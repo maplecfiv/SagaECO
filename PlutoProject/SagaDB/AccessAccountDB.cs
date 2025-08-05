@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using SagaLib;
 
 //引入OLEDB
@@ -12,6 +13,7 @@ namespace SagaDB
 {
     public class AccessAccountDB : AccessConnectivity, AccountDB
     {
+        private static readonly ILogger<AccessAccountDB> _logger = Logger.InitLogger<AccessAccountDB>();
         private readonly string Source;
         private Encoding encoder = Encoding.UTF8;
         private bool isconnected;
@@ -43,7 +45,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else Console.WriteLine("SQL Connection error");
+                else _logger.LogDebug("SQL Connection error");
             }
         }
 
@@ -171,7 +173,7 @@ namespace SagaDB
 
             if (result.Count == 0) return null;
             account = new Account();
-            //   Console.WriteLine(result[0]["account_id"].ToString());
+            //   _logger.LogDebug(result[0]["account_id"].ToString());
             account.AccountID = (int)result[0]["account_id"];
             account.Name = name;
             account.Password = (string)result[0]["password"];

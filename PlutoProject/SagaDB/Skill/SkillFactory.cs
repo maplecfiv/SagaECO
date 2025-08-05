@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Microsoft.Extensions.Logging;
 using SagaDB.Actor;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
@@ -11,6 +12,7 @@ namespace SagaDB.Skill
 {
     public class SkillFactory : Singleton<SkillFactory>
     {
+        private static readonly ILogger<SkillFactory> _logger = Logger.InitLogger<SkillFactory>();
         public enum SkillPaga
         {
             p1,
@@ -298,7 +300,7 @@ namespace SagaDB.Skill
             var sw = new StreamWriter(path + ".csv", false, encoding);
             sw.WriteLine("#ID,Name,主动,最大Lv,Lv,JobLv,MP,SP,吟唱时间,延迟,射程,目标,目标2,范围,技能释放射程");
             Logger.ShowInfo("Loading skill database...");
-            Console.ForegroundColor = ConsoleColor.Green;
+            //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             var print = true;
             string[] paras;
@@ -343,7 +345,7 @@ namespace SagaDB.Skill
                     {
                         if (print)
                         {
-                            Console.Write("*");
+                            _logger.LogDebug("*");
                             print = false;
                         }
                     }
@@ -361,8 +363,8 @@ namespace SagaDB.Skill
                 }
             }
 
-            Console.WriteLine();
-            Console.ResetColor();
+            // _logger.LogDebug();
+            //Console.ResetColor();
             Logger.ShowInfo(count + " skills loaded.");
             sw.Flush();
             sw.Close();

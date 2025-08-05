@@ -19,11 +19,13 @@ using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
 using FurniturePlace = SagaDB.FFGarden.FurniturePlace;
+using Microsoft.Extensions.Logging;
 
 namespace SagaDB
 {
     public class MySQLActorDB : MySQLConnectivity, ActorDB
     {
+        private static readonly ILogger<MySQLActorDB> _logger = Logger.InitLogger<MySQLActorDB>();
         private readonly string database;
         private readonly string dbpass;
         private readonly string dbuser;
@@ -63,7 +65,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else Console.WriteLine("SQL Connection error");
+                else _logger.LogDebug("SQL Connection error");
             }
         }
 

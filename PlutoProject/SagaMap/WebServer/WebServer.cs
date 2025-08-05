@@ -4,11 +4,13 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using SagaLib;
+using Microsoft.Extensions.Logging;
 
 namespace SagaMap.WebServer
 {
     public class WebServer
     {
+        private static readonly ILogger<WebServer> _logger = Logger.InitLogger<WebServer>();
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
         private bool data;
@@ -55,11 +57,11 @@ namespace SagaMap.WebServer
                                 Logger.ShowInfo("Client connected:" + ctx.Request.RemoteEndPoint.Address);
 
                                 //Debug
-                                //Console.WriteLine(ctx.Request.Headers.Get("token"));
-                                //Console.WriteLine(ctx.Request.Headers.Get("char_id"));
-                                //Console.WriteLine(ctx.Request.Headers.Get("item_id"));
-                                //Console.WriteLine(ctx.Request.Headers.Get("qty"));
-                                //Console.WriteLine(ctx.Request.Headers.Get("action"));
+                                //_logger.LogDebug(ctx.Request.Headers.Get("token"));
+                                //_logger.LogDebug(ctx.Request.Headers.Get("char_id"));
+                                //_logger.LogDebug(ctx.Request.Headers.Get("item_id"));
+                                //_logger.LogDebug(ctx.Request.Headers.Get("qty"));
+                                //_logger.LogDebug(ctx.Request.Headers.Get("action"));
                                 var token = ctx.Request.Headers.Get("token");
 
                                 if (token == Configuration.Configuration.Instance.APIKey)
@@ -124,8 +126,8 @@ namespace SagaMap.WebServer
                                 else
                                 {
                                     Logger.ShowWarning("Token access deined.");
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.WriteLine("Dropped.");
+                                    //Console.ForegroundColor = ConsoleColor.Red;
+                                    _logger.LogDebug("Dropped.");
                                     ctx.Response.OutputStream.Close();
                                 }
                             }
@@ -133,8 +135,8 @@ namespace SagaMap.WebServer
                             {
                                 //Not allow to GET
                                 Logger.ShowWarning("Method disallowed from:" + ctx.Request.UserHostAddress);
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Dropped.");
+                                //Console.ForegroundColor = ConsoleColor.Red;
+                                _logger.LogDebug("Dropped.");
                                 ctx.Response.OutputStream.Close();
                             }
 

@@ -211,6 +211,8 @@ namespace SagaLib
 
         private int InitCSV(string path, Encoding encoding)
         {
+            //TODO enable item_transform
+            /*
             if (path == "./DB/item_transform.csv") return 0;
             var baseStream = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
             var parser = new TextFieldParser(baseStream, encoding);
@@ -263,7 +265,8 @@ namespace SagaLib
 
             parser.Close();
             baseStream.Close();
-            return count;
+            return count;*/
+            return 0;
         }
 
         /// <summary>

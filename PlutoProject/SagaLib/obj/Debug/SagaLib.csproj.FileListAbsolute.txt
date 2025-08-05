@@ -10,3 +10,11 @@ F:/ECOAceProject/SagaECONewClient/Bin/SagaLib.dll
 F:/ECOAceProject/SagaECONewClient/Bin/SagaLib.pdb
 F:/ECOAceProject/SagaECONewClient/Bin/SagaLib.XML
 F:/ECOAceProject/SagaECONewClient/SagaLib/obj/Debug/SagaLib.csprojResolveAssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLib.dll
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLib.pdb
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLib.XML
+/home/maple/projects/SagaECO/PlutoProject/SagaLib/obj/Debug/SagaLib.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLib/obj/Debug/SagaLib.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLib/obj/Debug/SagaLib.csproj.CopyComplete
+/home/maple/projects/SagaECO/PlutoProject/SagaLib/obj/Debug/SagaLib.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLib/obj/Debug/SagaLib.pdb

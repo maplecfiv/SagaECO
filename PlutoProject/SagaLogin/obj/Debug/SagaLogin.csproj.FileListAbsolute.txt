@@ -10,3 +10,12 @@ F:/ECOAceProject/SagaECONewClient/Bin/SagaLogin.exe.config
 F:/ECOAceProject/SagaECONewClient/Bin/SagaLogin.exe
 F:/ECOAceProject/SagaECONewClient/Bin/SagaLogin.pdb
 F:/ECOAceProject/SagaECONewClient/SagaLogin/obj/Debug/SagaLogin.csprojResolveAssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLogin.exe.config
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLogin.exe
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaLogin.pdb
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.exe.config
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.csproj.CopyComplete
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.exe
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/SagaLogin.pdb

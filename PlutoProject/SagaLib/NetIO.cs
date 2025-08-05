@@ -443,7 +443,7 @@ namespace SagaLib
 
                 // Receive the data from the packet and call the receivedata function
                 // The packet is stored in AsyncState
-                //Console.WriteLine("New packet with size " + p.size);
+                //_logger.LogDebug("New packet with size " + p.size);
                 try
                 {
                     stream.BeginRead(data, 4, (int)size, callbackData, data);

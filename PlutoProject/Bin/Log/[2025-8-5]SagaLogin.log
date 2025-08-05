@@ -1,0 +1,43 @@
+5/8/2025 10:49:23 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:49:23 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:49:23 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <3cd0e9ab2f874ad19ca4fa2d9d7ed2ef>:0 
+5/8/2025 10:50:53 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:50:53 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:50:53 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <3cd0e9ab2f874ad19ca4fa2d9d7ed2ef>:0 
+5/8/2025 10:52:45 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:52:45 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:52:45 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:14:49 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:14:49 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:14:49 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:15:41 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:15:41 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:15:41 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:17:50 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:17:50 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:17:50 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:28:58 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:28:58 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:28:58 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <3239ff6037df4a35a05c292b210b5350>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <780f473cb08542d7ab94b195b805ed5f>:0 
+5/8/2025 11:32:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:32:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:07 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:17 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:27 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:37 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:07 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:17 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:27 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:37 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:35:07 PM|[Error]Failed.. Trying again in 10sec

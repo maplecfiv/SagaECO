@@ -47,11 +47,13 @@ using SagaMap.Properties;
 using SagaMap.Skill;
 using SagaMap.Tasks.System;
 using AIThread = SagaMap.Mob.AIThread;
+using Microsoft.Extensions.Logging;
 
 namespace SagaMap
 {
     public class MapServer
     {
+        private static readonly ILogger<MapServer> _logger = Logger.InitLogger<MapServer>();
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -177,57 +179,57 @@ namespace SagaMap
             var Log = new Logger("SagaMap.log");
             Logger.defaultlogger = Log;
             Logger.CurrentLogger = Log;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("======================================================================");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("                         SagaECO Map Server                ");
-            Console.WriteLine("         (C)2013-2017 The Pluto ECO Project Development Team                ");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("======================================================================");
-            Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.White;
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("======================================================================");
+            //Console.ForegroundColor = ConsoleColor.Cyan;
+            _logger.LogDebug("                         SagaECO Map Server                ");
+            _logger.LogDebug("         (C)2013-2017 The Pluto ECO Project Development Team                ");
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("======================================================================");
+            //Console.ResetColor();
+            //Console.ForegroundColor = ConsoleColor.White;
             Logger.ShowInfo("Version Informations:");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("SagaMap");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("SagaLib");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("SagaMap");
+            //Console.ForegroundColor = ConsoleColor.White;
+            _logger.LogDebug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("SagaLib");
+            //Console.ForegroundColor = ConsoleColor.White;
+            _logger.LogDebug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
                               SagaLib.Properties.GlobalInfo.ModifyDate + ")");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("SagaDB");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("SagaDB");
+            //Console.ForegroundColor = ConsoleColor.White;
+            _logger.LogDebug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
                               SagaDB.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
 
             Configuration.Configuration.Instance.Initialization("./Config/SagaMap.xml");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("[Info]");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Current Packet Version:[");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(Configuration.Configuration.Instance.Version);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("]");
+            //Console.ForegroundColor = ConsoleColor.Green;
+            _logger.LogDebug("[Info]");
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("Current Packet Version:[");
+            //Console.ForegroundColor = ConsoleColor.White;
+            _logger.LogDebug(Configuration.Configuration.Instance.Version.ToString());
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("]");
 
             LocalManager.Instance.CurrentLanguage =
                 (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages),
                     Configuration.Configuration.Instance.Language);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("[Info]");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write("Current Language:[");
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(LocalManager.Instance);
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("]");
-            Console.ResetColor();
+            //Console.ForegroundColor = ConsoleColor.Green;
+            _logger.LogDebug("[Info]");
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("Current Language:[");
+            //Console.ForegroundColor = ConsoleColor.White;
+            _logger.LogDebug(LocalManager.Instance.ToString());
+            //Console.ForegroundColor = ConsoleColor.Yellow;
+            _logger.LogDebug("]");
+            //Console.ResetColor();
 
             //int item = (int)ContainerType.HEAD_ACCE2;
 

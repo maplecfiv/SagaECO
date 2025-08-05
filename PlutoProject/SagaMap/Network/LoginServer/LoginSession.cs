@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using SagaLib;
 using SagaMap.Packets.Login;
 using Version = SagaLib.Version;
@@ -11,6 +12,7 @@ namespace SagaMap.Network.LoginServer
 {
     public class LoginSession : SagaLib.Client
     {
+        private static readonly ILogger<LoginSession> _logger = Logger.InitLogger<LoginSession>();
         public enum SESSION_STATE
         {
             CONNECTED,
@@ -126,17 +128,17 @@ namespace SagaMap.Network.LoginServer
                 Logger.ShowInfo("Got Configuration from login server:");
                 foreach (var i in Configuration.Configuration.Instance.StartupSetting.Keys)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("[Info]");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("Configuration for Race[");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(i.ToString());
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("]");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
-                    Console.ResetColor();
+                    //Console.ForegroundColor = ConsoleColor.Green;
+                    _logger.LogDebug("[Info]");
+                    //Console.ForegroundColor = ConsoleColor.Yellow;
+                    _logger.LogDebug("Configuration for Race[");
+                    //Console.ForegroundColor = ConsoleColor.White;
+                    _logger.LogDebug(i.ToString());
+                    //Console.ForegroundColor = ConsoleColor.Yellow;
+                    _logger.LogDebug("]");
+                    //Console.ForegroundColor = ConsoleColor.White;
+                    _logger.LogDebug(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
+                    //Console.ResetColor();
                 }
 
                 state = SESSION_STATE.IDENTIFIED;

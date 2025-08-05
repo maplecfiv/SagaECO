@@ -26,7 +26,7 @@ namespace SagaDB.Marionette
         {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             Logger.ShowInfo("Loading marionette database...");
-            Console.ForegroundColor = ConsoleColor.Green;
+            //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             string[] paras;
             while (!sr.EndOfStream)
@@ -104,7 +104,7 @@ namespace SagaDB.Marionette
                 }
             }
 
-            Console.ResetColor();
+            //Console.ResetColor();
             Logger.ShowInfo(count + " marionette loaded.");
             sr.Close();
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using SagaDB.Actor;
 using SagaDB.BBS;
 using SagaDB.FFGarden;
@@ -19,6 +20,7 @@ namespace SagaDB
 {
     public class AccessActorDb : AccessConnectivity, ActorDB
     {
+        private static readonly ILogger<AccessActorDb> _logger = Logger.InitLogger<AccessActorDb>();
         private readonly string Source;
         private Encoding encoder = Encoding.UTF8;
         private bool isconnected;
@@ -49,7 +51,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else Console.WriteLine("SQL Connection error");
+                else _logger.LogDebug("SQL Connection error");
             }
         }
 

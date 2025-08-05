@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using ThreadState = System.Threading.ThreadState;
+using Microsoft.Extensions.Logging;
 
 namespace SagaLib
 {
     public class ClientManager
     {
+        private static readonly ILogger<ClientManager> _logger = Logger.InitLogger<ClientManager>();
         //public byte CheckUnLockSecond = 1;
         public static bool noCheckDeadLock = false;
 
@@ -108,7 +110,7 @@ namespace SagaLib
                         {
                         }
 
-                        Console.WriteLine();
+                        // _logger.LogDebug();
 //#endif
                         StackTrace running;
                         try
@@ -133,7 +135,7 @@ namespace SagaLib
                             Logger.ShowError(ex);
                         }
 
-                        Console.WriteLine();
+                        // _logger.LogDebug();
                         Logger.ShowError("Call Stack of all blocking Threads:");
                         var list = blockedThread.ToArray();
                         foreach (var j in list)
@@ -156,10 +158,10 @@ namespace SagaLib
                                 Logger.ShowError(ex);
                             }
 
-                            Console.WriteLine();
+                            // _logger.LogDebug();
                         }
 
-                        Console.WriteLine();
+                        // _logger.LogDebug();
                         Logger.ShowError("Call Stack of all Threads:");
                         var keys = new string[Threads.Keys.Count];
                         Threads.Keys.CopyTo(keys, 0);
@@ -183,7 +185,7 @@ namespace SagaLib
                             {
                             }
 
-                            Console.WriteLine();
+                            // _logger.LogDebug();
                         }
 
                         LeaveCriticalArea(currentBlocker);
@@ -222,7 +224,7 @@ namespace SagaLib
                 {
                 }
 
-                Console.WriteLine();
+                // _logger.LogDebug();
             }
 
             Logger.ShowWarning("Call Stack of all Threads:");
@@ -245,7 +247,7 @@ namespace SagaLib
                 {
                 }
 
-                Console.WriteLine();
+                // _logger.LogDebug();
             }
         }
 

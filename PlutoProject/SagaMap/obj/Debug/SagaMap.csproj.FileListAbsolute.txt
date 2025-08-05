@@ -19,3 +19,13 @@ G:/svn/PlutoProject/Bin/SagaMap.exe.config
 G:/svn/PlutoProject/Bin/SagaMap.exe
 G:/svn/PlutoProject/Bin/SagaMap.pdb
 G:/svn/PlutoProject/Bin/SagaMap.XML
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaMap.exe.config
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaMap.exe
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaMap.pdb
+/home/maple/projects/SagaECO/PlutoProject/Bin/SagaMap.XML
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.exe.config
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.csproj.CopyComplete
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.exe
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/SagaMap.pdb
