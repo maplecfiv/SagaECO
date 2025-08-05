@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 
-namespace SagaDB.FFarden
+namespace SagaDB.FFGarden
 {
     public enum FFardenSlot
     {

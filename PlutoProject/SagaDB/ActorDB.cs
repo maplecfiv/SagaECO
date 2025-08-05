@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FFarden;
+using SagaDB.FFGarden;
 using SagaDB.Tamaire;
 
 namespace SagaDB
@@ -128,7 +128,7 @@ namespace SagaDB
 
         List<ActorPC> GetWRPRanking();
 
-        List<FFarden.FFarden> GetFFList();
+        List<FFarden> GetFFList();
 
         void SaveFF(Ring.Ring ring);
 

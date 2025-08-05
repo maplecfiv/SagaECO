@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SagaDB.BBS;
+using SagaDB.FGGarden;
 using SagaDB.Iris;
 using SagaDB.Item;
 using SagaDB.Map;
@@ -1639,7 +1640,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     玩家的飞空庭
         /// </summary>
-        public FGarden.FGarden FGarden { get; set; }
+        public FGarden FGarden { get; set; }
 
         /// <summary>
         ///     帐篷Actor

@@ -5,7 +5,7 @@ using System.Data.OleDb;
 using System.Text;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FFarden;
+using SagaDB.FFGarden;
 using SagaDB.Item;
 using SagaDB.Map;
 using SagaDB.Quests;
@@ -804,10 +804,10 @@ namespace SagaDB
         {
         }
 
-        public List<FFarden.FFarden> GetFFList()
+        public List<FFarden> GetFFList()
         {
             var sqlstr = "SELECT * FROM `ff`;";
-            var list = new List<FFarden.FFarden>();
+            var list = new List<FFarden>();
 
             return list;
         }

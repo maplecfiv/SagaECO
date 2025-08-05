@@ -8,7 +8,8 @@ using ICSharpCode.SharpZipLib.BZip2;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FGarden;
+using SagaDB.FFGarden;
+using SagaDB.FGGarden;
 using SagaDB.Item;
 using SagaDB.Map;
 using SagaDB.Mob;
@@ -17,7 +18,7 @@ using SagaDB.Quests;
 using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
-using FurniturePlace = SagaDB.FFarden.FurniturePlace;
+using FurniturePlace = SagaDB.FFGarden.FurniturePlace;
 
 namespace SagaDB
 {
@@ -1891,7 +1892,7 @@ namespace SagaDB
                 if (result.Count > 0)
                     if (pc.Ring.FFarden == null)
                     {
-                        pc.Ring.FFarden = new FFarden.FFarden();
+                        pc.Ring.FFarden = new FFarden();
                         pc.Ring.FFarden.ID = (uint)result[0]["ff_id"];
                         pc.Ring.FFarden.Name = (string)result[0]["name"];
                         pc.Ring.FFarden.RingID = (uint)result[0]["ring_id"];
@@ -1964,15 +1965,15 @@ namespace SagaDB
             }
         }
 
-        public List<FFarden.FFarden> GetFFList()
+        public List<FFarden> GetFFList()
         {
             var sqlstr = "SELECT * FROM `ff`;";
-            var list = new List<FFarden.FFarden>();
+            var list = new List<FFarden>();
             var result = SQLExecuteQuery(sqlstr);
 
             foreach (DataRow i in result)
             {
-                var ff = new FFarden.FFarden();
+                var ff = new FFarden();
                 ff.Name = (string)i["name"];
                 ff.Content = (string)i["content"];
                 ff.ID = (uint)i["ff_id"];
@@ -2872,7 +2873,7 @@ namespace SagaDB
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0)
             {
-                var garden = new FGarden.FGarden(pc);
+                var garden = new FGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
                 garden.FGardenEquipments[FGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
                 garden.FGardenEquipments[FGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
@@ -2892,7 +2893,7 @@ namespace SagaDB
             result = SQLExecuteQuery(sqlstr);
             foreach (DataRow i in result)
             {
-                var place = (FGarden.FurniturePlace)(byte)i["place"];
+                var place = (FGGarden.FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
                 actor.PictID = (uint)i["pict_id"];
@@ -2968,12 +2969,12 @@ namespace SagaDB
             }
 
             sqlstr = string.Format("DELETE FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';", pc.FGarden.ID);
-            foreach (var i in pc.FGarden.Furnitures[FGarden.FurniturePlace.GARDEN])
+            foreach (var i in pc.FGarden.Furnitures[FGGarden.FurniturePlace.GARDEN])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
                     pc.FGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
-            foreach (var i in pc.FGarden.Furnitures[FGarden.FurniturePlace.ROOM])
+            foreach (var i in pc.FGarden.Furnitures[FGGarden.FurniturePlace.ROOM])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",

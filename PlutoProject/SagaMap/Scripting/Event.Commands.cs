@@ -6,7 +6,7 @@ using SagaDB.Actor;
 using SagaDB.DefWar;
 using SagaDB.DEMIC;
 using SagaDB.ECOShop;
-using SagaDB.FGarden;
+using SagaDB.FGGarden;
 using SagaDB.Iris;
 using SagaDB.Item;
 using SagaDB.Map;
@@ -2213,7 +2213,7 @@ namespace SagaMap.Scripting
                 {
                     var item = list[sel - 1];
                     var num = item.BaseData.id - item.BaseData.iconID;
-                    var res = TreasureFactory.Instance.GetRandomItem(item.BaseData.itemType + num);
+                    var res = TreasureFactory.Instance.GetRandomItem(String.Concat(item.BaseData.itemType, num));
                     TakeItem(pc, item.ItemID, 1);
                     bool identified;
                     if (Global.Random.Next(0, 99) <= 5)

@@ -7,8 +7,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SagaDB.Actor;
 using SagaDB.ECOShop;
-using SagaDB.FFarden;
-using SagaDB.FGarden;
+using SagaDB.FFGarden;
+using SagaDB.FGGarden;
 using SagaDB.Iris;
 using SagaDB.Item;
 using SagaDB.Map;
@@ -35,7 +35,7 @@ using SagaMap.Tasks.PC;
 using SagaMap.Tasks.System;
 using AIFlag = SagaMap.Mob.AIFlag;
 using AIMode = SagaMap.Mob.AIMode;
-using FurniturePlace = SagaDB.FGarden.FurniturePlace;
+using FurniturePlace = SagaDB.FGGarden.FurniturePlace;
 using Item = SagaDB.Item.Item;
 using StatusFactory = SagaMap.PC.StatusFactory;
 
@@ -4142,9 +4142,9 @@ namespace SagaMap
                     client.Character.Ring.FFarden.ObMode = 3;
                     client.Character.Ring.FFarden.Content = "测试内容";
                     var r = new FFarden();
-                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFarden.FurniturePlace.GARDEN,
+                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.GARDEN,
                         new List<ActorFurniture>());
-                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFarden.FurniturePlace.ROOM,
+                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.ROOM,
                         new List<ActorFurniture>());
                 }
 

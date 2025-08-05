@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading;
 using SagaDB.Actor;
-using SagaDB.FGarden;
+using SagaDB.FGGarden;
 using SagaDB.Furniture;
 using SagaDB.Item;
 using SagaLib;
