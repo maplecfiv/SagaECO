@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace SagaLib.VirtualFileSystem.Lpk
+namespace SagaLib.VirtualFileSytem.LPK
 {
     public class LpkInputStream : Stream
     {

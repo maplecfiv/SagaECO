@@ -3,7 +3,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Partner
 {
     public class CSMG_PARTNER_TALK : Packet
     {

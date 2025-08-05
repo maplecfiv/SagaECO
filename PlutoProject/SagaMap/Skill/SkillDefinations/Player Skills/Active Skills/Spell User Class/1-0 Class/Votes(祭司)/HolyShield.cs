@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Vates
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_
 {
     public class HolyShield : ISkill
     {

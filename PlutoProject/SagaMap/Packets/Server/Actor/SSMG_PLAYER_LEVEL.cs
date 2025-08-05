@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     /// <summary>
     ///     [00][0E][02][3A]
@@ -17,9 +17,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_LEVEL()
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 data = new byte[19];
-            else if (Configuration.Instance.Version >= Version.Saga11)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[18];
             else
                 data = new byte[15];
@@ -62,7 +62,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutByte(value, 8);
             }
         }
@@ -71,9 +71,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                     PutUShort(value, 9);
-                else if (Configuration.Instance.Version >= Version.Saga11)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(value, 8);
                 else
                     PutUShort(value, 7);
@@ -84,9 +84,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                     PutUShort(value, 11);
-                else if (Configuration.Instance.Version >= Version.Saga11)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(value, 10);
                 else
                     PutUShort(value, 9);
@@ -97,9 +97,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                     PutUShort(value, 13);
-                else if (Configuration.Instance.Version >= Version.Saga11)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(value, 12);
                 else
                     PutUShort(value, 11);
@@ -110,9 +110,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                     PutUShort(value, 15);
-                else if (Configuration.Instance.Version >= Version.Saga11)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(value, 14);
                 else
                     PutUShort(value, 13);
@@ -123,9 +123,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                     PutUShort(value, 17);
-                else if (Configuration.Instance.Version >= Version.Saga11)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(value, 16);
                 else
                     PutUShort(value, 13);

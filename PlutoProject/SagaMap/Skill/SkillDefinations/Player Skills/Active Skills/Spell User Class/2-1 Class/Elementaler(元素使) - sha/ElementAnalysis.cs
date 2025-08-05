@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Elementaler
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
 {
     /// <summary>
     ///     精靈分析（精霊分析）

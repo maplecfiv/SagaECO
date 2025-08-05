@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.WRP
 {
     public class SSMG_WRP_LIST : Packet
     {

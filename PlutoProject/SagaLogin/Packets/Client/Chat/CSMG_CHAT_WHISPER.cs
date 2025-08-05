@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Chat
 {
     public class CSMG_CHAT_WHISPER : Packet
     {

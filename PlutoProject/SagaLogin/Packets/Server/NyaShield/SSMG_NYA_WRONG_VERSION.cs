@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.NyaShield
 {
     public class SSMG_NYA_WRONG_VERSION : Packet
     {

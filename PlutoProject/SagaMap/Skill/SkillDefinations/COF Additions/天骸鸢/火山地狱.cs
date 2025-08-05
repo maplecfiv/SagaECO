@@ -4,7 +4,7 @@ using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Elementaler
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.天骸鸢
 {
     internal class FireInfernal : MobISkill
     {

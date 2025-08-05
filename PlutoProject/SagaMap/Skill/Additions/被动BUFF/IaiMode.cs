@@ -2,7 +2,7 @@ using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions.被动BUFF
 {
     /// <summary>
     ///     居合姿态

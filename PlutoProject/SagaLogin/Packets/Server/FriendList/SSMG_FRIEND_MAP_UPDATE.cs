@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.FriendList
 {
     public class SSMG_FRIEND_MAP_UPDATE : Packet
     {

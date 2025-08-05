@@ -42,7 +42,7 @@ namespace SagaMap.Network.LoginServer
 
         public void Connect()
         {
-            var address = Dns.GetHostAddresses(Configuration.Instance.LoginHost)[0];
+            var address = Dns.GetHostAddresses(Configuration.Configuration.Instance.LoginHost)[0];
             var Connected = false;
             var times = 5;
             do
@@ -55,7 +55,7 @@ namespace SagaMap.Network.LoginServer
 
                 try
                 {
-                    sock.Connect(new IPEndPoint(IPAddress.Parse(address.ToString()), Configuration.Instance.LoginPort));
+                    sock.Connect(new IPEndPoint(IPAddress.Parse(address.ToString()), Configuration.Configuration.Instance.LoginPort));
                     Connected = true;
                 }
                 catch (Exception e)
@@ -74,7 +74,7 @@ namespace SagaMap.Network.LoginServer
             try
             {
                 netIO = new NetIO(sock, commandTable, this);
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     netIO.FirstLevelLength = 2;
                 netIO.SetMode(NetIO.Mode.Client);
                 var p = new Packet(8);
@@ -91,28 +91,28 @@ namespace SagaMap.Network.LoginServer
         {
             state = SESSION_STATE.NOT_IDENTIFIED;
             INTERN_LOGIN_REGISTER p;
-            var count = Configuration.Instance.HostedMaps.Count / 200;
+            var count = Configuration.Configuration.Instance.HostedMaps.Count / 200;
             List<uint> list;
             for (var i = 0; i < count; i++)
             {
                 p = new INTERN_LOGIN_REGISTER();
-                p.Password = Configuration.Instance.LoginPass;
+                p.Password = Configuration.Configuration.Instance.LoginPass;
                 list = new List<uint>();
-                for (var j = i * 200; j < (i + 1) * 200; j++) list.Add(Configuration.Instance.HostedMaps[j]);
+                for (var j = i * 200; j < (i + 1) * 200; j++) list.Add(Configuration.Configuration.Instance.HostedMaps[j]);
                 p.HostedMaps = list;
                 netIO.SendPacket(p);
             }
 
             p = new INTERN_LOGIN_REGISTER();
-            p.Password = Configuration.Instance.LoginPass;
+            p.Password = Configuration.Configuration.Instance.LoginPass;
             list = new List<uint>();
-            for (var i = count * 200; i < Configuration.Instance.HostedMaps.Count; i++)
-                list.Add(Configuration.Instance.HostedMaps[i]);
+            for (var i = count * 200; i < Configuration.Configuration.Instance.HostedMaps.Count; i++)
+                list.Add(Configuration.Configuration.Instance.HostedMaps[i]);
             p.HostedMaps = list;
             netIO.SendPacket(p);
 
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG();
-            p1.Version = Configuration.Instance.Version;
+            p1.Version = Configuration.Configuration.Instance.Version;
             netIO.SendPacket(p1);
         }
 
@@ -120,9 +120,9 @@ namespace SagaMap.Network.LoginServer
         {
             if (p.AuthOK)
             {
-                Configuration.Instance.StartupSetting = p.StartupSetting;
+                Configuration.Configuration.Instance.StartupSetting = p.StartupSetting;
                 Logger.ShowInfo("Got Configuration from login server:");
-                foreach (var i in Configuration.Instance.StartupSetting.Keys)
+                foreach (var i in Configuration.Configuration.Instance.StartupSetting.Keys)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("[Info]");
@@ -133,7 +133,7 @@ namespace SagaMap.Network.LoginServer
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write("]");
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(":\r\n      " + Configuration.Instance.StartupSetting[i]);
+                    Console.WriteLine(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
                     Console.ResetColor();
                 }
 

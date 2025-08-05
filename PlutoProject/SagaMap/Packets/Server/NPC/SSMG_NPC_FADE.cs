@@ -1,7 +1,6 @@
 using SagaLib;
-using SagaMap.Scripting;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Packets.Server.NPC
 {
     public enum FadeType
     {
@@ -14,10 +13,7 @@ namespace SagaMap.Scripting
         Black,
         White
     }
-}
 
-namespace SagaMap.Packets.Server
-{
     public class SSMG_NPC_FADE : Packet
     {
         public SSMG_NPC_FADE()

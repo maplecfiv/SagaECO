@@ -1,9 +1,10 @@
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.FL2_1
+namespace SagaMap.Skill.NewSkill.FL2_1
 {
     public class ArmorBreaker : ISkill
     {

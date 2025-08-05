@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using SagaLib.VirtualFileSystem.Lpk;
+using SagaLib.VirtualFileSytem.LPK;
 
-namespace SagaLib.VirtualFileSystem
+namespace SagaLib.VirtualFileSytem.IFileSystemImp
 {
     public class LPKFileSystem : IFileSystem
     {

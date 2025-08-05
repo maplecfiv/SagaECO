@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Gladiator
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm
 {
     /// <summary>
     ///     ジリオンブレイド

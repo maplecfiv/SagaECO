@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.PProtect
 {
     public class SSMG_PPROTECT_CREATED_ADD_RESULT : Packet
     {

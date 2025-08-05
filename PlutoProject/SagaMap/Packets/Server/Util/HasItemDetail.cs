@@ -3,7 +3,7 @@ using SagaDB.Item;
 using SagaLib;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Util
 {
     public abstract class HasItemDetail : Packet
     {
@@ -20,7 +20,7 @@ namespace SagaMap.Packets.Server
             set => shopCount = value;
         }
 
-        protected Item ItemDetail
+        protected SagaDB.Item.Item ItemDetail
         {
             set
             {
@@ -92,7 +92,7 @@ namespace SagaMap.Packets.Server
                 else
                     PutUShort(0);
                 //Iris Cards
-                if (Configuration.Instance.Version >= Version.Saga9_Iris)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9_Iris)
                 {
                     PutUShort(value.CurrentSlot);
                     for (var i = 0; i < 10; i++)
@@ -179,7 +179,7 @@ namespace SagaMap.Packets.Server
 
                 //this.PutByte((byte)(this.size-3), 2); //回头补封包前面的偏移
 
-                if (Configuration.Instance.Version >= Version.Saga9_Iris)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9_Iris)
                 {
                     if (value.Rental)
                     {

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NPC
 {
     public class SSMG_NPC_PET_SELECT : Packet
     {
@@ -25,7 +24,7 @@ namespace SagaMap.Packets.Server
             set => PutInt((int)value, 2);
         }
 
-        public List<Item> Pets
+        public List<SagaDB.Item.Item> Pets
         {
             set
             {

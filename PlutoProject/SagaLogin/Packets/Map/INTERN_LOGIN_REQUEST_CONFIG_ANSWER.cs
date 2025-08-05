@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using SagaDB.Actor;
+using SagaDB.Config;
 using SagaLib;
-using SagaLogin.Configurations;
 
 namespace SagaLogin.Packets.Map
 {

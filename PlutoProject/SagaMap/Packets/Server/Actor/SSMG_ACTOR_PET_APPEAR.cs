@@ -1,16 +1,16 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_PET_APPEAR : Packet
     {
         public SSMG_ACTOR_PET_APPEAR()
         {
-            if (Configuration.Instance.Version == Version.Saga6)
+            if (Configuration.Configuration.Instance.Version == Version.Saga6)
                 data = new byte[30];
-            if (Configuration.Instance.Version >= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                 data = new byte[36];
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 data = new byte[42];
             offset = 2;
             ID = 0x122F;
@@ -40,7 +40,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga9) PutByte(value, 15);
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9) PutByte(value, 15);
             }
         }
 
@@ -48,7 +48,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga9) PutUInt(value, 16);
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9) PutUInt(value, 16);
             }
         }
 
@@ -57,9 +57,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutByte(value, 15);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutByte(value, 21);
             }
         }
@@ -68,9 +68,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutByte(value, 16);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutByte(value, 22);
             }
         }
@@ -79,9 +79,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutUShort(value, 17);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutUShort(value, 23);
             }
         }
@@ -90,9 +90,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutByte(value, 19);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutByte(value, 25);
             }
         }
@@ -101,11 +101,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutUInt(value, 20);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutUInt(value, 26);
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     PutUInt(value, 26); ///0???
                     PutUInt(value, 30);
@@ -117,11 +117,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                     PutUInt(value, 24);
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     PutUInt(value, 30);
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     PutUInt(value, 34); //0???
                     PutUInt(value, 38);

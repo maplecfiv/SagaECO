@@ -1,8 +1,7 @@
 ﻿using System.IO;
-using SevenZip;
-using SevenZip.Compression.LZMA;
+using SagaLib.VirtualFileSytem.LPK.LZMA.Common;
 
-namespace SagaLib.VirtualFileSystem.Lpk.LZMA
+namespace SagaLib.VirtualFileSytem.LPK.LZMA
 {
     public static class LzmaHelper
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.MasterEnchance;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_MASTERENHANCE_DETAIL : Packet
     {

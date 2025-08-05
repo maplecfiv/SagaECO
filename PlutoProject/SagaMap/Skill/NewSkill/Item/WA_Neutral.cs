@@ -1,6 +1,7 @@
 ﻿using SagaDB.Actor;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Item
+namespace SagaMap.Skill.NewSkill.Item
 {
     public class WA_Neutral : ISkill
     {

@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_WARE_GET_RESULT : Packet
     {

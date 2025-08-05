@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.模版
+namespace SagaMap.Skill.SkillDefinations.技能模版
 {
     public class 设置系 : ISkill
     {

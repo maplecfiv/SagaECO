@@ -5,14 +5,31 @@ using System.Net.Sockets;
 using SagaDB;
 using SagaDB.Actor;
 using SagaDB.BBS;
+using SagaDB.Config;
 using SagaDB.Item;
 using SagaDB.Tamaire;
 using SagaLib;
-using SagaLogin.Configurations;
 using SagaLogin.Manager;
 using SagaLogin.Packets.Client;
+using SagaLogin.Packets.Client.Chat;
+using SagaLogin.Packets.Client.FriendList;
+using SagaLogin.Packets.Client.Login;
+using SagaLogin.Packets.Client.NyaShield;
+using SagaLogin.Packets.Client.Ring;
+using SagaLogin.Packets.Client.Tamaire;
+using SagaLogin.Packets.Client.Tool;
+using SagaLogin.Packets.Client.WRP;
 using SagaLogin.Packets.Map;
 using SagaLogin.Packets.Server;
+using SagaLogin.Packets.Server.Chat;
+using SagaLogin.Packets.Server.FriendList;
+using SagaLogin.Packets.Server.Login;
+using SagaLogin.Packets.Server.Mail;
+using SagaLogin.Packets.Server.NyaShield;
+using SagaLogin.Packets.Server.Ring;
+using SagaLogin.Packets.Server.Tamaire;
+using SagaLogin.Packets.Server.Tool;
+using SagaLogin.Packets.Server.WRP;
 using Version = SagaLib.Version;
 
 namespace SagaLogin.Network.Client
@@ -523,10 +540,10 @@ namespace SagaLogin.Network.Client
                     pc.JobLevel2X = 1;
                     pc.QuestRemaining = 3;
                     pc.EP = 100;
-                    pc.MapID = Configuration.Instance.StartupSetting[pc.Race].StartMap;
+                    pc.MapID = Configuration.Configuration.Instance.StartupSetting[pc.Race].StartMap;
                     //MapInfo info = MapInfoFactory.Instance.MapInfo[pc.MapID];
-                    pc.X2 = Configuration.Instance.StartupSetting[pc.Race].X;
-                    pc.Y2 = Configuration.Instance.StartupSetting[pc.Race].Y;
+                    pc.X2 = Configuration.Configuration.Instance.StartupSetting[pc.Race].X;
+                    pc.Y2 = Configuration.Configuration.Instance.StartupSetting[pc.Race].Y;
 
                     pc.Dir = 2;
                     pc.HP = 120;
@@ -536,12 +553,12 @@ namespace SagaLogin.Network.Client
                     pc.SP = 100;
                     pc.MaxSP = 100;
 
-                    pc.Str = Configuration.Instance.StartupSetting[pc.Race].Str;
-                    pc.Dex = Configuration.Instance.StartupSetting[pc.Race].Dex;
-                    pc.Int = Configuration.Instance.StartupSetting[pc.Race].Int;
-                    pc.Vit = Configuration.Instance.StartupSetting[pc.Race].Vit;
-                    pc.Agi = Configuration.Instance.StartupSetting[pc.Race].Agi;
-                    pc.Mag = Configuration.Instance.StartupSetting[pc.Race].Mag;
+                    pc.Str = Configuration.Configuration.Instance.StartupSetting[pc.Race].Str;
+                    pc.Dex = Configuration.Configuration.Instance.StartupSetting[pc.Race].Dex;
+                    pc.Int = Configuration.Configuration.Instance.StartupSetting[pc.Race].Int;
+                    pc.Vit = Configuration.Configuration.Instance.StartupSetting[pc.Race].Vit;
+                    pc.Agi = Configuration.Configuration.Instance.StartupSetting[pc.Race].Agi;
+                    pc.Mag = Configuration.Configuration.Instance.StartupSetting[pc.Race].Mag;
                     pc.SkillPoint = 3;
                     pc.StatsPoint = 2;
                     pc.Gold = 0;
@@ -559,7 +576,7 @@ namespace SagaLogin.Network.Client
                     pc.CInt["canFriend"] = 1;
 
                     List<StartItem> lists;
-                    lists = Configuration.Instance.StartItem[pc.Race][pc.Gender];
+                    lists = Configuration.Configuration.Instance.StartItem[pc.Race][pc.Gender];
                     foreach (var i in lists)
                     {
                         var item = ItemFactory.Instance.GetItem(i.ItemID);
@@ -702,7 +719,7 @@ namespace SagaLogin.Network.Client
         private void SendWelcomeMessages()
         {
             SendSystemMessages("------------------------------------------------------", 0);
-            foreach (var motd in Configuration.Instance.Motd)
+            foreach (var motd in Configuration.Configuration.Instance.Motd)
                 SendSystemMessages(motd, 0);
             SendSystemMessages("------------------------------------------------------", 0);
         }
@@ -767,7 +784,7 @@ namespace SagaLogin.Network.Client
         public LoginClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
         {
             netIO = new NetIO(mSock, mCommandTable, this);
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 netIO.FirstLevelLength = 2;
             netIO.SetMode(NetIO.Mode.Server);
             if (netIO.sock.Connected) OnConnect();
@@ -1045,10 +1062,10 @@ namespace SagaLogin.Network.Client
 
         public void OnInternMapRequestConfig(INTERN_LOGIN_REQUEST_CONFIG p)
         {
-            Configuration.Instance.Version = p.Version;
+            Configuration.Configuration.Instance.Version = p.Version;
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
-            p1.AuthOK = server.Password == Configuration.Instance.Password;
-            p1.StartupSetting = Configuration.Instance.StartupSetting;
+            p1.AuthOK = server.Password == Configuration.Configuration.Instance.Password;
+            p1.StartupSetting = Configuration.Configuration.Instance.StartupSetting;
             netIO.SendPacket(p1);
 
             Logger.ShowInfo(string.Format("Mapserver:{0}:{1} is requesting configuration...", server.IP, server.port));
@@ -1061,7 +1078,7 @@ namespace SagaLogin.Network.Client
             if (this.server == null)
             {
                 this.server = server;
-                if (server.Password != Configuration.Instance.Password)
+                if (server.Password != Configuration.Configuration.Instance.Password)
                 {
                     Logger.ShowWarning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
@@ -1071,7 +1088,7 @@ namespace SagaLogin.Network.Client
             }
             else
             {
-                if (server.Password != Configuration.Instance.Password)
+                if (server.Password != Configuration.Configuration.Instance.Password)
                 {
                     Logger.ShowWarning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,

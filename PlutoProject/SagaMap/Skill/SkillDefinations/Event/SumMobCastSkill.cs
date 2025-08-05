@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Event
 {

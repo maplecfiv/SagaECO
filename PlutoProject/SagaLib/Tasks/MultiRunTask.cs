@@ -1,6 +1,6 @@
 using System;
 
-namespace SagaLib
+namespace SagaLib.Tasks
 {
     public abstract class MultiRunTask
     {

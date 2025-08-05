@@ -1,8 +1,8 @@
 using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Fencer
+namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     /// <summary>
     ///     盾術修練（シールドマスタリー）

@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.ODWar
 {
     public class SSMG_ODWAR_RESULT : Packet
     {

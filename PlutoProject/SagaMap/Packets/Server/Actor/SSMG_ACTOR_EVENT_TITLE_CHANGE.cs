@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_EVENT_TITLE_CHANGE : Packet
     {

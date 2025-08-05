@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     ぱぴーみたいにどーん！

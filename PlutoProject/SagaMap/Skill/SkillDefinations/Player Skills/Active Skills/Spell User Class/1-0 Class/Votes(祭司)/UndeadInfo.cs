@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Vates
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_
 {
     /// <summary>
     ///     邪靈知識（死霊知識）圣印术

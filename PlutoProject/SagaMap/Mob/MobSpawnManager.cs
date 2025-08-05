@@ -4,7 +4,7 @@ using System.Xml;
 using SagaDB.Actor;
 using SagaDB.Mob;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
@@ -83,7 +83,7 @@ namespace SagaMap.Mob
                                         y = byte.Parse(k.InnerText);
                                         break;
                                     case "amount":
-                                        amount = int.Parse(k.InnerText) * Configuration.Instance.MobAmount;
+                                        amount = int.Parse(k.InnerText) * Configuration.Configuration.Instance.MobAmount;
                                         break;
                                     case "range":
                                         range = int.Parse(k.InnerText);
@@ -107,7 +107,7 @@ namespace SagaMap.Mob
                                 rate = 100;
                             if (rate <= Global.Random.Next(0, 99))
                                 continue;
-                            if (!Configuration.Instance.HostedMaps.Contains(map))
+                            if (!Configuration.Configuration.Instance.HostedMaps.Contains(map))
                                 continue;
                             for (var count = 0; count < amount; count++)
                             {

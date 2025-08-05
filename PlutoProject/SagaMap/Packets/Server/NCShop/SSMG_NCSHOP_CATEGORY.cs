@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.ECOShop;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NCShop
 {
     public class SSMG_NCSHOP_CATEGORY : Packet
     {

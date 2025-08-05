@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Partner
 {
     public class SSMG_PARTNER_CUBE_UPDATE : Packet
     {

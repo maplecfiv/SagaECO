@@ -11,7 +11,6 @@ using SagaDB.DualJob;
 using SagaDB.ECOShop;
 using SagaDB.EnhanceTable;
 using SagaDB.FGGarden;
-using SagaDB.Furniture;
 using SagaDB.Iris;
 using SagaDB.Item;
 using SagaDB.Map;
@@ -34,11 +33,72 @@ using SagaMap.Dungeon;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.AbyssTeam;
+using SagaMap.Packets.Client.Actor;
+using SagaMap.Packets.Client.Another;
+using SagaMap.Packets.Client.Bond;
+using SagaMap.Packets.Client.Chat;
+using SagaMap.Packets.Client.Community;
+using SagaMap.Packets.Client.DEM;
+using SagaMap.Packets.Client.DualJob;
+using SagaMap.Packets.Client.FFarden;
+using SagaMap.Packets.Client.FGarden;
+using SagaMap.Packets.Client.Fish;
+using SagaMap.Packets.Client.Golem;
+using SagaMap.Packets.Client.InfiniteCorridor;
+using SagaMap.Packets.Client.IrisCard;
+using SagaMap.Packets.Client.Item;
+using SagaMap.Packets.Client.Login;
+using SagaMap.Packets.Client.Navi;
+using SagaMap.Packets.Client.NCShop;
+using SagaMap.Packets.Client.NPC;
+using SagaMap.Packets.Client.Partner;
+using SagaMap.Packets.Client.Party;
+using SagaMap.Packets.Client.Possession;
+using SagaMap.Packets.Client.PProtect;
+using SagaMap.Packets.Client.Quest;
+using SagaMap.Packets.Client.Ring;
+using SagaMap.Packets.Client.Skill;
+using SagaMap.Packets.Client.Tamaire;
+using SagaMap.Packets.Client.Trade;
+using SagaMap.Packets.Client.VShop;
 using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.AbyssTeam;
+using SagaMap.Packets.Server.Actor;
+using SagaMap.Packets.Server.Another;
+using SagaMap.Packets.Server.AnotherAncientArk;
+using SagaMap.Packets.Server.Bond;
+using SagaMap.Packets.Server.Chat;
+using SagaMap.Packets.Server.Community;
+using SagaMap.Packets.Server.DefWar;
+using SagaMap.Packets.Server.DEM;
+using SagaMap.Packets.Server.DualJob;
+using SagaMap.Packets.Server.FFarden;
+using SagaMap.Packets.Server.FGarden;
+using SagaMap.Packets.Server.Fish;
+using SagaMap.Packets.Server.Golem;
+using SagaMap.Packets.Server.IrisCard;
+using SagaMap.Packets.Server.Item;
+using SagaMap.Packets.Server.Login;
+using SagaMap.Packets.Server.MosterGuide;
+using SagaMap.Packets.Server.NCShop;
+using SagaMap.Packets.Server.NPC;
+using SagaMap.Packets.Server.Partner;
+using SagaMap.Packets.Server.Party;
+using SagaMap.Packets.Server.Possession;
+using SagaMap.Packets.Server.PProtect;
+using SagaMap.Packets.Server.Quest;
+using SagaMap.Packets.Server.Ring;
+using SagaMap.Packets.Server.Skill;
+using SagaMap.Packets.Server.Stamp;
+using SagaMap.Packets.Server.Tamaire;
+using SagaMap.Packets.Server.Theater;
+using SagaMap.Packets.Server.Trade;
+using SagaMap.Packets.Server.VShop;
 using SagaMap.Partner;
 using SagaMap.Scripting;
 using SagaMap.Skill;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 using SagaMap.Tasks.Golem;
 using SagaMap.Tasks.Item;
 using SagaMap.Tasks.Partner;
@@ -452,7 +512,7 @@ namespace SagaMap.Network.Client
         public uint selectedPet;
         public bool syntheseFinished;
         public Dictionary<uint, uint> syntheseItem;
-        public bool vshopClosed = Configuration.Instance.VShopClosed;
+        public bool vshopClosed = Configuration.Configuration.Instance.VShopClosed;
 
         public void OnNPCPetSelect(CSMG_NPC_PET_SELECT p)
         {
@@ -696,7 +756,7 @@ namespace SagaMap.Network.Client
             if (p.Unknown != 0)
             {
                 npcJobSwitchRes = true;
-                var item = Character.Inventory.GetItem(Configuration.Instance.JobSwitchReduceItem,
+                var item = Character.Inventory.GetItem(Configuration.Configuration.Instance.JobSwitchReduceItem,
                     Inventory.SearchType.ITEM_ID);
                 if (item != null || p.ItemUseCount == 0)
                 {
@@ -1558,7 +1618,7 @@ namespace SagaMap.Network.Client
             Character.Speed = 200;
             FromActorPC(Character).SendChangeStatus();
 
-            if (Configuration.Instance.HostedMaps.Contains(Character.MapID))
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(Character.MapID))
             {
                 var newMap = MapManager.Instance.GetMap(Character.MapID);
                 if (Character.Marionette != null)
@@ -1593,7 +1653,7 @@ namespace SagaMap.Network.Client
             if (Character.MapID != ring.FFarden.MapID && Character.MapID != ring.FFarden.RoomMapID)
                 return;
             if (ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count < Configuration.Instance.MaxFurnitureCount)
+                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count < Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
                 var actor = new ActorFurniture();
@@ -1623,7 +1683,7 @@ namespace SagaMap.Network.Client
                     ring.FFarden.Furnitures[FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
                     ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
+                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
                 MapServer.charDB.SaveFF(ring);
             }
             else
@@ -1687,7 +1747,7 @@ namespace SagaMap.Network.Client
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
                 ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
+                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
         public void OnFFFurnitureRoomAppear()
@@ -3277,7 +3337,7 @@ namespace SagaMap.Network.Client
 
         public void ResetStatusPoint()
         {
-            var setting = Configuration.Instance.StartupSetting[Character.Race];
+            var setting = Configuration.Configuration.Instance.StartupSetting[Character.Race];
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Str, Character.Str);
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Dex, Character.Dex);
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Int, Character.Int);
@@ -3669,7 +3729,7 @@ namespace SagaMap.Network.Client
                     p.DungeonDir = map.DungeonMap.Dir;
                     p.DungeonX = map.DungeonMap.X;
                     p.DungeonY = map.DungeonMap.Y;
-                    Character.Speed = Configuration.Instance.Speed;
+                    Character.Speed = Configuration.Configuration.Instance.Speed;
                 }
 
                 if (fgTakeOff)
@@ -4442,7 +4502,7 @@ namespace SagaMap.Network.Client
 
         public void OnStatsUp(CSMG_PLAYER_STATS_UP p)
         {
-            if (Configuration.Instance.Version < Version.Saga13)
+            if (Configuration.Configuration.Instance.Version < Version.Saga13)
             {
                 switch (p.Type)
                 {
@@ -4695,7 +4755,7 @@ namespace SagaMap.Network.Client
                 }
             }
 
-            if (Configuration.Instance.HostedMaps.Contains(Character.SaveMap))
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(Character.SaveMap))
             {
                 var info = MapInfoFactory.Instance.MapInfo[Character.SaveMap];
                 Map.SendActorToMap(Character, Character.SaveMap, Global.PosX8to16(Character.SaveX, info.width),
@@ -8420,7 +8480,7 @@ namespace SagaMap.Network.Client
                 {
                     result = -3;
                 }
-                else if (Character.Inventory.WareTotalCount >= Configuration.Instance.WarehouseLimit)
+                else if (Character.Inventory.WareTotalCount >= Configuration.Configuration.Instance.WarehouseLimit)
                 {
                     result = -4;
                 }
@@ -8475,8 +8535,8 @@ namespace SagaMap.Network.Client
             var p = new SSMG_ITEM_WARE_HEADER();
             p.Place = place;
             p.CountCurrent = Character.Inventory.WareHouse[place].Count;
-            p.CountAll = Configuration.Instance.WarehouseLimit;
-            p.CountMax = Configuration.Instance.WarehouseLimit;
+            p.CountAll = Configuration.Configuration.Instance.WarehouseLimit;
+            p.CountMax = Configuration.Configuration.Instance.WarehouseLimit;
             //p.Gold = this.Character.Account.Bank;
             netIO.SendPacket(p);
 
@@ -8592,7 +8652,7 @@ namespace SagaMap.Network.Client
                 {
                     result = -3;
                 }
-                else if (Character.Inventory.WareTotalCount >= Configuration.Instance.WarehouseLimit)
+                else if (Character.Inventory.WareTotalCount >= Configuration.Configuration.Instance.WarehouseLimit)
                 {
                     result = -4;
                 }
@@ -8950,7 +9010,7 @@ namespace SagaMap.Network.Client
                 var data = p.Data;
                 if (data[0] == 0x89)
                 {
-                    if (Character.Ring.Fame >= Configuration.Instance.RingFameNeededForEmblem)
+                    if (Character.Ring.Fame >= Configuration.Configuration.Instance.RingFameNeededForEmblem)
                     {
                         p1.Result = SSMG_RING_EMBLEM_UPLOAD_RESULT.Results.OK;
                         MapServer.charDB.RingEmblemUpdate(Character.Ring, p.Data);
@@ -9145,7 +9205,7 @@ namespace SagaMap.Network.Client
                     var p2 = new SSMG_PARTY_MEMBER_DETAIL();
                     p2.PartyIndex = i;
                     p2.CharID = pc.CharID;
-                    if (Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
                     p2.Job = pc.Job;
                     p2.Level = pc.Level;
                     p2.JobLevel = pc.CurrentJobLevel;
@@ -10072,7 +10132,7 @@ namespace SagaMap.Network.Client
 
         public void OnSendVersion(CSMG_SEND_VERSION p)
         {
-            if (Configuration.Instance.ClientVersion == null || Configuration.Instance.ClientVersion == p.GetVersion())
+            if (Configuration.Configuration.Instance.ClientVersion == null || Configuration.Configuration.Instance.ClientVersion == p.GetVersion())
             {
                 Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.CLIENT_CONNECTING, p.GetVersion()));
                 client_Version = p.GetVersion();
@@ -10142,7 +10202,7 @@ namespace SagaMap.Network.Client
                 var insamemac = players.Count(x => x.account.MacAddress == account.MacAddress);
                 var insameip = players.Count(x => x.account.LastIP == account.LastIP);
                 var onlinecount = Math.Max(insamemac, insameip);
-                if (onlinecount >= Configuration.Instance.MaxCharacterInMapServer)
+                if (onlinecount >= Configuration.Configuration.Instance.MaxCharacterInMapServer)
                 {
                     netIO.Disconnect();
                     return;
@@ -10464,18 +10524,18 @@ namespace SagaMap.Network.Client
                     }
                 }
 
-                if (Character.DominionStr < Configuration.Instance.StartupSetting[Character.Race].Str)
-                    Character.DominionStr = Configuration.Instance.StartupSetting[Character.Race].Str;
-                if (Character.DominionDex < Configuration.Instance.StartupSetting[Character.Race].Dex)
-                    Character.DominionDex = Configuration.Instance.StartupSetting[Character.Race].Dex;
-                if (Character.DominionInt < Configuration.Instance.StartupSetting[Character.Race].Int)
-                    Character.DominionInt = Configuration.Instance.StartupSetting[Character.Race].Int;
-                if (Character.DominionVit < Configuration.Instance.StartupSetting[Character.Race].Vit)
-                    Character.DominionVit = Configuration.Instance.StartupSetting[Character.Race].Vit;
-                if (Character.DominionAgi < Configuration.Instance.StartupSetting[Character.Race].Agi)
-                    Character.DominionAgi = Configuration.Instance.StartupSetting[Character.Race].Agi;
-                if (Character.DominionMag < Configuration.Instance.StartupSetting[Character.Race].Mag)
-                    Character.DominionMag = Configuration.Instance.StartupSetting[Character.Race].Mag;
+                if (Character.DominionStr < Configuration.Configuration.Instance.StartupSetting[Character.Race].Str)
+                    Character.DominionStr = Configuration.Configuration.Instance.StartupSetting[Character.Race].Str;
+                if (Character.DominionDex < Configuration.Configuration.Instance.StartupSetting[Character.Race].Dex)
+                    Character.DominionDex = Configuration.Configuration.Instance.StartupSetting[Character.Race].Dex;
+                if (Character.DominionInt < Configuration.Configuration.Instance.StartupSetting[Character.Race].Int)
+                    Character.DominionInt = Configuration.Configuration.Instance.StartupSetting[Character.Race].Int;
+                if (Character.DominionVit < Configuration.Configuration.Instance.StartupSetting[Character.Race].Vit)
+                    Character.DominionVit = Configuration.Configuration.Instance.StartupSetting[Character.Race].Vit;
+                if (Character.DominionAgi < Configuration.Configuration.Instance.StartupSetting[Character.Race].Agi)
+                    Character.DominionAgi = Configuration.Configuration.Instance.StartupSetting[Character.Race].Agi;
+                if (Character.DominionMag < Configuration.Configuration.Instance.StartupSetting[Character.Race].Mag)
+                    Character.DominionMag = Configuration.Configuration.Instance.StartupSetting[Character.Race].Mag;
 
                 Character.WRPRanking = WRPRankingManager.Instance.GetRanking(Character);
 
@@ -10548,7 +10608,7 @@ namespace SagaMap.Network.Client
                 }*/ //改革！
 
                 //packet logger for unnormal player
-                foreach (var i in Configuration.Instance.MonitorAccounts)
+                foreach (var i in Configuration.Configuration.Instance.MonitorAccounts)
                     if (account.Name.StartsWith(i))
                     {
                         logger = new PacketLogger.PacketLogger(this);
@@ -10843,7 +10903,7 @@ namespace SagaMap.Network.Client
             //Check API Item
             if (CheckAPI == false)
             {
-                var pr = new Process();
+                var pr = new Process.Process();
                 pr.CheckAPIItem(Character.CharID, this);
                 CheckAPI = true;
             }
@@ -11123,7 +11183,7 @@ namespace SagaMap.Network.Client
                     var p2 = new SSMG_PARTY_MEMBER_DETAIL();
                     p2.PartyIndex = Character.Party.IndexOf(pc);
                     p2.CharID = pc.CharID;
-                    if (Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
                     p2.Job = pc.Job;
                     p2.Level = pc.Level;
                     p2.JobLevel = pc.CurrentJobLevel;
@@ -11187,7 +11247,7 @@ namespace SagaMap.Network.Client
                         var p2 = new SSMG_PARTY_MEMBER_DETAIL();
                         p2.PartyIndex = i;
                         p2.CharID = pc.CharID;
-                        if (Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) p2.Form = 0;
                         p2.Job = pc.Job;
                         p2.Level = pc.Level;
                         p2.JobLevel = pc.CurrentJobLevel;
@@ -13664,7 +13724,7 @@ namespace SagaMap.Network.Client
                             support_addon = EnhanceTableFactory.Instance.Table[nextlevel].Shinzui;
 
                         //強化祭活動
-                        if (Configuration.Instance.EnhanceMatsuri)
+                        if (Configuration.Configuration.Instance.EnhanceMatsuri)
                             matsuri_addon = EnhanceTableFactory.Instance.Table[nextlevel].Matsuri;
 
 
@@ -16004,7 +16064,7 @@ namespace SagaMap.Network.Client
                 pet.HP = 99;
                 Character.HP = pet.MaxHP;*/
                 //Character.Speed = 600;
-                Character.Speed = Configuration.Instance.Speed;
+                Character.Speed = Configuration.Configuration.Instance.Speed;
 
                 //SendSystemMessage("[提示]在骑宠时移动速度上升33%，受到的伤害提升100%，治愈量下降70%。");
                 SendPetBasicInfo();
@@ -17665,19 +17725,19 @@ namespace SagaMap.Network.Client
                 if (hours > 24000)
                 {
                     Character.QuestNextResetTime =
-                        DateTime.Now + new TimeSpan(0, Configuration.Instance.QuestUpdateTime, 0, 0);
+                        DateTime.Now + new TimeSpan(0, Configuration.Configuration.Instance.QuestUpdateTime, 0, 0);
                 }
                 else
                 {
                     if (Character.Account.questNextTime <= Character.QuestNextResetTime)
                     {
-                        Character.QuestRemaining += (ushort)((hours / Configuration.Instance.QuestUpdateTime + 1) *
-                                                             Configuration.Instance.QuestUpdateAmount);
-                        if (Character.QuestRemaining > Configuration.Instance.QuestPointsMax)
-                            Character.QuestRemaining = (ushort)Configuration.Instance.QuestPointsMax;
+                        Character.QuestRemaining += (ushort)((hours / Configuration.Configuration.Instance.QuestUpdateTime + 1) *
+                                                             Configuration.Configuration.Instance.QuestUpdateAmount);
+                        if (Character.QuestRemaining > Configuration.Configuration.Instance.QuestPointsMax)
+                            Character.QuestRemaining = (ushort)Configuration.Configuration.Instance.QuestPointsMax;
                         Character.QuestNextResetTime = Character.QuestNextResetTime + new TimeSpan(0,
-                            (hours / Configuration.Instance.QuestUpdateTime + 1) *
-                            Configuration.Instance.QuestUpdateTime, 0, 0);
+                            (hours / Configuration.Configuration.Instance.QuestUpdateTime + 1) *
+                            Configuration.Configuration.Instance.QuestUpdateTime, 0, 0);
                         Character.Account.questNextTime = Character.QuestNextResetTime;
                     }
                     else
@@ -17949,7 +18009,7 @@ namespace SagaMap.Network.Client
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
                 Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
+                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
         public void OnFGardenFurnitureSetup(CSMG_FGARDEN_FURNITURE_SETUP p)
@@ -17959,7 +18019,7 @@ namespace SagaMap.Network.Client
             if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
             if (Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count < Configuration.Instance.MaxFurnitureCount)
+                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count < Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
                 var actor = new ActorFurniture();
@@ -17989,7 +18049,7 @@ namespace SagaMap.Network.Client
                     Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
                     Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
+                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
             }
             else
             {

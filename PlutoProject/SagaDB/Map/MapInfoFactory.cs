@@ -7,7 +7,7 @@ using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
 using SagaDB.Marionette;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Map
 {

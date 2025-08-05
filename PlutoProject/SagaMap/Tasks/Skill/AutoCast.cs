@@ -1,8 +1,10 @@
 ﻿using System;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.Skill;
 
 namespace SagaMap.Tasks.Skill
 {

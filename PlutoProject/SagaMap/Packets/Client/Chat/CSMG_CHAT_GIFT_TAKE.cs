@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Chat
 {
     public class CSMG_CHAT_GIFT_TAKE : Packet
     {

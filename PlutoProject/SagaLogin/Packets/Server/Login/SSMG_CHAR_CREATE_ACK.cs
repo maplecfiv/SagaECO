@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Login
 {
     public class SSMG_CHAR_CREATE_ACK : Packet
     {

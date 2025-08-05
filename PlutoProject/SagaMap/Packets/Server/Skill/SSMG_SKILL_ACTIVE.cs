@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Skill
 {
     public class SSMG_SKILL_ACTIVE : Packet
     {
@@ -10,9 +9,9 @@ namespace SagaMap.Packets.Server
 
         public SSMG_SKILL_ACTIVE(byte combo)
         {
-            if (Configuration.Instance.Version <= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga9)
                 data = new byte[22 + 4 * combo + 6 * combo + 4 * combo];
-            if (Configuration.Instance.Version >= Version.Saga9_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
                 //this.data = new byte[23 + 4 * combo + 12 * combo + 4 * combo + 12 * combo];
                 data = new byte[22 + combo * 4 + combo * 28];
             offset = 2;
@@ -36,7 +35,7 @@ namespace SagaMap.Packets.Server
             set => PutUInt(value, 10);
         }
 
-        public List<Actor> AffectedID
+        public List<SagaDB.Actor.Actor> AffectedID
         {
             set
             {
@@ -59,23 +58,23 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version <= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version <= Version.Saga9)
                     PutByte(value, (ushort)(21 + combo * 4 + combo * 6 + combo * 4));
 
-                if (Configuration.Instance.Version >= Version.Saga9_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
                     PutByte(value, (ushort)(21 + combo * 4 + combo * 28));
             }
         }
 
         public void SetHP(List<int> hp)
         {
-            if (Configuration.Instance.Version <= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga9)
             {
                 PutByte(combo, (ushort)(17 + combo * 4));
                 for (var i = 0; i < combo; i++) PutShort((short)hp[i], (ushort)(18 + combo * 4 + i * 2));
             }
 
-            if (Configuration.Instance.Version >= Version.Saga9_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
             {
                 PutByte(combo, (ushort)(17 + combo * 4));
                 for (var i = 0; i < combo; i++) PutLong(hp[i], (ushort)(18 + combo * 4 + i * 8));
@@ -85,13 +84,13 @@ namespace SagaMap.Packets.Server
 
         public void SetMP(List<int> mp)
         {
-            if (Configuration.Instance.Version <= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga9)
             {
                 PutByte(combo, (ushort)(18 + combo * 4 + combo * 2));
                 for (var i = 0; i < combo; i++) PutShort((short)mp[i], (ushort)(19 + combo * 4 + combo * 2 + i * 2));
             }
 
-            if (Configuration.Instance.Version >= Version.Saga9_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
             {
                 PutByte(combo, (ushort)(18 + combo * 4 + combo * 8));
                 for (var i = 0; i < combo; i++)
@@ -104,13 +103,13 @@ namespace SagaMap.Packets.Server
 
         public void SetSP(List<int> sp)
         {
-            if (Configuration.Instance.Version <= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga9)
             {
                 PutByte(combo, (ushort)(19 + combo * 4 + combo * 4));
                 for (var i = 0; i < combo; i++) PutShort((short)sp[i], (ushort)(20 + combo * 4 + combo * 4 + i * 2));
             }
 
-            if (Configuration.Instance.Version >= Version.Saga9_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
             {
                 PutByte(combo, (ushort)(19 + combo * 4 + combo * 16));
                 for (var i = 0; i < combo; i++)
@@ -123,13 +122,13 @@ namespace SagaMap.Packets.Server
 
         public void AttackFlag(List<AttackFlag> flag)
         {
-            if (Configuration.Instance.Version <= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga9)
             {
                 PutByte(combo, (ushort)(20 + combo * 4 + combo * 6));
                 for (var i = 0; i < combo; i++) PutUInt((uint)flag[i], (ushort)(21 + combo * 4 + combo * 6 + i * 4));
             }
 
-            if (Configuration.Instance.Version >= Version.Saga9_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9_2)
             {
                 PutByte(combo, (ushort)(20 + combo * 4 + combo * 24));
                 for (var i = 0; i < combo; i++) PutUInt((uint)flag[i], (ushort)(21 + combo * 4 + combo * 24 + i * 4));

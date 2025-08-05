@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaMap.Partner
 {

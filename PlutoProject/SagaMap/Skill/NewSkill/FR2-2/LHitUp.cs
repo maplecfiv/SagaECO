@@ -2,9 +2,10 @@ using SagaDB.Actor;
 using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Archer
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     飄渺之境

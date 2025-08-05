@@ -5,7 +5,7 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Scripting;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Global.Active
 {
     /// <summary>
     ///     露营

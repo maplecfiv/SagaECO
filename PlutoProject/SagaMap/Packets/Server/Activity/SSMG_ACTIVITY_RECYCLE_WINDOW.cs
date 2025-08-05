@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Activity
 {
     public class SSMG_ACTIVITY_RECYCLE_WINDOW : Packet
     {

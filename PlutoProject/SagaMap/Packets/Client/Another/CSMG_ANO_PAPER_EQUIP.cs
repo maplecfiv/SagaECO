@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Another
 {
     public class CSMG_ANO_PAPER_EQUIP : Packet
     {

@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Tool
 {
     public class SSMG_TOOL_RESULT : Packet
     {

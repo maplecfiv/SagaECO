@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.ForceMaster
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
 {
     public class ForceWave : ISkill
     {

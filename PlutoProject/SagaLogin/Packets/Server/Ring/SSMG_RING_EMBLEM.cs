@@ -1,7 +1,7 @@
 using System;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Ring
 {
     public class SSMG_RING_EMBLEM : Packet
     {

@@ -5,62 +5,62 @@ using SagaLib;
 using SagaMap.Manager;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_PLAYER_INFO : Packet
     {
         public SSMG_PLAYER_INFO()
         {
-            if (Configuration.Instance.Version == Version.Saga6)
+            if (Configuration.Configuration.Instance.Version == Version.Saga6)
             {
                 data = new byte[210];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga9)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga9)
             {
                 data = new byte[219];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
                 data = new byte[222];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
             {
                 data = new byte[225];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga13)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga13)
             {
                 data = new byte[243];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga14)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga14)
             {
                 data = new byte[252];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga14_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
             {
                 data = new byte[235];
                 offset = 2;
                 ID = 0x01FF;
             }
 
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
             {
                 uint length = 250;
                 length += 8; //15年12月8日加入，对应版本449
@@ -80,7 +80,7 @@ namespace SagaMap.Packets.Server
             {
                 #region Saga6
 
-                if (Configuration.Instance.Version == Version.Saga6)
+                if (Configuration.Configuration.Instance.Version == Version.Saga6)
                 {
                     var info = MapManager.Instance.GetMap(value.MapID);
                     PutUInt(value.ActorID, 2);
@@ -265,8 +265,8 @@ namespace SagaMap.Packets.Server
 
                 #region Saga9/Saga9_2
 
-                if (Configuration.Instance.Version >= Version.Saga9 &&
-                    Configuration.Instance.Version < Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga14_2)
                 {
                     var info = MapManager.Instance.GetMap(value.MapID);
                     PutUInt(value.ActorID, 2);
@@ -281,14 +281,14 @@ namespace SagaMap.Packets.Server
                     PutByte((byte)(buf.Length + 1), 10);
                     PutBytes(buf, 11);
                     PutByte((byte)value.Race, offset);
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         offset++;
                         PutByte((byte)value.Form, offset);
                     }
 
                     PutByte((byte)value.Gender, (ushort)(offset + 1));
-                    if (Configuration.Instance.Version >= Version.Saga11)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     {
                         offset++;
                         PutByte(0, (ushort)(offset + 1)); //Unknown
@@ -298,14 +298,14 @@ namespace SagaMap.Packets.Server
                     PutByte(value.HairColor, (ushort)(offset + 3));
                     PutUShort(value.Wig, (ushort)(offset + 4));
                     //this.PutByte(0xff, (ushort)(offset + 5));
-                    if (Configuration.Instance.Version >= Version.Saga11)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     {
                         offset++;
                         PutByte(0xFF, (ushort)(offset + 5)); //Unknown
                     }
 
                     PutUShort(value.Face, (ushort)(offset + 6));
-                    if (Configuration.Instance.Version >= Version.Saga11)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     {
                         offset++;
                         if (value.Rebirth || value.Job == value.Job3)
@@ -329,7 +329,7 @@ namespace SagaMap.Packets.Server
                     PutUInt(value.MaxSP, (ushort)(offset + 37));
                     PutUInt(value.EP, (ushort)(offset + 41)); //ep
                     PutUInt(value.MaxEP, (ushort)(offset + 45)); //max ep
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         PutShort(value.CL, (ushort)(offset + 49));
                         offset += 2;
@@ -455,7 +455,7 @@ namespace SagaMap.Packets.Server
                             break;
                     }
 
-                    if (Configuration.Instance.Version >= Version.Saga14)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga14)
                         PutByte(1, 251); //unknown
                     /*int  ridepet_id; //(itemid
             byte ridepet_color;//ロボ用
@@ -471,8 +471,8 @@ namespace SagaMap.Packets.Server
 
                 #region Saga14_2
 
-                if (Configuration.Instance.Version >= Version.Saga14_2 &&
-                    Configuration.Instance.Version < Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga17)
                 {
                     var info = MapManager.Instance.GetMap(value.MapID);
                     PutUInt(value.ActorID, 2);
@@ -644,7 +644,7 @@ namespace SagaMap.Packets.Server
 
                 #region Saga17
 
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     var info = MapManager.Instance.GetMap(value.MapID);
                     PutUInt(value.ActorID, 2);

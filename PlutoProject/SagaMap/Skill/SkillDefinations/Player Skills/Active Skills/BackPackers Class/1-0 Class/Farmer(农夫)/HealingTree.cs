@@ -1,10 +1,11 @@
 ﻿using System;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Farmasist
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Farmer_农夫_
 {
     /// <summary>
     ///     樹精靈之手（ヒーリングツリー）

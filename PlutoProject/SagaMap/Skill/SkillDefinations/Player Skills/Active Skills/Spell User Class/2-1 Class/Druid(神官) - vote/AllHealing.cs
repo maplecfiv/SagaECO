@@ -3,9 +3,9 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Druid
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote
 {
     public class AllHealing : ISkill
     {

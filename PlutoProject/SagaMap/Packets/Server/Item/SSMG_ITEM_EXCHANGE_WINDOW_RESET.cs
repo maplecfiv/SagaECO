@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_EXCHANGE_WINDOW_RESET : Packet
     {

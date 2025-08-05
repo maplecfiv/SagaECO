@@ -2,8 +2,9 @@
 
 using System;
 using System.IO;
+using SagaLib.VirtualFileSytem.LPK.LZMA.Common;
 
-namespace SevenZip.Compression.LZ
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.LZ
 {
     public class BinTree : InWindow, IMatchFinder
     {

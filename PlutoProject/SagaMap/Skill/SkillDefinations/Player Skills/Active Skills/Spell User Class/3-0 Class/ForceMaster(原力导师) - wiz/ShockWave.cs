@@ -1,11 +1,12 @@
 ﻿using System;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.ForceMaster
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
 {
     internal class ShockWave : Groove, ISkill
     {

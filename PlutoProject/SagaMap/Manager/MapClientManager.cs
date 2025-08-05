@@ -9,6 +9,35 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.AbyssTeam;
+using SagaMap.Packets.Client.Actor;
+using SagaMap.Packets.Client.Another;
+using SagaMap.Packets.Client.Bond;
+using SagaMap.Packets.Client.Chat;
+using SagaMap.Packets.Client.Community;
+using SagaMap.Packets.Client.DEM;
+using SagaMap.Packets.Client.DualJob;
+using SagaMap.Packets.Client.FFarden;
+using SagaMap.Packets.Client.FGarden;
+using SagaMap.Packets.Client.Fish;
+using SagaMap.Packets.Client.Golem;
+using SagaMap.Packets.Client.InfiniteCorridor;
+using SagaMap.Packets.Client.IrisCard;
+using SagaMap.Packets.Client.Item;
+using SagaMap.Packets.Client.Login;
+using SagaMap.Packets.Client.Navi;
+using SagaMap.Packets.Client.NCShop;
+using SagaMap.Packets.Client.NPC;
+using SagaMap.Packets.Client.Partner;
+using SagaMap.Packets.Client.Party;
+using SagaMap.Packets.Client.Possession;
+using SagaMap.Packets.Client.PProtect;
+using SagaMap.Packets.Client.Quest;
+using SagaMap.Packets.Client.Ring;
+using SagaMap.Packets.Client.Skill;
+using SagaMap.Packets.Client.Tamaire;
+using SagaMap.Packets.Client.Trade;
+using SagaMap.Packets.Client.VShop;
 
 namespace SagaMap.Manager
 {

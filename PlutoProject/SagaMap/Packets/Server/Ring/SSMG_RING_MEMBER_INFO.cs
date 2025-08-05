@@ -1,8 +1,7 @@
 using SagaDB.Actor;
-using SagaDB.Ring;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Ring
 {
     public class SSMG_RING_MEMBER_INFO : Packet
     {
@@ -13,7 +12,7 @@ namespace SagaMap.Packets.Server
             ID = 0x1ACE;
         }
 
-        public void Member(ActorPC value, Ring ring)
+        public void Member(ActorPC value, SagaDB.Ring.Ring ring)
         {
             int index;
             if (ring != null)

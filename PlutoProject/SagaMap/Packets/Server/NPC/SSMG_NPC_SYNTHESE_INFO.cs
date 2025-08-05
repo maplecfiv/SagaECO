@@ -2,7 +2,7 @@ using System;
 using SagaDB.Synthese;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NPC
 {
     public class SSMG_NPC_SYNTHESE_INFO : Packet
     {

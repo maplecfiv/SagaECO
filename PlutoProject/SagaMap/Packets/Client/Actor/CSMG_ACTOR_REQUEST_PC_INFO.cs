@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Actor
 {
     public class CSMG_ACTOR_REQUEST_PC_INFO : Packet
     {

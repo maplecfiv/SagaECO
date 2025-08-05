@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Gunner
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_2_Class.Gunner_神枪手____arc
 {
     /// <summary>
     ///     近身戰鬥修練（CQB）

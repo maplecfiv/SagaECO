@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Theater
 {
     public class SSMG_THEATER_SCHEDULE_HEADER : Packet
     {

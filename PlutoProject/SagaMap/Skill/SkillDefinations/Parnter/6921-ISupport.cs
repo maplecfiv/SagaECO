@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     私が支えます（坚固光环）

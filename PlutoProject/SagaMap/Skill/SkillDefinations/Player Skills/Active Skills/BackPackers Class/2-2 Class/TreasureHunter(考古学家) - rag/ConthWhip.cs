@@ -4,7 +4,7 @@ using System.Linq;
 using SagaDB.Actor;
 using SagaDB.Item;
 
-namespace SagaMap.Skill.SkillDefinations.TreasureHunter
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.TreasureHunter_考古学家____rag
 {
     /// <summary>
     ///     鞭子瞬連（ウィップラッシュ）

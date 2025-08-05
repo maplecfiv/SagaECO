@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Wizard
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Wizard_魔法师_
 {
     /// <summary>
     ///     石化妖目

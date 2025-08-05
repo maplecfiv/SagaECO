@@ -60,7 +60,7 @@ namespace SagaMap.Manager
             parms.ReferencedAssemblies.Add("SagaLib.dll");
             parms.ReferencedAssemblies.Add("SagaDB.dll");
             parms.ReferencedAssemblies.Add("SagaMap.exe");
-            foreach (var i in Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
+            foreach (var i in Configuration.Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
             // Compile
             results = Provider.CompileAssemblyFromFile(parms, Source);
             if (results.Errors.HasErrors)

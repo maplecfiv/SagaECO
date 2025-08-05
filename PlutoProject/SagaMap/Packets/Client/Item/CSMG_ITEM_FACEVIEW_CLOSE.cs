@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Item
 {
     public class CSMG_ITEM_FACEVIEW_CLOSE : Packet
     {

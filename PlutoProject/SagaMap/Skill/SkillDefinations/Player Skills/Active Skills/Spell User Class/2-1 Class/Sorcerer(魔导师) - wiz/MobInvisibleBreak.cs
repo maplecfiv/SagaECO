@@ -3,7 +3,7 @@ using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Sorcerer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz
 {
     /// <summary>
     ///     透明化感知（インビジブルブレイク）

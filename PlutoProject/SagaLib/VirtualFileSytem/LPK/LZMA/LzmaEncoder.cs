@@ -2,10 +2,10 @@
 
 using System;
 using System.IO;
-using SevenZip.Compression.LZ;
-using SevenZip.Compression.RangeCoder;
+using SagaLib.VirtualFileSytem.LPK.LZMA.LZ;
+using SagaLib.VirtualFileSytem.LPK.LZMA.RangeCoder;
 
-namespace SevenZip.Compression.LZMA
+namespace SagaLib.VirtualFileSytem.LPK.LZMA
 {
     public class Encoder : ICoder, ISetCoderProperties, IWriteCoderProperties
     {

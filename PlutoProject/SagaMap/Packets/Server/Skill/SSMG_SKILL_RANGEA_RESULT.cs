@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Skill
 {
     public class SSMG_SKILL_RANGEA_RESULT : Packet
     {

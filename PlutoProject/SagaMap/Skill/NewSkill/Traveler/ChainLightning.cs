@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Traveler
+namespace SagaMap.Skill.NewSkill.Traveler
 {
     internal class ChainLightning : ISkill
     {

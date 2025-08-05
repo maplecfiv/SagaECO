@@ -4,10 +4,9 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
-using SagaLib.VirtualFileSystem.Lpk.LZMA;
-using SevenZip;
+using SagaLib.VirtualFileSytem.LPK.LZMA;
 
-namespace SagaLib.VirtualFileSystem.Lpk
+namespace SagaLib.VirtualFileSytem.LPK
 {
     /* LPK 文件格式 1.0
      * struct

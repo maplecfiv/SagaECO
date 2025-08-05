@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Sage
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz
 {
     /// <summary>
     ///     速讀（リードマスタリー）

@@ -1,7 +1,6 @@
 using SagaLib;
-using SagaMap.Scripting;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Packets.Server.NPC
 {
     public enum UIType
     {
@@ -35,10 +34,7 @@ namespace SagaMap.Scripting
         EquipSlot,
         EquipOnly
     }
-}
 
-namespace SagaMap.Packets.Server
-{
     public class SSMG_NPC_SHOW_UI : Packet
     {
         public SSMG_NPC_SHOW_UI()

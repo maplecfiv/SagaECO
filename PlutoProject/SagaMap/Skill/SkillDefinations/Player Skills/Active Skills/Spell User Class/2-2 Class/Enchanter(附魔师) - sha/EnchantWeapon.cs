@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Enchanter
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Enchanter_附魔师____sha
 {
     /// <summary>
     ///     迷惑武器（エンチャントウエポン）

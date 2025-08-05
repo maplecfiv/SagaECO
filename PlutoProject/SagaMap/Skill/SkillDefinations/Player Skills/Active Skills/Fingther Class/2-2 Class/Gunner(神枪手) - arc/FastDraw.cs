@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
 
-namespace SagaMap.Skill.SkillDefinations.Gunner
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Gunner_神枪手____arc
 {
     /// <summary>
     ///     迅雷槍法（ファーストドロー）

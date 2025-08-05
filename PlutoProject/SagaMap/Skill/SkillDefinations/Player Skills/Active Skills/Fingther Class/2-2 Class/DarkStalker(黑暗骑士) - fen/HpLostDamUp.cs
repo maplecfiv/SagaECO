@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.DarkStalker
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen
 {
     /// <summary>
     ///     血色战刃

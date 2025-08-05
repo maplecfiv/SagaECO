@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Community
 {
     public class CSMG_COMMUNITY_BBS_REQUEST_PAGE : Packet
     {

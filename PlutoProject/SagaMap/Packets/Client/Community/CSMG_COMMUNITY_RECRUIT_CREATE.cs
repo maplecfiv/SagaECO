@@ -2,7 +2,7 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Community
 {
     public class CSMG_COMMUNITY_RECRUIT_CREATE : Packet
     {

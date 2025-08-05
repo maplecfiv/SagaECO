@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Trader
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_1_Class.Trader_贸易商____mer
 {
     /// <summary>
     ///     人類知識（人間知識）

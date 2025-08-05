@@ -2,7 +2,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.FriendList
 {
     public class SSMG_FRIEND_CHAR_INFO : Packet
     {
@@ -24,7 +24,7 @@ namespace SagaLogin.Packets.Server
                 var size = (byte)buf.Length;
                 PutByte(size, 6);
                 PutBytes(buf, 7);
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     PutByte(4, (ushort)(7 + size));
                     PutUShort((ushort)value.Job, (ushort)(8 + size));
@@ -45,7 +45,7 @@ namespace SagaLogin.Packets.Server
             set
             {
                 var size = GetByte(6);
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutUInt(value, (ushort)(14 + size));
                 else
                     PutUInt(value, (ushort)(13 + size));
@@ -57,7 +57,7 @@ namespace SagaLogin.Packets.Server
             set
             {
                 var size = GetByte(6);
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutByte((byte)value, (ushort)(18 + size));
                 else
                     PutByte((byte)value, (ushort)(17 + size));
@@ -68,7 +68,7 @@ namespace SagaLogin.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     var size = GetByte(6);
                     var buf = Global.Unicode.GetBytes(value + "\0");

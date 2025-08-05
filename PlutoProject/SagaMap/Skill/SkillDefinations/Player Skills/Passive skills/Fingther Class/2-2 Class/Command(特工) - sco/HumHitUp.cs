@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Command
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_2_Class.Command_特工____sco
 {
     /// <summary>
     ///     人族命中

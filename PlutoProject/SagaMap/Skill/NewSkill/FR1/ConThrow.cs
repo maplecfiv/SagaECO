@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Scout
+namespace SagaMap.Skill.NewSkill.FR1
 {
     public class ConThrow : ISkill
     {

@@ -1,8 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Traveler
+namespace SagaMap.Skill.NewSkill.Traveler
 {
     public class Silva : ISkill
     {

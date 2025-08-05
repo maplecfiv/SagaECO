@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Alchemist
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Alchemist_炼金术士____far
 {
     /// <summary>
     ///     危險毒性（プラントポイズン）[接續技能]

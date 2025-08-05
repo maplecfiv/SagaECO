@@ -3,7 +3,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions
 {
     public class Medicine1 : DefaultBuff
     {

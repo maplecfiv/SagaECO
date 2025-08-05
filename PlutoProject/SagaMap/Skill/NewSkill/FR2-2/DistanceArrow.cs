@@ -1,6 +1,7 @@
 ﻿using SagaDB.Actor;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Archer
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     鷹眼

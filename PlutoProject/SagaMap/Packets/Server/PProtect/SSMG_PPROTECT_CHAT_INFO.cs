@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.PProtect
 {
     public class SSMG_PPROTECT_CHAT_INFO : Packet
     {

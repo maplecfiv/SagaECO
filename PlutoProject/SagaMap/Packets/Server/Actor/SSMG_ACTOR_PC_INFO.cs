@@ -6,29 +6,29 @@ using SagaLib;
 using SagaMap.Network.Client;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_PC_INFO : Packet
     {
         public SSMG_ACTOR_PC_INFO()
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 //this.data = new byte[166];
                 data = new byte[239];
-            else if (Configuration.Instance.Version >= Version.Saga14_2)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                 data = new byte[145];
-            else if (Configuration.Instance.Version >= Version.Saga14)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga14)
                 data = new byte[150];
-            else if (Configuration.Instance.Version >= Version.Saga13)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga13)
                 data = new byte[145];
-            else if (Configuration.Instance.Version >= Version.Saga11)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[140];
-            else if (Configuration.Instance.Version >= Version.Saga10)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 data = new byte[137];
             else
                 data = new byte[144];
             offset = 2;
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 ID = 0x020D;
             else
                 ID = 0x020E;
@@ -40,7 +40,7 @@ namespace SagaMap.Packets.Server
             {
                 #region Old
 
-                if (Configuration.Instance.Version < Version.Saga17)
+                if (Configuration.Configuration.Instance.Version < Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -61,14 +61,14 @@ namespace SagaMap.Packets.Server
                     if (value.Owner.Marionette == null)
                     {
                         PutByte((byte)value.Owner.Race, offset);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             offset++;
                             PutByte((byte)value.Owner.Form, offset);
                         }
 
                         PutByte((byte)value.Owner.Gender, (ushort)(offset + 1));
-                        if (Configuration.Instance.Version >= Version.Saga11)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                         {
                             PutUShort(value.Owner.HairStyle, (ushort)(offset + 2));
                             PutByte(value.Owner.HairColor, (ushort)(offset + 4));
@@ -91,7 +91,7 @@ namespace SagaMap.Packets.Server
                     else
                     {
                         PutByte(0xff, offset);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             offset++;
                             PutByte(0xff, offset);
@@ -106,7 +106,7 @@ namespace SagaMap.Packets.Server
                         PutByte(0xff, (ushort)(offset + 7));
                         PutByte(0xff, (ushort)(offset + 8));
                         PutByte(0xff, (ushort)(offset + 9));
-                        if (Configuration.Instance.Version >= Version.Saga11)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                         {
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
@@ -189,7 +189,7 @@ namespace SagaMap.Packets.Server
 
                 #region Saga17
 
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -246,7 +246,7 @@ namespace SagaMap.Packets.Server
                     PutByte(0x0E, offset + 15);
 
                     ////////////////玩家装备////////////////
-                    Dictionary<EnumEquipSlot, Item> equips;
+                    Dictionary<EnumEquipSlot, SagaDB.Item.Item> equips;
                     if (value.Owner.Form != DEM_FORM.MACHINA_FORM)
                         equips = value.Owner.Inventory.Equipments;
                     else
@@ -476,8 +476,8 @@ namespace SagaMap.Packets.Server
             {
                 #region Saga14
 
-                if (Configuration.Instance.Version >= Version.Saga9 &&
-                    Configuration.Instance.Version < Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga14_2)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -498,14 +498,14 @@ namespace SagaMap.Packets.Server
                     if (value.Marionette == null && value.TranceID == 0)
                     {
                         PutByte((byte)value.Race, offset);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             offset++;
                             PutByte((byte)value.Form, offset);
                         }
 
                         PutByte((byte)value.Gender, (ushort)(offset + 1));
-                        if (Configuration.Instance.Version >= Version.Saga11)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                         {
                             PutUShort(value.HairStyle, (ushort)(offset + 2));
                             PutByte(value.HairColor, (ushort)(offset + 4));
@@ -531,7 +531,7 @@ namespace SagaMap.Packets.Server
                     else
                     {
                         PutByte(0xff, offset);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             offset++;
                             PutByte(0xff, offset);
@@ -546,7 +546,7 @@ namespace SagaMap.Packets.Server
                         PutByte(0xff, (ushort)(offset + 7));
                         PutByte(0xff, (ushort)(offset + 8));
                         PutByte(0xff, (ushort)(offset + 9));
-                        if (Configuration.Instance.Version >= Version.Saga11)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                         {
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
@@ -554,7 +554,7 @@ namespace SagaMap.Packets.Server
                         }
                     }
 
-                    Dictionary<EnumEquipSlot, Item> equips;
+                    Dictionary<EnumEquipSlot, SagaDB.Item.Item> equips;
                     if (value.Form != DEM_FORM.MACHINA_FORM)
                         equips = value.Inventory.Equipments;
                     else
@@ -799,8 +799,8 @@ namespace SagaMap.Packets.Server
 
                 #region Saga14_2
 
-                if (Configuration.Instance.Version >= Version.Saga14_2 &&
-                    Configuration.Instance.Version < Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -839,7 +839,7 @@ namespace SagaMap.Packets.Server
                     {
                         PutByte(0xff, offset);
 
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             offset++;
                             PutByte(0xff, offset);
@@ -861,7 +861,7 @@ namespace SagaMap.Packets.Server
                         PutByte(0xff, (ushort)(++offset + 9));
                     }
 
-                    Dictionary<EnumEquipSlot, Item> equips;
+                    Dictionary<EnumEquipSlot, SagaDB.Item.Item> equips;
                     if (value.Form != DEM_FORM.MACHINA_FORM)
                         equips = value.Inventory.Equipments;
                     else
@@ -1095,7 +1095,7 @@ namespace SagaMap.Packets.Server
 
                 #region Saga17
 
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -1192,7 +1192,7 @@ namespace SagaMap.Packets.Server
                     PutByte(14, offset + 15);
 
                     ////////////////玩家装备////////////////
-                    Dictionary<EnumEquipSlot, Item> equips, appequips; //幻化外观
+                    Dictionary<EnumEquipSlot, SagaDB.Item.Item> equips, appequips; //幻化外观
                     if (value.Form != DEM_FORM.MACHINA_FORM)
                         equips = value.Inventory.Equipments;
                     else
@@ -1534,8 +1534,8 @@ namespace SagaMap.Packets.Server
             {
                 #region Saga14
 
-                if (Configuration.Instance.Version >= Version.Saga9 &&
-                    Configuration.Instance.Version < Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga14_2)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -1554,7 +1554,7 @@ namespace SagaMap.Packets.Server
                     offset = (ushort)(11 + size);
 
                     PutByte(0xff, offset);
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         offset++;
                         PutByte(0xff, offset);
@@ -1569,7 +1569,7 @@ namespace SagaMap.Packets.Server
                     PutByte(0xff, (ushort)(offset + 7));
                     PutByte(0xff, (ushort)(offset + 8));
                     PutByte(0xff, (ushort)(offset + 9));
-                    if (Configuration.Instance.Version >= Version.Saga11)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     {
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
@@ -1635,8 +1635,8 @@ namespace SagaMap.Packets.Server
 
                 #region Saga14_2
 
-                if (Configuration.Instance.Version >= Version.Saga14_2 &&
-                    Configuration.Instance.Version < Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
+                    Configuration.Configuration.Instance.Version < Version.Saga17)
                 {
                     data = new byte[154];
                     this.offset = 2;
@@ -1659,7 +1659,7 @@ namespace SagaMap.Packets.Server
                     offset = (ushort)(11 + size);
 
                     PutByte(0xff, offset);
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         offset++;
                         PutByte(0xff, offset);
@@ -1674,14 +1674,14 @@ namespace SagaMap.Packets.Server
                     PutByte(0xff, (ushort)(offset + 7));
                     PutByte(0xff, (ushort)(offset + 8));
                     PutByte(0xff, (ushort)(offset + 9));
-                    if (Configuration.Instance.Version >= Version.Saga11)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     {
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
                     }
 
-                    if (Configuration.Instance.Version >= Version.Saga14_2) PutByte(0xff, (ushort)(++offset + 9));
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga14_2) PutByte(0xff, (ushort)(++offset + 9));
                     PutByte(0x0D, (ushort)(offset + 10));
 
                     if (value.PictID != 0)
@@ -1743,7 +1743,7 @@ namespace SagaMap.Packets.Server
 
                 #region Saga17
 
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -1855,7 +1855,7 @@ namespace SagaMap.Packets.Server
             {
                 #region Saga17
 
-                if (Configuration.Instance.Version >= Version.Saga17)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
                     byte[] buf, buff;
                     byte size;
@@ -1932,7 +1932,7 @@ namespace SagaMap.Packets.Server
             }
         }
 
-        public Actor Actor
+        public SagaDB.Actor.Actor Actor
         {
             set
             {

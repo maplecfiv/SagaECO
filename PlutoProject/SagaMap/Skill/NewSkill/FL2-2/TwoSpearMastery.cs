@@ -1,8 +1,9 @@
 using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     //ツーハンドスピアマスタリ
     public class TwoSpearMastery : ISkill

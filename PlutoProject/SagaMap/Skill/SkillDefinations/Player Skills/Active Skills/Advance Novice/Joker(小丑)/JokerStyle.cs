@@ -2,9 +2,9 @@
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Novice.Joker_小丑_
 {
     /// <summary>
     ///     ジョーカースタイル

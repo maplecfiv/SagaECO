@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.NyaShield
 {
     public class CSMG_NYASHIELD_VERSION : Packet
     {

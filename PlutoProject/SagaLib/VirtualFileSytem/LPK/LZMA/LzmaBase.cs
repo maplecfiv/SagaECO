@@ -1,6 +1,6 @@
 // LzmaBase.cs
 
-namespace SevenZip.Compression.LZMA
+namespace SagaLib.VirtualFileSytem.LPK.LZMA
 {
     internal abstract class Base
     {

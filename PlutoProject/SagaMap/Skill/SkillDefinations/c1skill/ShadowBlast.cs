@@ -3,7 +3,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.C1skill
+namespace SagaMap.Skill.SkillDefinations.c1skill
 {
     public class ShadowBlast : ISkill
     {

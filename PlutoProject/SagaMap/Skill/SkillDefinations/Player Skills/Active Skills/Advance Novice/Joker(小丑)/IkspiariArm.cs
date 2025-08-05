@@ -1,6 +1,6 @@
 ﻿using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Novice.Joker_小丑_
 {
     /// <summary>
     ///     イクスパンジアーム

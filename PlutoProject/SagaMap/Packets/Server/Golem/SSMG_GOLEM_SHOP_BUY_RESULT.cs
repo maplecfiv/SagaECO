@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Golem
 {
     public class SSMG_GOLEM_SHOP_BUY_RESULT : Packet
     {

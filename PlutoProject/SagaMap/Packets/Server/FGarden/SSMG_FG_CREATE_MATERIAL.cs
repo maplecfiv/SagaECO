@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Scripting;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FGarden
 {
     public class SSMG_FG_CREATE_MATERIAL : Packet
     {

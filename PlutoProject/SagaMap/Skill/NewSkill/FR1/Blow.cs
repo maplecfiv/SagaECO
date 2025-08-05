@@ -1,7 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.NewSkill.FR1
 {
     /// <summary>
     ///     乾坤一擊

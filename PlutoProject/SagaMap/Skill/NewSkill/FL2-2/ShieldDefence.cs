@@ -1,7 +1,8 @@
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.FL2_2
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class ShieldDefence : ISkill
     {

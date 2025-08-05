@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Tatarabe
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._1_0_Class.Tatarabe_矿工_
 {
     /// <summary>
     ///     鐵礦知識（鉱石知識）

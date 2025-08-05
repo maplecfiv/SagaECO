@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     public class MostThingsBurn : ISkill
     {

@@ -31,14 +31,14 @@ namespace SagaMap.Packets.Login
             {
                 ushort index;
                 index = (ushort)(3 + GetByte(2));
-                var buf = Global.Unicode.GetBytes(Configuration.Instance.Host);
+                var buf = Global.Unicode.GetBytes(Configuration.Configuration.Instance.Host);
                 PutByte((byte)buf.Length, index);
                 var buff = new byte[data.Length + buf.Length];
                 data.CopyTo(buff, 0);
                 data = buff;
                 PutBytes(buf, (ushort)(index + 1));
                 index = (ushort)(index + 1 + buf.Length);
-                PutInt(Configuration.Instance.Port, index);
+                PutInt(Configuration.Configuration.Instance.Port, index);
 
                 buff = new byte[data.Length + value.Count * 4 + 1];
                 data.CopyTo(buff, 0);

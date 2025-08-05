@@ -1,6 +1,6 @@
 ﻿using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Striker_猎人____arc
 {
     /// <summary>
     ///     兇狠威脅（バイオレントピック）

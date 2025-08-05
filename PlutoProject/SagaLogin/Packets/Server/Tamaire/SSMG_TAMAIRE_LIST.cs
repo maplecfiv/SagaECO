@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Tamaire;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Tamaire
 {
     public class SSMG_TAMAIRE_LIST : Packet
     {

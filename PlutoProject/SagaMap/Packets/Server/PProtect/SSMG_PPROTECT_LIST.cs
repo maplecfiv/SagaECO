@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.PProtect;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.PProtect
 {
     public class SSMG_PPROTECT_LIST : Packet
     {
@@ -29,7 +28,7 @@ namespace SagaMap.Packets.Server
             set => PutUShort(value, 5);
         }
 
-        public List<PProtect> List
+        public List<SagaDB.PProtect.PProtect> List
         {
             set
             {

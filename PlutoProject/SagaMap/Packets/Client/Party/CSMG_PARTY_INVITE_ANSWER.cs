@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Party
 {
     public class CSMG_PARTY_INVITE_ANSWER : Packet
     {

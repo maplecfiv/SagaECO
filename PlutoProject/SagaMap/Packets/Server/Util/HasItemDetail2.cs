@@ -3,7 +3,7 @@ using SagaDB.Item;
 using SagaLib;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Util
 {
     public abstract class HasItemDetail2 : Packet
     {
@@ -21,7 +21,7 @@ namespace SagaMap.Packets.Server
         }
 
 
-        protected Item ItemDetail
+        protected SagaDB.Item.Item ItemDetail
         {
             set
             {
@@ -53,7 +53,7 @@ namespace SagaMap.Packets.Server
                 else
                     PutUShort(0);
                 //Iris Cards
-                if (Configuration.Instance.Version >= Version.Saga9_Iris)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9_Iris)
                 {
                     PutUShort(value.CurrentSlot);
                     for (var i = 0; i < 10; i++)
@@ -130,7 +130,7 @@ namespace SagaMap.Packets.Server
                 PutShort(0);
                 //this.PutInt(0);//unknown8
                 PutShort(0); //unknown9
-                if (Configuration.Instance.Version >= Version.Saga9_Iris)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9_Iris)
                 {
                     if (value.Rental)
                     {

@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using SagaDB.Actor;
+using SagaDB.Config;
 using SagaDB.Item;
 using SagaLib;
-using SagaLogin.Configurations;
 using Version = SagaLib.Version;
 
-namespace SagaLogin
+namespace SagaLogin.Configuration
 {
     public class Configuration : Singleton<Configuration>
     {

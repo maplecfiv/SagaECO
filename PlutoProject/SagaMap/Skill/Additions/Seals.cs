@@ -1,6 +1,6 @@
 using SagaDB.Actor;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions
 {
     public class Seals : DefaultBuff
     {

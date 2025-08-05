@@ -2,7 +2,7 @@
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Global.Active
 {
     /// <summary>
     ///     钓鱼
@@ -36,7 +36,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var lifetime = 10000000;
-            var skill1 = new Additions.Global.Fish(args.skill, sActor, lifetime, 60000);
+            var skill1 = new Additions.Fish(args.skill, sActor, lifetime, 60000);
             SkillHandler.ApplyAddition(sActor, skill1);
         }
 

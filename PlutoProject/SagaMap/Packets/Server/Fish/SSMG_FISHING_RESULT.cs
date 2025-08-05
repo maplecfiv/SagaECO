@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Fish
 {
     public class SSMG_FISHING_RESULT : Packet
     {

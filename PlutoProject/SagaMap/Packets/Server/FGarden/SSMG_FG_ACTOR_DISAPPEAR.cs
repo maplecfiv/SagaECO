@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FGarden
 {
     public class SSMG_FG_ACTOR_DISAPPEAR : Packet
     {

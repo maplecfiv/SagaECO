@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.Ranger
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Ranger_冒险家_
 {
     /// <summary>
     ///     濕滑陷阱（スリップトラップ）

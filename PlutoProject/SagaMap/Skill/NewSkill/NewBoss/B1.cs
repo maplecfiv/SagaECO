@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.NewBoss
+namespace SagaMap.Skill.NewSkill.NewBoss
 {
     internal class B1 : ISkill
     {

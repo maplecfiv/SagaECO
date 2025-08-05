@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.IrisCard
 {
     public class SSMG_IRIS_CARD_ASSEMBLE_LIST : Packet
     {
@@ -13,7 +12,7 @@ namespace SagaMap.Packets.Server
             ID = 0x140A;
         }
 
-        public List<Item> Cards
+        public List<SagaDB.Item.Item> Cards
         {
             set
             {

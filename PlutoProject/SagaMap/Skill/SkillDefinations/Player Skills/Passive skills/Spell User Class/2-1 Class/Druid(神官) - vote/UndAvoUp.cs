@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Druid
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._2_1_Class.Druid_神官____vote
 {
     /// <summary>
     ///     不死系迴避

@@ -1,5 +1,6 @@
 ﻿using System;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Mob;
 
 namespace SagaMap.Tasks.Mob

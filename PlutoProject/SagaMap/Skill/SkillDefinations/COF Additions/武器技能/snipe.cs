@@ -4,7 +4,7 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class Snipe : ISkill
     {

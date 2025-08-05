@@ -3,7 +3,7 @@ using System.Text;
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Login
 {
     public class CSMG_LOGIN : Packet
     {

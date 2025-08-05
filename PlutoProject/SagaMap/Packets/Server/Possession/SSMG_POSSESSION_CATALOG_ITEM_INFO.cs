@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Possession
 {
     public class SSMG_POSSESSION_CATALOG_ITEM_INFO : Packet
     {

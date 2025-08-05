@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.Vates
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_
 {
     public class HolyGroove : Groove, ISkill
     {

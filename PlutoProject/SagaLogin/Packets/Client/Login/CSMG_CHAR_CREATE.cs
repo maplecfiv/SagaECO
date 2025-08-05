@@ -2,7 +2,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Login
 {
     public class CSMG_CHAR_CREATE : Packet
     {
@@ -50,7 +50,7 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 3;
                 else
                     offset = GetDataOffset() + 2;
@@ -63,7 +63,7 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 4;
                 else
                     offset = GetDataOffset() + 3;
@@ -76,7 +76,7 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 5;
                 else
                     offset = GetDataOffset() + 4;

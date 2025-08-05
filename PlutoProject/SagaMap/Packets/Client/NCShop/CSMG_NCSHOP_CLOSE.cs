@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.NCShop
 {
     public class CSMG_NCSHOP_CLOSE : Packet
     {

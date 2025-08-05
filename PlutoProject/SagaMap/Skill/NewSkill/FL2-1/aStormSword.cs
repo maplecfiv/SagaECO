@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.BladeMaster
+namespace SagaMap.Skill.NewSkill.FL2_1
 {
     /// <summary>
     ///     旋風劍（旋風剣）

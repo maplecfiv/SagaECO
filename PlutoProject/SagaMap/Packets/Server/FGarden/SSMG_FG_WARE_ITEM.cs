@@ -1,13 +1,13 @@
-using SagaDB.Item;
 using SagaLib;
+using SagaMap.Packets.Server.Util;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FGarden
 {
     public class SSMG_FG_WARE_ITEM : HasItemDetail
     {
         public SSMG_FG_WARE_ITEM()
         {
-            if (Configuration.Instance.Version < Version.Saga9_Iris)
+            if (Configuration.Configuration.Instance.Version < Version.Saga9_Iris)
                 data = new byte[170];
             else
                 data = new byte[217];
@@ -15,7 +15,7 @@ namespace SagaMap.Packets.Server
             ID = 0x1c26;
         }
 
-        public Item Item
+        public SagaDB.Item.Item Item
         {
             set
             {

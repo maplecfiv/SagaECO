@@ -2,7 +2,7 @@ using SagaDB.Actor;
 using SagaDB.Map;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_EVENT_APPEAR : Packet
     {

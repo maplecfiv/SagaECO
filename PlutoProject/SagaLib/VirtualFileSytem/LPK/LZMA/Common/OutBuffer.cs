@@ -2,7 +2,7 @@
 
 using System.IO;
 
-namespace SevenZip.Buffer
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.Common
 {
     public class OutBuffer
     {

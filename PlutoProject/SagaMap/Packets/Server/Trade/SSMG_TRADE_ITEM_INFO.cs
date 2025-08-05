@@ -1,13 +1,14 @@
 using SagaDB.Item;
 using SagaLib;
+using SagaMap.Packets.Server.Util;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Trade
 {
     public class SSMG_TRADE_ITEM_INFO : HasItemDetail
     {
         public SSMG_TRADE_ITEM_INFO()
         {
-            if (Configuration.Instance.Version < Version.Saga9_Iris)
+            if (Configuration.Configuration.Instance.Version < Version.Saga9_Iris)
                 data = new byte[170];
             else
                 data = new byte[217];
@@ -15,11 +16,11 @@ namespace SagaMap.Packets.Server
             ID = 0x0A1E;
         }
 
-        public Item Item
+        public SagaDB.Item.Item Item
         {
             set
             {
-                if (Configuration.Instance.Version < Version.Saga9_Iris)
+                if (Configuration.Configuration.Instance.Version < Version.Saga9_Iris)
                     PutByte(0xa6, 2);
                 else
                     PutByte(0xd6, 2);

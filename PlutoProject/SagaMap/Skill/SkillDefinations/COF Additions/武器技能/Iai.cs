@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class IaiForWeapon : ISkill
     {

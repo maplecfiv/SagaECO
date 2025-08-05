@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.FFarden
 {
     public class CSMG_FFGARDEN_JOIN_OTHER : Packet
     {

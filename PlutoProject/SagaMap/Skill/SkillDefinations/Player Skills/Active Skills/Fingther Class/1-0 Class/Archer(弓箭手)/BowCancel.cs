@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Archer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Archer_弓箭手_
 {
     /// <summary>
     ///     弓之達人

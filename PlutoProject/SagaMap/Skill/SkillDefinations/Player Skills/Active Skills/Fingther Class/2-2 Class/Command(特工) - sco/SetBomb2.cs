@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Command
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco
 {
     /// <summary>
     ///     定時炸彈（セットボム）[接續技能]

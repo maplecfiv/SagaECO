@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Possession
 {
     public class CSMG_POSSESSION_CANCEL : Packet
     {

@@ -3,7 +3,7 @@
 using System;
 using System.Collections;
 
-namespace SevenZip.CommandLineParser
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.Common
 {
     public enum SwitchType
     {

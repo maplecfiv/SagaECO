@@ -4,7 +4,7 @@ using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Gunner
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     地狱之火

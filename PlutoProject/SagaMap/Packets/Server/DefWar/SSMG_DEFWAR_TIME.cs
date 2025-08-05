@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DefWar
 {
     public class SSMG_DEFWAR_TIME : Packet
     {

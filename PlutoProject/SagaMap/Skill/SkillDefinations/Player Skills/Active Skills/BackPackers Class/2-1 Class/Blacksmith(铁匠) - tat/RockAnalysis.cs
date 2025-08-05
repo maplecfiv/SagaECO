@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Blacksmith
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Blacksmith_铁匠____tat
 {
     /// <summary>
     ///     礦石分析（鉱石分析）

@@ -1,7 +1,7 @@
 using System;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_OPTION : Packet
     {

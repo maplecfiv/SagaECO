@@ -3,7 +3,7 @@ using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Skill
 {
     public class SSMG_SKILL_LIST : Packet
     {
@@ -21,7 +21,7 @@ namespace SagaMap.Packets.Server
         /// <param name="job">0 for basic, 1 for expert, 2 for technical</param>
         public void Skills(List<SagaDB.Skill.Skill> list, byte job, PC_JOB job2, bool ifDominion, ActorPC pc)
         {
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[8 + list.Count * 2 + list.Count * 3];
             else
                 data = new byte[7 + list.Count * 2 + list.Count * 3];

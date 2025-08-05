@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FFarden
 {
     public class SSMG_FF_USE : Packet
     {

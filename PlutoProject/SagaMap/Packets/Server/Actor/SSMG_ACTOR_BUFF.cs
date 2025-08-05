@@ -1,17 +1,16 @@
-using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_BUFF : Packet
     {
         public SSMG_ACTOR_BUFF()
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 data = new byte[54];
-            else if (Configuration.Instance.Version >= Version.Saga14_2)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                 data = new byte[46];
-            else if (Configuration.Instance.Version >= Version.Saga11)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[42];
             else
                 data = new byte[38];
@@ -19,7 +18,7 @@ namespace SagaMap.Packets.Server
             ID = 0x157C;
         }
 
-        public Actor Actor
+        public SagaDB.Actor.Actor Actor
         {
             set
             {
@@ -32,13 +31,13 @@ namespace SagaMap.Packets.Server
                 PutInt(value.Buff.Buffs[5].Value, 26);
                 PutInt(value.Buff.Buffs[6].Value, 30);
                 PutInt(value.Buff.Buffs[7].Value, 34);
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutInt(value.Buff.Buffs[8].Value, 38);
-                if (Configuration.Instance.Version >= Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                     PutInt(value.Buff.Buffs[9].Value, 42);
-                if (Configuration.Instance.Version >= Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                     PutInt(value.Buff.Buffs[10].Value, 46);
-                if (Configuration.Instance.Version >= Version.Saga14_2)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                     PutInt(value.Buff.Buffs[11].Value, 50);
             }
         }

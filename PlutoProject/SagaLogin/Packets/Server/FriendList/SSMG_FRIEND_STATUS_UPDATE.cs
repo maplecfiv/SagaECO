@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.FriendList
 {
     public class SSMG_FRIEND_STATUS_UPDATE : Packet
     {

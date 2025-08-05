@@ -1,7 +1,6 @@
 using SagaLib;
-using SagaMap.Scripting;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NPC
 {
     public class SSMG_NPC_MESSAGE_GALMODE : Packet
     {
@@ -10,7 +9,7 @@ namespace SagaMap.Packets.Server
             data = new byte[19];
             offset = 2;
             ID = 0x0606;
-            if (Configuration.Instance.Version <= Version.Saga18)
+            if (Configuration.Configuration.Instance.Version <= Version.Saga18)
             {
                 PutUInt(1, 2);
                 PutUInt(1, 15);

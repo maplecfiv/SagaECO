@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
 
-namespace SagaMap.Skill.SkillDefinations.Bard
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Bard_诗人____vote
 {
     /// <summary>
     ///     軍隊音樂會（ゲリラライブ）

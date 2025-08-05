@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Trader
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Trader_贸易商____mer
 {
     /// <summary>
     ///     冥想

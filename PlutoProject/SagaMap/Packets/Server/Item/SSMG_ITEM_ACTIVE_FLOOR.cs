@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_ACTIVE_FLOOR : Packet
     {
@@ -27,7 +26,7 @@ namespace SagaMap.Packets.Server
             set => PutUInt(value, 8);
         }
 
-        public List<Actor> AffectedID
+        public List<SagaDB.Actor.Actor> AffectedID
         {
             set
             {

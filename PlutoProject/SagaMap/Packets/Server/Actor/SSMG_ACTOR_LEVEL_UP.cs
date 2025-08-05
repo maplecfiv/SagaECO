@@ -1,14 +1,14 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_ACTOR_LEVEL_UP : Packet
     {
         public SSMG_ACTOR_LEVEL_UP()
         {
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[43];
-            else if (Configuration.Instance.Version >= Version.Saga10)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 data = new byte[41];
             else
                 data = new byte[25];
@@ -80,9 +80,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutByte(value, 42);
-                else if (Configuration.Instance.Version >= Version.Saga10)
+                else if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutByte(value, 40);
                 else
                     PutByte(value, 24);

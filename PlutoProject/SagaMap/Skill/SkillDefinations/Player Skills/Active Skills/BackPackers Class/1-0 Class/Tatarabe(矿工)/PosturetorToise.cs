@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Tatarabe
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Tatarabe_矿工_
 {
     /// <summary>
     ///     銅牆鐵壁（亀の構え）

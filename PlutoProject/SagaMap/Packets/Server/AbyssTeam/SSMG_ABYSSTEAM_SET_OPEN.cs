@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.AbyssTeam
 {
     public class SSMG_ABYSSTEAM_SET_OPEN : Packet
     {

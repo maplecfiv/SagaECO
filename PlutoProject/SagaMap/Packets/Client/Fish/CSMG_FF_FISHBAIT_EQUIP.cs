@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Fish
 {
     public class CSMG_FF_FISHBAIT_EQUIP : Packet
     {

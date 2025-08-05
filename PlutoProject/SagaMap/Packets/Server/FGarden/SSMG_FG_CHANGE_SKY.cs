@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Packets.Server.FGarden
 {
     public enum FG_Sky
     {
@@ -9,10 +9,7 @@ namespace SagaMap.Scripting
         Night,
         Cosmos
     }
-}
 
-namespace SagaMap.Packets.Server
-{
     public class SSMG_FG_CHANGE_SKY : Packet
     {
         public SSMG_FG_CHANGE_SKY()

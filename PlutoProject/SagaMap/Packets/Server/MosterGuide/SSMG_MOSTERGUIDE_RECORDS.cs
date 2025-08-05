@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.MosterGuide
 {
     public class SSMG_MOSTERGUIDE_RECORDS : Packet
     {

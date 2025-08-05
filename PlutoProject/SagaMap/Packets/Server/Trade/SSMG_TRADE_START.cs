@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Trade
 {
     public class SSMG_TRADE_START : Packet
     {

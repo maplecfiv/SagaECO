@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Community
 {
     public class SSMG_COMMUNITY_RECRUIT_DELETE : Packet
     {

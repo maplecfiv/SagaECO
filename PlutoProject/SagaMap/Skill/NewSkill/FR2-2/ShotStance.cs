@@ -1,7 +1,8 @@
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     名射手的姿勢（名射手の構え）

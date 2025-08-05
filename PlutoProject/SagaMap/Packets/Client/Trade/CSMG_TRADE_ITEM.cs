@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Trade
 {
     public class CSMG_TRADE_ITEM : Packet
     {

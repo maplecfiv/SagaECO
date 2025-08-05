@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using SagaDB.Mob;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Marionette
 {

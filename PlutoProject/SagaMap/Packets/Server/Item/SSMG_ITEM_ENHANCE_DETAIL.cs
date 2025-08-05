@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public enum EnhanceType
     {

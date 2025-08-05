@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Navi
 {
     public class SSMG_NAVI_PROGRESS_UP : Packet
     {

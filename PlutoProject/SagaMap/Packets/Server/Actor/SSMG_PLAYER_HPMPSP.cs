@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_PLAYER_HPMPSP : Packet
     {
@@ -20,7 +20,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga9)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga9)
                     //this.PutByte(4, 6);
                     PutByte(3, 6);
                 else

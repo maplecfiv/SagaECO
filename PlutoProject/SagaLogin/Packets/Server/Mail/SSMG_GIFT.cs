@@ -2,7 +2,7 @@ using System;
 using SagaDB.BBS;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Mail
 {
     public class SSMG_GIFT : Packet
     {

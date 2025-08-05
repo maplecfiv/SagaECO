@@ -1,8 +1,8 @@
 using System;
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     public class MaxMPUp : ISkill
     {

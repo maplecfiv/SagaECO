@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.MosterGuide
 {
     public class SSMG_MOSTERGUIDE_NEW_RECORD : Packet
     {

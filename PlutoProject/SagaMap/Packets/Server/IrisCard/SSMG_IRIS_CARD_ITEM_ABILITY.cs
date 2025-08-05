@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Iris;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.IrisCard
 {
     public class SSMG_IRIS_CARD_ITEM_ABILITY : Packet
     {

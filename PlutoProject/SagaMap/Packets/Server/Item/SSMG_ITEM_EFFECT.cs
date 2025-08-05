@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_EFFECT : Packet
     {
@@ -37,7 +36,7 @@ namespace SagaMap.Packets.Server
         }
 
 
-        public List<Actor> AffectedID
+        public List<SagaDB.Actor.Actor> AffectedID
         {
             set
             {

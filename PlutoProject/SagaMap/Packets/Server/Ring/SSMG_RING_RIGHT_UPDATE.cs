@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Ring
 {
     public class SSMG_RING_RIGHT_UPDATE : Packet
     {

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Tatarabe
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Tatarabe_矿工_
 {
     /// <summary>
     ///     營火（焚き火）

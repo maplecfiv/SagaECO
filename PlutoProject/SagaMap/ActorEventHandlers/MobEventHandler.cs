@@ -5,9 +5,10 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
+using SagaMap.ODWar;
 using SagaMap.Scripting;
 using SagaMap.Skill;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 using SagaMap.Tasks.Mob;
 
 namespace SagaMap.ActorEventHandlers
@@ -368,19 +369,19 @@ namespace SagaMap.ActorEventHandlers
                     //special drops
 
                     //boss掉心
-                    if (Configuration.Instance.ActiveSpecialLoot)
+                    if (Configuration.Configuration.Instance.ActiveSpecialLoot)
                         if (mob.BaseData.mobType.ToString().Contains("BOSS") && AI.SpawnDelay >= 1800000)
                         {
-                            if (Global.Random.Next(0, 10000) <= Configuration.Instance.BossSpecialLootRate)
-                                for (var i = 0; i < Configuration.Instance.BossSpecialLootNum; i++)
-                                    AI.map.AddItemDrop(Configuration.Instance.BossSpecialLootID, null, mob, false,
+                            if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.BossSpecialLootRate)
+                                for (var i = 0; i < Configuration.Configuration.Instance.BossSpecialLootNum; i++)
+                                    AI.map.AddItemDrop(Configuration.Configuration.Instance.BossSpecialLootID, null, mob, false,
                                         false, false);
                         }
-                        else if (Global.Random.Next(0, 10000) <= Configuration.Instance.NomalMobSpecialLootRate &&
+                        else if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.NomalMobSpecialLootRate &&
                                  ((MobEventHandler)mob.e).AI.SpawnDelay != 0)
                         {
-                            for (var i = 0; i < Configuration.Instance.NomalMobSpecialLootNum; i++)
-                                AI.map.AddItemDrop(Configuration.Instance.NomalMobSpecialLootID, null, mob, false,
+                            for (var i = 0; i < Configuration.Configuration.Instance.NomalMobSpecialLootNum; i++)
+                                AI.map.AddItemDrop(Configuration.Configuration.Instance.NomalMobSpecialLootID, null, mob, false,
                                     false, false);
                         }
 
@@ -402,7 +403,7 @@ namespace SagaMap.ActorEventHandlers
                     //印章因为目前掉率全都是0,所以取了最小的万分之一
                     if (mob.BaseData.stampDrop != null)
                         if (Global.Random.Next(0, 9999) <= mob.BaseData.stampDrop.Rate *
-                            Configuration.Instance.CalcStampDropRateForPC(owner))
+                            Configuration.Configuration.Instance.CalcStampDropRateForPC(owner))
                         {
                             AI.map.AddItemDrop(mob.BaseData.stampDrop.ItemID, null, mob, false, false, false);
                             stamp = true;
@@ -410,14 +411,14 @@ namespace SagaMap.ActorEventHandlers
 
                     //dropDeterminator = this.mob.BaseData.dropItems.Sum(x => x.Rate) + this.mob.BaseData.dropItemsSpecial.Sum(x => x.Rate);
                     //特殊掉落(知识掉落)
-                    if ((!stamp || Configuration.Instance.MultipleDrop) && checkDropSpecial())
+                    if ((!stamp || Configuration.Configuration.Instance.MultipleDrop) && checkDropSpecial())
                         foreach (var i in mob.BaseData.dropItemsSpecial)
                         {
                             dropDeterminator = Global.Random.Next(0, 9999);
-                            if (!Configuration.Instance.MultipleDrop)
+                            if (!Configuration.Configuration.Instance.MultipleDrop)
                             {
                                 maxVlaue = baseValue +
-                                           (int)(i.Rate * Configuration.Instance.CalcSpecialDropRateForPC(owner) /
+                                           (int)(i.Rate * Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
                                                  100.0f);
                                 if (dropDeterminator >= baseValue && dropDeterminator < maxVlaue)
                                 {
@@ -429,7 +430,7 @@ namespace SagaMap.ActorEventHandlers
                             }
                             else
                             {
-                                if (dropDeterminator < i.Rate * Configuration.Instance.CalcSpecialDropRateForPC(owner) /
+                                if (dropDeterminator < i.Rate * Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
                                     100.0f)
                                 {
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
@@ -441,9 +442,9 @@ namespace SagaMap.ActorEventHandlers
                     baseValue = 0;
                     maxVlaue = 0;
                     //如果已经掉落印章,并且掉落特殊物品,同时开启了多重掉落
-                    if ((!stamp && !special) || Configuration.Instance.MultipleDrop)
+                    if ((!stamp && !special) || Configuration.Configuration.Instance.MultipleDrop)
                     {
-                        if (Configuration.Instance.MultipleDrop)
+                        if (Configuration.Configuration.Instance.MultipleDrop)
                         {
                             foreach (var i in mob.BaseData.dropItems)
                             {
@@ -454,7 +455,7 @@ namespace SagaMap.ActorEventHandlers
                                     continue;
 
                                 if (Global.Random.Next(1, denominator) <
-                                    i.Rate * Configuration.Instance.CalcGlobalDropRateForPC(owner))
+                                    i.Rate * Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner))
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
                             }
                         }
@@ -467,7 +468,7 @@ namespace SagaMap.ActorEventHandlers
                                 var oneshotdrop = false;
                                 var denominator = Global.Random.Next(1, mob.BaseData.dropItems.Sum(x => x.Rate));
 
-                                for (var ix = 0; ix < (int)Configuration.Instance.CalcGlobalDropRateForPC(owner); ix++)
+                                for (var ix = 0; ix < (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner); ix++)
                                     foreach (var i in mob.BaseData.dropItems)
                                     {
                                         if (oneshotdrop)
@@ -485,7 +486,7 @@ namespace SagaMap.ActorEventHandlers
                                             }
                                             else
                                             {
-                                                if (ix == (int)Configuration.Instance.CalcGlobalDropRateForPC(owner) -
+                                                if (ix == (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner) -
                                                     1)
                                                     oneshotdrop = true;
                                             }

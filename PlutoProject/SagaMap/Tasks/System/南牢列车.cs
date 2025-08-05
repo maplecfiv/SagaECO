@@ -2,6 +2,7 @@
 using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;

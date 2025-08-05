@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Quest
 {
     public class CSMG_QUEST_DETAIL_REQUEST : Packet
     {

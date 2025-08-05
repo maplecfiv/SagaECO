@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {

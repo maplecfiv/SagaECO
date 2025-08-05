@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.KnightWar
 {
     public class SSMG_KNIGHTWAR_SCORE : Packet
     {

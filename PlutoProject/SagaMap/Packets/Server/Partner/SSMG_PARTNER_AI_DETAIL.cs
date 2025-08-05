@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Partner
 {
     public class SSMG_PARTNER_AI_DETAIL : Packet
     {

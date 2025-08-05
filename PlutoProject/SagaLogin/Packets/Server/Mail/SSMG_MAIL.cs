@@ -1,7 +1,6 @@
-using SagaDB.BBS;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Mail
 {
     public class SSMG_MAIL : Packet
     {
@@ -12,7 +11,7 @@ namespace SagaLogin.Packets.Server
             ID = 0x00F7;
         }
 
-        public Mail mail
+        public SagaDB.BBS.Mail mail
         {
             set { }
         }

@@ -42,7 +42,7 @@ namespace SagaMap.Manager
 
         public void LoadMaps()
         {
-            foreach (var mapID in Configuration.Instance.HostedMaps)
+            foreach (var mapID in Configuration.Configuration.Instance.HostedMaps)
                 if (mapInfo.ContainsKey(mapID))
                     if (!AddMap(new Map(mapInfo[mapID])))
                         Logger.ShowError("Cannot load map " + mapID, null);
@@ -112,7 +112,7 @@ namespace SagaMap.Manager
             newMap.ResurrectionLimit = ResurrectionLimit;
             if (returnori) newMap.returnori = true;
             newMap.OriID = template;
-            Configuration.Instance.HostedMaps.Add(newMap.ID);
+            Configuration.Configuration.Instance.HostedMaps.Add(newMap.ID);
             Maps.Add(newMap.ID, newMap);
             return newMap.ID;
         }
@@ -136,7 +136,7 @@ namespace SagaMap.Manager
             newMap.ClientExitY = exitY;
             newMap.AutoDispose = autoDispose;
             newMap.Ring = ring;
-            Configuration.Instance.HostedMaps.Add(newMap.ID);
+            Configuration.Configuration.Instance.HostedMaps.Add(newMap.ID);
             Maps.Add(newMap.ID, newMap);
             return newMap.ID;
         }
@@ -147,21 +147,21 @@ namespace SagaMap.Manager
             var newMap = new Map(templateMap.Info);
             newMap.ID = 90001999;
             newMap.IsMapInstance = false;
-            Configuration.Instance.HostedMaps.Add(newMap.ID);
+            Configuration.Configuration.Instance.HostedMaps.Add(newMap.ID);
             Maps.Add(newMap.ID, newMap);
 
             templateMap = Maps[91000000];
             newMap = new Map(templateMap.Info);
             newMap.ID = 91000999;
             newMap.IsMapInstance = false;
-            Configuration.Instance.HostedMaps.Add(newMap.ID);
+            Configuration.Configuration.Instance.HostedMaps.Add(newMap.ID);
             Maps.Add(newMap.ID, newMap);
 
             templateMap = Maps[70000000];
             newMap = new Map(templateMap.Info);
             newMap.ID = 70000999;
             newMap.IsMapInstance = false;
-            Configuration.Instance.HostedMaps.Add(newMap.ID);
+            Configuration.Configuration.Instance.HostedMaps.Add(newMap.ID);
             Maps.Add(newMap.ID, newMap);
         }
 
@@ -198,7 +198,7 @@ namespace SagaMap.Manager
             var map = Maps[id];
             map.OnDestrory();
             Maps.Remove(id);
-            Configuration.Instance.HostedMaps.Remove(id);
+            Configuration.Configuration.Instance.HostedMaps.Remove(id);
             return true;
         }
 

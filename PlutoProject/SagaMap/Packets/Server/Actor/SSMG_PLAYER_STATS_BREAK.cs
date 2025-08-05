@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     /// <summary>
     ///     str110 = 1

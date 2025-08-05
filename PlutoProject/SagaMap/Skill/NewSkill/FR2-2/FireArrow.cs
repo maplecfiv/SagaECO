@@ -1,7 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.FR2_2
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     火燄箭

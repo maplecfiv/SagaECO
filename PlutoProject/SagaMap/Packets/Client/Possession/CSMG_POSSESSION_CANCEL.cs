@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Possession
 {
     public class CSMG_POSSESSION_PARTNER_CANCEL : Packet
     {

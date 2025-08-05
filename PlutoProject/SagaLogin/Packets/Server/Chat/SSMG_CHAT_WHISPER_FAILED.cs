@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Chat
 {
     public class SSMG_CHAT_WHISPER_FAILED : Packet
     {

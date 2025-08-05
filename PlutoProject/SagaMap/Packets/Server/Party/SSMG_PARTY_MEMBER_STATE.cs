@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Party
 {
     public class SSMG_PARTY_MEMBER_STATE : Packet
     {

@@ -2,13 +2,13 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_ACTOR_APPEAR : Packet
     {
         public SSMG_ITEM_ACTOR_APPEAR()
         {
-            if (Configuration.Instance.Version < Version.Saga9_Iris)
+            if (Configuration.Configuration.Instance.Version < Version.Saga9_Iris)
                 data = new byte[26];
             else
                 data = new byte[29];

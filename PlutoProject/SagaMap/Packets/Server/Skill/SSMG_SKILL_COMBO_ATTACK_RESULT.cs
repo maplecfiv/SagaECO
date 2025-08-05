@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Skill
 {
     public class SSMG_SKILL_COMBO_ATTACK_RESULT : Packet
     {
@@ -21,7 +21,7 @@ namespace SagaMap.Packets.Server
             set => PutUInt(value, 2);
         }
 
-        public List<Actor> TargetID
+        public List<SagaDB.Actor.Actor> TargetID
         {
             set
             {

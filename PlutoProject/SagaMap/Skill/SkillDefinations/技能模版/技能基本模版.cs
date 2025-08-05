@@ -1,6 +1,6 @@
 ﻿using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.X
+namespace SagaMap.Skill.SkillDefinations.技能模版
 {
     internal class X1 : ISkill
     {

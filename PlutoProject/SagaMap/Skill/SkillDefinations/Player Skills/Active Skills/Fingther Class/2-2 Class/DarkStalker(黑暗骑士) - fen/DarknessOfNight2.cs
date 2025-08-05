@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.DarkStalker
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen
 {
     /// <summary>
     ///     黑暗騎士（ダークネスオブナイト）[接續技能]

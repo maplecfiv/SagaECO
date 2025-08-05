@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Knight
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen
 {
     /// <summary>
     ///     胳膊卸力（アームスラスト）

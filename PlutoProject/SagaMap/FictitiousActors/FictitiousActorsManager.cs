@@ -4,9 +4,10 @@ using SagaDB.Item;
 using SagaDB.Mob;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
 using SagaMap.Mob;
 
-namespace SagaMap.Manager
+namespace SagaMap.FictitiousActors
 {
     public class FictitiousActorsManager : Singleton<FictitiousActorsManager>
     {

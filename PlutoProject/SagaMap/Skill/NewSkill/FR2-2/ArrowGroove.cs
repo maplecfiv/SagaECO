@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     飛鑽箭頭（クリーブアロー）

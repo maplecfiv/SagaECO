@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Item
 {

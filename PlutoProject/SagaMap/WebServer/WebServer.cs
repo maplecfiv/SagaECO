@@ -5,14 +5,14 @@ using System.Text;
 using System.Threading;
 using SagaLib;
 
-namespace SagaMap
+namespace SagaMap.WebServer
 {
     public class WebServer
     {
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
         private bool data;
-        private string stoken = Configuration.Instance.APIKey;
+        private string stoken = Configuration.Configuration.Instance.APIKey;
         private bool success;
 
         public WebServer(string[] prefixes, Func<HttpListenerRequest, string> method)
@@ -62,7 +62,7 @@ namespace SagaMap
                                 //Console.WriteLine(ctx.Request.Headers.Get("action"));
                                 var token = ctx.Request.Headers.Get("token");
 
-                                if (token == Configuration.Instance.APIKey)
+                                if (token == Configuration.Configuration.Instance.APIKey)
                                 {
                                     switch (ctx.Request.Headers.Get("action"))
                                     {
@@ -77,7 +77,7 @@ namespace SagaMap
                                             var charid = uint.Parse(ctx.Request.Headers.Get("char_id"));
                                             var itemid = uint.Parse(ctx.Request.Headers.Get("item_id"));
                                             var qty = ushort.Parse(ctx.Request.Headers.Get("qty"));
-                                            var p = new Process();
+                                            var p = new Process.Process();
                                             p.Action(charid, itemid, qty);
                                             success = p.Load();
                                             break;
@@ -90,7 +90,7 @@ namespace SagaMap
                                             }
 
                                             charid = uint.Parse(ctx.Request.Headers.Get("char_id"));
-                                            var p2 = new Process();
+                                            var p2 = new Process.Process();
                                             p2.Query(charid);
                                             data = p2.InvQuery();
                                             if (data)
@@ -111,7 +111,7 @@ namespace SagaMap
                                             var message = ctx.Request.Headers.Get("message");
                                             Logger.ShowInfo("An announce has made. (" + s + ")");
 
-                                            var p3 = new Process();
+                                            var p3 = new Process.Process();
                                             p3.Announce(message);
                                             success = true;
                                             break;

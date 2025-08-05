@@ -3,7 +3,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Global.Active
 {
     /// <summary>
     ///     元素风暴,各属性风暴通用技能

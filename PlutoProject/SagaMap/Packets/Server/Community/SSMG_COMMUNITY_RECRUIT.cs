@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Community
 {
     public class SSMG_COMMUNITY_RECRUIT : Packet
     {

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.SkillDefinations.Hawkeye
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {
     public class PointRain : ISkill
     {

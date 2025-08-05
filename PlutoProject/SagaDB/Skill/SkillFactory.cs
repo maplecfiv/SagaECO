@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using SagaDB.Actor;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Skill
 {

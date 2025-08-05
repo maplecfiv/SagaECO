@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.FriendList
 {
     public class SSMG_FRIEND_DETAIL_UPDATE : Packet
     {

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Knight
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     /// <summary>
     ///     比卡利之槍（ストライクスピア）

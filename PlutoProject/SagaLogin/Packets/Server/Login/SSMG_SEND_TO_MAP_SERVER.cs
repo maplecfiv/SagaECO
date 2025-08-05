@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Login
 {
     public class SSMG_SEND_TO_MAP_SERVER : Packet
     {

@@ -3,9 +3,9 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Elementaler
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.坏掉的德普提
 {
     internal class IceInfernal : MobISkill
     {

@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DualJob
 {
     public class SSMG_DUALJOB_SET_DUALJOB_INFO : Packet
     {

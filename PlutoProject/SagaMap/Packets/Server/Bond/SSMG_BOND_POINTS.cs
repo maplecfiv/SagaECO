@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Bond
 {
     public class SSMG_BOND_POINTS : Packet
     {

@@ -1,6 +1,6 @@
 ﻿using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.X
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.熊爹
 {
     public class Attack2 : MobISkill
     {

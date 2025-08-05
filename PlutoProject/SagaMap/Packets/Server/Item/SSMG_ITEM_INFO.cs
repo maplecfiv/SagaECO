@@ -1,6 +1,7 @@
 using SagaDB.Item;
+using SagaMap.Packets.Server.Util;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_INFO : HasItemDetail
     {
@@ -11,7 +12,7 @@ namespace SagaMap.Packets.Server
             ID = 0x0203;
         }
 
-        public Item Item
+        public SagaDB.Item.Item Item
         {
             set
             {

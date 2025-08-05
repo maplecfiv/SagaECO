@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NPC
 {
     public class SSMG_NPC_MESSAGE : Packet
     {
         public SSMG_NPC_MESSAGE()
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 data = new byte[18];
-            else if (Configuration.Instance.Version >= Version.Saga14_2)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
                 data = new byte[13];
             else
                 data = new byte[11];
@@ -76,7 +76,7 @@ namespace SagaMap.Packets.Server
             //this.PutUInt(0, 2);
             PutUInt(npcID, 2);
             ushort oldoffset;
-            if (Configuration.Instance.Version >= Version.Saga14_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
             {
                 oldoffset = 7;
                 PutByte(0, 6);
@@ -98,7 +98,7 @@ namespace SagaMap.Packets.Server
             PutBytes(buf, oldoffset);
 
             var offset = (ushort)(8 + size);
-            if (Configuration.Instance.Version >= Version.Saga14_2)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
             {
                 PutByte(0, offset);
                 offset++;

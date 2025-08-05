@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Map
 {

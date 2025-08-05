@@ -3,9 +3,9 @@ using SagaDB.Fish;
 using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.Fish;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions
 {
     public class Fish : DefaultBuff
     {

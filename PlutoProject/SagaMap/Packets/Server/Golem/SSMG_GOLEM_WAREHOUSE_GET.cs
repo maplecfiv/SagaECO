@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Golem
 {
     public class SSMG_GOLEM_WAREHOUSE_GET : Packet
     {

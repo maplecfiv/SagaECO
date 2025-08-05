@@ -2,7 +2,7 @@
 using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Bard
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Bard_诗人____vote
 {
     /// <summary>
     ///     雄壯音樂演奏（ミュージカルブロウ）

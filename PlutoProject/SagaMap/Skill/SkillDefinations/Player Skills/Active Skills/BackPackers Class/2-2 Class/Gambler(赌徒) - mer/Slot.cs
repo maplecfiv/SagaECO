@@ -1,9 +1,10 @@
 ﻿using System;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Gambler
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Gambler_赌徒____mer
 {
     /// <summary>
     ///     幸運數字（スリーセブン）

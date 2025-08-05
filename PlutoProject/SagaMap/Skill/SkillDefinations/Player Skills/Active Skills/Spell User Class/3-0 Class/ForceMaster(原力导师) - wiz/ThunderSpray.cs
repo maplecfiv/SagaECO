@@ -4,9 +4,9 @@ using System.Linq;
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.ForceMaster
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
 {
     /// <summary>
     ///     フリークブラスト

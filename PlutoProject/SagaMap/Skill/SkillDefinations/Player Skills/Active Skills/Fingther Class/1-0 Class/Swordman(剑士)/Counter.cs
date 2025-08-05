@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
 {
     /// <summary>
     ///     反擊

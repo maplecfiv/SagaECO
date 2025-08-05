@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Harvest
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._3_0_Class.Harvest_收获者____far
 {
     /// <summary>
     ///     ハーヴェストマスター

@@ -4,7 +4,7 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Merchant
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Merchant_商人_
 {
     /// <summary>
     ///     死角地帶（ライオットハンマー）

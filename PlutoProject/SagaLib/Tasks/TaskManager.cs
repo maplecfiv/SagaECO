@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace SagaLib
+namespace SagaLib.Tasks
 {
     public class TaskManager : Singleton<TaskManager>
     {

@@ -1,6 +1,6 @@
 using System.Threading;
 
-namespace SagaLib
+namespace SagaLib.Tasks
 {
     public class SingleRunTask
     {

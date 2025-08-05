@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Cabalist
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock
 {
     /// <summary>
     ///     献祭 (ソウルサケリファイス)

@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.PProtect
 {
     public class CSMG_PPROTECT_CREATED_OUT : Packet
     {

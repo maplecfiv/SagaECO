@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SagaLib.VirtualFileSystem
+namespace SagaLib.VirtualFileSytem.IFileSystemImp
 {
     public class RealFileSystem : IFileSystem
     {

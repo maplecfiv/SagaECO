@@ -4,11 +4,12 @@ using SagaDB.Actor;
 using SagaDB.ODWar;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Server;
-using SagaMap.Scripting;
+using SagaMap.Packets.Server.NPC;
+using SagaMap.Packets.Server.ODWar;
 
-namespace SagaMap.Scripting
+namespace SagaMap.ODWar
 {
     public enum SymbolReviveResult
     {
@@ -17,10 +18,7 @@ namespace SagaMap.Scripting
         StillTrash,
         Faild
     }
-}
 
-namespace SagaMap.Manager
-{
     public class ODWarManager : Singleton<ODWarManager>
     {
         public void StartODWar(uint mapID)

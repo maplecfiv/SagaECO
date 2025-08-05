@@ -1,7 +1,7 @@
 using System.Text;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Bond
 {
     public class SSMG_BOND_INVITE_PUPILIN_RESULT : Packet
     {

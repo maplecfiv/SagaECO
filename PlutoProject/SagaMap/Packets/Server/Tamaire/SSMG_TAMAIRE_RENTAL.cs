@@ -1,7 +1,7 @@
 using System;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Tamaire
 {
     public class SSMG_TAMAIRE_RENTAL : Packet
     {

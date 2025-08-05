@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Login
 {
     public class CSMG_REQUEST_MAP_SERVER : Packet
     {

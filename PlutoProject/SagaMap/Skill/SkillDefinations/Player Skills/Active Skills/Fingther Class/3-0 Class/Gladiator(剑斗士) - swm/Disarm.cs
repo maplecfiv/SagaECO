@@ -2,10 +2,10 @@
 using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Packets.Client.Item;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Gladiator
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm
 {
     /// <summary>
     ///     リムーブウエポン

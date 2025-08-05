@@ -10,7 +10,7 @@ using SagaDB.Title;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.PC
 {
@@ -1606,7 +1606,7 @@ namespace SagaMap.PC
 
                 //防御计算
                 pc.Status.def = Math.Min(checkPositive(pcvit / 3 + (int)(pcvit / 4.5f)),
-                    Configuration.Instance.BasePhysicDef);
+                    Configuration.Configuration.Instance.BasePhysicDef);
                 pc.Status.def_bs = pc.Status.def;
                 pc.Status.def += checkPositive(pc.Status.def_skill + checkHighVitBonus(pc) + pc.Status.def_item +
                                                pc.Status.def_iris);
@@ -1615,7 +1615,7 @@ namespace SagaMap.PC
                                                          pc.Status.def_add_item + pc.Status.def_add_iris);
 
                 pc.Status.mdef = Math.Min(checkPositive(pcint / 3 + (int)(pcvit / 4.0f)),
-                    Configuration.Instance.BaseMagicDef);
+                    Configuration.Configuration.Instance.BaseMagicDef);
                 pc.Status.mdef_bs = pc.Status.mdef;
                 pc.Status.mdef += checkPositive(pc.Status.mdef_skill + checkHighIntBonus(pc) + pc.Status.mdef_item +
                                                 pc.Status.mdef_iris);
@@ -1663,8 +1663,8 @@ namespace SagaMap.PC
                     pc.Status.mdef_add = (short)checkPositive(pc.Status.mdef_add + i.Status.mdef_add_possession);
                 }
 
-                pc.Status.def = Math.Min(pc.Status.def, Configuration.Instance.MaxPhysicDef);
-                pc.Status.mdef = Math.Min(pc.Status.mdef, Configuration.Instance.MaxMagicDef);
+                pc.Status.def = Math.Min(pc.Status.def, Configuration.Configuration.Instance.MaxPhysicDef);
+                pc.Status.mdef = Math.Min(pc.Status.mdef, Configuration.Configuration.Instance.MaxMagicDef);
 
                 //攻速计算
                 if (pc.Status.Additions.ContainsKey("ModeChange"))
@@ -1685,7 +1685,7 @@ namespace SagaMap.PC
 
 
             //移动速度
-            pc.Speed = (ushort)(Configuration.Instance.Speed + pc.Status.speed_item + pc.Status.speed_skill);
+            pc.Speed = (ushort)(Configuration.Configuration.Instance.Speed + pc.Status.speed_item + pc.Status.speed_skill);
 
             //爪子和双枪的攻速惩罚
             if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
@@ -1762,7 +1762,7 @@ namespace SagaMap.PC
                             pc.Int + pc.Status.int_item + pc.Status.int_chip + pc.Status.int_rev + pc.Status.int_skill,
                             0) / 10.0f + 200)
                        * VolumeJobFactor(pc)
-                       * Configuration.Instance.VolumeRate * 10);
+                       * Configuration.Configuration.Instance.VolumeRate * 10);
 
             if (pc.Status.volume_iris > 0) VOLU += (uint)(VOLU * (pc.Status.volume_iris / 100.0f));
             if (pc.Status.volume_add_iris > 0) VOLU += (uint)pc.Status.volume_add_iris;
@@ -1806,7 +1806,7 @@ namespace SagaMap.PC
                         Math.Max(
                             pc.Vit + pc.Status.vit_item + pc.Status.vit_chip + pc.Status.vit_rev + pc.Status.vit_skill,
                             0) / 3.0f + 400) *
-                       Configuration.Instance.PayloadRate *
+                       Configuration.Configuration.Instance.PayloadRate *
                        PayLoadRaceFactor(pc.Race) * PayLoadJobFactor(pc) * 10);
             if (pc.Status.payl_iris > 0) PCPAYL += (uint)(PCPAYL * (pc.Status.payl_iris / 100.0f));
             if (pc.Status.payl_add_iris > 0) PCPAYL += (uint)pc.Status.payl_add_iris;

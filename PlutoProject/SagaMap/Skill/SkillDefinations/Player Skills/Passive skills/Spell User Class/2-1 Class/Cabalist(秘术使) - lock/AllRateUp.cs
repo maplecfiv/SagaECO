@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Cabalist
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock
 {
     /// <summary>
     ///     提升異常狀態成功率（状態異常成功率上昇）

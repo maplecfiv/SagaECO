@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SagaDB.BBS;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Community
 {
     public class SSMG_COMMUNITY_BBS_PAGE_INFO : Packet
     {

@@ -8,6 +8,14 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaLogin.Network.Client;
 using SagaLogin.Packets.Client;
+using SagaLogin.Packets.Client.Chat;
+using SagaLogin.Packets.Client.FriendList;
+using SagaLogin.Packets.Client.Login;
+using SagaLogin.Packets.Client.NyaShield;
+using SagaLogin.Packets.Client.Ring;
+using SagaLogin.Packets.Client.Tamaire;
+using SagaLogin.Packets.Client.Tool;
+using SagaLogin.Packets.Client.WRP;
 using SagaLogin.Packets.Map;
 
 namespace SagaLogin.Manager

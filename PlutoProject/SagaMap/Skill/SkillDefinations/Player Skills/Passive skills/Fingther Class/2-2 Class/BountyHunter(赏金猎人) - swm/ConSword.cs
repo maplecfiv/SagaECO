@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.BountyHunter
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_2_Class.BountyHunter_赏金猎人____swm
 {
     /// <summary>
     ///     2段砍擊（二段斬り）

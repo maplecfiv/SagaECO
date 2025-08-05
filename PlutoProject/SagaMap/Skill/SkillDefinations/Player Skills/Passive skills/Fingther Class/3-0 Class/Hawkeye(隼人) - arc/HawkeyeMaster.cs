@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Hawkeye
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {
     /// <summary>
     ///     シューティングマスタリー

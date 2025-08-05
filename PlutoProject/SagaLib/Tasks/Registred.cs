@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SagaLib
+namespace SagaLib.Tasks
 {
     public class RegisteredManager : Singleton<RegisteredManager>
     {

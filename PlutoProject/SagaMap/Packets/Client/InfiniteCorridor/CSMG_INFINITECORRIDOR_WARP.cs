@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.InfiniteCorridor
 {
     public class CSMG_INFINITECORRIDOR_WARP : Packet
     {

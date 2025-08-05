@@ -2,9 +2,9 @@
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Sage
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz
 {
     /// <summary>
     ///     活幽靈（ドッペルゲンガー）

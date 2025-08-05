@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.AbyssTeam
 {
     public class CSMG_ABYSSTEAM_SET_OPEN_REQUEST : Packet
     {

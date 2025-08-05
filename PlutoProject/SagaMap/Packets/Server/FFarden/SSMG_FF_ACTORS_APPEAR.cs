@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FFarden
 {
     public class SSMG_FF_ACTORS_APPEAR : Packet
     {

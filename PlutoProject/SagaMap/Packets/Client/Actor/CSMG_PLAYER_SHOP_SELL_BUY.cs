@@ -3,7 +3,7 @@ using SagaDB.Item;
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Actor
 {
     public class CSMG_PLAYER_SHOP_SELL_BUY : Packet
     {

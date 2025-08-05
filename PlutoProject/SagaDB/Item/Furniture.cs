@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SagaDB.Furniture
+namespace SagaDB.Item
 {
     public class Furniture
     {

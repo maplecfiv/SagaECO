@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.X
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.丢弃
 {
     internal class Fengshenlegs : MobISkill
     {

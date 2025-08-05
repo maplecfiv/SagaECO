@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using SagaLib;
+using SagaLib.Tasks;
 
 namespace SagaDB.Actor
 {

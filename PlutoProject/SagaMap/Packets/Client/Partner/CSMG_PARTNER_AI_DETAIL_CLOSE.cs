@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Partner
 {
     public class CSMG_PARTNER_AI_DETAIL_CLOSE : Packet
     {

@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Weapon
+namespace SagaMap.Skill.SkillDefinations.Weapon.Passive
 {
     /// <summary>
     ///     クリティカル率アップ（小）

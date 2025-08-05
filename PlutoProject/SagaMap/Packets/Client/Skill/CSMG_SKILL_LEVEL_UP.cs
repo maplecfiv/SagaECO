@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Skill
 {
     public class CSMG_SKILL_LEVEL_UP : Packet
     {

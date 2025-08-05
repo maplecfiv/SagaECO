@@ -1,6 +1,6 @@
 ﻿using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Elementaler
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
 {
     /// <summary>
     ///     元素四重奏（エレメンタルカルテット）

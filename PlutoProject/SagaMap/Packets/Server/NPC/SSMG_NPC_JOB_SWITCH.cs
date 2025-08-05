@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NPC
 {
     public class SSMG_NPC_JOB_SWITCH : Packet
     {

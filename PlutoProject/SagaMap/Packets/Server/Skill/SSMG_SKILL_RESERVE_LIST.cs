@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Skill
 {
     public class SSMG_SKILL_RESERVE_LIST : Packet
     {

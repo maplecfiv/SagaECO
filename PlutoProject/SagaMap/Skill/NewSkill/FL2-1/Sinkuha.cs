@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Item;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.BladeMaster
+namespace SagaMap.Skill.NewSkill.FL2_1
 {
     public class Sinkuha : ISkill
     {

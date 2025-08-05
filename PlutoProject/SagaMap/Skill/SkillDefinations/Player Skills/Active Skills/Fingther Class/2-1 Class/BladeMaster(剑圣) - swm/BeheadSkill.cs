@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Mob;
 
-namespace SagaMap.Skill.SkillDefinations.BladeMaster
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.BladeMaster_剑圣____swm
 {
     /// <summary>
     ///     斬擊系共通，會依怪物種類增加傷害

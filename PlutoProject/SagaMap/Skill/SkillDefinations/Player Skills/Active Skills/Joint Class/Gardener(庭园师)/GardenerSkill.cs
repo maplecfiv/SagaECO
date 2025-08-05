@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Gardener
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Gardener_庭园师_
 {
     /// <summary>
     ///     庭師の手腕

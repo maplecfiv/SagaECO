@@ -1,9 +1,9 @@
 ﻿using System;
 using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Stryder
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Stryder_风行者____rag
 {
     internal class SkillForbid : ISkill
     {

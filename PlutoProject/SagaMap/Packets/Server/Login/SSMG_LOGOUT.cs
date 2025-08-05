@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Login
 {
     public class SSMG_LOGOUT : Packet
     {

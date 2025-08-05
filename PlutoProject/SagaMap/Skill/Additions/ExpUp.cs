@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions
 {
     /// <summary>
     ///     經驗值上升

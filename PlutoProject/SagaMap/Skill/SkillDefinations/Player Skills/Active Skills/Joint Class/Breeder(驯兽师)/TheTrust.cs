@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Breeder
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Breeder_驯兽师_
 {
     /// <summary>
     ///     信頼の証（信頼の証）

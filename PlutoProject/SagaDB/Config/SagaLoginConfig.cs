@@ -1,7 +1,7 @@
 ﻿using System;
 using SagaDB.Item;
 
-namespace SagaLogin.Configurations
+namespace SagaDB.Config
 {
     [Serializable]
     public class StartupSetting

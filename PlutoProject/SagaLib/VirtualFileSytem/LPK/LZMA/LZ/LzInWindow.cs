@@ -2,7 +2,7 @@
 
 using System.IO;
 
-namespace SevenZip.Compression.LZ
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.LZ
 {
     public class InWindow
     {

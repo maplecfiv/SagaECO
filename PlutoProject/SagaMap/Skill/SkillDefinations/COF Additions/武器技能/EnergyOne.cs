@@ -4,7 +4,7 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.SkillDefinations.Wizard
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class EnergyOneForWeapon : ISkill
     {

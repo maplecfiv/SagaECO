@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.IrisCard
 {
     public class SSMG_IRIS_ADD_SLOT_MATERIAL : Packet
     {

@@ -3,7 +3,7 @@ using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.Additions.Global
+namespace SagaMap.Skill.Additions
 {
     public class MoveSpeedDown : DefaultBuff
     {

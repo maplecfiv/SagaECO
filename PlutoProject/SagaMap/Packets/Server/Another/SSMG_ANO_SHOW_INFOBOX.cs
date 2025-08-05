@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Another
 {
     public class SSMG_ANO_SHOW_INFOBOX : Packet
     {

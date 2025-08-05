@@ -1,7 +1,6 @@
-using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_IRIS_CARD_INFO : Packet
     {
@@ -12,7 +11,7 @@ namespace SagaMap.Packets.Server
             ID = 0x09D5;
         }
 
-        public Item Item
+        public SagaDB.Item.Item Item
         {
             set
             {

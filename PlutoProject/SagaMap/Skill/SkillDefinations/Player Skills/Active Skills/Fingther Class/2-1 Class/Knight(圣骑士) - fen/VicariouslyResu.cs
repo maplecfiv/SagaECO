@@ -3,7 +3,7 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.SkillDefinations.Knight
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen
 {
     /// <summary>
     ///     犧牲（サクリファイス）

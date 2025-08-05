@@ -1,4 +1,6 @@
-﻿namespace SagaLib.VirtualFileSystem
+﻿using SagaLib.VirtualFileSytem.IFileSystemImp;
+
+namespace SagaLib.VirtualFileSytem
 {
     public enum FileSystems
     {

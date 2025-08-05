@@ -4,13 +4,13 @@ using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Login
 {
     public class SSMG_CHAR_EQUIP : Packet
     {
         public SSMG_CHAR_EQUIP()
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 data = new byte[230];
             else
                 data = new byte[161];
@@ -20,7 +20,7 @@ namespace SagaLogin.Packets.Server
             PutByte(0xE, 2);
             PutByte(0xE, 59);
             PutByte(0xE, 116);
-            if (Configuration.Instance.Version >= Version.Saga10) PutByte(0xE, 173);
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10) PutByte(0xE, 173);
         }
 
 
@@ -29,7 +29,7 @@ namespace SagaLogin.Packets.Server
             set
             {
                 int count;
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     count = 4;
                 else
                     count = 3;

@@ -2,7 +2,7 @@
 using SagaLib;
 using SagaMap.Mob;
 
-namespace SagaMap.Tasks.System
+namespace SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity.Mob
 {
     public class 活动怪物
     {

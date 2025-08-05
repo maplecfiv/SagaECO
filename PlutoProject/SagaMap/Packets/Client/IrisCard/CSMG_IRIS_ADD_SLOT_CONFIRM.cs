@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.IrisCard
 {
     public class CSMG_IRIS_ADD_SLOT_CONFIRM : Packet
     {

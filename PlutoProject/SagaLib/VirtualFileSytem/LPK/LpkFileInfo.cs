@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace SagaLib.VirtualFileSystem.Lpk
+namespace SagaLib.VirtualFileSytem.LPK
 {
     public class LpkFileInfo
     {

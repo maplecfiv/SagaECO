@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_MASTERENHANCE_LIST : Packet
     {
@@ -13,7 +12,7 @@ namespace SagaMap.Packets.Server
             ID = 0x1F54;
         }
 
-        public List<Item> Items
+        public List<SagaDB.Item.Item> Items
         {
             set
             {

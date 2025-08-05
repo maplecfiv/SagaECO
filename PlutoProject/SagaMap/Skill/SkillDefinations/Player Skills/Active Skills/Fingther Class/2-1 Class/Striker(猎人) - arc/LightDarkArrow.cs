@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Striker_猎人____arc
 {
     /// <summary>
     ///     光之箭（シャイニングアロー）、 黑暗箭（ダークネスアロー）

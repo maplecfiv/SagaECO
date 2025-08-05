@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class EmergencyAvoid : ISkill
     {

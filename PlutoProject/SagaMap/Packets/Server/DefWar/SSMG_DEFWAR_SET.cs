@@ -1,7 +1,6 @@
-using SagaDB.DefWar;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DefWar
 {
     public class SSMG_DEFWAR_SET : Packet
     {
@@ -17,7 +16,7 @@ namespace SagaMap.Packets.Server
             set => PutUInt(value, 10);
         }
 
-        public DefWar Data
+        public SagaDB.DefWar.DefWar Data
         {
             set
             {

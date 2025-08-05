@@ -1,13 +1,13 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Party
 {
     public class SSMG_PARTY_MEMBER_BUFF : Packet
     {
         public SSMG_PARTY_MEMBER_BUFF()
         {
-            if (Configuration.Instance.Version < Version.Saga11)
+            if (Configuration.Configuration.Instance.Version < Version.Saga11)
                 data = new byte[42];
             else
                 data = new byte[58];

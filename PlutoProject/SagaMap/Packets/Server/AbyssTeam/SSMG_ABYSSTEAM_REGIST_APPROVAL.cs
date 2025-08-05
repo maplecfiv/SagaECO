@@ -2,7 +2,7 @@ using System.Text;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.AbyssTeam
 {
     public class SSMG_ABYSSTEAM_REGIST_APPROVAL : Packet
     {

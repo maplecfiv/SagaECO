@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace SevenZip.Compression.RangeCoder
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.RangeCoder
 {
     internal class Encoder
     {

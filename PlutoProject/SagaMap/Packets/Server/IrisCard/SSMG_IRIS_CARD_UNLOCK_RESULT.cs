@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.IrisCard
 {
     public class SSMG_IRIS_CARD_UNLOCK_RESULT : Packet
     {

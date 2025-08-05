@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.DualJob
 {
     public class CSMG_DUALJOB_CHANGE_CONFIRM : Packet
     {

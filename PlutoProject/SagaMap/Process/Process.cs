@@ -6,7 +6,7 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
-namespace SagaMap
+namespace SagaMap.Process
 {
     internal class Process : MapServer
     {

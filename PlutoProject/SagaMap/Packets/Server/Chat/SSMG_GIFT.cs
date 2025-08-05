@@ -2,7 +2,7 @@ using System;
 using SagaDB.BBS;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Chat
 {
     public class SSMG_GIFT : Packet
     {

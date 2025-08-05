@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Packets.Server.FGarden
 {
     public enum FG_Weather
     {
@@ -8,10 +8,7 @@ namespace SagaMap.Scripting
         Rain,
         Snow
     }
-}
 
-namespace SagaMap.Packets.Server
-{
     public class SSMG_FG_CHANGE_WEATHER : Packet
     {
         public SSMG_FG_CHANGE_WEATHER()

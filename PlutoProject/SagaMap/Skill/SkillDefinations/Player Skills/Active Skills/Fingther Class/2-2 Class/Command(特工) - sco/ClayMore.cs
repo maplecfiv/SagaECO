@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.Command
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco
 {
     /// <summary>
     ///     大型地雷（クレイモアトラップ）

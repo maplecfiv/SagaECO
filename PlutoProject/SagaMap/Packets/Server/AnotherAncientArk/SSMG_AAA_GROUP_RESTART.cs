@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.AnotherAncientArk
 {
     public class SSMG_AAA_GROUP_RESTART : Packet
     {

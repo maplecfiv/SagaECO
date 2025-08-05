@@ -2,7 +2,7 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     機銃砲・マシンナーズアリア

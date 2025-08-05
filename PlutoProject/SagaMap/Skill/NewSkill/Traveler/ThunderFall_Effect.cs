@@ -1,6 +1,7 @@
 ﻿using SagaDB.Actor;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Traveler
+namespace SagaMap.Skill.NewSkill.Traveler
 {
     public class ThunderFall_Effect : ISkill
     {

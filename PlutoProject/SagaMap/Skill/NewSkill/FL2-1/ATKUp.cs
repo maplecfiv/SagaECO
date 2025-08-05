@@ -1,8 +1,9 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Swordman
+namespace SagaMap.Skill.NewSkill.FL2_1
 {
     /// <summary>
     ///     攻擊．煥發 アタックバースト

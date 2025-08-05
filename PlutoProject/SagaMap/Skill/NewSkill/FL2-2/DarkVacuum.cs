@@ -1,7 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.DarkStalker
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     /// <summary>
     ///     黑暗的波動(暗黑波动斩)（ダークワールウィンド）

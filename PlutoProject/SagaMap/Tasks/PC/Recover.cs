@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Tasks.PC

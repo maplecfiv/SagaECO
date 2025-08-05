@@ -2,8 +2,9 @@
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.BountyHunter
+namespace SagaMap.Skill.NewSkill.FL2_1
 {
     /// <summary>
     ///     重力波（グラヴィティ）

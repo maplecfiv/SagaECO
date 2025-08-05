@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml;
 using SagaDB.Actor;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.FictitiousActors
 {

@@ -5,7 +5,7 @@ using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Skill;
 
-namespace SagaMap.Mob.AICommands
+namespace SagaMap.Mob.AICommands.SpecificAI
 {
     public class　CCAttack : AICommand
     {

@@ -6,7 +6,7 @@ using System.Text;
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
 namespace SagaDB.Partner
 {

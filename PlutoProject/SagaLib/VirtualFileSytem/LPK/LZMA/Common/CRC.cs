@@ -1,6 +1,6 @@
 // Common/CRC.cs
 
-namespace SevenZip
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.Common
 {
     internal class CRC
     {

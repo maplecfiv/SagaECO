@@ -7,13 +7,12 @@ using SagaDB.Map;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.Actor;
 using SagaMap.PC;
-using SagaMap.Scripting;
 using SagaMap.Skill;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Manager
 {
     public enum LevelType : byte
     {
@@ -25,10 +24,7 @@ namespace SagaMap.Scripting
         JLEVEL3 = 6,
         DUALJ = 7
     }
-}
 
-namespace SagaMap.Manager
-{
     public sealed class ExperienceManager : Singleton<ExperienceManager>
     {
         private readonly short[,] clTable =
@@ -420,7 +416,7 @@ namespace SagaMap.Manager
                 if (targetPC.CurrentJobLevel >= MaxJLevel)
                     jexp = 0;
 
-            percentage = percentage * Configuration.Instance.CalcQuestRateForPC(targetPC);
+            percentage = percentage * Configuration.Configuration.Instance.CalcQuestRateForPC(targetPC);
 
             var realexp = exp * percentage;
             var realjobexp = jexp * percentage;
@@ -445,7 +441,7 @@ namespace SagaMap.Manager
                 if (map.Info.Flag.Test(MapFlags.Dominion))
                 {
                     targetPC.DominionCEXP += (ulong)realexp;
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -505,7 +501,7 @@ namespace SagaMap.Manager
                 if (map.Info.Flag.Test(MapFlags.Dominion))
                 {
                     targetPC.DominionCEXP += (ulong)realexp;
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -523,7 +519,7 @@ namespace SagaMap.Manager
                 }
 
                 targetPC.JointJEXP += (ulong)realjobexp;
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     if (targetPC.JointJEXP >= GetExpForLevel(50, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(50, LevelType.JLEVEL2) - 1;
@@ -584,7 +580,7 @@ namespace SagaMap.Manager
             //percentage *= (float)Config.Instance.EXPRate / 100f;
             //Weapon weapon = WeaponFactory.GetActiveWeapon(targetPC);
             if (percentage < 0) percentage = 1.0f;
-            percentage = percentage * Configuration.Instance.CalcEXPRateForPC(targetPC);
+            percentage = percentage * Configuration.Configuration.Instance.CalcEXPRateForPC(targetPC);
 
             var eh = (PCEventHandler)targetPC.e;
 
@@ -629,7 +625,7 @@ namespace SagaMap.Manager
                     if (map.Info.Flag.Test(MapFlags.Dominion))
                     {
                         i.DominionCEXP += (ulong)(baseExp * 0.1f);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             if (i.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -687,7 +683,7 @@ namespace SagaMap.Manager
                     if (map.Info.Flag.Test(MapFlags.Dominion))
                     {
                         i.DominionCEXP += (ulong)(baseExp * 0.1f);
-                        if (Configuration.Instance.Version >= Version.Saga10)
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         {
                             if (i.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -712,7 +708,7 @@ namespace SagaMap.Manager
                     }
 
                     i.JointJEXP += (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         if (i.JointJEXP >= GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                             i.JointJEXP = GetExpForLevel(MaxJLevel, LevelType.JLEVEL2) - 1;
@@ -775,7 +771,7 @@ namespace SagaMap.Manager
                 if (map.Info.Flag.Test(MapFlags.Dominion))
                 {
                     targetPC.DominionCEXP += baseExp;
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -834,7 +830,7 @@ namespace SagaMap.Manager
                 if (map.Info.Flag.Test(MapFlags.Dominion))
                 {
                     targetPC.DominionCEXP += baseExp;
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
@@ -852,7 +848,7 @@ namespace SagaMap.Manager
                 }
 
                 targetPC.JointJEXP += jobExp;
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     if (targetPC.JointJEXP >= GetExpForLevel(51, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(51, LevelType.JLEVEL2) - 1;
@@ -1232,18 +1228,18 @@ namespace SagaMap.Manager
             {
                 if (pc.Race == PC_RACE.DEM)
                 {
-                    pc.DominionCEXP -= (ulong)(pc.DominionCEXP * Configuration.Instance.DeathPenaltyBaseDominion);
-                    pc.DominionJEXP -= (ulong)(pc.DominionJEXP * Configuration.Instance.DeathPenaltyJobDominion);
+                    pc.DominionCEXP -= (ulong)(pc.DominionCEXP * Configuration.Configuration.Instance.DeathPenaltyBaseDominion);
+                    pc.DominionJEXP -= (ulong)(pc.DominionJEXP * Configuration.Configuration.Instance.DeathPenaltyJobDominion);
                     return;
                 }
 
                 shouldBase =
                     (ulong)((GetExpForLevel((uint)(pc.DominionLevel + 1), LevelType.CLEVEL) -
                              GetExpForLevel(pc.DominionLevel, LevelType.CLEVEL)) *
-                            Configuration.Instance.DeathPenaltyBaseDominion);
+                            Configuration.Configuration.Instance.DeathPenaltyBaseDominion);
                 shouldJob = (ulong)((GetExpForLevel((uint)(pc.DominionJobLevel + 1), LevelType.JLEVEL2) -
                                      GetExpForLevel(pc.DominionJobLevel, LevelType.JLEVEL2)) *
-                                    Configuration.Instance.DeathPenaltyJobDominion);
+                                    Configuration.Configuration.Instance.DeathPenaltyJobDominion);
                 if (pc.DominionCEXP > shouldBase)
                     pc.DominionCEXP -= shouldBase;
                 else
@@ -1258,17 +1254,17 @@ namespace SagaMap.Manager
                     while (pc.DominionStatsPoint < shouldStats)
                     {
                         var statsHad = new List<int>();
-                        if (pc.Str > Configuration.Instance.StartupSetting[pc.Race].Str)
+                        if (pc.Str > Configuration.Configuration.Instance.StartupSetting[pc.Race].Str)
                             statsHad.Add(0);
-                        if (pc.Dex > Configuration.Instance.StartupSetting[pc.Race].Dex)
+                        if (pc.Dex > Configuration.Configuration.Instance.StartupSetting[pc.Race].Dex)
                             statsHad.Add(1);
-                        if (pc.Int > Configuration.Instance.StartupSetting[pc.Race].Int)
+                        if (pc.Int > Configuration.Configuration.Instance.StartupSetting[pc.Race].Int)
                             statsHad.Add(2);
-                        if (pc.Vit > Configuration.Instance.StartupSetting[pc.Race].Vit)
+                        if (pc.Vit > Configuration.Configuration.Instance.StartupSetting[pc.Race].Vit)
                             statsHad.Add(3);
-                        if (pc.Agi > Configuration.Instance.StartupSetting[pc.Race].Agi)
+                        if (pc.Agi > Configuration.Configuration.Instance.StartupSetting[pc.Race].Agi)
                             statsHad.Add(4);
-                        if (pc.Mag > Configuration.Instance.StartupSetting[pc.Race].Mag)
+                        if (pc.Mag > Configuration.Configuration.Instance.StartupSetting[pc.Race].Mag)
                             statsHad.Add(5);
                         if (statsHad.Count == 0)
                         {
@@ -1318,38 +1314,38 @@ namespace SagaMap.Manager
             {
                 if (pc.Race == PC_RACE.DEM)
                 {
-                    pc.CEXP -= (ulong)(pc.CEXP * Configuration.Instance.DeathPenaltyBaseEmil);
-                    pc.JEXP -= (ulong)(pc.JEXP * Configuration.Instance.DeathPenaltyJobEmil);
+                    pc.CEXP -= (ulong)(pc.CEXP * Configuration.Configuration.Instance.DeathPenaltyBaseEmil);
+                    pc.JEXP -= (ulong)(pc.JEXP * Configuration.Configuration.Instance.DeathPenaltyJobEmil);
                     return;
                 }
 
                 if (pc.Job == pc.JobBasic)
                     shouldJob = (ulong)((GetExpForLevel((uint)(pc.JobLevel1 + 1), LevelType.JLEVEL) -
                                          GetExpForLevel(pc.JobLevel1, LevelType.JLEVEL)) *
-                                        Configuration.Instance.DeathPenaltyJobEmil);
+                                        Configuration.Configuration.Instance.DeathPenaltyJobEmil);
                 else if (pc.Job == pc.Job2X)
                     shouldJob = (ulong)((GetExpForLevel((uint)(pc.JobLevel2X + 1), LevelType.JLEVEL2) -
                                          GetExpForLevel(pc.JobLevel2X, LevelType.JLEVEL2)) *
-                                        Configuration.Instance.DeathPenaltyJobEmil);
+                                        Configuration.Configuration.Instance.DeathPenaltyJobEmil);
                 else if (pc.Job == pc.Job2T)
                     shouldJob = (ulong)((GetExpForLevel((uint)(pc.JobLevel2T + 1), LevelType.JLEVEL2) -
                                          GetExpForLevel(pc.JobLevel2T, LevelType.JLEVEL2)) *
-                                        Configuration.Instance.DeathPenaltyJobEmil);
+                                        Configuration.Configuration.Instance.DeathPenaltyJobEmil);
                 else
                     shouldJob = (ulong)((GetExpForLevel((uint)(pc.JobLevel3 + 1), LevelType.JLEVEL3) -
                                          GetExpForLevel(pc.JobLevel3, LevelType.JLEVEL3)) *
-                                        Configuration.Instance.DeathPenaltyJobEmil);
+                                        Configuration.Configuration.Instance.DeathPenaltyJobEmil);
 
                 if (!pc.Rebirth)
                     shouldBase =
                         (ulong)((GetExpForLevel((uint)(pc.Level + 1), LevelType.CLEVEL) -
                                  GetExpForLevel(pc.Level, LevelType.CLEVEL)) *
-                                Configuration.Instance.DeathPenaltyBaseEmil);
+                                Configuration.Configuration.Instance.DeathPenaltyBaseEmil);
                 else
                     shouldBase =
                         (ulong)((GetExpForLevel((uint)(pc.Level + 1), LevelType.CLEVEL2) -
                                  GetExpForLevel(pc.Level, LevelType.CLEVEL2)) *
-                                Configuration.Instance.DeathPenaltyBaseEmil);
+                                Configuration.Configuration.Instance.DeathPenaltyBaseEmil);
 
                 if (pc.CEXP > shouldBase)
                     pc.CEXP -= shouldBase;

@@ -1,12 +1,12 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FGarden
 {
     public class SSMG_FG_FURNITURE_RECONFIG : Packet
     {
         public SSMG_FG_FURNITURE_RECONFIG()
         {
-            if (Configuration.Instance.Version < Version.Saga11)
+            if (Configuration.Configuration.Instance.Version < Version.Saga11)
                 data = new byte[14];
             else
                 data = new byte[18];
@@ -38,7 +38,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < Version.Saga11)
+                if (Configuration.Configuration.Instance.Version < Version.Saga11)
                     PutUShort(value, 12);
                 else
                     PutUShort(value, 14);

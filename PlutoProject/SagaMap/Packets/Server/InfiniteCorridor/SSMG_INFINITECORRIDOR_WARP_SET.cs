@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.InfiniteCorridor
 {
     public class SSMG_INFINITECORRIDOR_WARP_SET : Packet
     {

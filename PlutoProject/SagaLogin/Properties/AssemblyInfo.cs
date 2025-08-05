@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.238.428")]
 
 
-namespace SagaLogin
+namespace SagaLogin.Properties
 {
     public class GlobalInfo
     {

@@ -24,8 +24,28 @@ using SagaMap.Dungeon;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
+using SagaMap.ODWar;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.Item;
 using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.Activity;
+using SagaMap.Packets.Server.Actor;
+using SagaMap.Packets.Server.Another;
+using SagaMap.Packets.Server.AnotherAncientArk;
+using SagaMap.Packets.Server.Chat;
+using SagaMap.Packets.Server.Community;
+using SagaMap.Packets.Server.DEM;
+using SagaMap.Packets.Server.FGarden;
+using SagaMap.Packets.Server.Golem;
+using SagaMap.Packets.Server.IrisCard;
+using SagaMap.Packets.Server.Item;
+using SagaMap.Packets.Server.NCShop;
+using SagaMap.Packets.Server.NPC;
+using SagaMap.Packets.Server.PProtect;
+using SagaMap.Packets.Server.Ring;
+using SagaMap.Packets.Server.Stamp;
+using SagaMap.Packets.Server.Theater;
+using SagaMap.Packets.Server.VShop;
 using SagaMap.PC;
 using SagaMap.Skill;
 using SagaMap.Tasks.Mob;
@@ -986,7 +1006,7 @@ namespace SagaMap.Scripting
         protected void Warp(ActorPC pc, uint mapID, byte x, byte y)
         {
             var client = GetMapClient(pc);
-            if (Configuration.Instance.HostedMaps.Contains(mapID))
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
             {
                 var newMap = MapManager.Instance.GetMap(mapID);
                 if (client.Character.Marionette != null)
@@ -1007,7 +1027,7 @@ namespace SagaMap.Scripting
         protected void Warp(ActorPC pc, uint mapID, short x, short y)
         {
             var client = GetMapClient(pc);
-            if (Configuration.Instance.HostedMaps.Contains(mapID))
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
             {
                 if (client.Character.Marionette != null)
                     client.MarionetteDeactivate();
@@ -1512,7 +1532,7 @@ namespace SagaMap.Scripting
         /// <returns></returns>
         protected string GetMapName(uint mapID)
         {
-            if (Configuration.Instance.HostedMaps.Contains(mapID))
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
             {
                 var newMap = MapManager.Instance.GetMap(mapID);
                 return newMap.Name;
@@ -2610,8 +2630,8 @@ namespace SagaMap.Scripting
                 max = pc.JobLevel2X / 5;
             }
 
-            p.LevelItem = Configuration.Instance.JobSwitchReduceItem;
-            var item = pc.Inventory.GetItem(Configuration.Instance.JobSwitchReduceItem, Inventory.SearchType.ITEM_ID);
+            p.LevelItem = Configuration.Configuration.Instance.JobSwitchReduceItem;
+            var item = pc.Inventory.GetItem(Configuration.Configuration.Instance.JobSwitchReduceItem, Inventory.SearchType.ITEM_ID);
             if (item != null)
             {
                 if (item.Stack < max)
@@ -4159,7 +4179,7 @@ namespace SagaMap.Scripting
         protected void ItemFusion(ActorPC pc, string confirm)
         {
             var sel = 0;
-            var rate = Configuration.Instance.ItemFusionRate;
+            var rate = Configuration.Configuration.Instance.ItemFusionRate;
             var client = MapClient.FromActorPC(pc);
             SSMG_ITEM_FUSION_RESULT p2;
 
@@ -5352,14 +5372,14 @@ namespace SagaMap.Scripting
                 }
 
                 ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
-                pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Instance.CalcQuestGoldRateForPC(pc));
+                pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
                 pc.CP += pc.Quest.Detail.CP;
 
                 //任务特殊奖励
-                if (Configuration.Instance.ActivceQuestSpecialReward)
+                if (Configuration.Configuration.Instance.ActivceQuestSpecialReward)
                     if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
-                        if (Global.Random.Next(0, 10000) <= Configuration.Instance.QuestSpecialRewardRate)
-                            GiveItem(pc, Configuration.Instance.QuestSpecialRewardID,
+                        if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.QuestSpecialRewardRate)
+                            GiveItem(pc, Configuration.Configuration.Instance.QuestSpecialRewardID,
                                 (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
 
 
@@ -5487,14 +5507,14 @@ namespace SagaMap.Scripting
                     }
 
                     ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
-                    pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Instance.CalcQuestGoldRateForPC(pc));
+                    pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
                     pc.CP += pc.Quest.Detail.CP;
 
                     //任务特殊奖励
-                    if (Configuration.Instance.ActivceQuestSpecialReward)
+                    if (Configuration.Configuration.Instance.ActivceQuestSpecialReward)
                         if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
-                            if (Global.Random.Next(0, 10000) <= Configuration.Instance.QuestSpecialRewardRate)
-                                GiveItem(pc, Configuration.Instance.QuestSpecialRewardID,
+                            if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.QuestSpecialRewardRate)
+                                GiveItem(pc, Configuration.Configuration.Instance.QuestSpecialRewardID,
                                     (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
 
 

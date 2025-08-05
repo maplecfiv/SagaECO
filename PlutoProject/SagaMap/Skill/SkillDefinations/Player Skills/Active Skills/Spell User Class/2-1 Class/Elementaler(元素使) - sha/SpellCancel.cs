@@ -2,7 +2,7 @@
 using SagaMap.ActorEventHandlers;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Skill.SkillDefinations.Elementaler
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
 {
     internal class SpellCancel : ISkill
     {

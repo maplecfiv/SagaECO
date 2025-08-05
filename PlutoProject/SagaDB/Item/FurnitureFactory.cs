@@ -2,7 +2,7 @@ using System;
 using System.Xml;
 using SagaLib;
 
-namespace SagaDB.Furniture
+namespace SagaDB.Item
 {
     public class FurnitureFactory : Factory<FurnitureFactory, Furniture>
     {

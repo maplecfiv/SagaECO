@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Gunner
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_2_Class.Gunner_神枪手____arc
 {
     /// <summary>
     ///     雙手槍命中率提升（２丁拳銃命中率上昇）

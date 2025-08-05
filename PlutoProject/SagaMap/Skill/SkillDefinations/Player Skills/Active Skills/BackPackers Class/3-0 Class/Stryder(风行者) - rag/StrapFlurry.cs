@@ -6,7 +6,7 @@ using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Stryder
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Stryder_风行者____rag
 {
     internal class StrapFlurry : ISkill
     {

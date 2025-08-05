@@ -2,9 +2,9 @@
 using System.Linq;
 using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Royaldealer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer
 {
     internal class RoyalDealer : ISkill
     {

@@ -1,7 +1,7 @@
 using System.Text;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.AbyssTeam
 {
     public class SSMG_ABYSSTEAM_REGIST_APPLY : Packet
     {

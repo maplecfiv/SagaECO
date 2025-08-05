@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Quest
 {
     public class CSMG_DAILYDUNGEON_JOIN : Packet
     {

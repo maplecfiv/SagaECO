@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.BladeMaster
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.BladeMaster_剑圣____swm
 {
     /// <summary>
     ///     飛燕劍（燕返し）

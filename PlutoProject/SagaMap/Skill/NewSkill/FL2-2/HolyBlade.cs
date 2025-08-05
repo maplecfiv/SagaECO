@@ -1,9 +1,10 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Knight
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class HolyBlade : ISkill
     {

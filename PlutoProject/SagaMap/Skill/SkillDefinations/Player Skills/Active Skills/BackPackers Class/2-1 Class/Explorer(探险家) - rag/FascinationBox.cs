@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Mob;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Manager;
 using static SagaMap.Skill.SkillHandler;
 
-namespace SagaMap.Skill.SkillDefinations.Explorer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Explorer_探险家____rag
 {
     /// <summary>
     ///     魅惑之箱（ファシネイションボックス）

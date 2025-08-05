@@ -1,4 +1,4 @@
-namespace SevenZip.Compression.RangeCoder
+namespace SagaLib.VirtualFileSytem.LPK.LZMA.RangeCoder
 {
     internal struct BitEncoder
     {

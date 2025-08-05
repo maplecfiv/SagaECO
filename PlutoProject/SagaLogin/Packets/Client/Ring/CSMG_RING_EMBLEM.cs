@@ -2,7 +2,7 @@ using System;
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Ring
 {
     public class CSMG_RING_EMBLEM : Packet
     {

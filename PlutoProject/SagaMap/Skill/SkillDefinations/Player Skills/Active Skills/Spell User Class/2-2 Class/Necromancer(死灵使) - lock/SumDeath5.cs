@@ -4,9 +4,9 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Necromancer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Necromancer_死灵使____lock
 {
     /// <summary>
     ///     死神召喚（死神召喚）[接續技能]

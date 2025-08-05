@@ -1,7 +1,6 @@
-using SagaDB.Ring;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Ring
 {
     public class SSMG_RING_INFO : Packet
     {
@@ -20,7 +19,7 @@ namespace SagaMap.Packets.Server
             ID = 0x1ACC;
         }
 
-        public void Ring(Ring ring, Reason reason)
+        public void Ring(SagaDB.Ring.Ring ring, Reason reason)
         {
             PutUInt(ring.ID, 2);
             var buf = Global.Unicode.GetBytes(ring.Name + "\0");

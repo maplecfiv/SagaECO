@@ -1,7 +1,7 @@
 using System.Text;
-using SagaDB.Item;
+using SagaMap.Packets.Server.Util;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Possession
 {
     public class SSMG_POSSESSION_CATALOG : HasItemDetail
     {
@@ -48,7 +48,7 @@ namespace SagaMap.Packets.Server
             set => PutUInt(value);
         }
 
-        public Item Item
+        public SagaDB.Item.Item Item
         {
             set => ItemDetail = value;
         }

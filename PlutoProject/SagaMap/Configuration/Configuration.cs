@@ -6,13 +6,13 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using SagaDB.Actor;
+using SagaDB.Config;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
-using SagaLogin.Configurations;
+using SagaLib.VirtualFileSytem;
 using SagaMap.Tasks.System;
 using Version = SagaLib.Version;
 
-namespace SagaMap
+namespace SagaMap.Configuration
 {
     public enum RateOverrideType
     {

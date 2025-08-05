@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.Tamaire
 {
     public class CSMG_TAMAIRE_RENTAL_REQUEST : Packet
     {

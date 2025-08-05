@@ -6,17 +6,17 @@ using SagaDB.Actor;
 using SagaLib;
 using Version = SagaLib.Version;
 
-namespace SagaLogin.Packets.Server
+namespace SagaLogin.Packets.Server.Login
 {
     public class SSMG_CHAR_DATA : Packet
     {
         public SSMG_CHAR_DATA()
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 data = new byte[156];
-            else if (Configuration.Instance.Version >= Version.Saga11)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 data = new byte[131];
-            else if (Configuration.Instance.Version >= Version.Saga10)
+            else if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 data = new byte[113];
             else
                 data = new byte[86];
@@ -32,7 +32,7 @@ namespace SagaLogin.Packets.Server
                 {
                     SetName("", 0);
                     SetRace(0, 0);
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         SetForm(0, 0);
                     SetGender(0, 0);
                     SetHairStyle(0, 0);
@@ -55,7 +55,7 @@ namespace SagaLogin.Packets.Server
                 }
 
                 int count;
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     count = 4;
                 else
                     count = 3;
@@ -70,7 +70,7 @@ namespace SagaLogin.Packets.Server
                     var pc = pcs.First();
                     SetName(pc.Name, (ushort)i);
                     SetRace((byte)pc.Race, (ushort)i);
-                    if (Configuration.Instance.Version >= Version.Saga10)
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                         SetForm((byte)pc.Form, (ushort)i);
                     SetGender((byte)pc.Gender, (ushort)i);
                     SetHairStyle(pc.HairStyle, (ushort)i);
@@ -103,7 +103,7 @@ namespace SagaLogin.Packets.Server
         {
             var current = 0;
             var offset = 3;
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 PutByte(4, 2);
             else
                 PutByte(3, 2);
@@ -132,7 +132,7 @@ namespace SagaLogin.Packets.Server
         {
             ushort offset = 3;
             int count;
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 count = 4;
             else
                 count = 3;
@@ -149,7 +149,7 @@ namespace SagaLogin.Packets.Server
         private void SetRace(byte race, ushort index)
         {
             var offset = GetDataOffset();
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 PutByte(4, offset);
             else
                 PutByte(3, offset);
@@ -158,7 +158,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetForm(byte form, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
                 var offset = (ushort)(GetDataOffset() + 5);
                 PutByte(4, offset);
@@ -168,7 +168,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetGender(byte gender, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
                 var offset = (ushort)(GetDataOffset() + 10);
                 PutByte(4, offset);
@@ -184,11 +184,11 @@ namespace SagaLogin.Packets.Server
 
         private void SetHairStyle(ushort hair, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
                 var offset = (ushort)(GetDataOffset() + 15);
                 PutByte(4, offset);
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(hair, (ushort)(offset + index * 2 + 1));
                 else
                     PutUShort(hair, (ushort)(offset + index + 1));
@@ -203,9 +203,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetHairColor(byte color, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 24)
                     : (ushort)(GetDataOffset() + 20);
                 PutByte(4, offset);
@@ -222,13 +222,13 @@ namespace SagaLogin.Packets.Server
         //Default by 0xff
         private void SetWig(ushort wig, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 29)
                     : (ushort)(GetDataOffset() + 25);
                 PutByte(4, offset);
-                if (Configuration.Instance.Version >= Version.Saga11)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     PutUShort(wig, (ushort)(offset + index * 2 + 1));
                 else
                     PutByte((byte)wig, (ushort)(offset + index + 1));
@@ -243,9 +243,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetIfExist(bool exist, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 38)
                     : (ushort)(GetDataOffset() + 30);
                 PutByte(4, offset);
@@ -267,9 +267,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetFace(ushort face, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 43)
                     : (ushort)(GetDataOffset() + 35);
                 PutByte(4, offset);
@@ -285,7 +285,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetRebirthFlag(byte unknown, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
             {
                 var offset = (ushort)(GetDataOffset() + 53);
                 PutByte(4, offset);
@@ -295,7 +295,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetTail(byte tail, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
             {
                 var offset = (ushort)(GetDataOffset() + 53);
                 PutByte(4, offset);
@@ -305,7 +305,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetWing(byte wing, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
             {
                 var offset = (ushort)(GetDataOffset() + 58);
                 PutByte(4, offset);
@@ -315,7 +315,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetWingColor(byte wingcolor, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga17)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga17)
             {
                 var offset = (ushort)(GetDataOffset() + 63);
                 PutByte(4, offset);
@@ -325,9 +325,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetUnkown()
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 53)
                     : (ushort)(GetDataOffset() + 40);
                 PutByte(4, offset);
@@ -348,9 +348,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetJob(byte job, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 68)
                     : (ushort)(GetDataOffset() + 55);
                 PutByte(4, offset);
@@ -366,9 +366,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetMap(uint map, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 73)
                     : (ushort)(GetDataOffset() + 60);
                 PutByte(4, offset);
@@ -384,9 +384,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetLv(byte lv, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 90)
                     : (ushort)(GetDataOffset() + 77);
                 PutByte(4, offset);
@@ -402,9 +402,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetJob1(byte job1, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 95)
                     : (ushort)(GetDataOffset() + 82);
                 PutByte(4, offset);
@@ -420,9 +420,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetQuestRemaining(ushort quest, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 100)
                     : (ushort)(GetDataOffset() + 87);
                 PutByte(4, offset);
@@ -438,9 +438,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetJob2X(byte job2x, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 109)
                     : (ushort)(GetDataOffset() + 96);
                 PutByte(4, offset);
@@ -456,9 +456,9 @@ namespace SagaLogin.Packets.Server
 
         private void SetJob2T(byte job2t, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga10)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga10)
             {
-                var offset = Configuration.Instance.Version >= Version.Saga11
+                var offset = Configuration.Configuration.Instance.Version >= Version.Saga11
                     ? (ushort)(GetDataOffset() + 114)
                     : (ushort)(GetDataOffset() + 101);
                 PutByte(4, offset);
@@ -474,7 +474,7 @@ namespace SagaLogin.Packets.Server
 
         private void SetJob3(byte job3, ushort index)
         {
-            if (Configuration.Instance.Version >= Version.Saga11)
+            if (Configuration.Configuration.Instance.Version >= Version.Saga11)
             {
                 var offset = (ushort)(GetDataOffset() + 119);
                 PutByte(4, offset);

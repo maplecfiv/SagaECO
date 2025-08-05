@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.DEM
 {
     public class CSMG_DEM_CHIP_CLOSE : Packet
     {

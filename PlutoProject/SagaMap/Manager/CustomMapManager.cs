@@ -6,7 +6,10 @@ using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.FFarden;
 using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.FFarden;
+using SagaMap.Packets.Server.FGarden;
 
 namespace SagaMap.Manager
 {
@@ -155,7 +158,7 @@ namespace SagaMap.Manager
                     ser.Furnitures[FurniturePlace.ROOM].Add(actor);
                 client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
                     ser.Furnitures[FurniturePlace.GARDEN].Count +
-                    ser.Furnitures[FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
+                    ser.Furnitures[FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
 
                 MapServer.charDB.SaveSerFF(ser);
             }
@@ -210,7 +213,7 @@ namespace SagaMap.Manager
                 client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE,
                     furniture.Name, ser.Furnitures[FurniturePlace.GARDEN].Count +
                                     ser.Furnitures[FurniturePlace.ROOM].Count,
-                    Configuration.Instance.MaxFurnitureCount));
+                    Configuration.Configuration.Instance.MaxFurnitureCount));
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Partner;
 
 namespace SagaMap.Tasks.Partner

@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Tool
 {
     public class TOOL_GIFTS : Packet
     {

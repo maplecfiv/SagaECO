@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaDB.DEMIC;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DEM
 {
     public class SSMG_DEM_CHIP_SHOP_CATEGORY : Packet
     {

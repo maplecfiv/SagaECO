@@ -15,6 +15,7 @@ using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Client.Possession;
 using SagaMap.Scripting;
 using SagaMap.Tasks.Item;
 using Item = SagaDB.Item.Item;
@@ -2376,14 +2377,14 @@ namespace SagaMap
                         pcs.Remove(posActor);
                 }
 
-                i.Speed = Configuration.Instance.Speed;
+                i.Speed = Configuration.Configuration.Instance.Speed;
                 i.ClearTaskAddition();
                 DeleteActor(i);
             }
 
             foreach (var i in pcs)
             {
-                i.Speed = Configuration.Instance.Speed;
+                i.Speed = Configuration.Configuration.Instance.Speed;
                 try
                 {
                     SendActorToMap(i, (uint)ClientExitMap, Global.PosX8to16(ClientExitX, map.Width),

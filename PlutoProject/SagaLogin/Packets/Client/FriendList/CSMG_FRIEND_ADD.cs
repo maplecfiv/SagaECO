@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.FriendList
 {
     public class CSMG_FRIEND_ADD : Packet
     {

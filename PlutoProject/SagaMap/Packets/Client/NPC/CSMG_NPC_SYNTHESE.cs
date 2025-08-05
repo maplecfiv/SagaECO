@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.NPC
 {
     public class CSMG_NPC_SYNTHESE : Packet
     {

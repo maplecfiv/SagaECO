@@ -2,7 +2,7 @@ using System.Text;
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Login
 {
     public class CSMG_CHAR_DELETE : Packet
     {

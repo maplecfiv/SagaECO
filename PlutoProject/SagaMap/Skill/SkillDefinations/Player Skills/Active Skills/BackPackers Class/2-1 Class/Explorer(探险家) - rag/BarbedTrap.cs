@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.Explorer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Explorer_探险家____rag
 {
     /// <summary>
     ///     刺棘陷阱（バーベッドトラップ）

@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.NCShop
 {
     public class SSMG_NCSHOP_INFO_FOOTER : Packet
     {

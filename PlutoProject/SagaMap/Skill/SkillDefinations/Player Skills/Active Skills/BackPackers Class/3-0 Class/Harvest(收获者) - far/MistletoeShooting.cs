@@ -2,10 +2,11 @@
 using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
+
 #pragma warning disable CS0105 // “System”的 using 指令以前在此命名空间中出现过
 #pragma warning restore CS0105 // “System”的 using 指令以前在此命名空间中出现过
 
-namespace SagaMap.Skill.SkillDefinations.Harvest
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far
 {
     /// <summary>
     ///     槲寄生射击(ヤドリギショット)

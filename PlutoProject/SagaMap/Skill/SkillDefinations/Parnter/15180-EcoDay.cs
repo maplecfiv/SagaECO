@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Global
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     こんどはエコの番！

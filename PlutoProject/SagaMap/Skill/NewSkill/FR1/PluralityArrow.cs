@@ -2,8 +2,9 @@
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaMap.Network.Client;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.NewSkill.FR1
 {
     /// <summary>
     ///     多連箭（バラージアロー）

@@ -1,8 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.FR2_2
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     寒冰箭

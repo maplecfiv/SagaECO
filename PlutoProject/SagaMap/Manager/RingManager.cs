@@ -5,6 +5,7 @@ using SagaDB.Ring;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Server;
+using SagaMap.Packets.Server.Ring;
 
 namespace SagaMap.Manager
 {

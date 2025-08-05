@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.FFarden
 {
     //表示当前飞空城的健康状态
     public class SSMG_FF_HEALTH_MODE : Packet

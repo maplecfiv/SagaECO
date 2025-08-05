@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Ring
 {
     public class SSMG_RING_INVITE_ANSWER_RESULT : Packet
     {

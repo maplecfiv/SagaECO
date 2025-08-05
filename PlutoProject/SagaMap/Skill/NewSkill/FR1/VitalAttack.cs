@@ -1,8 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Scout
+namespace SagaMap.Skill.NewSkill.FR1
 {
     /// <summary>
     ///     追擊要害

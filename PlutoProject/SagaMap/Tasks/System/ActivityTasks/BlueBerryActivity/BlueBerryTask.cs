@@ -1,8 +1,9 @@
 ﻿using System;
-using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.Manager;
+using SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity.Mob;
 
-namespace SagaMap.Tasks.System
+namespace SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity
 {
     public class BlueBerryActivity : MultiRunTask
     {

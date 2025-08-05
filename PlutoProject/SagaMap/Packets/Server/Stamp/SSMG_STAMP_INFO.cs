@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Stamp
 {
     public class SSMG_STAMP_INFO : Packet
     {
@@ -24,7 +24,7 @@ namespace SagaMap.Packets.Server
             }
         }
 
-        public Stamp Stamp
+        public SagaDB.Actor.Stamp Stamp
         {
             set
             {

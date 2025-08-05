@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Actor
 {
     public class SSMG_PLAYER_EXP : Packet
     {
@@ -42,7 +42,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     //this.PutLong(value, 18);
                 }
@@ -53,7 +53,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                 {
                     // this.PutLong(value, 26);
                 }

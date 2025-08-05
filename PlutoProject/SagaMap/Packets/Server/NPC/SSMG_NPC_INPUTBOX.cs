@@ -1,7 +1,6 @@
 using SagaLib;
-using SagaMap.Scripting;
 
-namespace SagaMap.Scripting
+namespace SagaMap.Packets.Server.NPC
 {
     public enum InputType
     {
@@ -9,10 +8,7 @@ namespace SagaMap.Scripting
         ItemCode,
         PetRename
     }
-}
 
-namespace SagaMap.Packets.Server
-{
     public class SSMG_NPC_INPUTBOX : Packet
     {
         public SSMG_NPC_INPUTBOX()

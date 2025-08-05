@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Party
 {
     public class SSMG_PARTY_MEMBER_DETAIL : Packet
     {
@@ -26,7 +26,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutByte(value, 10);
             }
         }
@@ -35,7 +35,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutUInt((uint)value, 11);
                 else
                     PutUInt((uint)value, 10);
@@ -46,7 +46,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutUInt(value, 15);
                 else
                     PutUInt(value, 14);
@@ -57,7 +57,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= Version.Saga10)
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
                     PutUInt(value, 19);
                 else
                     PutUInt(value, 18);

@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaLogin.Network.Client;
 
-namespace SagaLogin.Packets.Client
+namespace SagaLogin.Packets.Client.Tamaire
 {
     public class CSMG_TAMAIRE_LIST_REQUEST : Packet
     {

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using SagaDB.Actor;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.Striker
+namespace SagaMap.Skill.NewSkill.FR2_2
 {
     /// <summary>
     ///     暴風之箭（ブラストアロー）

@@ -1,7 +1,7 @@
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DEM
 {
     public class SSMG_DEM_FORM_CHANGE : Packet
     {

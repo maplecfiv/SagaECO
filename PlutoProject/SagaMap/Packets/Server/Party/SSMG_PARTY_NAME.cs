@@ -1,8 +1,6 @@
-using SagaDB.Actor;
-using SagaDB.Party;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Party
 {
     public class SSMG_PARTY_NAME : Packet
     {
@@ -13,7 +11,7 @@ namespace SagaMap.Packets.Server
             ID = 0x19D9;
         }
 
-        public void Party(Party party, Actor pc)
+        public void Party(SagaDB.Party.Party party, SagaDB.Actor.Actor pc)
         {
             PutUInt(pc.ActorID, 2);
             byte[] buf;

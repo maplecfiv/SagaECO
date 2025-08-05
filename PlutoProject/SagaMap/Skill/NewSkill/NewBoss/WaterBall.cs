@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaLib;
+using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.NewBoss
+namespace SagaMap.Skill.NewSkill.NewBoss
 {
     public class WaterBall : ISkill
     {

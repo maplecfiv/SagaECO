@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Chat
 {
     public class SSMG_SYSTEM_MESSAGE : Packet
     {

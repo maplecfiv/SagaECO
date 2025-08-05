@@ -17,7 +17,7 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //int lifetime = 1800000;
-            var skill = new Additions.Global.MPRecovery(args.skill, dActor, int.MaxValue, 5000, true);
+            var skill = new Additions.MPRecovery(args.skill, dActor, int.MaxValue, 5000, true);
             SkillHandler.ApplyAddition(dActor, skill);
             //DefaultBuff skill2 = new DefaultBuff(args.skill, dActor, "MarionetteMPRecovery", lifetime);
             //skill.OnAdditionStart += this.StartEventHandler;

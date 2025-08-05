@@ -4,7 +4,7 @@ using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_ACTOR_EQUIP_UPDATE : Packet
     {
@@ -23,7 +23,7 @@ namespace SagaMap.Packets.Server
                 PutUInt(value.ActorID, 2);
                 PutByte(14, 6);
 
-                Dictionary<EnumEquipSlot, Item> equips, appequips; //幻化外观
+                Dictionary<EnumEquipSlot, SagaDB.Item.Item> equips, appequips; //幻化外观
                 if (value.Form != DEM_FORM.MACHINA_FORM)
                     equips = value.Inventory.Equipments;
                 else

@@ -1,7 +1,7 @@
 using SagaDB.Quests;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.Quest
 {
     public class SSMG_QUEST_ACTIVATE : Packet
     {

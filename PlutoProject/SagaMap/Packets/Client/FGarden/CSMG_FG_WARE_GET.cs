@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client
+namespace SagaMap.Packets.Client.FGarden
 {
     public class CSMG_FG_WARE_GET : Packet
     {

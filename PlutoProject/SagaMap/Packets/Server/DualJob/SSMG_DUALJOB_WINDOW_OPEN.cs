@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server
+namespace SagaMap.Packets.Server.DualJob
 {
     public class SSMG_DUALJOB_WINDOW_OPEN : Packet
     {

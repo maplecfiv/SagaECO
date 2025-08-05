@@ -1,9 +1,9 @@
 ﻿using SagaDB.Actor;
 using SagaDB.Item;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Scout
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Scout_盗贼_
 {
     /// <summary>
     ///     匕首之達人

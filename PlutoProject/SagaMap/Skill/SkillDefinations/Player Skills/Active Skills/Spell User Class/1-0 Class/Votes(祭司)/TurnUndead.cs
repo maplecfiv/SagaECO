@@ -1,7 +1,7 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Vates
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_
 {
     /// <summary>
     ///     聖光審判術（ターンアンデッド）

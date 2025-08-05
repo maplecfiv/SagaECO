@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using SagaDB.Iris;
 using SagaLib;
-using SagaLib.VirtualFileSystem;
+using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
+namespace SagaDB.Iris
 {
     public class IrisGachaFactory : Singleton<IrisGachaFactory>
     {

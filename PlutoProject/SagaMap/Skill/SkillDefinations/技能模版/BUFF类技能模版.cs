@@ -1,8 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaMap.Skill.Additions.Global;
+using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.X
+namespace SagaMap.Skill.SkillDefinations.技能模版
 {
     internal class buffX : ISkill
     {

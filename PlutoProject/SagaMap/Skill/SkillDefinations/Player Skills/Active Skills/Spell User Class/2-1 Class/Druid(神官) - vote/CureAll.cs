@@ -2,7 +2,7 @@
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 
-namespace SagaMap.Skill.SkillDefinations.Druid
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote
 {
     /// <summary>
     ///     女神的加護（アレス）

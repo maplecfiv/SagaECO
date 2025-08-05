@@ -25,7 +25,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
             foreach (var act in affected)
                 if (act.type == ActorType.PC)
                 {
-                    var skill = new Additions.Global.ExpUp(args.skill, act, lifetime);
+                    var skill = new Additions.ExpUp(args.skill, act, lifetime);
                     SkillHandler.ApplyAddition(act, skill);
                 }
         }

@@ -1,7 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaLib;
+using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.SkillDefinations.FL2_2
+namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class IceStab : ISkill
     {
