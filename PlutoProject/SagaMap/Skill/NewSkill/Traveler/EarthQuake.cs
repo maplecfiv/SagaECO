@@ -32,8 +32,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 skill = args.Clone();
                 skill.skill = SkillFactory.Instance.GetSkill(23006, 1);
                 map = MapManager.Instance.GetMap(actor.MapID);
-                x = SagaLib.Global.PosX16to8(actor.X, map.Width);
-                y = SagaLib.Global.PosY16to8(actor.Y, map.Height);
+                x = Global.PosX16to8(actor.X, map.Width);
+                y = Global.PosY16to8(actor.Y, map.Height);
                 skill.x = x;
                 skill.y = y;
                 skill.dActor = 0xffffffff;
@@ -60,8 +60,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
                                 var s = skill.Clone();
                                 s.x = (byte)(x + j);
                                 s.y = (byte)(y + k);
-                                var actors = map.GetRoundAreaActors(SagaLib.Global.PosX8to16(s.x, map.Width),
-                                    SagaLib.Global.PosY8to16(s.y, map.Height), 300);
+                                var actors = map.GetRoundAreaActors(Global.PosX8to16(s.x, map.Width),
+                                    Global.PosY8to16(s.y, map.Height), 300);
                                 var affected = new List<Actor>();
                                 s.affectedActors.Clear();
                                 foreach (var i in actors)

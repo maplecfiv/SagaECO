@@ -1685,7 +1685,8 @@ namespace SagaMap.PC
 
 
             //移动速度
-            pc.Speed = (ushort)(Configuration.Configuration.Instance.Speed + pc.Status.speed_item + pc.Status.speed_skill);
+            pc.Speed = (ushort)(Configuration.Configuration.Instance.Speed + pc.Status.speed_item +
+                                pc.Status.speed_skill);
 
             //爪子和双枪的攻速惩罚
             if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))

@@ -60,7 +60,8 @@ using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Cla
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Gambler_赌徒____mer;
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat;
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Marionest_木偶师____far;
-using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.TreasureHunter_考古学家____rag;
+using
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.TreasureHunter_考古学家____rag;
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far;
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat;
 using SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer;
@@ -144,25 +145,39 @@ using SagaMap.Skill.SkillDefinations.Repair;
 using SagaMap.Skill.SkillDefinations.SunFlowerAdditions;
 using SagaMap.Skill.SkillDefinations.Weapon;
 using SagaMap.Skill.SkillDefinations.Weapon.Passive;
-using AreaHeal = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.AreaHeal;
-using AReflection = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz.AReflection;
+using AreaHeal =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.AreaHeal;
+using AReflection =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz.AReflection;
 using Blow = SagaMap.Skill.SkillDefinations.Monster.Blow;
 using Brandish = SagaMap.Skill.SkillDefinations.Monster.Brandish;
-using CAPACommunion = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer.CAPACommunion;
-using ChainLightning = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha.ChainLightning;
+using CAPACommunion =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer.
+    CAPACommunion;
+using ChainLightning =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha.
+    ChainLightning;
 using ChgTrance = SagaMap.Skill.SkillDefinations.Event.ChgTrance;
 using ConfuseBlow = SagaMap.Skill.SkillDefinations.Monster.ConfuseBlow;
-using CriUp = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer.CriUp;
-using CureAll = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote.CureAll;
-using DarkMist = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen.DarkMist;
+using CriUp =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer.
+    CriUp;
+using CureAll =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote.CureAll;
+using DarkMist =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen.
+    DarkMist;
 using DarkStorm = SagaMap.Skill.SkillDefinations.Monster.DarkStorm;
 using EarthArrow = SagaMap.Skill.SkillDefinations.Monster.EarthArrow;
-using EarthQuake = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha.EarthQuake;
+using EarthQuake =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha.
+    EarthQuake;
 using ExpUp = SagaMap.Skill.SkillDefinations.Event.ExpUp;
 using FireArrow = SagaMap.Skill.SkillDefinations.Monster.FireArrow;
 using Fish = SagaMap.Skill.SkillDefinations.Global.Active.Fish;
 using Gravity = SagaMap.Skill.SkillDefinations.Event.Gravity;
-using Healing = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.Healing;
+using Healing =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.Healing;
 using HPRecovery = SagaMap.Skill.SkillDefinations.Marionette.HPRecovery;
 using Iai = SagaMap.Skill.SkillDefinations.Monster.Iai;
 using IceArrow = SagaMap.Skill.SkillDefinations.Monster.IceArrow;
@@ -173,18 +188,25 @@ using MagPoison = SagaMap.Skill.SkillDefinations.Monster.MagPoison;
 using MagSlow = SagaMap.Skill.SkillDefinations.Monster.MagSlow;
 using MPRecovery = SagaMap.Skill.SkillDefinations.Marionette.MPRecovery;
 using Phalanx = SagaMap.Skill.SkillDefinations.Monster.Phalanx;
-using RobotAtkUp = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat.RobotAtkUp;
-using RobotDefUp = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat.RobotDefUp;
+using RobotAtkUp =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat.
+    RobotAtkUp;
+using RobotDefUp =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat.
+    RobotDefUp;
 using Rush = SagaMap.Skill.SkillDefinations.Monster.Rush;
 using ShadowBlast = SagaMap.Skill.SkillDefinations.c1skill.ShadowBlast;
-using ShockWave = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz.ShockWave;
+using ShockWave =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz.
+    ShockWave;
 using SPRecovery = SagaMap.Skill.SkillDefinations.Marionette.SPRecovery;
 using STR_VIT_AGI_UP = SagaMap.Skill.SkillDefinations.Event.STR_VIT_AGI_UP;
 using StunBlow = SagaMap.Skill.SkillDefinations.Monster.StunBlow;
 using SumMob = SagaMap.Skill.SkillDefinations.Global.SumMob;
 using SumMobCastSkill = SagaMap.Skill.SkillDefinations.Global.SumMobCastSkill;
 using TrDrop2 = SagaMap.Skill.SkillDefinations.Monster.TrDrop2;
-using TurnUndead = SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.TurnUndead;
+using TurnUndead =
+    SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.TurnUndead;
 using WaterArrow = SagaMap.Skill.SkillDefinations.Monster.WaterArrow;
 using WaterGroove = SagaMap.Skill.SkillDefinations.Monster.WaterGroove;
 using WindArrow = SagaMap.Skill.SkillDefinations.Monster.WindArrow;
@@ -3194,7 +3216,7 @@ namespace SagaMap.Skill
                                         if (arg.skill != null)
                                             y1 = arg.skill.Name;
                                     SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "",
-                                        "受到了 " + (-damage) + " 点" + "恢复效果");
+                                        "受到了 " + -damage + " 点" + "恢复效果");
                                 }
                                 catch (Exception ex)
                                 {
@@ -5081,7 +5103,7 @@ namespace SagaMap.Skill
                                         if (arg.skill != null)
                                             y1 = arg.skill.Name;
                                     SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "",
-                                        "受到了 " + (-damage) + " 点" + "治疗效果");
+                                        "受到了 " + -damage + " 点" + "治疗效果");
                                 }
                                 catch (Exception ex)
                                 {
@@ -5103,7 +5125,7 @@ namespace SagaMap.Skill
                                     damage = 0;
                                 s = "治疗效果";
                                 SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y + "",
-                                    "接受了 " + (-damage) + " 点" + s);
+                                    "接受了 " + -damage + " 点" + s);
                             }
                             else
                             {
@@ -5274,7 +5296,8 @@ namespace SagaMap.Skill
                 //这里取副职等级
                 var duallv = 0;
                 if (thispc.DualJobSkill.Exists(x => x.ID == SkillID))
-                    duallv = Enumerable.FirstOrDefault<SagaDB.Skill.Skill>(thispc.DualJobSkill, x => x.ID == SkillID).Level;
+                    duallv = Enumerable.FirstOrDefault<SagaDB.Skill.Skill>(thispc.DualJobSkill, x => x.ID == SkillID)
+                        .Level;
 
                 //这里取主职等级
                 var mainlv = 0;
@@ -5328,7 +5351,8 @@ namespace SagaMap.Skill
                 //这里取副职等级
                 var duallv = 0;
                 if (thispc.DualJobSkill.Exists(x => x.ID == SkillID))
-                    duallv = Enumerable.FirstOrDefault<SagaDB.Skill.Skill>(thispc.DualJobSkill, x => x.ID == SkillID).Level;
+                    duallv = Enumerable.FirstOrDefault<SagaDB.Skill.Skill>(thispc.DualJobSkill, x => x.ID == SkillID)
+                        .Level;
 
                 //这里取主职等级
                 var mainlv = 0;
@@ -10399,7 +10423,9 @@ namespace SagaMap.Skill
             #region Harvest
 
             skillHandlers.Add(2481, new EquipCompose()); //12月2日实装，lv3（未完成，需要封包）
-            skillHandlers.Add(3360, new SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far.CAPACommunion()); //12月2日实装，lv6
+            skillHandlers.Add(3360,
+                new SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far.
+                    CAPACommunion()); //12月2日实装，lv6
             skillHandlers.Add(3370, new Twine()); //12月2日,lv10（未实装，可能需要新的debuff）
             skillHandlers.Add(2488, new PotentialArmor()); //12月2日，lv13（未完成，需要封包）
             skillHandlers.Add(3381, new TwineSleep()); //12月2日,lv20（未实装，可能需要新的debuff）
@@ -10643,7 +10669,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(7710, new SumMob(90010000));
             skillHandlers.Add(7711, new MobSelfDarkHighStorm());
             skillHandlers.Add(4951, new MobSelfDarkHighStorm());
-            skillHandlers.Add(7712, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock.DarkStorm(true));
+            skillHandlers.Add(7712,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock.
+                    DarkStorm(true));
             skillHandlers.Add(7713, new MobSelfMagStun());
             skillHandlers.Add(7714, new TrDrop2());
             skillHandlers.Add(7715, new MobHpPerDown());
@@ -10816,15 +10844,21 @@ namespace SagaMap.Skill
             skillHandlers.Add(9100, new MiniMum());
             skillHandlers.Add(9101, new MaxiMum());
             skillHandlers.Add(9102, new EventCampfire());
-            skillHandlers.Add(9103, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.Invisible());
+            skillHandlers.Add(9103,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.
+                    Invisible());
             skillHandlers.Add(9105, new EventCampfire());
             skillHandlers.Add(9108, new Dango());
             skillHandlers.Add(9109, new EventCampfire());
-            skillHandlers.Add(9114, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.Invisible());
+            skillHandlers.Add(9114,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.
+                    Invisible());
             skillHandlers.Add(9117, new ExpUp());
             skillHandlers.Add(9126, new EventCampfire());
             skillHandlers.Add(9127, new EventCampfire());
-            skillHandlers.Add(9128, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.Invisible());
+            skillHandlers.Add(9128,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.
+                    Invisible());
             skillHandlers.Add(9129, new SumMobCastSkill(19010001, 9130));
             skillHandlers.Add(9130, new HpRecoveryMax());
             skillHandlers.Add(9131, new SumMobCastSkill(19010002, 9132));
@@ -10862,7 +10896,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(9192, new WeepingWillow1());
             skillHandlers.Add(9193, new WeepingWillow2());
 
-            skillHandlers.Add(9197, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.Invisible());
+            skillHandlers.Add(9197,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.
+                    Invisible());
             skillHandlers.Add(5520, new DarkSun());
 
             skillHandlers.Add(9208, new SumMobCastSkill(19010028, 9209));
@@ -10894,7 +10930,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(2114, new SlowBlow());
             skillHandlers.Add(2120, new Charge());
             skillHandlers.Add(2117, new CutDown());
-            skillHandlers.Add(2115, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.Iai());
+            skillHandlers.Add(2115,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.Iai());
             skillHandlers.Add(2201, new Iai2());
             skillHandlers.Add(2202, new Iai3());
 
@@ -10966,7 +11003,8 @@ namespace SagaMap.Skill
 
             #region Scout
 
-            skillHandlers.Add(2001, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Scout_盗贼_.CriUp());
+            skillHandlers.Add(2001,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Scout_盗贼_.CriUp());
             skillHandlers.Add(2008, new ShortSwordCancel());
             skillHandlers.Add(2139, new ConThrust());
             skillHandlers.Add(2143, new SummerSaltKick());
@@ -11001,7 +11039,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(127, new HandGunDamUp());
             skillHandlers.Add(2137, new Tackle());
             skillHandlers.Add(125, new MartialArtDamUp());
-            skillHandlers.Add(2141, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco.Rush());
+            skillHandlers.Add(2141,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco.Rush());
             skillHandlers.Add(2282, new FlashHandGrenade());
             skillHandlers.Add(2362, new SetBomb());
             skillHandlers.Add(2378, new SetBomb2());
@@ -11036,7 +11075,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(3125, new DancingSword());
             skillHandlers.Add(3124, new EnergySpear());
             skillHandlers.Add(3127, new EnergyBlast());
-            skillHandlers.Add(3135, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Wizard_魔法师_.MagPoison());
+            skillHandlers.Add(3135,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Wizard_魔法师_.MagPoison());
             skillHandlers.Add(3136, new MagStone());
             skillHandlers.Add(3139, new MagSilence());
             skillHandlers.Add(801, new MaGaNiInfo());
@@ -11059,7 +11099,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3126, new LivingSword());
             skillHandlers.Add(3300, new DevineBarrier());
             skillHandlers.Add(3253, new Teleport());
-            skillHandlers.Add(3097, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.Invisible());
+            skillHandlers.Add(3097,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz.
+                    Invisible());
             skillHandlers.Add(3275, new EnergyBarrier());
             skillHandlers.Add(3276, new MagicBarrier());
             skillHandlers.Add(3256, new Clutter());
@@ -11086,7 +11128,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(3054, new Healing());
             skillHandlers.Add(3165, new SmallHealing());
             skillHandlers.Add(3055, new Resurrection());
-            skillHandlers.Add(3073, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.LightOne());
+            skillHandlers.Add(3073,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Votes_祭司_.LightOne());
             //skillHandlers.Add(3075, new SkillDefinations.Vates.HolyWeapon());
             //skillHandlers.Add(3076, new SkillDefinations.Vates.HolyShield());
             skillHandlers.Add(3075, new ElementWeapon(Elements.Holy));
@@ -11121,7 +11164,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(3007, new ElementShield(Elements.Fire));
             skillHandlers.Add(3008, new ElementWeapon(Elements.Fire));
             skillHandlers.Add(3009, new FireBlast());
-            skillHandlers.Add(3029, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Shaman_精灵使_.IceArrow());
+            skillHandlers.Add(3029,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Shaman_精灵使_.IceArrow());
             //skillHandlers.Add(3030, new SkillDefinations.Shaman.WaterShield());
             //skillHandlers.Add(3031, new SkillDefinations.Shaman.WaterWeapon());
             skillHandlers.Add(3030, new ElementShield(Elements.Water));
@@ -11151,7 +11195,9 @@ namespace SagaMap.Skill
 
             skillHandlers.Add(3016, new FireGroove());
             skillHandlers.Add(3028, new WindGroove());
-            skillHandlers.Add(3040, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha.WaterGroove());
+            skillHandlers.Add(3040,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha.
+                    WaterGroove());
             skillHandlers.Add(3053, new EarthGroove());
             skillHandlers.Add(3265, new LavaFlow());
             skillHandlers.Add(3036, new ElementStorm(Elements.Water));
@@ -11212,14 +11258,17 @@ namespace SagaMap.Skill
             #region Warlock
 
             skillHandlers.Add(3083, new BlackWidow());
-            skillHandlers.Add(3085, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_.ShadowBlast());
+            skillHandlers.Add(3085,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_.
+                    ShadowBlast());
             //skillHandlers.Add(3088, new SkillDefinations.Warlock.DarkWeapon());
             skillHandlers.Add(3088, new ElementWeapon(Elements.Dark));
             skillHandlers.Add(3093, new DarkGroove());
             //skillHandlers.Add(3133, new SkillDefinations.Warlock.DarkShield());
             skillHandlers.Add(3133, new ElementShield(Elements.Dark));
             skillHandlers.Add(3134, new ChaosWidow());
-            skillHandlers.Add(3140, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_.MagSlow());
+            skillHandlers.Add(3140,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_.MagSlow());
             skillHandlers.Add(3141, new MagConfuse());
             skillHandlers.Add(3142, new MagFreeze());
             skillHandlers.Add(3143, new MagStun());
@@ -11235,7 +11284,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2230, new SoulSteal());
             skillHandlers.Add(3092, new ElementCircle(Elements.Dark)); //暗黑結界（ダークパワーサークル）
             skillHandlers.Add(3087, new Fanaticism());
-            skillHandlers.Add(3089, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock.DarkStorm());
+            skillHandlers.Add(3089,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock.
+                    DarkStorm());
             skillHandlers.Add(3274, new MoveDownCircle());
             skillHandlers.Add(3021, new SleepCloud());
             skillHandlers.Add(949, new AllRateUp());
@@ -11262,7 +11313,9 @@ namespace SagaMap.Skill
 
             #region Knight
 
-            skillHandlers.Add(2123, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen.ShockWave());
+            skillHandlers.Add(2123,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen.
+                    ShockWave());
             skillHandlers.Add(2247, new AtkUnDead());
             skillHandlers.Add(946, new ConSpear());
             skillHandlers.Add(2065, new AstuteBlow());
@@ -11336,10 +11389,14 @@ namespace SagaMap.Skill
             skillHandlers.Add(964, new RobotHpUp());
             skillHandlers.Add(2326, new RobotAmobm());
             skillHandlers.Add(968, new RobotHitUp());
-            skillHandlers.Add(966, new SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat.RobotDefUp());
+            skillHandlers.Add(966,
+                new SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat.
+                    RobotDefUp());
             skillHandlers.Add(2323, new RobotChaff());
             skillHandlers.Add(969, new RobotAvoUp());
-            skillHandlers.Add(965, new SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat.RobotAtkUp());
+            skillHandlers.Add(965,
+                new SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat.
+                    RobotAtkUp());
             skillHandlers.Add(2324, new MirrorSkill());
             skillHandlers.Add(2325, new RobotTeleport());
             skillHandlers.Add(2322, new RobotBerserk());
@@ -11377,7 +11434,9 @@ namespace SagaMap.Skill
             #region Alchemist
 
             skillHandlers.Add(2022, new Synthese());
-            skillHandlers.Add(2118, new SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Alchemist_炼金术士____far.Phalanx());
+            skillHandlers.Add(2118,
+                new SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Alchemist_炼金术士____far.
+                    Phalanx());
             skillHandlers.Add(3096, new DelayTrap());
             skillHandlers.Add(2389, new DustExplosion());
             skillHandlers.Add(2214, new PlantAnalysis());
@@ -11455,11 +11514,17 @@ namespace SagaMap.Skill
 
             #region Druid
 
-            skillHandlers.Add(3146, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.CureAll());
+            skillHandlers.Add(3146,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.
+                    CureAll());
             skillHandlers.Add(3307, new RegiAllUp());
             skillHandlers.Add(3308, new AreaHeal());
-            skillHandlers.Add(3257, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.STR_VIT_AGI_UP());
-            skillHandlers.Add(3258, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.MAG_INT_DEX_UP());
+            skillHandlers.Add(3257,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.
+                    STR_VIT_AGI_UP());
+            skillHandlers.Add(3258,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.
+                    MAG_INT_DEX_UP());
             skillHandlers.Add(3056, new HolyFeather());
             skillHandlers.Add(3164, new FlashLight());
             //skillHandlers.Add(3080, new SkillDefinations.Enchanter.ElementCircle(Elements.Holy));//熾天使之翼（ホーリーパワーサークル
@@ -11543,7 +11608,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2319, new Rebone());
             skillHandlers.Add(3121, new NeKuRoMaNShi());
             skillHandlers.Add(315, new ChgstDamUp());
-            skillHandlers.Add(3122, new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Necromancer_死灵使____lock.TrDrop2());
+            skillHandlers.Add(3122,
+                new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Necromancer_死灵使____lock.
+                    TrDrop2());
             skillHandlers.Add(3297, new Terror());
             skillHandlers.Add(3324, new SumDeath());
             skillHandlers.Add(3325, new SumDeath2());
@@ -11841,7 +11908,8 @@ namespace SagaMap.Skill
             skillHandlers.Add(109, new SpearMastery());
             skillHandlers.Add(122, new TwoAxeMastery());
             skillHandlers.Add(116, new ShieldMastery());
-            skillHandlers.Add(2112, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.ConfuseBlow());
+            skillHandlers.Add(2112,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.ConfuseBlow());
             skillHandlers.Add(2138, new LightningSpear());
             skillHandlers.Add(2121, new ChargeStrike());
 
@@ -11894,7 +11962,8 @@ namespace SagaMap.Skill
 
             #region FR2-1
 
-            skillHandlers.Add(2113, new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.StunBlow());
+            skillHandlers.Add(2113,
+                new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.StunBlow());
             skillHandlers.Add(2043, new Cloaking());
             skillHandlers.Add(2384, new Raid());
             skillHandlers.Add(977, new AvoidUp());

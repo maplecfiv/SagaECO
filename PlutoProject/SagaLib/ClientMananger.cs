@@ -25,11 +25,11 @@ namespace SagaLib
         private static StackTrace Stacktrace;
 //#endif
 
-/// <summary>
-///     Command table contains the commands that need to be called when a
-///     packet is received. Key will be the packet type
-/// </summary>
-public Dictionary<ushort, Packet> commandTable;
+        /// <summary>
+        ///     Command table contains the commands that need to be called when a
+        ///     packet is received. Key will be the packet type
+        /// </summary>
+        public Dictionary<ushort, Packet> commandTable;
 
         public TcpListener listener;
 

@@ -352,7 +352,7 @@ namespace SagaMap.Network.Client
                         arg.fromID = i.ActorID;
                         arg.toID = i.ActorID;
                         arg.result = (int)i.PossessionPosition;
-                        Map.SendEventToAllActorsWhoCanSeeActor(SagaMap.Map.EVENT_TYPE.POSSESSION, arg, i, true);
+                        Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
                     }
                     else
                     {
@@ -369,7 +369,7 @@ namespace SagaMap.Network.Client
                                 arg.x = Global.PosX16to8(i.X, Map.Width);
                                 arg.y = Global.PosY16to8(i.Y, Map.Height);
                                 arg.dir = (byte)(i.Dir / 45);
-                                Map.SendEventToAllActorsWhoCanSeeActor(SagaMap.Map.EVENT_TYPE.POSSESSION, arg, i, true);
+                                Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
                             }
                             else
                             {
@@ -1653,7 +1653,8 @@ namespace SagaMap.Network.Client
             if (Character.MapID != ring.FFarden.MapID && Character.MapID != ring.FFarden.RoomMapID)
                 return;
             if (ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count < Configuration.Configuration.Instance.MaxFurnitureCount)
+                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count <
+                Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
                 var actor = new ActorFurniture();
@@ -1683,7 +1684,8 @@ namespace SagaMap.Network.Client
                     ring.FFarden.Furnitures[FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
                     ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
+                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Count,
+                    Configuration.Configuration.Instance.MaxFurnitureCount));
                 MapServer.charDB.SaveFF(ring);
             }
             else
@@ -1747,7 +1749,8 @@ namespace SagaMap.Network.Client
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
                 ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
+                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count,
+                Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
         public void OnFFFurnitureRoomAppear()
@@ -5965,7 +5968,7 @@ namespace SagaMap.Network.Client
             //broadcast
             SendPetBasicInfo();
             SendPetDetailInfo();
-            PC.StatusFactory.Instance.CalcStatus(Character);
+            StatusFactory.Instance.CalcStatus(Character);
             SendPlayerInfo();
         }
 
@@ -6152,7 +6155,7 @@ namespace SagaMap.Network.Client
             MapServer.charDB.SavePartner(partner);
             SendPetBasicInfo();
             SendPetDetailInfo();
-            PC.StatusFactory.Instance.CalcStatus(Character);
+            StatusFactory.Instance.CalcStatus(Character);
         }
 
         /// <summary>
@@ -6231,7 +6234,7 @@ namespace SagaMap.Network.Client
             //broadcast
             SendPetBasicInfo();
             SendPetDetailInfo();
-            PC.StatusFactory.Instance.CalcStatus(Character);
+            StatusFactory.Instance.CalcStatus(Character);
             SendPlayerInfo();
         }
 
@@ -6352,7 +6355,7 @@ namespace SagaMap.Network.Client
             Partner.StatusFactory.Instance.CalcPartnerStatus(partner);
             SendPetBasicInfo();
             SendPetDetailInfo();
-            PC.StatusFactory.Instance.CalcStatus(Character);
+            StatusFactory.Instance.CalcStatus(Character);
             if (food.itemID == 168500107) //成功使用【超级棒棒糖Ver.A】10次
                 TitleProccess(Character, 29, 1);
             return true;
@@ -7130,7 +7133,8 @@ namespace SagaMap.Network.Client
                     if (this == null)
                         return;
                     main = new Thread(MainLoop);
-                    main.Name = string.Format("ThreadPoolMainLoopAUTO({0})" + Character.Name, (object)main.ManagedThreadId);
+                    main.Name = string.Format("ThreadPoolMainLoopAUTO({0})" + Character.Name,
+                        (object)main.ManagedThreadId);
                     ClientManager.AddThread(main);
                     Character.AutoAttack = true;
                     main.Start();
@@ -10132,7 +10136,8 @@ namespace SagaMap.Network.Client
 
         public void OnSendVersion(CSMG_SEND_VERSION p)
         {
-            if (Configuration.Configuration.Instance.ClientVersion == null || Configuration.Configuration.Instance.ClientVersion == p.GetVersion())
+            if (Configuration.Configuration.Instance.ClientVersion == null ||
+                Configuration.Configuration.Instance.ClientVersion == p.GetVersion())
             {
                 Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.CLIENT_CONNECTING, p.GetVersion()));
                 client_Version = p.GetVersion();
@@ -17731,8 +17736,9 @@ namespace SagaMap.Network.Client
                 {
                     if (Character.Account.questNextTime <= Character.QuestNextResetTime)
                     {
-                        Character.QuestRemaining += (ushort)((hours / Configuration.Configuration.Instance.QuestUpdateTime + 1) *
-                                                             Configuration.Configuration.Instance.QuestUpdateAmount);
+                        Character.QuestRemaining +=
+                            (ushort)((hours / Configuration.Configuration.Instance.QuestUpdateTime + 1) *
+                                     Configuration.Configuration.Instance.QuestUpdateAmount);
                         if (Character.QuestRemaining > Configuration.Configuration.Instance.QuestPointsMax)
                             Character.QuestRemaining = (ushort)Configuration.Configuration.Instance.QuestPointsMax;
                         Character.QuestNextResetTime = Character.QuestNextResetTime + new TimeSpan(0,
@@ -18009,7 +18015,8 @@ namespace SagaMap.Network.Client
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
                 Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
+                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count,
+                Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
         public void OnFGardenFurnitureSetup(CSMG_FGARDEN_FURNITURE_SETUP p)
@@ -18019,7 +18026,8 @@ namespace SagaMap.Network.Client
             if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
             if (Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count < Configuration.Configuration.Instance.MaxFurnitureCount)
+                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count <
+                Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
                 var actor = new ActorFurniture();
@@ -18049,7 +18057,8 @@ namespace SagaMap.Network.Client
                     Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
                     Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count, Configuration.Configuration.Instance.MaxFurnitureCount));
+                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count,
+                    Configuration.Configuration.Instance.MaxFurnitureCount));
             }
             else
             {

@@ -1191,10 +1191,10 @@ namespace SagaMap.Scripting
         protected void AddGoods(params uint[] goods)
         {
             foreach (var i in goods)
-                if (this.Goods.Count == 12)
+                if (Goods.Count == 12)
                     Logger.ShowWarning(ToString() + ":Maximal shop items(12) reached, skiping");
                 else
-                    this.Goods.Add(i);
+                    Goods.Add(i);
         }
 
         /// <summary>
@@ -2570,7 +2570,7 @@ namespace SagaMap.Scripting
                 {
                     var item = list[sel - 1];
                     var num = item.BaseData.id - item.BaseData.iconID;
-                    var res = TreasureFactory.Instance.GetRandomItem(String.Concat(item.BaseData.itemType, num));
+                    var res = TreasureFactory.Instance.GetRandomItem(string.Concat(item.BaseData.itemType, num));
                     TakeItem(pc, item.ItemID, 1);
                     bool identified;
                     if (Global.Random.Next(0, 99) <= 5)
@@ -2631,7 +2631,8 @@ namespace SagaMap.Scripting
             }
 
             p.LevelItem = Configuration.Configuration.Instance.JobSwitchReduceItem;
-            var item = pc.Inventory.GetItem(Configuration.Configuration.Instance.JobSwitchReduceItem, Inventory.SearchType.ITEM_ID);
+            var item = pc.Inventory.GetItem(Configuration.Configuration.Instance.JobSwitchReduceItem,
+                Inventory.SearchType.ITEM_ID);
             if (item != null)
             {
                 if (item.Stack < max)
@@ -5372,7 +5373,8 @@ namespace SagaMap.Scripting
                 }
 
                 ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
-                pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
+                pc.Gold += (int)(pc.Quest.Detail.Gold *
+                                 Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
                 pc.CP += pc.Quest.Detail.CP;
 
                 //任务特殊奖励
@@ -5507,13 +5509,15 @@ namespace SagaMap.Scripting
                     }
 
                     ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
-                    pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
+                    pc.Gold += (int)(pc.Quest.Detail.Gold *
+                                     Configuration.Configuration.Instance.CalcQuestGoldRateForPC(pc));
                     pc.CP += pc.Quest.Detail.CP;
 
                     //任务特殊奖励
                     if (Configuration.Configuration.Instance.ActivceQuestSpecialReward)
                         if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
-                            if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.QuestSpecialRewardRate)
+                            if (Global.Random.Next(0, 10000) <=
+                                Configuration.Configuration.Instance.QuestSpecialRewardRate)
                                 GiveItem(pc, Configuration.Configuration.Instance.QuestSpecialRewardID,
                                     (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
 

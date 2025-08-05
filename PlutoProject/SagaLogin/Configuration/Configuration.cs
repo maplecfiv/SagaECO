@@ -204,16 +204,16 @@ namespace SagaLogin.Configuration
                             switch (i.Attributes["race"].Value.ToUpper())
                             {
                                 case "EMIL":
-                                    items = this.StartItem[PC_RACE.EMIL];
+                                    items = StartItem[PC_RACE.EMIL];
                                     break;
                                 case "TITANIA":
-                                    items = this.StartItem[PC_RACE.TITANIA];
+                                    items = StartItem[PC_RACE.TITANIA];
                                     break;
                                 case "DOMINION":
-                                    items = this.StartItem[PC_RACE.DOMINION];
+                                    items = StartItem[PC_RACE.DOMINION];
                                     break;
                                 case "DEM":
-                                    items = this.StartItem[PC_RACE.DEM];
+                                    items = StartItem[PC_RACE.DEM];
                                     break;
                             }
 

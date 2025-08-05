@@ -5,8 +5,8 @@ namespace SagaDB.Actor
         public ActorSkill(Skill.Skill skill, Actor caster)
         {
             type = ActorType.SKILL;
-            this.Skill = skill;
-            this.Caster = caster;
+            Skill = skill;
+            Caster = caster;
         }
 
         public Skill.Skill Skill { get; set; }

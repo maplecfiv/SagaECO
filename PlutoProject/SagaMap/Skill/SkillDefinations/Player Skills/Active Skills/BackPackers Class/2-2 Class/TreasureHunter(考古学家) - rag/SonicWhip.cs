@@ -5,7 +5,8 @@ using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.TreasureHunter_考古学家____rag
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.
+    TreasureHunter_考古学家____rag
 {
     /// <summary>
     ///     音速鞭子（ソニックウィップ）起始阶段(拉人)

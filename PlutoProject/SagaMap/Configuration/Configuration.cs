@@ -831,7 +831,7 @@ namespace SagaMap.Configuration
                 LoginPass = Global.Unicode.GetString(br.ReadBytes(len));
                 len = br.ReadByte();
                 Language = Global.Unicode.GetString(br.ReadBytes(len));
-                this.Version = (Version)br.ReadByte();
+                Version = (Version)br.ReadByte();
                 len = br.ReadByte();
                 encoding = Global.Unicode.GetString(br.ReadBytes(len));
                 EXPRate = br.ReadInt32();

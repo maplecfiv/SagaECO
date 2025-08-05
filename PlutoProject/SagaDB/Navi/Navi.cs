@@ -26,7 +26,7 @@ namespace SagaDB.Navi
     {
         public Category(uint id)
         {
-            this.ID = id;
+            ID = id;
         }
 
         public uint ID { get; }
@@ -44,7 +44,7 @@ namespace SagaDB.Navi
 
         public Event(uint id)
         {
-            this.ID = id;
+            ID = id;
         }
 
         public uint ID { get; }
@@ -135,9 +135,9 @@ namespace SagaDB.Navi
 
         public Step(uint id, uint uniqueId, Event belongEvent)
         {
-            this.ID = id;
-            this.UniqueId = uniqueId;
-            this.BelongEvent = belongEvent;
+            ID = id;
+            UniqueId = uniqueId;
+            BelongEvent = belongEvent;
         }
 
         public uint ID { get; }

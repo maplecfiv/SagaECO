@@ -83,7 +83,8 @@ namespace SagaMap.Mob
                                         y = byte.Parse(k.InnerText);
                                         break;
                                     case "amount":
-                                        amount = int.Parse(k.InnerText) * Configuration.Configuration.Instance.MobAmount;
+                                        amount = int.Parse(k.InnerText) *
+                                                 Configuration.Configuration.Instance.MobAmount;
                                         break;
                                     case "range":
                                         range = int.Parse(k.InnerText);

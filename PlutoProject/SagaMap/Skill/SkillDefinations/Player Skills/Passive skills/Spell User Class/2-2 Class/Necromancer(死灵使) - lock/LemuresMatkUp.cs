@@ -1,7 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._2_2_Class.Necromancer_死灵使____lock
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._2_2_Class.
+    Necromancer_死灵使____lock
 {
     /// <summary>
     ///     提升召喚對象的魔法攻擊（召喚対象魔法系上昇）

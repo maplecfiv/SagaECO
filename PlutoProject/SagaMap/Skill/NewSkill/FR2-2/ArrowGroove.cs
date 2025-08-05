@@ -42,8 +42,8 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             //创建AI类
             var ai = new MobAI(actor, true);
             //寻路
-            var path = ai.FindPath(SagaLib.Global.PosX16to8(sActor.X, map.Width),
-                SagaLib.Global.PosY16to8(sActor.Y, map.Height), args.x, args.y);
+            var path = ai.FindPath(Global.PosX16to8(sActor.X, map.Width),
+                Global.PosY16to8(sActor.Y, map.Height), args.x, args.y);
 
             if (path.Count >= 2)
             {
@@ -61,8 +61,8 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             if (path.Count == 1)
             {
                 //根据现有路径推算一步
-                var deltaX = path[path.Count - 1].x - SagaLib.Global.PosX16to8(sActor.X, map.Width);
-                var deltaY = path[path.Count - 1].y - SagaLib.Global.PosY16to8(sActor.Y, map.Height);
+                var deltaX = path[path.Count - 1].x - Global.PosX16to8(sActor.X, map.Width);
+                var deltaY = path[path.Count - 1].y - Global.PosY16to8(sActor.Y, map.Height);
                 deltaX = path[path.Count - 1].x + deltaX;
                 deltaY = path[path.Count - 1].y + deltaY;
                 var node = new MapNode();
@@ -154,10 +154,10 @@ namespace SagaMap.Skill.NewSkill.FR2_2
                         {
                             var pos = new short[2];
                             var pos2 = new short[2];
-                            pos[0] = SagaLib.Global.PosX8to16(path[count].x, map.Width);
-                            pos[1] = SagaLib.Global.PosY8to16(path[count].y, map.Height);
-                            pos2[0] = SagaLib.Global.PosX8to16(path[count + 1].x, map.Width);
-                            pos2[1] = SagaLib.Global.PosY8to16(path[count + 1].y, map.Height);
+                            pos[0] = Global.PosX8to16(path[count].x, map.Width);
+                            pos[1] = Global.PosY8to16(path[count].y, map.Height);
+                            pos2[0] = Global.PosX8to16(path[count + 1].x, map.Width);
+                            pos2[1] = Global.PosY8to16(path[count + 1].y, map.Height);
                             map.MoveActor(Map.MOVE_TYPE.START, actor, pos, 0, 200);
 
                             //取得当前格子内的Actor

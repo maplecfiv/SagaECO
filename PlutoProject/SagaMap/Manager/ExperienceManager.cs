@@ -1228,8 +1228,10 @@ namespace SagaMap.Manager
             {
                 if (pc.Race == PC_RACE.DEM)
                 {
-                    pc.DominionCEXP -= (ulong)(pc.DominionCEXP * Configuration.Configuration.Instance.DeathPenaltyBaseDominion);
-                    pc.DominionJEXP -= (ulong)(pc.DominionJEXP * Configuration.Configuration.Instance.DeathPenaltyJobDominion);
+                    pc.DominionCEXP -=
+                        (ulong)(pc.DominionCEXP * Configuration.Configuration.Instance.DeathPenaltyBaseDominion);
+                    pc.DominionJEXP -=
+                        (ulong)(pc.DominionJEXP * Configuration.Configuration.Instance.DeathPenaltyJobDominion);
                     return;
                 }
 

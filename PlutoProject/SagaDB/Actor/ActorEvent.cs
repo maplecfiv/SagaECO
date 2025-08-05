@@ -7,7 +7,7 @@ namespace SagaDB.Actor
         public ActorEvent(ActorPC caster)
         {
             type = ActorType.EVENT;
-            this.Caster = caster;
+            Caster = caster;
         }
 
         public ActorEventTypes Type { get; set; }

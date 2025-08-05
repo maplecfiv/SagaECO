@@ -8,7 +8,7 @@ namespace SagaDB.Actor
 
         public ActorItem(Item.Item item)
         {
-            this.Item = item;
+            Item = item;
             Name = item.BaseData.name;
             type = ActorType.ITEM;
         }

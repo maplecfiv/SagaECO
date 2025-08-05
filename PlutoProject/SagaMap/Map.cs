@@ -2362,7 +2362,8 @@ namespace SagaMap
                         eh.Client.OnPossessionCancel(p);
                     else
                         posActor.PossessionTarget = 0;
-                    eh.Client.map.SendActorToMap((Actor)posActor, (uint)ClientExitMap, Global.PosX8to16(ClientExitX, map.Width),
+                    eh.Client.map.SendActorToMap((Actor)posActor, (uint)ClientExitMap,
+                        Global.PosX8to16(ClientExitX, map.Width),
                         Global.PosY8to16(ClientExitY, map.Height));
                     if (!posActor.Online)
                     {

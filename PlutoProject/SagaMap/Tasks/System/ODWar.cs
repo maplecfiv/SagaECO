@@ -30,16 +30,15 @@ namespace SagaMap.Tasks.System
 
         public void StartODWar(uint mapID)
         {
-            if (ODWarFactory.Instance.Items.ContainsKey(mapID))
-            {
-                MapClientManager.Instance.Announce("都市防御战开始了！");
-                ODWarFactory.Instance.Items[mapID].Started = true;
-                if (ODWarFactory.Instance.Items[mapID].StartTime.ContainsKey((int)DateTime.Today.DayOfWeek))
-                    ODWarFactory.Instance.Items[mapID].StartTime[(int)DateTime.Today.DayOfWeek] = DateTime.Now.Hour;
-                else
-                    ODWarFactory.Instance.Items[mapID].StartTime.Add((int)DateTime.Today.DayOfWeek, DateTime.Now.Hour);
-                ODWarFactory.Instance.Items[mapID].Score.Clear();
-            }
+            if (!ODWarFactory.Instance.Items.ContainsKey(mapID)) return;
+
+            MapClientManager.Instance.Announce("都市防御战开始了！");
+            ODWarFactory.Instance.Items[mapID].Started = true;
+            if (ODWarFactory.Instance.Items[mapID].StartTime.ContainsKey((int)DateTime.Today.DayOfWeek))
+                ODWarFactory.Instance.Items[mapID].StartTime[(int)DateTime.Today.DayOfWeek] = DateTime.Now.Hour;
+            else
+                ODWarFactory.Instance.Items[mapID].StartTime.Add((int)DateTime.Today.DayOfWeek, DateTime.Now.Hour);
+            ODWarFactory.Instance.Items[mapID].Score.Clear();
         }
 
         public override void CallBack()
@@ -103,14 +102,9 @@ namespace SagaMap.Tasks.System
                     }
                     else
                     {
-                        var shouldCount = (i.WaveStrong.DEMNormal + i.WaveStrong.DEMChamp) * i.Symbols.Count;
-                        if (map.CountActorType(ActorType.MOB) <= shouldCount)
-                        {
-                            if (now.Minute % 10 == 0)
-                                ODWarManager.Instance.SpawnMob(i.MapID, true);
-                            else
-                                ODWarManager.Instance.SpawnMob(i.MapID, false);
-                        }
+                        if (map.CountActorType(ActorType.MOB) <=
+                            (i.WaveStrong.DEMNormal + i.WaveStrong.DEMChamp) * i.Symbols.Count)
+                            ODWarManager.Instance.SpawnMob(i.MapID, now.Minute % 10 == 0);
                     }
                 }
             }

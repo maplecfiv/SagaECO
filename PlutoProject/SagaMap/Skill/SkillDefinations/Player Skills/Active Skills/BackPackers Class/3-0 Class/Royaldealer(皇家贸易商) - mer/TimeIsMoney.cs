@@ -2,7 +2,8 @@
 using SagaDB.Actor;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Royaldealer_皇家贸易商____mer
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.
+    Royaldealer_皇家贸易商____mer
 {
     internal class TimeIsMoney : ISkill
     {

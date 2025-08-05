@@ -28,6 +28,7 @@ using SagaMap.FictitiousActors;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
+using SagaMap.ODWar;
 using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Another;
@@ -428,20 +429,19 @@ namespace SagaMap
             if (arg[0] == "")
             {
                 client.SendSystemMessage("参数错误");
+                return;
             }
-            else
-            {
-                var charID = int.Parse(arg[0]);
-                var index = int.Parse(arg[1]);
 
-                var chr =
-                    from c in MapClientManager.Instance.OnlinePlayer
-                    where c.Character.CharID == charID
-                    select c;
-                var tClient = chr.First();
+            var charID = int.Parse(arg[0]);
+            var index = int.Parse(arg[1]);
 
-                tClient.SetTitle(index, true);
-            }
+            var chr =
+                from c in MapClientManager.Instance.OnlinePlayer
+                where c.Character.CharID == charID
+                select c;
+            var tClient = chr.First();
+
+            tClient.SetTitle(index, true);
         }
 
         public void ProcessSetTitle(MapClient client, string args)
@@ -450,99 +450,101 @@ namespace SagaMap
             if (arg[0] == "")
             {
                 client.SendSystemMessage("参数错误");
+                return;
             }
-            else
-            {
-                var index = int.Parse(arg[0]);
-                client.SetTitle(index, true);
-            }
+
+            var index = int.Parse(arg[0]);
+            client.SetTitle(index, true);
         }
 
         public void ProcessBuffTest(MapClient client, string args)
         {
             var arg = args.Split(' ');
             if (arg[0] == "" || arg[1] == "")
+            {
                 client.SendSystemMessage("参数错误");
-            else
-                try
-                {
-                    var list = byte.Parse(arg[0]);
-                    var index = int.Parse(arg[1]);
-                    var s = "";
+                return;
+            }
 
-                    byte[] IDbuf;
-                    var strIDbuf = "";
-                    byte[] Indexbuf;
-                    var strIndexbuf = "";
-                    var nullbuf = "";
-                    IDbuf = BitConverter.GetBytes(client.Character.ActorID);
-                    Array.Reverse(IDbuf);
-                    strIDbuf = Conversions.bytes2HexString(IDbuf);
-                    Indexbuf = BitConverter.GetBytes(index);
-                    Array.Reverse(Indexbuf);
-                    strIndexbuf = Conversions.bytes2HexString(Indexbuf);
-                    nullbuf = " 00 00 00 00";
-                    switch (list)
-                    {
-                        case 1:
-                            s = "15 7C " + strIDbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 2:
-                            s = "15 7C " + strIDbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 3:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 4:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 5:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 6:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 7:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 8:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 9:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf;
-                            break;
-                        case 10:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf;
-                            break;
-                        case 11:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf;
-                            break;
-                        case 12:
-                            s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
-                                nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf;
-                            break;
-                    }
+            try
+            {
+                var list = byte.Parse(arg[0]);
+                var index = int.Parse(arg[1]);
+                var s = "";
 
-                    var buf = Conversions.HexStr2Bytes(s.Replace(" ", ""));
-                    var p = new Packet();
-                    p.data = buf;
-                    client.netIO.SendPacket(p);
-                }
-                catch (Exception ex)
+                byte[] IDbuf;
+                var strIDbuf = "";
+                byte[] Indexbuf;
+                var strIndexbuf = "";
+                var nullbuf = "";
+                IDbuf = BitConverter.GetBytes(client.Character.ActorID);
+                Array.Reverse(IDbuf);
+                strIDbuf = Conversions.bytes2HexString(IDbuf);
+                Indexbuf = BitConverter.GetBytes(index);
+                Array.Reverse(Indexbuf);
+                strIndexbuf = Conversions.bytes2HexString(Indexbuf);
+                nullbuf = " 00 00 00 00";
+                switch (list)
                 {
-                    Logger.ShowError(ex);
+                    case 1:
+                        s = "15 7C " + strIDbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 2:
+                        s = "15 7C " + strIDbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 3:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 4:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 5:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 6:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 7:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 8:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 9:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf + nullbuf;
+                        break;
+                    case 10:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf + nullbuf;
+                        break;
+                    case 11:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf + nullbuf;
+                        break;
+                    case 12:
+                        s = "15 7C " + strIDbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + nullbuf +
+                            nullbuf + nullbuf + nullbuf + nullbuf + nullbuf + strIndexbuf;
+                        break;
                 }
+
+                var buf = Conversions.HexStr2Bytes(s.Replace(" ", ""));
+                var p = new Packet();
+                p.data = buf;
+                client.netIO.SendPacket(p);
+            }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
         }
 
         public void ProcessOpenWing(MapClient client, string args)
@@ -575,29 +577,32 @@ namespace SagaMap
         {
             var arg = args.Split(' ');
             if (arg[0] == "" || arg[1] == "" || arg[2] == "")
+            {
                 client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_TA_PAEA);
-            else
-                try
+                return;
+            }
+
+            try
+            {
+                var taskname = arg[0];
+                if (!tasklist.ContainsKey(taskname))
                 {
-                    var taskname = arg[0];
-                    if (!tasklist.ContainsKey(taskname))
-                    {
-                        var announce = arg[1];
-                        var period = int.Parse(arg[2]) * 1000;
-                        var ta = new TaskAnnounce(taskname, announce, period);
-                        ta.Activate();
-                        tasklist.Add(taskname, ta);
-                        client.SendSystemMessage(taskname + "添加成功");
-                    }
-                    else
-                    {
-                        client.SendSystemMessage(taskname + "已存在！");
-                    }
+                    var announce = arg[1];
+                    var period = int.Parse(arg[2]) * 1000;
+                    var ta = new TaskAnnounce(taskname, announce, period);
+                    ta.Activate();
+                    tasklist.Add(taskname, ta);
+                    client.SendSystemMessage(taskname + "添加成功");
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.ShowError(ex);
+                    client.SendSystemMessage(taskname + "已存在！");
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
         }
 
         public void ProcessStopTaskAnnounce(MapClient client, string args)
@@ -1260,10 +1265,12 @@ namespace SagaMap
                         PartnerAIFactory.Instance.Items.Clear();
                         PartnerAIFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
-                                SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                                SearchOption.AllDirectories),
+                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
                         MobAIFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
-                                SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                                SearchOption.AllDirectories),
+                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
                         ProcessSettingAnnounce(client, "[系统] 怪物DB更新完毕");
                         break;
                     case "quests":
@@ -1280,7 +1287,8 @@ namespace SagaMap
                         TreasureFactory.Instance.Reload();
                         TreasureFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure/", "*.*",
-                                SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                                SearchOption.AllDirectories),
+                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
                         ProcessSettingAnnounce(client, "[系统] 宝箱DB更新完毕");
                         break;
                     case "spawns":
@@ -3882,7 +3890,7 @@ namespace SagaMap
         private void ProcessODWarStart(MapClient client, string arg)
         {
             var map = uint.Parse(arg);
-            ODWar.Instance.StartODWar(map);
+            Tasks.System.ODWar.Instance.StartODWar(map);
         }
 
         private void ProcessKillAllMob(MapClient client, string arg)
@@ -3893,13 +3901,13 @@ namespace SagaMap
             var actors = client.map.Actors.Values.ToList();
             var count = 0;
             foreach (var i in actors)
-                if (i.type == ActorType.MOB)
-                {
-                    var eh = (MobEventHandler)i.e;
-                    i.Buff.PlayingDead = true;
-                    eh.OnDie(loot);
-                    count++;
-                }
+            {
+                if (i.type != ActorType.MOB) continue;
+                var eh = (MobEventHandler)i.e;
+                i.Buff.PlayingDead = true;
+                eh.OnDie(loot);
+                count++;
+            }
 
             client.SendSystemMessage(count + " mobs killed");
         }

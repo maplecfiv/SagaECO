@@ -6,8 +6,8 @@ namespace SagaLib
     {
         public Vector2D(ushort x, ushort y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public ushort X { get; set; }

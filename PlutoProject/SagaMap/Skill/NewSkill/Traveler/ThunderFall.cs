@@ -33,8 +33,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 map = MapManager.Instance.GetMap(actor.MapID);
                 period = 200;
                 dueTime = 0;
-                path = GetStraightPath(SagaLib.Global.PosX16to8(caster.X, map.Width),
-                    SagaLib.Global.PosY16to8(caster.Y, map.Height), args.x, args.y);
+                path = GetStraightPath(Global.PosX16to8(caster.X, map.Width),
+                    Global.PosY16to8(caster.Y, map.Height), args.x, args.y);
                 var Me = (ActorPC)caster;
             }
 
@@ -158,8 +158,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
                         skill.x = path[count].x;
                         skill.y = path[count].y;
 
-                        var actors = map.GetRoundAreaActors(SagaLib.Global.PosX8to16(skill.x, map.Width),
-                            SagaLib.Global.PosY8to16(skill.y, map.Height), 150);
+                        var actors = map.GetRoundAreaActors(Global.PosX8to16(skill.x, map.Width),
+                            Global.PosY8to16(skill.y, map.Height), 150);
                         var affected = new List<Actor>();
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
@@ -208,8 +208,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //设定技能体位置
             actor.MapID = sActor.MapID;
-            actor.X = SagaLib.Global.PosX8to16(args.x, map.Width);
-            actor.Y = SagaLib.Global.PosY8to16(args.y, map.Height);
+            actor.X = Global.PosX8to16(args.x, map.Width);
+            actor.Y = Global.PosY8to16(args.y, map.Height);
             //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
             actor.e = new NullEventHandler();
             //在指定地图注册技能体Actor

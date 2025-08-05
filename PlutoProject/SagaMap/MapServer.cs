@@ -68,10 +68,12 @@ namespace SagaMap
                 switch (Configuration.Configuration.Instance.DBType)
                 {
                     case 0:
-                        charDB = new MySQLActorDB(Configuration.Configuration.Instance.DBHost, Configuration.Configuration.Instance.DBPort,
+                        charDB = new MySQLActorDB(Configuration.Configuration.Instance.DBHost,
+                            Configuration.Configuration.Instance.DBPort,
                             Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
                             Configuration.Configuration.Instance.DBPass);
-                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost, Configuration.Configuration.Instance.DBPort,
+                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
+                            Configuration.Configuration.Instance.DBPort,
                             Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
                             Configuration.Configuration.Instance.DBPass);
                         charDB.Connect();
@@ -192,11 +194,13 @@ namespace SagaMap
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaLib");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" + SagaLib.Properties.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaDB");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" + SagaDB.Properties.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
+                              SagaDB.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
 
@@ -212,7 +216,8 @@ namespace SagaMap
             Console.WriteLine("]");
 
             LocalManager.Instance.CurrentLanguage =
-                (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages), Configuration.Configuration.Instance.Language);
+                (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages),
+                    Configuration.Configuration.Instance.Language);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[Info]");
@@ -236,18 +241,24 @@ namespace SagaMap
 #endif
             ItemAdditionFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv",
-                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.TopDirectoryOnly),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             ItemFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
-                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.TopDirectoryOnly),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             ItemReleaseFactory.Instance.Init("DB/equipment_release.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            FurnitureFactory.Instance.Init("DB/furniture.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            HairFactory.Instance.Init("DB/hair_info.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            FaceFactory.Instance.Init("DB/face_info.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            FurnitureFactory.Instance.Init("DB/furniture.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            HairFactory.Instance.Init("DB/hair_info.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            FaceFactory.Instance.Init("DB/face_info.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             ItemExchangeListFactory.Instance.Init("DB/exchange_list.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ExchangeFactory.Instance.Init("DB/exchange.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ExchangeFactory.Instance.Init("DB/exchange.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             PacketManager.Instance.LoadPacketFiles("./Packers");
 
             EnhanceTableFactory.Instance.Init("DB/enhancetable.csv",
@@ -257,7 +268,8 @@ namespace SagaMap
 
             IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            IrisCardFactory.Instance.Init("DB/iris_card.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            IrisCardFactory.Instance.Init("DB/iris_card.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
@@ -267,17 +279,22 @@ namespace SagaMap
 
             ModelFactory.Instance.Init("DB/demic_chip_model.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ChipFactory.Instance.Init("DB/demic_chip.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ChipFactory.Instance.Init("DB/demic_chip.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
-            SyntheseFactory.Instance.Init("DB/synthe1.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            SyntheseFactory.Instance.Init("DB/synthe1.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             TreasureFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure", "*.xml",
                     SearchOption.AllDirectories), null);
-            FishFactory.Instance.Init("DB/FishList.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            FishFactory.Instance.Init("DB/FishList.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             DropGroupFactory.Instance.Init("DB/monsterdrop.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            MobFactory.Instance.Init("DB/monster.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            MobFactory.Instance.InitPet("DB/pet.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            MobFactory.Instance.Init("DB/monster.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            MobFactory.Instance.InitPet("DB/pet.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             MobFactory.Instance.InitPartner("DB/partner_info.csv",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             MobFactory.Instance.InitPetLimit("DB/pet_limit.csv",
@@ -307,16 +324,23 @@ namespace SagaMap
             SkillFactory.Instance.LoadSkillList("DB/SkillList.xml");
             //SkillFactory.Instance.LoadSkillList2("DB/SkillDB");
 
-            RingFameTable.Instance.Init("DB/RingFame.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            RingFameTable.Instance.Init("DB/RingFame.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
             QuestFactory.Instance.Init("DB/Quests", null, true);
 
-            NPCFactory.Instance.Init("DB/npc.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ShopFactory.Instance.Init("DB/ShopDB.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ECOShopFactory.Instance.Init("DB/ECOShop.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ChipShopFactory.Instance.Init("DB/ChipShop.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            NCShopFactory.Instance.Init("DB/NCShop.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            GShopFactory.Instance.Init("DB/GShop.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            NPCFactory.Instance.Init("DB/npc.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ShopFactory.Instance.Init("DB/ShopDB.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ECOShopFactory.Instance.Init("DB/ECOShop.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ChipShopFactory.Instance.Init("DB/ChipShop.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            NCShopFactory.Instance.Init("DB/NCShop.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            GShopFactory.Instance.Init("DB/GShop.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             KujiListFactory.Instance.InitXML("DB/KujiList.xml",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             KujiListFactory.Instance.BuildNotInKujiItemsList();
@@ -331,7 +355,8 @@ namespace SagaMap
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
             MapInfoFactory.Instance.Init("DB/MapInfo.zip");
-            MapNameFactory.Instance.Init("DB/mapname.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            MapNameFactory.Instance.Init("DB/mapname.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             MapInfoFactory.Instance.LoadMapFish("DB/CanFish.xml");
             MapInfoFactory.Instance.LoadFlags("DB/MapFlags.xml");
             MapInfoFactory.Instance.LoadGatherInterval("DB/pick_interval.csv",
@@ -348,16 +373,20 @@ namespace SagaMap
             DungeonFactory.Instance.Init("DB/Dungeon/Dungeons.xml",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
-            MobAIFactory.Instance.Init("DB/MobAI.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            MobAIFactory.Instance.Init("DB/MobAI.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             MobAIFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
-                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.AllDirectories),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             MobAIFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/AnMobAI", "*.xml",
-                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.AllDirectories),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             PartnerAIFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
-                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.AllDirectories),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             //MobSpawnManager.Instance.LoadAnAI("DB/AnMobAI");
             MobSpawnManager.Instance.LoadSpawn("DB/Spawns");
             FictitiousActorsFactory.Instance.LoadActorsList("DB/Actors");
@@ -365,7 +394,8 @@ namespace SagaMap
             FictitiousActorsManager.Instance.regionFictitiousActors();
             TheaterFactory.Instance.Init("DB/TheaterSchedule.xml",
                 Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
-            ODWarFactory.Instance.Init("DB/ODWar.xml", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            ODWarFactory.Instance.Init("DB/ODWar.xml",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
             Theater.Instance.Activate();
             //Tasks.System.AutoRunSystemScript runscript = new Tasks.System.AutoRunSystemScript(3235125);
             //runscript.Activate();
@@ -377,7 +407,8 @@ namespace SagaMap
             //KujiListFactory.Instance.InitZeroCPList("DB/CP0List.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //title db
-            TitleFactory.Instance.Init("DB/title_info.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            TitleFactory.Instance.Init("DB/title_info.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
             //Experience Reward table for tamaire
             TamaireExpRewardFactory.Instance.Init("DB/tamairereward.csv",
@@ -429,7 +460,8 @@ namespace SagaMap
             ScriptManager.Instance.VariableHolder = charDB.LoadServerVar();
 
             //Starting API
-            var pre = Configuration.Configuration.Instance.Prefixes + ":" + Configuration.Configuration.Instance.APIPort + "/";
+            var pre = Configuration.Configuration.Instance.Prefixes + ":" +
+                      Configuration.Configuration.Instance.APIPort + "/";
             var ws = new WebServer.WebServer(SendResponse, pre);
             ws.Run();
             Logger.ShowInfo("Accepting API Clients from: " + pre);
@@ -485,7 +517,8 @@ namespace SagaMap
 
             //Experience table
             //SagaMap.Manager.ExperienceManager.Instance.LoadTable("DB/exp.xml");
-            PCExperienceFactory.Instance.Init("DB/EXP.csv", Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+            PCExperienceFactory.Instance.Init("DB/EXP.csv",
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
             //CustomMapManager.Instance.CreateFF();
             //MapManager.Instance.CreateFFInstanceOfSer();
@@ -534,7 +567,8 @@ namespace SagaMap
                                 {
                                 }
 
-                            var sw = new StreamWriter(Configuration.Configuration.Instance.StatisticsPagePath, false, Global.Unicode);
+                            var sw = new StreamWriter(Configuration.Configuration.Instance.StatisticsPagePath, false,
+                                Global.Unicode);
                             sw.Write(header);
                             sw.Write(res);
                             sw.Write(footer);

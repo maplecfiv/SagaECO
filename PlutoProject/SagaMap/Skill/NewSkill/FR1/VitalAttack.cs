@@ -21,7 +21,7 @@ namespace SagaMap.Skill.NewSkill.FR1
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var factor = 1.9f + 0.3f * level;
-            if (SagaLib.Global.Random.Next(0, 100) < 20)
+            if (Global.Random.Next(0, 100) < 20)
                 if (sActor.type == ActorType.PC)
                 {
                     var pc = (ActorPC)sActor;

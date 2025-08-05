@@ -1681,7 +1681,8 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(0xff, (ushort)(++offset + 9));
                     }
 
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga14_2) PutByte(0xff, (ushort)(++offset + 9));
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga14_2)
+                        PutByte(0xff, (ushort)(++offset + 9));
                     PutByte(0x0D, (ushort)(offset + 10));
 
                     if (value.PictID != 0)

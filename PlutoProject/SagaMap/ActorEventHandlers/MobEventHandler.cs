@@ -372,16 +372,20 @@ namespace SagaMap.ActorEventHandlers
                     if (Configuration.Configuration.Instance.ActiveSpecialLoot)
                         if (mob.BaseData.mobType.ToString().Contains("BOSS") && AI.SpawnDelay >= 1800000)
                         {
-                            if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.BossSpecialLootRate)
+                            if (Global.Random.Next(0, 10000) <=
+                                Configuration.Configuration.Instance.BossSpecialLootRate)
                                 for (var i = 0; i < Configuration.Configuration.Instance.BossSpecialLootNum; i++)
-                                    AI.map.AddItemDrop(Configuration.Configuration.Instance.BossSpecialLootID, null, mob, false,
+                                    AI.map.AddItemDrop(Configuration.Configuration.Instance.BossSpecialLootID, null,
+                                        mob, false,
                                         false, false);
                         }
-                        else if (Global.Random.Next(0, 10000) <= Configuration.Configuration.Instance.NomalMobSpecialLootRate &&
+                        else if (Global.Random.Next(0, 10000) <=
+                                 Configuration.Configuration.Instance.NomalMobSpecialLootRate &&
                                  ((MobEventHandler)mob.e).AI.SpawnDelay != 0)
                         {
                             for (var i = 0; i < Configuration.Configuration.Instance.NomalMobSpecialLootNum; i++)
-                                AI.map.AddItemDrop(Configuration.Configuration.Instance.NomalMobSpecialLootID, null, mob, false,
+                                AI.map.AddItemDrop(Configuration.Configuration.Instance.NomalMobSpecialLootID, null,
+                                    mob, false,
                                     false, false);
                         }
 
@@ -418,7 +422,8 @@ namespace SagaMap.ActorEventHandlers
                             if (!Configuration.Configuration.Instance.MultipleDrop)
                             {
                                 maxVlaue = baseValue +
-                                           (int)(i.Rate * Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
+                                           (int)(i.Rate *
+                                                 Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
                                                  100.0f);
                                 if (dropDeterminator >= baseValue && dropDeterminator < maxVlaue)
                                 {
@@ -430,7 +435,8 @@ namespace SagaMap.ActorEventHandlers
                             }
                             else
                             {
-                                if (dropDeterminator < i.Rate * Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
+                                if (dropDeterminator < i.Rate *
+                                    Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
                                     100.0f)
                                 {
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
@@ -468,7 +474,9 @@ namespace SagaMap.ActorEventHandlers
                                 var oneshotdrop = false;
                                 var denominator = Global.Random.Next(1, mob.BaseData.dropItems.Sum(x => x.Rate));
 
-                                for (var ix = 0; ix < (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner); ix++)
+                                for (var ix = 0;
+                                     ix < (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner);
+                                     ix++)
                                     foreach (var i in mob.BaseData.dropItems)
                                     {
                                         if (oneshotdrop)
@@ -486,7 +494,8 @@ namespace SagaMap.ActorEventHandlers
                                             }
                                             else
                                             {
-                                                if (ix == (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner) -
+                                                if (ix == (int)Configuration.Configuration.Instance
+                                                        .CalcGlobalDropRateForPC(owner) -
                                                     1)
                                                     oneshotdrop = true;
                                             }

@@ -30,10 +30,12 @@ namespace SagaLogin
                 switch (Configuration.Configuration.Instance.DBType)
                 {
                     case 0:
-                        charDB = new MySQLActorDB(Configuration.Configuration.Instance.DBHost, Configuration.Configuration.Instance.DBPort,
+                        charDB = new MySQLActorDB(Configuration.Configuration.Instance.DBHost,
+                            Configuration.Configuration.Instance.DBPort,
                             Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
                             Configuration.Configuration.Instance.DBPass);
-                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost, Configuration.Configuration.Instance.DBPort,
+                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
+                            Configuration.Configuration.Instance.DBPort,
                             Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
                             Configuration.Configuration.Instance.DBPass);
                         charDB.Connect();
@@ -154,11 +156,13 @@ namespace SagaLogin
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaLib");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" + SagaLib.Properties.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaDB");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" + SagaDB.Properties.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
+                              SagaDB.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo("Starting Initialization...", null);
 
@@ -174,7 +178,8 @@ namespace SagaLogin
 #endif
             ItemFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
-                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                    SearchOption.TopDirectoryOnly),
+                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
 

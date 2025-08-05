@@ -54,9 +54,9 @@ namespace SagaMap.Tasks.Dungeon
                 {
                     var time = "";
                     if (rest >= 3600)
-                        time = (rest / 3600) + LocalManager.Instance.Strings.ITD_HOUR;
+                        time = rest / 3600 + LocalManager.Instance.Strings.ITD_HOUR;
                     if (rest < 3600 && rest >= 60)
-                        time = (rest / 60) + LocalManager.Instance.Strings.ITD_MINUTE;
+                        time = rest / 60 + LocalManager.Instance.Strings.ITD_MINUTE;
                     if (rest < 60)
                         time = rest + LocalManager.Instance.Strings.ITD_SECOND;
                     var announce = string.Format(LocalManager.Instance.Strings.ITD_CRASHING, time);

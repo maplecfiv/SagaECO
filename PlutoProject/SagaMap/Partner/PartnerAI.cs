@@ -930,7 +930,8 @@ namespace SagaMap.Partner
                             if (Global.Random.Next(0, 99) < 10)
                             {
                                 AIActivity = Activity.LAZY;
-                                if ((Math.Abs((int)(Partner.X - X_Spawn)) > 1000 || Math.Abs((int)(Partner.Y - Y_Spawn)) > 1000) &&
+                                if ((Math.Abs((int)(Partner.X - X_Spawn)) > 1000 ||
+                                     Math.Abs((int)(Partner.Y - Y_Spawn)) > 1000) &&
                                     MoveRange != 0)
                                 {
                                     short x, y;

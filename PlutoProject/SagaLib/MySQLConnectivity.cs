@@ -245,14 +245,14 @@ namespace SagaLib
 
             public MySQLCommand(MySqlCommand cmd)
             {
-                this.Command = cmd;
+                Command = cmd;
                 Type = CommandType.NonQuery;
             }
 
             public MySQLCommand(MySqlCommand cmd, CommandType type)
             {
-                this.Command = cmd;
-                this.Type = type;
+                Command = cmd;
+                Type = type;
             }
 
             public MySqlCommand Command { get; }

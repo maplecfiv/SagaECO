@@ -55,7 +55,8 @@ namespace SagaMap.Network.LoginServer
 
                 try
                 {
-                    sock.Connect(new IPEndPoint(IPAddress.Parse(address.ToString()), Configuration.Configuration.Instance.LoginPort));
+                    sock.Connect(new IPEndPoint(IPAddress.Parse(address.ToString()),
+                        Configuration.Configuration.Instance.LoginPort));
                     Connected = true;
                 }
                 catch (Exception e)
@@ -98,7 +99,8 @@ namespace SagaMap.Network.LoginServer
                 p = new INTERN_LOGIN_REGISTER();
                 p.Password = Configuration.Configuration.Instance.LoginPass;
                 list = new List<uint>();
-                for (var j = i * 200; j < (i + 1) * 200; j++) list.Add(Configuration.Configuration.Instance.HostedMaps[j]);
+                for (var j = i * 200; j < (i + 1) * 200; j++)
+                    list.Add(Configuration.Configuration.Instance.HostedMaps[j]);
                 p.HostedMaps = list;
                 netIO.SendPacket(p);
             }

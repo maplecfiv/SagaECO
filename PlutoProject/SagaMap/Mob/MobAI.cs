@@ -196,7 +196,8 @@ namespace SagaMap.Mob
                             if (Global.Random.Next(0, 99) < 10)
                             {
                                 AIActivity = Activity.LAZY;
-                                if ((Math.Abs((int)(Mob.X - X_Spawn)) > 1000 || Math.Abs((int)(Mob.Y - Y_Spawn)) > 1000) &&
+                                if ((Math.Abs((int)(Mob.X - X_Spawn)) > 1000 ||
+                                     Math.Abs((int)(Mob.Y - Y_Spawn)) > 1000) &&
                                     MoveRange != 0)
                                 {
                                     short x, y;
@@ -1232,7 +1233,7 @@ namespace SagaMap.Mob
             {
                 Actor actor;
                 ActorMob mob;
-                if (this.Mob.type == ActorType.MOB)
+                if (Mob.type == ActorType.MOB)
                 {
                     mob = (ActorMob)Mob;
                     for (var i = 0; i < arg.affectedActors.Count; i++)

@@ -39,7 +39,7 @@ namespace SagaLib.Tasks
                 Logger.ShowWarning("period <= 0");
             this.dueTime = dueTime;
             this.period = period;
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>
