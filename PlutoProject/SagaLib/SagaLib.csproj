@@ -97,7 +97,6 @@
         <Compile Include="BitMask.cs"/>
         <Compile Include="Client.cs"/>
         <Compile Include="ClientMananger.cs"/>
-        <Compile Include="Logger.SQLLogger.cs"/>
         <Compile Include="DatabaseWaitress.cs"/>
         <Compile Include="FactoryList.cs"/>
         <Compile Include="FactoryString.cs"/>

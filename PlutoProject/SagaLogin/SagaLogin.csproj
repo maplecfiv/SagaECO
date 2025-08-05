@@ -89,14 +89,7 @@
         <Compile Include="Configuration\Configuration.cs"/>
         <Compile Include="LoginServer.cs"/>
         <Compile Include="Manager\MapServerManager.cs"/>
-        <Compile Include="Network\Client\LoginClient.AbyssRanking.cs"/>
-        <Compile Include="Network\Client\LoginClient.Tamaire.cs"/>
-        <Compile Include="Network\Client\LoginClient.Tool.cs"/>
-        <Compile Include="Network\Client\LoginClient.Ring.cs"/>
-        <Compile Include="Network\Client\LoginClient.Chat.cs"/>
         <Compile Include="Network\Client\LoginClient.FriendList.cs"/>
-        <Compile Include="Network\Client\LoginClient.Login.cs"/>
-        <Compile Include="Network\Client\LoginClient.Map.cs"/>
         <Compile Include="Network\Client\LoginClient.cs"/>
         <Compile Include="Packets\Client\Chat\CSMG_CHAT_WHISPER.cs"/>
         <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_DELETE.cs"/>

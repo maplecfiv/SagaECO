@@ -7,14 +7,6 @@ using SagaLib;
 
 namespace SagaMap
 {
-    public partial class Map
-    {
-        internal object RegisterActor()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class ChatArg : MapEventArgs
     {
         public string content;
