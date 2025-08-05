@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.FGarden;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -13,26 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_FF_FURNITURE_REMOVE()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint ActorID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint ActorID => GetUInt(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_FF_FURNITURE_REMOVE();
+            return new CSMG_FF_FURNITURE_REMOVE();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnFFFurnitureRemove(this);
+            ((MapClient)client).OnFFFurnitureRemove(this);
         }
-
     }
 }

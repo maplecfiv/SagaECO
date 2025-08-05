@@ -1,29 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
 using SagaMap.Network.Client;
+
 namespace SagaMap.Tasks.PC
 {
     public class Possession : MultiRunTask
     {
-        MapClient client;
-        ActorPC target;
-        PossessionPosition pos;
-        string comment;
+        private readonly MapClient client;
+        private readonly string comment;
+        private readonly PossessionPosition pos;
+        private readonly ActorPC target;
+
         public Possession(MapClient client, ActorPC target, PossessionPosition position, string comment, int reduce)
         {
             if (reduce > 9)
                 reduce = 9;
-            this.dueTime = 10000 - reduce * 1000;
-            this.period = 10000 - reduce * 1000;
+            dueTime = 10000 - reduce * 1000;
+            period = 10000 - reduce * 1000;
             this.client = client;
             this.target = target;
-            this.pos = position;
+            pos = position;
             this.comment = comment;
         }
 
@@ -37,14 +34,14 @@ namespace SagaMap.Tasks.PC
                 client.PossessionPerform(target, pos, comment);
                 if (client.Character.Tasks.ContainsKey("Possession"))
                     client.Character.Tasks.Remove("Possession");
-                this.Deactivate();
-
+                Deactivate();
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

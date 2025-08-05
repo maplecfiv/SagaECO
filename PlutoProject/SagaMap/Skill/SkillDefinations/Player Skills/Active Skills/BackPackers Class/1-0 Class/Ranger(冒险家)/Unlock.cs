@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.SkillDefinations.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Ranger
 {
-    public class Unlock : Skill.SkillDefinations.Global.SkillEvent
+    public class Unlock : SkillEvent
     {
-        protected override void RunScript(SagaMap.Skill.SkillDefinations.Global.SkillEvent.Parameter para)
+        protected override void RunScript(Parameter para)
         {
             Scripting.SkillEvent.Instance.OpenTreasureBox((ActorPC)para.sActor);
         }

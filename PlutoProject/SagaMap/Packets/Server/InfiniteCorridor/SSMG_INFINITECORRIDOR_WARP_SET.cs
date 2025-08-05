@@ -1,5 +1,4 @@
 using SagaLib;
-using System;
 
 namespace SagaMap.Packets.Server
 {
@@ -7,9 +6,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_INFINITECORRIDOR_WARP_SET()
         {
-            this.data = new byte[12];
-            this.ID = 0x2292;
-            this.offset = 2;
+            data = new byte[12];
+            ID = 0x2292;
+            offset = 2;
         }
     }
 }

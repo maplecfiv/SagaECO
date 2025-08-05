@@ -1,30 +1,29 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
 using SagaLib;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     public class ElementWeapon : ISkill
     {
         public Elements element;
+
         public ElementWeapon(Elements e)
         {
             element = e;
         }
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            if (dActor.Status.Additions.ContainsKey("YugenKeiyaku"))
-            {
-                return;
-            }
+            if (dActor.Status.Additions.ContainsKey("YugenKeiyaku")) return;
             if (dActor.Status.Additions.ContainsKey("FireWeapon"))
                 SkillHandler.RemoveAddition(dActor, "FireWeapon");
             if (dActor.Status.Additions.ContainsKey("WaterWeapon"))
@@ -43,14 +42,15 @@ namespace SagaMap.Skill.SkillDefinations.Global
             dActor.Buff.WeaponHolyElementUp = false;
             dActor.Buff.WeaponWaterElementUp = false;
             dActor.Buff.WeaponWindElementUp = false;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, element.ToString() + "Weapon", 50000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, dActor, element + "Weapon", 50000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int atk = 5 + skill.skill.Level * 4;
+            var atk = 5 + skill.skill.Level * 4;
             uint SkillID = 0;
             if (actor.type == ActorType.PC)
             {
@@ -78,8 +78,10 @@ namespace SagaMap.Skill.SkillDefinations.Global
                         SkillID = 0;
                         break;
                 }
-                ActorPC pc = (ActorPC)actor;
-                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkill.Exists(x => x.ID == 934)) && element == Elements.Holy)//GU2-1光明之魂
+
+                var pc = (ActorPC)actor;
+                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkill.Exists(x => x.ID == 934)) &&
+                    element == Elements.Holy) //GU2-1光明之魂
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 934))
@@ -92,7 +94,8 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
                     atk += 25 + 5 * Math.Max(duallv, mainlv);
                 }
-                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkill.Exists(x => x.ID == 935)) && element == Elements.Dark)//GU2-2黑暗之魂
+                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkill.Exists(x => x.ID == 935)) &&
+                         element == Elements.Dark) //GU2-2黑暗之魂
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 935))
@@ -121,35 +124,27 @@ namespace SagaMap.Skill.SkillDefinations.Global
             }
 
 
-
-
-
-
-
             if (skill.Variable.ContainsKey("ElementWeapon"))
                 skill.Variable.Remove("ElementWeapon");
             skill.Variable.Add("ElementWeapon", atk);
             actor.Status.attackElements_skill[element] += atk;
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Weapon" + element.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Weapon" + element + "ElementUp");
             propertyInfo.SetValue(actor.Buff, true, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-            if (actor.Status.Additions.ContainsKey("YugenKeiyaku"))
-            {
-                SkillHandler.RemoveAddition(actor, "YugenKeiyaku");
-            }
-            int value = skill.Variable["ElementWeapon"];
+            if (actor.Status.Additions.ContainsKey("YugenKeiyaku")) SkillHandler.RemoveAddition(actor, "YugenKeiyaku");
+            var value = skill.Variable["ElementWeapon"];
             actor.Status.attackElements_skill[element] -= value;
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Weapon" + element.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Weapon" + element + "ElementUp");
             propertyInfo.SetValue(actor.Buff, false, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-
-
     }
 }

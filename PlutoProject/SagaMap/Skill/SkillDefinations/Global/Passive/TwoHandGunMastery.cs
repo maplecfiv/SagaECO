@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// 雙手槍修練（ツーハンドスピアマスタリー）
+    ///     雙手槍修練（ツーハンドスピアマスタリー）
     /// </summary>
-    public class TwoHandGunMastery:ISkill
+    public class TwoHandGunMastery : ISkill
     {
         #region ISkill Members
 
@@ -21,22 +18,19 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool active = false;
+            var active = false;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (SkillHandler.Instance.isEquipmentRight(sActor,SagaDB.Item.ItemType.DUALGUN,SagaDB.Item.ItemType.SPEAR))
-                {
-                    active = true;
-                }
-                DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "TwoHandGunMastery", active);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var pc = (ActorPC)sActor;
+                if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.DUALGUN, ItemType.SPEAR)) active = true;
+                var skill = new DefaultPassiveSkill(args.skill, sActor, "TwoHandGunMastery", active);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             int value;
             value = skill.skill.Level * 5;
@@ -59,11 +53,11 @@ namespace SagaMap.Skill.SkillDefinations.Global
             actor.Status.hit_melee_skill += (short)value;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             if (actor.type == ActorType.PC)
             {
-                int value = skill.Variable["MasteryATK"];
+                var value = skill.Variable["MasteryATK"];
                 actor.Status.min_atk2_skill -= (short)value;
                 value = skill.Variable["MasteryHIT"];
                 actor.Status.hit_melee_skill -= (short)value;

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Astralist
@@ -14,27 +11,32 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 120000;
-            List<Actor> realAffected = new List<Actor>();
-            ActorPC sPC = (ActorPC)sActor;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "Contract", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 120000;
+            var realAffected = new List<Actor>();
+            var sPC = (ActorPC)sActor;
+            var skill = new DefaultBuff(args.skill, dActor, "Contract", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.Contract_Lv = skill.skill.Level;
             actor.Buff.三转パクティオ = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.Contract_Lv = 0;
             actor.Buff.三转パクティオ = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
     }
 }

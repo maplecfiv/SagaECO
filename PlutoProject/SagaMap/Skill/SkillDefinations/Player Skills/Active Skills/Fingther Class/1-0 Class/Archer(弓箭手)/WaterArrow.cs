@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaDB.Item;
+using SagaLib;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Archer
 {
     /// <summary>
-    /// 寒冰箭
+    ///     寒冰箭
     /// </summary>
-    public class WaterArrow: ISkill
+    public class WaterArrow : ISkill
     {
         #region ISkill Members
 
@@ -19,27 +18,26 @@ namespace SagaMap.Skill.SkillDefinations.Archer
         {
             if (CheckPossible(pc))
                 return 0;
-            else
-                return -5;
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
-            if (sActor.type == ActorType.PC) 
+            if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                 {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW || SkillHandler.Instance.CheckDEMRightEquip(sActor, SagaDB.Item.ItemType.PARTS_BLOW))
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW ||
+                        SkillHandler.Instance.CheckDEMRightEquip(sActor, ItemType.PARTS_BLOW))
                         return true;
-                    else
-                        return false;
-                }
-                else
                     return false;
+                }
+
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
 
@@ -47,28 +45,21 @@ namespace SagaMap.Skill.SkillDefinations.Archer
         {
             float factor = 0;
             factor = 1.0f + 0.2f * level;
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 200, true);
-            List<Actor> affected = new List<Actor>();
+            var actors = MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 200, true);
+            var affected = new List<Actor>();
             //取得有效Actor（即怪物）
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
-                {
                     affected.Add(i);
-                }
-            }
-            SkillHandler.Instance.PhysicalAttack(sActor, affected, args, SagaLib.Elements.Water, factor);
-            foreach (Actor i in affected)
-            {
+
+            SkillHandler.Instance.PhysicalAttack(sActor, affected, args, Elements.Water, factor);
+            foreach (var i in affected)
                 if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Frosen, 10 * level))
                 {
-                    Additions.Global.Freeze skill = new SagaMap.Skill.Additions.Global.Freeze(args.skill, i, 3000);
+                    var skill = new Freeze(args.skill, i, 3000);
                     SkillHandler.ApplyAddition(i, skill);
                 }
-            }
         }
-
-
 
         #endregion
     }

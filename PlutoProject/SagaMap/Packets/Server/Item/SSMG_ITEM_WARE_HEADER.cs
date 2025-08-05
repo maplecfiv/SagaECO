@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,58 +7,40 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_WARE_HEADER()
         {
-            this.data = new byte[30];
-            this.offset = 2;
-            this.ID = 0x09F6;
-            this.PutInt(0x0F, 18);
+            data = new byte[30];
+            offset = 2;
+            ID = 0x09F6;
+            PutInt(0x0F, 18);
         }
 
         public WarehousePlace Place
         {
-            set
-            {
-                this.PutInt((int)value, 2);
-            }        
+            set => PutInt((int)value, 2);
         }
 
         public int CountCurrent
         {
-            set
-            {
-                this.PutInt(value, 6);
-            }
+            set => PutInt(value, 6);
         }
 
         public int CountAll
         {
-            set
-            {
-                this.PutInt(value, 10);
-            }
+            set => PutInt(value, 10);
         }
 
         public int CountMax
         {
-            set
-            {
-                this.PutInt(value, 14);
-            }
+            set => PutInt(value, 14);
         }
+
         public int Unknown
         {
-            set
-            {
-                this.PutInt(value, 18);
-
-            }
+            set => PutInt(value, 18);
         }
+
         public ulong Gold
         {
-            set
-            {
-                this.PutULong(value, 22);
-            }
+            set => PutULong(value, 22);
         }
     }
 }
-

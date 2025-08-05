@@ -1,24 +1,21 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Skill.Additions.Global;
-using SagaDB.Mob;
+
 namespace SagaMap.Skill.SkillDefinations.Druid
 {
     /// <summary>
-    /// 祭司聖言（ディフィートカース）
+    ///     祭司聖言（ディフィートカース）
     /// </summary>
     public class UndeadMdefDownOne : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             float factor = 0;
@@ -35,33 +32,31 @@ namespace SagaMap.Skill.SkillDefinations.Druid
                 //types.Add(SagaDB.Mob.MobType.UNDEAD_NOTOUCH);
                 //types.Add(SagaDB.Mob.MobType.UNDEAD_SKILL);
 
-                ActorMob mob = (ActorMob)dActor;
+                var mob = (ActorMob)dActor;
                 if (mob.BaseData.undead)
-                {
                     factor = 2.15f + 1.15f * level;
-                }
                 else
-                {
                     factor = 1.9f + 0.9f * level;
-                }
             }
             else
             {
                 factor = 1.9f + 0.9f * level;
             }
-            int lifetime = 1000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "UndeadMdefDownOne", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+
+            var lifetime = 1000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "UndeadMdefDownOne", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
             //int rate = 70 + 10 * level;
             //if (SkillHandler.Instance.CanAdditionApply(sActor,dActor,"UndeadMdefDownOne", rate))
             //{
 
             //}
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             //int level = skill.skill.Level;
             ////左魔防
@@ -77,17 +72,17 @@ namespace SagaMap.Skill.SkillDefinations.Druid
             //    skill.Variable.Remove("UndeadMdefDownOne_mdef_add");
             //skill.Variable.Add("UndeadMdefDownOne_mdef_add", mdef_add_add);
             //actor.Status.mdef_add_skill += (short)mdef_add_add;
-
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             ////左魔防
             //actor.Status.mdef_skill -= (short)skill.Variable["UndeadMdefDownOne_mdef"];
 
             ////右魔防
             //actor.Status.mdef_add_skill -= (short)skill.Variable["UndeadMdefDownOne_mdef_add"];
-
         }
+
         #endregion
     }
 }

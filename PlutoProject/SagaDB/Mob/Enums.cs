@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SagaDB.Mob
+﻿namespace SagaDB.Mob
 {
     public enum MobType
     {
@@ -680,6 +675,6 @@ namespace SagaDB.Mob
         NONE_NOTOUCH,
         NONE_BOSS_NODEATH_NONBLAST_NOHPVIEW,
         NONE_BOSS_NODEATH_NONBLAST_VISIONMAX_NOHPVIEW,
-        MACHINE_SKILL_BOSS_SKILL,
+        MACHINE_SKILL_BOSS_SKILL
     }
 }

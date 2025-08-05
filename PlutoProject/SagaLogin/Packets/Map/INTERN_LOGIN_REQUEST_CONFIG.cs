@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaLogin;
 using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Map
@@ -12,26 +7,19 @@ namespace SagaLogin.Packets.Map
     {
         public INTERN_LOGIN_REQUEST_CONFIG()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public SagaLib.Version Version
-        {
-            get
-            {
-                return (SagaLib.Version)this.GetByte(2);
-            }
-        }
+        public Version Version => (Version)GetByte(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaLogin.Packets.Map.INTERN_LOGIN_REQUEST_CONFIG();
+            return new INTERN_LOGIN_REQUEST_CONFIG();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginClient)(client)).OnInternMapRequestConfig(this);
+            ((LoginClient)client).OnInternMapRequestConfig(this);
         }
-
     }
 }

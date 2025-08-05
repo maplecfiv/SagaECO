@@ -1,41 +1,35 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
 
 namespace SagaDB.DEMIC
 {
     public class ChipFactory : Factory<ChipFactory, Chip.BaseData>
     {
-        Dictionary<short, Chip.BaseData> byChipID = new Dictionary<short, Chip.BaseData>();
-
-        public Dictionary<short, Chip.BaseData> ByChipID { get { return this.byChipID; } }
-       
         public ChipFactory()
         {
-            this.loadingTab = "Loading DEMIC Chip database";
-            this.loadedTab = " chips loaded.";
-            this.databaseName = "DEMIC Chip";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading DEMIC Chip database";
+            loadedTab = " chips loaded.";
+            databaseName = "DEMIC Chip";
+            FactoryType = FactoryType.CSV;
         }
+
+        public Dictionary<short, Chip.BaseData> ByChipID { get; } = new Dictionary<short, Chip.BaseData>();
 
         public Chip GetChip(uint itemID)
         {
             if (items.ContainsKey(itemID))
             {
-                Chip chip = new Chip(items[itemID]);
+                var chip = new Chip(items[itemID]);
                 return chip;
             }
-            else
-            {
-                Logger.ShowWarning("Cannot find chip:" + itemID.ToString());
-                return null;
-            }
+
+            Logger.ShowWarning("Cannot find chip:" + itemID);
+            return null;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, Chip.BaseData item)
+        protected override void ParseXML(XmlElement root, XmlElement current, Chip.BaseData item)
         {
             throw new NotImplementedException();
         }
@@ -49,7 +43,7 @@ namespace SagaDB.DEMIC
         {
             item.chipID = short.Parse(paras[0]);
             item.itemID = uint.Parse(paras[1]);
-            byChipID.Add(item.chipID, item);
+            ByChipID.Add(item.chipID, item);
             item.name = paras[2];
             item.type = byte.Parse(paras[3]);
             item.model = ModelFactory.Instance.Models[uint.Parse(paras[7])];

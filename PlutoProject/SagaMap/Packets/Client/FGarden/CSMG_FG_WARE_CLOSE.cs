@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,18 +7,17 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_FG_WARE_CLOSE()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_FG_WARE_CLOSE();
+            return new CSMG_FG_WARE_CLOSE();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnFGardenWareClose(this);
+            ((MapClient)client).OnFGardenWareClose(this);
         }
-
     }
 }

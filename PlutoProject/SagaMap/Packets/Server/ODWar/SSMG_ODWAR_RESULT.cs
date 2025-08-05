@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,10 +6,10 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ODWAR_RESULT()
         {
-            this.data = new byte[16];
-            this.offset = 2;
-            this.ID = 0x1B85;
-            this.PutByte(1, 2);
+            data = new byte[16];
+            offset = 2;
+            ID = 0x1B85;
+            PutByte(1, 2);
         }
 
         public bool Win
@@ -22,35 +17,23 @@ namespace SagaMap.Packets.Server
             set
             {
                 if (value)
-                    this.PutByte(1, 3);
+                    PutByte(1, 3);
             }
         }
 
         public uint EXP
         {
-            set
-            {
-                this.PutUInt(value, 4);
-            }
+            set => PutUInt(value, 4);
         }
 
         public uint JEXP
         {
-            set
-            {
-                this.PutUInt(value, 8);
-            }
+            set => PutUInt(value, 8);
         }
 
         public uint CP
         {
-            set
-            {
-                this.PutUInt(value, 12);
-            }
+            set => PutUInt(value, 12);
         }
-
-
     }
 }
-

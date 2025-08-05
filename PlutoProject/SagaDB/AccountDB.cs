@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace SagaDB
 {
     public interface AccountDB
     {
         /// <summary>
-        /// Add the given user to the database.
+        ///     Add the given user to the database.
         /// </summary>
         /// <param name="user">User that needs to be added.</param>
         void WriteUser(Account user);
 
         /// <summary>
-        /// Get a user from the database using the given name.
+        ///     Get a user from the database using the given name.
         /// </summary>
         /// <param name="name">Name of the user.</param>
         /// <returns>The user with the given name.</returns>
@@ -25,6 +22,5 @@ namespace SagaDB
         bool Connect();
         bool isConnected();
         List<Account> GetAllAccount();
-
     }
 }

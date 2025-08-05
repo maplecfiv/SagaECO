@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
-using SagaMap.Network.Client;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Swordman
 {
     /// <summary>
-    /// 居和3段
+    ///     居和3段
     /// </summary>
     public class Iai3 : ISkill
     {
@@ -20,22 +16,21 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
         {
             if (CheckPossible(pc))
                 return 0;
-            else
-                return -5;
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) || pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
+                    pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
                     return true;
-                else
-                    return false;
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
@@ -47,7 +42,7 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
                 factor = 1.4f + 0.3f * level;
                 if (sActor is ActorPC)
                 {
-                    ActorPC pc = sActor as ActorPC;
+                    var pc = sActor as ActorPC;
 
                     //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
                     if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkill.Exists(x => x.ID == 1117))
@@ -82,15 +77,14 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
                             mainlv = pc.Skills3[1117].Level;
 
                         //这里取等级最高的剑圣等级用来做居合的倍率加成
-                        factor += (3.0f + Math.Max(duallv, mainlv));
+                        factor += 3.0f + Math.Max(duallv, mainlv);
                     }
-
-                    
                 }
 
                 SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
             }
         }
+
         #endregion
     }
 }

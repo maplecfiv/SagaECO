@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,41 +6,29 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_SHOWPICT_LOCATION()
         {
-            this.data = new byte[9];
-            this.offset = 2;
-            this.ID = 0x05E0;
+            data = new byte[9];
+            offset = 2;
+            ID = 0x05E0;
         }
 
         public uint NPCID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
-        
+
         public byte X
         {
-            set
-            {
-                this.PutByte(value, 6);
-            }
+            set => PutByte(value, 6);
         }
 
         public byte Y
         {
-            set
-            {
-                this.PutByte(value, 7);
-            }
+            set => PutByte(value, 7);
         }
+
         public byte Dir
         {
-            set
-            {
-                this.PutByte(value, 8);
-            }
+            set => PutByte(value, 8);
         }
     }
 }
-

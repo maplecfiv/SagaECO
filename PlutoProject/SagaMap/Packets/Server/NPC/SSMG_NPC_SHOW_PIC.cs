@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Scripting;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,22 +6,22 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_SHOW_PIC()
         {
-            this.data = new byte[13];
-            this.offset = 2;
-            this.ID = 0x067C;
+            data = new byte[13];
+            offset = 2;
+            ID = 0x067C;
         }
 
         public string Path
         {
             set
             {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[this.data.Length + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[data.Length + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)buf.Length, 2);
-                this.PutBytes(buf, 3);
+                PutByte((byte)buf.Length, 2);
+                PutBytes(buf, 3);
             }
         }
 
@@ -34,8 +29,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte len = GetByte(2);
-                this.PutInt(value, (ushort)(3 + len));
+                var len = GetByte(2);
+                PutInt(value, (ushort)(3 + len));
             }
         }
 
@@ -43,8 +38,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte len = GetByte(2);
-                this.PutInt(value, (ushort)(7 + len));
+                var len = GetByte(2);
+                PutInt(value, (ushort)(7 + len));
             }
         }
 
@@ -52,16 +47,15 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte len = GetByte(2);
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[this.data.Length + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var len = GetByte(2);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[data.Length + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)buf.Length, (ushort)(11 + len));
-                this.PutBytes(buf, (ushort)(12 + len));
+                PutByte((byte)buf.Length, (ushort)(11 + len));
+                PutBytes(buf, (ushort)(12 + len));
             }
         }
     }
 }
-

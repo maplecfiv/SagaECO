@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
 
 namespace SagaMap.Skill.SkillDefinations.Hawkeye
 {
-    class MirageShotSEQ : ISkill
+    internal class MirageShotSEQ : ISkill
     {
         #region ISkill Members
 
@@ -21,15 +14,12 @@ namespace SagaMap.Skill.SkillDefinations.Hawkeye
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            if (sActor.type != ActorType.PC)
-            {
-                level = 3;
-            }
+            if (sActor.type != ActorType.PC) level = 3;
             args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.STAB;
-            List<Actor> dest = new List<Actor>();
+            var dest = new List<Actor>();
             float factor = 0;
-            int countMax = 0;
+            var countMax = 0;
             switch (level)
             {
                 case 1:
@@ -48,7 +38,8 @@ namespace SagaMap.Skill.SkillDefinations.Hawkeye
                     //this.period = 700;
                     break;
             }
-            for (int i = 0; i < countMax; i++)
+
+            for (var i = 0; i < countMax; i++)
                 dest.Add(dActor);
             args.delayRate = 4.5f;
             SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor);

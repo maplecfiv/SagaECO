@@ -1,30 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Enchanter
 {
     /// <summary>
-    /// 火焰勢力（ファイアオーラ）
+    ///     火焰勢力（ファイアオーラ）
     /// </summary>
     public class SoulOfFire : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 60000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "SoulOfFire", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 60000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "SoulOfFire", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             short MinAtk = 0, MaxAtk = 0;
             int level = skill.skill.Level;
@@ -48,44 +49,46 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
             if (skill.Variable.ContainsKey("SoulOfFire_max_atk1"))
                 skill.Variable.Remove("SoulOfFire_max_atk1");
             skill.Variable.Add("SoulOfFire_max_atk1", MaxAtk);
-            actor.Status.max_atk1_skill += (short)MaxAtk;
+            actor.Status.max_atk1_skill += MaxAtk;
 
             //最大攻擊
             if (skill.Variable.ContainsKey("SoulOfFire_max_atk2"))
                 skill.Variable.Remove("SoulOfFire_max_atk2");
             skill.Variable.Add("SoulOfFire_max_atk2", MaxAtk);
-            actor.Status.max_atk2_skill += (short)MaxAtk;
+            actor.Status.max_atk2_skill += MaxAtk;
 
             //最大攻擊
             if (skill.Variable.ContainsKey("SoulOfFire_max_atk3"))
                 skill.Variable.Remove("SoulOfFire_max_atk3");
             skill.Variable.Add("SoulOfFire_max_atk3", MaxAtk);
-            actor.Status.max_atk3_skill += (short)MaxAtk;
+            actor.Status.max_atk3_skill += MaxAtk;
 
             //最小攻擊
             if (skill.Variable.ContainsKey("SoulOfFire_min_atk1"))
                 skill.Variable.Remove("SoulOfFire_min_atk1");
             skill.Variable.Add("SoulOfFire_min_atk1", MinAtk);
-            actor.Status.min_atk1_skill += (short)MinAtk;
+            actor.Status.min_atk1_skill += MinAtk;
 
             //最小攻擊
             if (skill.Variable.ContainsKey("SoulOfFire_min_atk2"))
                 skill.Variable.Remove("SoulOfFire_min_atk2");
             skill.Variable.Add("SoulOfFire_min_atk2", MinAtk);
-            actor.Status.min_atk2_skill += (short)MinAtk;
+            actor.Status.min_atk2_skill += MinAtk;
 
             //最小攻擊
             if (skill.Variable.ContainsKey("SoulOfFire_min_atk3"))
                 skill.Variable.Remove("SoulOfFire_min_atk3");
             skill.Variable.Add("SoulOfFire_min_atk3", MinAtk);
-            actor.Status.min_atk3_skill = (short)MinAtk;
+            actor.Status.min_atk3_skill = MinAtk;
 
 
             actor.Buff.MinAtkUp = true;
             actor.Buff.MaxAtkUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //最大攻擊
             actor.Status.max_atk1_skill -= (short)skill.Variable["SoulOfFire_max_atk1"];
@@ -107,8 +110,10 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
 
             actor.Buff.MinAtkUp = false;
             actor.Buff.MaxAtkUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

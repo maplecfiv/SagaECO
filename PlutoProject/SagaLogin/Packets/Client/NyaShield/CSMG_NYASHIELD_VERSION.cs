@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaLogin;
-using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Client
 {
@@ -12,27 +6,20 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_NYASHIELD_VERSION()
         {
-            this.size = 6;
-            this.offset = 2;
+            size = 6;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
-        {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_NYASHIELD_VERSION();
-        }
+        public ushort ver => GetByte(2);
 
-        public ushort ver
+        public override Packet New()
         {
-            get
-            {
-                return this.GetByte(2);
-            }
+            return new CSMG_NYASHIELD_VERSION();
         }
 
         public override void Parse(SagaLib.Client client)
         {
             //((LoginClient)(client)).OnNya(this);
         }
-
     }
 }

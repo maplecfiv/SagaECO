@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaLogin.Packets.Server
@@ -10,11 +6,9 @@ namespace SagaLogin.Packets.Server
     {
         public SSMG_PONG()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x0B;   
+            data = new byte[6];
+            offset = 2;
+            ID = 0x0B;
         }
-
     }
 }
-

@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,41 +7,33 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ITEM_EQUIPT()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public uint InventoryID
         {
             set
             {
-                this.data = new byte[6];
-                this.PutUInt(value, 2);
+                data = new byte[6];
+                PutUInt(value, 2);
             }
-            get
-            {
-                return this.GetUInt(2);
-            }
+            get => GetUInt(2);
         }
+
         public byte EquipSlot
         {
-            set
-            {
-                this.PutByte(value, 6);
-            }
-            get
-            {
-                return this.GetByte(6);
-            }
+            set => PutByte(value, 6);
+            get => GetByte(6);
         }
-        public override SagaLib.Packet New()
+
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_ITEM_EQUIPT();
+            return new CSMG_ITEM_EQUIPT();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnItemEquipt(this);
+            ((MapClient)client).OnItemEquipt(this);
         }
-
     }
 }

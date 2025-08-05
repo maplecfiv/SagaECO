@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,17 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_IDENTIFY()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x09D1;
+            data = new byte[10];
+            offset = 2;
+            ID = 0x09D1;
         }
 
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public bool Identify
@@ -29,7 +21,7 @@ namespace SagaMap.Packets.Server
             set
             {
                 if (value)
-                    this.PutInt(this.GetInt(6) | 1, 6);
+                    PutInt(GetInt(6) | 1, 6);
             }
         }
 
@@ -38,9 +30,8 @@ namespace SagaMap.Packets.Server
             set
             {
                 if (value)
-                    this.PutInt(this.GetInt(6) | 0x20, 6);
+                    PutInt(GetInt(6) | 0x20, 6);
             }
         }
     }
 }
-

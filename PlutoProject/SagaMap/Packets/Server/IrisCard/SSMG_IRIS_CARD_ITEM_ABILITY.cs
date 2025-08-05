@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
+using SagaDB.Iris;
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,37 +10,31 @@ namespace SagaMap.Packets.Server
         {
             Deck,
             Total,
-            Max,
+            Max
         }
 
         public SSMG_IRIS_CARD_ITEM_ABILITY()
         {
-            this.data = new byte[11];
-            this.offset = 2;
-            this.ID = 0x1DC5;
+            data = new byte[11];
+            offset = 2;
+            ID = 0x1DC5;
         }
 
         public Types Type
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
 
-        public List<SagaDB.Iris.AbilityVector> AbilityVectors
+        public List<AbilityVector> AbilityVectors
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 4 * value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + 4 * value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count, 3);
-                foreach (SagaDB.Iris.AbilityVector i in value)
-                {
-                    this.PutUInt(i.ID);
-                }
+                PutByte((byte)value.Count, 3);
+                foreach (var i in value) PutUInt(i.ID);
             }
         }
 
@@ -51,15 +42,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 2 * value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + 2 * value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count);
-                foreach (int i in value)
-                {
-                    this.PutShort((short)i);
-                }
+                PutByte((byte)value.Count);
+                foreach (var i in value) PutShort((short)i);
             }
         }
 
@@ -67,31 +55,25 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count);
-                foreach (int i in value)
-                {
-                    this.PutByte((byte)i);
-                }
+                PutByte((byte)value.Count);
+                foreach (var i in value) PutByte((byte)i);
             }
         }
 
-        public List<SagaDB.Iris.ReleaseAbility> ReleaseAbilities
+        public List<ReleaseAbility> ReleaseAbilities
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 4 * value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + 4 * value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count);
-                foreach (SagaDB.Iris.ReleaseAbility i in value)
-                {
-                    this.PutInt((int)i);
-                }
+                PutByte((byte)value.Count);
+                foreach (var i in value) PutInt((int)i);
             }
         }
 
@@ -99,15 +81,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 4 * value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + 4 * value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count);
-                foreach (int i in value)
-                {
-                    this.PutInt(i);
-                }
+                PutByte((byte)value.Count);
+                foreach (var i in value) PutInt(i);
             }
         }
 
@@ -115,15 +94,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 4 * value.Count + 1];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte(0);
-                this.PutByte((byte)value.Count);
-                for (int i = 0; i < value.Count; i++)
-                {
-                    this.PutUShort((ushort)value[(Elements)i]);
-                }
+                var buff = new byte[data.Length + 4 * value.Count + 1];
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte(0);
+                PutByte((byte)value.Count);
+                for (var i = 0; i < value.Count; i++) PutUShort((ushort)value[(Elements)i]);
             }
         }
 
@@ -131,17 +107,13 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] buff = new byte[this.data.Length + 4 * value.Count];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buff = new byte[data.Length + 4 * value.Count];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)value.Count);
-                for (int i = 0; i < value.Count; i++)
-                {
-                    this.PutUShort((ushort)value[(Elements)i]);
-                }
+                PutByte((byte)value.Count);
+                for (var i = 0; i < value.Count; i++) PutUShort((ushort)value[(Elements)i]);
             }
         }
     }
 }
-

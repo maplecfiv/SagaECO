@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,34 +7,21 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_CHAT_MOTION()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public MotionType Motion
-        {
-            get
-            {
-                return (MotionType)this.GetUShort(2);
-            }
-        }
+        public MotionType Motion => (MotionType)GetUShort(2);
 
-        public byte Loop
-        {
-            get
-            {
-                return this.GetByte(4);
-            }
-        }
+        public byte Loop => GetByte(4);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_CHAT_MOTION();
+            return new CSMG_CHAT_MOTION();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnMotion(this);
+            ((MapClient)client).OnMotion(this);
         }
-
     }
 }

@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,25 +6,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_SHOP_COUNT_UPDATE()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x191C;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x191C;
         }
 
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public short ShopCount
         {
-            set
-            {
-                this.PutShort(value, 6);
-            }
+            set => PutShort(value, 6);
         }
     }
 }
-

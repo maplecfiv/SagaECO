@@ -1,120 +1,98 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
 using SagaDB.Item;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Mob;
+using SagaMap.Network.Client;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Hawkeye
 {
-    class MirageShot : ISkill
+    internal class MirageShot : ISkill
     {
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-            int numdown = args.skill.Level * 3;
-            if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
+            var numdown = args.skill.Level * 3;
+            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
             {
-                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW)
+                if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW)
                 {
-                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
+                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
                     {
-                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.ARROW)
+                        if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.ARROW)
                         {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack >= numdown)
-                            {
-                                return 0;
-                            }
-                            else
-                            {
-                                return -55;
-                            }
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack >= numdown) return 0;
+
+                            return -55;
                         }
-                        else
-                            return -34;
+
+                        return -34;
                     }
+
                     return -34;
                 }
-                else if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.GUN ||
-                    pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.DUALGUN ||
-                    pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.RIFLE)
+
+                if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.GUN ||
+                    pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.DUALGUN ||
+                    pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.RIFLE)
                 {
-                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
+                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
                     {
-                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BULLET)
+                        if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.BULLET)
                         {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack >= numdown)
-                            {
-                                return 0;
-                            }
-                            else
-                            {
-                                return -56;
-                            }
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack >= numdown) return 0;
+
+                            return -56;
                         }
 
                         return -35;
                     }
+
                     return -35;
                 }
-                else
-                    return -5;
-            }
-            else
+
                 return -5;
+            }
+
+            return -5;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int numdown = level * 3;
+            var numdown = level * 3;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                 {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW)
-                    {
-                        if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                        {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.ARROW)
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack >= numdown)
-                                {
-                                    for (int i = 0; i < numdown; i++)
-                                        Network.Client.MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                                }
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW)
+                        if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.ARROW)
+                                if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack >= numdown)
+                                    for (var i = 0; i < numdown; i++)
+                                        MapClient.FromActorPC(pc)
+                                            .DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot, 1,
+                                                false);
 
-                            }
-                        }
-                    }
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.GUN ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.DUALGUN ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.RIFLE)
-                    {
-                        if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                        {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BULLET)
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack >= numdown)
-                                {
-                                    for (int i = 0; i < numdown; i++)
-                                        Network.Client.MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                                }
-                            }
-                        }
-                    }
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.GUN ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.DUALGUN ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.RIFLE)
+                        if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.BULLET)
+                                if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack >= numdown)
+                                    for (var i = 0; i < numdown; i++)
+                                        MapClient.FromActorPC(pc)
+                                            .DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot, 1,
+                                                false);
                 }
             }
-            int lifetime = 5000;
-            MirageShotbuff skill = new MirageShotbuff(args.skill, sActor, lifetime, args);
+
+            var lifetime = 5000;
+            var skill = new MirageShotbuff(args.skill, sActor, lifetime, args);
             SkillHandler.ApplyAddition(sActor, skill);
-            MirageShotbuff skill2 = new MirageShotbuff(args.skill, sActor, lifetime, args);
+            var skill2 = new MirageShotbuff(args.skill, sActor, lifetime, args);
             SkillHandler.ApplyAddition(sActor, skill2);
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2540, level, 1000));
         }
@@ -123,37 +101,38 @@ namespace SagaMap.Skill.SkillDefinations.Hawkeye
         {
             private ActorShadow shadow;
             private SkillArg thisarg;
+
             public MirageShotbuff(SagaDB.Skill.Skill skill, Actor actor, int lifetime, SkillArg args)
                 : base(skill, actor, "MirageShotbuff", lifetime)
             {
                 thisarg = args;
-                this.OnAdditionStart += this.StartEvent;
-                this.OnAdditionEnd += this.EndEvent;
+                OnAdditionStart += StartEvent;
+                OnAdditionEnd += EndEvent;
             }
 
-            void StartEvent(Actor actor, DefaultBuff skill)
+            private void StartEvent(Actor actor, DefaultBuff skill)
             {
                 shadow = MirageShotMe((ActorPC)actor, skill.skill.Level);
             }
 
-            void EndEvent(Actor actor, DefaultBuff skill)
+            private void EndEvent(Actor actor, DefaultBuff skill)
             {
-                Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                ActorEventHandlers.PetEventHandler eh = (SagaMap.ActorEventHandlers.PetEventHandler)shadow.e;
+                var map = MapManager.Instance.GetMap(actor.MapID);
+                var eh = (PetEventHandler)shadow.e;
                 eh.AI.Pause();
                 shadow.ClearTaskAddition();
                 map.DeleteActor(shadow);
             }
+
             public ActorShadow MirageShotMe(ActorPC pc, byte level)
             {
-
-                ActorShadow actor = new ActorShadow(pc);
-                Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
+                var actor = new ActorShadow(pc);
+                var map = MapManager.Instance.GetMap(pc.MapID);
                 actor.Name = pc.Name;
                 actor.MapID = pc.MapID;
-                int nx = SagaLib.Global.Random.Next(-1, 1);
+                var nx = SagaLib.Global.Random.Next(-1, 1);
                 actor.X = (short)(pc.X + nx);
-                int ny = SagaLib.Global.Random.Next(-1, 1);
+                var ny = SagaLib.Global.Random.Next(-1, 1);
                 actor.Y = (short)(pc.Y + ny);
                 actor.MaxHP = (uint)(pc.MaxHP * (0.1f + 0.2f * level));
                 actor.HP = pc.MaxHP;
@@ -169,10 +148,10 @@ namespace SagaMap.Skill.SkillDefinations.Hawkeye
                 actor.Speed = pc.Speed;
                 actor.BaseData.range = 12f;
 
-                ActorEventHandlers.PetEventHandler eh = new ActorEventHandlers.PetEventHandler(actor);
+                var eh = new PetEventHandler(actor);
                 actor.e = eh;
 
-                eh.AI.Mode = new SagaMap.Mob.AIMode(1);
+                eh.AI.Mode = new AIMode(1);
                 //switch (skill.Level)
                 //{
                 //    case 1:
@@ -201,6 +180,5 @@ namespace SagaMap.Skill.SkillDefinations.Hawkeye
         }
 
         #endregion
-
     }
 }

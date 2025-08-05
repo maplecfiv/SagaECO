@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
-    /// 神聖光界（ディバインバリア）
+    ///     神聖光界（ディバインバリア）
     /// </summary>
     public class MobDevineBarrier : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             RemoveAddition(dActor, "SoulOfEarth");
@@ -25,24 +23,23 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             RemoveAddition(dActor, "MagicBarrier");
             RemoveAddition(dActor, "EnergyBarrier");
 
-            int lifetime = 110000 + 15000 * level;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 100, true);
-            foreach (Actor act in affected)
-            {
+            var lifetime = 110000 + 15000 * level;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 100, true);
+            foreach (var act in affected)
                 if (act.type == ActorType.MOB && !SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
-                    DefaultBuff skill = new DefaultBuff(args.skill, act, "MobDevineBarrier", lifetime);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, act, "MobDevineBarrier", lifetime);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(act, skill);
                     SkillHandler.Instance.ShowEffectByActor(act, 4019);
                 }
-            }
 
             //sActor. = 4019;
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             short LDef = 0, RDef = 0, LMDef = 0, RMDef = 0;
             int level = skill.skill.Level;
@@ -79,6 +76,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                     RMDef = 20;
                     break;
             }
+
             //左防
             if (skill.Variable.ContainsKey("DevineBarrier_LDef"))
                 skill.Variable.Remove("DevineBarrier_LDef");
@@ -110,19 +108,16 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             actor.Buff.MagicDefUp = true;
             actor.Buff.MagicDefRateUp = true;
 
-            EffectArg arg = new EffectArg();
+            var arg = new EffectArg();
             arg.effectID = 4019;
             arg.actorID = actor.ActorID;
 
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, arg, actor, true);
-
-
-
-
-
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, arg, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //左防
             actor.Status.def_skill -= (short)skill.Variable["DevineBarrier_LDef"];
@@ -136,22 +131,21 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             actor.Buff.DefRateUp = false;
             actor.Buff.MagicDefUp = false;
             actor.Buff.MagicDefRateUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        public void RemoveAddition(Actor actor, String additionName)
+        public void RemoveAddition(Actor actor, string additionName)
         {
             if (actor.Status.Additions.ContainsKey(additionName))
             {
-                Addition addition = actor.Status.Additions[additionName];
+                var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
-                if (addition.Activated)
-                {
-                    addition.AdditionEnd();
-                }
+                if (addition.Activated) addition.AdditionEnd();
                 addition.Activated = false;
             }
         }
+
         #endregion
     }
 }

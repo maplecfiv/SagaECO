@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,10 +6,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_SHOP_FOOTER()
         {
-            this.data = new byte[2];
-            this.offset = 2;
-            this.ID = 0x1802;
+            data = new byte[2];
+            offset = 2;
+            ID = 0x1802;
         }
     }
 }
-

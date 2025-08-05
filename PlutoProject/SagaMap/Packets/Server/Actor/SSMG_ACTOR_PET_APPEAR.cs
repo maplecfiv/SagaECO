@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,56 +6,41 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTOR_PET_APPEAR()
         {
-            if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                this.data = new byte[30];
-            if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                this.data = new byte[36];
-            if (Configuration.Instance.Version >= SagaLib.Version.Saga17)
-                this.data = new byte[42];
-            this.offset = 2;
-            this.ID = 0x122F;
+            if (Configuration.Instance.Version == Version.Saga6)
+                data = new byte[30];
+            if (Configuration.Instance.Version >= Version.Saga9)
+                data = new byte[36];
+            if (Configuration.Instance.Version >= Version.Saga17)
+                data = new byte[42];
+            offset = 2;
+            ID = 0x122F;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public byte Union
         {
-            set
-            {
-                this.PutByte(value, 6);
-            }
+            set => PutByte(value, 6);
         }
 
         public uint OwnerActorID
         {
-            set
-            {
-                this.PutUInt(value, 7);
-            }
+            set => PutUInt(value, 7);
         }
 
         public uint OwnerCharID
         {
-            set
-            {
-                this.PutUInt(value, 11);
-            }
+            set => PutUInt(value, 11);
         }
 
         public byte OwnerLevel
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                {
-                    this.PutByte(value, 15);
-                }
+                if (Configuration.Instance.Version >= Version.Saga9) PutByte(value, 15);
             }
         }
 
@@ -67,10 +48,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                {
-                    this.PutUInt(value, 16);
-                }
+                if (Configuration.Instance.Version >= Version.Saga9) PutUInt(value, 16);
             }
         }
 
@@ -79,10 +57,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutByte(value, 15);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutByte(value, 21);
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutByte(value, 15);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutByte(value, 21);
             }
         }
 
@@ -90,10 +68,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutByte(value, 16);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutByte(value, 22);
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutByte(value, 16);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutByte(value, 22);
             }
         }
 
@@ -101,10 +79,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutUShort(value, 17);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutUShort(value, 23);
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutUShort(value, 17);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutUShort(value, 23);
             }
         }
 
@@ -112,25 +90,25 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutByte(value, 19);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutByte(value, 25);
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutByte(value, 19);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutByte(value, 25);
             }
         }
-        
+
         public uint HP
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutUInt(value, 20);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutUInt(value, 26);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga17)
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutUInt(value, 20);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutUInt(value, 26);
+                if (Configuration.Instance.Version >= Version.Saga17)
                 {
-                    this.PutUInt(value, 26);///0???
-                    this.PutUInt(value, 30);
+                    PutUInt(value, 26); ///0???
+                    PutUInt(value, 30);
                 }
             }
         }
@@ -139,17 +117,16 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version == SagaLib.Version.Saga6)
-                    this.PutUInt(value, 24);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga9)
-                    this.PutUInt(value, 30);
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga17)
+                if (Configuration.Instance.Version == Version.Saga6)
+                    PutUInt(value, 24);
+                if (Configuration.Instance.Version >= Version.Saga9)
+                    PutUInt(value, 30);
+                if (Configuration.Instance.Version >= Version.Saga17)
                 {
-                    this.PutUInt(value, 34);//0???
-                    this.PutUInt(value, 38);
+                    PutUInt(value, 34); //0???
+                    PutUInt(value, 38);
                 }
             }
         }
     }
 }
-

@@ -7,7 +7,7 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ITEM_EXCHANGE_CLOSE()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public override Packet New()

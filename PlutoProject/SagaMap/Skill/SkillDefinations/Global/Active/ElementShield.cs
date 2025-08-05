@@ -1,26 +1,28 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
 using SagaLib;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     public class ElementShield : ISkill
     {
         public Elements element;
         public bool monsteruse;
+
         public ElementShield(Elements e, bool ismonster = false)
         {
             element = e;
             monsteruse = ismonster;
         }
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             if (monsteruse)
@@ -28,6 +30,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
                 level = 5;
                 dActor = sActor;
             }
+
             if (dActor.Status.Additions.ContainsKey("HolyShield"))
                 SkillHandler.RemoveAddition(dActor, "HolyShield");
             if (dActor.Status.Additions.ContainsKey("DarkShield"))
@@ -46,19 +49,21 @@ namespace SagaMap.Skill.SkillDefinations.Global
             dActor.Buff.BodyWaterElementUp = false;
             dActor.Buff.BodyWindElementUp = false;
             dActor.Buff.BodyHolyElementUp = false;
-            int life = new int[] { 0, 15000, 35000, 60000, 100000, 150000 }[level];
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, element.ToString() + "Shield", life);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var life = new[] { 0, 15000, 35000, 60000, 100000, 150000 }[level];
+            var skill = new DefaultBuff(args.skill, dActor, element + "Shield", life);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int atk1 = skill.skill.Level * 5;
+            var atk1 = skill.skill.Level * 5;
             if (actor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)actor;
-                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkill.Exists(x => x.ID == 934)) && element == Elements.Holy)//GU2-1光明之魂
+                var pc = (ActorPC)actor;
+                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkill.Exists(x => x.ID == 934)) &&
+                    element == Elements.Holy) //GU2-1光明之魂
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 934))
@@ -71,7 +76,8 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
                     atk1 += 5 * (Math.Max(duallv, mainlv) - 1);
                 }
-                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkill.Exists(x => x.ID == 935)) && element == Elements.Dark)//GU2-2黑暗之魂
+                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkill.Exists(x => x.ID == 935)) &&
+                         element == Elements.Dark) //GU2-2黑暗之魂
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 935))
@@ -85,30 +91,31 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     atk1 += 5 * (Math.Max(duallv, mainlv) - 1);
                 }
             }
+
             if (skill.Variable.ContainsKey("ElementShield"))
                 skill.Variable.Remove("ElementShield");
             skill.Variable.Add("ElementShield", atk1);
             actor.Status.elements_skill[element] += atk1;
 
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + element.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + element + "ElementUp");
             propertyInfo.SetValue(actor.Buff, true, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-            int value = skill.Variable["ElementShield"];
+            var value = skill.Variable["ElementShield"];
             actor.Status.elements_skill[element] -= (short)value;
             if (actor.Status.Additions.ContainsKey("Amplement"))
-            {
                 if (element != Elements.Dark && element != Elements.Holy)
                     actor.Status.Additions["Amplement"].AdditionEnd();
-            }
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + element.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + element + "ElementUp");
             propertyInfo.SetValue(actor.Buff, false, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
     }
 }

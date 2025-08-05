@@ -1,19 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
-
 
 namespace SagaMap.Skill.SkillDefinations.Stryder
 {
-    class SkillForbid : ISkill
+    internal class SkillForbid : ISkill
     {
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
+        {
+            actor.Buff.三转禁言レストスキル = true;
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+        }
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
+            actor.Buff.三转禁言レストスキル = false;
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+        }
+
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
@@ -27,38 +34,26 @@ namespace SagaMap.Skill.SkillDefinations.Stryder
         {
             int[] lifetime = { 0, 3000, 4000, 4000, 4000, 5000 };
             if (dActor.type == ActorType.PC)
-                lifetime = new int[] { 0, 3000, 4000, 4000, 4000, 5000 };
+                lifetime = new[] { 0, 3000, 4000, 4000, 4000, 5000 };
             if (dActor.type == ActorType.MOB)
-                lifetime = new int[] { 0, 15000, 18000, 21000, 24000, 30000 };
+                lifetime = new[] { 0, 15000, 18000, 21000, 24000, 30000 };
             if (SkillHandler.Instance.isBossMob(sActor))
-                lifetime = new int[] { 0, 2000, 2000, 2000, 2000, 2000 };
+                lifetime = new[] { 0, 2000, 2000, 2000, 2000, 2000 };
 
 
             int[] rate = { 0, 95, 90, 85, 80, 75 };
 
-            Random rand = new Random();
-            int rVal = rand.Next(0, 100);
-            if (rVal > rate[level])
-            {
-                return;
-            }
+            var rand = new Random();
+            var rVal = rand.Next(0, 100);
+            if (rVal > rate[level]) return;
 
 
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "SkillForbid", lifetime[level]);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, dActor, "SkillForbid", lifetime[level]);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
+
         #endregion
-        void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
-            actor.Buff.三转禁言レストスキル = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-        }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
-            actor.Buff.三转禁言レストスキル = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-        }
     }
 }

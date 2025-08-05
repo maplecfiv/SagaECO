@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// 小丑
+    ///     小丑
     /// </summary>
     public class JokerNone : ISkill
     {
@@ -23,30 +19,28 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int life = 60000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, sActor, "Joker1", life);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var life = 60000 * level;
+            var skill = new DefaultBuff(args.skill, sActor, "Joker1", life);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
 
-
-
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
-            int hp = (int)(actor.MaxHP * 0.2f * level);
-            int mp = (int)(actor.MaxMP * 0.2f * level);
-            int sp = (int)(actor.MaxSP * 0.2f * level);
-            int max_atk1_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
-            int max_atk2_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
-            int max_atk3_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
-            int min_atk1_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
-            int min_atk2_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
-            int min_atk3_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
-            int max_matk_add = (int)(actor.Status.max_matk_bs * (0.5f * level));
-            int min_matk_add = (int)(actor.Status.min_matk_bs * (0.5f * level));
+            var hp = (int)(actor.MaxHP * 0.2f * level);
+            var mp = (int)(actor.MaxMP * 0.2f * level);
+            var sp = (int)(actor.MaxSP * 0.2f * level);
+            var max_atk1_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
+            var max_atk2_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
+            var max_atk3_add = (int)(actor.Status.max_atk_bs * (0.5f * level));
+            var min_atk1_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
+            var min_atk2_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
+            var min_atk3_add = (int)(actor.Status.min_atk_bs * (0.5f * level));
+            var max_matk_add = (int)(actor.Status.max_matk_bs * (0.5f * level));
+            var min_matk_add = (int)(actor.Status.min_matk_bs * (0.5f * level));
 
             if (skill.Variable.ContainsKey("Joker1_HP"))
                 skill.Variable.Remove("Joker1_HP");
@@ -113,10 +107,11 @@ namespace SagaMap.Skill.SkillDefinations.Global
             actor.Buff.MinAtkUp = true;
             actor.Buff.MinMagicAtkUp = true;
             actor.Buff.MaxMagicAtkUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //大傷
             actor.Status.max_atk1_skill -= (short)skill.Variable["Joker_MAX_ATK1"];
@@ -138,7 +133,8 @@ namespace SagaMap.Skill.SkillDefinations.Global
             actor.Buff.MinAtkUp = false;
             actor.Buff.MinMagicAtkUp = false;
             actor.Buff.MaxMagicAtkUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
         #endregion

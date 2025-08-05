@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaDB.Item;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Archer
 {
     /// <summary>
-    /// 大地箭
+    ///     大地箭
     /// </summary>
     public class EarthArrow : ISkill
     {
@@ -19,27 +17,26 @@ namespace SagaMap.Skill.SkillDefinations.Archer
         {
             if (CheckPossible(pc))
                 return 0;
-            else
-                return -5;
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                 {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW || SkillHandler.Instance.CheckDEMRightEquip(sActor, SagaDB.Item.ItemType.PARTS_BLOW))
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW ||
+                        SkillHandler.Instance.CheckDEMRightEquip(sActor, ItemType.PARTS_BLOW))
                         return true;
-                    else
-                        return false;
-                }
-                else
                     return false;
+                }
+
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
 
@@ -47,19 +44,17 @@ namespace SagaMap.Skill.SkillDefinations.Archer
         {
             float factor = 0;
             factor = 0.8f + 0.1f * level;
-            List<Actor> target = new List<Actor>();
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(dActor, 200, true);
-            List<Actor> affacted = new List<Actor>();
+            var target = new List<Actor>();
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(dActor, 200, true);
+            var affacted = new List<Actor>();
             byte MaxCount = 3;
             byte Count = 0;
             args.argType = SkillArg.ArgType.Attack;
             if (actors.Count > 0)
             {
                 while (Count < MaxCount)
-                {
-                    foreach (Actor i in actors)
-                    {
+                    foreach (var i in actors)
                         if (Count < MaxCount)
                         {
                             Count += 1;
@@ -69,12 +64,11 @@ namespace SagaMap.Skill.SkillDefinations.Archer
                                 map.SendEffect(i, 8034);
                             }
                         }
-                    }
-                }
 
-                SkillHandler.Instance.PhysicalAttack(sActor, affacted, args, SagaLib.Elements.Earth, factor);
+                SkillHandler.Instance.PhysicalAttack(sActor, affacted, args, Elements.Earth, factor);
             }
         }
+
         #endregion
     }
 }

@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.FGarden;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -13,34 +7,21 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_GOLEM_WAREHOUSE_GET()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint InventoryID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint InventoryID => GetUInt(2);
 
-        public ushort Count
-        {
-            get
-            {
-                return this.GetUShort(6);
-            }
-        }
+        public ushort Count => GetUShort(6);
 
-       public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_GOLEM_WAREHOUSE_GET();
+            return new CSMG_GOLEM_WAREHOUSE_GET();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnGolemWarehouseGet(this);
+            ((MapClient)client).OnGolemWarehouseGet(this);
         }
-
     }
 }

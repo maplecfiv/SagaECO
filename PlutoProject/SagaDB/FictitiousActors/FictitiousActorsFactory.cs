@@ -1,58 +1,62 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Xml;
-
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.VirtualFileSystem;
-using SagaDB.Actor;
 
 namespace SagaDB.FictitiousActors
 {
     public class FictitiousActorsFactory : Singleton<FictitiousActorsFactory>
     {
-        Dictionary<uint, List<Actor.Actor>> fictitiousactorslist = new Dictionary<uint,List<Actor.Actor>>();
-        public Dictionary<uint, List<SagaDB.Actor.Actor>> FictitiousActorsList { get { return this.fictitiousactorslist; } set { this.fictitiousactorslist = value; } }
+        public Dictionary<uint, Dictionary<uint, GolemShopItem>> GolemBuyList =
+            new Dictionary<uint, Dictionary<uint, GolemShopItem>>();
 
-        public Dictionary<uint, Dictionary<uint, GolemShopItem>> GolemSellList = new Dictionary<uint, Dictionary<uint, GolemShopItem>>();
-        public Dictionary<uint, Dictionary<uint, GolemShopItem>> GolemBuyList = new Dictionary<uint, Dictionary<uint, GolemShopItem>>();
+        public Dictionary<uint, Dictionary<uint, GolemShopItem>> GolemSellList =
+            new Dictionary<uint, Dictionary<uint, GolemShopItem>>();
+
+        public Dictionary<uint, List<Actor.Actor>> FictitiousActorsList { get; set; } =
+            new Dictionary<uint, List<Actor.Actor>>();
+
         public void LoadActorsList(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml", System.IO.SearchOption.AllDirectories);
-            int total = 0;
-            foreach (string f in file)
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml",
+                SearchOption.AllDirectories);
+            var total = 0;
+            foreach (var f in file)
                 total += LoadOne(f);
             Logger.ShowInfo("Actors loaded...");
         }
 
         public void LoadShopLists(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml", System.IO.SearchOption.AllDirectories);
-            int total = 0;
-            foreach (string f in file)
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml",
+                SearchOption.AllDirectories);
+            var total = 0;
+            foreach (var f in file)
                 total += LoadShopListOne(f);
             Logger.ShowInfo("Actors loaded...");
         }
 
         public int LoadShopListOne(string f)
         {
-            int total = 0;
-            XmlDocument xml = new XmlDocument();
+            var total = 0;
+            var xml = new XmlDocument();
             try
             {
                 XmlElement root;
                 XmlNodeList list;
-                System.IO.Stream fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
+                var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
                 xml.Load(fs);
                 root = xml["GolemShop"];
                 list = root.ChildNodes;
                 byte id = 0;
                 byte type = 0;
                 uint slotid = 0;
-                GolemShopItem gsi = new GolemShopItem();
-                Dictionary<uint, GolemShopItem> item = new Dictionary<uint, GolemShopItem>();
-                foreach (object j in list)
+                var gsi = new GolemShopItem();
+                var item = new Dictionary<uint, GolemShopItem>();
+                foreach (var j in list)
                 {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
@@ -63,13 +67,12 @@ namespace SagaDB.FictitiousActors
                             id = byte.Parse(i.InnerText);
                             break;
                         case "type":
-                            if(i.InnerText.ToLower() == "sell")
+                            if (i.InnerText.ToLower() == "sell")
                                 type = 1;
                             break;
                         case "item":
-                            XmlNodeList listi = i.ChildNodes;
+                            var listi = i.ChildNodes;
                             foreach (XmlElement y in listi)
-                            {
                                 switch (y.Name.ToLower())
                                 {
                                     case "id":
@@ -82,11 +85,12 @@ namespace SagaDB.FictitiousActors
                                         gsi.Count = ushort.Parse(y.InnerText);
                                         break;
                                 }
-                            }
+
                             slotid++;
                             item.Add(slotid, gsi);
                             break;
                     }
+
                     if (type == 1)
                     {
                         if (!GolemSellList.ContainsKey(id))
@@ -99,47 +103,52 @@ namespace SagaDB.FictitiousActors
                     }
                 }
             }
-            catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
+
             return total;
         }
 
         public int LoadOne(string f)
         {
-            int total = 0;
-            XmlDocument xml = new XmlDocument();
+            var total = 0;
+            var xml = new XmlDocument();
             try
             {
                 XmlElement root;
                 XmlNodeList list;
-                SagaDB.Actor.Actor actor = new Actor.Actor();
-                ActorFurniture fi = new ActorFurniture();
-                ActorGolem Golem = new ActorGolem();
-                System.IO.Stream fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
+                var actor = new Actor.Actor();
+                var fi = new ActorFurniture();
+                var Golem = new ActorGolem();
+                var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
                 xml.Load(fs);
                 root = xml["Actors"];
                 list = root.ChildNodes;
-                foreach (object j in list)
+                foreach (var j in list)
                 {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
 
-                    string type = i.Attributes["Type"].Value;
+                    var type = i.Attributes["Type"].Value;
 
                     switch (type)
                     {
                         case "PC":
-                            actor = new SagaDB.Actor.ActorPC();
+                            actor = new ActorPC();
                             break;
                         case "FI":
-                            actor = new SagaDB.Actor.ActorFurniture();
+                            actor = new ActorFurniture();
                             break;
                         case "GOLEM":
-                            actor = new SagaDB.Actor.ActorGolem();
+                            actor = new ActorGolem();
                             break;
                     }
-                    XmlNodeList skills = i.ChildNodes;
-                    foreach (object j2 in skills)
+
+                    var skills = i.ChildNodes;
+                    foreach (var j2 in skills)
                     {
                         XmlElement i2;
                         if (j2.GetType() != typeof(XmlElement)) continue;
@@ -152,34 +161,42 @@ namespace SagaDB.FictitiousActors
                                 break;
                             case "x":
                                 if (actor.type == ActorType.FURNITURE)
+                                {
                                     actor.X = short.Parse(i2.InnerText);
+                                }
                                 else
                                 {
                                     actor.X = -1;
                                     actor.X2 = byte.Parse(i2.InnerText);
                                 }
+
                                 break;
                             case "y":
                                 if (actor.type == ActorType.FURNITURE)
+                                {
                                     actor.Y = short.Parse(i2.InnerText);
+                                }
                                 else
                                 {
                                     actor.Y = -1;
                                     actor.Y2 = byte.Parse(i2.InnerText);
                                 }
+
                                 break;
                             case "dir":
                                 actor.Dir = (ushort)(ushort.Parse(i2.InnerText) * 45);
                                 break;
                         }
+
                         switch (type)
                         {
                             #region PC
+
                             case "PC":
                                 actor.type = ActorType.PC;
-                                ActorPC pc = (ActorPC)actor;
-                                if(pc.Equips == null)
-                                pc.Equips = new uint[12];
+                                var pc = (ActorPC)actor;
+                                if (pc.Equips == null)
+                                    pc.Equips = new uint[12];
                                 pc.MaxHP = 100;
                                 pc.HP = 100;
                                 switch (i2.Name.ToLower())
@@ -258,12 +275,13 @@ namespace SagaDB.FictitiousActors
                                         pc.MotionLoop = true;
                                         break;
                                     case "shoptitle":
-                                        string title = i2.InnerText;
+                                        var title = i2.InnerText;
                                         if (title != "")
                                         {
                                             pc.TInt["虚构玩家"] = 1;
                                             pc.TStr["虚构玩家店名"] = title;
                                         }
+
                                         break;
                                     case "titlesid":
                                         pc.AInt["称号_主语"] = int.Parse(i2.InnerText);
@@ -281,9 +299,13 @@ namespace SagaDB.FictitiousActors
                                         pc.TInt["虚构玩家EmotionID"] = int.Parse(i2.InnerText);
                                         break;
                                 }
+
                                 break;
+
                             #endregion
+
                             #region FURNITURE
+
                             case "FI":
                                 actor.type = ActorType.FURNITURE;
                                 fi = (ActorFurniture)actor;
@@ -320,9 +342,13 @@ namespace SagaDB.FictitiousActors
                                         fi.ItemID = uint.Parse(i2.InnerText);
                                         break;
                                 }
+
                                 break;
+
                             #endregion
+
                             #region GOLEM
+
                             case "GOLEM":
                                 actor.type = ActorType.GOLEM;
                                 Golem = (ActorGolem)actor;
@@ -345,33 +371,42 @@ namespace SagaDB.FictitiousActors
                                         Golem.Title = i2.InnerText;
                                         break;
                                     case "shoptype":
-                                        string t = i2.InnerText.ToLower();
+                                        var t = i2.InnerText.ToLower();
                                         if (t == "sell")
                                             Golem.GolemType = GolemType.Sell;
-                                        else if(t == "buy")
+                                        else if (t == "buy")
                                             Golem.GolemType = GolemType.Buy;
                                         break;
                                     case "aitype":
                                         Golem.AIMode = byte.Parse(i2.InnerText);
                                         break;
                                 }
+
                                 break;
-                                #endregion
+
+                            #endregion
                         }
                     }
+
                     if (actor.type == ActorType.FURNITURE)
                     {
-                        if (!fictitiousactorslist.ContainsKey(fi.MapID)) this.fictitiousactorslist.Add(fi.MapID, new List<Actor.Actor>());
-                        fictitiousactorslist[fi.MapID].Add(fi);
+                        if (!FictitiousActorsList.ContainsKey(fi.MapID))
+                            FictitiousActorsList.Add(fi.MapID, new List<Actor.Actor>());
+                        FictitiousActorsList[fi.MapID].Add(fi);
                     }
                     else
                     {
-                        if (!fictitiousactorslist.ContainsKey(actor.MapID)) this.fictitiousactorslist.Add(actor.MapID, new List<Actor.Actor>());
-                        fictitiousactorslist[actor.MapID].Add(actor);
+                        if (!FictitiousActorsList.ContainsKey(actor.MapID))
+                            FictitiousActorsList.Add(actor.MapID, new List<Actor.Actor>());
+                        FictitiousActorsList[actor.MapID].Add(actor);
                     }
                 }
             }
-            catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
+
             return total;
         }
     }

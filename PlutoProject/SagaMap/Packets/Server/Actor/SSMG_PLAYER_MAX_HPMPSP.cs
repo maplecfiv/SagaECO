@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,26 +6,23 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_MAX_HPMPSP()
         {
-            this.data = new byte[35];
-            this.offset = 2;
-            this.ID = 0x0221;
+            data = new byte[35];
+            offset = 2;
+            ID = 0x0221;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint MaxHP
         {
             set
             {
-                this.PutByte(3, 6);
-                this.PutUInt(0, 7);
-                this.PutUInt(value, 11);
+                PutByte(3, 6);
+                PutUInt(0, 7);
+                PutUInt(value, 11);
             }
         }
 
@@ -39,8 +30,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutUInt(0, 15);
-                this.PutUInt(value, 19);
+                PutUInt(0, 15);
+                PutUInt(value, 19);
             }
         }
 
@@ -48,18 +39,14 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutUInt(0, 23);
-                this.PutUInt(value, 27);
+                PutUInt(0, 23);
+                PutUInt(value, 27);
             }
         }
 
         public uint MaxEP
         {
-            set
-            {
-                this.PutUInt(value, 31);
-            }
+            set => PutUInt(value, 31);
         }
     }
 }
-        

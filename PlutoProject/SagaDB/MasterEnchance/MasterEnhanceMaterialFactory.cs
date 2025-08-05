@@ -1,11 +1,9 @@
-﻿using SagaLib;
-using SagaLib.VirtualFileSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.MasterEnchance
 {
@@ -13,7 +11,7 @@ namespace SagaDB.MasterEnchance
     {
         public Dictionary<uint, MasterEnhanceMaterial> Items = new Dictionary<uint, MasterEnhanceMaterial>();
 
-        public void Init(string path, System.Text.Encoding encoding)
+        public void Init(string path, Encoding encoding)
         {
             using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
             {
@@ -38,7 +36,6 @@ namespace SagaDB.MasterEnchance
                     catch (Exception ex)
                     {
                         Logger.ShowError(ex);
-                        continue;
                     }
                 }
             }

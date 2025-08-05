@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Druid
 {
     /// <summary>
-    /// 範圍治癒（エリアヒール）
+    ///     範圍治癒（エリアヒール）
     /// </summary>
     public class AreaHeal : ISkill
     {
-        bool MobUse;
+        private readonly bool MobUse;
+
         public AreaHeal()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         public AreaHeal(bool MobUse)
         {
             this.MobUse = MobUse;
         }
+
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
@@ -30,44 +31,31 @@ namespace SagaMap.Skill.SkillDefinations.Druid
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            if (MobUse)
-            {
-                level = 5;
-            }
-            float factor = -(1f + 0.4f * level);
+            if (MobUse) level = 5;
+            var factor = -(1f + 0.4f * level);
 
-            if (sActor.Status.Additions.ContainsKey("Cardinal"))//3转10技提升治疗量
+            if (sActor.Status.Additions.ContainsKey("Cardinal")) //3转10技提升治疗量
                 factor += sActor.Status.Cardinal_Rank;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 100, true);
-            List<Actor> realAffected = new List<Actor>();
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 100, true);
+            var realAffected = new List<Actor>();
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                foreach (Actor act in affected)
-                {
+                var pc = (ActorPC)sActor;
+                foreach (var act in affected)
                     if (act.type == ActorType.PC || act.type == ActorType.PET || act.type == ActorType.SHADOW)
-                    {
                         if (pc.PossessionTarget == 0)
-                        {
                             realAffected.Add(act);
-                        }
-                    }
-                }
             }
             else
             {
-                foreach (Actor act in affected)
-                {
+                foreach (var act in affected)
                     if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                    {
                         realAffected.Add(act);
-                    }
-                }
-
             }
 
-            SkillHandler.Instance.MagicAttack(sActor, realAffected, args, SkillHandler.DefType.IgnoreAll, SagaLib.Elements.Holy, factor);
+            SkillHandler.Instance.MagicAttack(sActor, realAffected, args, SkillHandler.DefType.IgnoreAll, Elements.Holy,
+                factor);
         }
 
         #endregion

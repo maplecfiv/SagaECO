@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
 
 namespace SagaMap.Dungeon
@@ -11,10 +8,10 @@ namespace SagaMap.Dungeon
     {
         public DungeonMapsFactory()
         {
-            this.loadingTab = "Loading Dungeon Map database";
-            this.loadedTab = " dungeon maps loaded.";
-            this.databaseName = "dungeon map";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Dungeon Map database";
+            loadedTab = " dungeon maps loaded.";
+            databaseName = "dungeon map";
+            FactoryType = FactoryType.XML;
         }
 
         protected override uint GetKey(DungeonMap item)
@@ -27,7 +24,7 @@ namespace SagaMap.Dungeon
             throw new NotImplementedException();
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, DungeonMap item)
+        protected override void ParseXML(XmlElement root, XmlElement current, DungeonMap item)
         {
             switch (root.Name.ToLower())
             {
@@ -44,21 +41,23 @@ namespace SagaMap.Dungeon
                             item.Theme = (Theme)Enum.Parse(typeof(Theme), current.InnerText);
                             break;
                         case "gate":
-                            GateType type = (GateType)Enum.Parse(typeof(GateType), current.GetAttribute("type"));
-                            byte x = byte.Parse(current.GetAttribute("x"));
-                            byte y = byte.Parse(current.GetAttribute("y"));
-                            uint npcID = uint.Parse(current.InnerText);
+                            var type = (GateType)Enum.Parse(typeof(GateType), current.GetAttribute("type"));
+                            var x = byte.Parse(current.GetAttribute("x"));
+                            var y = byte.Parse(current.GetAttribute("y"));
+                            var npcID = uint.Parse(current.InnerText);
                             if (!item.Gates.ContainsKey(type))
                             {
-                                DungeonGate gate = new DungeonGate();
+                                var gate = new DungeonGate();
                                 gate.GateType = type;
                                 gate.X = x;
                                 gate.Y = y;
                                 gate.NPCID = npcID;
                                 item.Gates.Add(type, gate);
                             }
+
                             break;
                     }
+
                     break;
             }
         }

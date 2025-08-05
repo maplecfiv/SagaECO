@@ -1,55 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Sorcerer
 {
     /// <summary>
-    /// 神經衰弱（クラッター）
+    ///     神經衰弱（クラッター）
     /// </summary>
     public class Clutter : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int rate = 10 + 10 * level;
-            int lifetime = new int[] { 0, 15000, 20000, 25000, 27000, 30000 }[level];
+            var rate = 10 + 10 * level;
+            var lifetime = new[] { 0, 15000, 20000, 25000, 27000, 30000 }[level];
             //if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, "MagIntDexDownOne", rate))
             if (SagaLib.Global.Random.Next(0, 99) < rate)
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "MagIntDexDownOne", lifetime);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var skill = new DefaultBuff(args.skill, dActor, "MagIntDexDownOne", lifetime);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             if (actor is ActorPC)
             {
                 //INT
-                int int_add = new int[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
+                var int_add = new[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_int"))
                     skill.Variable.Remove("MagIntDexDownOne_int");
                 skill.Variable.Add("MagIntDexDownOne_int", int_add);
                 actor.Status.int_skill -= (short)int_add;
 
                 //MAG
-                int mag_add = new int[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
+                var mag_add = new[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_mag"))
                     skill.Variable.Remove("MagIntDexDownOne_mag");
                 skill.Variable.Add("MagIntDexDownOne_mag", mag_add);
                 actor.Status.mag_skill -= (short)mag_add;
 
                 //DEX
-                int dex_add = -(6 + level * 2);
+                var dex_add = -(6 + level * 2);
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_dex"))
                     skill.Variable.Remove("MagIntDexDownOne_dex");
                 skill.Variable.Add("MagIntDexDownOne_dex", dex_add);
@@ -60,10 +61,10 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
             else if (actor is ActorMob)
             {
-                int max_matk_add = (int)(actor.Status.max_matk * (0.10f + 0.04f * level));
-                int min_matk_add = (int)(actor.Status.min_matk * (0.10f + 0.04f * level));
-                int magic_reduce = (int)((float)(0.10f + 0.04f * level) * 100.0f);
-                int mdef_add = 10 + 4 * level;
+                var max_matk_add = (int)(actor.Status.max_matk * (0.10f + 0.04f * level));
+                var min_matk_add = (int)(actor.Status.min_matk * (0.10f + 0.04f * level));
+                var magic_reduce = (int)((0.10f + 0.04f * level) * 100.0f);
+                var mdef_add = 10 + 4 * level;
 
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_MinMatk"))
                     skill.Variable.Remove("MagIntDexDownOne_MinMatk");
@@ -91,11 +92,14 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -124,10 +128,13 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
+
         #endregion
     }
 }

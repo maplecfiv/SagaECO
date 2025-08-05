@@ -1,47 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// もっと褒めてもいいのよ！
+    ///     もっと褒めてもいいのよ！
     /// </summary>
     public class YouCanPraiseMore : ISkill
     {
         #region ISkill 成員
-        int KillingMarkCounter = 0;
-        public int TryCast(SagaDB.Actor.ActorPC sActor, SagaDB.Actor.Actor dActor, SkillArg args)
+
+        private int KillingMarkCounter;
+
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             if (sActor.Status.Additions.ContainsKey("Efuikasu"))
                 return -1;
             return 0;
         }
-        public void Proc(SagaDB.Actor.Actor sActor, SagaDB.Actor.Actor dActor, SkillArg args, byte level)
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 420000;
+            var lifetime = 420000;
             if (sActor.KillingMarkCounter != 0)
                 KillingMarkCounter = sActor.KillingMarkCounter;
-            DefaultBuff skill = new DefaultBuff(args.skill, sActor, "Efuikasu", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, sActor, "Efuikasu", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(sActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.KillingMarkCounter = Math.Min(KillingMarkCounter, 20);
             actor.Buff.KillingMark = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.KillingMarkCounter = 0;
             actor.Buff.KillingMark = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

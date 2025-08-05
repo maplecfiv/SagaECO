@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 
 namespace SagaLib.VirtualFileSystem
 {
     public class RealFileSystem : IFileSystem
     {
-        string rootPath = ".";
+        private string rootPath = ".";
+
         #region IFileSystem Members
 
         public bool Init(string path)
@@ -19,26 +17,21 @@ namespace SagaLib.VirtualFileSystem
             return true;
         }
 
-        public System.IO.Stream OpenFile(string path)
+        public Stream OpenFile(string path)
         {
-            if (path.IndexOf(":") < 0)
-            {
-                return new System.IO.FileStream(rootPath + path, System.IO.FileMode.Open, System.IO.FileAccess.Read);
-            }
-            else
-            {
-                return new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read);
-            }
+            if (path.IndexOf(":") < 0) return new FileStream(rootPath + path, FileMode.Open, FileAccess.Read);
+
+            return new FileStream(path, FileMode.Open, FileAccess.Read);
         }
 
         public string[] SearchFile(string path, string pattern)
         {
-            return System.IO.Directory.GetFiles(rootPath + path, pattern);
+            return Directory.GetFiles(rootPath + path, pattern);
         }
 
-        public string[] SearchFile(string path, string pattern, System.IO.SearchOption option)
+        public string[] SearchFile(string path, string pattern, SearchOption option)
         {
-            return System.IO.Directory.GetFiles(rootPath + path, pattern, option);
+            return Directory.GetFiles(rootPath + path, pattern, option);
         }
 
         public void Close()

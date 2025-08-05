@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
+﻿using SagaDB.Actor;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Network.Client;
 
 namespace SagaMap.Skill.SkillDefinations.Elementaler
 {
-    class SpellCancel : ISkill
+    internal class SpellCancel : ISkill
     {
         #region ISkill Members
 
@@ -21,22 +15,20 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            ActorEventHandlers.PCEventHandler _e;
-            SagaMap.Network.Client.MapClient myClinet;
-            ActorPC myActor = (ActorPC)sActor;
-            _e = (ActorEventHandlers.PCEventHandler)sActor.e;
+            PCEventHandler _e;
+            MapClient myClinet;
+            var myActor = (ActorPC)sActor;
+            _e = (PCEventHandler)sActor.e;
             myClinet = _e.Client;
             myClinet.SendSkillDummy();
             if (myClinet.Character.Tasks.ContainsKey("SkillCast"))
-            {
                 if (myClinet.Character.Tasks["SkillCast"].Activated)
                 {
                     myClinet.Character.Tasks["SkillCast"].Deactivate();
                     myClinet.Character.Tasks.Remove("SkillCast");
                 }
-            }
         }
-        #endregion
 
+        #endregion
     }
 }

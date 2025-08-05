@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Astralist
 {
-    class WindExplosion : ISkill
+    internal class WindExplosion : ISkill
     {
         #region ISkill Members
 
@@ -22,10 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             float factor = 0;
-            if(sActor.type!=ActorType.PC)
-            {
-                level = 5;
-            }
+            if (sActor.type != ActorType.PC) level = 5;
             switch (level)
             {
                 case 1:
@@ -44,12 +38,12 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                     factor = 15.0f;
                     break;
             }
-            if(sActor.type==ActorType.PC)
+
+            if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
+                var pc = (ActorPC)sActor;
                 if (pc.Skills2_1.ContainsKey(3261) || pc.DualJobSkill.Exists(x => x.ID == 3261))
                 {
-
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 3261))
                         duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3261).Level;
@@ -60,9 +54,9 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
 
                     factor += 0.5f * Math.Max(duallv, mainlv);
                 }
+
                 if (pc.Skills2_1.ContainsKey(3264) || pc.DualJobSkill.Exists(x => x.ID == 3264))
                 {
-
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 3264))
                         duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3264).Level;
@@ -167,17 +161,17 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
 
             //    }
             //}
-            ActorSkill actorS = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 350, null);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
+            var actorS = new ActorSkill(args.skill, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
+                SagaLib.Global.PosY8to16(args.y, map.Height), 350, null);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Wind, factor);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Wind, factor);
         }
+
         #endregion
     }
 }

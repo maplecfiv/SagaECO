@@ -1,51 +1,48 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-
 using SagaDB;
-using SagaDB.Item;
-using SagaDB.Actor;
 using SagaLib;
-using SagaLogin;
 using SagaLogin.Manager;
+using SagaLogin.Packets.Client;
+using SagaLogin.Packets.Server;
+using Version = SagaLib.Version;
 
 namespace SagaLogin.Network.Client
 {
     public partial class LoginClient : SagaLib.Client
     {
+        public enum SESSION_STATE
+        {
+            LOGIN,
+            MAP,
+            REDIRECTING,
+            DISCONNECTED
+        }
+
+        public Account account;
         private string client_Version;
 
         private uint frontWord, backWord;
 
         public bool IsMapServer = false;
-
-        public Account account;
-
-        public enum SESSION_STATE
-        {
-            LOGIN, MAP, REDIRECTING, DISCONNECTED
-        }
         public SESSION_STATE state;
 
         public LoginClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
         {
-            this.netIO = new NetIO(mSock, mCommandTable, this);
-            if (Configuration.Instance.Version >= SagaLib.Version.Saga11)
-                this.netIO.FirstLevelLength = 2;
-            this.netIO.SetMode(NetIO.Mode.Server);
-            if (this.netIO.sock.Connected) this.OnConnect();
+            netIO = new NetIO(mSock, mCommandTable, this);
+            if (Configuration.Instance.Version >= Version.Saga11)
+                netIO.FirstLevelLength = 2;
+            netIO.SetMode(NetIO.Mode.Server);
+            if (netIO.sock.Connected) OnConnect();
         }
 
         public override string ToString()
         {
             try
             {
-                if (this.netIO != null) return this.netIO.sock.RemoteEndPoint.ToString();
-                else
-                    return "LoginClient";
+                if (netIO != null) return netIO.sock.RemoteEndPoint.ToString();
+                return "LoginClient";
             }
             catch (Exception)
             {
@@ -55,47 +52,46 @@ namespace SagaLogin.Network.Client
 
         public override void OnConnect()
         {
-
         }
 
         public override void OnDisconnect()
         {
-            if (this.currentStatus != CharStatus.OFFLINE)
+            if (currentStatus != CharStatus.OFFLINE)
             {
-                if (this.IsMapServer)
+                if (IsMapServer)
                 {
                     Logger.ShowWarning("A map server has just disconnected...");
-                    foreach (uint i in this.server.HostedMaps)
-                    {
+                    foreach (var i in server.HostedMaps)
                         if (MapServerManager.Instance.MapServers.ContainsKey(i))
                             MapServerManager.Instance.MapServers.Remove(i);
-                    }
                 }
                 else
                 {
-                    this.currentStatus = CharStatus.OFFLINE;
-                    this.currentMap = 0;
+                    currentStatus = CharStatus.OFFLINE;
+                    currentMap = 0;
                     try
                     {
-                        this.SendStatusToFriends();
+                        SendStatusToFriends();
                     }
                     catch (Exception ex)
                     {
                         Logger.ShowError(ex);
                     }
-                    if (this.account != null)
-                        Logger.ShowInfo(this.account.Name + " logged out.");
+
+                    if (account != null)
+                        Logger.ShowInfo(account.Name + " logged out.");
                 }
             }
+
             if (LoginClientManager.Instance.Clients.Contains(this))
                 LoginClientManager.Instance.Clients.Remove(this);
         }
 
-        public void OnWRPRequest(Packets.Client.CSMG_WRP_REQUEST p)
+        public void OnWRPRequest(CSMG_WRP_REQUEST p)
         {
-            Packets.Server.SSMG_WRP_LIST p1 = new SagaLogin.Packets.Server.SSMG_WRP_LIST();
+            var p1 = new SSMG_WRP_LIST();
             p1.RankingList = LoginServer.charDB.GetWRPRanking();
-            this.netIO.SendPacket(p1);
+            netIO.SendPacket(p1);
         }
     }
 }

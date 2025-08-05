@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,26 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_NPC_SELECT()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte Result
-        {
-            get
-            {
-                return GetByte(2);
-            }
-        }
+        public byte Result => GetByte(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_NPC_SELECT();
+            return new CSMG_NPC_SELECT();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnNPCSelect(this);
+            ((MapClient)client).OnNPCSelect(this);
         }
-
     }
 }

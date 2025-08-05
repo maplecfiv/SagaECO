@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,17 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_SETSHOP_OPEN_SETUP()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x190B;
+            data = new byte[4];
+            offset = 2;
+            ID = 0x190B;
         }
 
         public uint Unknown
         {
-            set
-            {
-                this.PutUInt(0, 2);
-            }
+            set => PutUInt(0, 2);
         }
 
 
@@ -30,15 +21,14 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] comment = Global.Unicode.GetBytes(value + "\0");
-                byte[] buf = new byte[7 + comment.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var comment = Global.Unicode.GetBytes(value + "\0");
+                var buf = new byte[7 + comment.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)comment.Length, 6);
-                this.PutBytes(comment, 7);
+                PutByte((byte)comment.Length, 6);
+                PutBytes(comment, 7);
             }
         }
     }
 }
-

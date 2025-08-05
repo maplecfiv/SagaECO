@@ -1,10 +1,8 @@
-﻿using SagaLib;
-using SagaLib.VirtualFileSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.Map
 {
@@ -12,7 +10,7 @@ namespace SagaDB.Map
     {
         public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
             while (!sr.EndOfStream)

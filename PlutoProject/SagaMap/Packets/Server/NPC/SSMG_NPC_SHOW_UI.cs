@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 using SagaMap.Scripting;
 
@@ -47,24 +43,22 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_SHOW_UI()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x0606;
+            data = new byte[10];
+            offset = 2;
+            ID = 0x0606;
 
-            this.PutUInt(1);
+            PutUInt(1);
         }
 
         public UIType UIType
         {
             set
             {
-                this.PutUInt((uint)value, 6);
-                this.PutUInt(0xffffffff);
-                this.PutUInt(0xffffffff);
-                this.PutByte(0x0);
+                PutUInt((uint)value, 6);
+                PutUInt(0xffffffff);
+                PutUInt(0xffffffff);
+                PutByte(0x0);
             }
         }
-
     }
 }
-

@@ -1,7 +1,5 @@
-using SagaLib;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -9,21 +7,18 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_DUALJOB_SKILL_SEND()
         {
-            this.data = new byte[36];
-            this.offset = 2;
-            this.ID = 0x22D2;
+            data = new byte[36];
+            offset = 2;
+            ID = 0x22D2;
         }
 
         public List<SagaDB.Skill.Skill> Skills
         {
             set
             {
-                this.PutByte(byte.Parse(value.Count.ToString()), offset);
+                PutByte(byte.Parse(value.Count.ToString()), offset);
 
-                foreach (var item in value)
-                {
-                    this.PutUShort(ushort.Parse(item.ID.ToString()));
-                }
+                foreach (var item in value) PutUShort(ushort.Parse(item.ID.ToString()));
             }
         }
 
@@ -31,12 +26,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutByte(byte.Parse(value.Count.ToString()), offset);
+                PutByte(byte.Parse(value.Count.ToString()), offset);
 
-                foreach (var item in value)
-                {
-                    this.PutByte(item.Level);
-                }
+                foreach (var item in value) PutByte(item.Level);
             }
         }
     }

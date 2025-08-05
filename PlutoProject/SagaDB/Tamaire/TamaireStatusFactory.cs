@@ -1,31 +1,41 @@
-using SagaDB.Actor;
-using SagaLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using SagaLib;
 
 namespace SagaDB.Tamaire
 {
     public class TamaireStatus
     {
-        public byte level;
-        public byte jobtype;
+        public int defpercent,
+            mdefpercent,
+            def,
+            mdef,
+            hit_melee,
+            hit_range,
+            avoid_melee,
+            avoid_range,
+            aspd,
+            cspd,
+            payload,
+            capacity;
+
         public int hp, sp, mp, atk_min, atk_max, matk_min, matk_max;
-        public int defpercent, mdefpercent, def,mdef,hit_melee, hit_range, avoid_melee, avoid_range, aspd, cspd, payload, capacity;
+        public byte jobtype;
+        public byte level;
     }
+
     public class TamaireStatusFactory : Factory<TamaireStatusFactory, TamaireStatus>
     {
+        private uint i;
+
         public TamaireStatusFactory()
         {
-            this.loadingTab = "Loading Tamaire Status";
-            this.loadedTab = " Tamaire Status loaded.";
-            this.databaseName = "TamaireStatus";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Tamaire Status";
+            loadedTab = " Tamaire Status loaded.";
+            databaseName = "TamaireStatus";
+            FactoryType = FactoryType.CSV;
         }
-        uint i;
+
         protected override uint GetKey(TamaireStatus item)
         {
             return i; //don't use this key as it has no physical meaning

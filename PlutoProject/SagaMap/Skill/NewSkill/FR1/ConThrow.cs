@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Scout
 {
@@ -49,17 +44,16 @@ namespace SagaMap.Skill.SkillDefinations.Scout
                     factor = 1.2f;
                     break;
             }
+
             args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.STAB;
             args.delayRate = 5f;
-            List<Actor> target = new List<Actor>();
-            for (int i = 0; i < count; i++)
-            {
-                target.Add(dActor);
-            }
+            var target = new List<Actor>();
+            for (var i = 0; i < count; i++) target.Add(dActor);
 
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
+
         #endregion
     }
 }

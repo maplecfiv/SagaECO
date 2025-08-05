@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SagaDB.Tamaire;
 using SagaLib;
-using SagaDB.ECOShop;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,17 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_TAMAIRE_RENTAL_TERMINATE()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x22B5;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x22B5;
         }
 
         public byte Reason
         {
-            set
-            {
-                this.PutByte(value,2); //00 = expired, 01 = terminated
-            }
+            set => PutByte(value, 2); //00 = expired, 01 = terminated
         }
     }
 }

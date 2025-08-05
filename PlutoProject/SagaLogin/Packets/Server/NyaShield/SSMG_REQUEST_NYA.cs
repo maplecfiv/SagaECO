@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaLogin.Packets.Server
@@ -10,11 +6,9 @@ namespace SagaLogin.Packets.Server
     {
         public SSMG_REQUEST_NYA()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x0150;   
+            data = new byte[4];
+            offset = 2;
+            ID = 0x0150;
         }
-
     }
 }
-

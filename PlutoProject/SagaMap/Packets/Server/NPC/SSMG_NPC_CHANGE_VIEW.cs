@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Scripting;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,27 +6,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_CHANGE_VIEW()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0xFFFE;
+            data = new byte[10];
+            offset = 2;
+            ID = 0xFFFE;
         }
 
         public uint NPCID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint MobID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
-
     }
 }
-

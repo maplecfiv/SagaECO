@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Global
@@ -19,32 +15,27 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool active = false;
+            var active = false;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHORT_SWORD)
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.SHORT_SWORD)
                     {
                         active = true;
-                        DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "ShortSwordMastery", active);
-                        skill.OnAdditionStart += this.StartEventHandler;
-                        skill.OnAdditionEnd += this.EndEventHandler;
+                        var skill = new DefaultPassiveSkill(args.skill, sActor, "ShortSwordMastery", active);
+                        skill.OnAdditionStart += StartEventHandler;
+                        skill.OnAdditionEnd += EndEventHandler;
                         SkillHandler.ApplyAddition(sActor, skill);
                     }
-                    //if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CLAW)
-                    //{
-                    //    active2 = true;
-                    //    DefaultPassiveSkill skill2 = new DefaultPassiveSkill(args.skill, sActor, "ConClaw", active2);
-                    //    skill2.OnAdditionStart += this.StartEventHandler2;
-                    //    skill2.OnAdditionEnd += this.EndEventHandler2;
-                    //    SkillHandler.ApplyAddition(sActor, skill2);
-                    //}
-                }
-
-
-
+                //if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CLAW)
+                //{
+                //    active2 = true;
+                //    DefaultPassiveSkill skill2 = new DefaultPassiveSkill(args.skill, sActor, "ConClaw", active2);
+                //    skill2.OnAdditionStart += this.StartEventHandler2;
+                //    skill2.OnAdditionEnd += this.EndEventHandler2;
+                //    SkillHandler.ApplyAddition(sActor, skill2);
+                //}
             }
         }
         //void StartEventHandler2(Actor actor, DefaultPassiveSkill skill)
@@ -62,7 +53,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
         //    actor.Status.combo_skill = 2;
         //}
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             int value;
             value = skill.skill.Level * 5;
@@ -85,9 +76,9 @@ namespace SagaMap.Skill.SkillDefinations.Global
             actor.Status.hit_melee_skill += (short)value;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            int value = skill.Variable["ShortSwordMastery_Atk"];
+            var value = skill.Variable["ShortSwordMastery_Atk"];
             actor.Status.min_atk1_skill -= (short)value;
             value = skill.Variable["ShortSwordMastery_Hit"];
             actor.Status.hit_melee_skill -= (short)value;

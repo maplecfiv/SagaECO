@@ -1,112 +1,46 @@
-﻿using SagaDB.Actor;
-using SagaLib;
-using SagaMap.Skill.Additions.Global;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SagaDB.Actor;
+using SagaDB.Item;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Cardinal
 {
     /// <summary>
-    /// ゴスペル
+    ///     ゴスペル
     /// </summary>
     public class Gospel : ISkill
     {
-        #region ISkill Members
-
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
-            if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 300) || map.CheckActorSkillIsHeal(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 300))
-            {
-                return -17;
-            }
-            ////待测试
-            //if (map.CheckActorSkillInRange(dActor.X, dActor.Y, 300))
-            //{
-            //    return -17;
-            //}
-            if (CheckPossible(pc))
-                return 0;
-            else
-                return -5;
-
-            //return 0;
-        }
-
-        bool CheckPossible(Actor sActor)
-        {
-            if (sActor.type == ActorType.PC)
-            {
-                ActorPC pc = (ActorPC)sActor;
-                if (Skill.SkillHandler.Instance.isEquipmentRight(pc, SagaDB.Item.ItemType.STRINGS) || pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
-                    return true;
-                else
-                    return false;
-            }
-            else
-                return true;
-        }
-
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            if (map.CheckActorSkillIsHeal(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 300))
-            {
-                return;
-            }
-            //创建设置型技能技能体
-            ActorSkill actor = new ActorSkill(args.skill, sActor);
-            //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            //设定技能体位置
-            actor.MapID = sActor.MapID;
-            actor.X = SagaLib.Global.PosX8to16(args.x, map.Width);
-            actor.Y = SagaLib.Global.PosY8to16(args.y, map.Height);
-            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
-            actor.e = new ActorEventHandlers.NullEventHandler();
-            //在指定地图注册技能体Actor
-            map.RegisterActor(actor);
-            //设置Actor隐身属性为非
-            actor.invisble = false;
-            //广播隐身属性改变事件，以便让玩家看到技能体
-            map.OnActorVisibilityChange(actor);
-            //設置系
-            actor.Stackable = false;
-            //创建技能效果处理对象
-            Activator timer = new Activator(sActor, actor, args, level);
-            timer.Activate();
-        }
-
-        #endregion
-
         #region Timer
 
         private class Activator : MultiRunTask
         {
-            ActorSkill actor;
-            Actor caster;
-            SkillArg skill;
-            Map map;
-            float[] factors = new float[] { 0f, -0.8f, -0.9f, -0.7f, -1.0f, -1.1f, -100f };
-            float factor = 0f;
-            int[] countMaxs = new int[] { 0, 5, 5, 16, 10, 13 };
-            int countMax = 0;
-            int count = 0, lifetime = 0;
+            private readonly ActorSkill actor;
+            private readonly Actor caster;
+            private readonly int countMax;
+            private readonly int[] countMaxs = { 0, 5, 5, 16, 10, 13 };
+            private readonly float factor;
+            private readonly float[] factors = { 0f, -0.8f, -0.9f, -0.7f, -1.0f, -1.1f, -100f };
+            private readonly int lifetime;
+            private readonly Map map;
+            private readonly SkillArg skill;
+            private int count;
 
             public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
             {
                 this.actor = actor;
                 this.caster = caster;
-                this.skill = args.Clone();
-                this.countMax = countMaxs[level];
-                map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                int[] periods = new int[] { 0, 1000, 1000, 500, 1000, 800, 100 };
+                skill = args.Clone();
+                countMax = countMaxs[level];
+                map = MapManager.Instance.GetMap(actor.MapID);
+                var periods = new[] { 0, 1000, 1000, 500, 1000, 800, 100 };
                 lifetime = 60000 * level;
                 factor = factors[level] + caster.Status.Cardinal_Rank;
-                this.period = periods[level];
-                this.dueTime = 0;
-
+                period = periods[level];
+                dueTime = 0;
             }
 
             public override void CallBack()
@@ -117,35 +51,31 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
                     if (count < countMax)
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
-                        List<Actor> actors = map.GetActorsArea(actor, 200, false);
-                        List<Actor> affected = new List<Actor>();
+                        var actors = map.GetActorsArea(actor, 200, false);
+                        var affected = new List<Actor>();
                         //取得有效Actor（即怪物）
 
                         //施加火属性魔法伤害
                         skill.affectedActors.Clear();
-                        foreach (Actor i in actors)
-                        {
+                        foreach (var i in actors)
                             if (i.type == ActorType.PC)
                             {
-                                ActorPC pc = (ActorPC)i;
+                                var pc = (ActorPC)i;
                                 if (!SkillHandler.Instance.CheckValidAttackTarget(caster, pc) && pc.Online)
                                 {
                                     affected.Add(pc);
                                     if (!pc.Status.Additions.ContainsKey("GospelBonus"))
                                     {
-                                        DefaultBuff gospelBonus = new DefaultBuff(skill.skill, pc, "GospelBonus", lifetime);
+                                        var gospelBonus = new DefaultBuff(skill.skill, pc, "GospelBonus", lifetime);
                                         gospelBonus.OnAdditionStart += gospelBonus_OnAdditionStart;
                                         gospelBonus.OnAdditionEnd += gospelBonus_OnAdditionEnd;
                                         SkillHandler.ApplyAddition(pc, gospelBonus);
                                     }
-
                                 }
-
                             }
 
-
-                        }
-                        SkillHandler.Instance.MagicAttack(caster, affected, skill, SkillHandler.DefType.IgnoreAll, Elements.Holy, factor);
+                        SkillHandler.Instance.MagicAttack(caster, affected, skill, SkillHandler.DefType.IgnoreAll,
+                            Elements.Holy, factor);
 
                         //广播技能效果
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
@@ -153,7 +83,7 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
                     }
                     else
                     {
-                        this.Deactivate();
+                        Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
@@ -165,22 +95,22 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }
 
-            void gospelBonus_OnAdditionStart(Actor actor, DefaultBuff skill)
+            private void gospelBonus_OnAdditionStart(Actor actor, DefaultBuff skill)
             {
                 int level = skill.skill.Level;
-                int max_atk1_add = (int)(30 + 30 * skill.skill.Level);
-                int max_atk2_add = (int)(30 + 30 * skill.skill.Level);
-                int max_atk3_add = (int)(30 + 30 * skill.skill.Level);
-                int min_atk1_add = (int)(30 + 30 * skill.skill.Level);
-                int min_atk2_add = (int)(30 + 30 * skill.skill.Level);
-                int min_atk3_add = (int)(30 + 30 * skill.skill.Level);
-                int max_matk_add = (int)(30 + 30 * skill.skill.Level);
-                int min_matk_add = (int)(30 + 30 * skill.skill.Level);
-                int def_add = 30 + 10 * level;
-                int mdef_add = 30 + 10 * level;
-                uint hpbonus = (uint)((float)actor.MaxHP * (((float)(10 + 5 * level) / 100.0f)));
-                uint mpbonus = (uint)((float)actor.MaxMP * (((float)(10 + 5 * level) / 100.0f)));
-                uint spbonus = (uint)((float)actor.MaxSP * (((float)(10 + 5 * level) / 100.0f)));
+                var max_atk1_add = 30 + 30 * skill.skill.Level;
+                var max_atk2_add = 30 + 30 * skill.skill.Level;
+                var max_atk3_add = 30 + 30 * skill.skill.Level;
+                var min_atk1_add = 30 + 30 * skill.skill.Level;
+                var min_atk2_add = 30 + 30 * skill.skill.Level;
+                var min_atk3_add = 30 + 30 * skill.skill.Level;
+                var max_matk_add = 30 + 30 * skill.skill.Level;
+                var min_matk_add = 30 + 30 * skill.skill.Level;
+                var def_add = 30 + 10 * level;
+                var mdef_add = 30 + 10 * level;
+                var hpbonus = (uint)(actor.MaxHP * ((10 + 5 * level) / 100.0f));
+                var mpbonus = (uint)(actor.MaxMP * ((10 + 5 * level) / 100.0f));
+                var spbonus = (uint)(actor.MaxSP * ((10 + 5 * level) / 100.0f));
 
                 if (skill.Variable.ContainsKey("GospelBonusHP"))
                     skill.Variable.Remove("GospelBonusHP");
@@ -262,10 +192,11 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
 
                 //PC.StatusFactory.Instance.CalcHPMPSP((ActorPC)actor);
                 //Network.Client.MapClient.FromActorPC((ActorPC)actor).SendPlayerInfo();
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
 
-            void gospelBonus_OnAdditionEnd(Actor actor, DefaultBuff skill)
+            private void gospelBonus_OnAdditionEnd(Actor actor, DefaultBuff skill)
             {
                 actor.Status.hp_skill -= (short)skill.Variable["GospelBonusHP"];
 
@@ -303,9 +234,75 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
 
                 //PC.StatusFactory.Instance.CalcHPMPSP((ActorPC)actor);
                 //Network.Client.MapClient.FromActorPC((ActorPC)actor).SendPlayerInfo();
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
         }
+
+        #endregion
+
+        #region ISkill Members
+
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
+        {
+            var map = MapManager.Instance.GetMap(pc.MapID);
+            if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
+                    SagaLib.Global.PosY8to16(args.y, map.Height), 300) ||
+                map.CheckActorSkillIsHeal(SagaLib.Global.PosX8to16(args.x, map.Width),
+                    SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return -17;
+            ////待测试
+            //if (map.CheckActorSkillInRange(dActor.X, dActor.Y, 300))
+            //{
+            //    return -17;
+            //}
+            if (CheckPossible(pc))
+                return 0;
+            return -5;
+
+            //return 0;
+        }
+
+        private bool CheckPossible(Actor sActor)
+        {
+            if (sActor.type == ActorType.PC)
+            {
+                var pc = (ActorPC)sActor;
+                if (SkillHandler.Instance.isEquipmentRight(pc, ItemType.STRINGS) ||
+                    pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
+                    return true;
+                return false;
+            }
+
+            return true;
+        }
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
+        {
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            if (map.CheckActorSkillIsHeal(SagaLib.Global.PosX8to16(args.x, map.Width),
+                    SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return;
+            //创建设置型技能技能体
+            var actor = new ActorSkill(args.skill, sActor);
+            //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            //设定技能体位置
+            actor.MapID = sActor.MapID;
+            actor.X = SagaLib.Global.PosX8to16(args.x, map.Width);
+            actor.Y = SagaLib.Global.PosY8to16(args.y, map.Height);
+            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
+            actor.e = new NullEventHandler();
+            //在指定地图注册技能体Actor
+            map.RegisterActor(actor);
+            //设置Actor隐身属性为非
+            actor.invisble = false;
+            //广播隐身属性改变事件，以便让玩家看到技能体
+            map.OnActorVisibilityChange(actor);
+            //設置系
+            actor.Stackable = false;
+            //创建技能效果处理对象
+            var timer = new Activator(sActor, actor, args, level);
+            timer.Activate();
+        }
+
         #endregion
     }
 }

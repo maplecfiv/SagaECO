@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,25 +6,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTNER_EXP_MESSAGE()
         {
-            this.data = new byte[15];
-            this.offset = 2;
-            this.ID = 0x2196;
+            data = new byte[15];
+            offset = 2;
+            ID = 0x2196;
         }
 
         public long EXP
         {
-            set
-            {
-                this.PutLong(value, 3);
-            }
+            set => PutLong(value, 3);
         }
 
         public int Reliability
         {
-            set
-            {
-                this.PutInt(value, 11);
-            }
+            set => PutInt(value, 11);
         }
     }
 }

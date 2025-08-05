@@ -1,5 +1,4 @@
 using SagaLib;
-using System;
 
 namespace SagaMap.Packets.Server
 {
@@ -7,14 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_OPEN_REBIRTHREWARD_WINDOW()
         {
-            this.data = new byte[0x0e];
-            this.ID = 0x1edd;
-            this.offset = 2;
+            data = new byte[0x0e];
+            ID = 0x1edd;
+            offset = 2;
         }
 
         public byte SetOpen
         {
-            set { this.PutByte(value, 3); }
+            set => PutByte(value, 3);
         }
     }
 }

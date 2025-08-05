@@ -1,59 +1,30 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB;
-using SagaDB.Item;
 
 namespace SagaDB.Actor
 {
     public class ActorItem : Actor
     {
-        Item.Item item;
-        uint lootedBy = 0xFFFFFFFF;
-        string comment;
-        Actor owner;
-        bool party;
-        DateTime createTime = DateTime.Now;
+        public bool Roll;
 
         public ActorItem(Item.Item item)
         {
-            this.item = item;
-            this.Name = item.BaseData.name;
-            this.type = ActorType.ITEM;            
+            this.Item = item;
+            Name = item.BaseData.name;
+            type = ActorType.ITEM;
         }
 
-        public Item.Item Item
-        {
-            get
-            {
-                return this.item;
-            }
-            set
-            {
-                this.item = value;
-            }
-        }
+        public Item.Item Item { get; set; }
 
-        public bool PossessionItem
-        {
-            get
-            {
-                return this.item.PossessionedActor != null;
-            }
-        }
+        public bool PossessionItem => Item.PossessionedActor != null;
 
-        public string Comment { get { return this.comment; } set { this.comment = value; } }
+        public string Comment { get; set; }
 
-        public uint LootedBy { get { return this.lootedBy; } set { this.lootedBy = value; } }
+        public uint LootedBy { get; set; } = 0xFFFFFFFF;
 
-        public Actor Owner { get { return this.owner; } set { this.owner = value; } }
+        public Actor Owner { get; set; }
 
-        public DateTime CreateTime { get { return this.createTime; } set { this.createTime = value; } }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
-        public bool Party { get { return this.party; } set { this.party = value; } }
-
-        public bool Roll;
+        public bool Party { get; set; }
     }
 }

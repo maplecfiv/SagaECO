@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Elementaler
 {
     /// <summary>
-    /// フロスティゲイル
+    ///     フロスティゲイル
     /// </summary>
-    class WaterNum : ISkill
+    internal class WaterNum : ISkill
     {
         #region ISkill Members
 
@@ -21,10 +18,10 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int rate = 0;
-            int lifetime = 0;
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Water, 0);
-            args.flag[0] = SagaLib.AttackFlag.NONE;
+            var rate = 0;
+            var lifetime = 0;
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Water, 0);
+            args.flag[0] = AttackFlag.NONE;
             switch (level)
             {
                 case 1:
@@ -48,9 +45,10 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
                     lifetime = 6000;
                     break;
             }
-            float rateModify = 0;//The higher value of elemet the higher rate of freezen possibility.
-            int element_dActor = 0;
-            element_dActor = dActor.Elements[SagaLib.Elements.Water];
+
+            float rateModify = 0; //The higher value of elemet the higher rate of freezen possibility.
+            var element_dActor = 0;
+            element_dActor = dActor.Elements[Elements.Water];
             if (element_dActor > 1 && element_dActor <= 100)
                 rateModify = 0.25F;
             if (element_dActor > 100 && element_dActor <= 200)
@@ -59,16 +57,15 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
                 rateModify = 0.75F;
             if (element_dActor > 300)
                 rateModify = 0.9F;
-            rate = (int)(100 - (100 - rate) * (1 - rateModify));//If dActor attach water element, the rate increase. 
+            rate = (int)(100 - (100 - rate) * (1 - rateModify)); //If dActor attach water element, the rate increase. 
             if (SagaLib.Global.Random.Next(0, 99) < rate)
-            {
                 if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, SkillHandler.DefaultAdditions.Frosen, rate))
                 {
-                    Additions.Global.Freeze skill = new SagaMap.Skill.Additions.Global.Freeze(args.skill, dActor, lifetime);
+                    var skill = new Freeze(args.skill, dActor, lifetime);
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
-            }
         }
+
         #endregion
     }
 }

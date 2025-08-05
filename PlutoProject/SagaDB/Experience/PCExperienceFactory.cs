@@ -1,25 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaLib.VirtualFileSystem;
 using System.Xml;
+using SagaLib;
+
 namespace SagaDB.Experience
 {
     public class PCExperienceFactory : Factory<PCExperienceFactory, PCLevel>
     {
         public PCExperienceFactory()
         {
-            this.loadingTab = "Loading Experience table";
-            this.loadedTab = " Experience table loaded.";
-            this.databaseName = "EXP";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Experience table";
+            loadedTab = " Experience table loaded.";
+            databaseName = "EXP";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, PCLevel item)
+        protected override void ParseXML(XmlElement root, XmlElement current, PCLevel item)
         {
             throw new NotImplementedException();
         }

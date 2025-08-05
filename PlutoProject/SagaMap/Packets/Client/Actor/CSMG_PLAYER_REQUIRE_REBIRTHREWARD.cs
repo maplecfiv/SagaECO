@@ -1,10 +1,5 @@
 using SagaLib;
 using SagaMap.Network.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SagaMap.Packets.Client
 {
@@ -12,7 +7,7 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_PLAYER_REQUIRE_REBIRTHREWARD()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public override Packet New()
@@ -22,7 +17,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRequireRebirthReward(this);
+            ((MapClient)client).OnRequireRebirthReward(this);
         }
     }
 }

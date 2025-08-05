@@ -1,13 +1,17 @@
 #define Text
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml;
+using System.IO;
 using System.Text;
-
-using SagaLib;
+using System.Xml;
 using SagaDB.Actor;
+using SagaLib;
 using SagaLib.VirtualFileSystem;
+using SagaLogin.Configurations;
+using SagaMap.Tasks.System;
+using Version = SagaLib.Version;
+
 namespace SagaMap
 {
     public enum RateOverrideType
@@ -15,186 +19,255 @@ namespace SagaMap
         GMLv,
         CLevel
     }
+
     public class RateOverrideItem
     {
-        RateOverrideType type;
+        public RateOverrideType Type { get; set; }
 
-        public RateOverrideType Type
-        {
-            get { return type; }
-            set { type = value; }
-        }
-        int value;
+        public int Value { get; set; }
 
-        public int Value
-        {
-            get { return this.value; }
-            set { this.value = value; }
-        }
-        float exprate, questrate, questGoldRate, stampDropRate;
+        public float ExpRate { get; set; }
 
-        public float ExpRate
-        {
-            get { return exprate; }
-            set { exprate = value; }
-        }
+        public float QuestRate { get; set; }
 
-        public float QuestRate
-        {
-            get { return questrate; }
-            set { questrate = value; }
-        }
+        public float QuestGoldRate { get; set; }
 
-        public float QuestGoldRate
-        {
-            get { return questGoldRate; }
-            set { questGoldRate = value; }
-        }
+        public float StampDropRate { get; set; }
 
-        public float StampDropRate
-        {
-            get { return stampDropRate; }
-            set { stampDropRate = value; }
-        }
-        float globalDropRate = 1f, specialDropRate = 1f;
+        public float GlobalDropRate { get; set; } = 1f;
 
-        public float GlobalDropRate
-        {
-            get { return globalDropRate; }
-            set { globalDropRate = value; }
-        }
-
-        public float SpecialDropRate
-        {
-            get { return specialDropRate; }
-            set { specialDropRate = value; }
-        }
+        public float SpecialDropRate { get; set; } = 1f;
 
         public override string ToString()
         {
-            return string.Format("Type:{0} Value:{1}", type, value);
+            return string.Format("Type:{0} Value:{1}", Type, Value);
         }
     }
 
     public class Configuration : Singleton<Configuration>
     {
-        string dbhost, dbuser, dbpass, dbname, language, loginhost, host;
-        int dbport, port, loglevel, loginport, dbType, warehouse = 100, firstlevelLimit;
-        string encoding;
-        string loginPass = "saga";
-        List<uint> hostedMaps = new List<uint>();
-        SagaLib.Version version = SagaLib.Version.Saga6;
-        uint jobSwitchReduceItem = 10024500;
-        uint maxFurnitureCount = 100;
-        string clientversion;
-        bool sqlLog = true;
-        Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting> startupSetting = new Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting>();
-        List<string> motd = new List<string>();
-        List<string> reference = new List<string>();
-        List<string> monitorAccounts = new List<string>();
-        Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>> rateOverride = new Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>>();
+        private readonly Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>> rateOverride =
+            new Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>>();
 
-        int exprate, questrate, questGoldRate = 100, questUpdateTime = 24, questUpdateAmount = 5, questPointsMax = 15;
-        int stampDropRate = 100;
-        int itemFusionRate = 80;
-        int ringfameemblem = 300;
-        int mobamount = 1;
-        ushort speed = 410;
-        float deathBaseRateEmil = 0.1f, deathJobRateEmil = 0.02f, deathBaseRateDom = 0.1f, deathJobRateDom = 0.02f;
-        float pvpDmgRatePhysic = 1f;
-        float pvpDmgRateMagic = 1f;
-        float payloadRate = 1f;
-        float volumeRate = 1f;
-        bool onlineStatic = true;
-        string statisticsPage = "index.htm";
-        bool multipleDrop = false;
-        float globalDropRate = 1f, specialDropRate = 1f;
-        int maxLvDiffForExp = 99;
-        bool bossSlash = false;
-        bool atkMastery = true;
-        int bossSlashRate = 10;
-        ushort basePhysicDef = 50;
-        ushort baseMagicDef = 50;
-        ushort maxPhysicDef = 90;
-        ushort maxMagicDef = 90;
-        bool activespecialloot = false;
-        int _BossSpecialLootRate = 0;
-        uint _BossSpecialLootID = 0;
-        byte _BossSpecialLootNum = 0;
-        int _NomalMobSpecialLootRate = 0;
-        uint _NomalMobSpecialLootID = 0;
-        byte _NomalMobSpecialLootNum = 0;
-        bool _ActiveQuestSpecialReward = false;
-        int _QuestSpecialRewardRate = 0;
-        uint _QuestSpecialRewardID = 0;
-        bool ajiMode = false;
-        bool enhanceMatsuri = false;
-        
         //API
-        string apiPass = "saga";
-        string whitelist = "127.0.0.1";
-        string prefixes, apikey;
-        int? apiport;
+        private int? apiport;
+        private string encoding;
+
+        private string prefixes;
 
         //VShop
 
-        bool vshopclosed = false;
-
-        int _maxcharinmapsrv = 2;
+        private string whitelist = "127.0.0.1";
 
 
-        public int MaxCharacterInMapServer { get { return _maxcharinmapsrv;  } set { _maxcharinmapsrv = value;  } }
-        public bool AJIMode { get { return this.ajiMode; } set { this.ajiMode = value; } }
-        public bool VShopClosed { get { return this.vshopclosed; } set { this.vshopclosed = value; } }
-        public string Host { get { return this.host; } set { this.host = value; } }
-        public string DBHost { get { return this.dbhost; } set { this.dbhost = value; } }
-        public string DBUser { get { return this.dbuser; } set { this.dbuser = value; } }
-        public string DBPass { get { return this.dbpass; } set { this.dbpass = value; } }
-        public string DBName { get { return this.dbname; } set { this.dbname = value; } }
-        public string LoginPass { get { return this.loginPass; } set { this.loginPass = value; } }
-        public string ClientVersion { get { return this.clientversion; } set { this.clientversion = value; } }
-        public string APIPass { get { return this.apiPass; } set { this.apiPass = value; } }
-        public string APIKey { get { return this.apikey; } set { this.apikey = value; } }
-        public bool EnhanceMatsuri { get { return this.enhanceMatsuri; } set { this.enhanceMatsuri = value; } }
+        public int MaxCharacterInMapServer { get; set; } = 2;
+
+        public bool AJIMode { get; set; }
+
+        public bool VShopClosed { get; set; }
+
+        public string Host { get; set; }
+
+        public string DBHost { get; set; }
+
+        public string DBUser { get; set; }
+
+        public string DBPass { get; set; }
+
+        public string DBName { get; set; }
+
+        public string LoginPass { get; set; } = "saga";
+
+        public string ClientVersion { get; set; }
+
+        public string APIPass { get; set; } = "saga";
+
+        public string APIKey { get; set; }
+
+        public bool EnhanceMatsuri { get; set; }
+
         public int APIPort
         {
             get
             {
-                if (this.apiport == null || this.apiport == 0)
+                if (apiport == null || apiport == 0)
                 {
                     Logger.ShowWarning("PORT ARE NOT SET.USEING DEFAULT PORT (8080).");
-                    this.apiport = 8080;
+                    apiport = 8080;
                 }
-                return this.apiport.Value;
+
+                return apiport.Value;
             }
-            set { this.apiport = value; }
+            set => apiport = value;
         }
+
         public string Prefixes
         {
             get
             {
-                if (this.prefixes == null)
+                if (prefixes == null)
                 {
                     Logger.ShowWarning("PREFIXES ARE NOT SET.USEING DEFAULT PREFIXES (localhost).");
-                    this.prefixes = "http://localhost";
+                    prefixes = "http://localhost";
                 }
-                return this.prefixes;
-            }
-            set { this.prefixes = value; }
-        }
-        public int Port { get { return this.port; } set { this.port = value; } }
-        public string LoginHost { get { return this.loginhost; } set { this.loginhost = value; } }
-        public int DBPort { get { return this.dbport; } set { this.dbport = value; } }
-        public int DBType { get { return this.dbType; } set { this.dbType = value; } }
-        public int LoginPort { get { return this.loginport; } set { this.loginport = value; } }
-        public int MaxLevelDifferenceForExp { get { return maxLvDiffForExp; } set { this.maxLvDiffForExp = value; } }
 
-        public int FirstLevelLimit { get { return this.firstlevelLimit; } set { this.firstlevelLimit = value; } }
-        public int EXPRate { get { return this.exprate; } set { this.exprate = value; } }
+                return prefixes;
+            }
+            set => prefixes = value;
+        }
+
+        public int Port { get; set; }
+
+        public string LoginHost { get; set; }
+
+        public int DBPort { get; set; }
+
+        public int DBType { get; set; }
+
+        public int LoginPort { get; set; }
+
+        public int MaxLevelDifferenceForExp { get; set; } = 99;
+
+        public int FirstLevelLimit { get; set; }
+
+        public int EXPRate { get; set; }
+
+        public int StampDropRate { get; private set; } = 100;
+
+        public int ItemFusionRate { get; private set; } = 80;
+
+        public int MobAmount { get; private set; } = 1;
+
+
+        public int QuestRate { get; set; }
+
+        public int QuestGoldRate { get; set; } = 100;
+
+        public int WarehouseLimit { get; private set; } = 100;
+
+        public ushort Speed { get; private set; } = 410;
+
+        public Version Version { get; private set; } = Version.Saga6;
+
+        public uint JobSwitchReduceItem { get; private set; } = 10024500;
+
+        public int RingFameNeededForEmblem { get; private set; } = 300;
+
+        public Dictionary<PC_RACE, StartupSetting> StartupSetting { get; set; } =
+            new Dictionary<PC_RACE, StartupSetting>();
+
+        public List<string> Motd { get; } = new List<string>();
+
+        public List<string> ScriptReference { get; } = new List<string>();
+
+        public List<string> MonitorAccounts { get; } = new List<string>();
+
+        public string Language { get; set; }
+
+        public List<uint> HostedMaps { get; set; } = new List<uint>();
+
+        public bool SQLLog { get; private set; } = true;
+
+        public int QuestUpdateTime { get; set; } = 24;
+
+        public int QuestUpdateAmount { get; set; } = 5;
+
+        public int QuestPointsMax { get; set; } = 15;
+
+        public uint MaxFurnitureCount { get; set; } = 100;
+
+        public int LogLevel { get; set; }
+
+        public float DeathPenaltyBaseEmil { get; set; } = 0.1f;
+
+        public float DeathPenaltyJobEmil { get; set; } = 0.02f;
+
+        public float DeathPenaltyBaseDominion { get; set; } = 0.1f;
+
+        public float DeathPenaltyJobDominion { get; set; } = 0.02f;
+
+        public bool OnlineStatistics { get; set; } = true;
+
+        public string StatisticsPagePath { get; set; } = "index.htm";
+
+        public bool MultipleDrop { get; set; }
+
+        public int BossSlashRate { get; set; } = 10;
+
+        public bool BossSlash { get; set; }
+
+        public bool AtkMastery { get; set; } = true;
+
+        public ushort BasePhysicDef { get; set; } = 50;
+
+        public ushort BaseMagicDef { get; set; } = 50;
+
+        public ushort MaxPhysicDef { get; set; } = 90;
+
+        public ushort MaxMagicDef { get; set; } = 90;
+
+        public float GlobalDropRate { get; set; } = 1f;
+
+        public float SpecialDropRate { get; set; } = 1f;
+
+        public bool ActiveSpecialLoot { get; set; }
+
+        public int BossSpecialLootRate { get; set; }
+
+        public uint BossSpecialLootID { get; set; }
+
+        public byte BossSpecialLootNum { get; set; }
+
+        public int NomalMobSpecialLootRate { get; set; }
+
+        public uint NomalMobSpecialLootID { get; set; }
+
+        public byte NomalMobSpecialLootNum { get; set; }
+
+        public bool ActivceQuestSpecialReward { get; set; }
+
+        public uint QuestSpecialRewardID { get; set; }
+
+        public int QuestSpecialRewardRate { get; set; }
+
+        public string TwitterID
+        {
+            get => TwitterID;
+            set => TwitterID = value;
+        }
+
+        public string TwitterPasswd
+        {
+            get => TwitterPasswd;
+            set => TwitterPasswd = value;
+        }
+
+        public float PVPDamageRatePhysic { get; set; } = 1f;
+
+        public float PVPDamageRateMagic { get; set; } = 1f;
+
+        public float PayloadRate { get; set; } = 1f;
+
+        public float VolumeRate { get; set; } = 1f;
+
+        public string DBEncoding
+        {
+            get
+            {
+                if (encoding == null)
+                {
+                    Logger.ShowDebug("DB Encoding not set, set to default value: UTF-8", Logger.CurrentLogger);
+                    encoding = "utf-8";
+                }
+
+                return encoding;
+            }
+            set => encoding = value;
+        }
 
         public float CalcEXPRateForPC(ActorPC pc)
         {
-            float rate = ((float)exprate / 100);
+            var rate = (float)EXPRate / 100;
             /*RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
             if (gmlv != null)
@@ -204,10 +277,9 @@ namespace SagaMap
             return rate;
         }
 
-        public int StampDropRate { get { return this.stampDropRate; } }
         public float CalcStampDropRateForPC(ActorPC pc)
         {
-            float rate = (float)stampDropRate / 100;
+            var rate = (float)StampDropRate / 100;
             if (pc != null)
             {
                 RateOverrideItem gmlv, lv;
@@ -217,16 +289,13 @@ namespace SagaMap
                 if (gmlv == null && lv != null)
                     rate *= lv.StampDropRate;
             }
+
             return rate;
         }
-        public int ItemFusionRate { get { return this.itemFusionRate; } }
-        public int MobAmount { get { return this.mobamount; } }
 
-
-        public int QuestRate { get { return this.questrate; } set { this.questrate = value; } }
         public float CalcQuestRateForPC(ActorPC pc)
         {
-            float rate = (float)questrate / 100;
+            var rate = (float)QuestRate / 100;
             RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
             if (gmlv != null)
@@ -235,10 +304,10 @@ namespace SagaMap
                 rate *= lv.QuestRate;
             return rate;
         }
-        public int QuestGoldRate { get { return this.questGoldRate; } set { this.questGoldRate = value; } }
+
         public float CalcQuestGoldRateForPC(ActorPC pc)
         {
-            float rate = (float)questGoldRate / 100;
+            var rate = (float)QuestGoldRate / 100;
             RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
             if (gmlv != null)
@@ -247,77 +316,26 @@ namespace SagaMap
                 rate *= lv.QuestGoldRate;
             return rate;
         }
-        public int WarehouseLimit { get { return this.warehouse; } }
-        public ushort Speed { get { return this.speed; } }
-        public SagaLib.Version Version { get { return this.version; } }
-        public uint JobSwitchReduceItem { get { return this.jobSwitchReduceItem; } }
-        public int RingFameNeededForEmblem { get { return this.ringfameemblem; } }
-        public Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting> StartupSetting { get { return this.startupSetting; } set { this.startupSetting = value; } }
-        public List<string> Motd { get { return this.motd; } }
-        public List<string> ScriptReference { get { return this.reference; } }
-        public List<string> MonitorAccounts { get { return this.monitorAccounts; } }
 
-        public string Language { get { return this.language; } set { this.language = value; } }
-        public List<uint> HostedMaps { get { return this.hostedMaps; } set { this.hostedMaps = value; } }
-        public bool SQLLog { get { return this.sqlLog; } }
-
-        public int QuestUpdateTime { get { return this.questUpdateTime; } set { this.questUpdateTime = value; } }
-
-        public int QuestUpdateAmount { get { return this.questUpdateAmount; } set { this.questUpdateAmount = value; } }
-
-        public int QuestPointsMax { get { return this.questPointsMax; } set { this.questPointsMax = value; } }
-
-        public uint MaxFurnitureCount { get { return this.maxFurnitureCount; } set { this.maxFurnitureCount = value; } }
-
-        public int LogLevel { get { return this.loglevel; } set { this.loglevel = value; } }
-
-        public float DeathPenaltyBaseEmil { get { return this.deathBaseRateEmil; } set { this.deathBaseRateEmil = value; } }
-
-        public float DeathPenaltyJobEmil { get { return this.deathJobRateEmil; } set { this.deathJobRateEmil = value; } }
-
-        public float DeathPenaltyBaseDominion { get { return this.deathBaseRateDom; } set { this.deathBaseRateDom = value; } }
-
-        public float DeathPenaltyJobDominion { get { return this.deathJobRateDom; } set { this.deathJobRateDom = value; } }
-
-        public bool OnlineStatistics { get { return this.onlineStatic; } set { this.onlineStatic = value; } }
-
-        public string StatisticsPagePath { get { return this.statisticsPage; } set { this.statisticsPage = value; } }
-
-        public bool MultipleDrop { get { return this.multipleDrop; } set { this.multipleDrop = value; } }
-
-        public int BossSlashRate { get { return this.bossSlashRate; } set { this.bossSlashRate = value; } }
-
-        public bool BossSlash { get { return this.bossSlash; } set { this.bossSlash = value; } }
-        public bool AtkMastery { get { return this.atkMastery; } set { this.atkMastery = value; } }
-
-        public ushort BasePhysicDef { get { return this.basePhysicDef; } set { this.basePhysicDef = value; } }
-
-        public ushort BaseMagicDef { get { return this.baseMagicDef; } set { this.baseMagicDef = value; } }
-
-        public ushort MaxPhysicDef { get { return this.maxPhysicDef; } set { this.maxPhysicDef = value; } }
-
-        public ushort MaxMagicDef { get { return this.maxMagicDef; } set { this.maxMagicDef = value; } }
-
-        public float GlobalDropRate { get { return this.globalDropRate; } set { this.globalDropRate = value; } }
         public float CalcGlobalDropRateForPC(ActorPC pc)
         {
-            float rate = (float)globalDropRate;
+            var rate = GlobalDropRate;
             if (pc != null)
             {
                 RateOverrideItem gmlv, lv;
                 GetRateOverride(pc, out gmlv, out lv);
                 if (gmlv != null)
                     rate *= gmlv.GlobalDropRate;
-                if (gmlv ==null && lv != null)
+                if (gmlv == null && lv != null)
                     rate *= lv.GlobalDropRate;
             }
+
             return rate;
         }
-        
-        public float SpecialDropRate { get { return this.specialDropRate; } set { this.specialDropRate = value; } }
+
         public float CalcSpecialDropRateForPC(ActorPC pc)
         {
-            float rate = (float)specialDropRate;
+            var rate = SpecialDropRate;
             if (pc != null)
             {
                 RateOverrideItem gmlv, lv;
@@ -327,497 +345,14 @@ namespace SagaMap
                 if (gmlv == null && lv != null)
                     rate *= lv.SpecialDropRate;
             }
+
             return rate;
         }
 
-        public bool ActiveSpecialLoot { get { return this.activespecialloot; } set { this.activespecialloot = value; } }
-        public int BossSpecialLootRate { get { return this._BossSpecialLootRate; } set { this._BossSpecialLootRate = value; } }
-        public uint BossSpecialLootID { get { return this._BossSpecialLootID; } set { this._BossSpecialLootID = value; } }
-        public byte BossSpecialLootNum { get { return this._BossSpecialLootNum; } set { this._BossSpecialLootNum = value; } }
-        public int NomalMobSpecialLootRate { get { return this._NomalMobSpecialLootRate; } set { this._NomalMobSpecialLootRate = value; } }
-        public uint NomalMobSpecialLootID { get { return this._NomalMobSpecialLootID; } set { this._NomalMobSpecialLootID = value; } }
-        public byte NomalMobSpecialLootNum { get { return this._NomalMobSpecialLootNum; } set { this._NomalMobSpecialLootNum = value; } }
-        public bool ActivceQuestSpecialReward { get { return this._ActiveQuestSpecialReward; } set { this._ActiveQuestSpecialReward = value; } }
-        public uint QuestSpecialRewardID { get { return this._QuestSpecialRewardID; } set { this._QuestSpecialRewardID = value; } }
-        public int QuestSpecialRewardRate { get { return this._QuestSpecialRewardRate; } set { this._QuestSpecialRewardRate = value; } }
-
-        public string TwitterID { get { return this.TwitterID; } set { this.TwitterID = value; } }
-
-        public string TwitterPasswd { get { return this.TwitterPasswd; } set { this.TwitterPasswd = value; } }
-
-        public float PVPDamageRatePhysic { get { return this.pvpDmgRatePhysic; } set { this.pvpDmgRatePhysic = value; } }
-
-        public float PVPDamageRateMagic { get { return this.pvpDmgRateMagic; } set { this.pvpDmgRateMagic = value; } }
-
-        public float PayloadRate { get { return this.payloadRate; } set { this.payloadRate = value; } }
-
-        public float VolumeRate { get { return this.volumeRate; } set { this.volumeRate = value; } }
-        
-        public string DBEncoding
-        {
-            get
-            {
-                if (this.encoding == null)
-                {
-                    Logger.ShowDebug("DB Encoding not set, set to default value: UTF-8", Logger.CurrentLogger);
-                    this.encoding = "utf-8";
-                }
-                return this.encoding;
-            }
-            set { this.encoding = value; }
-        }
-#if Text
-        void InitXML(string path)
-        {
-            XmlDocument xml = new XmlDocument();
-            bool getVersion = false;
-            try
-            {
-                XmlElement root;
-                XmlNodeList list;
-                xml.Load(path);
-                root = xml["SagaMap"];
-                list = root.ChildNodes;
-                foreach (object j in list)
-                {
-                    XmlElement i;
-                    if (j.GetType() != typeof(XmlElement)) continue;
-                    i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
-                        case "host":
-                            this.host = i.InnerText;
-                            break;
-                        case "port":
-                            this.port = int.Parse(i.InnerText);
-                            break;
-                        case "dbtype":
-                            this.dbType = int.Parse(i.InnerText);
-                            break;
-                        case "dbhost":
-                            this.dbhost = i.InnerText;
-                            break;
-                        case "dbport":
-                            this.dbport = int.Parse(i.InnerText);
-                            break;
-                        case "dbuser":
-                            this.dbuser = i.InnerText;
-                            break;
-                        case "dbpass":
-                            this.dbpass = i.InnerText;
-                            break;
-                        case "dbname":
-                            this.dbname = i.InnerText;
-                            break;
-                        case "loginhost":
-                            this.loginhost = i.InnerText;
-                            break;
-                        case "loginport":
-                            this.loginport = int.Parse(i.InnerText);
-                            break;
-                        case "loginpass":
-                            this.loginPass = i.InnerText;
-                            break;
-                        case "prefixes":
-                            this.prefixes = i.InnerText;
-                            break;
-                        case "apikey":
-                            this.apikey = i.InnerText;
-                            break;
-                        case "apiport":
-                            this.apiport = int.Parse(i.InnerText);
-                            break;
-                        case "vshopclosed":
-                            this.vshopclosed = bool.Parse(i.InnerText);
-                            break;
-                        case "loglevel":
-                            this.loglevel = int.Parse(i.InnerText);
-                            break;
-                        case "clientversion":
-                            this.clientversion = i.InnerText;
-                            break;
-                        case "language":
-                            this.language = i.InnerText;
-                            break;
-                        case "dbencoding":
-                            this.encoding = i.InnerText;
-                            break;
-                        case "atkmastery":
-                            this.atkMastery = (i.InnerText == "1");
-                            break;
-                        case "levellimit" :
-                            this.FirstLevelLimit = int.Parse(i.InnerText);
-                            break;
-                        case "maxsameplayerinmapserver":
-                            this._maxcharinmapsrv = int.Parse(i.InnerText);
-                            break;
-                        case "motd":
-                            string[] msg = i.InnerText.Split('\n');
-                            foreach (string k in msg)
-                            {
-                                string tmp = k.Replace("\r", "").Replace(" ", "");
-                                if (tmp != "")
-                                    motd.Add(tmp);
-                            }
-                            break;
-                        case "monitoraccounts":
-                            string[] account = i.InnerText.Split('\n');
-                            foreach (string k in account)
-                            {
-                                string tmp = k.Replace("\r", "").Replace(" ", "");
-                                if (tmp != "")
-                                    monitorAccounts.Add(tmp);
-                            }
-                            break;
-                        case "maxlvdiffforexp":
-                            maxLvDiffForExp = int.Parse(i.InnerText);
-                            break;
-                        case "rateoverride":
-                            {
-                                string type = i.Attributes["type"].Value;
-                                int value = int.Parse(i.Attributes["value"].Value);
-                                RateOverrideType rType = RateOverrideType.GMLv;
-                                switch(type.ToLower())
-                                {
-                                    case "gmlv":
-                                        rType= RateOverrideType.GMLv;
-                                        break;
-                                    case "clv":
-                                        rType = RateOverrideType.CLevel;
-                                        break;
-                                }
-                                Dictionary<int, RateOverrideItem> list2;
-                                if (rateOverride.ContainsKey(rType))
-                                    list2 = rateOverride[rType];
-                                else
-                                {
-                                    list2 = new Dictionary<int, RateOverrideItem>();
-                                    rateOverride.Add(rType, list2);
-                                }
-                                if (!list2.ContainsKey(value))
-                                {
-                                    RateOverrideItem item = new RateOverrideItem();
-                                    item.Type = rType;
-                                    item.Value = value;
-                                    XmlNodeList maps = i.ChildNodes;
-                                    foreach (object l in maps)
-                                    {
-                                        XmlElement k;
-                                        if (l.GetType() != typeof(XmlElement)) continue;
-                                        k = (XmlElement)l;
-                                        switch (k.Name.ToLower())
-                                        {
-                                            case "exprate":
-                                                item.ExpRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                            case "questrate":
-                                                item.QuestRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                            case "questgoldrate":
-                                                item.QuestGoldRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                            case "stampdroprate":
-                                                item.StampDropRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                            case "globaldroprate":
-                                                item.GlobalDropRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                            case "specialdroprate":
-                                                item.SpecialDropRate = ((float)int.Parse(k.InnerText) / 100f);
-                                                break;
-                                        }
-                                    }
-                                    list2.Add(value, item);
-                                }
-                            }
-                            break;
-                        case "hostedmaps":
-                            {
-                                XmlNodeList maps = i.ChildNodes;
-                                foreach (object l in maps)
-                                {
-                                    XmlElement k;
-                                    if (l.GetType() != typeof(XmlElement)) continue;
-                                    k = (XmlElement)l;
-                                    switch (k.Name.ToLower())
-                                    {
-                                        case "mapid":
-                                            hostedMaps.Add(uint.Parse(k.InnerText));
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
-                        case "scriptreference":
-                            XmlNodeList dlls = i.ChildNodes;
-                            foreach (object l in dlls)
-                            {
-                                XmlElement k;
-                                if (l.GetType() != typeof(XmlElement)) continue;
-                                k = (XmlElement)l;
-                                switch (k.Name.ToLower())
-                                {
-                                    case "assembly":
-                                        reference.Add(k.InnerText);
-                                        break;
-                                }
-                            }
-                            break;
-                        case "exprate":
-                            this.exprate = int.Parse(i.InnerText);
-                            break;
-                        case "enhancematsuri":
-                            this.enhanceMatsuri = bool.Parse(i.InnerText);
-                            break;
-                        case "stampdroprate":
-                            this.stampDropRate = int.Parse(i.InnerText);
-                            break;
-                        case "itemfusionrate":
-                            this.itemFusionRate = int.Parse(i.InnerText);
-                            break;
-                        case "questrate":
-                            this.questrate = int.Parse(i.InnerText);
-                            break;
-                        case "questgoldrate":
-                            this.questGoldRate = int.Parse(i.InnerText);
-                            break;
-                        case "warehouselimit":
-                            this.warehouse = int.Parse(i.InnerText);
-                            break;
-                        case "version":
-                            try
-                            {
-                                this.version = (SagaLib.Version)Enum.Parse(typeof(SagaLib.Version), i.InnerText);
-                                getVersion = true;
-                            }
-                            catch
-                            {
-                                Logger.ShowWarning(string.Format("Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, this.version));
-                            }
-                            break;
-                        case "jobswitchreduceitem":
-                            this.jobSwitchReduceItem = uint.Parse(i.InnerText);
-                            break;
-                        case "ringfameneededforemblem":
-                            this.ringfameemblem = int.Parse(i.InnerText);
-                            break;
-                        case "maxfurniturecount":
-                            this.maxFurnitureCount = uint.Parse(i.InnerText);
-                            break;
-                        case "deathpenaltybaseemil":
-                            this.deathBaseRateEmil = (float)(int.Parse(i.InnerText)) / 100;
-                            break;
-                        case "deathpenaltyjobemil":
-                            this.deathJobRateEmil = (float)(int.Parse(i.InnerText)) / 100;
-                            break;
-                        case "deathpenaltybasedominion":
-                            this.deathBaseRateDom = (float)(int.Parse(i.InnerText)) / 100;
-                            break;
-                        case "deathpenaltyjobdominion":
-                            this.deathJobRateDom = (float)(int.Parse(i.InnerText)) / 100;
-                            break;
-                        case "sqllog":
-                            if (i.InnerText == "1")
-                                this.sqlLog = true;
-                            else
-                                this.sqlLog = false;
-                            break;
-                        case "questupdatetime":
-                            this.questUpdateTime = int.Parse(i.InnerText);
-                            break;
-                        case "questupdateamount":
-                            this.questUpdateAmount = int.Parse(i.InnerText);
-                            break;
-                        case "questpointsmax":
-                            this.questPointsMax = int.Parse(i.InnerText);
-                            break;
-                        case "onlinestatistic":
-                            this.onlineStatic = (int.Parse(i.InnerText) == 1);
-                            break;
-                        case "statisticpagepath":
-                            this.statisticsPage = i.InnerText;
-                            break;
-                        case "sqlloglevel":
-                            Logger.SQLLogLevel.Value = int.Parse(i.InnerText);
-                            break;
-                        case "multipledrop":
-                            this.multipleDrop = (i.InnerText == "1");
-                            break;
-                        case "bossslash":
-                            this.bossSlash = (i.InnerText == "1");
-                            break;
-                        case "bossslashrate":
-                            this.bossSlashRate = int.Parse(i.InnerText);
-                            break;
-                        case "globaldroprate":
-                            this.globalDropRate = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "specialdroprate":
-                            this.specialDropRate = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "pvpdamageratephysic":
-                            this.pvpDmgRatePhysic = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "pvpdamageratemagic":
-                            this.pvpDmgRateMagic = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "payloadrate":
-                            this.payloadRate = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "volumerate":
-                            this.volumeRate = ((float)int.Parse(i.InnerText) / 100f);
-                            break;
-                        case "TwitterID":
-                            this.TwitterID = i.InnerText;
-                            break;
-                        case "TwitterPasswd":
-                            this.TwitterPasswd = i.InnerText;
-                            break;
-                        case "speed":
-                            this.speed = ushort.Parse(i.InnerText);
-                            break;
-                        case "mobamount":
-                            this.mobamount = int.Parse(i.InnerText);
-                            break;
-                        case "basePhysicDef":
-                            this.basePhysicDef = ushort.Parse(i.InnerText);
-                            break;
-                        case "basemagicdef":
-                            this.baseMagicDef = ushort.Parse(i.InnerText);
-                            break;
-                        case "maxphysicdef":
-                            this.maxPhysicDef = ushort.Parse(i.InnerText);
-                            break;
-                        case "maxmagicdef":
-                            this.maxMagicDef = ushort.Parse(i.InnerText);
-                            break;
-                        case "activespecialloot":
-                            this.ActiveSpecialLoot = bool.Parse(i.InnerText);
-                            break;
-                        case "bossspeciallootrate":
-                            this.BossSpecialLootRate = int.Parse(i.InnerText);
-                            break;
-                        case "bossspeciallootid":
-                            this.BossSpecialLootID = uint.Parse(i.InnerText);
-                            break;
-                        case "bossspeciallootnum":
-                            this.BossSpecialLootNum = byte.Parse(i.InnerText);
-                            break;
-                        case "nomalmobspeciallootrate":
-                            this.NomalMobSpecialLootRate = int.Parse(i.InnerText);
-                            break;
-                        case "nomalmobspeciallootid":
-                            this.NomalMobSpecialLootID = uint.Parse(i.InnerText);
-                            break;
-                        case "nomalmobspeciallootnum":
-                            this.NomalMobSpecialLootNum = byte.Parse(i.InnerText);
-                            break;
-                        case "activequestspecialreward":
-                            this.ActivceQuestSpecialReward = bool.Parse(i.InnerText);
-                            break;
-                        case "questspecialrewardid":
-                            this.QuestSpecialRewardID = uint.Parse(i.InnerText);
-                            break;
-                        case "questspecialrewardrate":
-                            this.QuestSpecialRewardRate = int.Parse(i.InnerText);
-                            break;
-                    }
-                }
-                if (!getVersion)
-                    Logger.ShowWarning(string.Format("Packet Version not set, using default version:[{0}], \r\n         please change Config/SagaMap.xml to set version", this.version));
-                Logger.ShowInfo("Done reading configuration...");
-            }
-            catch (Exception ex)
-            {
-                Logger.ShowError(ex);
-            }
-        }
-//#else
-        void InitDat(string path)
-        {
-            System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.Open, System.IO.FileAccess.Read);
-            System.IO.BinaryReader br = new System.IO.BinaryReader(fs);
-            int magic = br.ReadInt32();
-            if (magic == 0x12345678)
-            {
-                int version = br.ReadInt32();
-                byte len = br.ReadByte();
-                this.host = Global.Unicode.GetString(br.ReadBytes(len));
-                this.port = br.ReadInt32();
-                len = br.ReadByte();
-                this.dbhost = Global.Unicode.GetString(br.ReadBytes(len));
-                this.dbport = br.ReadInt32();
-                this.loglevel = br.ReadInt32();
-                this.sqlLog = br.ReadBoolean();
-                Logger.SQLLogLevel.Value = br.ReadInt32();
-                len = br.ReadByte();
-                this.dbuser = Global.Unicode.GetString(br.ReadBytes(len));
-                len = br.ReadByte();
-                this.dbpass = Global.Unicode.GetString(br.ReadBytes(len));
-                len = br.ReadByte();
-                this.loginhost = Global.Unicode.GetString(br.ReadBytes(len));
-                this.loginport = br.ReadInt32();
-                len = br.ReadByte();
-                this.loginPass = Global.Unicode.GetString(br.ReadBytes(len));
-                len = br.ReadByte();
-                this.language = Global.Unicode.GetString(br.ReadBytes(len));
-                this.version = (SagaLib.Version)br.ReadByte();
-                len = br.ReadByte();
-                this.encoding = Global.Unicode.GetString(br.ReadBytes(len));
-                this.exprate = br.ReadInt32();
-                this.questrate = br.ReadInt32();
-                this.questGoldRate = br.ReadInt32();
-                this.stampDropRate = br.ReadInt32();
-                this.itemFusionRate = br.ReadInt32();
-                this.mobamount = br.ReadInt32();
-                this.questUpdateTime = br.ReadInt32();
-                this.questUpdateAmount = br.ReadInt32();
-                this.questPointsMax = br.ReadInt32();
-                this.warehouse = br.ReadInt32();
-                this.deathBaseRateEmil = br.ReadSingle();
-                this.deathJobRateEmil = br.ReadSingle();
-                this.deathBaseRateDom = br.ReadSingle();
-                this.deathJobRateDom = br.ReadSingle();
-                this.jobSwitchReduceItem = br.ReadUInt32();
-                this.ringfameemblem = br.ReadInt32();
-                this.maxFurnitureCount = br.ReadUInt32();
-                this.onlineStatic = br.ReadBoolean();
-                len = br.ReadByte();
-                this.statisticsPage = Global.Unicode.GetString(br.ReadBytes(len));
-                this.multipleDrop = br.ReadBoolean();
-                this.bossSlash = br.ReadBoolean();
-                this.bossSlashRate = br.ReadInt32();
-                this.globalDropRate = br.ReadSingle();
-                this.atkMastery = br.ReadBoolean();
-
-                int count = br.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    len = br.ReadByte();
-                    string txt = Global.Unicode.GetString(br.ReadBytes(len));
-                    this.motd.Add(txt);
-                }
-                count = br.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    len = br.ReadByte();
-                    string txt = Global.Unicode.GetString(br.ReadBytes(len));
-                    this.reference.Add(txt);
-                }
-                count = br.ReadInt32();
-                for (int i = 0; i < count; i++)
-                {
-                    uint mapID = br.ReadUInt32();
-                    this.hostedMaps.Add(mapID);
-                }
-
-            }
-        }
-#endif
-
         public void InitAnnounce(string path)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path),
+                Encoding.GetEncoding(Instance.DBEncoding));
 
             string[] paras;
             byte count = 0;
@@ -832,12 +367,12 @@ namespace SagaMap
                         continue;
                     paras = line.Split(',');
 
-                    int DueTime = int.Parse(paras[0]);
-                    int Period = int.Parse(paras[1]);
-                    string Text = paras[2];
+                    var DueTime = int.Parse(paras[0]);
+                    var Period = int.Parse(paras[1]);
+                    var Text = paras[2];
 
                     count++;
-                    Tasks.System.TaskAnnounce ta = new Tasks.System.TaskAnnounce("公告" + count, Text, DueTime,Period);
+                    var ta = new TaskAnnounce("公告" + count, Text, DueTime, Period);
                     ta.Activate();
                 }
                 catch (Exception ex)
@@ -850,7 +385,7 @@ namespace SagaMap
 
         public void Initialization(string path)
         {
-            this.hostedMaps.Clear();
+            HostedMaps.Clear();
 #if Text
             InitXML(path);
 #else
@@ -858,40 +393,497 @@ namespace SagaMap
 #endif
         }
 
-        void GetRateOverride(ActorPC pc, out RateOverrideItem gmlv, out RateOverrideItem clv)
+        private void GetRateOverride(ActorPC pc, out RateOverrideItem gmlv, out RateOverrideItem clv)
         {
             gmlv = null;
             clv = null;
-            foreach (RateOverrideType i in rateOverride.Keys)
-            {
+            foreach (var i in rateOverride.Keys)
                 switch (i)
                 {
                     case RateOverrideType.GMLv:
-                        {
-                            int maxValue = 0;
-                            foreach (int j in rateOverride[i].Keys)
-                            {
-                                if (j > maxValue && j <= pc.Account.GMLevel)
-                                    maxValue = j;
-                            }
-                            if (maxValue > 0)
-                                gmlv = rateOverride[i][maxValue];
-                        }
+                    {
+                        var maxValue = 0;
+                        foreach (var j in rateOverride[i].Keys)
+                            if (j > maxValue && j <= pc.Account.GMLevel)
+                                maxValue = j;
+                        if (maxValue > 0)
+                            gmlv = rateOverride[i][maxValue];
+                    }
                         break;
                     case RateOverrideType.CLevel:
-                        {
-                            int maxValue = 0;
-                            foreach (int j in rateOverride[i].Keys)
-                            {
-                                if (j > maxValue && j <= pc.Level)
-                                    maxValue = j;
-                            }
-                            if (maxValue > 0)
-                                clv = rateOverride[i][maxValue];
-                        }
+                    {
+                        var maxValue = 0;
+                        foreach (var j in rateOverride[i].Keys)
+                            if (j > maxValue && j <= pc.Level)
+                                maxValue = j;
+                        if (maxValue > 0)
+                            clv = rateOverride[i][maxValue];
+                    }
                         break;
+                }
+        }
+#if Text
+        private void InitXML(string path)
+        {
+            var xml = new XmlDocument();
+            var getVersion = false;
+            try
+            {
+                XmlElement root;
+                XmlNodeList list;
+                xml.Load(path);
+                root = xml["SagaMap"];
+                list = root.ChildNodes;
+                foreach (var j in list)
+                {
+                    XmlElement i;
+                    if (j.GetType() != typeof(XmlElement)) continue;
+                    i = (XmlElement)j;
+                    switch (i.Name.ToLower())
+                    {
+                        case "host":
+                            Host = i.InnerText;
+                            break;
+                        case "port":
+                            Port = int.Parse(i.InnerText);
+                            break;
+                        case "dbtype":
+                            DBType = int.Parse(i.InnerText);
+                            break;
+                        case "dbhost":
+                            DBHost = i.InnerText;
+                            break;
+                        case "dbport":
+                            DBPort = int.Parse(i.InnerText);
+                            break;
+                        case "dbuser":
+                            DBUser = i.InnerText;
+                            break;
+                        case "dbpass":
+                            DBPass = i.InnerText;
+                            break;
+                        case "dbname":
+                            DBName = i.InnerText;
+                            break;
+                        case "loginhost":
+                            LoginHost = i.InnerText;
+                            break;
+                        case "loginport":
+                            LoginPort = int.Parse(i.InnerText);
+                            break;
+                        case "loginpass":
+                            LoginPass = i.InnerText;
+                            break;
+                        case "prefixes":
+                            prefixes = i.InnerText;
+                            break;
+                        case "apikey":
+                            APIKey = i.InnerText;
+                            break;
+                        case "apiport":
+                            apiport = int.Parse(i.InnerText);
+                            break;
+                        case "vshopclosed":
+                            VShopClosed = bool.Parse(i.InnerText);
+                            break;
+                        case "loglevel":
+                            LogLevel = int.Parse(i.InnerText);
+                            break;
+                        case "clientversion":
+                            ClientVersion = i.InnerText;
+                            break;
+                        case "language":
+                            Language = i.InnerText;
+                            break;
+                        case "dbencoding":
+                            encoding = i.InnerText;
+                            break;
+                        case "atkmastery":
+                            AtkMastery = i.InnerText == "1";
+                            break;
+                        case "levellimit":
+                            FirstLevelLimit = int.Parse(i.InnerText);
+                            break;
+                        case "maxsameplayerinmapserver":
+                            MaxCharacterInMapServer = int.Parse(i.InnerText);
+                            break;
+                        case "motd":
+                            var msg = i.InnerText.Split('\n');
+                            foreach (var k in msg)
+                            {
+                                var tmp = k.Replace("\r", "").Replace(" ", "");
+                                if (tmp != "")
+                                    Motd.Add(tmp);
+                            }
+
+                            break;
+                        case "monitoraccounts":
+                            var account = i.InnerText.Split('\n');
+                            foreach (var k in account)
+                            {
+                                var tmp = k.Replace("\r", "").Replace(" ", "");
+                                if (tmp != "")
+                                    MonitorAccounts.Add(tmp);
+                            }
+
+                            break;
+                        case "maxlvdiffforexp":
+                            MaxLevelDifferenceForExp = int.Parse(i.InnerText);
+                            break;
+                        case "rateoverride":
+                        {
+                            var type = i.Attributes["type"].Value;
+                            var value = int.Parse(i.Attributes["value"].Value);
+                            var rType = RateOverrideType.GMLv;
+                            switch (type.ToLower())
+                            {
+                                case "gmlv":
+                                    rType = RateOverrideType.GMLv;
+                                    break;
+                                case "clv":
+                                    rType = RateOverrideType.CLevel;
+                                    break;
+                            }
+
+                            Dictionary<int, RateOverrideItem> list2;
+                            if (rateOverride.ContainsKey(rType))
+                            {
+                                list2 = rateOverride[rType];
+                            }
+                            else
+                            {
+                                list2 = new Dictionary<int, RateOverrideItem>();
+                                rateOverride.Add(rType, list2);
+                            }
+
+                            if (!list2.ContainsKey(value))
+                            {
+                                var item = new RateOverrideItem();
+                                item.Type = rType;
+                                item.Value = value;
+                                var maps = i.ChildNodes;
+                                foreach (var l in maps)
+                                {
+                                    XmlElement k;
+                                    if (l.GetType() != typeof(XmlElement)) continue;
+                                    k = (XmlElement)l;
+                                    switch (k.Name.ToLower())
+                                    {
+                                        case "exprate":
+                                            item.ExpRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "questrate":
+                                            item.QuestRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "questgoldrate":
+                                            item.QuestGoldRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "stampdroprate":
+                                            item.StampDropRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "globaldroprate":
+                                            item.GlobalDropRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "specialdroprate":
+                                            item.SpecialDropRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                    }
+                                }
+
+                                list2.Add(value, item);
+                            }
+                        }
+                            break;
+                        case "hostedmaps":
+                        {
+                            var maps = i.ChildNodes;
+                            foreach (var l in maps)
+                            {
+                                XmlElement k;
+                                if (l.GetType() != typeof(XmlElement)) continue;
+                                k = (XmlElement)l;
+                                switch (k.Name.ToLower())
+                                {
+                                    case "mapid":
+                                        HostedMaps.Add(uint.Parse(k.InnerText));
+                                        break;
+                                }
+                            }
+                        }
+                            break;
+                        case "scriptreference":
+                            var dlls = i.ChildNodes;
+                            foreach (var l in dlls)
+                            {
+                                XmlElement k;
+                                if (l.GetType() != typeof(XmlElement)) continue;
+                                k = (XmlElement)l;
+                                switch (k.Name.ToLower())
+                                {
+                                    case "assembly":
+                                        ScriptReference.Add(k.InnerText);
+                                        break;
+                                }
+                            }
+
+                            break;
+                        case "exprate":
+                            EXPRate = int.Parse(i.InnerText);
+                            break;
+                        case "enhancematsuri":
+                            EnhanceMatsuri = bool.Parse(i.InnerText);
+                            break;
+                        case "stampdroprate":
+                            StampDropRate = int.Parse(i.InnerText);
+                            break;
+                        case "itemfusionrate":
+                            ItemFusionRate = int.Parse(i.InnerText);
+                            break;
+                        case "questrate":
+                            QuestRate = int.Parse(i.InnerText);
+                            break;
+                        case "questgoldrate":
+                            QuestGoldRate = int.Parse(i.InnerText);
+                            break;
+                        case "warehouselimit":
+                            WarehouseLimit = int.Parse(i.InnerText);
+                            break;
+                        case "version":
+                            try
+                            {
+                                Version = (Version)Enum.Parse(typeof(Version), i.InnerText);
+                                getVersion = true;
+                            }
+                            catch
+                            {
+                                Logger.ShowWarning(string.Format(
+                                    "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
+                            }
+
+                            break;
+                        case "jobswitchreduceitem":
+                            JobSwitchReduceItem = uint.Parse(i.InnerText);
+                            break;
+                        case "ringfameneededforemblem":
+                            RingFameNeededForEmblem = int.Parse(i.InnerText);
+                            break;
+                        case "maxfurniturecount":
+                            MaxFurnitureCount = uint.Parse(i.InnerText);
+                            break;
+                        case "deathpenaltybaseemil":
+                            DeathPenaltyBaseEmil = (float)int.Parse(i.InnerText) / 100;
+                            break;
+                        case "deathpenaltyjobemil":
+                            DeathPenaltyJobEmil = (float)int.Parse(i.InnerText) / 100;
+                            break;
+                        case "deathpenaltybasedominion":
+                            DeathPenaltyBaseDominion = (float)int.Parse(i.InnerText) / 100;
+                            break;
+                        case "deathpenaltyjobdominion":
+                            DeathPenaltyJobDominion = (float)int.Parse(i.InnerText) / 100;
+                            break;
+                        case "sqllog":
+                            if (i.InnerText == "1")
+                                SQLLog = true;
+                            else
+                                SQLLog = false;
+                            break;
+                        case "questupdatetime":
+                            QuestUpdateTime = int.Parse(i.InnerText);
+                            break;
+                        case "questupdateamount":
+                            QuestUpdateAmount = int.Parse(i.InnerText);
+                            break;
+                        case "questpointsmax":
+                            QuestPointsMax = int.Parse(i.InnerText);
+                            break;
+                        case "onlinestatistic":
+                            OnlineStatistics = int.Parse(i.InnerText) == 1;
+                            break;
+                        case "statisticpagepath":
+                            StatisticsPagePath = i.InnerText;
+                            break;
+                        case "sqlloglevel":
+                            Logger.SQLLogLevel.Value = int.Parse(i.InnerText);
+                            break;
+                        case "multipledrop":
+                            MultipleDrop = i.InnerText == "1";
+                            break;
+                        case "bossslash":
+                            BossSlash = i.InnerText == "1";
+                            break;
+                        case "bossslashrate":
+                            BossSlashRate = int.Parse(i.InnerText);
+                            break;
+                        case "globaldroprate":
+                            GlobalDropRate = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "specialdroprate":
+                            SpecialDropRate = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "pvpdamageratephysic":
+                            PVPDamageRatePhysic = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "pvpdamageratemagic":
+                            PVPDamageRateMagic = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "payloadrate":
+                            PayloadRate = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "volumerate":
+                            VolumeRate = int.Parse(i.InnerText) / 100f;
+                            break;
+                        case "TwitterID":
+                            TwitterID = i.InnerText;
+                            break;
+                        case "TwitterPasswd":
+                            TwitterPasswd = i.InnerText;
+                            break;
+                        case "speed":
+                            Speed = ushort.Parse(i.InnerText);
+                            break;
+                        case "mobamount":
+                            MobAmount = int.Parse(i.InnerText);
+                            break;
+                        case "basePhysicDef":
+                            BasePhysicDef = ushort.Parse(i.InnerText);
+                            break;
+                        case "basemagicdef":
+                            BaseMagicDef = ushort.Parse(i.InnerText);
+                            break;
+                        case "maxphysicdef":
+                            MaxPhysicDef = ushort.Parse(i.InnerText);
+                            break;
+                        case "maxmagicdef":
+                            MaxMagicDef = ushort.Parse(i.InnerText);
+                            break;
+                        case "activespecialloot":
+                            ActiveSpecialLoot = bool.Parse(i.InnerText);
+                            break;
+                        case "bossspeciallootrate":
+                            BossSpecialLootRate = int.Parse(i.InnerText);
+                            break;
+                        case "bossspeciallootid":
+                            BossSpecialLootID = uint.Parse(i.InnerText);
+                            break;
+                        case "bossspeciallootnum":
+                            BossSpecialLootNum = byte.Parse(i.InnerText);
+                            break;
+                        case "nomalmobspeciallootrate":
+                            NomalMobSpecialLootRate = int.Parse(i.InnerText);
+                            break;
+                        case "nomalmobspeciallootid":
+                            NomalMobSpecialLootID = uint.Parse(i.InnerText);
+                            break;
+                        case "nomalmobspeciallootnum":
+                            NomalMobSpecialLootNum = byte.Parse(i.InnerText);
+                            break;
+                        case "activequestspecialreward":
+                            ActivceQuestSpecialReward = bool.Parse(i.InnerText);
+                            break;
+                        case "questspecialrewardid":
+                            QuestSpecialRewardID = uint.Parse(i.InnerText);
+                            break;
+                        case "questspecialrewardrate":
+                            QuestSpecialRewardRate = int.Parse(i.InnerText);
+                            break;
+                    }
+                }
+
+                if (!getVersion)
+                    Logger.ShowWarning(string.Format(
+                        "Packet Version not set, using default version:[{0}], \r\n         please change Config/SagaMap.xml to set version",
+                        Version));
+                Logger.ShowInfo("Done reading configuration...");
+            }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
+        }
+
+//#else
+        private void InitDat(string path)
+        {
+            var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            var br = new BinaryReader(fs);
+            var magic = br.ReadInt32();
+            if (magic == 0x12345678)
+            {
+                var version = br.ReadInt32();
+                var len = br.ReadByte();
+                Host = Global.Unicode.GetString(br.ReadBytes(len));
+                Port = br.ReadInt32();
+                len = br.ReadByte();
+                DBHost = Global.Unicode.GetString(br.ReadBytes(len));
+                DBPort = br.ReadInt32();
+                LogLevel = br.ReadInt32();
+                SQLLog = br.ReadBoolean();
+                Logger.SQLLogLevel.Value = br.ReadInt32();
+                len = br.ReadByte();
+                DBUser = Global.Unicode.GetString(br.ReadBytes(len));
+                len = br.ReadByte();
+                DBPass = Global.Unicode.GetString(br.ReadBytes(len));
+                len = br.ReadByte();
+                LoginHost = Global.Unicode.GetString(br.ReadBytes(len));
+                LoginPort = br.ReadInt32();
+                len = br.ReadByte();
+                LoginPass = Global.Unicode.GetString(br.ReadBytes(len));
+                len = br.ReadByte();
+                Language = Global.Unicode.GetString(br.ReadBytes(len));
+                this.Version = (Version)br.ReadByte();
+                len = br.ReadByte();
+                encoding = Global.Unicode.GetString(br.ReadBytes(len));
+                EXPRate = br.ReadInt32();
+                QuestRate = br.ReadInt32();
+                QuestGoldRate = br.ReadInt32();
+                StampDropRate = br.ReadInt32();
+                ItemFusionRate = br.ReadInt32();
+                MobAmount = br.ReadInt32();
+                QuestUpdateTime = br.ReadInt32();
+                QuestUpdateAmount = br.ReadInt32();
+                QuestPointsMax = br.ReadInt32();
+                WarehouseLimit = br.ReadInt32();
+                DeathPenaltyBaseEmil = br.ReadSingle();
+                DeathPenaltyJobEmil = br.ReadSingle();
+                DeathPenaltyBaseDominion = br.ReadSingle();
+                DeathPenaltyJobDominion = br.ReadSingle();
+                JobSwitchReduceItem = br.ReadUInt32();
+                RingFameNeededForEmblem = br.ReadInt32();
+                MaxFurnitureCount = br.ReadUInt32();
+                OnlineStatistics = br.ReadBoolean();
+                len = br.ReadByte();
+                StatisticsPagePath = Global.Unicode.GetString(br.ReadBytes(len));
+                MultipleDrop = br.ReadBoolean();
+                BossSlash = br.ReadBoolean();
+                BossSlashRate = br.ReadInt32();
+                GlobalDropRate = br.ReadSingle();
+                AtkMastery = br.ReadBoolean();
+
+                var count = br.ReadInt32();
+                for (var i = 0; i < count; i++)
+                {
+                    len = br.ReadByte();
+                    var txt = Global.Unicode.GetString(br.ReadBytes(len));
+                    Motd.Add(txt);
+                }
+
+                count = br.ReadInt32();
+                for (var i = 0; i < count; i++)
+                {
+                    len = br.ReadByte();
+                    var txt = Global.Unicode.GetString(br.ReadBytes(len));
+                    ScriptReference.Add(txt);
+                }
+
+                count = br.ReadInt32();
+                for (var i = 0; i < count; i++)
+                {
+                    var mapID = br.ReadUInt32();
+                    HostedMaps.Add(mapID);
                 }
             }
         }
+#endif
     }
 }

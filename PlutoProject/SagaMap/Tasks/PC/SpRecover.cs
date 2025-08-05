@@ -1,51 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
 using SagaMap.Network.Client;
+
 namespace SagaMap.Tasks.PC
 {
     public class SpRecover : MultiRunTask
     {
-        MapClient client;
+        private readonly MapClient client;
+
         public SpRecover(MapClient client)
         {
-            this.dueTime = 3000;
-            this.period = 3000;
+            dueTime = 3000;
+            period = 3000;
             this.client = client;
         }
 
         public override void CallBack()
         {
-            if (this.client != null && this.client.Character != null)
+            if (client != null && client.Character != null)
             {
                 ClientManager.EnterCriticalArea();
                 try
                 {
-                    if (!(this.client.Character.Job == PC_JOB.CARDINAL || this.client.Character.Job == PC_JOB.FORCEMASTER))
+                    if (!(client.Character.Job == PC_JOB.CARDINAL || client.Character.Job == PC_JOB.FORCEMASTER))
                     {
-                        this.client.Character.Tasks.Remove("EpRecover");
-                        this.Deactivate();
+                        client.Character.Tasks.Remove("EpRecover");
+                        Deactivate();
                     }
-                    else if (this.client.Character.EP != this.client.Character.MaxEP)
+                    else if (client.Character.EP != client.Character.MaxEP)
                     {
-                        this.client.Character.EP += 100;
-                        if (this.client.Character.EP > this.client.Character.MaxEP)
-                            this.client.Character.EP = this.client.Character.MaxEP;
-                        this.client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, this.client.Character, true);
+                        client.Character.EP += 100;
+                        if (client.Character.EP > client.Character.MaxEP)
+                            client.Character.EP = client.Character.MaxEP;
+                        client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null,
+                            client.Character, true);
                     }
-
                 }
                 catch (Exception ex)
                 {
                     Logger.ShowError(ex);
-                    this.client.Character.Tasks.Remove("EpRecover");
-                    this.Deactivate();
+                    client.Character.Tasks.Remove("EpRecover");
+                    Deactivate();
                 }
+
                 ClientManager.LeaveCriticalArea();
             }
         }

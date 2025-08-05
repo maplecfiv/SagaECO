@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,7 +7,7 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_RING_EMBLEM_UPLOAD()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public byte[] Data
@@ -21,28 +16,27 @@ namespace SagaMap.Packets.Client
             {
                 if (GetInt(3) == 0xFD)
                 {
-                    int len = this.GetInt(7);
-                    byte[] buf = this.GetBytes((ushort)len, 11);
+                    var len = GetInt(7);
+                    var buf = GetBytes((ushort)len, 11);
                     return buf;
                 }
                 else
                 {
-                    int len = this.GetInt(3);
-                    byte[] buf = this.GetBytes((ushort)len, 7);
+                    var len = GetInt(3);
+                    var buf = GetBytes((ushort)len, 7);
                     return buf;
                 }
             }
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_RING_EMBLEM_UPLOAD();
+            return new CSMG_RING_EMBLEM_UPLOAD();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRingEmblemUpload(this);
+            ((MapClient)client).OnRingEmblemUpload(this);
         }
-
     }
 }

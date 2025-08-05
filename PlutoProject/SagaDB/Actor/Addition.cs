@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaDB.Actor
 {
     /// <summary>
-    /// A class which contains the information about a players addition bonus (such as Buff)
+    ///     A class which contains the information about a players addition bonus (such as Buff)
     /// </summary>
     public abstract class Addition : MultiRunTask
     {
@@ -17,12 +14,33 @@ namespace SagaDB.Actor
             Buff,
             Debuff,
             Control,
-            Other,
+            Other
         }
 
-        
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        #region Internal Methods
+
+        public override void CallBack()
+        {
+            if (RestLifeTime > 100)
+            {
+                OnTimerUpdate();
+            }
+            else
+            {
+                Deactivate();
+                OnTimerEnd();
+            }
+        }
+
+        #endregion
+
+
         #region Fields
-        private Actor m_myActor;
 
         /// <summary>
         /// Task instance for this addition
@@ -30,170 +48,114 @@ namespace SagaDB.Actor
         //internal MultiRunTask m_task;
 
         /// <summary>
-        /// A time stamp of when it's get applied to player
+        ///     A time stamp of when it's get applied to player
         /// </summary>
         private DateTime m_starttime;
 
-        private string m_name;
-
-        private bool m_activated = false;
-        
         public AdditionType MyType;
 
         public bool enabled = true;
+
         #endregion
 
         #region Properties
 
         /// <summary>
-        /// 是否启用
+        ///     是否启用
         /// </summary>
         public bool Enabled
         {
-            get { return enabled; }
-            set { enabled = value; }
-        }
-        /// <summary>
-        /// Actor that get attached to this addition
-        /// </summary>
-        /// 
-        public Actor AttachedActor
-        {
-            get
-            {
-                return m_myActor;
-            }
-            set
-            {
-                m_myActor = value;
-            }
-        }
-        /// <summary>
-        /// Name of this Addition
-        /// </summary>
-        public string Name
-        {
-            get
-            {
-                return m_name;
-            }
-            set
-            {
-                m_name = value;
-            }
+            get => enabled;
+            set => enabled = value;
         }
 
         /// <summary>
-        /// Returns the activation interval
+        ///     Actor that get attached to this addition
+        /// </summary>
+        public Actor AttachedActor { get; set; }
+
+        /// <summary>
+        ///     Name of this Addition
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        ///     Returns the activation interval
         /// </summary>
         public int Interval
         {
             get
             {
-                if (this != null)
-                {
-                    return this.period;
-                }
-                else
-                {
-                    return -1;
-                }
+                if (this != null) return period;
+
+                return -1;
             }
         }
 
         /// <summary>
-        /// Returns if this addition is activated
+        ///     Returns if this addition is activated
         /// </summary>
-        public bool Activated
-        {
-            get
-            {
-                return m_activated;
-            }
-            set
-            {
-                m_activated = value;
-            }
-        }
+        public bool Activated { get; set; }
 
 
         /// <summary>
-        /// Time that this addition get started
+        ///     Time that this addition get started
         /// </summary>
         public DateTime StartTime
         {
-            get
-            {
-                return this.m_starttime;
-            }
-            set
-            {
-                this.m_starttime = value;
-            }
+            get => m_starttime;
+            set => m_starttime = value;
         }
 
         /// <summary>
-        /// Returns if this addition should be activated
+        ///     Returns if this addition should be activated
         /// </summary>
-        public virtual bool IfActivate
-        {
-            get
-            {
-                return true;
-            }
-        }
+        public virtual bool IfActivate => true;
 
         #endregion
 
-        public override string ToString()
-        {
-            return this.Name;
-        }
-
         #region Virtual methodes
+
         /// <summary>
-        /// Total Life time for this Addition
+        ///     Total Life time for this Addition
         /// </summary>
         public virtual int TotalLifeTime
         {
-            get { return int.MaxValue; }
+            get => int.MaxValue;
             set { }
         }
 
         /// <summary>
-        /// Rest Life time for this Addition
+        ///     Rest Life time for this Addition
         /// </summary>
-        public virtual int RestLifeTime
-        {
-            get { return int.MaxValue; }
-        }
+        public virtual int RestLifeTime => int.MaxValue;
 
         /// <summary>
-        /// Method to be called on Addition start
+        ///     Method to be called on Addition start
         /// </summary>
         public abstract void AdditionStart();
-        
+
         /// <summary>
-        /// Method to be called on Addition End
+        ///     Method to be called on Addition End
         /// </summary>
         public abstract void AdditionEnd();
 
         /// <summary>
-        /// Method that be called once Timer call back function get invoked
+        ///     Method that be called once Timer call back function get invoked
         /// </summary>
         public virtual void OnTimerUpdate()
         {
         }
 
         /// <summary>
-        /// Method that be called once Timer get started
+        ///     Method that be called once Timer get started
         /// </summary>
         public virtual void OnTimerStart()
         {
         }
 
         /// <summary>
-        /// Method that be called once Timer get stoped
+        ///     Method that be called once Timer get stoped
         /// </summary>
         public virtual void OnTimerEnd()
         {
@@ -202,42 +164,31 @@ namespace SagaDB.Actor
         #endregion
 
         #region Protected Methods
+
         /// <summary>
-        /// Initialize the timer
+        ///     Initialize the timer
         /// </summary>
         /// <param name="interval">Interval</param>
         /// <param name="duetime">Due Time</param>
         protected void InitTimer(int interval, int duetime)
         {
-            this.dueTime = duetime;
-            this.period = interval;//= new MultiRunTask(duetime, interval);
-            this.Name = this.Name;
+            dueTime = duetime;
+            period = interval; //= new MultiRunTask(duetime, interval);
+            Name = Name;
         }
 
         protected void TimerStart()
         {
             if (this != null)
-                this.Activate();
+                Activate();
         }
 
         protected void TimerEnd()
         {
             if (this != null)
-                this.Deactivate();
+                Deactivate();
         }
-        #endregion
 
-        #region Internal Methods
-        public override void CallBack()
-        {
-            if (this.RestLifeTime > 100)
-                this.OnTimerUpdate();
-            else
-            {
-                this.Deactivate(); 
-                this.OnTimerEnd();                
-            }
-        }
         #endregion
     }
 }

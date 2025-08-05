@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,144 +6,99 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_STATUS_EXTEND()
         {
-            if (Configuration.Instance.Version >= SagaLib.Version.Saga17)
-            this.data = new byte[41];
+            if (Configuration.Instance.Version >= Version.Saga17)
+                data = new byte[41];
             else
-                this.data = new byte[63];
-            this.offset = 2;
-            this.ID = 0x0217;
-            if (Configuration.Instance.Version >= SagaLib.Version.Saga17)
-                this.PutByte(0x13, 2);
+                data = new byte[63];
+            offset = 2;
+            ID = 0x0217;
+            if (Configuration.Instance.Version >= Version.Saga17)
+                PutByte(0x13, 2);
             else
-                this.PutByte(0x1E, 2);
+                PutByte(0x1E, 2);
         }
 
         public ushort Speed
         {
-            set
-            {
-                this.PutUShort(value, 3);
-            }
+            set => PutUShort(value, 3);
         }
 
         public ushort ATK1Min
         {
-            set
-            {
-                this.PutUShort(value, 5);
-            }
+            set => PutUShort(value, 5);
         }
 
         public ushort ATK2Min
         {
-            set
-            {
-                this.PutUShort(value, 7);
-            }
+            set => PutUShort(value, 7);
         }
 
         public ushort ATK3Min
         {
-            set
-            {
-                this.PutUShort(value, 9);
-            }
+            set => PutUShort(value, 9);
         }
 
         public ushort ATK1Max
         {
-            set
-            {
-                this.PutUShort(value, 11);
-            }
+            set => PutUShort(value, 11);
         }
 
         public ushort ATK2Max
         {
-            set
-            {
-                this.PutUShort(value, 13);
-            }
+            set => PutUShort(value, 13);
         }
 
         public ushort ATK3Max
         {
-            set
-            {
-                this.PutUShort(value, 15);
-            }
+            set => PutUShort(value, 15);
         }
 
         public ushort MATKMin
         {
-            set
-            {
-                this.PutUShort(value, 17);
-            }
+            set => PutUShort(value, 17);
         }
 
         public ushort MATKMax
         {
-            set
-            {
-                this.PutUShort(value, 19);
-            }
+            set => PutUShort(value, 19);
         }
 
         public ushort DefBase
         {
-            set
-            {
-                this.PutUShort(value, 21);
-            }
+            set => PutUShort(value, 21);
         }
 
         public ushort DefAddition
         {
-            set
-            {
-                this.PutUShort(value, 23);
-            }
+            set => PutUShort(value, 23);
         }
 
         public ushort MDefBase
         {
-            set
-            {
-                this.PutUShort(value, 25);
-            }
+            set => PutUShort(value, 25);
         }
 
         public ushort MDefAddition
         {
-            set
-            {
-                this.PutUShort(value, 27);
-            }
+            set => PutUShort(value, 27);
         }
 
         public ushort HitMelee
         {
-            set
-            {
-                this.PutUShort(value, 29);
-            }
+            set => PutUShort(value, 29);
         }
 
         public ushort HitRanged
         {
-            set
-            {
-                this.PutUShort(value, 31);
-            }
+            set => PutUShort(value, 31);
         }
 
         public ushort HitMagic
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 33);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 33);
             }
         }
 
@@ -157,8 +106,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 35);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 35);
             }
         }
 
@@ -166,11 +115,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 37);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 37);
                 else
-                    this.PutUShort(value, 33);
-
+                    PutUShort(value, 33);
             }
         }
 
@@ -178,10 +126,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 39);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 39);
                 else
-                    this.PutUShort(value, 35);
+                    PutUShort(value, 35);
             }
         }
 
@@ -189,8 +137,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 41);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 41);
             }
         }
 
@@ -198,8 +146,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 43);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 43);
             }
         }
 
@@ -207,8 +155,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 45);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 45);
             }
         }
 
@@ -216,8 +164,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 47);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 47);
             }
         }
 
@@ -225,8 +173,8 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutUShort(value, 49);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutUShort(value, 49);
             }
         }
 
@@ -234,11 +182,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutShort(value, 51);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutShort(value, 51);
                 else
-                    this.PutShort(value, 37);
-
+                    PutShort(value, 37);
             }
         }
 
@@ -246,12 +193,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version < SagaLib.Version.Saga17)
-                    this.PutShort(value, 53);
+                if (Configuration.Instance.Version < Version.Saga17)
+                    PutShort(value, 53);
                 else
-                    this.PutShort(value, 39);
+                    PutShort(value, 39);
             }
         }
     }
 }
-        

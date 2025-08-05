@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,32 +8,32 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_SHOP_SELL_RESULT()
         {
-            this.data = new byte[12];
-            this.offset = 2;
-            this.ID = 0x1805;
+            data = new byte[12];
+            offset = 2;
+            ID = 0x1805;
         }
 
         public Dictionary<uint, GolemShopItem> SoldItems
         {
             set
             {
-                this.data = new byte[12 + value.Count * 6];
-                this.offset = 2;
-                this.ID = 0x1805;
+                data = new byte[12 + value.Count * 6];
+                offset = 2;
+                ID = 0x1805;
                 uint gold = 0;
-                this.PutByte((byte)value.Count, 10);
-                this.PutByte((byte)value.Count, (ushort)(11 + value.Count * 4));
-                int j = 0;
-                foreach (uint i in value.Keys)
+                PutByte((byte)value.Count, 10);
+                PutByte((byte)value.Count, (ushort)(11 + value.Count * 4));
+                var j = 0;
+                foreach (var i in value.Keys)
                 {
-                    this.PutUInt(i, (ushort)(11 + j * 4));
-                    this.PutUShort(value[i].Count, (ushort)(12 + value.Count * 4 + j * 2));
-                    gold += (uint)(value[i].Count * value[i].Price);
+                    PutUInt(i, (ushort)(11 + j * 4));
+                    PutUShort(value[i].Count, (ushort)(12 + value.Count * 4 + j * 2));
+                    gold += value[i].Count * value[i].Price;
                     j++;
                 }
-                this.PutUInt(gold, 6);
+
+                PutUInt(gold, 6);
             }
         }
     }
 }
-

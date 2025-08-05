@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Vates
 {
     public class HolyShield : ISkill
@@ -23,32 +21,34 @@ namespace SagaMap.Skill.SkillDefinations.Vates
             SkillHandler.RemoveAddition(dActor, "WaterShield");
             SkillHandler.RemoveAddition(dActor, "WindShield");
             SkillHandler.RemoveAddition(dActor, "DarkShield");
-            int life = new int[] { 0, 15000, 35000, 60000, 100000, 150000 }[level];
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "HolyShield", life);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var life = new[] { 0, 15000, 35000, 60000, 100000, 150000 }[level];
+            var skill = new DefaultBuff(args.skill, dActor, "HolyShield", life);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int atk1 = skill.skill.Level * 5;
+            var atk1 = skill.skill.Level * 5;
             if (skill.Variable.ContainsKey("HolyShield"))
                 skill.Variable.Remove("HolyShield");
             skill.Variable.Add("HolyShield", atk1);
-            actor.Status.elements_skill[SagaLib.Elements.Holy] += atk1;
+            actor.Status.elements_skill[Elements.Holy] += atk1;
 
             actor.Buff.BodyHolyElementUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-            int value = skill.Variable["HolyShield"];
-            actor.Status.elements_skill[SagaLib.Elements.Holy] -= (short)value;
+            var value = skill.Variable["HolyShield"];
+            actor.Status.elements_skill[Elements.Holy] -= (short)value;
 
             actor.Buff.BodyHolyElementUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
         #endregion

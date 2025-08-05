@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaDB.LevelLimit;
-
-using SagaMap.Network.Client;
+﻿using SagaLib;
 using SagaMap.Manager;
+
 namespace SagaMap.Tasks.System
 {
     public class AutoRunSystemScript : MultiRunTask
     {
-        uint ID = 0;
+        private readonly uint ID;
+
         public AutoRunSystemScript(uint EventID)
         {
-            this.period = 5000;
-            this.dueTime = 10000;
+            period = 5000;
+            dueTime = 10000;
             ID = EventID;
         }
 
@@ -25,11 +18,12 @@ namespace SagaMap.Tasks.System
         {
             if (ScriptManager.Instance.Events.ContainsKey(ID))
             {
-                Scripting.Event evnt = ScriptManager.Instance.Events[ID];
+                var evnt = ScriptManager.Instance.Events[ID];
                 evnt.OnEvent(ScriptManager.Instance.VariableHolder);
-                Logger.ShowInfo("已成功加載腳本：" + evnt.ToString());
+                Logger.ShowInfo("已成功加載腳本：" + evnt);
             }
-            this.Deactivate();
+
+            Deactivate();
         }
     }
 }

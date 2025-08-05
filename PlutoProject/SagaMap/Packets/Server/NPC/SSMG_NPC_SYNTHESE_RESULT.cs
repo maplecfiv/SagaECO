@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_SYNTHESE_RESULT()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x13B8;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x13B8;
         }
 
         public byte Result
         {
-            set
-            {
-                this.PutByte(value, 2);
-            }
+            set => PutByte(value, 2);
         }
     }
 }
-

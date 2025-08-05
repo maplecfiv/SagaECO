@@ -1,66 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Assassin
 {
     /// <summary>
-    /// アサルト
+    ///     アサルト
     /// </summary>
     public class Concentricity : ISkill
     {
-        bool MobUse;
+        private readonly bool MobUse;
+
         public Concentricity()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         public Concentricity(bool MobUse)
         {
             this.MobUse = MobUse;
         }
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             return true;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            if (MobUse)
-            {
-                level = 5;
-            }
-            int lifetime = 15000 + 15000 * level;
+            if (MobUse) level = 5;
+            var lifetime = 15000 + 15000 * level;
             if (sActor.type == ActorType.PC)
             {
                 args.dActor = 0;
                 Actor realdActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
                 if (CheckPossible(realdActor))
                 {
-                    DefaultBuff skill = new DefaultBuff(args.skill, realdActor, "Concentricity", lifetime);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, realdActor, "Concentricity", lifetime);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(realdActor, skill);
                 }
             }
             else
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, sActor, "Concentricity", lifetime);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var skill = new DefaultBuff(args.skill, sActor, "Concentricity", lifetime);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            short def_rate = (short)((float)actor.Status.def * 0.3f);
+            var def_rate = (short)(actor.Status.def * 0.3f);
             if (skill.Variable.ContainsKey("Concentricity"))
                 skill.Variable.Remove("Concentricity");
             skill.Variable.Add("Concentricity", def_rate);
@@ -69,9 +69,11 @@ namespace SagaMap.Skill.SkillDefinations.Assassin
             actor.Status.cri_skill += 30;
             actor.Buff.DefDown = true;
             actor.Buff.CriticalRateUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Buff.DefDown = false;
             actor.Buff.CriticalRateUp = false;
@@ -82,8 +84,10 @@ namespace SagaMap.Skill.SkillDefinations.Assassin
             if (skill.Variable.ContainsKey("Concentricity"))
                 skill.Variable.Remove("Concentricity");
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

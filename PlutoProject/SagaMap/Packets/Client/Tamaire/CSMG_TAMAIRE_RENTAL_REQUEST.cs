@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,27 +7,20 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_TAMAIRE_RENTAL_REQUEST()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
+        public uint Lender => GetUInt(2);
 
-        public override SagaLib.Packet New()
-        {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_TAMAIRE_RENTAL_REQUEST();
-        }
 
-        public uint Lender
+        public override Packet New()
         {
-            get
-            {
-                return this.GetUInt(2);
-            }
+            return new CSMG_TAMAIRE_RENTAL_REQUEST();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnTamaireRentalRequest(this);
+            ((MapClient)client).OnTamaireRentalRequest(this);
         }
-
     }
 }

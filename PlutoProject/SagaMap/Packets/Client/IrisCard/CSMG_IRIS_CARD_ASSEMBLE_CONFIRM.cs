@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,76 +7,33 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_IRIS_CARD_ASSEMBLE_CONFIRM()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint CardID
+        public uint CardID => GetUInt(2);
+
+        public uint SupportItem => GetUInt(6);
+
+
+        public uint ProtectItem => GetUInt(10);
+
+
+        public byte BaseLevel => GetByte(14);
+
+        public byte JobLevel => GetByte(15);
+
+        public ushort ExpRate => GetUShort(16);
+
+        public ushort JExpRate => GetUShort(18);
+
+        public override Packet New()
         {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
-
-        public uint SupportItem
-        {
-            get
-            {
-                return this.GetUInt(6);
-            }
-        }
-
-
-        public uint ProtectItem
-        {
-            get
-            {
-                return this.GetUInt(10);
-            }
-        }
-
-
-        public byte BaseLevel
-        {
-            get
-            {
-                return this.GetByte(14);
-            }
-        }
-
-        public byte JobLevel
-        {
-            get
-            {
-                return this.GetByte(15);
-            }
-        }
-
-        public ushort ExpRate
-        {
-            get
-            {
-                return this.GetUShort(16);
-            }
-        }
-
-        public ushort JExpRate
-        {
-            get
-            {
-                return this.GetUShort(18);
-            }
-        }
-
-        public override SagaLib.Packet New()
-        {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_IRIS_CARD_ASSEMBLE_CONFIRM();
+            return new CSMG_IRIS_CARD_ASSEMBLE_CONFIRM();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnIrisCardAssemble(this);
+            ((MapClient)client).OnIrisCardAssemble(this);
         }
-
     }
 }

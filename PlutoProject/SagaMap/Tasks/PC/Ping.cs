@@ -1,34 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
-using SagaDB.Actor;
-
-using SagaMap.Network.Client;
 using System.Globalization;
+using SagaLib;
+using SagaMap.Network.Client;
 
 namespace SagaMap.Tasks.PC
 {
     public class Ping : MultiRunTask
     {
-        MapClient pc;
+        private readonly MapClient pc;
+
         public Ping(MapClient pc)
         {
-            this.period = 10000;
+            period = 10000;
             this.pc = pc;
         }
 
         public override void CallBack()
         {
             checkdailylogin(pc);
-            if (!pc.Character.Tasks.ContainsKey("Recover"))//自然恢复
+            if (!pc.Character.Tasks.ContainsKey("Recover")) //自然恢复
             {
-                Recover reg = new Recover(pc);
+                var reg = new Recover(pc);
                 pc.Character.Tasks.Add("Recover", reg);
                 reg.Activate();
             }
+
             if ((pc.ping - DateTime.Now).TotalSeconds > 120)
             {
                 ClientManager.EnterCriticalArea();
@@ -40,11 +36,12 @@ namespace SagaMap.Tasks.PC
                 {
                     Logger.ShowError(ex);
                 }
+
                 ClientManager.LeaveCriticalArea();
             }
         }
 
-        void checkdailylogin(MapClient pc)
+        private void checkdailylogin(MapClient pc)
         {
             pc.Character.AInt["累积在线时长10秒加1"]++;
             if (pc.Character.AInt["累积在线时长10秒加1"] >= 360)
@@ -60,12 +57,12 @@ namespace SagaMap.Tasks.PC
 
             if (pc.Character.AStr["连续登陆记录"] != DateTime.Now.ToString("yyyy-MM-dd"))
             {
-                string mark = pc.Character.AStr["连续登陆记录"];
+                var mark = pc.Character.AStr["连续登陆记录"];
                 if (mark != "")
                 {
-                    DateTime da = DateTime.ParseExact(mark, "yyyy-MM-dd", CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    var da = DateTime.ParseExact(mark, "yyyy-MM-dd", CultureInfo.CurrentCulture, DateTimeStyles.None);
                     pc.Character.AStr["连续登陆记录"] = DateTime.Now.ToString("yyyy-MM-dd");
-                    double daya = (DateTime.Now - da).TotalDays;
+                    var daya = (DateTime.Now - da).TotalDays;
                     if (daya >= 1 && daya <= 2)
                     {
                         pc.TitleProccess(pc.Character, 20, 1);
@@ -87,7 +84,8 @@ namespace SagaMap.Tasks.PC
                     pc.TitleProccess(pc.Character, 22, 1);
                 }
             }
-            else if (pc.Character.AInt["称号20完成度"] == 0 && pc.Character.AStr["连续登陆记录"] == DateTime.Now.ToString("yyyy-MM-dd"))
+            else if (pc.Character.AInt["称号20完成度"] == 0 &&
+                     pc.Character.AStr["连续登陆记录"] == DateTime.Now.ToString("yyyy-MM-dd"))
             {
                 pc.Character.AInt["称号20完成度"] = 2;
                 pc.Character.AInt["称号21完成度"] = 2;

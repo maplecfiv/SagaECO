@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
 
 namespace SagaMap.Tasks.Partner
 {
     public class ReliabilityGrow : MultiRunTask
     {
         private ActorPartner partner;
+
         public ReliabilityGrow(ActorPartner partner)
         {
-            this.dueTime = (int)(60 * 1000);
-            this.period = (int)(60 * 1000);
+            dueTime = 60 * 1000;
+            period = 60 * 1000;
             this.partner = partner;
         }
 
@@ -28,8 +24,9 @@ namespace SagaMap.Tasks.Partner
             }
             catch (Exception)
             {
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

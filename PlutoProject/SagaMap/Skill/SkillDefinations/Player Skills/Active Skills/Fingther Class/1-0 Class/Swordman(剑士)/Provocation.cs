@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.ActorEventHandlers;
 
 namespace SagaMap.Skill.SkillDefinations.Swordman
 {
     /// <summary>
-    /// 挑釁
+    ///     挑釁
     /// </summary>
-    public class Provocation:ISkill
+    public class Provocation : ISkill
     {
         #region ISkill Members
 
@@ -23,15 +19,11 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
         {
             if (dActor.type == ActorType.MOB)
             {
-                ActorEventHandlers.MobEventHandler eh = (ActorEventHandlers.MobEventHandler)dActor.e;
+                var eh = (MobEventHandler)dActor.e;
                 if (eh.AI.Hate.ContainsKey(sActor.ActorID))
-                {
-                    eh.AI.Hate[sActor.ActorID] += (uint)(dActor.MaxHP * 5);
-                }
+                    eh.AI.Hate[sActor.ActorID] += dActor.MaxHP * 5;
                 else
-                {
-                    eh.AI.Hate.Add(sActor.ActorID, (uint)(dActor.MaxHP * 5));
-                }
+                    eh.AI.Hate.Add(sActor.ActorID, dActor.MaxHP * 5);
             }
         }
 

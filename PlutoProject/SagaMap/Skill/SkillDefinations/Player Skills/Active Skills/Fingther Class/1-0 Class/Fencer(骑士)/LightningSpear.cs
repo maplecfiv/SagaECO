@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaMap.Skill.Additions.Global;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Fencer
 {
     /// <summary>
-    /// ライトニングスピア
+    ///     ライトニングスピア
     /// </summary>
     public class LightningSpear : ISkill
     {
@@ -21,7 +16,7 @@ namespace SagaMap.Skill.SkillDefinations.Fencer
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.1f + 0.2f * level;
+            var factor = 1.1f + 0.2f * level;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 

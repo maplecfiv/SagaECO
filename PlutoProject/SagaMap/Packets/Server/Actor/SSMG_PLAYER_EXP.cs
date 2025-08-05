@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,37 +6,28 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_EXP()
         {
-            this.data = new byte[18+8];//8bytes unknowns
-            this.offset = 2;
-            this.ID = 0x0235;
-            this.PutByte(1, 10);
+            data = new byte[18 + 8]; //8bytes unknowns
+            offset = 2;
+            ID = 0x0235;
+            PutByte(1, 10);
         }
 
         /// <summary>
-        /// 345 means 34.5%
+        ///     345 means 34.5%
         /// </summary>
         public uint EXPPercentage
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint JEXPPercentage
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public int WRP
         {
-            set
-            {
-                this.PutInt(value, 11);
-            }
+            set => PutInt(value, 11);
         }
 
         public uint ECoin
@@ -57,7 +42,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga10)
+                if (Configuration.Instance.Version >= Version.Saga10)
                 {
                     //this.PutLong(value, 18);
                 }
@@ -68,12 +53,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga10)
+                if (Configuration.Instance.Version >= Version.Saga10)
                 {
-                   // this.PutLong(value, 26);
+                    // this.PutLong(value, 26);
                 }
             }
         }
     }
 }
-        

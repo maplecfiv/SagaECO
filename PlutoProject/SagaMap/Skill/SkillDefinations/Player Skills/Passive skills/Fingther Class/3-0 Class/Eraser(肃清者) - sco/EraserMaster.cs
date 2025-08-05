@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Eraser
@@ -19,28 +15,25 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool active = false;
+            var active = false;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHORT_SWORD ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CLAW
-                        || pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.GUN
-                        )
-                    {
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.SHORT_SWORD ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.CLAW
+                        || pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.GUN
+                       )
                         active = true;
-                    }
-                }
-                DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "EraserMaster", active);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+
+                var skill = new DefaultPassiveSkill(args.skill, sActor, "EraserMaster", active);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             int value;
             value = 15 + skill.skill.Level * 15;
@@ -67,15 +60,16 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
             skill.Variable.Add("EraserCriUp", cri);
             actor.Status.cri_skill += cri;
 
-            int MartialArtDamUp = 128 + 6 * skill.skill.Level;
+            var MartialArtDamUp = 128 + 6 * skill.skill.Level;
             if (skill.Variable.ContainsKey("EraserMasteryMartialArtDamUp"))
                 skill.Variable.Remove("EraserMasteryMartialArtDamUp");
             skill.Variable.Add("EraserMasteryMartialArtDamUp", MartialArtDamUp);
             if (actor.Status.Additions.ContainsKey("MartialArtDamUp"))
-                (actor.Status.Additions["MartialArtDamUp"] as DefaultPassiveSkill).Variable["MartialArtDamUp"] += MartialArtDamUp;
+                (actor.Status.Additions["MartialArtDamUp"] as DefaultPassiveSkill).Variable["MartialArtDamUp"] +=
+                    MartialArtDamUp;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             actor.Status.min_atk2_skill -= (short)skill.Variable["EraserMasteryATK"];
             actor.Status.min_atk3_skill -= (short)skill.Variable["EraserMasteryATK"];
@@ -84,7 +78,8 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
             actor.Status.hit_melee_skill -= (short)skill.Variable["EraserMasteryHIT"];
             actor.Status.cri_skill -= (short)skill.Variable["EraserCriUp"];
             if (actor.Status.Additions.ContainsKey("MartialArtDamUp"))
-                (actor.Status.Additions["MartialArtDamUp"] as DefaultPassiveSkill).Variable["MartialArtDamUp"] -= (short)skill.Variable["EraserMasteryMartialArtDamUp"];
+                (actor.Status.Additions["MartialArtDamUp"] as DefaultPassiveSkill).Variable["MartialArtDamUp"] -=
+                    (short)skill.Variable["EraserMasteryMartialArtDamUp"];
             if (skill.Variable.ContainsKey("EraserMasteryMartialArtDamUp"))
                 skill.Variable.Remove("EraserMasteryMartialArtDamUp");
         }

@@ -1,27 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Sorcerer
 {
     /// <summary>
-    /// マジックバリア
+    ///     マジックバリア
     /// </summary>
     public class MagicBarrier : ISkill
     {
-        bool MobUse;
+        private readonly bool MobUse;
+
         public MagicBarrier()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         public MagicBarrier(bool MobUse)
         {
             this.MobUse = MobUse;
         }
+
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
@@ -34,38 +36,36 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             if (MobUse)
                 level = 5;
 
-            int life = 60000 + 120000 * level;
+            var life = 60000 + 120000 * level;
 
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 250, true);
-            List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 250, true);
+            var realAffected = new List<Actor>();
+            foreach (var act in affected)
                 if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     SkillHandler.RemoveAddition(act, "DevineBarrier");
-                    DefaultBuff skill = new DefaultBuff(args.skill, act, "MagicBarrier", life);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, act, "MagicBarrier", life);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(act, skill);
-                    EffectArg arg2 = new EffectArg();
+                    var arg2 = new EffectArg();
                     arg2.effectID = 5169;
                     arg2.actorID = act.ActorID;
 
 
-                    Manager.MapManager.Instance.GetMap(act.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, act, true);
+                    MapManager.Instance.GetMap(act.MapID)
+                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, act, true);
                 }
-            }
-
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int atk1 = 0, atk2 = 0;
-            int level3114 = 0;
+            var level3114 = 0;
             if (actor is ActorPC)
             {
-                ActorPC pc = actor as ActorPC;
+                var pc = actor as ActorPC;
 
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
                 if (pc.Skills.ContainsKey(3114) || pc.DualJobSkill.Exists(x => x.ID == 3114))
@@ -87,6 +87,7 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
                     level3114 = 1;
                 }
             }
+
             switch (level3114)
             {
                 case 1:
@@ -122,34 +123,34 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
 
             actor.Buff.MagicDefUp = true;
             actor.Buff.MagicDefRateUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-            int value = skill.Variable["MDef"];
+            var value = skill.Variable["MDef"];
             actor.Status.mdef_skill -= (short)value;
             value = skill.Variable["MDefAdd"];
             actor.Status.mdef_add_skill -= (short)value;
 
             actor.Buff.MagicDefUp = false;
             actor.Buff.MagicDefRateUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        public void RemoveAddition(Actor actor, String additionName)
+        public void RemoveAddition(Actor actor, string additionName)
         {
             if (actor.Status.Additions.ContainsKey(additionName))
             {
-                Addition addition = actor.Status.Additions[additionName];
+                var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
-                if (addition.Activated)
-                {
-                    addition.AdditionEnd();
-                }
+                if (addition.Activated) addition.AdditionEnd();
                 addition.Activated = false;
             }
         }
+
         #endregion
     }
 }

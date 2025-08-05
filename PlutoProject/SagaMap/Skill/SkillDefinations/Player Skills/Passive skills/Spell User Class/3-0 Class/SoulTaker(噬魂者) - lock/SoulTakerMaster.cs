@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
@@ -19,46 +15,38 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool active = false;
+            var active = false;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) ||
-                    pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
+                    pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
                 {
-                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                    {
-
-                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.AXE ||
-                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.HAMMER ||
-                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SWORD)
-                        {
+                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                        if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.AXE ||
+                            pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.HAMMER ||
+                            pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.SWORD)
                             active = true;
-                        }
-                    }
-                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                    {
 
-                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.AXE ||
-                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.HAMMER ||
-                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SWORD)
-                        {
+                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                        if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.AXE ||
+                            pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.HAMMER ||
+                            pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.SWORD)
                             active = true;
-                        }
-                    }
                 }
-                DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "SoulTakerMaster", active);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+
+                var skill = new DefaultPassiveSkill(args.skill, sActor, "SoulTakerMaster", active);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            int value = 0;
-            int value2 = 0;
-            int value3 = 0;
+            var value = 0;
+            var value2 = 0;
+            var value3 = 0;
             switch (skill.skill.Level)
             {
                 case 1:
@@ -105,11 +93,11 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
             actor.Status.cri_skill += (short)value3;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             if (actor.type == ActorType.PC)
             {
-                int value = skill.Variable["SoulTakerMaster"];
+                var value = skill.Variable["SoulTakerMaster"];
                 actor.Status.min_atk1_skill -= (short)value;
                 actor.Status.min_atk2_skill -= (short)value;
                 actor.Status.min_atk3_skill -= (short)value;

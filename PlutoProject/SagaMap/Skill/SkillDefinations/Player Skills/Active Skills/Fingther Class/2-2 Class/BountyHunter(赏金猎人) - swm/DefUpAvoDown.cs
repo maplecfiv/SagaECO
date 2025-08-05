@@ -1,36 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.BountyHunter
 {
     /// <summary>
-    /// 散漫身姿（ブラフ）
+    ///     散漫身姿（ブラフ）
     /// </summary>
     public class DefUpAvoDown : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = (45 - 5 * level) * 1000;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "DefUpAvoDown", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = (45 - 5 * level) * 1000;
+            var skill = new DefaultBuff(args.skill, dActor, "DefUpAvoDown", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
-            int avo_range_down = -(int)(actor.Status.avoid_ranged * 0.1f * level);
-            int avo_melee_down = -(int)(actor.Status.avoid_melee * 0.1f * level);
-            int def_add_add = (int)(actor.Status.def_add * (0.1f + 0.1f * level));
-            int def_add = (int)(actor.Status.def * (0.1f + 0.1f * level));
+            var avo_range_down = -(int)(actor.Status.avoid_ranged * 0.1f * level);
+            var avo_melee_down = -(int)(actor.Status.avoid_melee * 0.1f * level);
+            var def_add_add = (int)(actor.Status.def_add * (0.1f + 0.1f * level));
+            var def_add = (int)(actor.Status.def * (0.1f + 0.1f * level));
             //avo_range_down
             if (skill.Variable.ContainsKey("DefUpAvoDown_avo_range_down"))
                 skill.Variable.Remove("DefUpAvoDown_avo_range_down");
@@ -54,9 +55,11 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
 
             actor.Buff.DefUp = true;
             actor.Buff.DefRateUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.avoid_ranged_skill -= (short)skill.Variable["DefUpAvoDown_avo_range_down"];
             actor.Status.avoid_melee_skill -= (short)skill.Variable["DefUpAvoDown_avo_melee_down"];
@@ -65,8 +68,10 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
 
             actor.Buff.DefUp = false;
             actor.Buff.DefRateUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,93 +1,86 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Threading;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
-using SagaDB.Actor;
+
 namespace SagaMap.Scripting
 {
     public class Timer : MultiRunTask
     {
-        public event TimerCallback OnTimerCall;
-
-        ActorPC pc;
-        List<object> customObjects = new List<object>();
-        bool needScript;
-
-        /// <summary>
-        /// 挂钩的玩家
-        /// </summary>
-        public ActorPC AttachedPC { get { return this.pc; } set { this.pc = value; } }
-
-        /// <summary>
-        /// 自定义物件
-        /// </summary>
-        public List<object> CustomObjects { get { return this.customObjects; } }
-
-        /// <summary>
-        /// 是否需要用到脚本
-        /// </summary>
-        public bool NeedScript { get { return this.needScript; } set { this.needScript = value; } }
-
-        public Timer(string name,int period, int due)
+        public Timer(string name, int period, int due)
         {
-            this.Name = name;
+            Name = name;
             this.period = period;
-            this.dueTime = due;
+            dueTime = due;
         }
+
+        /// <summary>
+        ///     挂钩的玩家
+        /// </summary>
+        public ActorPC AttachedPC { get; set; }
+
+        /// <summary>
+        ///     自定义物件
+        /// </summary>
+        public List<object> CustomObjects { get; } = new List<object>();
+
+        /// <summary>
+        ///     是否需要用到脚本
+        /// </summary>
+        public bool NeedScript { get; set; }
+
+        public event TimerCallback OnTimerCall;
 
         public override void CallBack()
         {
             try
             {
-                if (needScript && pc != null)
+                if (NeedScript && AttachedPC != null)
                 {
-                    if (MapClient.FromActorPC(pc).scriptThread != null)
+                    if (MapClient.FromActorPC(AttachedPC).scriptThread != null)
                         return;
-                    MapClient.FromActorPC(pc).scriptThread = new System.Threading.Thread(Run);
-                    MapClient.FromActorPC(pc).scriptThread.Start();
+                    MapClient.FromActorPC(AttachedPC).scriptThread = new Thread(Run);
+                    MapClient.FromActorPC(AttachedPC).scriptThread.Start();
                 }
                 else
                 {
-                    if (pc != null)
+                    if (AttachedPC != null)
                     {
                         if (OnTimerCall != null)
-                            OnTimerCall(this, pc);
+                            OnTimerCall(this, AttachedPC);
                     }
                     else
                     {
                         OnTimerCall(this, null);
-                        this.Deactivate();
+                        Deactivate();
                     }
                 }
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                Logger.ShowError(ex);
             }
-
         }
 
-        void Run()
+        private void Run()
         {
             ClientManager.EnterCriticalArea();
             try
             {
-                if (pc != null)
-                {
-                    OnTimerCall(this, pc);
-                }
+                if (AttachedPC != null)
+                    OnTimerCall(this, AttachedPC);
                 else
-                    this.Deactivate();
+                    Deactivate();
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                Logger.ShowError(ex);
             }
+
             ClientManager.LeaveCriticalArea();
-            MapClient.FromActorPC(pc).scriptThread = null;
+            MapClient.FromActorPC(AttachedPC).scriptThread = null;
         }
     }
 }

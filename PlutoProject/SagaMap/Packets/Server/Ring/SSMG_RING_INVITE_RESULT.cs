@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Ring;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -19,23 +12,19 @@ namespace SagaMap.Packets.Server
             TARGET_NO_RING_INVITE = -3,
             TARGET_ALREADY_IN_RING = -4,
             NO_RING = -5,
-            NO_RIGHT = -6,
+            NO_RIGHT = -6
         }
 
         public SSMG_RING_INVITE_RESULT()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1AB3;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1AB3;
         }
 
         public int Result
         {
-            set
-            {
-                this.PutInt(value, 2);
-            }
+            set => PutInt(value, 2);
         }
     }
 }
-

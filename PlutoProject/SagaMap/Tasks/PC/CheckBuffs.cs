@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill;
-using SagaMap.Network.Client;
+using SagaLib;
+
 namespace SagaMap.Tasks.PC
 {
     public partial class Recover : MultiRunTask
     {
-        List<int> MapList(ActorPC pc)
+        private List<int> MapList(ActorPC pc)
         {
-            List<int> maps = new List<int>();
+            var maps = new List<int>();
             maps.Add(pc.TInt["S20090000"]);
             maps.Add(pc.TInt["S20091000"]);
             maps.Add(pc.TInt["S20092000"]);
@@ -29,7 +24,8 @@ namespace SagaMap.Tasks.PC
             maps.Add(pc.TInt["每日地牢地图ID"]);
             return maps;
         }
-        void BuffChecker(ActorPC pc)
+
+        private void BuffChecker(ActorPC pc)
         {
             //if (pc.Buff.单枪匹马)
             //{

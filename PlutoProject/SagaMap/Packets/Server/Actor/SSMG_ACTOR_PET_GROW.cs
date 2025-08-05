@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -32,47 +28,34 @@ namespace SagaMap.Packets.Server
             MPRecover,
             Stamina,
             ASPD,
-            CSPD,
+            CSPD
         }
 
         public SSMG_ACTOR_PET_GROW()
         {
-            this.data = new byte[18];
-            this.offset = 2;
-            this.ID = 0x12C0;
+            data = new byte[18];
+            offset = 2;
+            ID = 0x12C0;
         }
 
         public uint PetActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint OwnerActorID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public GrowType Type
         {
-            set
-            {
-                this.PutUInt((uint)value, 10);
-            }
+            set => PutUInt((uint)value, 10);
         }
 
         public uint Value
         {
-            set
-            {
-                PutUInt(value, 14);
-            }
+            set => PutUInt(value, 14);
         }
     }
 }
-

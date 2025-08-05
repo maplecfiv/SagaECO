@@ -1,43 +1,41 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SagaDB.Actor;
+using SagaLib;
 using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.Necromancer
 {
     /// <summary>
-    /// 死神召喚（死神召喚）[接續技能]
+    ///     死神召喚（死神召喚）[接續技能]
     /// </summary>
     public class SumDeath4 : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 5.0f;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(dActor, 100, true);
-            List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
+            var factor = 5.0f;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(dActor, 100, true);
+            var realAffected = new List<Actor>();
+            foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
                     realAffected.Add(act);
-                }
-            }
-            SkillHandler.Instance.MagicAttack (sActor, realAffected, args, SagaLib.Elements.Dark, factor);
+
+            SkillHandler.Instance.MagicAttack(sActor, realAffected, args, Elements.Dark, factor);
             if (sActor.type == ActorType.MOB)
-            {
                 try
                 {
-                    ActorMob mob = (ActorMob)sActor;
-                    MobEventHandler mobe = (MobEventHandler)mob.e;
-                    Actor Master = mobe.AI.Master;
+                    var mob = (ActorMob)sActor;
+                    var mobe = (MobEventHandler)mob.e;
+                    var Master = mobe.AI.Master;
                     Master.Slave.Remove(mob);
                     mob.ClearTaskAddition();
                     map.DeleteActor(mob);
@@ -45,8 +43,8 @@ namespace SagaMap.Skill.SkillDefinations.Necromancer
                 catch (Exception)
                 {
                 }
-            }
         }
+
         #endregion
     }
 }

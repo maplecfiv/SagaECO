@@ -1,37 +1,40 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.Gunner
 {
     /// <summary>
-    /// 散彈（散弾）
+    ///     散彈（散弾）
     /// </summary>
     public class CanisterShot : ISkill, MobISkill
     {
-        bool MobUse;
+        private bool MobUse;
+
+        public Dictionary<SkillHandler.ActorDirection, List<int>> range =
+            new Dictionary<SkillHandler.ActorDirection, List<int>>();
+
         public CanisterShot(bool MobUse)
         {
             this.MobUse = MobUse;
         }
-        public Dictionary<SagaMap.Skill.SkillHandler.ActorDirection, List<int>> range = new Dictionary<SkillHandler.ActorDirection, List<int>>();
+
         #region Init
+
         public CanisterShot()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         private void init()
         {
             range.Clear();
             //建立List
-            for (int i = 0; i < 8; i++)
-            {
-                range.Add((SkillHandler.ActorDirection)i, new List<int>());
-            }
+            for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
+
             #region RangePos
+
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 3));
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 3));
@@ -138,50 +141,50 @@ namespace SagaMap.Skill.SkillDefinations.Gunner
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(0, 3, 3));
 
             #endregion
-
         }
+
         #endregion
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return SkillHandler.Instance.CheckPcGunAndBullet(sActor);
         }
+
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            return;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             SkillHandler.Instance.PcBulletDown(sActor);
             init();
-            float factor = 1.0f;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 300, false);
-            List<Actor> realAffected = new List<Actor>();
-            SkillHandler.ActorDirection dir = SkillHandler.Instance.GetDirection(sActor);
-            foreach (Actor act in affected)
-            {
+            var factor = 1.0f;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 300, false);
+            var realAffected = new List<Actor>();
+            var dir = SkillHandler.Instance.GetDirection(sActor);
+            foreach (var act in affected)
                 //需去掉不在範圍內的 - 完成
                 /*
                  * ■■■■■■■　　□■□□□□　☆：使用者
                  * □■■■■■□　　□■■□□□　■：效果範圍
                  * □□■■■□□　　□■■■□□
                  * □□□☆□□□　　□☆■■■□
-                 * 
+                 *
                  */
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     int XDiff, YDiff;
                     SkillHandler.Instance.GetXYDiff(map, sActor, act, out XDiff, out YDiff);
                     if (range[dir].Contains(SkillHandler.Instance.CalcPosHashCode(XDiff, YDiff, 3)))
-                    {
                         realAffected.Add(act);
-                    }
                 }
-            }
+
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
-        #endregion
 
+        #endregion
     }
 }

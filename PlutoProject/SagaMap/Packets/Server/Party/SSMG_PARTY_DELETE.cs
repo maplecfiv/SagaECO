@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Party;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -15,34 +8,31 @@ namespace SagaMap.Packets.Server
         {
             DISMISSED = 1,
             QUIT = 2,
-            KICKED = 3,
+            KICKED = 3
         }
 
         public SSMG_PARTY_DELETE()
         {
-            this.data = new byte[11];
-            this.offset = 2;
-            this.ID = 0x19DD;
+            data = new byte[11];
+            offset = 2;
+            ID = 0x19DD;
         }
 
         public uint PartyID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public string PartyName
         {
             set
             {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[11 + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, 6);
-                this.PutBytes(buf, 7);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[11 + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte((byte)buf.Length, 6);
+                PutBytes(buf, 7);
             }
         }
 
@@ -50,10 +40,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte size = GetByte(6);
-                this.PutInt((int)value, (ushort)(7 + size));
+                var size = GetByte(6);
+                PutInt((int)value, (ushort)(7 + size));
             }
         }
     }
 }
-

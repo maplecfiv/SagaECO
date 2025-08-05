@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,42 +7,23 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_COMMUNITY_RECRUIT_REQUEST_ANS()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public bool Accept
-        {
-            get
-            {
-                return (GetUInt(2) == 1);
-            }
-        }
+        public bool Accept => GetUInt(2) == 1;
 
-        public uint CharID
-        {
-            get
-            {
-                return this.GetUInt(6);
-            }
-        }
+        public uint CharID => GetUInt(6);
 
-        public string CharName
-        {
-            get
-            {
-                return Global.Unicode.GetString(this.GetBytes(this.GetByte(10), 11));
-            }
-        }
+        public string CharName => Global.Unicode.GetString(GetBytes(GetByte(10), 11));
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_COMMUNITY_RECRUIT_REQUEST_ANS();
+            return new CSMG_COMMUNITY_RECRUIT_REQUEST_ANS();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRecruitRequestAns(this);
+            ((MapClient)client).OnRecruitRequestAns(this);
         }
-
     }
 }

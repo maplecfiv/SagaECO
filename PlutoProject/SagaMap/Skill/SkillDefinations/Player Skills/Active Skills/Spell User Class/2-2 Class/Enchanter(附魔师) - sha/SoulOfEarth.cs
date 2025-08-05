@@ -1,35 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Enchanter
 {
     /// <summary>
-    /// 大地勢力（アースオーラ）
+    ///     大地勢力（アースオーラ）
     /// </summary>
     public class SoulOfEarth : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (dActor.Status.Additions.ContainsKey("DevineBarrier"))
-            {
-                return -12;
-            }
+            if (dActor.Status.Additions.ContainsKey("DevineBarrier")) return -12;
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 60000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "SoulOfEarth", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 60000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "SoulOfEarth", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             short LDef = 0, RDef = 0;
             int level = skill.skill.Level;
@@ -48,6 +45,7 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
                     RDef = 40;
                     break;
             }
+
             SkillHandler.RemoveAddition(actor, "EnergyShield");
 
             //左防
@@ -66,9 +64,11 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
 
             actor.Buff.DefRateUp = true;
             actor.Buff.DefUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //左防
             actor.Status.def_skill -= (short)skill.Variable["SoulOfEarth_LDef"];
@@ -77,8 +77,10 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
 
             actor.Buff.DefRateUp = false;
             actor.Buff.DefUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

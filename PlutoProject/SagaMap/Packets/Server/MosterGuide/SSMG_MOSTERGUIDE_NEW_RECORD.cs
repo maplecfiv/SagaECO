@@ -1,5 +1,4 @@
 using SagaLib;
-using System;
 
 namespace SagaMap.Packets.Server
 {
@@ -7,16 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_MOSTERGUIDE_NEW_RECORD()
         {
-            this.data = new byte[6];
-            this.ID = 0x2289;
-            this.offset = 2;
+            data = new byte[6];
+            ID = 0x2289;
+            offset = 2;
         }
+
         public short guideID
         {
-            set
-            {
-                this.PutShort(value, 4);
-            }
+            set => PutShort(value, 4);
         }
     }
 }

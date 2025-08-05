@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
 using SagaDB.Partner;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,52 +7,41 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTNER_EQUIP_RESULT()
         {
-            this.data = new byte[12];
-            this.offset = 2;
-            this.ID = 0x218B;
+            data = new byte[12];
+            offset = 2;
+            ID = 0x218B;
         }
+
         public uint PartnerInventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public uint EquipItemID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
+
         /// <summary>
-        /// 0 for weapon, 1 for costume
+        ///     0 for weapon, 1 for costume
         /// </summary>
         public EnumPartnerEquipSlot PartnerEquipSlot
         {
             set
             {
-                if (value== EnumPartnerEquipSlot.WEAPON)
-                {
-                    this.PutByte(0, 10);
-                }
+                if (value == EnumPartnerEquipSlot.WEAPON)
+                    PutByte(0, 10);
                 else
-                {
-                    this.PutByte(1, 10);
-                }
-                
+                    PutByte(1, 10);
             }
         }
+
         /// <summary>
-        /// 0 for in, 1 for out
+        ///     0 for in, 1 for out
         /// </summary>
         public byte MoveType
         {
-            set
-            {
-                this.PutByte(value, 11);
-            }
-        }   
+            set => PutByte(value, 11);
+        }
     }
 }
-        

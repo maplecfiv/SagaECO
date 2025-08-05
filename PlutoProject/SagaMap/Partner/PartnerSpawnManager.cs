@@ -1,40 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Xml;
-
-using SagaLib;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaDB.Mob;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaMap.Partner
 {
     public class PartnerSpawnManager : Singleton<PartnerSpawnManager>
     {
-        Dictionary<uint, List<ActorPartner>> mobs = new Dictionary<uint, List<ActorPartner>>();
-        public PartnerSpawnManager()
-        {
-
-        }
+        private Dictionary<uint, List<ActorPartner>> mobs = new Dictionary<uint, List<ActorPartner>>();
 
         public int LoadAI(string f)
         {
-            int total = 0;
+            var total = 0;
 
             return total;
         }
 
         public void LoadAnAI(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
-            int total = 0;
-            foreach (string f in file)
-            {
-                total += LoadAI(f);
-            }
-            Logger.ShowInfo(total.ToString() + " 加载新的AI...");
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
+            var total = 0;
+            foreach (var f in file) total += LoadAI(f);
+            Logger.ShowInfo(total + " 加载新的AI...");
         }
     }
 }

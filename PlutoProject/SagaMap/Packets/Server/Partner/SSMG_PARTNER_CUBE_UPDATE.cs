@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,25 +6,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTNER_CUBE_UPDATE()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x2187;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x2187;
         }
 
         public uint PartnerInventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public ushort CubeUniqueID
         {
-            set
-            {
-                this.PutUShort(value, 6);
-            }
+            set => PutUShort(value, 6);
         }
     }
 }
-        

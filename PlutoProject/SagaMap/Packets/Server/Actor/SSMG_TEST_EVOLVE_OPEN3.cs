@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Ring;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,11 +6,10 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_TEST_EVOLVE_OPEN3()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x1EDC;
-            this.PutUShort(0x6E, 2);
+            data = new byte[4];
+            offset = 2;
+            ID = 0x1EDC;
+            PutUShort(0x6E, 2);
         }
     }
 }
-

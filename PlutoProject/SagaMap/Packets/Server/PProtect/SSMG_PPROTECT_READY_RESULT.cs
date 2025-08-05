@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.PProtect;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,20 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PPROTECT_READY_RESULT()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x2375;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x2375;
         }
 
         public byte Code
         {
-            set
-            {
-                this.PutByte(value, 2);
-            }
+            set => PutByte(value, 2);
         }
-
-
     }
 }
-

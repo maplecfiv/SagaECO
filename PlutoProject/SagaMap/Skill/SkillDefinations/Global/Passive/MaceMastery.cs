@@ -1,17 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
-    public class MaceMastery:ISkill
+    public class MaceMastery : ISkill
     {
         #region ISkill Members
-
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -20,26 +15,23 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool active = false;
+            var active = false;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.HAMMER ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.STAFF)
-                    {
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.HAMMER ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.STAFF)
                         active = true;
-                    }
-                }
-                DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "MaceMastery", active);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+
+                var skill = new DefaultPassiveSkill(args.skill, sActor, "MaceMastery", active);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             int value;
             value = skill.skill.Level * 5;
@@ -62,9 +54,9 @@ namespace SagaMap.Skill.SkillDefinations.Global
             actor.Status.hit_melee_skill += (short)value;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            int value = skill.Variable["MaceMasteryATK"];
+            var value = skill.Variable["MaceMasteryATK"];
             actor.Status.min_atk1_skill -= (short)value;
             value = skill.Variable["MaceMasteryHIT"];
             actor.Status.hit_melee_skill -= (short)value;

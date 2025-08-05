@@ -1,46 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Druid
 {
     /// <summary>
-    /// 計劃者（プラーナ）
+    ///     計劃者（プラーナ）
     /// </summary>
     public class RegiAllUp : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //int lifetime = 40000 + 20000 * level;
-            int lifetime = 300000 + 120000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "RegiAllUp", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 300000 + 120000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "RegiAllUp", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
-            string[] StatusNames = { "Sleep", "Poison", "Stun", "Silence", "Stone", "Confuse", "鈍足", "Frosen", "Stiff" };
-            foreach (string StatusName in StatusNames)
+            string[] StatusNames =
+                { "Sleep", "Poison", "Stun", "Silence", "Stone", "Confuse", "鈍足", "Frosen", "Stiff" };
+            foreach (var StatusName in StatusNames)
             {
-                DefaultBuff skill2 = new DefaultBuff(args.skill, dActor, StatusName + "Regi", lifetime);
-                skill2.OnAdditionStart += this.StartBuffEventHandler;
-                skill2.OnAdditionEnd += this.EndBuffEventHandler;
+                var skill2 = new DefaultBuff(args.skill, dActor, StatusName + "Regi", lifetime);
+                skill2.OnAdditionStart += StartBuffEventHandler;
+                skill2.OnAdditionEnd += EndBuffEventHandler;
                 SkillHandler.ApplyAddition(dActor, skill2);
             }
         }
-        void StartBuffEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartBuffEventHandler(Actor actor, DefaultBuff skill)
         {
         }
-        void EndBuffEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndBuffEventHandler(Actor actor, DefaultBuff skill)
         {
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Buff.ConfuseResist = true;
             actor.Buff.FaintResist = true;
@@ -51,9 +54,11 @@ namespace SagaMap.Skill.SkillDefinations.Druid
             actor.Buff.SleepResist = true;
             actor.Buff.SpeedDownResist = true;
             actor.Buff.StoneResist = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Buff.ConfuseResist = false;
             actor.Buff.FaintResist = false;
@@ -64,8 +69,10 @@ namespace SagaMap.Skill.SkillDefinations.Druid
             actor.Buff.SleepResist = false;
             actor.Buff.SpeedDownResist = false;
             actor.Buff.StoneResist = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

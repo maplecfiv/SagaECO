@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Warlock
 {
     /// <summary>
-    /// マジックコンフュージョン
+    ///     マジックコンフュージョン
     /// </summary>
     public class MagConfuse : ISkill
     {
@@ -19,24 +15,19 @@ namespace SagaMap.Skill.SkillDefinations.Warlock
         {
             if (pc.Status.Additions.ContainsKey("MagConfuse"))
                 return -30;
-            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
+
+            return -14;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            DefaultBuff skill2 = new DefaultBuff(args.skill, sActor, "MagConfuse", 60000);
+            var skill2 = new DefaultBuff(args.skill, sActor, "MagConfuse", 60000);
             SkillHandler.ApplyAddition(sActor, skill2);
-            int rate = 0;
-            int lifetime = 0;
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Neutral, 0);
-            args.flag[0] = SagaLib.AttackFlag.NONE;
+            var rate = 0;
+            var lifetime = 0;
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Neutral, 0);
+            args.flag[0] = AttackFlag.NONE;
             switch (level)
             {
                 case 1:
@@ -60,12 +51,14 @@ namespace SagaMap.Skill.SkillDefinations.Warlock
                     lifetime = 6000;
                     break;
             }
+
             if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, SkillHandler.DefaultAdditions.Confuse, rate))
             {
-                Additions.Global.Confuse skill = new SagaMap.Skill.Additions.Global.Confuse(args.skill, dActor, lifetime);
+                var skill = new Confuse(args.skill, dActor, lifetime);
                 SkillHandler.ApplyAddition(dActor, skill);
             }
         }
+
         #endregion
     }
 }

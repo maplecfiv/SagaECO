@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SagaDB.Npc
 {
@@ -10,47 +7,41 @@ namespace SagaDB.Npc
         None,
         CP,
         ECoin,
-        unknown,
+        unknown
     }
 
     public class Shop
     {
-        uint id;
-        uint sellrate, buyrate, buylimit;
-        List<uint> goods = new List<uint>();
-        List<uint> npcs = new List<uint>();
-        ShopType type;
+        /// <summary>
+        ///     Shop的ID
+        /// </summary>
+        public uint ID { get; set; }
+
+        public List<uint> RelatedNPC { get; } = new List<uint>();
 
         /// <summary>
-        /// Shop的ID
+        ///     贩卖倍率
         /// </summary>
-        public uint ID { get { return this.id; } set { this.id = value; } }
-
-        public List<uint> RelatedNPC { get { return npcs; } }
+        public uint SellRate { get; set; }
 
         /// <summary>
-        /// 贩卖倍率
+        ///     购买倍率
         /// </summary>
-        public uint SellRate { get { return this.sellrate; } set { this.sellrate = value; } }
+        public uint BuyRate { get; set; }
 
         /// <summary>
-        /// 购买倍率
+        ///     购买额度
         /// </summary>
-        public uint BuyRate { get { return this.buyrate; } set { this.buyrate = value; } }
+        public uint BuyLimit { get; set; }
 
         /// <summary>
-        /// 购买额度
+        ///     商品
         /// </summary>
-        public uint BuyLimit { get { return this.buylimit; } set { this.buylimit = value; } }
+        public List<uint> Goods { get; } = new List<uint>();
 
         /// <summary>
-        /// 商品
+        ///     商店类型
         /// </summary>
-        public List<uint> Goods { get { return this.goods; } }
-
-        /// <summary>
-        /// 商店类型
-        /// </summary>
-        public ShopType ShopType { get { return this.type; } set { this.type = value; } }
+        public ShopType ShopType { get; set; }
     }
 }

@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaDB.Item;
 using SagaLib;
-using SagaMap;
-using SagaMap.Skill.Additions.Global;
-
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Stryder
 {
-    class StrapFlurry : ISkill
+    internal class StrapFlurry : ISkill
     {
         #region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.isEquipmentRight(sActor, SagaDB.Item.ItemType.ROPE) || sActor.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
-            {
-                return 0;
-            }
+            if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.ROPE) ||
+                sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0) return 0;
             return -5;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.1f + 0.3f * level;
+            var factor = 1.1f + 0.3f * level;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
+                var pc = (ActorPC)sActor;
                 //不管是主职还是副职,，检索技能是否存在
                 if (pc.Skills2_2.ContainsKey(2337) || pc.DualJobSkill.Exists(x => x.ID == 2337))
                 {
@@ -50,9 +44,9 @@ namespace SagaMap.Skill.SkillDefinations.Stryder
                     factor += 1.9f + 0.1f * Math.Max(duallv, mainlv);
                     //factor += 0.3f + 0.05f * pc.Skills2_2[2337].Level;
                 }
+
                 if (pc.Skills3.ContainsKey(992) || pc.DualJobSkill.Exists(x => x.ID == 992))
                 {
-
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 992))
                         duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 992).Level;
@@ -62,15 +56,15 @@ namespace SagaMap.Skill.SkillDefinations.Stryder
                     factor += 0.1f * Math.Max(duallv, mainlv);
                 }
             }
+
             //ActorSkill actorS = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(sActor, 400, true);
-            List<Actor> affected = new List<Actor>();
-            short[] pos = new short[2];
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(sActor, 400, true);
+            var affected = new List<Actor>();
+            var pos = new short[2];
             pos[0] = sActor.X;
             pos[1] = sActor.Y;
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 //这里,应该是判定为可以攻击的对象才会被拉过来.
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {
@@ -79,10 +73,10 @@ namespace SagaMap.Skill.SkillDefinations.Stryder
                     //map.MoveActor(Map.MOVE_TYPE.START, dActor, pos, dActor.Dir, 20000, true, SagaLib.MoveType.BATTLE_MOTION);
                     map.MoveActor(Map.MOVE_TYPE.START, i, pos, i.Dir, 20000, true, MoveType.BATTLE_MOTION);
                 }
-            }
 
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }
+
         #endregion
     }
 }

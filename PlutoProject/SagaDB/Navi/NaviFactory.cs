@@ -1,24 +1,22 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaLib;
-using SagaDB.Actor;
-using SagaLib.VirtualFileSystem;
 using System.Xml;
+using SagaLib;
+
 namespace SagaDB.Navi
 {
     public class NaviFactory : Factory<NaviFactory, Navi>
     {
+        private uint i;
+
         public NaviFactory()
         {
-            this.loadingTab = "Loading navi database";
-            this.loadedTab = " navis loaded.";
-            this.databaseName = "navi";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading navi database";
+            loadedTab = " navis loaded.";
+            databaseName = "navi";
+            FactoryType = FactoryType.CSV;
         }
-        uint i;
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, Navi item)
+
+        protected override void ParseXML(XmlElement root, XmlElement current, Navi item)
         {
             throw new NotImplementedException();
         }
@@ -30,22 +28,16 @@ namespace SagaDB.Navi
 
         protected override void ParseCSV(Navi item, string[] paras)
         {
-            uint stepUniqueId = uint.Parse(paras[0]);
-            uint categoryId = uint.Parse(paras[1]);
-            uint eventId = uint.Parse(paras[2]);
-            uint stepId = uint.Parse(paras[3]);
-            if (!item.Categories.ContainsKey(categoryId))
-            {
-                item.Categories.Add(categoryId, new Category(categoryId));
-            }
-            Category c = item.Categories[categoryId];
-            if (!c.Events.ContainsKey(eventId))
-            {
-                c.Events.Add(eventId, new Event(eventId));
-            }
-            Event e = c.Events[eventId];
+            var stepUniqueId = uint.Parse(paras[0]);
+            var categoryId = uint.Parse(paras[1]);
+            var eventId = uint.Parse(paras[2]);
+            var stepId = uint.Parse(paras[3]);
+            if (!item.Categories.ContainsKey(categoryId)) item.Categories.Add(categoryId, new Category(categoryId));
+            var c = item.Categories[categoryId];
+            if (!c.Events.ContainsKey(eventId)) c.Events.Add(eventId, new Event(eventId));
+            var e = c.Events[eventId];
 
-            Step s = new Step(stepId, stepUniqueId, e);
+            var s = new Step(stepId, stepUniqueId, e);
             e.Steps.Add(stepId, s);
             item.UniqueSteps.Add(stepUniqueId, s);
             i++;

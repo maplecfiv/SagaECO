@@ -1,16 +1,9 @@
 ﻿using SagaDB.Actor;
-using SagaLib;
-using SagaMap.Skill.Additions.Global;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaMap.Scripting;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// デモリッション
+    ///     デモリッション
     /// </summary>
     public class Demolition : ISkill
     {
@@ -22,15 +15,12 @@ namespace SagaMap.Skill.SkillDefinations.Global
         }
 
 
-
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 18.0f;
+            var factor = 18.0f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-
-
         }
-        #endregion
 
+        #endregion
     }
 }

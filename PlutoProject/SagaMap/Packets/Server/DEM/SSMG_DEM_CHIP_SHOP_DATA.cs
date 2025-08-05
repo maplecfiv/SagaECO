@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-using SagaDB.DEMIC;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,48 +6,38 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_DEM_CHIP_SHOP_DATA()
         {
-            this.data = new byte[15];
-            this.offset = 2;
-            this.ID = 0x063A;            
+            data = new byte[15];
+            offset = 2;
+            ID = 0x063A;
         }
 
         public uint EXP
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint JEXP
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public uint ItemID
         {
-            set
-            {
-                this.PutUInt(value, 10);
-            }
+            set => PutUInt(value, 10);
         }
 
         public string Description
         {
             set
             {
-                byte[] comment = Global.Unicode.GetBytes(value + "\0");
-                byte[] buf = new byte[15 + comment.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var comment = Global.Unicode.GetBytes(value + "\0");
+                var buf = new byte[15 + comment.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)comment.Length, 14);
-                this.PutBytes(comment, 15);
+                PutByte((byte)comment.Length, 14);
+                PutBytes(comment, 15);
             }
         }
     }
 }
-

@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
-
 
 namespace SagaMap.Packets.Client
 {
@@ -13,23 +7,13 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ITEM_CHANGE()
         {
-            this.offset = 2;
-        }
-        public uint ChangeID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
+            offset = 2;
         }
 
-        public uint InventorySlot
-        {
-            get
-            {
-                return this.GetUInt(7);
-            }
-        }
+        public uint ChangeID => GetUInt(2);
+
+        public uint InventorySlot => GetUInt(7);
+
         /*
         public List<uint> SlotList()
         {
@@ -42,14 +26,14 @@ namespace SagaMap.Packets.Client
             return list;
         }
         */
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_ITEM_CHANGE();
+            return new CSMG_ITEM_CHANGE();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnItemChange(this);
+            ((MapClient)client).OnItemChange(this);
         }
     }
 }

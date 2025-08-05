@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -14,23 +9,19 @@ namespace SagaMap.Packets.Server
             OK = 0,
             CANNOT_SET_NOW = -1,
             CANNOT_SET = -2,
-            SLOT_OVER = -3,
+            SLOT_OVER = -3
         }
 
         public SSMG_IRIS_CARD_INSERT_RESULT()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1DB7;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1DB7;
         }
 
         public Results Result
         {
-            set
-            {
-                this.PutInt((int)value, 2);
-            }
+            set => PutInt((int)value, 2);
         }
     }
 }
-

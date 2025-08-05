@@ -1,24 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaMap;
-using SagaMap.Scripting;
+using SagaDB.Mob;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
 
 namespace SagaMap.Mob.AICommands
 {
     public class Chase : AICommand
     {
-        private CommandStatus status;
-        private Actor dest;
-        private MobAI mob;
+        private readonly Actor dest;
+        private readonly MobAI mob;
+        private int index;
 
-        List<MapNode> path;
-        int index = 0;
+        private List<MapNode> path;
 
-        public short x = 0, y = 0;
+        public short x, y;
 
         public Chase(MobAI mob, Actor dest)
         {
@@ -30,13 +27,13 @@ namespace SagaMap.Mob.AICommands
                 y = dest.Y;
                 if (mob.Mob.MapID != dest.MapID || !mob.CanMove)
                 {
-                    this.Status = CommandStatus.FINISHED;
+                    Status = CommandStatus.FINISHED;
                     return;
                 }
 
                 if (dest.Status.Additions.ContainsKey("Hiding") || dest.Status.Additions.ContainsKey("Cloaking"))
                 {
-                    this.status = CommandStatus.FINISHED;
+                    Status = CommandStatus.FINISHED;
                     return;
                 }
 
@@ -46,7 +43,7 @@ namespace SagaMap.Mob.AICommands
                     {
                         if (Global.Random.Next(0, 99) < 20)
                         {
-                            int range = Global.Random.Next(100, 1000);
+                            var range = Global.Random.Next(100, 1000);
                             x = (short)(mob.Mob.X - dest.X);
                             y = (short)(mob.Mob.Y - dest.Y);
                             x = (short)(mob.Mob.X + x / MobAI.GetLengthD(0, 0, x, y) * range);
@@ -54,13 +51,13 @@ namespace SagaMap.Mob.AICommands
                         }
                         else
                         {
-                            this.status = CommandStatus.FINISHED;
+                            Status = CommandStatus.FINISHED;
                             return;
                         }
                     }
                     else
                     {
-                        this.Status = CommandStatus.FINISHED;
+                        Status = CommandStatus.FINISHED;
                         return;
                     }
 
@@ -103,36 +100,22 @@ namespace SagaMap.Mob.AICommands
                     */
                 }
 
-                path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width), Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(x, mob.map.Width), Global.PosY16to8(y, mob.map.Height));
-                this.Status = CommandStatus.INIT;
+                path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width),
+                    Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(x, mob.map.Width),
+                    Global.PosY16to8(y, mob.map.Height));
+                Status = CommandStatus.INIT;
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
             }
-
-
         }
-        void returnAndInitialize()
+
+        public string GetName()
         {
-            if (mob.Mob.type == ActorType.GOLEM) return;
-            short[] pos = new short[2] { mob.X_pb, mob.Y_pb };
-            mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, pos, 1, 1000, false, MoveType.WARP2);
-            mob.Mob.HP = mob.Mob.MaxHP;
-            if (mob.Mob.type == ActorType.MOB)
-            {
-                if (((ActorMob)mob.Mob).AttackedForEvent != 0)
-                    mob.Mob.e.OnActorReturning(mob.Mob);
-                ((ActorMob)mob.Mob).AttackedForEvent = 0;
-                mob.firstAttacker = null;
-                mob.Mob.BattleStartTime = DateTime.Now;
-            }
-            mob.Hate.Clear();
-            //清空HP相关SKILL状态
-            mob.SkillOfHPClear();
-            mob.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, mob.Mob, false);
+            return "Chase";
         }
-        public string GetName() { return "Chase"; }
+
         public void Update(object para)
         {
             try
@@ -140,37 +123,30 @@ namespace SagaMap.Mob.AICommands
                 MapNode node;
                 if (mob.Mode.NoMove || !mob.CanMove)
                     return;
-                if (this.dest.Status == null)
+                if (dest.Status == null)
                 {
-                    this.status = CommandStatus.FINISHED;
+                    Status = CommandStatus.FINISHED;
                     return;
                 }
+
                 //if (mob.Mode.isAnAI && mob.CannotMove)
                 //    return;
-                if (this.dest.Status.Additions.ContainsKey("Hiding"))
-                {
-                    this.Status = CommandStatus.FINISHED;
-                }
-                if (this.dest.Status.Additions.ContainsKey("Through"))
-                {
-                    this.Status = CommandStatus.FINISHED;
-                }
-                if (this.Status == CommandStatus.FINISHED)
+                if (dest.Status.Additions.ContainsKey("Hiding")) Status = CommandStatus.FINISHED;
+                if (dest.Status.Additions.ContainsKey("Through")) Status = CommandStatus.FINISHED;
+                if (Status == CommandStatus.FINISHED)
                     return;
                 if (!mob.Mode.Active && mob.Master == null)
-                {
                     if (DateTime.Now > mob.attackStamp.AddSeconds(15))
                     {
                         returnAndInitialize();
                         Status = CommandStatus.FINISHED;
                         return;
                     }
-                }
+
                 if (mob.Master != null)
-                {
                     if (mob.Master.type == ActorType.MOB)
                     {
-                        ActorEventHandlers.MobEventHandler e = (ActorEventHandlers.MobEventHandler)mob.Master.e;
+                        var e = (MobEventHandler)mob.Master.e;
                         if (e.AI.Hate.Count == 0 && mob.Master.SettledSlave.Count == 0)
                         {
                             returnAndInitialize();
@@ -179,7 +155,7 @@ namespace SagaMap.Mob.AICommands
                             return;
                         }
                     }
-                }
+
                 float size = 0;
                 if (mob.Mode.isAnAI)
                 {
@@ -195,116 +171,144 @@ namespace SagaMap.Mob.AICommands
                         size = mob.Mob.Range;
                 }
                 else
+                {
                     size = 1;
+                }
 
-                bool ifNeko = false;
+                var ifNeko = false;
                 if (mob.Mob.type == ActorType.PET)
-                {
-                    if (((ActorPet)mob.Mob).BaseData.mobType == SagaDB.Mob.MobType.MAGIC_CREATURE)
-                    {
+                    if (((ActorPet)mob.Mob).BaseData.mobType == MobType.MAGIC_CREATURE)
                         ifNeko = true;
-                    }
-                }
 
-                if (MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) <= (size * 150) && !ifNeko)
-                {
-                    if (!this.mob.Mode.RunAway)
-                    {
-                        if (Global.Random.Next(0, 99) < 70 || !this.mob.Mode.RunAway)
+                if (MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) <= size * 150 && !ifNeko)
+                    if (!mob.Mode.RunAway)
+                        if (Global.Random.Next(0, 99) < 70 || !mob.Mode.RunAway)
                         {
-                            this.mob.map.FindFreeCoord(this.mob.Mob.X, this.mob.Mob.Y, out x, out y, this.mob.Mob);
-                            if (this.mob.Mob.X == x && this.mob.Mob.Y == y || this.mob.Mode.RunAway)
+                            mob.map.FindFreeCoord(mob.Mob.X, mob.Mob.Y, out x, out y, mob.Mob);
+                            if ((mob.Mob.X == x && mob.Mob.Y == y) || mob.Mode.RunAway)
                             {
-                                this.Status = CommandStatus.FINISHED;
+                                Status = CommandStatus.FINISHED;
                                 return;
                             }
-                            else
-                            {
-                                short[] dst = new short[2] { x, y };
-                                mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst, MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
-                                return;
-                            }
+
+                            var dst = new short[2] { x, y };
+                            mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst,
+                                MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20),
+                                true);
+                            return;
                         }
-                    }
-                }
+
                 //if (mob.Mode.RunAway) return;
                 if (index + 1 < path.Count)
                 {
                     node = path[index];
-                    short[] dst = new short[2] { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
-                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst, MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
+                    var dst = new short[2]
+                        { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
+                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst,
+                        MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
                     if (mob.Mode.isAnAI)
                         mob.CannotAttack = DateTime.Now.AddMilliseconds(1500);
                 }
                 else if (path.Count == 1 && index == 0)
                 {
-                    byte xs = Global.PosX16to8(mob.Mob.X, mob.map.Width);
-                    byte ys = Global.PosY16to8(mob.Mob.Y, mob.map.Height);
+                    var xs = Global.PosX16to8(mob.Mob.X, mob.map.Width);
+                    var ys = Global.PosY16to8(mob.Mob.Y, mob.map.Height);
                     node = path[index];
-                    short[] dst = new short[2] { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
-                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst, MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
+                    var dst = new short[2]
+                        { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
+                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst,
+                        MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
                 }
                 else
                 {
                     if (path.Count == 0)
                     {
-                        this.Status = CommandStatus.FINISHED;
+                        Status = CommandStatus.FINISHED;
                         return;
                     }
+
                     node = path[path.Count - 1];
-                    short[] dst = new short[2] { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
+                    var dst = new short[2]
+                        { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };
                     if (mob.map.GetActorsArea(dst[0], dst[1], 50).Count > 0 && !ifNeko)
                     {
-                        this.mob.map.FindFreeCoord(dest.X, dest.Y, out x, out y, this.mob.Mob);
-                        path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width), Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(x, mob.map.Width), Global.PosY16to8(y, mob.map.Height));
+                        mob.map.FindFreeCoord(dest.X, dest.Y, out x, out y, mob.Mob);
+                        path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width),
+                            Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(x, mob.map.Width),
+                            Global.PosY16to8(y, mob.map.Height));
                         index = 0;
                         return;
                     }
-                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst, MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
-                    if ((MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) > (50 + size * 100) && !mob.Mode.RunAway))
+
+                    mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, dst,
+                        MobAI.GetDir((short)(dst[0] - x), (short)(dst[1] - y)), (ushort)(mob.Mob.Speed / 20), true);
+                    if (MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) > 50 + size * 100 && !mob.Mode.RunAway)
                     {
                         if (mob.Mob.MapID != dest.MapID)
                         {
-                            this.Status = CommandStatus.FINISHED;
+                            Status = CommandStatus.FINISHED;
                             return;
                         }
-                        path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width), Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(dest.X, mob.map.Width), Global.PosY16to8(dest.Y, mob.map.Height));
+
+                        path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width),
+                            Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(dest.X, mob.map.Width),
+                            Global.PosY16to8(dest.Y, mob.map.Height));
                         index = -1;
                     }
                     else
                     {
-                        this.Status = CommandStatus.FINISHED;
+                        Status = CommandStatus.FINISHED;
                         return;
                     }
                 }
+
                 index++;
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex, null);
-                this.Status = CommandStatus.FINISHED;
+                Status = CommandStatus.FINISHED;
+            }
+        }
+
+        public CommandStatus Status { get; set; }
+
+        public void Dispose()
+        {
+            Status = CommandStatus.FINISHED;
+        }
+
+        private void returnAndInitialize()
+        {
+            if (mob.Mob.type == ActorType.GOLEM) return;
+            var pos = new short[2] { mob.X_pb, mob.Y_pb };
+            mob.map.MoveActor(Map.MOVE_TYPE.START, mob.Mob, pos, 1, 1000, false, MoveType.WARP2);
+            mob.Mob.HP = mob.Mob.MaxHP;
+            if (mob.Mob.type == ActorType.MOB)
+            {
+                if (((ActorMob)mob.Mob).AttackedForEvent != 0)
+                    mob.Mob.e.OnActorReturning(mob.Mob);
+                ((ActorMob)mob.Mob).AttackedForEvent = 0;
+                mob.firstAttacker = null;
+                mob.Mob.BattleStartTime = DateTime.Now;
             }
 
+            mob.Hate.Clear();
+            //清空HP相关SKILL状态
+            mob.SkillOfHPClear();
+            mob.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, mob.Mob, false);
         }
 
         public void FindPath()
         {
-            path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width), Global.PosY16to8(mob.Mob.Y, mob.map.Height), Global.PosX16to8(x, mob.map.Width), Global.PosY16to8(y, mob.map.Height));
+            path = mob.FindPath(Global.PosX16to8(mob.Mob.X, mob.map.Width), Global.PosY16to8(mob.Mob.Y, mob.map.Height),
+                Global.PosX16to8(x, mob.map.Width), Global.PosY16to8(y, mob.map.Height));
             index = 0;
         }
 
-        public CommandStatus Status
+        public List<MapNode> GetPath()
         {
-            get { return status; }
-            set { status = value; }
+            return path;
         }
-
-        public List<MapNode> GetPath() { return path; }
-
-        public void Dispose()
-        {
-            this.status = CommandStatus.FINISHED;
-        }
-
     }
 }

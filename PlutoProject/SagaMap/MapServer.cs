@@ -1,56 +1,62 @@
 ﻿//#define FreeVersion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using SagaDB;
 using SagaDB.Actor;
+using SagaDB.DEMIC;
+using SagaDB.DualJob;
+using SagaDB.ECOShop;
+using SagaDB.EnhanceTable;
+using SagaDB.Experience;
+using SagaDB.FictitiousActors;
+using SagaDB.Fish;
+using SagaDB.Furniture;
+using SagaDB.Iris;
 using SagaDB.Item;
-using SagaDB.Mob;
-using SagaDB.Partner;
 using SagaDB.Map;
 using SagaDB.Marionette;
-using SagaDB.Quests;
+using SagaDB.MasterEnchance;
+using SagaDB.Mob;
 using SagaDB.Npc;
+using SagaDB.ODWar;
+using SagaDB.Partner;
+using SagaDB.Quests;
+using SagaDB.Ring;
 using SagaDB.Skill;
 using SagaDB.Synthese;
-using SagaDB.Treasure;
-using SagaDB.Ring;
-using SagaDB.ECOShop;
+using SagaDB.Tamaire;
 using SagaDB.Theater;
-using SagaDB.ODWar;
-using SagaDB.Iris;
 using SagaDB.Title;
-using SagaDB.DEMIC;
-using SagaDB.EnhanceTable;
-using SagaDB.DefWar;
+using SagaDB.Treasure;
 using SagaLib;
 using SagaLib.VirtualFileSystem;
+using SagaMap.Dungeon;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
-using SagaMap.Dungeon;
-using System.Runtime.InteropServices;
-using SagaDB.FictitiousActors;
-using SagaDB.Fish;
-using SagaDB.Experience;
-using SagaDB.Tamaire;
-using SagaDB.DualJob;
-using System.Net;
-using SagaDB.Furniture;
-using SagaDB.MasterEnchance;
+using SagaMap.Network.LoginServer;
+using SagaMap.Partner;
+using SagaMap.Skill;
+using SagaMap.Tasks.System;
+using AIThread = SagaMap.Mob.AIThread;
 
 namespace SagaMap
 {
     public class MapServer
     {
         /// <summary>
-        /// The characterdatabase associated to this mapserver.
+        ///     The characterdatabase associated to this mapserver.
         /// </summary>
         public static ActorDB charDB;
+
         public static AccountDB accountDB;
-        public static bool shutingdown = false;
+        public static bool shutingdown;
         public static bool shouldRefreshStatistic = true;
 
         public static bool StartDatabase()
@@ -61,9 +67,11 @@ namespace SagaMap
                 {
                     case 0:
                         charDB = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
+                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
+                            Configuration.Instance.DBPass);
                         accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
+                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
+                            Configuration.Instance.DBPass);
                         charDB.Connect();
                         accountDB.Connect();
                         return true;
@@ -85,13 +93,14 @@ namespace SagaMap
 
         public static void EnsureCharDB()
         {
-            bool notConnected = false;
+            var notConnected = false;
 
             if (!charDB.isConnected())
             {
                 Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
+
             while (notConnected)
             {
                 Logger.ShowInfo("Trying to reconnect to char db server ..", null);
@@ -99,7 +108,7 @@ namespace SagaMap
                 if (!charDB.isConnected())
                 {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
-                    System.Threading.Thread.Sleep(10000);
+                    Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
@@ -113,13 +122,14 @@ namespace SagaMap
 
         public static void EnsureAccountDB()
         {
-            bool notConnected = false;
+            var notConnected = false;
 
             if (!accountDB.isConnected())
             {
                 Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
+
             while (notConnected)
             {
                 Logger.ShowInfo("Trying to reconnect to char db server ..", null);
@@ -127,7 +137,7 @@ namespace SagaMap
                 if (!accountDB.isConnected())
                 {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
-                    System.Threading.Thread.Sleep(10000);
+                    Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
@@ -141,24 +151,26 @@ namespace SagaMap
 
         [DllImport("User32.dll ", EntryPoint = "FindWindow")]
         private static extern int FindWindow(string lpClassName, string lpWindowName);
+
         [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
-        extern static IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
+
         [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
-        extern static int RemoveMenu(IntPtr hMenu, int nPos, int flags);
+        private static extern int RemoveMenu(IntPtr hMenu, int nPos, int flags);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            DateTime time = DateTime.Now;
-            string fullPath = System.Environment.CurrentDirectory + "\\SagaMap.exe";
-            int WINDOW_HANDLER = FindWindow(null, fullPath);
-            IntPtr CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
-            int SC_CLOSE = 0xF060;
+            var time = DateTime.Now;
+            var fullPath = Environment.CurrentDirectory + "\\SagaMap.exe";
+            var WINDOW_HANDLER = FindWindow(null, fullPath);
+            var CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
+            var SC_CLOSE = 0xF060;
             RemoveMenu(CLOSE_MENU, SC_CLOSE, 0x0);
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(ShutingDown);
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            Console.CancelKeyPress += ShutingDown;
+            AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            Logger Log = new Logger("SagaMap.log");
+            var Log = new Logger("SagaMap.log");
             Logger.defaultlogger = Log;
             Logger.CurrentLogger = Log;
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -197,7 +209,8 @@ namespace SagaMap
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("]");
 
-            LocalManager.Instance.CurrentLanguage = (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages), Configuration.Instance.Language);
+            LocalManager.Instance.CurrentLanguage =
+                (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages), Configuration.Instance.Language);
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("[Info]");
@@ -219,49 +232,76 @@ namespace SagaMap
 #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
 #endif
-            ItemAdditionFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv", System.IO.SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ItemFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv", System.IO.SearchOption.TopDirectoryOnly), System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ItemReleaseFactory.Instance.Init("DB/equipment_release.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            FurnitureFactory.Instance.Init("DB/furniture.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            HairFactory.Instance.Init("DB/hair_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            FaceFactory.Instance.Init("DB/face_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ItemExchangeListFactory.Instance.Init("DB/exchange_list.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ExchangeFactory.Instance.Init("DB/exchange.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ItemAdditionFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv",
+                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ItemFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
+                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ItemReleaseFactory.Instance.Init("DB/equipment_release.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            FurnitureFactory.Instance.Init("DB/furniture.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            HairFactory.Instance.Init("DB/hair_info.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            FaceFactory.Instance.Init("DB/face_info.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ItemExchangeListFactory.Instance.Init("DB/exchange_list.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ExchangeFactory.Instance.Init("DB/exchange.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             PacketManager.Instance.LoadPacketFiles("./Packers");
 
-            EnhanceTableFactory.Instance.Init("DB/enhancetable.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MasterEnhanceMaterialFactory.Instance.Init("DB/MasterEnhanceMaterial.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            EnhanceTableFactory.Instance.Init("DB/enhancetable.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MasterEnhanceMaterialFactory.Instance.Init("DB/MasterEnhanceMaterial.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             IrisCardFactory.Instance.Init("DB/iris_card.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            IrisDrawRateFactory.Instance.Init("DB/irisdrawrate.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            IrisDrawRateFactory.Instance.Init("DB/irisdrawrate.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            ModelFactory.Instance.Init("DB/demic_chip_model.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ModelFactory.Instance.Init("DB/demic_chip_model.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             ChipFactory.Instance.Init("DB/demic_chip.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            SyntheseFactory.Instance.Init("DB/synthe1.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            TreasureFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure", "*.xml", System.IO.SearchOption.AllDirectories), null);
-            FishFactory.Instance.Init("DB/FishList.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            DropGroupFactory.Instance.Init("DB/monsterdrop.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobFactory.Instance.Init("DB/monster.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobFactory.Instance.InitPet("DB/pet.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobFactory.Instance.InitPartner("DB/partner_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobFactory.Instance.InitPetLimit("DB/pet_limit.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerDB("DB/partner_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerRankDB("DB/partner_base_rank.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerFoodDB("DB/partner_food.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_Equip.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerTalksInfo("DB/partner_talks_db.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerMotions("DB/partner_motion_together.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitActCubeDB("DB/partner_actcube.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            PartnerFactory.Instance.InitPartnerPicts("DB/monsterpict.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            SyntheseFactory.Instance.Init("DB/synthe1.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            TreasureFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure", "*.xml",
+                    SearchOption.AllDirectories), null);
+            FishFactory.Instance.Init("DB/FishList.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            DropGroupFactory.Instance.Init("DB/monsterdrop.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobFactory.Instance.Init("DB/monster.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobFactory.Instance.InitPet("DB/pet.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobFactory.Instance.InitPartner("DB/partner_info.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobFactory.Instance.InitPetLimit("DB/pet_limit.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerDB("DB/partner_info.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerRankDB("DB/partner_base_rank.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerFoodDB("DB/partner_food.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_Equip.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerTalksInfo("DB/partner_talks_db.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerMotions("DB/partner_motion_together.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitActCubeDB("DB/partner_actcube.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerFactory.Instance.InitPartnerPicts("DB/monsterpict.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
 
-            MarionetteFactory.Instance.Init("DB/marionette.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MarionetteFactory.Instance.Init("DB/marionette.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            SkillFactory.Instance.InitSSP("DB/effect.ssp", System.Text.Encoding.Unicode);
+            SkillFactory.Instance.InitSSP("DB/effect.ssp", Encoding.Unicode);
             SkillFactory.Instance.LoadSkillList("DB/SkillList.xml");
             //SkillFactory.Instance.LoadSkillList2("DB/SkillDB");
 
@@ -269,26 +309,31 @@ namespace SagaMap
 
             QuestFactory.Instance.Init("DB/Quests", null, true);
 
-            NPCFactory.Instance.Init("DB/npc.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ShopFactory.Instance.Init("DB/ShopDB.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ECOShopFactory.Instance.Init("DB/ECOShop.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ChipShopFactory.Instance.Init("DB/ChipShop.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            NCShopFactory.Instance.Init("DB/NCShop.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            GShopFactory.Instance.Init("DB/GShop.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            KujiListFactory.Instance.InitXML("DB/KujiList.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            NPCFactory.Instance.Init("DB/npc.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ShopFactory.Instance.Init("DB/ShopDB.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ECOShopFactory.Instance.Init("DB/ECOShop.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ChipShopFactory.Instance.Init("DB/ChipShop.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            NCShopFactory.Instance.Init("DB/NCShop.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            GShopFactory.Instance.Init("DB/GShop.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            KujiListFactory.Instance.InitXML("DB/KujiList.xml",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             KujiListFactory.Instance.BuildNotInKujiItemsList();
             //KujiListFactory.Instance.InitEventKujiList("DB/EventKujiList.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            KujiListFactory.Instance.InitTransformList("DB/item_transform.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            KujiListFactory.Instance.InitTransformList("DB/item_transform.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //加载副职信息
-            DualJobInfoFactory.Instance.Init("DB/dualjob_info.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            DualJobSkillFactory.Instance.Init("DB/dualjob_skill_learn.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            DualJobInfoFactory.Instance.Init("DB/dualjob_info.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            DualJobSkillFactory.Instance.Init("DB/dualjob_skill_learn.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             MapInfoFactory.Instance.Init("DB/MapInfo.zip");
             MapNameFactory.Instance.Init("DB/mapname.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             MapInfoFactory.Instance.LoadMapFish("DB/CanFish.xml");
             MapInfoFactory.Instance.LoadFlags("DB/MapFlags.xml");
-            MapInfoFactory.Instance.LoadGatherInterval("DB/pick_interval.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MapInfoFactory.Instance.LoadGatherInterval("DB/pick_interval.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             MapInfoFactory.Instance.LoadMapObjects("DB/MapObjects.dat");
             MapInfoFactory.Instance.ApplyMapObject();
             MapInfoFactory.Instance.MapObjects.Clear();
@@ -296,25 +341,35 @@ namespace SagaMap
             MapManager.Instance.MapInfos = MapInfoFactory.Instance.MapInfo;
             MapManager.Instance.LoadMaps();
 
-            DungeonMapsFactory.Instance.Init("DB/Dungeon/DungeonMaps.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            DungeonFactory.Instance.Init("DB/Dungeon/Dungeons.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            DungeonMapsFactory.Instance.Init("DB/Dungeon/DungeonMaps.xml",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            DungeonFactory.Instance.Init("DB/Dungeon/Dungeons.xml",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             MobAIFactory.Instance.Init("DB/MobAI.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobAIFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml", System.IO.SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            MobAIFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/AnMobAI", "*.xml", System.IO.SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            Partner.PartnerAIFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml", System.IO.SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobAIFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
+                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            MobAIFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/AnMobAI", "*.xml",
+                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            PartnerAIFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
+                    SearchOption.AllDirectories), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             //MobSpawnManager.Instance.LoadAnAI("DB/AnMobAI");
             MobSpawnManager.Instance.LoadSpawn("DB/Spawns");
             FictitiousActorsFactory.Instance.LoadActorsList("DB/Actors");
             //SagaDB.FictitiousActors.FictitiousActorsFactory.Instance.LoadShopLists("DB/GolemShop");
             FictitiousActorsManager.Instance.regionFictitiousActors();
-            TheaterFactory.Instance.Init("DB/TheaterSchedule.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            ODWarFactory.Instance.Init("DB/ODWar.xml", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            Tasks.System.Theater.Instance.Activate();
+            TheaterFactory.Instance.Init("DB/TheaterSchedule.xml",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ODWarFactory.Instance.Init("DB/ODWar.xml", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            Theater.Instance.Activate();
             //Tasks.System.AutoRunSystemScript runscript = new Tasks.System.AutoRunSystemScript(3235125);
             //runscript.Activate();
 
-            AnotherFactory.Instance.Init("DB/another_page.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            AnotherFactory.Instance.Init("DB/another_page.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             //意义不明暂时关闭
             //PlayerTitleFactory.Instance.Init("DB/playertitle.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             //KujiListFactory.Instance.InitZeroCPList("DB/CP0List.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
@@ -323,36 +378,36 @@ namespace SagaMap
             TitleFactory.Instance.Init("DB/title_info.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //Experience Reward table for tamaire
-            TamaireExpRewardFactory.Instance.Init("DB/tamairereward.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            TamaireExpRewardFactory.Instance.Init("DB/tamairereward.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             //Status table for tamaire
-            TamaireStatusFactory.Instance.Init("DB/soul_status_param.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            TamaireStatusFactory.Instance.Init("DB/soul_status_param.csv",
+                Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //称号的奖励暂时被过滤掉了
             //TitleFactory.Instance.InitB("DB/title_Bounds.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            Skill.SkillHandler.Instance.LoadSkill("./Skills");
-            Skill.SkillHandler.Instance.Init();
+            SkillHandler.Instance.LoadSkill("./Skills");
+            SkillHandler.Instance.Init();
 
-            Global.clientMananger = (ClientManager)MapClientManager.Instance;
+            Global.clientMananger = MapClientManager.Instance;
 
             //目前无用
             //DefWarFactory.Instance.Init("DB/odwar_order_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             AtCommand.Instance.LoadCommandLevelSetting("./Config/GMCommand.csv");
 
-            Network.LoginServer.LoginSession login = new SagaMap.Network.LoginServer.LoginSession();//Make connection to the Login server.
+            var login = new LoginSession(); //Make connection to the Login server.
 
-            while (login.state != SagaMap.Network.LoginServer.LoginSession.SESSION_STATE.IDENTIFIED &&
-                login.state != SagaMap.Network.LoginServer.LoginSession.SESSION_STATE.REJECTED)
-            {
-                System.Threading.Thread.Sleep(1000);
-            }
+            while (login.state != LoginSession.SESSION_STATE.IDENTIFIED &&
+                   login.state != LoginSession.SESSION_STATE.REJECTED)
+                Thread.Sleep(1000);
 
-            if (login.state == SagaMap.Network.LoginServer.LoginSession.SESSION_STATE.REJECTED)
+            if (login.state == LoginSession.SESSION_STATE.REJECTED)
             {
                 Logger.ShowError("Shutting down in 20sec.", null);
                 MapClientManager.Instance.Abort();
-                System.Threading.Thread.Sleep(20000);
+                Thread.Sleep(20000);
                 return;
             }
 
@@ -361,7 +416,7 @@ namespace SagaMap
                 Logger.ShowError("cannot connect to dbserver", null);
                 Logger.ShowError("Shutting down in 20sec.", null);
                 MapClientManager.Instance.Abort();
-                System.Threading.Thread.Sleep(20000);
+                Thread.Sleep(20000);
                 return;
             }
 
@@ -372,8 +427,8 @@ namespace SagaMap
             ScriptManager.Instance.VariableHolder = charDB.LoadServerVar();
 
             //Starting API
-            string pre = Configuration.Instance.Prefixes + ":" + Configuration.Instance.APIPort + "/";
-            WebServer ws = new WebServer(SendResponse, pre);
+            var pre = Configuration.Instance.Prefixes + ":" + Configuration.Instance.APIPort + "/";
+            var ws = new WebServer(SendResponse, pre);
             ws.Run();
             Logger.ShowInfo("Accepting API Clients from: " + pre);
 
@@ -384,7 +439,7 @@ namespace SagaMap
                 Logger.ShowError("cannot listen on port: " + Configuration.Instance.Port);
                 Logger.ShowInfo("Shutting down in 20sec.");
                 MapClientManager.Instance.Abort();
-                System.Threading.Thread.Sleep(20000);
+                Thread.Sleep(20000);
                 return;
             }
 
@@ -392,16 +447,18 @@ namespace SagaMap
             {
                 Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online`=0;");
                 Logger.ShowInfo("Clearing SQL Logs");
-                Logger.defaultSql.SQLExecuteNonQuery(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';", Logger.defaultSql.ToSQLDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
+                Logger.defaultSql.SQLExecuteNonQuery(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';",
+                    Logger.defaultSql.ToSQLDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
             }
-            Logger.ProgressBarHide("加载总耗时：" + (DateTime.Now - time).TotalMilliseconds.ToString() + "ms");
+
+            Logger.ProgressBarHide("加载总耗时：" + (DateTime.Now - time).TotalMilliseconds + "ms");
             Logger.ShowInfo(LocalManager.Instance.Strings.ACCEPTING_CLIENT);
 
             //激活AJIMODE線程
             //SagaMap.Tasks.System.AJImode aji = new Tasks.System.AJImode();
             //aji.Activate();
             //激活自動保存系統變量線程
-            SagaMap.Tasks.System.AutoSaveServerSvar asss = new Tasks.System.AutoSaveServerSvar();
+            var asss = new AutoSaveServerSvar();
             asss.Activate();
 
             //关攻防
@@ -416,8 +473,8 @@ namespace SagaMap
             //Tasks.System.南牢列车.Instance.Activate();
 
 
-            DateTime now = DateTime.Now;
-            foreach (SagaDB.ODWar.ODWar i in ODWarFactory.Instance.Items.Values)
+            var now = DateTime.Now;
+            foreach (var i in ODWarFactory.Instance.Items.Values)
             {
                 //ODWarManager.Instance.StartODWar(i.MapID);
             }
@@ -432,11 +489,10 @@ namespace SagaMap
             //MapManager.Instance.CreateFFInstanceOfSer();
 
 
-            System.Threading.Thread console = new System.Threading.Thread(ConsoleThread);
+            var console = new Thread(ConsoleThread);
             console.Start();
 
             while (true)
-            {
                 try
                 {
                     if (shouldRefreshStatistic && Configuration.Instance.OnlineStatistics)
@@ -444,19 +500,20 @@ namespace SagaMap
                         try
                         {
                             string content;
-                            System.IO.StreamReader sr = new System.IO.StreamReader("Config/OnlineStatisticTemplate.htm", true);
+                            var sr = new StreamReader("Config/OnlineStatisticTemplate.htm", true);
                             content = sr.ReadToEnd();
                             sr.Close();
-                            string header = content.Substring(0, content.IndexOf("<template for one row>"));
-                            content = content.Substring(content.IndexOf("<template for one row>") + "<template for one row>".Length);
-                            string footer = content.Substring(content.IndexOf("</template for one row>") + "</template for one row>".Length);
+                            var header = content.Substring(0, content.IndexOf("<template for one row>"));
+                            content = content.Substring(content.IndexOf("<template for one row>") +
+                                                        "<template for one row>".Length);
+                            var footer = content.Substring(content.IndexOf("</template for one row>") +
+                                                           "</template for one row>".Length);
                             content = content.Substring(0, content.IndexOf("</template for one row>"));
-                            string res = "";
-                            foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)
-                            {
+                            var res = "";
+                            foreach (var i in MapClientManager.Instance.OnlinePlayer)
                                 try
                                 {
-                                    string tmp = content;
+                                    var tmp = content;
                                     tmp = tmp.Replace("{CharName}", i.Character.Name);
                                     tmp = tmp.Replace("{Job}", i.Character.Job.ToString());
                                     tmp = tmp.Replace("{BaseLv}", i.Character.Level.ToString());
@@ -471,9 +528,11 @@ namespace SagaMap
                                     tmp = tmp.Replace("{Map}", i.map.Info.name);
                                     res += tmp;
                                 }
-                                catch { }
-                            }
-                            System.IO.StreamWriter sw = new System.IO.StreamWriter(Configuration.Instance.StatisticsPagePath, false, Global.Unicode);
+                                catch
+                                {
+                                }
+
+                            var sw = new StreamWriter(Configuration.Instance.StatisticsPagePath, false, Global.Unicode);
                             sw.Write(header);
                             sw.Write(res);
                             sw.Write(footer);
@@ -484,8 +543,10 @@ namespace SagaMap
                         {
                             Logger.ShowError(ex);
                         }
+
                         shouldRefreshStatistic = false;
                     }
+
                     // keep the connections to the database servers alive
                     EnsureCharDB();
                     EnsureAccountDB();
@@ -495,22 +556,19 @@ namespace SagaMap
 #endif
                     if (!shutingdown)
                         MapClientManager.Instance.NetworkLoop(10);
-                    System.Threading.Thread.Sleep(1);
-
+                    Thread.Sleep(1);
                 }
                 catch (Exception ex)
                 {
                     Logger.ShowError(ex);
                 }
-            }
         }
 
-        static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-
         }
 
-        static void CurrentDomain_DomainUnload(object sender, EventArgs e)
+        private static void CurrentDomain_DomainUnload(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -518,81 +576,78 @@ namespace SagaMap
         private static void ConsoleThread()
         {
             while (true)
-            {
                 try
                 {
-                    string cmd = Console.ReadLine();
-                    string[] args = cmd.Split(' ');
+                    var cmd = Console.ReadLine();
+                    var args = cmd.Split(' ');
                     switch (args[0].ToLower())
                     {
                         case "printthreads":
                             ClientManager.PrintAllThreads();
                             break;
                         case "printtaskinfo":
-                            Logger.ShowWarning("Active AI count:" + Mob.AIThread.Instance.ActiveAI.ToString());
-                            List<string> tasks = TaskManager.Instance.RegisteredTasks;
-                            Logger.ShowWarning("Active Tasks:" + tasks.Count.ToString());
-                            foreach (string i in tasks)
-                            {
-                                Logger.ShowWarning(i);
-                            }
+                            Logger.ShowWarning("Active AI count:" + AIThread.Instance.ActiveAI);
+                            var tasks = TaskManager.Instance.RegisteredTasks;
+                            Logger.ShowWarning("Active Tasks:" + tasks.Count);
+                            foreach (var i in tasks) Logger.ShowWarning(i);
                             break;
                         case "printband":
-                            int sendTotal = 0;
-                            int receiveTotal = 0;
+                            var sendTotal = 0;
+                            var receiveTotal = 0;
                             Logger.ShowWarning("Bandwidth usage information:");
                             try
                             {
-                                foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)
+                                foreach (var i in MapClientManager.Instance.OnlinePlayer)
                                 {
                                     sendTotal += i.netIO.UpStreamBand;
                                     receiveTotal += i.netIO.DownStreamBand;
-                                    Logger.ShowWarning(string.Format("Client:{0} Receive:{1:0.##}KB/s Send:{2:0.##}KB/s",
-                                        i.ToString(),
+                                    Logger.ShowWarning(string.Format(
+                                        "Client:{0} Receive:{1:0.##}KB/s Send:{2:0.##}KB/s",
+                                        i,
                                         (float)i.netIO.DownStreamBand / 1024,
                                         (float)i.netIO.UpStreamBand / 1024));
                                 }
                             }
-                            catch { }
+                            catch
+                            {
+                            }
+
                             Logger.ShowWarning(string.Format("Total: Receive:{0:0.##}KB/s Send:{1:0.##}KB/s",
-                                        (float)receiveTotal / 1024,
-                                        (float)sendTotal / 1024));
+                                (float)receiveTotal / 1024,
+                                (float)sendTotal / 1024));
                             break;
                         case "announce":
                             if (args.Length > 1)
                             {
-                                StringBuilder tmsg = new StringBuilder(args[1]);
-                                for (int i = 2; i < args.Length; i++)
-                                {
-                                    tmsg.Append(" " + args[i]);
-                                }
-                                string msg = tmsg.ToString();
+                                var tmsg = new StringBuilder(args[1]);
+                                for (var i = 2; i < args.Length; i++) tmsg.Append(" " + args[i]);
+                                var msg = tmsg.ToString();
                                 try
                                 {
-                                    foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)
-                                    {
-                                        i.SendAnnounce(msg);
-                                    }
-
+                                    foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
                                 }
-                                catch (Exception) { }
+                                catch (Exception)
+                                {
+                                }
                             }
+
                             break;
                         case "kick":
                             if (args.Length > 1)
-                            {
                                 try
                                 {
                                     MapClient client;
                                     var chr =
-                                    from c in MapClientManager.Instance.OnlinePlayer
-                                    where c.Character.Name == args[1]
-                                    select c;
+                                        from c in MapClientManager.Instance.OnlinePlayer
+                                        where c.Character.Name == args[1]
+                                        select c;
                                     client = chr.First();
                                     client.netIO.Disconnect();
                                 }
-                                catch (Exception) { }
-                            }
+                                catch (Exception)
+                                {
+                                }
+
                             break;
                         case "savevar":
                             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
@@ -602,77 +657,81 @@ namespace SagaMap
                             Logger.ShowInfo("Closing.....", null);
                             shutingdown = true;
                             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
-                            MapClient[] clients = new MapClient[MapClientManager.Instance.Clients.Count];
+                            var clients = new MapClient[MapClientManager.Instance.Clients.Count];
                             MapClientManager.Instance.Clients.CopyTo(clients);
                             Logger.ShowInfo("Saving player's data.....", null);
 
-                            foreach (MapClient i in clients)
-                            {
+                            foreach (var i in clients)
                                 try
                                 {
                                     if (i.Character == null) continue;
                                     i.netIO.Disconnect();
                                 }
-                                catch (Exception) { }
-                            }
+                                catch (Exception)
+                                {
+                                }
+
                             Logger.ShowInfo("Saving golem's data.....", null);
 
-                            foreach (Map i in MapManager.Instance.Maps.Values)
+                            foreach (var i in MapManager.Instance.Maps.Values)
                             {
-                                foreach (Actor j in i.Actors.Values)
-                                {
+                                foreach (var j in i.Actors.Values)
                                     if (j.type == ActorType.GOLEM)
-                                    {
                                         try
                                         {
-                                            ActorGolem golem = (ActorGolem)j;
+                                            var golem = (ActorGolem)j;
                                             charDB.SaveChar(golem.Owner, false);
                                         }
-                                        catch { }
-                                    }
-                                }
+                                        catch
+                                        {
+                                        }
+
                                 if (i.IsMapInstance)
                                     i.OnDestrory();
                             }
-                            System.Environment.Exit(System.Environment.ExitCode);
+
+                            Environment.Exit(Environment.ExitCode);
                             break;
                         case "who":
-                            foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)
+                            foreach (var i in MapClientManager.Instance.OnlinePlayer)
                             {
                                 byte x, y;
 
                                 x = Global.PosX16to8(i.Character.X, i.map.Width);
                                 y = Global.PosY16to8(i.Character.Y, i.map.Height);
-                                Logger.ShowInfo(i.Character.Name + "(CharID:" + i.Character.CharID + ")[" + i.Map.Name + " " + x.ToString() + "," + y.ToString() + "] IP：" + i.Character.Account.LastIP);
+                                Logger.ShowInfo(i.Character.Name + "(CharID:" + i.Character.CharID + ")[" + i.Map.Name +
+                                                " " + x + "," + y + "] IP：" + i.Character.Account.LastIP);
                             }
-                            Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO + MapClientManager.Instance.OnlinePlayer.Count.ToString());
-                            Logger.ShowInfo("当前IP在线：" + MapClientManager.Instance.OnlinePlayerOnlyIP.Count.ToString());
+
+                            Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                                            MapClientManager.Instance.OnlinePlayer.Count);
+                            Logger.ShowInfo("当前IP在线：" + MapClientManager.Instance.OnlinePlayerOnlyIP.Count);
                             break;
                         case "kick2":
                             if (args.Length > 1)
-                            {
                                 try
                                 {
                                     MapClient client;
                                     var chr =
-                                    from c in MapClientManager.Instance.OnlinePlayer
-                                    where c.Character.CharID == uint.Parse(args[1])
-                                    select c;
+                                        from c in MapClientManager.Instance.OnlinePlayer
+                                        where c.Character.CharID == uint.Parse(args[1])
+                                        select c;
                                     if (chr.Count() > 0)
                                     {
                                         client = chr.First();
                                         client.netIO.Disconnect();
                                     }
                                 }
-                                catch (Exception) { }
-                            }
+                                catch (Exception)
+                                {
+                                }
+
                             break;
                     }
                 }
                 catch
                 {
                 }
-            }
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
@@ -680,19 +739,18 @@ namespace SagaMap
             Logger.ShowInfo("Closing.....", null);
             shutingdown = true;
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
-            MapClient[] clients = new MapClient[MapClientManager.Instance.Clients.Count];
+            var clients = new MapClient[MapClientManager.Instance.Clients.Count];
             MapClientManager.Instance.Clients.CopyTo(clients);
             Logger.ShowInfo("Saving golem's data.....", null);
 
-            Map[] maps = MapManager.Instance.Maps.Values.ToArray();
-            foreach (Map i in maps)
+            var maps = MapManager.Instance.Maps.Values.ToArray();
+            foreach (var i in maps)
             {
-                Actor[] actors = i.Actors.Values.ToArray();
-                foreach (Actor j in actors)
-                {
+                var actors = i.Actors.Values.ToArray();
+                foreach (var j in actors)
                     if (j == null)
                         continue;
-                    /*if (j.type == ActorType.GOLEM)取消石像
+                /*if (j.type == ActorType.GOLEM)取消石像
                     {
                         try
                         {
@@ -701,85 +759,87 @@ namespace SagaMap
                         }
                         catch (Exception ex) { Logger.ShowError(ex); }
                     }*/
-                }
                 if (i.IsMapInstance)
-                {
                     try
                     {
                         i.OnDestrory();
                     }
-                    catch { }
-                }
+                    catch
+                    {
+                    }
             }
+
             Logger.ShowInfo("Saving player's data.....", null);
 
-            foreach (MapClient i in clients)
-            {
+            foreach (var i in clients)
                 try
                 {
                     if (i.Character == null) continue;
                     i.netIO.Disconnect();
                 }
-                catch (Exception) { }
-            }
+                catch (Exception)
+                {
+                }
 
 
             Logger.ShowInfo("Closing MySQL connection....");
             if (charDB.GetType() == typeof(MySQLConnectivity))
             {
-                MySQLConnectivity con = (MySQLConnectivity)charDB;
+                var con = (MySQLConnectivity)charDB;
                 while (!con.CanClose)
-                    System.Threading.Thread.Sleep(100);
+                    Thread.Sleep(100);
             }
+
             if (accountDB.GetType() == typeof(MySQLConnectivity))
             {
-                MySQLConnectivity con = (MySQLConnectivity)accountDB;
+                var con = (MySQLConnectivity)accountDB;
                 while (!con.CanClose)
-                    System.Threading.Thread.Sleep(100);
+                    Thread.Sleep(100);
             }
         }
+
         public static string SendResponse(HttpListenerRequest request)
         {
             return null;
         }
+
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception ex = e.ExceptionObject as Exception;
+            var ex = e.ExceptionObject as Exception;
             shutingdown = true;
             Logger.ShowError("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.ShowError("Error Message:" + ex.ToString());
+            Logger.ShowError("Error Message:" + ex);
             Logger.ShowError("Call Stack:" + ex.StackTrace);
             Logger.ShowError("Trying to save all player's data");
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
 
-            MapClient[] clients = new MapClient[MapClientManager.Instance.Clients.Count];
+            var clients = new MapClient[MapClientManager.Instance.Clients.Count];
             MapClientManager.Instance.Clients.CopyTo(clients);
-            foreach (MapClient i in clients)
-            {
+            foreach (var i in clients)
                 try
                 {
                     if (i.Character == null) continue;
                     i.netIO.Disconnect();
                 }
-                catch (Exception) { }
-            }
+                catch (Exception)
+                {
+                }
+
             Logger.ShowError("Trying to clear golem actor");
 
-            Map[] maps = MapManager.Instance.Maps.Values.ToArray();
-            foreach (Map i in maps)
+            var maps = MapManager.Instance.Maps.Values.ToArray();
+            foreach (var i in maps)
             {
-                foreach (Actor j in i.Actors.Values)
-                {
+                foreach (var j in i.Actors.Values)
                     if (j.type == ActorType.GOLEM)
-                    {
                         try
                         {
-                            ActorGolem golem = (ActorGolem)j;
+                            var golem = (ActorGolem)j;
                             charDB.SaveChar(golem.Owner, true, false);
                         }
-                        catch { }
-                    }
-                }
+                        catch
+                        {
+                        }
 
                 if (i.IsMapInstance)
                     i.OnDestrory();
@@ -788,15 +848,16 @@ namespace SagaMap
             Logger.ShowInfo("Closing MySQL connection....");
             if (charDB.GetType() == typeof(MySQLConnectivity))
             {
-                MySQLConnectivity con = (MySQLConnectivity)charDB;
+                var con = (MySQLConnectivity)charDB;
                 while (!con.CanClose)
-                    System.Threading.Thread.Sleep(100);
+                    Thread.Sleep(100);
             }
+
             if (accountDB.GetType() == typeof(MySQLConnectivity))
             {
-                MySQLConnectivity con = (MySQLConnectivity)accountDB;
+                var con = (MySQLConnectivity)accountDB;
                 while (!con.CanClose)
-                    System.Threading.Thread.Sleep(100);
+                    Thread.Sleep(100);
             }
         }
     }

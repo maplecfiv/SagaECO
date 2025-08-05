@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaLib;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.BladeMaster
 {
@@ -16,33 +12,26 @@ namespace SagaMap.Skill.SkillDefinations.BladeMaster
         {
             if (CheckPossible(pc))
             {
-                if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor))
-                {
-                    return 0;
-                }
-                else
-                {
-                    return -14;
-                }
+                if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
+
+                return -14;
             }
-            else
-            {
-                return -5;
-            }
+
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) || pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
+                    pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
                     return true;
-                else
-                    return false;
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
@@ -53,24 +42,17 @@ namespace SagaMap.Skill.SkillDefinations.BladeMaster
                 args.type = ATTACK_TYPE.BLOW;
                 //args.argType = SkillArg.ArgType.Attack;
                 factor = 1.0f + 0.2f * level;
-                List<Actor> actors = new List<Actor>();
+                var actors = new List<Actor>();
 
                 if (level == 6)
-                {
-                    for (int i = 0; i < 10; i++)
-                    {
+                    for (var i = 0; i < 10; i++)
                         actors.Add(dActor);
-                        
-                    }
-                }
                 else
                     actors.Add(dActor);
                 SkillHandler.Instance.PhysicalAttack(sActor, actors, args, sActor.WeaponElement, factor);
-
             }
         }
 
         #endregion
     }
 }
-

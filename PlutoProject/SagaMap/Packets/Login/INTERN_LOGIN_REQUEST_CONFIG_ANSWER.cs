@@ -1,9 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using SagaDB.Actor;
 using SagaLib;
-using SagaMap;
+using SagaLogin.Configurations;
 using SagaMap.Network.LoginServer;
 
 namespace SagaMap.Packets.Login
@@ -12,41 +12,34 @@ namespace SagaMap.Packets.Login
     {
         public INTERN_LOGIN_REQUEST_CONFIG_ANSWER()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public bool AuthOK
+        public bool AuthOK => GetByte(2) == 1;
+
+        public Dictionary<PC_RACE, StartupSetting> StartupSetting
         {
             get
             {
-                return (GetByte(2) == 1);
-            }
-        }
-
-        public Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting> StartupSetting
-        {
-            get
-            {
-                uint len = GetUInt(3);
+                var len = GetUInt(3);
                 byte[] buf;
                 buf = GetBytes((ushort)len, 7);
-                System.IO.MemoryStream ms = new System.IO.MemoryStream(buf);
-                Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting> list;
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                list = (Dictionary<SagaDB.Actor.PC_RACE, SagaLogin.Configurations.StartupSetting>)bf.Deserialize(ms);
+                var ms = new MemoryStream(buf);
+                Dictionary<PC_RACE, StartupSetting> list;
+                var bf = new BinaryFormatter();
+                list = (Dictionary<PC_RACE, StartupSetting>)bf.Deserialize(ms);
                 return list;
             }
         }
-        
-        public override SagaLib.Packet New()
+
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Login.INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
+            return new INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginSession)(client)).OnGetConfig(this);
+            ((LoginSession)client).OnGetConfig(this);
         }
-
     }
 }

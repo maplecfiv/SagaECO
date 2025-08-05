@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
-using SagaDB.Item;
-
 
 namespace SagaMap.Skill.SkillDefinations.Royaldealer
 {
     /// <summary>
-    /// 假币（フォールスマネー）
+    ///     假币（フォールスマネー）
     /// </summary>
-    class FalseMoney : ISkill
+    internal class FalseMoney : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
@@ -26,51 +19,49 @@ namespace SagaMap.Skill.SkillDefinations.Royaldealer
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.0f + 0.1f * level;
-            int lifetime = 7000;
-            ActorPC pc = sActor as ActorPC;
+            var factor = 1.0f + 0.1f * level;
+            var lifetime = 7000;
+            var pc = sActor as ActorPC;
 
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 300, false);
-            List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 300, false);
+            var realAffected = new List<Actor>();
+            foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.鈍足, 50))
                     {
-                        MoveSpeedDown skills = new MoveSpeedDown(args.skill, act, lifetime);
+                        var skills = new MoveSpeedDown(args.skill, act, lifetime);
                         SkillHandler.ApplyAddition(act, skills);
                     }
+
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.Confuse, 50))
                     {
-                        Confuse skills = new Confuse(args.skill, act, lifetime);
+                        var skills = new Confuse(args.skill, act, lifetime);
                         SkillHandler.ApplyAddition(act, skills);
                     }
+
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.Silence, 50))
                     {
-                        Silence skills = new Silence(args.skill, act, lifetime);
+                        var skills = new Silence(args.skill, act, lifetime);
                         SkillHandler.ApplyAddition(act, skills);
                     }
+
                     if (SagaLib.Global.Random.Next(0, 99) > 50)
                     {
-                        DefaultBuff skill = new DefaultBuff(args.skill, dActor, "FalseMoney", 180000);
-                        skill.OnAdditionStart += this.StartEventHandler;
-                        skill.OnAdditionEnd += this.EndEventHandler;
+                        var skill = new DefaultBuff(args.skill, dActor, "FalseMoney", 180000);
+                        skill.OnAdditionStart += StartEventHandler;
+                        skill.OnAdditionEnd += EndEventHandler;
                         SkillHandler.ApplyAddition(dActor, skill);
                     }
+
                     realAffected.Add(act);
                 }
-            }
+
             SkillHandler.Instance.MagicAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
-
-
-
-
-
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             //actor.Buff.DefRateUp = true;
             if (skill.Variable.ContainsKey("Agi_down"))
@@ -83,16 +74,20 @@ namespace SagaMap.Skill.SkillDefinations.Royaldealer
             actor.Status.dex_skill -= 25;
             actor.Buff.AGIDown = true;
             actor.Buff.DEXDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.agi_skill += (short)skill.Variable["Agi_down"];
             actor.Status.dex_skill += (short)skill.Variable["Dex_down"];
             actor.Buff.AGIDown = false;
             actor.Buff.DEXDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

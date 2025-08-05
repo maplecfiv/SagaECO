@@ -7,32 +7,23 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ITEM_EXCHANGE_CONFIRM()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint ExchangeType
-        {
-            get { return this.GetUInt(2); }
-        }
+        public uint ExchangeType => GetUInt(2);
 
-        public uint InventorySlot
-        {
-            get { return this.GetUInt(6); }
-        }
+        public uint InventorySlot => GetUInt(6);
 
-        public uint ExchangeTargetID
-        {
-            get { return this.GetUInt(10); }
-        }
+        public uint ExchangeTargetID => GetUInt(10);
 
         public override Packet New()
         {
-            return (Packet)new CSMG_ITEM_EXCHANGE_CONFIRM();
+            return new CSMG_ITEM_EXCHANGE_CONFIRM();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnItemExchangeConfirm(this);
+            ((MapClient)client).OnItemExchangeConfirm(this);
         }
     }
 }

@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
 
 namespace SagaDB.Npc
@@ -11,13 +8,13 @@ namespace SagaDB.Npc
     {
         public NPCFactory()
         {
-            this.loadingTab = "Loading NPC database";
-            this.loadedTab = " npcs loaded.";
-            this.databaseName = "npc";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading NPC database";
+            loadedTab = " npcs loaded.";
+            databaseName = "npc";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, NPC item)
+        protected override void ParseXML(XmlElement root, XmlElement current, NPC item)
         {
             throw new NotImplementedException();
         }
@@ -29,19 +26,15 @@ namespace SagaDB.Npc
 
         protected override void ParseCSV(NPC item, string[] paras)
         {
-            
             item.ID = uint.Parse(paras[0]);
-            if(paras[1] == null || paras[1] == "0" || paras[1] == "")
-            {
+            if (paras[1] == null || paras[1] == "0" || paras[1] == "")
                 item.Name = "_";
-            }else
-            {
+            else
                 item.Name = paras[1];
-            }
-            
+
             item.MapID = uint.Parse(paras[2]);
             item.X = byte.Parse(paras[3]);
-            item.Y = byte.Parse(paras[4]);            
+            item.Y = byte.Parse(paras[4]);
         }
     }
 }

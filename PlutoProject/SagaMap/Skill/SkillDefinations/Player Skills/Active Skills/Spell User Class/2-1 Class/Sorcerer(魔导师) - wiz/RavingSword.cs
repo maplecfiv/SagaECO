@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Sorcerer
 {
     /// <summary>
-    /// レイビングソード
+    ///     レイビングソード
     /// </summary>
     public class LivingSword : ISkill
     {
@@ -21,8 +17,8 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 3.5f + 2.0f * level;
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SkillHandler.DefType.Def, SagaLib.Elements.Neutral, factor);
+            var factor = 3.5f + 2.0f * level;
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SkillHandler.DefType.Def, Elements.Neutral, factor);
         }
 
         #endregion

@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Ring;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,30 +6,27 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_RING_INVITE()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x1AAF;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x1AAF;
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public string CharName
         {
             set
             {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[8 + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[8 + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)buf.Length, 6);
-                this.PutBytes(buf, 7);
+                PutByte((byte)buf.Length, 6);
+                PutBytes(buf, 7);
             }
         }
 
@@ -44,16 +34,15 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte offset = this.GetByte(6);
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[8 + offset + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                var offset = GetByte(6);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[8 + offset + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)buf.Length, (ushort)(7 + offset));
-                this.PutBytes(buf, (ushort)(8 + offset));
+                PutByte((byte)buf.Length, (ushort)(7 + offset));
+                PutBytes(buf, (ushort)(8 + offset));
             }
         }
     }
 }
-

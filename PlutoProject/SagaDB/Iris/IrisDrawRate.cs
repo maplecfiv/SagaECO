@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SagaDB.Iris
 {
     /// <summary>
-    /// IRIS抽卡
+    ///     IRIS抽卡
     /// </summary>
     [Serializable]
     public class IrisDrawRate

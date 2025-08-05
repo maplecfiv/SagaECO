@@ -1,32 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.Ring
 {
     public class RingFame
     {
-        uint level;
-        uint fame;
+        public uint Level { get; set; }
 
-        public uint Level { get { return this.level; } set { this.level = value; } }
-
-        public uint Fame { get { return this.fame; } set { this.fame = value; } }
+        public uint Fame { get; set; }
     }
 
     public class RingFameTable : Factory<RingFameTable, RingFame>
     {
         public RingFameTable()
         {
-            this.loadingTab = "Loading Ring Fame database";
-            this.loadedTab = " entries loaded.";
-            this.databaseName = " Ring fame";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Ring Fame database";
+            loadedTab = " entries loaded.";
+            databaseName = " Ring fame";
+            FactoryType = FactoryType.XML;
         }
 
         protected override uint GetKey(RingFame item)
@@ -51,8 +43,9 @@ namespace SagaDB.Ring
                             break;
                         case "fame":
                             item.Fame = uint.Parse(current.InnerText);
-                            break;                        
+                            break;
                     }
+
                     break;
             }
         }

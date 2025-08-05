@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
 using SagaLib;
-using SagaDB.Actor;
-
 using SagaMap.Network.Client;
+
 namespace SagaMap.Tasks.PC
 {
     public class CityRecover : MultiRunTask
     {
-        MapClient client;
+        private readonly MapClient client;
+
         public CityRecover(MapClient client)
         {
-            this.dueTime = 5000;
-            this.period = 5000;
+            dueTime = 5000;
+            period = 5000;
             this.client = client;
         }
 
@@ -24,34 +20,36 @@ namespace SagaMap.Tasks.PC
             ClientManager.EnterCriticalArea();
             try
             {
-                if (this.client.Character.HP < this.client.Character.MaxHP || this.client.Character.MP < this.client.Character.MaxMP ||
-                    this.client.Character.SP < this.client.Character.MaxSP)
+                if (client.Character.HP < client.Character.MaxHP || client.Character.MP < client.Character.MaxMP ||
+                    client.Character.SP < client.Character.MaxSP)
                 {
-                    this.client.Character.HP += (uint)(this.client.Character.MaxHP * (100 + ((this.client.Character.Vit +
-                        this.client.Character.Status.vit_item +
-                        this.client.Character.Status.vit_rev) / 3)) / 2000);
-                    if (this.client.Character.HP > this.client.Character.MaxHP)
-                        this.client.Character.HP = this.client.Character.MaxHP;
-                    this.client.Character.MP += (uint)(this.client.Character.MaxMP * (100 + ((this.client.Character.Mag +
-                     this.client.Character.Status.mag_item +
-                     this.client.Character.Status.mag_rev) / 3)) / 2000);
-                    if (this.client.Character.MP > this.client.Character.MaxMP)
-                        this.client.Character.MP = this.client.Character.MaxMP;
-                    this.client.Character.SP += (uint)(this.client.Character.MaxSP * (100 + ((this.client.Character.Int +
-                      this.client.Character.Vit + this.client.Character.Status.int_item +
-                      this.client.Character.Status.int_rev + this.client.Character.Status.vit_rev +
-                      this.client.Character.Status.vit_item) / 6)) / 2000);
-                    if (this.client.Character.SP > this.client.Character.MaxSP)
-                        this.client.Character.SP = this.client.Character.MaxSP;
-                    this.client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, this.client.Character, true);
+                    client.Character.HP += (uint)(client.Character.MaxHP * (100 + (client.Character.Vit +
+                        client.Character.Status.vit_item +
+                        client.Character.Status.vit_rev) / 3) / 2000);
+                    if (client.Character.HP > client.Character.MaxHP)
+                        client.Character.HP = client.Character.MaxHP;
+                    client.Character.MP += (uint)(client.Character.MaxMP * (100 + (client.Character.Mag +
+                        client.Character.Status.mag_item +
+                        client.Character.Status.mag_rev) / 3) / 2000);
+                    if (client.Character.MP > client.Character.MaxMP)
+                        client.Character.MP = client.Character.MaxMP;
+                    client.Character.SP += (uint)(client.Character.MaxSP * (100 + (client.Character.Int +
+                        client.Character.Vit + client.Character.Status.int_item +
+                        client.Character.Status.int_rev + client.Character.Status.vit_rev +
+                        client.Character.Status.vit_item) / 6) / 2000);
+                    if (client.Character.SP > client.Character.MaxSP)
+                        client.Character.SP = client.Character.MaxSP;
+                    client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, client.Character,
+                        true);
                 }
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.client.Character.Tasks.Remove("CityRecover");
-                this.Deactivate();
+                client.Character.Tasks.Remove("CityRecover");
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

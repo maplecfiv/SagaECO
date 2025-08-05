@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,21 +6,21 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_CHAT_PARTY()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x0407;   
+            data = new byte[4];
+            offset = 2;
+            ID = 0x0407;
         }
 
         public string Sender
         {
             set
             {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[buf.Length + 4];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, 2);
-                this.PutBytes(buf, 3);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[buf.Length + 4];
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte((byte)buf.Length, 2);
+                PutBytes(buf, 3);
             }
         }
 
@@ -32,15 +28,14 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte size = this.GetByte(2);
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[buf.Length + this.data.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, (ushort)(3 + size));
-                this.PutBytes(buf, (ushort)(4 + size));
+                var size = GetByte(2);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[buf.Length + data.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte((byte)buf.Length, (ushort)(3 + size));
+                PutBytes(buf, (ushort)(4 + size));
             }
         }
     }
 }
-

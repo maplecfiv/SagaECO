@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-
-
 using SagaDB.Actor;
 using SagaDB.Item;
-using SagaDB.Map;
+using SagaDB.Skill;
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap
 {
@@ -24,44 +18,44 @@ namespace SagaMap
     public class ChatArg : MapEventArgs
     {
         public string content;
-        public MotionType motion;
-        public byte loop;
         public uint emotion;
         public byte expression;
+        public byte loop;
+        public MotionType motion;
     }
 
     public class MoveArg : MapEventArgs
     {
-        public ushort x, y, dir;
         public MoveType type;
+        public ushort x, y, dir;
     }
 
     public class EffectArg : MapEventArgs
     {
         public uint actorID;
         public uint effectID;
-        public byte x = 0xFF, y = 0xFF;
-        public bool oneTime = true;
         public ushort height = 0xFFFF;
+        public bool oneTime = true;
+        public byte x = 0xFF, y = 0xFF;
     }
 
     public class PossessionArg : MapEventArgs
     {
-        public uint fromID;
-        public uint toID;
-        public int result;
-        public string comment;
         public bool cancel = false;
+        public string comment;
+        public byte dir;
+        public uint fromID;
+        public int result;
+        public uint toID;
         public byte x;
         public byte y;
-        public byte dir;
     }
 
     public class AutoCastInfo
     {
-        public uint skillID;
-        public byte level;
         public int delay;
+        public byte level;
+        public uint skillID;
         public byte x = 0xff;
         public byte y = 0xff;
     }
@@ -75,124 +69,129 @@ namespace SagaMap
             Active,
             Item_Cast,
             Item_Active,
-            Actor_Active,
+            Actor_Active
         }
 
-        public ArgType argType = ArgType.Attack;
-        public uint sActor, dActor;
         public List<Actor> affectedActors = new List<Actor>();
-        public Item item;
-        public SagaDB.Skill.Skill skill;
-        public byte x, y;
-        public ATTACK_TYPE type;
-        public List<int> hp = new List<int>(), mp = new List<int>(), sp = new List<int>();
-        public List<AttackFlag> flag = new List<AttackFlag>();
-        public uint delay;
-        public short result;
-        public uint inventorySlot;
+
+        public ArgType argType = ArgType.Attack;
         public List<AutoCastInfo> autoCast = new List<AutoCastInfo>();
-        public bool useMPSP = true;
-        public bool showEffect = true;
+        public uint delay;
         public float delayRate = 1f;
+        public List<AttackFlag> flag = new List<AttackFlag>();
+        public List<int> hp = new List<int>(), mp = new List<int>(), sp = new List<int>();
+        public uint inventorySlot;
+        public Item item;
+        public short result;
+        public uint sActor, dActor;
+        public bool showEffect = true;
+        public SagaDB.Skill.Skill skill;
+        public ATTACK_TYPE type;
+        public bool useMPSP = true;
+        public byte x, y;
 
         public SkillArg Clone()
         {
-            SkillArg arg = new SkillArg();
-            arg.sActor = this.sActor;
-            arg.dActor = this.dActor;
-            arg.skill = this.skill;
-            arg.x = this.x;
-            arg.y = this.y;
-            arg.argType = this.argType;
-            arg.affectedActors = this.affectedActors;
+            var arg = new SkillArg();
+            arg.sActor = sActor;
+            arg.dActor = dActor;
+            arg.skill = skill;
+            arg.x = x;
+            arg.y = y;
+            arg.argType = argType;
+            arg.affectedActors = affectedActors;
             return arg;
         }
+
         public SkillArg CloneWithoutSkill()
         {
-            SkillArg arg = new SkillArg();
-            SagaDB.Skill.Skill skill = new SagaDB.Skill.Skill();
-            skill.BaseData = new SagaDB.Skill.SkillData();
+            var arg = new SkillArg();
+            var skill = new SagaDB.Skill.Skill();
+            skill.BaseData = new SkillData();
             skill.BaseData.id = 0;
-            arg.sActor = this.sActor;
-            arg.dActor = this.dActor;
+            arg.sActor = sActor;
+            arg.dActor = dActor;
             arg.skill = skill;
-            arg.x = this.x;
-            arg.y = this.y;
-            arg.argType = this.argType;
+            arg.x = x;
+            arg.y = y;
+            arg.argType = argType;
             return arg;
         }
+
         public void Init()
         {
-            this.hp = new List<int>();
-            this.mp = new List<int>();
-            this.sp = new List<int>();
-            this.flag = new List<AttackFlag>();
-            for (int i = 0; i < this.affectedActors.Count; i++)
+            hp = new List<int>();
+            mp = new List<int>();
+            sp = new List<int>();
+            flag = new List<AttackFlag>();
+            for (var i = 0; i < affectedActors.Count; i++)
             {
-                this.flag.Add((AttackFlag)0);
-                this.hp.Add(0);
-                this.mp.Add(0);
-                this.sp.Add(0);
+                flag.Add(0);
+                hp.Add(0);
+                mp.Add(0);
+                sp.Add(0);
             }
         }
+
         public void Add(SkillArg arg)
         {
-            for (int i = 0; i < arg.affectedActors.Count; i++)
+            for (var i = 0; i < arg.affectedActors.Count; i++)
             {
-                this.affectedActors.Add(arg.affectedActors[i]);
-                this.flag.Add(arg.flag[i]);
-                this.hp.Add(arg.hp[i]);
-                this.mp.Add(arg.mp[i]);
-                this.sp.Add(arg.sp[i]);
+                affectedActors.Add(arg.affectedActors[i]);
+                flag.Add(arg.flag[i]);
+                hp.Add(arg.hp[i]);
+                mp.Add(arg.mp[i]);
+                sp.Add(arg.sp[i]);
             }
         }
+
         public void AddSameActor(SkillArg arg)
         {
-            int count = this.affectedActors.Count;
-            for (int i = 0; i < arg.affectedActors.Count; i++)
+            var count = affectedActors.Count;
+            for (var i = 0; i < arg.affectedActors.Count; i++)
+            for (var j = 0; j < count; j++)
             {
-                for (int j = 0; j < count; j++)
+                if (arg.affectedActors[i].ActorID == affectedActors[j].ActorID)
                 {
-                    if (arg.affectedActors[i].ActorID == this.affectedActors[j].ActorID)
-                    {
-                        this.hp[j] += arg.hp[i];
-                        this.mp[j] += arg.mp[i];
-                        this.sp[j] += arg.sp[i];
-                        break;
-                    }
-                    if (j == count - 1)
-                    {
-                        this.affectedActors.Add(arg.affectedActors[i]);
-                        this.flag.Add(arg.flag[i]);
-                        this.hp.Add(arg.hp[i]);
-                        this.mp.Add(arg.mp[i]);
-                        this.sp.Add(arg.sp[i]);
-                    }
+                    hp[j] += arg.hp[i];
+                    mp[j] += arg.mp[i];
+                    sp[j] += arg.sp[i];
+                    break;
+                }
+
+                if (j == count - 1)
+                {
+                    affectedActors.Add(arg.affectedActors[i]);
+                    flag.Add(arg.flag[i]);
+                    hp.Add(arg.hp[i]);
+                    mp.Add(arg.mp[i]);
+                    sp.Add(arg.sp[i]);
                 }
             }
         }
+
         public void Remove(Actor actor)
         {
-            if (this.affectedActors.Contains(actor))
+            if (affectedActors.Contains(actor))
             {
-                this.hp.RemoveAt(this.affectedActors.IndexOf(actor));
-                this.mp.RemoveAt(this.affectedActors.IndexOf(actor));
-                this.sp.RemoveAt(this.affectedActors.IndexOf(actor));
-                this.flag.RemoveAt(this.affectedActors.IndexOf(actor));
-                this.affectedActors.Remove(actor);
+                hp.RemoveAt(affectedActors.IndexOf(actor));
+                mp.RemoveAt(affectedActors.IndexOf(actor));
+                sp.RemoveAt(affectedActors.IndexOf(actor));
+                flag.RemoveAt(affectedActors.IndexOf(actor));
+                affectedActors.Remove(actor);
             }
         }
 
         public void Extend(int count)
         {
-            for (int i = 0; i < count; i++)
-                this.hp.Add(0);
-            for (int i = 0; i < count; i++)
-                this.mp.Add(0);
-            for (int i = 0; i < count; i++)
-                this.sp.Add(0);
-            for (int i = 0; i < count; i++)
-                this.flag.Add((AttackFlag)0);
+            for (var i = 0; i < count; i++)
+                hp.Add(0);
+            for (var i = 0; i < count; i++)
+                mp.Add(0);
+            for (var i = 0; i < count; i++)
+                sp.Add(0);
+            for (var i = 0; i < count; i++)
+                flag.Add(0);
         }
     }
 }

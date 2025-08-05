@@ -1,41 +1,34 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
 using SagaDB.Party;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
     public class SSMG_PARTY_INFO : Packet
     {
-        
         public SSMG_PARTY_INFO()
         {
-            this.data = new byte[13];
-            this.offset = 2;
-            this.ID = 0x19DC;
+            data = new byte[13];
+            offset = 2;
+            ID = 0x19DC;
         }
 
         public void Party(Party party, ActorPC pc)
         {
-            this.PutUInt(party.ID, 2);
-            byte[] buf = Global.Unicode.GetBytes(party.Name + "\0");
-            byte[] buff = new byte[13 + buf.Length];
-            byte size = (byte)buf.Length;
-            this.data.CopyTo(buff, 0);
-            this.data = buff;
-            this.PutByte(size, 6);
-            this.PutBytes(buf, 7);
+            PutUInt(party.ID, 2);
+            var buf = Global.Unicode.GetBytes(party.Name + "\0");
+            var buff = new byte[13 + buf.Length];
+            var size = (byte)buf.Length;
+            data.CopyTo(buff, 0);
+            data = buff;
+            PutByte(size, 6);
+            PutBytes(buf, 7);
             if (party.Leader == pc)
-                this.PutByte(1, (ushort)(7 + size));
+                PutByte(1, (ushort)(7 + size));
             else
-                this.PutByte(0, (ushort)(7 + size));
-            this.PutByte((byte)party.IndexOf(pc), (ushort)(8 + size));
-            this.PutInt(party.MemberCount, (ushort)(9 + size));
+                PutByte(0, (ushort)(7 + size));
+            PutByte(party.IndexOf(pc), (ushort)(8 + size));
+            PutInt(party.MemberCount, (ushort)(9 + size));
         }
     }
 }
-

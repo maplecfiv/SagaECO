@@ -1,22 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
-using SagaDB.Item;
-using SagaDB.Actor;
-using SagaLib;
-using SagaLogin;
-using SagaLogin.Manager;
+using SagaLogin.Packets.Client;
+using SagaLogin.Packets.Server;
 
 namespace SagaLogin.Network.Client
 {
     public partial class LoginClient : SagaLib.Client
     {
-        public void OnRingEmblemNew(Packets.Client.CSMG_RING_EMBLEM_NEW p)
+        public void OnRingEmblemNew(CSMG_RING_EMBLEM_NEW p)
         {
             bool needUpdate;
             DateTime newDate;
@@ -25,7 +15,7 @@ namespace SagaLogin.Network.Client
             SendRingEmblem(p.RingID, data, needUpdate, newDate);
         }
 
-        public void OnRingEmblem(Packets.Client.CSMG_RING_EMBLEM p)
+        public void OnRingEmblem(CSMG_RING_EMBLEM p)
         {
             bool needUpdate;
             DateTime newDate;
@@ -34,9 +24,9 @@ namespace SagaLogin.Network.Client
             SendRingEmblem(p.RingID, data, needUpdate, newDate);
         }
 
-        void SendRingEmblem(uint ringid, byte[] data, bool needUpdate, DateTime newDate)
+        private void SendRingEmblem(uint ringid, byte[] data, bool needUpdate, DateTime newDate)
         {
-            Packets.Server.SSMG_RING_EMBLEM p = new SagaLogin.Packets.Server.SSMG_RING_EMBLEM();
+            var p = new SSMG_RING_EMBLEM();
             if (needUpdate)
                 p.Result = 0;
             else
@@ -50,10 +40,11 @@ namespace SagaLogin.Network.Client
                 p.UpdateTime = newDate;
             }
             else
-            {                
+            {
                 p.Result2 = 1;
             }
-            this.netIO.SendPacket(p);
+
+            netIO.SendPacket(p);
         }
     }
 }

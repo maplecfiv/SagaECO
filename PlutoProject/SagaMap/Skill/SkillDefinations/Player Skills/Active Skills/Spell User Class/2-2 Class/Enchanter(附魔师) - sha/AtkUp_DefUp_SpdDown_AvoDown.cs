@@ -1,76 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Enchanter
 {
     /// <summary>
-    ///  旺盛的精靈勢力（パワーエンチャント）
+    ///     旺盛的精靈勢力（パワーエンチャント）
     /// </summary>
     public class AtkUp_DefUp_SpdDown_AvoDown : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (dActor.type == ActorType.PC)
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (dActor.type == ActorType.PC) return 0;
+
+            return -14;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "AtkUp_DefUp_SpdDown_AvoDown", 30000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, dActor, "AtkUp_DefUp_SpdDown_AvoDown", 30000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
 
             //最小攻擊
-            int min_atk1_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
+            var min_atk1_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_min_atk1"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_min_atk1");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_min_atk1", min_atk1_add);
             actor.Status.min_atk1_skill += (short)min_atk1_add;
 
             //最小攻擊
-            int min_atk2_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
+            var min_atk2_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_min_atk2"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_min_atk2");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_min_atk2", min_atk2_add);
             actor.Status.min_atk2_skill += (short)min_atk2_add;
 
             //最小攻擊
-            int min_atk3_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
+            var min_atk3_add = (int)(actor.Status.min_atk_bs * (0.12f + 0.03f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_min_atk3"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_min_atk3");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_min_atk3", min_atk3_add);
             actor.Status.min_atk3_skill += (short)min_atk3_add;
 
             //最小魔攻
-            int min_matk_add = (int)(actor.Status.min_matk_bs * (0.12f + 0.03f * level));
+            var min_matk_add = (int)(actor.Status.min_matk_bs * (0.12f + 0.03f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_min_matk"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_min_matk");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_min_matk", min_matk_add);
             actor.Status.min_matk_skill += (short)min_matk_add;
 
             //左防禦
-            int def_add = (int)(actor.Status.def_bs * (0.21f + 0.01f * level));
+            var def_add = (int)(actor.Status.def_bs * (0.21f + 0.01f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_def"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_def");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_def", def_add);
             actor.Status.def_skill += (short)def_add;
 
             //左魔防
-            int mdef_add = (int)(actor.Status.mdef_bs * (0.21f + 0.01f * level));
+            var mdef_add = (int)(actor.Status.mdef_bs * (0.21f + 0.01f * level));
             if (skill.Variable.ContainsKey("AtkUp_DefUp_SpdDown_AvoDown_mdef"))
                 skill.Variable.Remove("AtkUp_DefUp_SpdDown_AvoDown_mdef");
             skill.Variable.Add("AtkUp_DefUp_SpdDown_AvoDown_mdef", mdef_add);
@@ -105,10 +101,11 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
 
             actor.Buff.DefUp = true;
             actor.Buff.MagicDefUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //最小攻擊
             actor.Status.min_atk1_skill -= (short)skill.Variable["AtkUp_DefUp_SpdDown_AvoDown_min_atk1"];
@@ -140,8 +137,10 @@ namespace SagaMap.Skill.SkillDefinations.Enchanter
 
             actor.Buff.DefUp = false;
             actor.Buff.MagicDefUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

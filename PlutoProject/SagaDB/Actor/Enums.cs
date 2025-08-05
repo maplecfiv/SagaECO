@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SagaDB.Actor
+﻿namespace SagaDB.Actor
 {
     public enum PC_RACE
     {
@@ -11,7 +6,7 @@ namespace SagaDB.Actor
         TITANIA,
         DOMINION,
         DEM,
-        NONE,
+        NONE
     }
 
     public enum DEM_FORM
@@ -31,15 +26,14 @@ namespace SagaDB.Actor
     public enum BATTLE_STATUS
     {
         NORMAL,
-        BATTLE,
+        BATTLE
     }
 
     public enum ATTACK_TYPE
     {
         BLOW,
         SLASH,
-        STAB,
-
+        STAB
     }
 
     public enum PC_JOB
@@ -95,12 +89,12 @@ namespace SagaDB.Actor
         ROYALDEALER = 117,
 
         //新增的超级初心者
-        JOKER=120,
+        JOKER = 120,
 
 
         BREEDER = 1041,
         GARDNER = 1042,
-        NONE,
+        NONE
     }
 
     public enum JobType
@@ -108,7 +102,7 @@ namespace SagaDB.Actor
         NOVICE,
         FIGHTER,
         SPELLUSER,
-        BACKPACKER,
+        BACKPACKER
     }
 
     public enum ActorType
@@ -124,7 +118,7 @@ namespace SagaDB.Actor
         GOLEM,
         FURNITUREUNIT,
         PARTNER,
-        ANOTHERMOB,
+        ANOTHERMOB
     }
 
     public enum UpdateEvent
@@ -141,7 +135,7 @@ namespace SagaDB.Actor
         EVENT_TITLE,
         VCASH_POINT,
         WRP,
-        QUEST_POINT,
+        QUEST_POINT
     }
 
     public enum PlayerMode
@@ -155,12 +149,12 @@ namespace SagaDB.Actor
         KNIGHT_SOUTH,
         KNIGHT_NORTH,
         KNIGHT_FLOWER,
-        KNIGHT_ROCK,
+        KNIGHT_ROCK
     }
 
     public enum ActorEventTypes
     {
         ROPE,
-        TENT,
+        TENT
     }
 }

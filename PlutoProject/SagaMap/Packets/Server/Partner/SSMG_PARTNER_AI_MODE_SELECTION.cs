@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,36 +6,27 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTNER_AI_MODE_SELECTION()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x2181;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x2181;
         }
 
         public uint PartnerInventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         /// <summary>
-        /// start at 0
+        ///     start at 0
         /// </summary>
         public byte AIMode
         {
-            set
-            {
-                this.PutByte(value, 6);
-            }
+            set => PutByte(value, 6);
         }
 
         public byte unknown0
         {
-            set
-            {
-                this.PutByte(value, 7);
-            }
+            set => PutByte(value, 7);
         }
     }
 }
-        

@@ -1,37 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.ODWar;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaDB.FictitiousActors;
 using SagaDB.Item;
-using SagaMap.Manager;
-using SagaMap.Network.Client;
+using SagaDB.Mob;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Mob;
 
 namespace SagaMap.Manager
 {
-    public class FictitiousActorsManager:Singleton<FictitiousActorsManager>
+    public class FictitiousActorsManager : Singleton<FictitiousActorsManager>
     {
-        public FictitiousActorsManager()
-        {
-        }
         public void regionFictitiousSingleActor(Actor item)
         {
-            Map map = MapManager.Instance.GetMap(item.MapID);
+            var map = MapManager.Instance.GetMap(item.MapID);
             if (item.type == ActorType.GOLEM)
             {
-                item.X = SagaLib.Global.PosX8to16(item.X2, map.Width);
-                item.Y = SagaLib.Global.PosY8to16(item.Y2, map.Height);
+                item.X = Global.PosX8to16(item.X2, map.Width);
+                item.Y = Global.PosY8to16(item.Y2, map.Height);
                 if (((ActorGolem)item).AIMode >= 1)
                 {
-                    ActorEventHandlers.MobEventHandler eh = new ActorEventHandlers.MobEventHandler((ActorGolem)item);
+                    var eh = new MobEventHandler((ActorGolem)item);
                     item.e = eh;
                     byte ai = 0;
                     if (((ActorGolem)item).AIMode == 2)
                     {
-                        SagaDB.Mob.MobData date = SagaDB.Mob.MobFactory.Instance.GetMobData(((ActorGolem)item).MobID);
+                        var date = MobFactory.Instance.GetMobData(((ActorGolem)item).MobID);
                         item.MaxHP = date.hp;
                         item.HP = date.hp;
                         item.Status.aspd = date.aspd;
@@ -52,13 +45,16 @@ namespace SagaMap.Manager
                         item.Range = 2;
                     }
                     else if (((ActorGolem)item).AIMode == 4)
+                    {
                         ai = 4;
+                    }
+
                     item.Speed = 600;
-                    eh.AI = new Mob.MobAI(item);
-                    if (Mob.MobAIFactory.Instance.Items.ContainsKey(((ActorGolem)item).MobID))
-                        eh.AI.Mode = Mob.MobAIFactory.Instance.Items[((ActorGolem)item).MobID];
+                    eh.AI = new MobAI(item);
+                    if (MobAIFactory.Instance.Items.ContainsKey(((ActorGolem)item).MobID))
+                        eh.AI.Mode = MobAIFactory.Instance.Items[((ActorGolem)item).MobID];
                     else
-                        eh.AI.Mode = new Mob.AIMode(ai);
+                        eh.AI.Mode = new AIMode(ai);
                     eh.AI.X_Ori = item.X;
                     eh.AI.Y_Ori = item.Y;
                     eh.AI.X_Spawn = item.X;
@@ -73,19 +69,19 @@ namespace SagaMap.Manager
                 map.OnActorVisibilityChange(item);
             }
         }
+
         public void regionFictitiousActors()
         {
-            foreach (uint Mapid in SagaDB.FictitiousActors.FictitiousActorsFactory.Instance.FictitiousActorsList.Keys)
+            foreach (var Mapid in FictitiousActorsFactory.Instance.FictitiousActorsList.Keys)
             {
-                Map map = MapManager.Instance.GetMap(Mapid);
+                var map = MapManager.Instance.GetMap(Mapid);
                 if (map == null)
                     continue;
 
-                foreach (Actor item in SagaDB.FictitiousActors.FictitiousActorsFactory.Instance.FictitiousActorsList[Mapid])
-                {
+                foreach (var item in FictitiousActorsFactory.Instance.FictitiousActorsList[Mapid])
                     if (item.type == ActorType.PC)
                     {
-                        ActorPC a = (ActorPC)item;
+                        var a = (ActorPC)item;
                         a.Inventory.Equipments[EnumEquipSlot.HEAD] = ItemFactory.Instance.GetItem(a.Equips[0]);
                         a.Inventory.Equipments[EnumEquipSlot.FACE] = ItemFactory.Instance.GetItem(a.Equips[1]);
                         a.Inventory.Equipments[EnumEquipSlot.CHEST_ACCE] = ItemFactory.Instance.GetItem(a.Equips[2]);
@@ -99,33 +95,33 @@ namespace SagaMap.Manager
                         a.Inventory.Equipments[EnumEquipSlot.PET] = ItemFactory.Instance.GetItem(a.Equips[10]);
                         a.Inventory.Equipments[EnumEquipSlot.EFFECT] = ItemFactory.Instance.GetItem(a.Equips[11]);
                         a.Fictitious = true;
-                        item.X = SagaLib.Global.PosX8to16(item.X2, map.Width);
-                        item.Y = SagaLib.Global.PosY8to16(item.Y2, map.Height);
-                        item.e = new ActorEventHandlers.PCEventHandler();
+                        item.X = Global.PosX8to16(item.X2, map.Width);
+                        item.Y = Global.PosY8to16(item.Y2, map.Height);
+                        item.e = new PCEventHandler();
                         map.RegisterActor(item);
                         item.invisble = false;
                         map.OnActorVisibilityChange(item);
                     }
                     else if (item.type == ActorType.FURNITURE)
                     {
-                        ActorFurniture fi = (ActorFurniture)item;
-                        fi.e = new ActorEventHandlers.NullEventHandler();
+                        var fi = (ActorFurniture)item;
+                        fi.e = new NullEventHandler();
                         map.RegisterActor(item);
                         item.invisble = false;
                         map.OnActorVisibilityChange(item);
                     }
                     else if (item.type == ActorType.GOLEM)
                     {
-                        item.X = SagaLib.Global.PosX8to16(item.X2, map.Width);
-                        item.Y = SagaLib.Global.PosY8to16(item.Y2, map.Height);
-                        ActorEventHandlers.MobEventHandler eh = new ActorEventHandlers.MobEventHandler((ActorGolem)item);
+                        item.X = Global.PosX8to16(item.X2, map.Width);
+                        item.Y = Global.PosY8to16(item.Y2, map.Height);
+                        var eh = new MobEventHandler((ActorGolem)item);
                         item.e = eh;
                         if (((ActorGolem)item).AIMode >= 1)
                         {
                             byte ai = 0;
                             if (((ActorGolem)item).AIMode == 2)
                             {
-                                SagaDB.Mob.MobData date = SagaDB.Mob.MobFactory.Instance.GetMobData(((ActorGolem)item).MobID);
+                                var date = MobFactory.Instance.GetMobData(((ActorGolem)item).MobID);
                                 item.MaxHP = date.hp;
                                 item.HP = date.hp;
                                 item.Status.aspd = date.aspd;
@@ -146,13 +142,16 @@ namespace SagaMap.Manager
                                 item.Range = 2;
                             }
                             else if (((ActorGolem)item).AIMode == 4)
+                            {
                                 ai = 4;
+                            }
+
                             item.Speed = 600;
-                            eh.AI = new Mob.MobAI(item);
-                            if (Mob.MobAIFactory.Instance.Items.ContainsKey(((ActorGolem)item).MobID))
-                                eh.AI.Mode = Mob.MobAIFactory.Instance.Items[((ActorGolem)item).MobID];
+                            eh.AI = new MobAI(item);
+                            if (MobAIFactory.Instance.Items.ContainsKey(((ActorGolem)item).MobID))
+                                eh.AI.Mode = MobAIFactory.Instance.Items[((ActorGolem)item).MobID];
                             else
-                                eh.AI.Mode = new Mob.AIMode(ai);
+                                eh.AI.Mode = new AIMode(ai);
                             eh.AI.X_Ori = item.X;
                             eh.AI.Y_Ori = item.Y;
                             eh.AI.X_Spawn = item.X;
@@ -166,7 +165,6 @@ namespace SagaMap.Manager
                         item.invisble = false;
                         map.OnActorVisibilityChange(item);
                     }
-                }
             }
         }
     }

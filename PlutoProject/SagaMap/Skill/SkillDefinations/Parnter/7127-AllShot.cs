@@ -1,71 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SagaDB.Actor;
 using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     public class AllShot : ISkill
     {
-        /// <summary>
-        /// 一斉掃射いっきますよ～♪
-        /// </summary>
-        #region ISkill Members
-
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
-            return 0;
-        }
-
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            //创建设置型技能技能体
-            ActorSkill actor = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            //设定技能体位置
-            actor.MapID = dActor.MapID;
-            actor.X = dActor.X;
-            actor.Y = dActor.Y;
-            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
-            actor.e = new ActorEventHandlers.NullEventHandler();
-            //在指定地图注册技能体Actor
-            map.RegisterActor(actor);
-            //设置Actor隐身属性为非
-            actor.invisble = false;
-            //广播隐身属性改变事件，以便让玩家看到技能体
-            map.OnActorVisibilityChange(actor);
-            //設置系
-            actor.Stackable = false;
-            //创建技能效果处理对象
-            Activator timer = new Activator(sActor, dActor, actor, args, level);
-            timer.Activate();
-
-        }
-        #endregion
-
         #region Timer
+
         private class Activator : MultiRunTask
         {
-            ActorSkill actor;
-            Actor caster;
-            SkillArg skill;
-            Map map;
-            int countMax = 0, count = 0;
-            float factor = 0;
-            Actor dActor;
+            private readonly ActorSkill actor;
+            private readonly Actor caster;
+            private readonly int countMax;
+            private readonly Actor dActor;
+            private readonly float factor;
+            private readonly Map map;
+            private readonly SkillArg skill;
+            private int count;
+
             public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level)
             {
                 this.actor = actor;
                 this.caster = caster;
-                this.skill = args.Clone();
-                map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                this.period = 350;
-                this.dueTime = 0;
+                skill = args.Clone();
+                map = MapManager.Instance.GetMap(actor.MapID);
+                period = 350;
+                dueTime = 0;
                 countMax = 8;
                 factor = 4.5f;
                 dActor = theDActor;
             }
+
             public override void CallBack()
             {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
@@ -76,21 +46,21 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         short skillrange = 200;
-                        List<Actor> actors = map.GetActorsArea(dActor, skillrange, true);
-                        List<Actor> affected = new List<Actor>();
-                        foreach (Actor i in actors)
-                        {
+                        var actors = map.GetActorsArea(dActor, skillrange, true);
+                        var affected = new List<Actor>();
+                        foreach (var i in actors)
                             if (SkillHandler.Instance.CheckValidAttackTarget(caster, i) && !i.Buff.Dead)
                             {
                                 affected.Add(i);
-                                if (SkillHandler.Instance.CanAdditionApply(caster, i, SkillHandler.DefaultAdditions.Frosen, 40))
+                                if (SkillHandler.Instance.CanAdditionApply(caster, i,
+                                        SkillHandler.DefaultAdditions.Frosen, 40))
                                 {
-                                    Additions.Global.Freeze skill2 = new SagaMap.Skill.Additions.Global.Freeze(skill.skill, i, 3000);
+                                    var skill2 = new Freeze(skill.skill, i, 3000);
                                     SkillHandler.ApplyAddition(i, skill2);
                                 }
+
                                 skill.affectedActors.Add(i);
                             }
-                        }
 
                         SkillHandler.Instance.PhysicalAttack(caster, affected, skill, caster.WeaponElement, factor);
 
@@ -100,7 +70,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     }
                     else
                     {
-                        this.Deactivate();
+                        Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
@@ -113,6 +83,44 @@ namespace SagaMap.Skill.SkillDefinations.Global
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
         }
+
+        #endregion
+
+        /// <summary>
+        ///     一斉掃射いっきますよ～♪
+        /// </summary>
+
+        #region ISkill Members
+
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
+        {
+            return 0;
+        }
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
+        {
+            //创建设置型技能技能体
+            var actor = new ActorSkill(args.skill, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            //设定技能体位置
+            actor.MapID = dActor.MapID;
+            actor.X = dActor.X;
+            actor.Y = dActor.Y;
+            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
+            actor.e = new NullEventHandler();
+            //在指定地图注册技能体Actor
+            map.RegisterActor(actor);
+            //设置Actor隐身属性为非
+            actor.invisble = false;
+            //广播隐身属性改变事件，以便让玩家看到技能体
+            map.OnActorVisibilityChange(actor);
+            //設置系
+            actor.Stackable = false;
+            //创建技能效果处理对象
+            var timer = new Activator(sActor, dActor, actor, args, level);
+            timer.Activate();
+        }
+
         #endregion
     }
 }

@@ -1,21 +1,21 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.Command
 {
     /// <summary>
-    /// 滑動追擊（スライディング）
+    ///     滑動追擊（スライディング）
     /// </summary>
     public class Sliding : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             /*
@@ -26,14 +26,15 @@ namespace SagaMap.Skill.SkillDefinations.Command
              * 三格距離以外，會有傷害衰減
              * 在移動中途被攻擊時，會馬上停止移動
              * 此為設置系技能
-             * 
+             *
              */
-            short[] pos = new short[2];
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            var pos = new short[2];
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             pos[0] = SagaLib.Global.PosX8to16(args.x, map.Width);
             pos[1] = SagaLib.Global.PosY8to16(args.y, map.Height);
-            map.MoveActor(Map.MOVE_TYPE.START, sActor, pos, sActor.Dir, 20000, true, SagaLib.MoveType.QUICKEN);
+            map.MoveActor(Map.MOVE_TYPE.START, sActor, pos, sActor.Dir, 20000, true, MoveType.QUICKEN);
         }
+
         #endregion
     }
 }

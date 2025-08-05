@@ -1,48 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Astralist
 {
     /// <summary>
-    /// ����֮��Լ����
+    ///     ����֮��Լ����
     /// </summary>
     public class YugenKeiyaku : ISkill
     {
+        public SkillArg arg = new SkillArg();
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (sActor.WeaponElement != Elements.Neutral)
-            {
-                return 0;
-            }
+            if (sActor.WeaponElement != Elements.Neutral) return 0;
             return -12;
         }
-        public SkillArg arg = new SkillArg();
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            int lifetime = 150000 + 30000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "YugenKeiyaku", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 150000 + 30000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "YugenKeiyaku", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
-
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             //��ʱ�Ҳ�����ȷ��ͼ��
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-
     }
 }

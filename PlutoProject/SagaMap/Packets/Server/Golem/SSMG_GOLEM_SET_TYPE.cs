@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,18 +7,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_SET_TYPE()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x17DF;
+            data = new byte[4];
+            offset = 2;
+            ID = 0x17DF;
         }
 
         public GolemType GolemType
         {
-            set
-            {
-                this.PutUShort((ushort)value, 2);
-            }
+            set => PutUShort((ushort)value, 2);
         }
     }
 }
-

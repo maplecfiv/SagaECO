@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
-
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
@@ -13,21 +10,23 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 0.8f;
-            int lifetime = 30000;
-            int rate = 20;
+            var factor = 0.8f;
+            var lifetime = 30000;
+            var rate = 20;
 
             if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, SkillHandler.DefaultAdditions.Frosen, rate))
             {
-                Additions.Global.Freeze skill = new SagaMap.Skill.Additions.Global.Freeze(args.skill, dActor, lifetime);
+                var skill = new Freeze(args.skill, dActor, lifetime);
                 SkillHandler.ApplyAddition(dActor, skill);
             }
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Neutral, factor);
+
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Neutral, factor);
             //if (SagaLib.Global.Random.Next(0, 99) < rate)
             //{
-                
+
             //    Additions.Global.Freeze skill = new SagaMap.Skill.Additions.Global.Freeze(args.skill, dActor, lifetime);
             //    SkillHandler.ApplyAddition(dActor, skill);
             //}

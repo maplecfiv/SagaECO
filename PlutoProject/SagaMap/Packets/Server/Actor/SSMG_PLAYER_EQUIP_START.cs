@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,16 +6,13 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_EQUIP_START()
         {
-            this.data = new byte[3];
-            this.ID = 0x0263;
+            data = new byte[3];
+            ID = 0x0263;
         }
+
         public uint Result
         {
-            set
-            {
-                this.PutUInt(value,2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }
-        

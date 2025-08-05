@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Network.Client;
+using SagaMap.Partner;
 
 namespace SagaMap.Tasks.Partner
 {
     public class Feed : MultiRunTask
     {
-        private ActorPartner partner;
-        MapClient mc;
+        private readonly MapClient mc;
+        private readonly ActorPartner partner;
+
         public Feed(MapClient mc, ActorPartner partner, uint nextfeedtime)
         {
-            this.dueTime = (int)(nextfeedtime * 1000);
-            this.period = 5000;
+            dueTime = (int)(nextfeedtime * 1000);
+            period = 5000;
             this.partner = partner;
             this.mc = mc;
         }
@@ -29,17 +27,18 @@ namespace SagaMap.Tasks.Partner
                 partner.reliabilityuprate = 100;
 
                 partner.Tasks.Remove("Feed");
-                this.Deactivate();
+                Deactivate();
 
-                SagaMap.Partner.StatusFactory.Instance.CalcPartnerStatus(partner);
+                StatusFactory.Instance.CalcPartnerStatus(partner);
                 mc.SendPetBasicInfo();
                 mc.SendPetDetailInfo();
                 SagaMap.PC.StatusFactory.Instance.CalcStatus(mc.Character);
             }
             catch (Exception)
             {
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaLogin;
 using SagaLogin.Network.Client;
-
-using SagaDB.Actor;
 
 namespace SagaLogin.Packets.Client
 {
@@ -14,26 +7,19 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_CHAR_STATUS()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte Slot
-        {
-            get
-            {
-                return this.GetByte(2);
-            }
-        }
+        public byte Slot => GetByte(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_CHAR_STATUS();
+            return new CSMG_CHAR_STATUS();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginClient)(client)).OnCharStatus(this);
+            ((LoginClient)client).OnCharStatus(this);
         }
-
     }
 }

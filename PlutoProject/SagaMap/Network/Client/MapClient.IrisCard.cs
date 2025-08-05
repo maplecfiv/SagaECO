@@ -1,33 +1,23 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
-using SagaDB.Item;
 using SagaDB.Actor;
-using SagaDB.Npc;
-using SagaDB.Quests;
-using SagaDB.Party;
 using SagaDB.Iris;
+using SagaDB.Item;
 using SagaLib;
-using SagaMap;
-using SagaMap.Manager;
 using SagaMap.Packets.Client;
 using SagaMap.Packets.Server;
+using SagaMap.PC;
 
 namespace SagaMap.Network.Client
 {
     public partial class MapClient
     {
-        public bool irisAddSlot = false;
-        public bool irisCardAssemble = false;
-        public bool irisGacha = false;
-        uint irisAddSlotMaterial = 0;
-        uint irisAddSlotItem = 0;
-        uint irisCardItem = 0;
+        public bool irisAddSlot;
+        private uint irisAddSlotItem;
+        private uint irisAddSlotMaterial;
+        public bool irisCardAssemble;
+        private uint irisCardItem;
+        public bool irisGacha;
 
 
         public void OnIrisGachaCancel(CSMG_IRIS_GACHA_CANCEL p)
@@ -67,37 +57,38 @@ namespace SagaMap.Network.Client
                     drawtype = DrawType.Random;
                     break;
             }
+
             return drawtype;
         }
 
         public void OnIrisGacha(CSMG_IRIS_GACHA_DRAW p)
         {
-            uint itemID = p.ItemID;
+            var itemID = p.ItemID;
 
             var key = string.Format("{0},{1},{2}", p.PayFlag, p.SessionID, p.ItemID);
 
             if (CountItem(itemID) > 0)
-            {
                 if (IrisGachaFactory.Instance.IrisGacha.ContainsKey(key))
                 {
                     //根据使用的抽卡道具获取抽卡方式
                     var drawType = GetDrawTypeFromItem(itemID);
 
-                    IrisGacha gacha = IrisGachaFactory.Instance.IrisGacha[key];
-                    Dictionary<uint, byte> cards = new Dictionary<uint, byte>();
+                    var gacha = IrisGachaFactory.Instance.IrisGacha[key];
+                    var cards = new Dictionary<uint, byte>();
                     DeleteItemID(itemID, 1, true);
 
                     //这里获取本页所有的18张卡片
-                    var selectedcards = IrisCardFactory.Instance.Items.Values.Where(x => x.Page == gacha.PageID).ToList();
+                    var selectedcards = IrisCardFactory.Instance.Items.Values.Where(x => x.Page == gacha.PageID)
+                        .ToList();
 
                     //加入字典? 意义不明
                     foreach (var item in selectedcards)
                         cards.Add(item.ID, (byte)item.Rarity);
 
                     //声明结果对象
-                    List<uint> results = new List<uint>();
+                    var results = new List<uint>();
 
-                    List<Item> retitems = new List<Item>();
+                    var retitems = new List<Item>();
 
 
                     IrisDrawRate drawrate = null;
@@ -106,10 +97,10 @@ namespace SagaMap.Network.Client
                         drawrate = IrisDrawRateFactory.Instance.DrawRate[key];
 
                     //先把所有的卡片抽出来
-                    for (int i = 0; i < gacha.Count; i++)
+                    for (var i = 0; i < gacha.Count; i++)
                     {
-                        int lottery = Global.Random.Next(0, 1000);
-                        List<uint> Lcards = new List<uint>();
+                        var lottery = Global.Random.Next(0, 1000);
+                        var Lcards = new List<uint>();
                         byte rank = 1;
 
                         if (lottery < (drawrate != null ? drawrate.SuperRatityRate : 5)) rank = 4;
@@ -119,12 +110,10 @@ namespace SagaMap.Network.Client
 
 
                         while (cards.Count(x => x.Value == rank) == 0)
-                        {
-                            if ((rank - 1) > 0)
+                            if (rank - 1 > 0)
                                 rank -= 1;
                             else
                                 rank = 4;
-                        }
 
                         //不存在保底
                         //if (i == 9)
@@ -133,7 +122,6 @@ namespace SagaMap.Network.Client
                         //    if (lottery < 50) rank = 3;
                         //    if (lottery < 8) rank = 4;
                         //}
-
                         foreach (var i2 in cards)
                             if (i2.Value == rank)
                                 Lcards.Add(i2.Key);
@@ -145,7 +133,7 @@ namespace SagaMap.Network.Client
                         else
                             itemid = Lcards[Global.Random.Next(0, Lcards.Count - 1)];
 
-                        Item item = ItemFactory.Instance.GetItem(itemid);
+                        var item = ItemFactory.Instance.GetItem(itemid);
                         item.Stack = 1;
                         item.Identified = true;
                         retitems.Add(item);
@@ -158,63 +146,72 @@ namespace SagaMap.Network.Client
                         case DrawType.Random:
                             break;
                         case DrawType.NomalOnly:
-                            var uncommon = retitems.Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Common).ToList();
-                            for (int i = 0; i < uncommon.Count; i++)
+                            var uncommon = retitems.Where(x =>
+                                IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Common).ToList();
+                            for (var i = 0; i < uncommon.Count; i++)
                             {
                                 var nomalcards = selectedcards.Where(x => x.Rarity == Rarity.Common).ToList();
                                 idx = Global.Random.Next(0, nomalcards.Count - 1);
 
                                 retitems.Remove(uncommon[i]);
-                                Item item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
+                                var item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
                                 item.Stack = 1;
                                 item.Identified = true;
                                 retitems.Add(item);
                             }
+
                             break;
                         case DrawType.UnCommonOnly:
-                            var ununcommon = retitems.Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Uncommon).ToList();
-                            for (int i = 0; i < ununcommon.Count; i++)
+                            var ununcommon = retitems.Where(x =>
+                                IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Uncommon).ToList();
+                            for (var i = 0; i < ununcommon.Count; i++)
                             {
                                 var nomalcards = selectedcards.Where(x => x.Rarity == Rarity.Uncommon).ToList();
                                 idx = Global.Random.Next(0, nomalcards.Count - 1);
 
                                 retitems.Remove(ununcommon[i]);
-                                Item item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
+                                var item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
                                 item.Stack = 1;
                                 item.Identified = true;
                                 retitems.Add(item);
                             }
+
                             break;
                         case DrawType.RarityOnly:
-                            var unrarity = retitems.Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Rare).ToList();
-                            for (int i = 0; i < unrarity.Count; i++)
+                            var unrarity = retitems
+                                .Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.Rare).ToList();
+                            for (var i = 0; i < unrarity.Count; i++)
                             {
                                 var nomalcards = selectedcards.Where(x => x.Rarity == Rarity.Rare).ToList();
                                 idx = Global.Random.Next(0, nomalcards.Count - 1);
 
                                 retitems.Remove(unrarity[i]);
-                                Item item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
+                                var item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
                                 item.Stack = 1;
                                 item.Identified = true;
                                 retitems.Add(item);
                             }
+
                             break;
                         case DrawType.SuperRarityOnly:
-                            var unsuperrarity = retitems.Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.SuperRare).ToList();
-                            for (int i = 0; i < unsuperrarity.Count; i++)
+                            var unsuperrarity = retitems.Where(x =>
+                                IrisCardFactory.Instance.Items[x.ItemID].Rarity != Rarity.SuperRare).ToList();
+                            for (var i = 0; i < unsuperrarity.Count; i++)
                             {
                                 var nomalcards = selectedcards.Where(x => x.Rarity == Rarity.SuperRare).ToList();
                                 idx = Global.Random.Next(0, nomalcards.Count - 1);
 
                                 retitems.Remove(unsuperrarity[i]);
-                                Item item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
+                                var item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
                                 item.Stack = 1;
                                 item.Identified = true;
                                 retitems.Add(item);
                             }
+
                             break;
                         case DrawType.AtleastOneSuperRarity:
-                            var superrarity = retitems.Where(x => IrisCardFactory.Instance.Items[x.ItemID].Rarity == Rarity.SuperRare).ToList();
+                            var superrarity = retitems.Where(x =>
+                                IrisCardFactory.Instance.Items[x.ItemID].Rarity == Rarity.SuperRare).ToList();
                             if (superrarity.Count == 0)
                             {
                                 idx = Global.Random.Next(0, retitems.Count - 1);
@@ -223,13 +220,12 @@ namespace SagaMap.Network.Client
                                 var nomalcards = selectedcards.Where(x => x.Rarity == Rarity.SuperRare).ToList();
                                 idx = Global.Random.Next(0, nomalcards.Count - 1);
 
-                                Item item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
+                                var item = ItemFactory.Instance.GetItem(nomalcards[idx].ID);
                                 item.Stack = 1;
                                 item.Identified = true;
                                 retitems.Add(item);
                             }
-                            break;
-                        default:
+
                             break;
                     }
 
@@ -241,12 +237,12 @@ namespace SagaMap.Network.Client
                         AddItem(item, true);
                     }
 
-                    SSMG_IRIS_GACHA_RESULT p2 = new SSMG_IRIS_GACHA_RESULT();
+                    var p2 = new SSMG_IRIS_GACHA_RESULT();
                     p2.ItemIDs = results;
                     netIO.SendPacket(p2);
                 }
-            }
         }
+
         public void OnIrisCardAssembleCancel(CSMG_IRIS_CARD_ASSEMBLE_CANCEL p)
         {
             irisCardAssemble = false;
@@ -254,30 +250,30 @@ namespace SagaMap.Network.Client
 
         public void OnIrisCardAssemble(CSMG_IRIS_CARD_ASSEMBLE_CONFIRM p)
         {
-            uint cardID = p.CardID;
+            var cardID = p.CardID;
             if (CountItem(cardID) > 0)
             {
                 if (IrisCardFactory.Instance.Items.ContainsKey(cardID))
                 {
-                    IrisCard card = IrisCardFactory.Instance.Items[cardID];
+                    var card = IrisCardFactory.Instance.Items[cardID];
                     if (card.NextCard != 0)
                     {
-                        int[] rates = new int[4] { 90, 60, 30, 5 };
-                        int[] counts = new int[4] { 10, 2, 2, 2 };
+                        var rates = new int[4] { 90, 60, 30, 5 };
+                        var counts = new int[4] { 10, 2, 2, 2 };
                         var SupportItem = p.SupportItem;
                         var ProtectItem = p.ProtectItem;
 
-                        int rate = rates[card.Rank];
-                        int count = counts[card.Rank];
+                        var rate = rates[card.Rank];
+                        var count = counts[card.Rank];
                         if (SupportItem == 10087101 || SupportItem == 10087100)
                             rate += 100;
                         else if (SupportItem != 0)
                             rate += 5;
                         if (CountItem(cardID) >= count)
                         {
-                            if (this.chara.Gold >= 5000)
+                            if (Character.Gold >= 5000)
                             {
-                                this.chara.Gold -= 5000;
+                                Character.Gold -= 5000;
 
                                 if (SupportItem != 0)
                                     DeleteItemID(SupportItem, 1, true);
@@ -289,51 +285,51 @@ namespace SagaMap.Network.Client
                                 {
                                     DeleteItemID(cardID, (ushort)count, true);
                                     AddItem(ItemFactory.Instance.GetItem(card.NextCard), true);
-                                    Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.OK;
-                                    this.netIO.SendPacket(p1);
+                                    var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                                    p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.OK;
+                                    netIO.SendPacket(p1);
                                 }
                                 else
                                 {
                                     if (ProtectItem == 0)
                                         DeleteItemID(cardID, (ushort)count, true);
 
-                                    Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.FAILED;
-                                    this.netIO.SendPacket(p1);
+                                    var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                                    p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.FAILED;
+                                    netIO.SendPacket(p1);
                                     irisCardAssemble = false;
                                 }
                             }
                             else
                             {
-                                Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NOT_ENOUGH_GOLD;
-                                this.netIO.SendPacket(p1);
+                                var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                                p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NOT_ENOUGH_GOLD;
+                                netIO.SendPacket(p1);
                                 irisCardAssemble = false;
                             }
                         }
                         else
                         {
-                            Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                            p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
-                            this.netIO.SendPacket(p1);
+                            var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                            p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
+                            netIO.SendPacket(p1);
                             irisCardAssemble = false;
                         }
                     }
                     else
                     {
-                        Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                        p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
-                        this.netIO.SendPacket(p1);
+                        var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                        p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
+                        netIO.SendPacket(p1);
                         irisCardAssemble = false;
                     }
                 }
             }
             else
             {
-                Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT();
-                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NO_ITEM;
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
+                p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NO_ITEM;
+                netIO.SendPacket(p1);
                 irisCardAssemble = false;
             }
         }
@@ -345,41 +341,40 @@ namespace SagaMap.Network.Client
 
         public void OnIrisCardLock(CSMG_IRIS_CARD_LOCK p)
         {
-            Item item = this.chara.Inventory.GetItem(irisCardItem);
+            var item = Character.Inventory.GetItem(irisCardItem);
             if (item != null)
             {
                 item.Locked = true;
                 SendItemIdentify(item.Slot);
-                Packets.Server.SSMG_IRIS_CARD_LOCK_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_LOCK_RESULT();
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_IRIS_CARD_LOCK_RESULT();
+                netIO.SendPacket(p1);
             }
         }
 
         public void OnIrisCardUnlock(CSMG_IRIS_CARD_UNLOCK p)
         {
-            Item item = this.chara.Inventory.GetItem(irisCardItem);
+            var item = Character.Inventory.GetItem(irisCardItem);
             if (item != null)
             {
                 item.Locked = false;
                 SendItemIdentify(item.Slot);
 
-                SSMG_IRIS_CARD_UNLOCK_RESULT p1 = new SSMG_IRIS_CARD_UNLOCK_RESULT();
+                var p1 = new SSMG_IRIS_CARD_UNLOCK_RESULT();
                 p1.Result = (byte)(CountItem(16003400u) > 0 ? 0x00 : 0x01);
                 if (CountItem(16003400u) > 0)
                     DeleteItem(GetItem(16003400u)[0].Slot, 1, true);
-                this.netIO.SendPacket(p1);
+                netIO.SendPacket(p1);
             }
         }
 
         /// <summary>
-        /// 给武器打洞
+        ///     给武器打洞
         /// </summary>
         /// <param name="pc"></param>
         protected void ItemAddSlot(ActorPC pc)
         {
-            List<uint> items = new List<uint>();
-            foreach (SagaDB.Item.Item i in pc.Inventory.GetContainer(ContainerType.BODY))
-            {
+            var items = new List<uint>();
+            foreach (var i in pc.Inventory.GetContainer(ContainerType.BODY))
                 if (i.IsEquipt)
                 {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
@@ -387,13 +382,10 @@ namespace SagaMap.Network.Client
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
                         i.EquipSlot[0] == EnumEquipSlot.UPPER_BODY ||
                         i.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
-                    {
                         items.Add(i.Slot);
-                    }
                 }
-            }
-            foreach (SagaDB.Item.Item i in pc.Inventory.GetContainer(ContainerType.BACK_BAG))
-            {
+
+            foreach (var i in pc.Inventory.GetContainer(ContainerType.BACK_BAG))
                 if (i.IsEquipt)
                 {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
@@ -401,13 +393,10 @@ namespace SagaMap.Network.Client
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
                         i.EquipSlot[0] == EnumEquipSlot.UPPER_BODY ||
                         i.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
-                    {
                         items.Add(i.Slot);
-                    }
                 }
-            }
-            foreach (SagaDB.Item.Item i in pc.Inventory.GetContainer(ContainerType.LEFT_BAG))
-            {
+
+            foreach (var i in pc.Inventory.GetContainer(ContainerType.LEFT_BAG))
                 if (i.IsEquipt)
                 {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
@@ -415,13 +404,10 @@ namespace SagaMap.Network.Client
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
                         i.EquipSlot[0] == EnumEquipSlot.UPPER_BODY ||
                         i.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
-                    {
                         items.Add(i.Slot);
-                    }
                 }
-            }
-            foreach (SagaDB.Item.Item i in pc.Inventory.GetContainer(ContainerType.RIGHT_BAG))
-            {
+
+            foreach (var i in pc.Inventory.GetContainer(ContainerType.RIGHT_BAG))
                 if (i.IsEquipt)
                 {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
@@ -429,11 +415,9 @@ namespace SagaMap.Network.Client
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
                         i.EquipSlot[0] == EnumEquipSlot.UPPER_BODY ||
                         i.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
-                    {
                         items.Add(i.Slot);
-                    }
                 }
-            }
+
             if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                 if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].CurrentSlot < 10)
                     items.Add(pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot);
@@ -496,122 +480,118 @@ namespace SagaMap.Network.Client
             if (CountItem(16001406) > 0)
                 items.Add(GetItem(16001406)[0].Slot);
 
-            Packets.Server.SSMG_IRIS_ADD_SLOT_ITEM_LIST p = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_ITEM_LIST();
+            var p = new SSMG_IRIS_ADD_SLOT_ITEM_LIST();
             p.Items = items;
-            this.netIO.SendPacket(p);
-
+            netIO.SendPacket(p);
         }
 
         public void OnIrisCardRemove(CSMG_IRIS_CARD_REMOVE p)
         {
-            Item item = this.chara.Inventory.GetItem(irisCardItem);
+            var item = Character.Inventory.GetItem(irisCardItem);
             if (item != null)
             {
                 if (!item.Locked)
                 {
                     if (p.CardSlot < item.Cards.Count)
                     {
-                        Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT();
-                        p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT.Results.OK;
-                        this.netIO.SendPacket(p1);
+                        var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
+                        p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.OK;
+                        netIO.SendPacket(p1);
 
-                        IrisCard card = item.Cards[p.CardSlot];
+                        var card = item.Cards[p.CardSlot];
                         AddItem(ItemFactory.Instance.GetItem(card.ID), true);
                         item.Cards.RemoveAt(p.CardSlot);
                         SendItemCardInfo(item);
                         SendItemCardAbility(item);
-
                     }
                     else
                     {
-                        Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT();
-                        p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                        this.netIO.SendPacket(p1);
+                        var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
+                        p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
+                        netIO.SendPacket(p1);
                     }
                 }
                 else
                 {
-                    Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
+                    p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
+                    netIO.SendPacket(p1);
                 }
             }
             else
             {
-                Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT();
-                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
+                p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
+                netIO.SendPacket(p1);
             }
         }
 
         public void OnIrisCardInsert(CSMG_IRIS_CARD_INSERT p)
         {
-            Item item = this.chara.Inventory.GetItem(irisCardItem);
+            var item = Character.Inventory.GetItem(irisCardItem);
             if (item != null)
             {
                 if (item.Cards.Count < item.CurrentSlot)
                 {
-                    Item card = this.chara.Inventory.GetItem(p.InventorySlot);
+                    var card = Character.Inventory.GetItem(p.InventorySlot);
                     if (card != null)
-                    {
                         if (card.BaseData.itemType == ItemType.IRIS_CARD)
                         {
                             if (IrisCardFactory.Instance.Items.ContainsKey(card.BaseData.id))
                             {
                                 DeleteItem(card.Slot, 1, true);
-                                Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT();
-                                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT.Results.OK;
-                                this.netIO.SendPacket(p1);
-                                IrisCard cardInfo = IrisCardFactory.Instance.Items[card.BaseData.id];
+                                var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
+                                p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.OK;
+                                netIO.SendPacket(p1);
+                                var cardInfo = IrisCardFactory.Instance.Items[card.BaseData.id];
                                 item.Cards.Add(cardInfo);
                                 SendItemCardInfo(item);
                                 SendItemCardAbility(item);
-                                PC.StatusFactory.Instance.CalcStatus(chara);
+                                StatusFactory.Instance.CalcStatus(Character);
                             }
                             else
                             {
-                                Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT();
-                                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT.Results.CANNOT_SET;
-                                this.netIO.SendPacket(p1);
+                                var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
+                                p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.CANNOT_SET;
+                                netIO.SendPacket(p1);
                             }
                         }
-                    }
                 }
                 else
                 {
-                    Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_INSERT_RESULT.Results.SLOT_OVER;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
+                    p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.SLOT_OVER;
+                    netIO.SendPacket(p1);
                 }
             }
         }
 
         public void OnIrisCardOpen(CSMG_IRIS_CARD_OPEN p)
         {
-            Item item = this.chara.Inventory.GetItem(p.InventorySlot);
+            var item = Character.Inventory.GetItem(p.InventorySlot);
             if (item != null)
             {
                 if (item.CurrentSlot > 0)
                 {
                     irisCardItem = item.Slot;
-                    Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT.Results.OK;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
+                    p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.OK;
+                    netIO.SendPacket(p1);
 
                     SendItemCardAbility(item);
                 }
                 else
                 {
-                    Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_SLOT;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
+                    p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_SLOT;
+                    netIO.SendPacket(p1);
                 }
             }
             else
             {
-                Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT();
-                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_ITEM;
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
+                p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_ITEM;
+                netIO.SendPacket(p1);
             }
         }
 
@@ -619,26 +599,27 @@ namespace SagaMap.Network.Client
         {
             if (irisAddSlot)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventorySlot);
+                var item = Character.Inventory.GetItem(p.InventorySlot);
                 if (item != null)
                 {
-                    int gold = item.BaseData.possibleLv * 1000;
+                    var gold = item.BaseData.possibleLv * 1000;
 
-                    uint material = p.Material;
-                    uint protectitem = p.ProtectItem;
-                    uint supportitem = p.SupportItem;
+                    var material = p.Material;
+                    var protectitem = p.ProtectItem;
+                    var supportitem = p.SupportItem;
                     if (CountItem(material) > 0)
                     {
-                        if (this.chara.Gold > gold)
+                        if (Character.Gold > gold)
                         {
-                            if ((!item.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && item.CurrentSlot < 10) || (item.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && item.CurrentSlot < 5))
+                            if ((!item.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && item.CurrentSlot < 10) ||
+                                (item.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && item.CurrentSlot < 5))
                             {
-                                this.chara.Gold -= gold;
+                                Character.Gold -= gold;
 
                                 DeleteItemID(material, 1, true);
 
 
-                                int baseRate = 0;
+                                var baseRate = 0;
                                 if (!item.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE))
                                     baseRate = 100 - item.CurrentSlot * 10;
                                 else
@@ -699,89 +680,88 @@ namespace SagaMap.Network.Client
 
                                 if (Global.Random.Next(1, 100) < baseRate)
                                 {
-                                    Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.OK;
-                                    this.netIO.SendPacket(p1);
+                                    var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                                    p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.OK;
+                                    netIO.SendPacket(p1);
                                     SendEffect(5145);
                                     item.CurrentSlot++;
                                     SendItemInfo(item);
 
-                                    ItemAddSlot(this.chara);
+                                    ItemAddSlot(Character);
                                     //this.irisAddSlot = false;
-
                                 }
                                 else if (protectitem != 0)
                                 {
                                     //DeleteItemID(p.ProtectItem, 1, true);
-                                    this.SendSystemMessage("装备打洞失败！使用了一本防爆书（打洞）。");
-                                    Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                    this.netIO.SendPacket(p1);
+                                    SendSystemMessage("装备打洞失败！使用了一本防爆书（打洞）。");
+                                    var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                                    p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
+                                    netIO.SendPacket(p1);
 
-                                    ItemAddSlot(this.chara);
+                                    ItemAddSlot(Character);
                                     //this.irisAddSlot = false;
                                 }
                                 else
                                 {
                                     DeleteItem(item.Slot, 1, true);
-                                    Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                    this.netIO.SendPacket(p1);
+                                    var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                                    p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
+                                    netIO.SendPacket(p1);
 
-                                    this.irisAddSlot = false;
+                                    irisAddSlot = false;
                                 }
                             }
                             else
                             {
-                                Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                                p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                this.netIO.SendPacket(p1);
+                                var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                                p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
+                                netIO.SendPacket(p1);
 
-                                this.irisAddSlot = false;
+                                irisAddSlot = false;
                             }
                         }
                         else
                         {
-                            Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                            p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
-                            this.netIO.SendPacket(p1);
+                            var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                            p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
+                            netIO.SendPacket(p1);
 
-                            this.irisAddSlot = false;
+                            irisAddSlot = false;
                         }
                     }
                     else
                     {
-                        Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                        p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_RIGHT_MATERIAL;
-                        this.netIO.SendPacket(p1);
+                        var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                        p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_RIGHT_MATERIAL;
+                        netIO.SendPacket(p1);
 
-                        this.irisAddSlot = false;
+                        irisAddSlot = false;
                     }
                 }
                 else
                 {
-                    Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                    p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
+                    netIO.SendPacket(p1);
 
-                    this.irisAddSlot = false;
+                    irisAddSlot = false;
                 }
             }
         }
 
         public void OnIrisAddSlotCancel(CSMG_IRIS_ADD_SLOT_CANCEL p)
         {
-            this.irisAddSlot = false;
+            irisAddSlot = false;
         }
 
         public void OnIrisAddSlotItemSelect(CSMG_IRIS_ADD_SLOT_ITEM_SELECT p)
         {
             if (irisAddSlot)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventorySlot);
+                var item = Character.Inventory.GetItem(p.InventorySlot);
                 if (item != null)
                 {
-                    int gold = item.BaseData.possibleLv * 1000;
+                    var gold = item.BaseData.possibleLv * 1000;
                     uint material = 0;
                     if (item.BaseData.possibleLv <= 30)
                         material = 10073000;
@@ -789,38 +769,38 @@ namespace SagaMap.Network.Client
                         material = 10073100;
                     else
                         material = 10073200;
-                    if (this.chara.Gold > gold)
+                    if (Character.Gold > gold)
                     {
                         if (item.CurrentSlot < 5)
                         {
-                            this.irisAddSlotMaterial = material;
-                            this.irisAddSlotItem = item.Slot;
+                            irisAddSlotMaterial = material;
+                            irisAddSlotItem = item.Slot;
 
-                            Packets.Server.SSMG_IRIS_ADD_SLOT_MATERIAL p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_MATERIAL();
+                            var p1 = new SSMG_IRIS_ADD_SLOT_MATERIAL();
                             p1.Slot = 1;
                             p1.Material = material;
                             p1.Gold = gold;
-                            this.netIO.SendPacket(p1);
+                            netIO.SendPacket(p1);
                         }
                         else
                         {
-                            Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                            p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                            this.netIO.SendPacket(p1);
+                            var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                            p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
+                            netIO.SendPacket(p1);
                         }
                     }
                     else
                     {
-                        Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                        p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
-                        this.netIO.SendPacket(p1);
+                        var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                        p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
+                        netIO.SendPacket(p1);
                     }
                 }
                 else
                 {
-                    Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT p1 = new SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT();
-                    p1.Result = SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
-                    this.netIO.SendPacket(p1);
+                    var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
+                    p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
+                    netIO.SendPacket(p1);
                     irisAddSlot = false;
                 }
             }
@@ -828,19 +808,19 @@ namespace SagaMap.Network.Client
 
         public void SendItemCardInfo(Item item)
         {
-            Packets.Server.SSMG_ITEM_IRIS_CARD_INFO p = new SagaMap.Packets.Server.SSMG_ITEM_IRIS_CARD_INFO();
+            var p = new SSMG_ITEM_IRIS_CARD_INFO();
             p.Item = item;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
 
         public void SendItemCardAbility(Item item)
         {
-            Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY p = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY();
-            p.Type = SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY.Types.Deck;
+            var p = new SSMG_IRIS_CARD_ITEM_ABILITY();
+            p.Type = SSMG_IRIS_CARD_ITEM_ABILITY.Types.Deck;
             p.AbilityVectors = item.AbilityVectors(true);
             p.VectorValues = item.VectorValues(true, false).Values.ToList();
             p.VectorLevels = item.VectorValues(true, true).Values.ToList();
-            Dictionary<ReleaseAbility, int> release = item.ReleaseAbilities(true);
+            var release = item.ReleaseAbilities(true);
             p.ReleaseAbilities = release.Keys.ToList();
             p.AbilityValues = release.Values.ToList();
             if (item.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
@@ -851,10 +831,10 @@ namespace SagaMap.Network.Client
                 p.ElementsDefence = item.IrisElements(true);
             else
                 p.ElementsDefence = Item.ElementsZero();
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
 
-            p = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY();
-            p.Type = SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY.Types.Max;
+            p = new SSMG_IRIS_CARD_ITEM_ABILITY();
+            p.Type = SSMG_IRIS_CARD_ITEM_ABILITY.Types.Max;
             p.AbilityVectors = item.AbilityVectors(false);
             p.VectorValues = item.VectorValues(false, false).Values.ToList();
             p.VectorLevels = item.VectorValues(false, true).Values.ToList();
@@ -869,19 +849,19 @@ namespace SagaMap.Network.Client
                 p.ElementsDefence = item.IrisElements(false);
             else
                 p.ElementsDefence = Item.ElementsZero();
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
 
-            p = new SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY();
-            p.Type = SagaMap.Packets.Server.SSMG_IRIS_CARD_ITEM_ABILITY.Types.Total;
-            p.AbilityVectors = this.chara.IrisAbilityValues.Keys.ToList();
-            p.VectorValues = this.chara.IrisAbilityValues.Values.ToList();
-            p.VectorLevels = this.chara.IrisAbilityLevels.Values.ToList();
-            release = Item.ReleaseAbilities(this.chara.IrisAbilityLevels);
+            p = new SSMG_IRIS_CARD_ITEM_ABILITY();
+            p.Type = SSMG_IRIS_CARD_ITEM_ABILITY.Types.Total;
+            p.AbilityVectors = Character.IrisAbilityValues.Keys.ToList();
+            p.VectorValues = Character.IrisAbilityValues.Values.ToList();
+            p.VectorLevels = Character.IrisAbilityLevels.Values.ToList();
+            release = Item.ReleaseAbilities(Character.IrisAbilityLevels);
             p.ReleaseAbilities = release.Keys.ToList();
             p.AbilityValues = release.Values.ToList();
-            p.ElementsAttack = this.chara.Status.attackelements_iris;
-            p.ElementsDefence = this.chara.Status.elements_iris;
-            this.netIO.SendPacket(p);
+            p.ElementsAttack = Character.Status.attackelements_iris;
+            p.ElementsDefence = Character.Status.elements_iris;
+            netIO.SendPacket(p);
         }
     }
 }

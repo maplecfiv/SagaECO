@@ -1,13 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaMap;
-using SagaMap.Network.Client;
 using SagaDB.Actor;
-using SagaDB.Map;
+using SagaMap.Dungeon;
+using SagaMap.Manager;
 
 namespace SagaMap.Scripting
 {
@@ -15,7 +8,7 @@ namespace SagaMap.Scripting
     {
         public WestFortGate()
         {
-            this.EventID = 0xF1000000;
+            EventID = 0xF1000000;
         }
 
         public override void OnEvent(ActorPC pc)
@@ -28,7 +21,7 @@ namespace SagaMap.Scripting
     {
         public WestFortField()
         {
-            this.EventID = 0xF1000001;
+            EventID = 0xF1000001;
         }
 
         public override void OnEvent(ActorPC pc)
@@ -41,16 +34,16 @@ namespace SagaMap.Scripting
     {
         public DungeonNorth()
         {
-            this.EventID = 12001501;
+            EventID = 12001501;
         }
 
         public override void OnEvent(ActorPC pc)
         {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
+            var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.IsDungeon)
             {
-                Dungeon.DungeonMap next = map.DungeonMap.Gates[SagaMap.Dungeon.GateType.North].ConnectedMap;
-                Warp(pc, next.Map.ID, next.Gates[SagaMap.Dungeon.GateType.South].X, next.Gates[SagaMap.Dungeon.GateType.South].Y);
+                var next = map.DungeonMap.Gates[GateType.North].ConnectedMap;
+                Warp(pc, next.Map.ID, next.Gates[GateType.South].X, next.Gates[GateType.South].Y);
             }
         }
     }
@@ -59,16 +52,16 @@ namespace SagaMap.Scripting
     {
         public DungeonEast()
         {
-            this.EventID = 12001502;
+            EventID = 12001502;
         }
 
         public override void OnEvent(ActorPC pc)
         {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
+            var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.IsDungeon)
             {
-                Dungeon.DungeonMap next = map.DungeonMap.Gates[SagaMap.Dungeon.GateType.East].ConnectedMap;
-                Warp(pc, next.Map.ID, next.Gates[SagaMap.Dungeon.GateType.West].X, next.Gates[SagaMap.Dungeon.GateType.West].Y);
+                var next = map.DungeonMap.Gates[GateType.East].ConnectedMap;
+                Warp(pc, next.Map.ID, next.Gates[GateType.West].X, next.Gates[GateType.West].Y);
             }
         }
     }
@@ -77,16 +70,16 @@ namespace SagaMap.Scripting
     {
         public DungeonSouth()
         {
-            this.EventID = 12001503;
+            EventID = 12001503;
         }
 
         public override void OnEvent(ActorPC pc)
         {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
+            var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.IsDungeon)
             {
-                Dungeon.DungeonMap next = map.DungeonMap.Gates[SagaMap.Dungeon.GateType.South].ConnectedMap;
-                Warp(pc, next.Map.ID, next.Gates[SagaMap.Dungeon.GateType.North].X, next.Gates[SagaMap.Dungeon.GateType.North].Y);
+                var next = map.DungeonMap.Gates[GateType.South].ConnectedMap;
+                Warp(pc, next.Map.ID, next.Gates[GateType.North].X, next.Gates[GateType.North].Y);
             }
         }
     }
@@ -95,16 +88,16 @@ namespace SagaMap.Scripting
     {
         public DungeonWest()
         {
-            this.EventID = 12001504;
+            EventID = 12001504;
         }
 
         public override void OnEvent(ActorPC pc)
         {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
+            var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.IsDungeon)
             {
-                Dungeon.DungeonMap next = map.DungeonMap.Gates[SagaMap.Dungeon.GateType.West].ConnectedMap;
-                Warp(pc, next.Map.ID, next.Gates[SagaMap.Dungeon.GateType.East].X, next.Gates[SagaMap.Dungeon.GateType.East].Y);
+                var next = map.DungeonMap.Gates[GateType.West].ConnectedMap;
+                Warp(pc, next.Map.ID, next.Gates[GateType.East].X, next.Gates[GateType.East].Y);
             }
         }
     }
@@ -113,16 +106,13 @@ namespace SagaMap.Scripting
     {
         public DungeonExit()
         {
-            this.EventID = 12001505;
+            EventID = 12001505;
         }
 
         public override void OnEvent(ActorPC pc)
         {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
-            if (map.IsDungeon)
-            {
-                Warp(pc, map.ClientExitMap, map.ClientExitX, map.ClientExitY);
-            }
+            var map = MapManager.Instance.GetMap(pc.MapID);
+            if (map.IsDungeon) Warp(pc, map.ClientExitMap, map.ClientExitX, map.ClientExitY);
         }
     }
 }

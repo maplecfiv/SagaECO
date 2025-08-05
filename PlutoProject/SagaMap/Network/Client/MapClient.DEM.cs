@@ -1,387 +1,378 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
-using SagaDB.Item;
 using SagaDB.Actor;
-using SagaDB.FGarden;
 using SagaDB.DEMIC;
+using SagaDB.Item;
+using SagaDB.Map;
 using SagaLib;
-using SagaMap;
 using SagaMap.Manager;
-using SagaMap.Skill;
-using SagaMap.PC;
 using SagaMap.Packets.Client;
+using SagaMap.Packets.Server;
+using SagaMap.PC;
+using SagaMap.Skill;
 
 namespace SagaMap.Network.Client
 {
     public partial class MapClient
     {
-        public bool demCLBuy = false;
-        public bool demParts = false;
+        public bool chipShop;
+        private uint currentChipCategory;
+        public bool demCLBuy;
 
-        public bool demic = false;
-        public bool chipShop = false;
-        uint currentChipCategory = 0;
+        public bool demic;
+        public bool demParts;
 
         public void SendCL()
         {
-            if (this.chara.Race == PC_RACE.DEM && this.state != SESSION_STATE.AUTHENTIFICATED)
+            if (Character.Race == PC_RACE.DEM && state != SESSION_STATE.AUTHENTIFICATED)
             {
-                Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE p1 = new SagaMap.Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE();
-                p1.Result = (SagaMap.Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE.Results)0;
-                p1.CurrentEP = this.Character.EPUsed;
-                p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(this.chara) - this.chara.EPUsed);
-                p1.CL = this.chara.CL;
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_DEM_COST_LIMIT_UPDATE();
+                p1.Result = 0;
+                p1.CurrentEP = Character.EPUsed;
+                p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(Character) - Character.EPUsed);
+                p1.CL = Character.CL;
+                netIO.SendPacket(p1);
             }
         }
 
-        public void OnDEMCostLimitBuy(Packets.Client.CSMG_DEM_COST_LIMIT_BUY p)
+        public void OnDEMCostLimitBuy(CSMG_DEM_COST_LIMIT_BUY p)
         {
             if (demCLBuy)
             {
-                short ep = p.EP;
-                Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE p1 = new SagaMap.Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE();
-                if (this.Character.EP >= ep)
+                var ep = p.EP;
+                var p1 = new SSMG_DEM_COST_LIMIT_UPDATE();
+                if (Character.EP >= ep)
                 {
-                    this.Character.EP = (uint)(this.Character.EP - ep);
-                    ExperienceManager.Instance.ApplyEP(this.Character, ep);
-                    PC.StatusFactory.Instance.CalcStatus(this.Character);
+                    Character.EP = (uint)(Character.EP - ep);
+                    ExperienceManager.Instance.ApplyEP(Character, ep);
+                    StatusFactory.Instance.CalcStatus(Character);
                     SendPlayerInfo();
-                    p1.Result = SagaMap.Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE.Results.OK;
+                    p1.Result = SSMG_DEM_COST_LIMIT_UPDATE.Results.OK;
                 }
                 else
-                    p1.Result = SagaMap.Packets.Server.SSMG_DEM_COST_LIMIT_UPDATE.Results.NOT_ENOUGH_EP;
-                p1.CurrentEP = this.Character.EPUsed;
-                p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(this.chara) - this.chara.EPUsed);
-                p1.CL = this.chara.CL;
-                this.netIO.SendPacket(p1);
+                {
+                    p1.Result = SSMG_DEM_COST_LIMIT_UPDATE.Results.NOT_ENOUGH_EP;
+                }
+
+                p1.CurrentEP = Character.EPUsed;
+                p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(Character) - Character.EPUsed);
+                p1.CL = Character.CL;
+                netIO.SendPacket(p1);
             }
         }
 
-        public void OnDEMCostLimitClose(Packets.Client.CSMG_DEM_COST_LIMIT_CLOSE p)
+        public void OnDEMCostLimitClose(CSMG_DEM_COST_LIMIT_CLOSE p)
         {
             demCLBuy = false;
         }
 
-        public void OnDEMFormChange(Packets.Client.CSMG_DEM_FORM_CHANGE p)
+        public void OnDEMFormChange(CSMG_DEM_FORM_CHANGE p)
         {
-            if (this.Character.Form != p.Form)
+            if (Character.Form != p.Form)
             {
-                this.Character.Form = p.Form;
+                Character.Form = p.Form;
 
-                SkillHandler.Instance.CastPassiveSkills(this.chara);
-                PC.StatusFactory.Instance.CalcStatus(this.chara);
+                SkillHandler.Instance.CastPassiveSkills(Character);
+                StatusFactory.Instance.CalcStatus(Character);
 
-                this.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, this.chara, true);                
+                map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, Character, true);
                 SendPlayerInfo();
                 SendAttackType();
 
-                Packets.Server.SSMG_DEM_FORM_CHANGE p1 = new SagaMap.Packets.Server.SSMG_DEM_FORM_CHANGE();
-                p1.Form = this.chara.Form;
-                this.netIO.SendPacket(p1);
+                var p1 = new SSMG_DEM_FORM_CHANGE();
+                p1.Form = Character.Form;
+                netIO.SendPacket(p1);
             }
         }
 
-        public void OnDEMPartsUnequip(Packets.Client.CSMG_DEM_PARTS_UNEQUIP p)
+        public void OnDEMPartsUnequip(CSMG_DEM_PARTS_UNEQUIP p)
         {
-            if (this.chara.Race == PC_RACE.DEM && demParts)
+            if (Character.Race == PC_RACE.DEM && demParts)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventoryID);
-                if (item == null)
-                {
-                    return;
-                }
-                bool ifUnequip = this.Character.Inventory.IsContainerParts(this.Character.Inventory.GetContainerType(item.Slot));
+                var item = Character.Inventory.GetItem(p.InventoryID);
+                if (item == null) return;
+                var ifUnequip = Character.Inventory.IsContainerParts(Character.Inventory.GetContainerType(item.Slot));
                 if (ifUnequip)
                 {
-                    List<EnumEquipSlot> slots = item.EquipSlot;
+                    var slots = item.EquipSlot;
                     if (slots.Count > 1)
-                    {
-                        for (int i = 1; i < slots.Count; i++)
-                        {
-                            this.Character.Inventory.Parts.Remove(slots[i]);
-                        }
-                    }
+                        for (var i = 1; i < slots.Count; i++)
+                            Character.Inventory.Parts.Remove(slots[i]);
 
-                    Packets.Server.SSMG_ITEM_DELETE p2;
-                    Packets.Server.SSMG_ITEM_ADD p3;
-                    uint slot = item.Slot;
+                    SSMG_ITEM_DELETE p2;
+                    SSMG_ITEM_ADD p3;
+                    var slot = item.Slot;
 
-                    if (this.Character.Inventory.MoveItem(this.Character.Inventory.GetContainerType(item.Slot), (int)item.Slot, ContainerType.BODY, 1))
+                    if (Character.Inventory.MoveItem(Character.Inventory.GetContainerType(item.Slot), (int)item.Slot,
+                            ContainerType.BODY, 1))
                     {
                         if (item.Stack == 0)
                         {
-                            if (slot == this.Character.Inventory.LastItem.Slot)
+                            if (slot == Character.Inventory.LastItem.Slot)
                             {
-                                Packets.Server.SSMG_ITEM_CONTAINER_CHANGE p1 = new SagaMap.Packets.Server.SSMG_ITEM_CONTAINER_CHANGE();
+                                var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                                 p1.InventorySlot = item.Slot;
                                 p1.Target = ContainerType.BODY;
-                                this.netIO.SendPacket(p1);
-                                Packets.Server.SSMG_ITEM_EQUIP p4 = new SagaMap.Packets.Server.SSMG_ITEM_EQUIP();
+                                netIO.SendPacket(p1);
+                                var p4 = new SSMG_ITEM_EQUIP();
                                 p4.InventorySlot = 0xffffffff;
                                 p4.Target = ContainerType.NONE;
                                 p4.Result = 3;
-                                PC.StatusFactory.Instance.CalcRange(this.Character);
+                                StatusFactory.Instance.CalcRange(Character);
                                 if (item.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
                                 {
                                     SendAttackType();
-                                    SkillHandler.Instance.CastPassiveSkills(this.Character);
+                                    SkillHandler.Instance.CastPassiveSkills(Character);
                                 }
-                                p4.Range = this.Character.Range;
-                                this.netIO.SendPacket(p4);
-                                this.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, this.Character, true);
 
-                                PC.StatusFactory.Instance.CalcStatus(this.Character);
-                                this.SendPlayerInfo();
+                                p4.Range = Character.Range;
+                                netIO.SendPacket(p4);
+                                map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, Character,
+                                    true);
+
+                                StatusFactory.Instance.CalcStatus(Character);
+                                SendPlayerInfo();
                             }
                             else
                             {
-                                p2 = new SagaMap.Packets.Server.SSMG_ITEM_DELETE();
+                                p2 = new SSMG_ITEM_DELETE();
                                 p2.InventorySlot = slot;
-                                this.netIO.SendPacket(p2);
+                                netIO.SendPacket(p2);
                                 if (slot != item.Slot)
                                 {
-                                    item = this.Character.Inventory.GetItem(item.Slot);
-                                    Packets.Server.SSMG_ITEM_COUNT_UPDATE p5 = new SagaMap.Packets.Server.SSMG_ITEM_COUNT_UPDATE();
+                                    item = Character.Inventory.GetItem(item.Slot);
+                                    var p5 = new SSMG_ITEM_COUNT_UPDATE();
                                     p5.InventorySlot = item.Slot;
                                     p5.Stack = item.Stack;
-                                    this.netIO.SendPacket(p5);
-                                    item = this.Character.Inventory.LastItem;
-                                    p3 = new SagaMap.Packets.Server.SSMG_ITEM_ADD();
+                                    netIO.SendPacket(p5);
+                                    item = Character.Inventory.LastItem;
+                                    p3 = new SSMG_ITEM_ADD();
                                     p3.Container = ContainerType.BODY;
                                     p3.InventorySlot = item.Slot;
                                     p3.Item = item;
-                                    this.netIO.SendPacket(p3);
+                                    netIO.SendPacket(p3);
                                 }
                                 else
                                 {
-                                    item = this.Character.Inventory.LastItem;
-                                    Packets.Server.SSMG_ITEM_COUNT_UPDATE p4 = new SagaMap.Packets.Server.SSMG_ITEM_COUNT_UPDATE();
+                                    item = Character.Inventory.LastItem;
+                                    var p4 = new SSMG_ITEM_COUNT_UPDATE();
                                     p4.InventorySlot = item.Slot;
                                     p4.Stack = item.Stack;
-                                    this.netIO.SendPacket(p4);
+                                    netIO.SendPacket(p4);
                                 }
                             }
                         }
                         else
                         {
-                            Packets.Server.SSMG_ITEM_COUNT_UPDATE p1 = new SagaMap.Packets.Server.SSMG_ITEM_COUNT_UPDATE();
+                            var p1 = new SSMG_ITEM_COUNT_UPDATE();
                             p1.InventorySlot = item.Slot;
                             p1.Stack = item.Stack;
-                            this.netIO.SendPacket(p1);
-                            if (this.Character.Inventory.LastItem.Stack == 1)
+                            netIO.SendPacket(p1);
+                            if (Character.Inventory.LastItem.Stack == 1)
                             {
-                                p3 = new SagaMap.Packets.Server.SSMG_ITEM_ADD();
+                                p3 = new SSMG_ITEM_ADD();
                                 p3.Container = ContainerType.BODY;
-                                p3.InventorySlot = this.Character.Inventory.LastItem.Slot;
-                                p3.Item = this.Character.Inventory.LastItem;
-                                this.netIO.SendPacket(p3);
+                                p3.InventorySlot = Character.Inventory.LastItem.Slot;
+                                p3.Item = Character.Inventory.LastItem;
+                                netIO.SendPacket(p3);
                             }
                             else
                             {
-                                item = this.Character.Inventory.LastItem;
-                                Packets.Server.SSMG_ITEM_COUNT_UPDATE p4 = new SagaMap.Packets.Server.SSMG_ITEM_COUNT_UPDATE();
+                                item = Character.Inventory.LastItem;
+                                var p4 = new SSMG_ITEM_COUNT_UPDATE();
                                 p4.InventorySlot = item.Slot;
                                 p4.Stack = item.Stack;
-                                this.netIO.SendPacket(p4);
+                                netIO.SendPacket(p4);
                             }
                         }
                     }
-                    this.Character.Inventory.CalcPayloadVolume();
-                    this.SendCapacity();
+
+                    Character.Inventory.CalcPayloadVolume();
+                    SendCapacity();
                 }
             }
         }
 
-        public void OnDEMPartsEquip(Packets.Client.CSMG_DEM_PARTS_EQUIP p)
+        public void OnDEMPartsEquip(CSMG_DEM_PARTS_EQUIP p)
         {
-            if (this.chara.Race == PC_RACE.DEM && demParts)
+            if (Character.Race == PC_RACE.DEM && demParts)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventoryID);
-                if (item == null)
-                {
-                    return;
-                }
-                int result = CheckEquipRequirement(item);
+                var item = Character.Inventory.GetItem(p.InventoryID);
+                if (item == null) return;
+                var result = CheckEquipRequirement(item);
                 if (result < 0)
                 {
-                    Packets.Server.SSMG_ITEM_EQUIP p4 = new SagaMap.Packets.Server.SSMG_ITEM_EQUIP();
+                    var p4 = new SSMG_ITEM_EQUIP();
                     p4.InventorySlot = 0xffffffff;
                     p4.Target = ContainerType.NONE;
                     p4.Result = result;
-                    p4.Range = this.Character.Range;
-                    this.netIO.SendPacket(p4);
+                    p4.Range = Character.Range;
+                    netIO.SendPacket(p4);
                     return;
                 }
-                foreach (EnumEquipSlot i in item.EquipSlot)
-                {
-                    if (this.Character.Inventory.Parts.ContainsKey(i))
+
+                foreach (var i in item.EquipSlot)
+                    if (Character.Inventory.Parts.ContainsKey(i))
                     {
-                        Item oriItem = this.Character.Inventory.Parts[i];
-                        
-                        foreach (EnumEquipSlot j in oriItem.EquipSlot)
+                        var oriItem = Character.Inventory.Parts[i];
+
+                        foreach (var j in oriItem.EquipSlot)
                         {
-                            if (!this.Character.Inventory.Parts.ContainsKey(j))
+                            if (!Character.Inventory.Parts.ContainsKey(j))
                                 continue;
-                            Item dummyItem = this.Character.Inventory.Parts[j];
+                            var dummyItem = Character.Inventory.Parts[j];
                             if (dummyItem.Stack == 0)
                             {
-                                this.Character.Inventory.Parts.Remove(j);
+                                Character.Inventory.Parts.Remove(j);
                                 continue;
                             }
-                            ContainerType container = (ContainerType)(((ContainerType)Enum.Parse(typeof(ContainerType), j.ToString())) + 200);
-                            if (this.Character.Inventory.MoveItem(container, (int)dummyItem.Slot, ContainerType.BODY, dummyItem.Stack))
+
+                            var container = (ContainerType)Enum.Parse(typeof(ContainerType), j.ToString()) + 200;
+                            if (Character.Inventory.MoveItem(container, (int)dummyItem.Slot, ContainerType.BODY,
+                                    dummyItem.Stack))
                             {
-                                Packets.Server.SSMG_ITEM_CONTAINER_CHANGE p1 = new SagaMap.Packets.Server.SSMG_ITEM_CONTAINER_CHANGE();
+                                var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                                 p1.InventorySlot = dummyItem.Slot;
                                 p1.Target = ContainerType.BODY;
-                                this.netIO.SendPacket(p1);
-                                Packets.Server.SSMG_ITEM_EQUIP p4 = new SagaMap.Packets.Server.SSMG_ITEM_EQUIP();
+                                netIO.SendPacket(p1);
+                                var p4 = new SSMG_ITEM_EQUIP();
                                 p4.InventorySlot = 0xffffffff;
                                 p4.Target = ContainerType.NONE;
                                 p4.Result = 1;
-                                p4.Range = this.Character.Range;
-                                this.netIO.SendPacket(p4);
+                                p4.Range = Character.Range;
+                                netIO.SendPacket(p4);
 
-                                PC.StatusFactory.Instance.CalcStatus(this.Character);
-                                this.SendPlayerInfo();
+                                StatusFactory.Instance.CalcStatus(Character);
+                                SendPlayerInfo();
                             }
                         }
                     }
-                }
-                ushort count = item.Stack;
+
+                var count = item.Stack;
                 if (count == 0) return;
 
-                ContainerType dst = (ContainerType)(((ContainerType)Enum.Parse(typeof(ContainerType), item.EquipSlot[0].ToString())) + 200);
-                if (this.Character.Inventory.MoveItem(this.Character.Inventory.GetContainerType(item.Slot), (int)item.Slot, dst, count))
+                var dst = (ContainerType)Enum.Parse(typeof(ContainerType), item.EquipSlot[0].ToString()) + 200;
+                if (Character.Inventory.MoveItem(Character.Inventory.GetContainerType(item.Slot), (int)item.Slot, dst,
+                        count))
                 {
                     if (item.Stack == 0)
                     {
-                        Packets.Server.SSMG_ITEM_EQUIP p4 = new SagaMap.Packets.Server.SSMG_ITEM_EQUIP();
-                        dst = (ContainerType)((ContainerType)Enum.Parse(typeof(ContainerType), item.EquipSlot[0].ToString()));
+                        var p4 = new SSMG_ITEM_EQUIP();
+                        dst = (ContainerType)Enum.Parse(typeof(ContainerType), item.EquipSlot[0].ToString());
                         p4.Target = dst;
                         p4.Result = 2;
                         p4.InventorySlot = item.Slot;
-                        PC.StatusFactory.Instance.CalcRange(this.Character);
-                        p4.Range = this.Character.Range;
-                        this.netIO.SendPacket(p4);
+                        StatusFactory.Instance.CalcRange(Character);
+                        p4.Range = Character.Range;
+                        netIO.SendPacket(p4);
                     }
                     else
                     {
-                        Packets.Server.SSMG_ITEM_COUNT_UPDATE p5 = new SagaMap.Packets.Server.SSMG_ITEM_COUNT_UPDATE();
+                        var p5 = new SSMG_ITEM_COUNT_UPDATE();
                         p5.InventorySlot = item.Slot;
                         p5.Stack = item.Stack;
-                        this.netIO.SendPacket(p5);
+                        netIO.SendPacket(p5);
                     }
                 }
-                List<EnumEquipSlot> slots = item.EquipSlot;
+
+                var slots = item.EquipSlot;
                 if (slots.Count > 1)
-                {
-                    for (int i = 1; i < slots.Count; i++)
+                    for (var i = 1; i < slots.Count; i++)
                     {
-                        Item dummy = item.Clone();
+                        var dummy = item.Clone();
                         dummy.Stack = 0;
-                        dst = (ContainerType)(((ContainerType)Enum.Parse(typeof(ContainerType), slots[i].ToString())) + 200);
-                        this.Character.Inventory.AddItem(dst, dummy);
+                        dst = (ContainerType)Enum.Parse(typeof(ContainerType), slots[i].ToString()) + 200;
+                        Character.Inventory.AddItem(dst, dummy);
                     }
 
-                }
                 if (item.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
                 {
                     SendAttackType();
-                    SkillHandler.Instance.CastPassiveSkills(this.Character);
+                    SkillHandler.Instance.CastPassiveSkills(Character);
                 }
 
                 //SkillHandler.Instance.CheckBuffValid(this.Character);
 
-                PC.StatusFactory.Instance.CalcStatus(this.Character);
-                this.SendPlayerInfo();
+                StatusFactory.Instance.CalcStatus(Character);
+                SendPlayerInfo();
 
-                this.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, this.Character, true);               
+                map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, Character, true);
             }
         }
 
-        public void OnDEMPartsClose(Packets.Client.CSMG_DEM_PARTS_CLOSE p)
+        public void OnDEMPartsClose(CSMG_DEM_PARTS_CLOSE p)
         {
             demParts = false;
         }
 
-        public void OnDEMDemicInitialize(Packets.Client.CSMG_DEM_DEMIC_INITIALIZE p)
+        public void OnDEMDemicInitialize(CSMG_DEM_DEMIC_INITIALIZE p)
         {
             if (demic)
             {
-                byte page = p.Page;
+                var page = p.Page;
                 DEMICPanel panel = null;
                 bool[,] table = null;
-                if (this.map.Info.Flag.Test(SagaDB.Map.MapFlags.Dominion))
+                if (map.Info.Flag.Test(MapFlags.Dominion))
                 {
-                    if (this.chara.Inventory.DominionDemicChips.ContainsKey(page))
+                    if (Character.Inventory.DominionDemicChips.ContainsKey(page))
                     {
-                        panel = this.chara.Inventory.DominionDemicChips[page];
-                        table = this.chara.Inventory.validTable(page, true);
+                        panel = Character.Inventory.DominionDemicChips[page];
+                        table = Character.Inventory.validTable(page, true);
                     }
                 }
                 else
                 {
-                    if (this.chara.Inventory.DemicChips.ContainsKey(page))
+                    if (Character.Inventory.DemicChips.ContainsKey(page))
                     {
-                        panel = this.chara.Inventory.DemicChips[page];
-                        table = this.chara.Inventory.validTable(page, false);
+                        panel = Character.Inventory.DemicChips[page];
+                        table = Character.Inventory.validTable(page, false);
                     }
                 }
 
-                Packets.Server.SSMG_DEM_DEMIC_INITIALIZED p1 = new SagaMap.Packets.Server.SSMG_DEM_DEMIC_INITIALIZED();
+                var p1 = new SSMG_DEM_DEMIC_INITIALIZED();
                 p1.Page = page;
 
                 if (panel != null)
                 {
-                    if (this.chara.EP > 0)
+                    if (Character.EP > 0)
                     {
-                        this.chara.EP--;
-                        foreach (Chip i in panel.Chips)
+                        Character.EP--;
+                        foreach (var i in panel.Chips)
                         {
                             if (i.Data.skill1 != 0)
-                            {
-                                if (this.chara.Skills.ContainsKey(i.Data.skill1))
+                                if (Character.Skills.ContainsKey(i.Data.skill1))
                                 {
-                                    if (this.chara.Skills[i.Data.skill1].Level > 1)
-                                        this.chara.Skills[i.Data.skill1].Level--;
+                                    if (Character.Skills[i.Data.skill1].Level > 1)
+                                        Character.Skills[i.Data.skill1].Level--;
                                     else
-                                        this.chara.Skills.Remove(i.Data.skill1);
+                                        Character.Skills.Remove(i.Data.skill1);
                                 }
-                            }
+
                             if (i.Data.skill2 != 0)
-                            {
-                                if (this.chara.Skills.ContainsKey(i.Data.skill2))
+                                if (Character.Skills.ContainsKey(i.Data.skill2))
                                 {
-                                    if (this.chara.Skills[i.Data.skill2].Level > 1)
-                                        this.chara.Skills[i.Data.skill2].Level--;
+                                    if (Character.Skills[i.Data.skill2].Level > 1)
+                                        Character.Skills[i.Data.skill2].Level--;
                                     else
-                                        this.chara.Skills.Remove(i.Data.skill2);
+                                        Character.Skills.Remove(i.Data.skill2);
                                 }
-                            }
+
                             if (i.Data.skill3 != 0)
-                            {
-                                if (this.chara.Skills.ContainsKey(i.Data.skill3))
+                                if (Character.Skills.ContainsKey(i.Data.skill3))
                                 {
-                                    if (this.chara.Skills[i.Data.skill3].Level > 1)
-                                        this.chara.Skills[i.Data.skill3].Level--;
+                                    if (Character.Skills[i.Data.skill3].Level > 1)
+                                        Character.Skills[i.Data.skill3].Level--;
                                     else
-                                        this.chara.Skills.Remove(i.Data.skill3);
+                                        Character.Skills.Remove(i.Data.skill3);
                                 }
-                            }
-                            
+
                             AddItem(ItemFactory.Instance.GetItem(i.ItemID), true);
                         }
+
                         panel.Chips.Clear();
                         int engageTask;
-                        int term = Global.Random.Next(0, 99);
+                        var term = Global.Random.Next(0, 99);
                         if (term <= 10)
                             engageTask = 2;
                         else if (term <= 40)
@@ -390,267 +381,251 @@ namespace SagaMap.Network.Client
                             engageTask = 0;
                         panel.EngageTask1 = 255;
                         panel.EngageTask2 = 255;
-                        for (int i = 0; i < engageTask; i++)
+                        for (var i = 0; i < engageTask; i++)
                         {
-                            List<byte[]> valid = new List<byte[]>();
-                            for (int j = 0; j < 9; j++)
-                            {
-                                for (int k = 0; k < 9; k++)
-                                {
-                                    if (table[k, j])
-                                        valid.Add(new byte[] { (byte)k, (byte)j });
-                                }
-                            }
-                            byte[] coord = valid[Global.Random.Next(0, valid.Count - 1)];
-                            byte task = (byte)(coord[0] + coord[1] * 9);
+                            var valid = new List<byte[]>();
+                            for (var j = 0; j < 9; j++)
+                            for (var k = 0; k < 9; k++)
+                                if (table[k, j])
+                                    valid.Add(new[] { (byte)k, (byte)j });
+
+                            var coord = valid[Global.Random.Next(0, valid.Count - 1)];
+                            var task = (byte)(coord[0] + coord[1] * 9);
                             if (i == 0)
                                 panel.EngageTask1 = task;
                             else
                                 panel.EngageTask2 = task;
                         }
 
-                        SendActorHPMPSP(this.chara);
+                        SendActorHPMPSP(Character);
 
-                        p1.Result = SagaMap.Packets.Server.SSMG_DEM_DEMIC_INITIALIZED.Results.OK;
+                        p1.Result = SSMG_DEM_DEMIC_INITIALIZED.Results.OK;
                         p1.EngageTask = panel.EngageTask1;
                         p1.EngageTask2 = panel.EngageTask2;
-                        
-                        PC.StatusFactory.Instance.CalcStatus(this.chara);
+
+                        StatusFactory.Instance.CalcStatus(Character);
                         SendPlayerInfo();
                     }
                     else
-                        p1.Result = SagaMap.Packets.Server.SSMG_DEM_DEMIC_INITIALIZED.Results.NOT_ENOUGH_EP;
+                    {
+                        p1.Result = SSMG_DEM_DEMIC_INITIALIZED.Results.NOT_ENOUGH_EP;
+                    }
                 }
                 else
-                    p1.Result = SagaMap.Packets.Server.SSMG_DEM_DEMIC_INITIALIZED.Results.FAILED;
+                {
+                    p1.Result = SSMG_DEM_DEMIC_INITIALIZED.Results.FAILED;
+                }
 
-                this.netIO.SendPacket(p1);
+                netIO.SendPacket(p1);
             }
         }
 
-        public void OnDEMDemicConfirm(Packets.Client.CSMG_DEM_DEMIC_CONFIRM p)
+        public void OnDEMDemicConfirm(CSMG_DEM_DEMIC_CONFIRM p)
         {
             if (demic)
             {
-                short[,] chips = p.Chips;
-                byte page = p.Page;
-                for (int i = 0; i < 9; i++)
+                var chips = p.Chips;
+                var page = p.Page;
+                for (var i = 0; i < 9; i++)
+                for (var j = 0; j < 9; j++)
                 {
-                    for (int j = 0; j < 9; j++)
+                    var chipID = chips[j, i];
+                    if (ChipFactory.Instance.ByChipID.ContainsKey(chipID))
                     {
-                        short chipID = chips[j, i];
-                        if (ChipFactory.Instance.ByChipID.ContainsKey(chipID))
+                        var chip = new Chip(ChipFactory.Instance.ByChipID[chipID]);
+                        if (CountItem(chip.ItemID) > 0)
                         {
-                            Chip chip = new Chip(ChipFactory.Instance.ByChipID[chipID]);
-                            if (CountItem(chip.ItemID) > 0)
-                            {
-                                chip.X = (byte)j;
-                                chip.Y = (byte)i;
-                                if (this.chara.Inventory.InsertChip(page, chip))
-                                {
-                                    DeleteItemID(chip.ItemID, 1, true);
-                                }
-                            }
+                            chip.X = (byte)j;
+                            chip.Y = (byte)i;
+                            if (Character.Inventory.InsertChip(page, chip)) DeleteItemID(chip.ItemID, 1, true);
                         }
                     }
                 }
-                Packets.Server.SSMG_DEM_DEMIC_CONFIRM_RESULT p1 = new SagaMap.Packets.Server.SSMG_DEM_DEMIC_CONFIRM_RESULT();
-                p1.Page = page;
-                p1.Result = SagaMap.Packets.Server.SSMG_DEM_DEMIC_CONFIRM_RESULT.Results.OK;
-                this.netIO.SendPacket(p1);
 
-                PC.StatusFactory.Instance.CalcStatus(this.chara);
-                SkillHandler.Instance.CastPassiveSkills(this.chara);
+                var p1 = new SSMG_DEM_DEMIC_CONFIRM_RESULT();
+                p1.Page = page;
+                p1.Result = SSMG_DEM_DEMIC_CONFIRM_RESULT.Results.OK;
+                netIO.SendPacket(p1);
+
+                StatusFactory.Instance.CalcStatus(Character);
+                SkillHandler.Instance.CastPassiveSkills(Character);
                 SendPlayerInfo();
             }
         }
 
-        public void OnDEMDemicClose(Packets.Client.CSMG_DEM_DEMIC_CLOSE p)
+        public void OnDEMDemicClose(CSMG_DEM_DEMIC_CLOSE p)
         {
             demic = false;
         }
 
-        public void OnDEMStatsPreCalc(Packets.Client.CSMG_DEM_STATS_PRE_CALC p)
+        public void OnDEMStatsPreCalc(CSMG_DEM_STATS_PRE_CALC p)
         {
             //backup
             ushort str, dex, intel, agi, vit, mag;
-            str = this.Character.Str;
-            dex = this.Character.Dex;
-            intel = this.Character.Int;
-            agi = this.Character.Agi;
-            vit = this.Character.Vit;
-            mag = this.Character.Mag;
+            str = Character.Str;
+            dex = Character.Dex;
+            intel = Character.Int;
+            agi = Character.Agi;
+            vit = Character.Vit;
+            mag = Character.Mag;
 
-            this.Character.Str = p.Str;
-            this.Character.Dex = p.Dex;
-            this.Character.Int = p.Int;
-            this.Character.Agi = p.Agi;
-            this.Character.Vit = p.Vit;
-            this.Character.Mag = p.Mag;
+            Character.Str = p.Str;
+            Character.Dex = p.Dex;
+            Character.Int = p.Int;
+            Character.Agi = p.Agi;
+            Character.Vit = p.Vit;
+            Character.Mag = p.Mag;
 
-            StatusFactory.Instance.CalcStatus(this.Character);
+            StatusFactory.Instance.CalcStatus(Character);
 
             {
-                Packets.Server.SSMG_PLAYER_STATS_PRE_CALC p1 = new SagaMap.Packets.Server.SSMG_PLAYER_STATS_PRE_CALC();
-                p1.ASPD = this.Character.Status.aspd;
-                p1.ATK1Max = this.Character.Status.max_atk1;
-                p1.ATK1Min = this.Character.Status.min_atk1;
-                p1.ATK2Max = this.Character.Status.max_atk2;
-                p1.ATK2Min = this.Character.Status.min_atk2;
-                p1.ATK3Max = this.Character.Status.max_atk3;
-                p1.ATK3Min = this.Character.Status.min_atk3;
-                p1.AvoidCritical = this.Character.Status.avoid_critical;
-                p1.AvoidMagic = this.Character.Status.avoid_magic;
-                p1.AvoidMelee = this.Character.Status.avoid_melee;
-                p1.AvoidRanged = this.Character.Status.avoid_ranged;
-                p1.CSPD = this.Character.Status.cspd;
-                p1.DefAddition = (ushort)this.Character.Status.def_add;
-                p1.DefBase = this.Character.Status.def;
-                p1.HitCritical = this.Character.Status.hit_critical;
-                p1.HitMagic = this.Character.Status.hit_magic;
-                p1.HitMelee = this.Character.Status.hit_melee;
-                p1.HitRanged = this.Character.Status.hit_ranged;
-                p1.MATKMax = this.Character.Status.max_matk;
-                p1.MATKMin = this.Character.Status.min_matk;
-                p1.MDefAddition = (ushort)this.Character.Status.mdef_add;
-                p1.MDefBase = this.Character.Status.mdef;
-                p1.Speed = this.Character.Speed;
-                p1.HP = (ushort)this.Character.MaxHP;
-                p1.MP = (ushort)this.Character.MaxMP;
-                p1.SP = (ushort)this.Character.MaxSP;
+                var p1 = new SSMG_PLAYER_STATS_PRE_CALC();
+                p1.ASPD = Character.Status.aspd;
+                p1.ATK1Max = Character.Status.max_atk1;
+                p1.ATK1Min = Character.Status.min_atk1;
+                p1.ATK2Max = Character.Status.max_atk2;
+                p1.ATK2Min = Character.Status.min_atk2;
+                p1.ATK3Max = Character.Status.max_atk3;
+                p1.ATK3Min = Character.Status.min_atk3;
+                p1.AvoidCritical = Character.Status.avoid_critical;
+                p1.AvoidMagic = Character.Status.avoid_magic;
+                p1.AvoidMelee = Character.Status.avoid_melee;
+                p1.AvoidRanged = Character.Status.avoid_ranged;
+                p1.CSPD = Character.Status.cspd;
+                p1.DefAddition = (ushort)Character.Status.def_add;
+                p1.DefBase = Character.Status.def;
+                p1.HitCritical = Character.Status.hit_critical;
+                p1.HitMagic = Character.Status.hit_magic;
+                p1.HitMelee = Character.Status.hit_melee;
+                p1.HitRanged = Character.Status.hit_ranged;
+                p1.MATKMax = Character.Status.max_matk;
+                p1.MATKMin = Character.Status.min_matk;
+                p1.MDefAddition = (ushort)Character.Status.mdef_add;
+                p1.MDefBase = Character.Status.mdef;
+                p1.Speed = Character.Speed;
+                p1.HP = (ushort)Character.MaxHP;
+                p1.MP = (ushort)Character.MaxMP;
+                p1.SP = (ushort)Character.MaxSP;
                 uint count = 0;
-                foreach (uint i in this.Character.Inventory.MaxVolume.Values)
-                {
-                    count += i;
-                }
+                foreach (var i in Character.Inventory.MaxVolume.Values) count += i;
                 p1.Capacity = (ushort)count;
                 count = 0;
-                foreach (uint i in this.Character.Inventory.MaxPayload.Values)
-                {
-                    count += i;
-                }
+                foreach (var i in Character.Inventory.MaxPayload.Values) count += i;
                 p1.Payload = (ushort)count;
 
-                this.netIO.SendPacket(p1);
+                netIO.SendPacket(p1);
             }
             {
-                Packets.Server.SSMG_DEM_STATS_PRE_CALC p1 = new SagaMap.Packets.Server.SSMG_DEM_STATS_PRE_CALC();
-                p1.ASPD = this.Character.Status.aspd;
-                p1.ATK1Max = this.Character.Status.max_atk1;
-                p1.ATK1Min = this.Character.Status.min_atk1;
-                p1.ATK2Max = this.Character.Status.max_atk2;
-                p1.ATK2Min = this.Character.Status.min_atk2;
-                p1.ATK3Max = this.Character.Status.max_atk3;
-                p1.ATK3Min = this.Character.Status.min_atk3;
-                p1.AvoidCritical = this.Character.Status.avoid_critical;
-                p1.AvoidMagic = this.Character.Status.avoid_magic;
-                p1.AvoidMelee = this.Character.Status.avoid_melee;
-                p1.AvoidRanged = this.Character.Status.avoid_ranged;
-                p1.CSPD = this.Character.Status.cspd;
-                p1.DefAddition = (ushort)this.Character.Status.def_add;
-                p1.DefBase = this.Character.Status.def;
-                p1.HitCritical = this.Character.Status.hit_critical;
-                p1.HitMagic = this.Character.Status.hit_magic;
-                p1.HitMelee = this.Character.Status.hit_melee;
-                p1.HitRanged = this.Character.Status.hit_ranged;
-                p1.MATKMax = this.Character.Status.max_matk;
-                p1.MATKMin = this.Character.Status.min_matk;
-                p1.MDefAddition = (ushort)this.Character.Status.mdef_add;
-                p1.MDefBase = this.Character.Status.mdef;
-                p1.Speed = this.Character.Speed;
-                p1.HP = (ushort)this.Character.MaxHP;
-                p1.MP = (ushort)this.Character.MaxMP;
-                p1.SP = (ushort)this.Character.MaxSP;
+                var p1 = new SSMG_DEM_STATS_PRE_CALC();
+                p1.ASPD = Character.Status.aspd;
+                p1.ATK1Max = Character.Status.max_atk1;
+                p1.ATK1Min = Character.Status.min_atk1;
+                p1.ATK2Max = Character.Status.max_atk2;
+                p1.ATK2Min = Character.Status.min_atk2;
+                p1.ATK3Max = Character.Status.max_atk3;
+                p1.ATK3Min = Character.Status.min_atk3;
+                p1.AvoidCritical = Character.Status.avoid_critical;
+                p1.AvoidMagic = Character.Status.avoid_magic;
+                p1.AvoidMelee = Character.Status.avoid_melee;
+                p1.AvoidRanged = Character.Status.avoid_ranged;
+                p1.CSPD = Character.Status.cspd;
+                p1.DefAddition = (ushort)Character.Status.def_add;
+                p1.DefBase = Character.Status.def;
+                p1.HitCritical = Character.Status.hit_critical;
+                p1.HitMagic = Character.Status.hit_magic;
+                p1.HitMelee = Character.Status.hit_melee;
+                p1.HitRanged = Character.Status.hit_ranged;
+                p1.MATKMax = Character.Status.max_matk;
+                p1.MATKMin = Character.Status.min_matk;
+                p1.MDefAddition = (ushort)Character.Status.mdef_add;
+                p1.MDefBase = Character.Status.mdef;
+                p1.Speed = Character.Speed;
+                p1.HP = (ushort)Character.MaxHP;
+                p1.MP = (ushort)Character.MaxMP;
+                p1.SP = (ushort)Character.MaxSP;
                 uint count = 0;
-                foreach (uint i in this.Character.Inventory.MaxVolume.Values)
-                {
-                    count += i;
-                }
+                foreach (var i in Character.Inventory.MaxVolume.Values) count += i;
                 p1.Capacity = (ushort)count;
                 count = 0;
-                foreach (uint i in this.Character.Inventory.MaxPayload.Values)
-                {
-                    count += i;
-                }
+                foreach (var i in Character.Inventory.MaxPayload.Values) count += i;
                 p1.Payload = (ushort)count;
 
-                this.netIO.SendPacket(p1);
+                netIO.SendPacket(p1);
             }
 
             //resotre
-            this.Character.Str = str;
-            this.Character.Dex = dex;
-            this.Character.Int = intel;
-            this.Character.Agi = agi;
-            this.Character.Vit = vit;
-            this.Character.Mag = mag;
+            Character.Str = str;
+            Character.Dex = dex;
+            Character.Int = intel;
+            Character.Agi = agi;
+            Character.Vit = vit;
+            Character.Mag = mag;
 
-            StatusFactory.Instance.CalcStatus(this.Character);
+            StatusFactory.Instance.CalcStatus(Character);
         }
 
-        public void OnDEMChipCategory(Packets.Client.CSMG_DEM_CHIP_CATEGORY p)
+        public void OnDEMChipCategory(CSMG_DEM_CHIP_CATEGORY p)
         {
             if (chipShop)
-            {
                 if (ChipShopFactory.Instance.Items.ContainsKey(p.Category))
                 {
                     currentChipCategory = p.Category;
-                    ChipShopCategory category = ChipShopFactory.Instance.Items[p.Category];
-                    Packets.Server.SSMG_DEM_CHIP_SHOP_HEADER p1 = new SagaMap.Packets.Server.SSMG_DEM_CHIP_SHOP_HEADER();
+                    var category = ChipShopFactory.Instance.Items[p.Category];
+                    var p1 = new SSMG_DEM_CHIP_SHOP_HEADER();
                     p1.CategoryID = p.Category;
-                    this.netIO.SendPacket(p1);
+                    netIO.SendPacket(p1);
 
-                    foreach (ShopChip i in category.Items.Values)
+                    foreach (var i in category.Items.Values)
                     {
-                        Packets.Server.SSMG_DEM_CHIP_SHOP_DATA p2 = new SagaMap.Packets.Server.SSMG_DEM_CHIP_SHOP_DATA();
+                        var p2 = new SSMG_DEM_CHIP_SHOP_DATA();
                         p2.EXP = (uint)i.EXP;
                         p2.JEXP = (uint)i.JEXP;
                         p2.ItemID = i.ItemID;
                         p2.Description = i.Description;
-                        this.netIO.SendPacket(p2);
+                        netIO.SendPacket(p2);
                     }
 
-                    Packets.Server.SSMG_DEM_CHIP_SHOP_FOOTER p3 = new SagaMap.Packets.Server.SSMG_DEM_CHIP_SHOP_FOOTER();
-                    this.netIO.SendPacket(p3);
+                    var p3 = new SSMG_DEM_CHIP_SHOP_FOOTER();
+                    netIO.SendPacket(p3);
                 }
-            }
         }
 
-        public void OnDEMChipClose(Packets.Client.CSMG_DEM_CHIP_CLOSE p)
+        public void OnDEMChipClose(CSMG_DEM_CHIP_CLOSE p)
         {
             chipShop = false;
         }
 
-        public void OnDEMChipBuy(Packets.Client.CSMG_DEM_CHIP_BUY p)
+        public void OnDEMChipBuy(CSMG_DEM_CHIP_BUY p)
         {
             if (chipShop)
             {
-                uint[] items = p.ItemIDs;
-                int[] counts = p.Counts;
+                var items = p.ItemIDs;
+                var counts = p.Counts;
 
-                for (int i = 0; i < items.Length; i++)
+                for (var i = 0; i < items.Length; i++)
                 {
                     var cat = from item in ChipShopFactory.Instance.Items.Values
-                              where item.Items.ContainsKey(items[i])
-                              select item;
+                        where item.Items.ContainsKey(items[i])
+                        select item;
 
                     if (cat.Count() > 0)
                     {
-                        ChipShopCategory category = cat.First();
+                        var category = cat.First();
                         if (counts[i] > 0)
                         {
-                            ShopChip chip = category.Items[items[i]];
-                            if ((this.chara.CEXP > chip.EXP * (ulong)counts[i]) &&
-                                this.chara.JEXP > chip.JEXP * (ulong)counts[i])
+                            var chip = category.Items[items[i]];
+                            if (Character.CEXP > chip.EXP * (ulong)counts[i] &&
+                                Character.JEXP > chip.JEXP * (ulong)counts[i])
                             {
-                                this.chara.CEXP -= (uint)(chip.EXP * (ulong)counts[i]);
-                                this.chara.JEXP -= (uint)(chip.JEXP * (ulong)counts[i]);
-                                SagaDB.Item.Item item = ItemFactory.Instance.GetItem(items[i]);
+                                Character.CEXP -= (uint)(chip.EXP * (ulong)counts[i]);
+                                Character.JEXP -= (uint)(chip.JEXP * (ulong)counts[i]);
+                                var item = ItemFactory.Instance.GetItem(items[i]);
                                 item.Stack = (ushort)counts[i];
                                 AddItem(item, true);
                             }
                         }
                     }
+
                     SendEXP();
                 }
             }

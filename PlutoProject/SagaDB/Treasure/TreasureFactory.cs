@@ -1,23 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Treasure;
 
 namespace SagaDB.Treasure
 {
-    public class TreasureFactory : FactoryString<TreasureFactory,TreasureList>
+    public class TreasureFactory : FactoryString<TreasureFactory, TreasureList>
     {
         public TreasureFactory()
         {
-            this.loadingTab = "Loading Treasure database";
-            this.loadedTab = " treasure groups loaded.";
-            this.databaseName = "treasure";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Treasure database";
+            loadedTab = " treasure groups loaded.";
+            databaseName = "treasure";
+            FactoryType = FactoryType.XML;
         }
 
         protected override string GetKey(TreasureList item)
@@ -35,10 +29,10 @@ namespace SagaDB.Treasure
             switch (current.Name.ToLower())
             {
                 case "treasurelist":
-                    item.Name = current.Attributes[0].InnerText;                    
+                    item.Name = current.Attributes[0].InnerText;
                     break;
                 case "item":
-                    TreasureItem treasure = new TreasureItem();
+                    var treasure = new TreasureItem();
                     treasure.ID = uint.Parse(current.InnerText);
                     treasure.Rate = int.Parse(current.GetAttribute("rate"));
                     treasure.Count = int.Parse(current.GetAttribute("count"));
@@ -50,24 +44,23 @@ namespace SagaDB.Treasure
 
         public TreasureItem GetRandomItem(string groupName)
         {
-            if (this.items.ContainsKey(groupName))
+            if (items.ContainsKey(groupName))
             {
-                TreasureList list = this.items[groupName];
-                int ran = Global.Random.Next(0, list.TotalRate);
-                int determinator = 0;
-                foreach(TreasureItem i in list.Items)
+                var list = items[groupName];
+                var ran = Global.Random.Next(0, list.TotalRate);
+                var determinator = 0;
+                foreach (var i in list.Items)
                 {
                     determinator += i.Rate;
                     if (ran <= determinator)
                         return i;
                 }
+
                 return null;
             }
-            else
-            {
-                Logger.ShowDebug("Cannot find TreasureGroup:" + groupName, Logger.defaultlogger);
-                return null;
-            }
+
+            Logger.ShowDebug("Cannot find TreasureGroup:" + groupName, Logger.defaultlogger);
+            return null;
         }
     }
 }

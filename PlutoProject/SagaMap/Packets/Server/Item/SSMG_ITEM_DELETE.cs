@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_DELETE()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x09CE;   
+            data = new byte[6];
+            offset = 2;
+            ID = 0x09CE;
         }
-       
+
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
-        }        
+            set => PutUInt(value, 2);
+        }
     }
 }
-

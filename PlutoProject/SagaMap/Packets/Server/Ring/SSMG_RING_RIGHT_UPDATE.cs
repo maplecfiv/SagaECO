@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Ring;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,34 +6,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_RING_RIGHT_UPDATE()
         {
-            this.data = new byte[14];
-            this.offset = 2;
-            this.ID = 0x1AD7;
+            data = new byte[14];
+            offset = 2;
+            ID = 0x1AD7;
         }
 
         public uint Unknown
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public int Right
         {
-            set
-            {
-                this.PutInt(value, 10);
-            }
+            set => PutInt(value, 10);
         }
     }
 }
-

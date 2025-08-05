@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaDB.Actor;
-
 using SagaLib;
+using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Server
 {
@@ -12,25 +7,18 @@ namespace SagaLogin.Packets.Server
     {
         public SSMG_FRIEND_STATUS_UPDATE()
         {
-            this.data = new byte[7];
-            this.ID = 0x00ED;
+            data = new byte[7];
+            ID = 0x00ED;
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
-        public SagaLogin.Network.Client.CharStatus Status
+        public CharStatus Status
         {
-            set
-            {
-                this.PutByte((byte)value, 6);
-            }
+            set => PutByte((byte)value, 6);
         }
     }
 }
-

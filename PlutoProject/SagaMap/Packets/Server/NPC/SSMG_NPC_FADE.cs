@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 using SagaMap.Scripting;
 
@@ -26,27 +22,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_FADE()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x05FE;
+            data = new byte[10];
+            offset = 2;
+            ID = 0x05FE;
         }
 
         public FadeType FadeType
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
 
         public FadeEffect FadeEffect
         {
-            set
-            {
-                this.PutByte((byte)value, 3);
-            }
+            set => PutByte((byte)value, 3);
         }
-
     }
 }
-

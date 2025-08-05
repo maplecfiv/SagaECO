@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
@@ -17,8 +13,8 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             args.type = ATTACK_TYPE.SLASH;
-            float factor = 1.3f;
-            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, SagaLib.Elements.Neutral, factor);
+            var factor = 1.3f;
+            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Neutral, factor);
         }
     }
 }

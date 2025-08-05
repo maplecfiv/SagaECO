@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.ForceMaster
 {
     /// <summary>
-    /// フリークブラスト
+    ///     フリークブラスト
     /// </summary>
     public class ThunderSpray : ISkill
     {
@@ -25,30 +22,26 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 2.0f + 1.0f * level;
+            var factor = 2.0f + 1.0f * level;
             int[] lifetime = { 0, 4000, 6000, 8000, 10000, 12000 };
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Skills2_2.ContainsKey(2330) || pc.DualJobSkill.Exists(x => x.ID == 2330))
-                {
-                    factor += 0.7f;
-                }
+                var pc = (ActorPC)sActor;
+                if (pc.Skills2_2.ContainsKey(2330) || pc.DualJobSkill.Exists(x => x.ID == 2330)) factor += 0.7f;
             }
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(dActor, 200, true);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
+
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(dActor, 200, true);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {
                     affected.Add(i);
                     if (!SkillHandler.Instance.isBossMob(i))
-                    {
                         if (sActor.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)sActor;
-                            if (pc.Skills.ContainsKey(3135) || pc.DualJobSkill.Exists(x => x.ID == 3135))//剧毒诅咒
+                            var pc = (ActorPC)sActor;
+                            if (pc.Skills.ContainsKey(3135) || pc.DualJobSkill.Exists(x => x.ID == 3135)) //剧毒诅咒
                             {
                                 var duallv = 0;
                                 if (pc.DualJobSkill.Exists(x => x.ID == 3135))
@@ -58,14 +51,16 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
                                 if (pc.Skills.ContainsKey(3135))
                                     mainlv = pc.Skills[3135].Level;
 
-                                int maxlv = Math.Max(duallv, mainlv);
-                                if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Poison, 15 + maxlv * 15))
+                                var maxlv = Math.Max(duallv, mainlv);
+                                if (SkillHandler.Instance.CanAdditionApply(sActor, i,
+                                        SkillHandler.DefaultAdditions.Poison, 15 + maxlv * 15))
                                 {
-                                    Additions.Global.Poison skill = new SagaMap.Skill.Additions.Global.Poison(args.skill, i, 2000 + level * 2000);
+                                    var skill = new Poison(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
-                            if (pc.Skills.ContainsKey(3136) || pc.DualJobSkill.Exists(x => x.ID == 3136))//石化诅咒
+
+                            if (pc.Skills.ContainsKey(3136) || pc.DualJobSkill.Exists(x => x.ID == 3136)) //石化诅咒
                             {
                                 var duallv = 0;
                                 if (pc.DualJobSkill.Exists(x => x.ID == 3136))
@@ -75,14 +70,16 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
                                 if (pc.Skills.ContainsKey(3136))
                                     mainlv = pc.Skills[3136].Level;
 
-                                int maxlv = Math.Max(duallv, mainlv);
-                                if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Stone, 15 + maxlv * 15))
+                                var maxlv = Math.Max(duallv, mainlv);
+                                if (SkillHandler.Instance.CanAdditionApply(sActor, i,
+                                        SkillHandler.DefaultAdditions.Stone, 15 + maxlv * 15))
                                 {
-                                    Additions.Global.Stone skill = new SagaMap.Skill.Additions.Global.Stone(args.skill, i, 2000 + level * 2000);
+                                    var skill = new Stone(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
-                            if (pc.Skills.ContainsKey(3139) || pc.DualJobSkill.Exists(x => x.ID == 3139))//沉默诅咒
+
+                            if (pc.Skills.ContainsKey(3139) || pc.DualJobSkill.Exists(x => x.ID == 3139)) //沉默诅咒
                             {
                                 var duallv = 0;
                                 if (pc.DualJobSkill.Exists(x => x.ID == 3139))
@@ -92,63 +89,61 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
                                 if (pc.Skills.ContainsKey(3139))
                                     mainlv = pc.Skills[3139].Level;
 
-                                int maxlv = Math.Max(duallv, mainlv);
-                                if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Silence, 15 + maxlv * 15))
+                                var maxlv = Math.Max(duallv, mainlv);
+                                if (SkillHandler.Instance.CanAdditionApply(sActor, i,
+                                        SkillHandler.DefaultAdditions.Silence, 15 + maxlv * 15))
                                 {
-                                    Additions.Global.Silence skill = new SagaMap.Skill.Additions.Global.Silence(args.skill, i, 2000 + level * 2000);
+                                    var skill = new Silence(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
                         }
 
-                        
-                        
-                    }
                     if (sActor.type == ActorType.PC)
                     {
-                        ActorPC pc = (ActorPC)sActor;
+                        var pc = (ActorPC)sActor;
                         if (pc.Skills2_1.ContainsKey(3255) || pc.DualJobSkill.Exists(x => x.ID == 3255))
                         {
-                            DefaultBuff StrVitAgiDownOne = new DefaultBuff(args.skill, i, "StrVitAgiDownOne", lifetime[level]);
+                            var StrVitAgiDownOne = new DefaultBuff(args.skill, i, "StrVitAgiDownOne", lifetime[level]);
                             StrVitAgiDownOne.OnAdditionStart += StartEventHandler;
                             StrVitAgiDownOne.OnAdditionEnd += EndEventHandler;
                             SkillHandler.ApplyAddition(i, StrVitAgiDownOne);
                         }
+
                         if (pc.Skills2_1.ContainsKey(3256) || pc.DualJobSkill.Exists(x => x.ID == 3256))
                         {
-                            DefaultBuff MagIntDexDownOne = new DefaultBuff(args.skill, i, "MagIntDexDownOne", lifetime[level]);
+                            var MagIntDexDownOne = new DefaultBuff(args.skill, i, "MagIntDexDownOne", lifetime[level]);
                             MagIntDexDownOne.OnAdditionStart += StartEventHandler2;
                             MagIntDexDownOne.OnAdditionEnd += EndEventHandler2;
                             SkillHandler.ApplyAddition(i, MagIntDexDownOne);
                         }
                     }
-
                 }
-            }
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Neutral, factor);
+
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Neutral, factor);
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             if (actor is ActorPC)
             {
                 //STR
-                int str_add = new int[] { 0, 5, 6, 7, 8, 10 }[level];
+                var str_add = new[] { 0, 5, 6, 7, 8, 10 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_str"))
                     skill.Variable.Remove("StrVitAgiDownOne_str");
                 skill.Variable.Add("StrVitAgiDownOne_str", str_add);
                 actor.Status.str_skill -= (short)str_add;
 
                 //AGI
-                int agi_add = new int[] { 0, 9, 12, 14, 16, 18 }[level];
+                var agi_add = new[] { 0, 9, 12, 14, 16, 18 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_agi"))
                     skill.Variable.Remove("StrVitAgiDownOne_agi");
                 skill.Variable.Add("StrVitAgiDownOne_agi", agi_add);
                 actor.Status.agi_skill -= (short)agi_add;
 
                 //VIT
-                int vit_add = new int[] { 0, 6, 7, 8, 11, 12 }[level];
+                var vit_add = new[] { 0, 6, 7, 8, 11, 12 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_vit"))
                     skill.Variable.Remove("StrVitAgiDownOne_vit");
                 skill.Variable.Add("StrVitAgiDownOne_vit", vit_add);
@@ -159,14 +154,14 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             }
             else if (actor is ActorMob)
             {
-                int min_atk1_add = (int)(actor.Status.min_atk1 * (0.1f + 0.04f * level));
-                int min_atk2_add = (int)(actor.Status.min_atk2 * (0.1f + 0.04f * level));
-                int min_atk3_add = (int)(actor.Status.min_atk3 * (0.1f + 0.04f * level));
-                int max_atk1_add = (int)(actor.Status.max_atk1 * (0.1f + 0.04f * level));
-                int max_atk2_add = (int)(actor.Status.max_atk2 * (0.1f + 0.04f * level));
-                int max_atk3_add = (int)(actor.Status.max_atk3 * (0.1f + 0.04f * level));
-                int savoid_add = (int)(actor.Status.avoid_melee * (0.1f + 0.04f * level));
-                int def_add = 10 + 4 * level;
+                var min_atk1_add = (int)(actor.Status.min_atk1 * (0.1f + 0.04f * level));
+                var min_atk2_add = (int)(actor.Status.min_atk2 * (0.1f + 0.04f * level));
+                var min_atk3_add = (int)(actor.Status.min_atk3 * (0.1f + 0.04f * level));
+                var max_atk1_add = (int)(actor.Status.max_atk1 * (0.1f + 0.04f * level));
+                var max_atk2_add = (int)(actor.Status.max_atk2 * (0.1f + 0.04f * level));
+                var max_atk3_add = (int)(actor.Status.max_atk3 * (0.1f + 0.04f * level));
+                var savoid_add = (int)(actor.Status.avoid_melee * (0.1f + 0.04f * level));
+                var def_add = 10 + 4 * level;
 
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_minatk1"))
                     skill.Variable.Remove("StrVitAgiDownOne_minatk1");
@@ -216,11 +211,14 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -250,36 +248,38 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
                 actor.Buff.MaxAtkDown = false;
                 actor.Buff.ShortDodgeDown = false;
                 actor.Buff.DefDown = false;
-
             }
+
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
 
-        void StartEventHandler2(Actor actor, DefaultBuff skill)
+        private void StartEventHandler2(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             if (actor is ActorPC)
             {
                 //INT
-                int int_add = new int[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
+                var int_add = new[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_int"))
                     skill.Variable.Remove("MagIntDexDownOne_int");
                 skill.Variable.Add("MagIntDexDownOne_int", int_add);
                 actor.Status.int_skill -= (short)int_add;
 
                 //MAG
-                int mag_add = new int[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
+                var mag_add = new[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_mag"))
                     skill.Variable.Remove("MagIntDexDownOne_mag");
                 skill.Variable.Add("MagIntDexDownOne_mag", mag_add);
                 actor.Status.mag_skill -= (short)mag_add;
 
                 //DEX
-                int dex_add = -(6 + level * 2);
+                var dex_add = -(6 + level * 2);
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_dex"))
                     skill.Variable.Remove("MagIntDexDownOne_dex");
                 skill.Variable.Add("MagIntDexDownOne_dex", dex_add);
@@ -290,10 +290,10 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             }
             else if (actor is ActorMob)
             {
-                int max_matk_add = (int)(actor.Status.max_matk * (0.10f + 0.04f * level));
-                int min_matk_add = (int)(actor.Status.min_matk * (0.10f + 0.04f * level));
-                int magic_reduce = (int)((float)(0.10f + 0.04f * level) * 100.0f);
-                int mdef_add = 10 + 4 * level;
+                var max_matk_add = (int)(actor.Status.max_matk * (0.10f + 0.04f * level));
+                var min_matk_add = (int)(actor.Status.min_matk * (0.10f + 0.04f * level));
+                var magic_reduce = (int)((0.10f + 0.04f * level) * 100.0f);
+                var mdef_add = 10 + 4 * level;
 
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_MinMatk"))
                     skill.Variable.Remove("MagIntDexDownOne_MinMatk");
@@ -322,11 +322,14 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
-        void EndEventHandler2(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler2(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -353,11 +356,15 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
                 actor.Buff.MagicDefRateDown = false;
                 actor.Buff.MagicDefDown = false;
             }
+
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
+
         #endregion
     }
 }

@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+
 namespace SagaMap.Skill.SkillDefinations.BountyHunter
 {
     /// <summary>
-    /// 砍擊盾（シールドスラッシュ）
+    ///     砍擊盾（シールドスラッシュ）
     /// </summary>
     public class ShieldSlash : Slash, ISkill
     {
         #region ISkill Members
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            this.SkillProc(sActor, dActor, args, level, SagaLib.PossessionPosition.LEFT_HAND);
+            SkillProc(sActor, dActor, args, level, PossessionPosition.LEFT_HAND);
         }
+
         #endregion
     }
 }

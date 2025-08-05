@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SagaDB.Partner
+﻿namespace SagaDB.Partner
 {
     public enum PartnerType
     {
         ANIMAL_RIDE_NOPITEM,
-HUMAN_NOPITEM,
-UNDEAD_RIDE,
+        HUMAN_NOPITEM,
+        UNDEAD_RIDE,
 
         ANIMAL,
         ANIMAL_RIDE,
@@ -29,13 +24,13 @@ UNDEAD_RIDE,
         PLANT,
         PLANT_RIDE,
         WATER_ANIMAL,
-        WATER_ANIMAL_RIDE,
+        WATER_ANIMAL_RIDE
     }
 
     public enum EnumPartnerEquipSlot
     {
         WEAPON,
-        COSTUME,
+        COSTUME
     }
 
     public enum PartnerCubeType
@@ -43,6 +38,6 @@ UNDEAD_RIDE,
         CONDITION,
         ACTION,
         ACTIVESKILL,
-        PASSIVESKILL,
+        PASSIVESKILL
     }
 }

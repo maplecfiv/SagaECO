@@ -1,50 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// ホーリーフェザー
+    ///     ホーリーフェザー
     /// </summary>
     public class StyleChange : ISkill
     {
         #region ISkill Members
-        Actor me;
+
+        private Actor me;
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
             me = sActor;
             Actor realdActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
             SkillHandler.RemoveAddition(realdActor, "DivineProtection");
             SkillHandler.RemoveAddition(realdActor, "StyleChange");
-            DefaultBuff skill = new DefaultBuff(args.skill, realdActor, "StyleChange", 420000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, realdActor, "StyleChange", 420000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(realdActor, skill);
-
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             short status_add = 0;
             if (me.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)actor;
+                var pc = (ActorPC)actor;
                 if (pc.Skills3.ContainsKey(3410))
-                {
                     status_add += new short[] { 0, 1, 2, 3, 5, 8 }[pc.Skills3[3410].Level];
-                }
             }
+
             switch (skill.skill.Level)
             {
                 case 1:
-                    int mp_add = (int)(actor.MaxMP * 0.3f);
+                    var mp_add = (int)(actor.MaxMP * 0.3f);
                     if (skill.Variable.ContainsKey("StyleChange_mp"))
                         skill.Variable.Remove("StyleChange_mp");
                     skill.Variable.Add("StyleChange_mp", (short)mp_add);
@@ -69,7 +68,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     actor.Status.mag_skill += (short)(6 + status_add);
                     break;
                 case 2:
-                    int sp_add = (int)(actor.MaxMP * 0.3f);
+                    var sp_add = (int)(actor.MaxMP * 0.3f);
                     if (skill.Variable.ContainsKey("StyleChange_sp"))
                         skill.Variable.Remove("StyleChange_sp");
                     skill.Variable.Add("StyleChange_sp", (short)sp_add);
@@ -94,7 +93,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     actor.Status.agi_skill += (short)(5 + status_add);
                     break;
                 case 3:
-                    int hp_add = (int)(actor.MaxHP * 0.3f);
+                    var hp_add = (int)(actor.MaxHP * 0.3f);
                     if (skill.Variable.ContainsKey("StyleChange_hp"))
                         skill.Variable.Remove("StyleChange_hp");
                     skill.Variable.Add("StyleChange_hp", (short)hp_add);
@@ -119,10 +118,12 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     actor.Status.agi_skill += (short)(3 + status_add);
                     break;
             }
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+
+            var map = MapManager.Instance.GetMap(actor.MapID);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             switch (skill.skill.Level)
             {
@@ -148,9 +149,11 @@ namespace SagaMap.Skill.SkillDefinations.Global
                     actor.Status.agi_skill -= (short)skill.Variable["StyleChange_agi"];
                     break;
             }
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+
+            var map = MapManager.Instance.GetMap(actor.MapID);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.ForceMaster
@@ -14,14 +10,15 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             if (!dActor.Status.Additions.ContainsKey("BarrierShield"))
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "BarrierShield", 600000, 1000);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
-                skill.OnUpdate += this.Update;
+                var skill = new DefaultBuff(args.skill, dActor, "BarrierShield", 600000, 1000);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
+                skill.OnUpdate += Update;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
             else
@@ -31,26 +28,30 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             //if(dActor.Status.Additions.ContainsKey("BarrierShield"))
             //    dActor.Status.Additions.Remove("BarrierShield");
             //else
-
         }
-        void Update(Actor actor, DefaultBuff skill)
+
+        private void Update(Actor actor, DefaultBuff skill)
         {
             uint[] MP_down = { 0, 30, 25, 20, 15, 10 };
-            uint mp_realdown = MP_down[skill.skill.Level];
+            var mp_realdown = MP_down[skill.skill.Level];
 
             if (actor.MP < mp_realdown)
             {
                 actor.Status.Additions["BarrierShield"].OnTimerEnd();
                 actor.Status.Additions.Remove("BarrierShield");
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
             else
             {
                 actor.MP -= mp_realdown;
             }
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, actor, true);
+
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, actor, true);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int[] def_down = { 0, 100, 95, 85, 75, 60 };
             if (actor.Status.def - def_down[skill.skill.Level] < 0)
@@ -69,17 +70,19 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             }
 
 
-
             actor.Buff.DefRateDown = true;
             actor.Buff.三转魔法抗体 = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.def_skill += (short)skill.Variable["BarrierShield_Def"];
             actor.Buff.DefRateDown = false;
             actor.Buff.三转魔法抗体 = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
     }
 }

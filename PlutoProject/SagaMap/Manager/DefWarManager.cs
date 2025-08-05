@@ -1,36 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Collections;
-
 using Newtonsoft.Json;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Map;
 using SagaDB.DefWar;
-
-
+using SagaLib;
 
 namespace SagaMap.Manager
 {
-    class DefWarManager : Singleton<DefWarManager>
+    internal class DefWarManager : Singleton<DefWarManager>
     {
+        private readonly Dictionary<uint, List<DefWar>> list = new Dictionary<uint, List<DefWar>>();
+
         public DefWarManager()
         {
-            string s = ScriptManager.Instance.VariableHolder.AStr["defwarlist"];
-            if(!string.IsNullOrEmpty(s))
+            var s = ScriptManager.Instance.VariableHolder.AStr["defwarlist"];
+            if (!string.IsNullOrEmpty(s))
                 list = JsonConvert.DeserializeObject<Dictionary<uint, List<DefWar>>>(s);
         }
 
-        void save()
+        private void save()
         {
             ScriptManager.Instance.VariableHolder.AStr["defwarlist"] =
                 JsonConvert.SerializeObject(list);
         }
-
-        Dictionary<uint, List<DefWar>> list = new Dictionary<uint, List<DefWar>>();
 
         public List<DefWar> GetDefWarList(uint mapid)
         {
@@ -45,23 +36,25 @@ namespace SagaMap.Manager
         }
 
 
-        public bool SetDefWar(uint mapid, uint dwid, byte dwn, byte r1,byte r2)
+        public bool SetDefWar(uint mapid, uint dwid, byte dwn, byte r1, byte r2)
         {
             if (list.ContainsKey(mapid))
             {
-                DefWar dw = list[mapid].First(x => x.ID == dwid);
+                var dw = list[mapid].First(x => x.ID == dwid);
                 if (dw == null)
                 {
                     //dw = DefWarFactory.Instance.GetItem(dwid);
                     dw = new DefWar(dwid);
                     list[mapid].Add(dw);
                 }
+
                 dw.Number = dwn;
                 dw.Result1 = r1;
                 dw.Result2 = r2;
                 MapManager.Instance.GetMap(mapid).DefWarChange(dw);
                 save();
             }
+
             return true;
         }
 
@@ -77,10 +70,7 @@ namespace SagaMap.Manager
 
         public void DefWarStates(Dictionary<uint, byte> list)
         {
-            foreach (KeyValuePair<uint, byte> i in list)
-            {
-                MapManager.Instance.GetMap(i.Key).DefWarStates(list);
-            }
+            foreach (var i in list) MapManager.Instance.GetMap(i.Key).DefWarStates(list);
         }
 
         public void AddDefWar(uint mapid, DefWar dw)
@@ -101,12 +91,8 @@ namespace SagaMap.Manager
 
         public void AllClear()
         {
-            foreach (var i in list)
-            {
-                i.Value.Clear();
-            }
+            foreach (var i in list) i.Value.Clear();
             save();
         }
-
     }
 }

@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaDB.Quests
 {
@@ -13,10 +9,10 @@ namespace SagaDB.Quests
     {
         public QuestFactory()
         {
-            this.loadingTab = "Loading Quest database";
-            this.loadedTab = " quests loaded.";
-            this.databaseName = "quest";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Quest database";
+            loadedTab = " quests loaded.";
+            databaseName = "quest";
+            FactoryType = FactoryType.XML;
         }
 
         protected override uint GetKey(QuestInfo item)
@@ -136,6 +132,7 @@ namespace SagaDB.Quests
                             item.QuestCounterName = current.InnerText;
                             break;
                     }
+
                     break;
             }
         }

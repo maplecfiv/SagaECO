@@ -1,51 +1,49 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Skill;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.Additions.Global
 {
-    public class Zombie : DefaultBuff 
+    public class Zombie : DefaultBuff
     {
         public Zombie(Actor actor)
             : base(null, actor, "Zombie", int.MaxValue, 10000)
         {
-            this.OnAdditionStart += this.StartEvent;
-            this.OnAdditionEnd += this.EndEvent;
-            this.OnUpdate += this.TimerUpdate;
+            OnAdditionStart += StartEvent;
+            OnAdditionEnd += EndEvent;
+            OnUpdate += TimerUpdate;
         }
 
-        void StartEvent(Actor actor, DefaultBuff skill)
+        private void StartEvent(Actor actor, DefaultBuff skill)
         {
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+            var map = MapManager.Instance.GetMap(actor.MapID);
             actor.Buff.Zombie = true;
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEvent(Actor actor, DefaultBuff skill)
+        private void EndEvent(Actor actor, DefaultBuff skill)
         {
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+            var map = MapManager.Instance.GetMap(actor.MapID);
             actor.Buff.Zombie = false;
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void TimerUpdate(Actor actor, DefaultBuff skill)
+        private void TimerUpdate(Actor actor, DefaultBuff skill)
         {
             //测试去除技能同步锁ClientManager.EnterCriticalArea();
             try
             {
                 if (actor.HP > 0 && !actor.Buff.Dead)
                 {
-                    Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                    int amount = (int)(actor.MaxHP / 50);
+                    var map = MapManager.Instance.GetMap(actor.MapID);
+                    var amount = (int)(actor.MaxHP / 50);
                     if (amount < 1)
                         amount = 1;
                     if (actor.HP > amount)
+                    {
                         actor.HP = (uint)(actor.HP - amount);
+                    }
                     else
                     {
                         actor.HP = 0;
@@ -54,6 +52,7 @@ namespace SagaMap.Skill.Additions.Global
                         actor.e.OnDie();
                         SkillHandler.RemoveAddition(actor, "Zombie");
                     }
+
                     map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, actor, true);
                 }
             }

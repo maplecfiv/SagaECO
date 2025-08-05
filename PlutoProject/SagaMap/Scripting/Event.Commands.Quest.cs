@@ -1,34 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaMap;
-using SagaMap.Network.Client;
-using SagaMap.Manager;
+using System.Threading;
 using SagaDB.Actor;
-using SagaDB.Map;
-using SagaDB.Item;
-using SagaDB.Skill;
 using SagaDB.Quests;
+using SagaLib;
+using SagaMap.Dungeon;
+using SagaMap.Manager;
+using SagaMap.Packets.Server;
 
 namespace SagaMap.Scripting
 {
     public abstract partial class Event
     {
-
         public void CompleteQuest(ActorPC pc)
         {
             if (pc.Quest.Status == QuestStatus.COMPLETED)
             {
-                MapClient client = GetMapClient(pc);
+                var client = GetMapClient(pc);
 
                 if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
-                    Dungeon.DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(SagaMap.Dungeon.DestroyType.QuestCancel);
+                    DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
 
-                Say(pc, 131, this.questCompleted);
-                float expfactor = 1.0f;
+                Say(pc, 131, questCompleted);
+                var expfactor = 1.0f;
 
                 Say(pc, 131, LocalManager.Instance.Strings.QUEST_REWARDED);
                 PlaySound(pc, 4006, false, 100, 50);
@@ -39,23 +34,21 @@ namespace SagaMap.Scripting
                 else
                 {
                     if (pc.Level < pc.Quest.Detail.MinLevel + 10)
-                    {
                         expfactor = 0.6f;
-                    }
                     else
-                    {
                         expfactor = 0.1f;
-                    }
                 }
+
                 ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
                 pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Instance.CalcQuestGoldRateForPC(pc));
-                pc.CP += (uint)(pc.Quest.Detail.CP);
+                pc.CP += pc.Quest.Detail.CP;
 
                 //任务特殊奖励
                 if (Configuration.Instance.ActivceQuestSpecialReward)
                     if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
                         if (Global.Random.Next(0, 10000) <= Configuration.Instance.QuestSpecialRewardRate)
-                            GiveItem(pc, Configuration.Instance.QuestSpecialRewardID, (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
+                            GiveItem(pc, Configuration.Instance.QuestSpecialRewardID,
+                                (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
 
 
                 //灰色任务无法获得声望?
@@ -64,28 +57,26 @@ namespace SagaMap.Scripting
                 if (pc.Ring != null)
                 {
                     pc.Ring.Fame += pc.Quest.Detail.Fame;
-                    RingManager.Instance.UpdateRingInfo(pc.Ring, SagaMap.Packets.Server.SSMG_RING_INFO.Reason.UPDATED);
+                    RingManager.Instance.UpdateRingInfo(pc.Ring, SSMG_RING_INFO.Reason.UPDATED);
                 }
+
                 if (pc.Quest.Detail.RewardItem != 0)
-                {
                     GiveItem(pc, pc.Quest.Detail.RewardItem, pc.Quest.Detail.RewardCount);
-                }
-                this.OnQuestUpdate(pc, pc.Quest);
+                OnQuestUpdate(pc, pc.Quest);
                 pc.Quest = null;
                 client.SendQuestDelete();
                 client.SendPlayerInfo();
             }
-
         }
 
         /// <summary>
-        /// 处理任务事件
+        ///     处理任务事件
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="groupID">NPC的任务组ID</param>
         protected void HandleQuest(ActorPC pc, uint groupID)
         {
-            MapClient client = GetMapClient(pc);
+            var client = GetMapClient(pc);
             int ExcessItemID1, ExcessItemID2, ExcessItemID3, ExcessItemCount1, ExcessItemCount2, ExcessItemCount3;
             if (pc.Quest != null)
             {
@@ -94,11 +85,12 @@ namespace SagaMap.Scripting
                     if (pc.Quest.QuestType == QuestType.GATHER && CountItem(pc, pc.Quest.Detail.ObjectID1) > 0)
                     {
                         if (pc.Quest.QuestType == QuestType.GATHER)
-                            Say(pc, 131, this.transport);
-                        List<SagaDB.Item.Item> item = NPCTrade(pc);
-                        foreach (SagaDB.Item.Item i in item)
+                            Say(pc, 131, transport);
+                        var item = NPCTrade(pc);
+                        foreach (var i in item)
                         {
-                            List<uint> ids = new List<uint> { pc.Quest.Detail.ObjectID1, pc.Quest.Detail.ObjectID2, pc.Quest.Detail.ObjectID3 };
+                            var ids = new List<uint>
+                                { pc.Quest.Detail.ObjectID1, pc.Quest.Detail.ObjectID2, pc.Quest.Detail.ObjectID3 };
                             if (!ids.Contains(i.ItemID))
                                 GiveItem(pc, i.ItemID, i.Stack);
                             if (i.ItemID == pc.Quest.Detail.ObjectID1)
@@ -111,6 +103,7 @@ namespace SagaMap.Scripting
                                 if (ExcessItemCount1 != 0)
                                     GiveItem(pc, (uint)ExcessItemID1, (ushort)ExcessItemCount1);
                             }
+
                             if (i.ItemID == pc.Quest.Detail.ObjectID2)
                                 pc.Quest.CurrentCount2 += i.Stack;
                             if (pc.Quest.CurrentCount2 > pc.Quest.Detail.Count2)
@@ -121,6 +114,7 @@ namespace SagaMap.Scripting
                                 if (ExcessItemCount2 != 0)
                                     GiveItem(pc, (uint)ExcessItemID2, (ushort)ExcessItemCount2);
                             }
+
                             if (i.ItemID == pc.Quest.Detail.ObjectID3)
                                 pc.Quest.CurrentCount3 += i.Stack;
                             if (pc.Quest.CurrentCount3 > pc.Quest.Detail.Count3)
@@ -132,18 +126,19 @@ namespace SagaMap.Scripting
                                     GiveItem(pc, (uint)ExcessItemID3, (ushort)ExcessItemCount3);
                             }
                         }
+
                         client.SendQuestCount();
                     }
                     else
                     {
-                        Say(pc, 131, this.alreadyHasQuest);
+                        Say(pc, 131, alreadyHasQuest);
                         if (Select(pc, LocalManager.Instance.Strings.QUEST_HOW_TO_DO, "",
-                            LocalManager.Instance.Strings.QUEST_NOT_CANCEL,
-                            LocalManager.Instance.Strings.QUEST_CANCEL) == 2)
+                                LocalManager.Instance.Strings.QUEST_NOT_CANCEL,
+                                LocalManager.Instance.Strings.QUEST_CANCEL) == 2)
                         {
                             if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
-                                Dungeon.DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(SagaMap.Dungeon.DestroyType.QuestCancel);
-                            Say(pc, 131, this.questCanceled);
+                                DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
+                            Say(pc, 131, questCanceled);
                             Say(pc, 131, LocalManager.Instance.Strings.QUEST_CANCELED);
                             PlaySound(pc, 4007, false, 100, 50);
                             if (pc.Fame > 0) pc.Fame--;
@@ -156,13 +151,14 @@ namespace SagaMap.Scripting
                         }
                     }
                 }
+
                 if (pc.Quest.Status == QuestStatus.COMPLETED)
                 {
                     if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
-                        Dungeon.DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(SagaMap.Dungeon.DestroyType.QuestCancel);
+                        DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
 
-                    Say(pc, 131, this.questCompleted);
-                    float expfactor = 1.0f;
+                    Say(pc, 131, questCompleted);
+                    var expfactor = 1.0f;
 
                     Say(pc, 131, LocalManager.Instance.Strings.QUEST_REWARDED);
                     PlaySound(pc, 4006, false, 100, 50);
@@ -173,23 +169,21 @@ namespace SagaMap.Scripting
                     else
                     {
                         if (pc.Level < pc.Quest.Detail.MinLevel + 10)
-                        {
                             expfactor = 0.6f;
-                        }
                         else
-                        {
                             expfactor = 0.1f;
-                        }
                     }
+
                     ExperienceManager.Instance.ApplyExp(pc, pc.Quest.Detail.EXP, pc.Quest.Detail.JEXP, expfactor);
                     pc.Gold += (int)(pc.Quest.Detail.Gold * Configuration.Instance.CalcQuestGoldRateForPC(pc));
-                    pc.CP += (uint)(pc.Quest.Detail.CP);
+                    pc.CP += pc.Quest.Detail.CP;
 
                     //任务特殊奖励
                     if (Configuration.Instance.ActivceQuestSpecialReward)
                         if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
                             if (Global.Random.Next(0, 10000) <= Configuration.Instance.QuestSpecialRewardRate)
-                                GiveItem(pc, Configuration.Instance.QuestSpecialRewardID, (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
+                                GiveItem(pc, Configuration.Instance.QuestSpecialRewardID,
+                                    (ushort)(pc.Quest.Detail.RequiredQuestPoint * 2));
 
 
                     //灰色任务无法获得声望?
@@ -198,13 +192,12 @@ namespace SagaMap.Scripting
                     if (pc.Ring != null)
                     {
                         pc.Ring.Fame += pc.Quest.Detail.Fame;
-                        RingManager.Instance.UpdateRingInfo(pc.Ring, SagaMap.Packets.Server.SSMG_RING_INFO.Reason.UPDATED);
+                        RingManager.Instance.UpdateRingInfo(pc.Ring, SSMG_RING_INFO.Reason.UPDATED);
                     }
+
                     if (pc.Quest.Detail.RewardItem != 0)
-                    {
                         GiveItem(pc, pc.Quest.Detail.RewardItem, pc.Quest.Detail.RewardCount);
-                    }
-                    this.OnQuestUpdate(pc, pc.Quest);
+                    OnQuestUpdate(pc, pc.Quest);
                     pc.Quest = null;
                     client.SendQuestDelete();
                     client.SendPlayerInfo();
@@ -212,47 +205,48 @@ namespace SagaMap.Scripting
                 else if (pc.Quest.Status == QuestStatus.FAILED)
                 {
                     if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
-                        Dungeon.DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(SagaMap.Dungeon.DestroyType.QuestCancel);
-                    Say(pc, 131, this.questFailed);
+                        DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
+                    Say(pc, 131, questFailed);
                     Say(pc, 131, LocalManager.Instance.Strings.QUEST_FAILED);
                     PlaySound(pc, 4007, false, 100, 50);
                     if (pc.Fame > 0) pc.Fame--;
-                    this.OnQuestUpdate(pc, pc.Quest);
+                    OnQuestUpdate(pc, pc.Quest);
                     pc.Quest = null;
                     client.SendQuestDelete();
                 }
             }
             else
             {
-                if (pc.QuestRemaining < this.leastQuestPoint)
+                if (pc.QuestRemaining < leastQuestPoint)
                 {
-                    Say(pc, 131, this.notEnoughQuestPoint);
+                    Say(pc, 131, notEnoughQuestPoint);
                 }
                 else
                 {
-                    Quest quest = SendQuestList(pc, groupID);
+                    var quest = SendQuestList(pc, groupID);
                     if (quest != null)
                     {
                         if (pc.QuestRemaining < quest.Detail.RequiredQuestPoint)
                         {
-                            Say(pc, 131, this.notEnoughQuestPoint);
+                            Say(pc, 131, notEnoughQuestPoint);
                         }
                         else
                         {
-                            QuestDifficulty difficulty = quest.Difficulty(pc);
+                            var difficulty = quest.Difficulty(pc);
                             if (difficulty == QuestDifficulty.TOO_EASY || difficulty == QuestDifficulty.TOO_HARD)
                             {
                                 if (difficulty == QuestDifficulty.TOO_EASY)
-                                    Say(pc, 131, this.questTooEasy);
+                                    Say(pc, 131, questTooEasy);
                                 else
-                                    Say(pc, 131, this.questTooHard);
+                                    Say(pc, 131, questTooHard);
                                 if (Select(pc, LocalManager.Instance.Strings.QUEST_IF_TAKE_QUEST, "",
-                                    LocalManager.Instance.Strings.QUEST_TAKE, LocalManager.Instance.Strings.QUEST_NOT_TAKE) == 1)
+                                        LocalManager.Instance.Strings.QUEST_TAKE,
+                                        LocalManager.Instance.Strings.QUEST_NOT_TAKE) == 1)
                                 {
                                     if (quest.QuestType != QuestType.GATHER)
-                                        Say(pc, 131, this.gotNormalQuest);
+                                        Say(pc, 131, gotNormalQuest);
                                     else
-                                        Say(pc, 131, this.gotTransportQuest);
+                                        Say(pc, 131, gotTransportQuest);
                                     QuestActivate(pc, quest);
                                     pc.QuestRemaining -= quest.Detail.RequiredQuestPoint;
                                     client.SendQuestPoints();
@@ -263,9 +257,9 @@ namespace SagaMap.Scripting
                                 if (CanTakeQuest(pc, quest))
                                 {
                                     if (quest.QuestType != QuestType.GATHER)
-                                        Say(pc, 131, this.gotNormalQuest);
+                                        Say(pc, 131, gotNormalQuest);
                                     else
-                                        Say(pc, 131, this.gotTransportQuest);
+                                        Say(pc, 131, gotTransportQuest);
                                     QuestActivate(pc, quest);
                                     pc.QuestRemaining -= quest.Detail.RequiredQuestPoint;
                                     client.SendQuestPoints();
@@ -279,7 +273,7 @@ namespace SagaMap.Scripting
         }
 
         /// <summary>
-        /// 判断是否可以接此任务
+        ///     判断是否可以接此任务
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
@@ -289,74 +283,66 @@ namespace SagaMap.Scripting
         }
 
         /// <summary>
-        /// 某任务状态改变后触发的事件
+        ///     某任务状态改变后触发的事件
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
         public virtual void OnQuestUpdate(ActorPC pc, Quest quest)
         {
-
         }
 
 
-
         /// <summary>
-        /// 向玩家发送任务列表
+        ///     向玩家发送任务列表
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="groupID">任务组ID</param>
         /// <returns>玩家选择的任务</returns>
-        Quest SendQuestList(ActorPC pc, uint groupID)
+        private Quest SendQuestList(ActorPC pc, uint groupID)
         {
             byte lv = 1;
-            Map map = MapManager.Instance.GetMap(pc.MapID);
+            var map = MapManager.Instance.GetMap(pc.MapID);
             lv = pc.Level;
             var quests =
                 from q in QuestFactory.Instance.Items.Values
                 where q.GroupID == groupID && ((lv >= q.MinLevel && lv <= q.MaxLevel) || q.MinLevel == 255)
-                && ((pc.Job == q.Job) || q.Job == PC_JOB.NONE)
-                && ((pc.JobType == q.JobType) || q.JobType == JobType.NOVICE)
-                && ((pc.Race == q.Race) || q.Race == PC_RACE.NONE)
-                && ((pc.Gender == q.Gender) || q.Gender == PC_GENDER.NONE)
+                                           && (pc.Job == q.Job || q.Job == PC_JOB.NONE)
+                                           && (pc.JobType == q.JobType || q.JobType == JobType.NOVICE)
+                                           && (pc.Race == q.Race || q.Race == PC_RACE.NONE)
+                                           && (pc.Gender == q.Gender || q.Gender == PC_GENDER.NONE)
                 select q;
-            List<QuestInfo> list = quests.ToList<QuestInfo>();
-            MapClient client = GetMapClient(pc);
+            var list = quests.ToList();
+            var client = GetMapClient(pc);
             client.questID = 0;
             client.SendQuestList(list);
 
             ClientManager.LeaveCriticalArea();
-            while (client.questID == 0)
-            {
-                System.Threading.Thread.Sleep(500);
-            }
+            while (client.questID == 0) Thread.Sleep(500);
             ClientManager.EnterCriticalArea();
 
             if (QuestFactory.Instance.Items.ContainsKey(client.questID))
             {
-                if (!list.Contains(QuestFactory.Instance.Items[client.questID]))
-                {
-                    return null;
-                }
-                else
-                    return new Quest(client.questID);
+                if (!list.Contains(QuestFactory.Instance.Items[client.questID])) return null;
+
+                return new Quest(client.questID);
             }
-            else
-                return null;
+
+            return null;
         }
 
         /// <summary>
-        /// 激活任务
+        ///     激活任务
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
-        void QuestActivate(ActorPC pc, Quest quest)
+        private void QuestActivate(ActorPC pc, Quest quest)
         {
             quest.Status = QuestStatus.OPEN;
             if (quest.Detail.TimeLimit >= 0)
                 quest.EndTime = DateTime.Now + new TimeSpan(0, quest.Detail.TimeLimit, 0);
             else
                 quest.EndTime = new DateTime(9999, 1, 1);
-            MapClient client = GetMapClient(pc);
+            var client = GetMapClient(pc);
             client.Character.Quest = quest;
             client.SendQuestInfo();
             client.SendQuestWindow();

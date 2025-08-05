@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
-    public class MPRecoverUP:ISkill
+    public class MPRecoverUP : ISkill
     {
         #region ISkill Members
 
@@ -19,25 +14,25 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "MPRecoverUP", true);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultPassiveSkill(args.skill, sActor, "MPRecoverUP", true);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            int value;            
-            value = skill.skill.Level;           
+            int value;
+            value = skill.skill.Level;
             if (skill.Variable.ContainsKey("MPRecover"))
                 skill.Variable.Remove("MPRecover");
             skill.Variable.Add("MPRecover", value);
             actor.Status.mp_recover_skill += (short)value;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            int value = skill.Variable["MPRecover"];
+            var value = skill.Variable["MPRecover"];
             actor.Status.mp_recover_skill -= (short)value;
         }
 

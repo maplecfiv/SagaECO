@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SagaDB.Mob;
 
 namespace SagaDB.Actor
 {
@@ -9,33 +6,33 @@ namespace SagaDB.Actor
     {
         public ActorShadow(ActorPC creator)
         {
-            this.baseData = new SagaDB.Mob.MobData();
-            this.baseData.level = creator.Level;
-            this.Status.attackType = creator.Status.attackType;
-            this.Status.aspd = creator.Status.aspd;
-            this.Status.def = creator.Status.def;
-            this.Status.def_add = creator.Status.def_add;
-            this.Status.mdef = creator.Status.mdef;
-            this.Status.mdef_add = creator.Status.mdef_add;
-            this.Status.min_atk1 = creator.Status.min_atk1;
-            this.Status.max_atk1 = creator.Status.max_atk1;
-            this.Status.min_atk2 = creator.Status.min_atk2;
-            this.Status.max_atk2 = creator.Status.max_atk2;
-            this.Status.min_atk3 = creator.Status.min_atk3;
-            this.Status.max_atk3 = creator.Status.max_atk3;
-            this.Status.min_matk = creator.Status.min_matk;
-            this.Status.max_matk = creator.Status.max_matk;
+            baseData = new MobData();
+            baseData.level = creator.Level;
+            Status.attackType = creator.Status.attackType;
+            Status.aspd = creator.Status.aspd;
+            Status.def = creator.Status.def;
+            Status.def_add = creator.Status.def_add;
+            Status.mdef = creator.Status.mdef;
+            Status.mdef_add = creator.Status.mdef_add;
+            Status.min_atk1 = creator.Status.min_atk1;
+            Status.max_atk1 = creator.Status.max_atk1;
+            Status.min_atk2 = creator.Status.min_atk2;
+            Status.max_atk2 = creator.Status.max_atk2;
+            Status.min_atk3 = creator.Status.min_atk3;
+            Status.max_atk3 = creator.Status.max_atk3;
+            Status.min_matk = creator.Status.min_matk;
+            Status.max_matk = creator.Status.max_matk;
 
-            this.Status.hit_melee = creator.Status.hit_melee;
-            this.Status.hit_ranged = creator.Status.hit_ranged;
-            this.Status.avoid_melee = creator.Status.avoid_melee;
-            this.Status.avoid_ranged = creator.Status.avoid_ranged;
-            this.MaxHP = 1;
-            this.HP = 1;
-            this.type = ActorType.SHADOW;
-            this.sightRange = 1500;
-            this.Owner = creator;
-            this.Speed = 100;
+            Status.hit_melee = creator.Status.hit_melee;
+            Status.hit_ranged = creator.Status.hit_ranged;
+            Status.avoid_melee = creator.Status.avoid_melee;
+            Status.avoid_ranged = creator.Status.avoid_ranged;
+            MaxHP = 1;
+            HP = 1;
+            type = ActorType.SHADOW;
+            sightRange = 1500;
+            Owner = creator;
+            Speed = 100;
         }
     }
 }

@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
+using SagaDB.Mob;
 using SagaLib;
 using SagaLib.VirtualFileSystem;
-using SagaDB.Mob;
 
 namespace SagaDB.Marionette
 {
     public class MarionetteFactory : Singleton<MarionetteFactory>
     {
         public Dictionary<uint, Marionette> Items = new Dictionary<uint, Marionette>();
-        public MarionetteFactory()
-        {
-        }
 
         public Marionette this[uint index]
         {
@@ -22,17 +18,16 @@ namespace SagaDB.Marionette
             {
                 if (Items.ContainsKey(index))
                     return Items[index];
-                else
-                    return null;
+                return null;
             }
         }
 
-        public void Init(string path, System.Text.Encoding encoding)
+        public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             Logger.ShowInfo("Loading marionette database...");
             Console.ForegroundColor = ConsoleColor.Green;
-            int count = 0;
+            var count = 0;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -46,11 +41,9 @@ namespace SagaDB.Marionette
                         continue;
                     paras = line.Split(',');
 
-                    for (int i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "" || paras[i].ToLower() == "null")
                             paras[i] = "0";
-                    }
                     mob = new Marionette();
                     mob.ID = uint.Parse(paras[0]);
                     mob.Name = paras[1];
@@ -92,20 +85,16 @@ namespace SagaDB.Marionette
                     mob.mp_recover = short.Parse(paras[57]);
                     mob.aspd = short.Parse(paras[58]);
                     mob.cspd = short.Parse(paras[59]);
-                    for (int i = 0; i < 6; i++)
-                    {
+                    for (var i = 0; i < 6; i++)
                         if (paras[77 + i] != "0")
                             mob.skills.Add(ushort.Parse(paras[77 + i]));
-                    }
-                    for (int i = 0; i < 8; i++)
-                    {
+                    for (var i = 0; i < 8; i++)
                         if (paras[83 + i] == "1")
                             mob.gather.Add((GatherType)i, true);
                         else
                             mob.gather.Add((GatherType)i, false);
-                    }
 
-                    Items.Add(mob.ID, mob);                   
+                    Items.Add(mob.ID, mob);
                     count++;
                 }
                 catch (Exception ex)
@@ -114,6 +103,7 @@ namespace SagaDB.Marionette
                     Logger.ShowError(ex);
                 }
             }
+
             Console.ResetColor();
             Logger.ShowInfo(count + " marionette loaded.");
             sr.Close();

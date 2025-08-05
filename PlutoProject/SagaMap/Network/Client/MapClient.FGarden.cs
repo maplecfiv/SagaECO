@@ -1,40 +1,36 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
-using SagaDB.Item;
+using System.Threading;
 using SagaDB.Actor;
 using SagaDB.FGarden;
-using SagaLib;
-using SagaMap;
-using SagaMap.Manager;
 using SagaDB.Furniture;
+using SagaDB.Item;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Packets.Client;
+using SagaMap.Packets.Server;
 
 namespace SagaMap.Network.Client
 {
     public partial class MapClient
     {
-        public void OnFGardenFurnitureUse(Packets.Client.CSMG_FGARDEN_FURNITURE_USE p)
+        public void OnFGardenFurnitureUse(CSMG_FGARDEN_FURNITURE_USE p)
         {
-            Map map = MapManager.Instance.GetMap(this.Character.MapID);
-            Actor actor = map.GetActor(p.ActorID);
+            var map = MapManager.Instance.GetMap(Character.MapID);
+            var actor = map.GetActor(p.ActorID);
 
             if (actor == null)
                 return;
             if (actor.type != ActorType.FURNITURE)
                 return;
-            ActorFurniture furniture = (ActorFurniture)actor;
+            var furniture = (ActorFurniture)actor;
 
             //this.Character.NowUseFurnitureID = p.ActorID;
 
             //Item item = ItemFactory.Instance.GetItem(furniture.ItemID);
-            Furniture f = FurnitureFactory.Instance.GetFurniture(furniture.ItemID);
+            var f = FurnitureFactory.Instance.GetFurniture(furniture.ItemID);
 
-            if(f.Motion.Count() <= 0)
+            if (f.Motion.Count() <= 0)
             {
                 EventActivate(31080000);
                 return;
@@ -44,27 +40,24 @@ namespace SagaMap.Network.Client
             {
                 int res;
                 //多選
-                Packets.Server.SSMG_NPC_SELECT ps = new SagaMap.Packets.Server.SSMG_NPC_SELECT();
+                var ps = new SSMG_NPC_SELECT();
                 ps.SetSelect("要做什麼？", "", f.Motion.Select(x => x.ToString()).ToArray(), false);
 
-                this.npcSelectResult = -1;
-                this.netIO.SendPacket(ps);
+                npcSelectResult = -1;
+                netIO.SendPacket(ps);
 
-                bool blocked = ClientManager.Blocked;
+                var blocked = ClientManager.Blocked;
                 if (blocked)
                     ClientManager.LeaveCriticalArea();
-                while (this.npcSelectResult == -1)
-                {
-                    System.Threading.Thread.Sleep(500);
-                }
+                while (npcSelectResult == -1) Thread.Sleep(500);
                 if (blocked)
                     ClientManager.EnterCriticalArea();
-                Packets.Server.SSMG_NPC_SELECT_RESULT ps2 = new Packets.Server.SSMG_NPC_SELECT_RESULT();
-                this.netIO.SendPacket(ps2);
-                res = this.npcSelectResult;
+                var ps2 = new SSMG_NPC_SELECT_RESULT();
+                netIO.SendPacket(ps2);
+                res = npcSelectResult;
 
-                this.SendSystemMessage("家具Select: " + res);
-                this.SendSystemMessage("家具Set motion: " + f.Motion[(res - 1)]);
+                SendSystemMessage("家具Select: " + res);
+                SendSystemMessage("家具Set motion: " + f.Motion[res - 1]);
 
                 /*
                 if (res > 0)
@@ -73,7 +66,6 @@ namespace SagaMap.Network.Client
                     map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.MOTION, null, furniture, false);
                 }
                 */
-
             }
             else
             {
@@ -92,80 +84,77 @@ namespace SagaMap.Network.Client
 
 
             EventActivate(31000000);
-            return;
-
-        
-
-
         }
 
-        public void OnFGardenFurnitureReconfig(Packets.Client.CSMG_FGARDEN_FURNITURE_RECONFIG p)
+        public void OnFGardenFurnitureReconfig(CSMG_FGARDEN_FURNITURE_RECONFIG p)
         {
-            if (this.Character.FGarden == null)
+            if (Character.FGarden == null)
                 return;
-            Map map = MapManager.Instance.GetMap(this.Character.MapID);
-            Actor actor = map.GetActor(p.ActorID);
+            var map = MapManager.Instance.GetMap(Character.MapID);
+            var actor = map.GetActor(p.ActorID);
             if (actor == null)
                 return;
             if (actor.type != ActorType.FURNITURE)
                 return;
-            if (this.Character.MapID != this.Character.FGarden.MapID && this.Character.MapID != this.Character.FGarden.RoomMapID)
+            if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
             {
-                Packets.Server.SSMG_FG_FURNITURE_RECONFIG p1 = new SagaMap.Packets.Server.SSMG_FG_FURNITURE_RECONFIG();
+                var p1 = new SSMG_FG_FURNITURE_RECONFIG();
                 p1.ActorID = actor.ActorID;
                 p1.X = actor.X;
                 p1.Y = actor.Y;
                 p1.Z = ((ActorFurniture)actor).Z;
                 p1.Dir = actor.Dir;
-                this.netIO.SendPacket(p1);
+                netIO.SendPacket(p1);
                 return;
             }
-            map.MoveActor(Map.MOVE_TYPE.START, actor, new short[] { p.X, p.Y, p.Z }, p.Dir, 200);
+
+            map.MoveActor(Map.MOVE_TYPE.START, actor, new[] { p.X, p.Y, p.Z }, p.Dir, 200);
         }
 
-        public void OnFGardenFurnitureRemove(Packets.Client.CSMG_FGARDEN_FURNITURE_REMOVE p)
+        public void OnFGardenFurnitureRemove(CSMG_FGARDEN_FURNITURE_REMOVE p)
         {
-            if (this.Character.FGarden == null)
+            if (Character.FGarden == null)
                 return;
-            if (this.Character.MapID != this.Character.FGarden.MapID && this.Character.MapID != this.Character.FGarden.RoomMapID)
+            if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
             Map map = null;
-            map = MapManager.Instance.GetMap(this.Character.MapID);
-            Actor actor = map.GetActor(p.ActorID);
+            map = MapManager.Instance.GetMap(Character.MapID);
+            var actor = map.GetActor(p.ActorID);
             if (actor == null)
                 return;
             if (actor.type != ActorType.FURNITURE)
                 return;
-            ActorFurniture furniture = (ActorFurniture)actor;
+            var furniture = (ActorFurniture)actor;
             map.DeleteActor(actor);
-            Item item = ItemFactory.Instance.GetItem(furniture.ItemID);
+            var item = ItemFactory.Instance.GetItem(furniture.ItemID);
             item.PictID = furniture.PictID;
-            if (this.Character.MapID == this.Character.FGarden.MapID)
-                this.Character.FGarden.Furnitures[FurniturePlace.GARDEN].Remove(furniture);
+            if (Character.MapID == Character.FGarden.MapID)
+                Character.FGarden.Furnitures[FurniturePlace.GARDEN].Remove(furniture);
             else
-                this.Character.FGarden.Furnitures[FurniturePlace.ROOM].Remove(furniture);
+                Character.FGarden.Furnitures[FurniturePlace.ROOM].Remove(furniture);
             AddItem(item, false);
-            SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name, (this.Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    this.Character.FGarden.Furnitures[FurniturePlace.ROOM].Count), Configuration.Instance.MaxFurnitureCount));
+            SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
+                Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                Character.FGarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
         }
 
-        public void OnFGardenFurnitureSetup(Packets.Client.CSMG_FGARDEN_FURNITURE_SETUP p)
+        public void OnFGardenFurnitureSetup(CSMG_FGARDEN_FURNITURE_SETUP p)
         {
-            if (this.Character.FGarden == null)
+            if (Character.FGarden == null)
                 return;
-            if (this.Character.MapID != this.Character.FGarden.MapID && this.Character.MapID != this.Character.FGarden.RoomMapID)
+            if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
-            if ((this.Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                this.Character.FGarden.Furnitures[FurniturePlace.ROOM].Count) < Configuration.Instance.MaxFurnitureCount)
+            if (Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                Character.FGarden.Furnitures[FurniturePlace.ROOM].Count < Configuration.Instance.MaxFurnitureCount)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventorySlot);
-                ActorFurniture actor = new ActorFurniture();
+                var item = Character.Inventory.GetItem(p.InventorySlot);
+                var actor = new ActorFurniture();
 
                 DeleteItem(p.InventorySlot, 1, false);
 
-                actor.MapID = this.Character.MapID;
+                actor.MapID = Character.MapID;
                 actor.ItemID = item.ItemID;
-                Map map = MapManager.Instance.GetMap(actor.MapID);
+                var map = MapManager.Instance.GetMap(actor.MapID);
                 actor.X = p.X;
                 actor.Y = p.Y;
                 actor.Z = p.Z;
@@ -175,79 +164,83 @@ namespace SagaMap.Network.Client
                 actor.Zaxis = p.AxleZ;
                 actor.Name = item.BaseData.name;
                 actor.PictID = item.PictID;
-                actor.e = new ActorEventHandlers.NullEventHandler();
+                actor.e = new NullEventHandler();
                 map.RegisterActor(actor);
                 actor.invisble = false;
                 map.OnActorVisibilityChange(actor);
 
-                if (this.Character.MapID == this.Character.FGarden.MapID)
-                    this.Character.FGarden.Furnitures[FurniturePlace.GARDEN].Add(actor);
+                if (Character.MapID == Character.FGarden.MapID)
+                    Character.FGarden.Furnitures[FurniturePlace.GARDEN].Add(actor);
                 else
-                    this.Character.FGarden.Furnitures[FurniturePlace.ROOM].Add(actor);
-                SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name, (this.Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    this.Character.FGarden.Furnitures[FurniturePlace.ROOM].Count), Configuration.Instance.MaxFurnitureCount));
+                    Character.FGarden.Furnitures[FurniturePlace.ROOM].Add(actor);
+                SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
+                    Character.FGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                    Character.FGarden.Furnitures[FurniturePlace.ROOM].Count, Configuration.Instance.MaxFurnitureCount));
             }
             else
             {
                 SendSystemMessage(LocalManager.Instance.Strings.FG_FUTNITURE_MAX);
-            }            
+            }
         }
 
-        public void OnFGardenEquipt(Packets.Client.CSMG_FGARDEN_EQUIPT p)
+        public void OnFGardenEquipt(CSMG_FGARDEN_EQUIPT p)
         {
-            if (this.Character.FGarden == null)
+            if (Character.FGarden == null)
                 return;
-            if (this.Character.MapID != this.Character.FGarden.MapID && this.Character.MapID != this.Character.FGarden.RoomMapID)
+            if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
             if (p.InventorySlot != 0xFFFFFFFF)
             {
-                Item item = this.Character.Inventory.GetItem(p.InventorySlot);
+                var item = Character.Inventory.GetItem(p.InventorySlot);
                 if (item == null)
                     return;
-                if (this.Character.FGarden.FGardenEquipments[p.Place] != 0)
+                if (Character.FGarden.FGardenEquipments[p.Place] != 0)
                 {
-                    uint itemID = this.Character.FGarden.FGardenEquipments[p.Place];
+                    var itemID = Character.FGarden.FGardenEquipments[p.Place];
                     AddItem(ItemFactory.Instance.GetItem(itemID, true), false);
-                    Packets.Server.SSMG_FG_EQUIPT p1 = new SagaMap.Packets.Server.SSMG_FG_EQUIPT();
+                    var p1 = new SSMG_FG_EQUIPT();
                     p1.ItemID = 0;
                     p1.Place = p.Place;
-                    this.netIO.SendPacket(p1);
+                    netIO.SendPacket(p1);
                 }
-                if (p.Place == SagaDB.FGarden.FGardenSlot.GARDEN_MODELHOUSE && this.Character.FGarden.FGardenEquipments[SagaDB.FGarden.FGardenSlot.GARDEN_MODELHOUSE] == 0)
+
+                if (p.Place == FGardenSlot.GARDEN_MODELHOUSE &&
+                    Character.FGarden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] == 0)
                 {
-                    Packets.Server.SSMG_NPC_SET_EVENT_AREA p1 = new SagaMap.Packets.Server.SSMG_NPC_SET_EVENT_AREA();
+                    var p1 = new SSMG_NPC_SET_EVENT_AREA();
                     p1.EventID = 10000315;
                     p1.StartX = 6;
                     p1.StartY = 7;
                     p1.EndX = 6;
                     p1.EndY = 7;
-                    this.netIO.SendPacket(p1);
+                    netIO.SendPacket(p1);
                 }
-                this.Character.FGarden.FGardenEquipments[p.Place] = item.ItemID;
-                Packets.Server.SSMG_FG_EQUIPT p2 = new SagaMap.Packets.Server.SSMG_FG_EQUIPT();
+
+                Character.FGarden.FGardenEquipments[p.Place] = item.ItemID;
+                var p2 = new SSMG_FG_EQUIPT();
                 p2.ItemID = item.ItemID;
                 p2.Place = p.Place;
-                this.netIO.SendPacket(p2);
+                netIO.SendPacket(p2);
                 DeleteItem(p.InventorySlot, 1, false);
             }
             else
             {
-                uint itemID = this.Character.FGarden.FGardenEquipments[p.Place];
+                var itemID = Character.FGarden.FGardenEquipments[p.Place];
                 if (itemID != 0)
                     AddItem(ItemFactory.Instance.GetItem(itemID, true), false);
-                this.Character.FGarden.FGardenEquipments[p.Place] = 0;
-                Packets.Server.SSMG_FG_EQUIPT p1 = new SagaMap.Packets.Server.SSMG_FG_EQUIPT();
+                Character.FGarden.FGardenEquipments[p.Place] = 0;
+                var p1 = new SSMG_FG_EQUIPT();
                 p1.ItemID = 0;
                 p1.Place = p.Place;
-                this.netIO.SendPacket(p1);
-                if (p.Place == SagaDB.FGarden.FGardenSlot.GARDEN_MODELHOUSE)
+                netIO.SendPacket(p1);
+                if (p.Place == FGardenSlot.GARDEN_MODELHOUSE)
                 {
-                    Packets.Server.SSMG_NPC_CANCEL_EVENT_AREA p2 = new SagaMap.Packets.Server.SSMG_NPC_CANCEL_EVENT_AREA();
+                    var p2 = new SSMG_NPC_CANCEL_EVENT_AREA();
                     p2.StartX = 6;
                     p2.StartY = 7;
                     p2.EndX = 6;
                     p2.EndY = 7;
-                    this.netIO.SendPacket(p2);
+                    netIO.SendPacket(p2);
                 }
             }
         }

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SagaMap.Packets.Client;
 
 namespace SagaMap.Network.Client
 {
     public partial class MapClient
     {
-        public void OnNaviOpen(Packets.Client.CSMG_NAVI_OPEN p)
+        public void OnNaviOpen(CSMG_NAVI_OPEN p)
         {
-
         }
     }
 }

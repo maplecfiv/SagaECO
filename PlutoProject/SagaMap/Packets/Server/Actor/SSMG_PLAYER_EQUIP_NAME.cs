@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,8 +6,8 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_EQUIP_NAME()
         {
-            this.data = new byte[4];
-            this.ID = 0x0264;
+            data = new byte[4];
+            ID = 0x0264;
         }
 
         public string ActorName
@@ -24,14 +18,13 @@ namespace SagaMap.Packets.Server
 
                 buf = Global.Unicode.GetBytes(value + "\0");
                 size = (byte)buf.Length;
-                buff = new byte[this.data.Length - 1 + size];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
+                buff = new byte[data.Length - 1 + size];
+                data.CopyTo(buff, 0);
+                data = buff;
 
-                this.PutByte((byte)size, 2);
-                this.PutBytes(buf, 3);
+                PutByte((byte)size, 2);
+                PutBytes(buf, 3);
             }
         }
     }
 }
-        

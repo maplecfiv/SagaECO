@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
-    public class LightArrow: ISkill
+    public class LightArrow : ISkill
     {
         #region ISkill Members
 
@@ -21,8 +16,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         {
             float factor = 0;
             factor = 1.3f + 0.2f * level;
-            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
-
+            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Holy, factor);
         }
 
         #endregion

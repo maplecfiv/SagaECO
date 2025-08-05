@@ -1,11 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
-using SagaDB.FGarden;
 using SagaDB.Item;
-using SagaMap;
+using SagaLib;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -14,29 +9,24 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_GOLEM_SHOP_SELL_BUY()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint ActorID
-        {
-            get
-            {
-                return GetUInt(2);
-            }
-        }
+        public uint ActorID => GetUInt(2);
 
         public Dictionary<uint, ushort> Items
         {
             get
             {
-                byte num = GetByte(6);
-                Dictionary<uint, ushort> items = new Dictionary<uint, ushort>();
-                for (int i = 0; i < num; i++)
+                var num = GetByte(6);
+                var items = new Dictionary<uint, ushort>();
+                for (var i = 0; i < num; i++)
                 {
-                    uint id = GetUInt((ushort)(7 + i * 4));
-                    ushort count = GetUShort((ushort)(8 + num * 4 + i * 2));
+                    var id = GetUInt((ushort)(7 + i * 4));
+                    var count = GetUShort((ushort)(8 + num * 4 + i * 2));
                     items.Add(id, count);
                 }
+
                 return items;
             }
         }
@@ -45,20 +35,19 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                byte num = GetByte(6);
+                var num = GetByte(6);
                 return (ContainerType)GetByte((ushort)(8 + num * 6));
             }
         }
 
-       public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_GOLEM_SHOP_SELL_BUY();
+            return new CSMG_GOLEM_SHOP_SELL_BUY();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnGolemShopSellBuy(this);
+            ((MapClient)client).OnGolemShopSellBuy(this);
         }
-
     }
 }

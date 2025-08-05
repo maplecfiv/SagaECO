@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,25 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_DAILYDUNGEON_JOIN()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte QID
+        public byte QID => GetByte(2);
+
+        public override Packet New()
         {
-            get
-            {
-                return GetByte(2);
-            }
-        }
-        public override SagaLib.Packet New()
-        {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_DAILYDUNGEON_JOIN();
+            return new CSMG_DAILYDUNGEON_JOIN();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnDailyDungeonJoin(this);
+            ((MapClient)client).OnDailyDungeonJoin(this);
         }
-
     }
 }

@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
@@ -11,18 +7,16 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_POSSESSION_CATALOG()
         {
-            this.data = new byte[220];
-            this.offset = 2;
-            this.ID = 0x178F;
+            data = new byte[220];
+            offset = 2;
+            ID = 0x178F;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public string comment
         {
             set
@@ -33,31 +27,30 @@ namespace SagaMap.Packets.Server
                         value += "\0";
                 }
                 else
+                {
                     value = "\0";
-                byte[] commentbuf = Encoding.UTF8.GetBytes(value);
-                byte[] buf = new byte[this.data.Length+commentbuf.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutByte((byte)commentbuf.Length, 6);
-                this.PutBytes(commentbuf, 7);
-                this.offset =(ushort)(commentbuf.Length + 7);
+                }
 
-                this.PutByte(0xD4);
+                var commentbuf = Encoding.UTF8.GetBytes(value);
+                var buf = new byte[data.Length + commentbuf.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutByte((byte)commentbuf.Length, 6);
+                PutBytes(commentbuf, 7);
+                offset = (ushort)(commentbuf.Length + 7);
+
+                PutByte(0xD4);
             }
         }
+
         public uint Index
         {
-            set
-            {
-                this.PutUInt(value);
-            }
+            set => PutUInt(value);
         }
+
         public Item Item
         {
-            set
-            {
-                this.ItemDetail = value;
-            }
+            set => ItemDetail = value;
         }
     }
 }

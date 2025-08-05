@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Swordman
 {
     /// <summary>
-    /// 暈眩攻擊
+    ///     暈眩攻擊
     /// </summary>
     public class ConfuseBlow : ISkill
     {
@@ -25,10 +22,10 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
             args.type = ATTACK_TYPE.BLOW;
             factor = 1.4f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-            if ((args.flag[0] & SagaLib.AttackFlag.HP_DAMAGE) != 0)
+            if ((args.flag[0] & AttackFlag.HP_DAMAGE) != 0)
             {
-                int rate = 100;
-                int lifetime = 6000;
+                var rate = 100;
+                var lifetime = 6000;
                 switch (level)
                 {
                     case 2:
@@ -48,10 +45,11 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
                         lifetime = 10000;
                         break;
                 }
+
                 lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime, SkillHandler.异常状态.混乱);
                 if (lifetime > 0)
                 {
-                    Additions.Global.Confuse skill = new SagaMap.Skill.Additions.Global.Confuse(args.skill, dActor, lifetime);
+                    var skill = new Confuse(args.skill, dActor, lifetime);
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
             }

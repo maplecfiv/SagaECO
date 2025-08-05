@@ -1,25 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
+﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
-using SagaLib;
-using SagaMap;
 
 namespace SagaMap.Skill.SkillDefinations.Elementaler
 {
     /// <summary>
-    /// 魔法極大化（ゼン）
+    ///     魔法極大化（ゼン）
     /// </summary>
     public class Zen : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-
             return 0;
         }
 
@@ -28,17 +20,17 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
             if (sActor.type == ActorType.PC)
             {
                 dActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
-                int[] lifetime = new int[] { 0, 15000, 25000, 35000, 45000, 45000, 60000 };
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "Zensss", lifetime[level]);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var lifetime = new[] { 0, 15000, 25000, 35000, 45000, 45000, 60000 };
+                var skill = new DefaultBuff(args.skill, dActor, "Zensss", lifetime[level]);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            float ZenMagPowerUp = 1.0f + 0.2f * skill.skill.Level;
+            var ZenMagPowerUp = 1.0f + 0.2f * skill.skill.Level;
 
             if (skill.Variable.ContainsKey("Zensss"))
                 skill.Variable.Remove("Zensss");
@@ -62,12 +54,13 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
             actor.ZenOutLst.Add(3398);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (skill.Variable.ContainsKey("Zensss"))
                 skill.Variable.Remove("Zensss");
             actor.ZenOutLst.Clear();
         }
+
         #endregion
     }
 }

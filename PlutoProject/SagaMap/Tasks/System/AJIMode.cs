@@ -1,30 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
-using SagaDB.ODWar;
-
 using SagaMap.Manager;
-using SagaMap.Network.Client;
 
 namespace SagaMap.Tasks.System
 {
     public class AJImode : MultiRunTask
     {
+        private static AJImode instance;
+        public bool ClearAlready = false;
+        public bool IsMainTain;
+        public bool StopLogin;
+
         public AJImode()
         {
-            this.period = 6000;
-            this.dueTime = 0;
+            period = 6000;
+            dueTime = 0;
         }
-
-        static AJImode instance;
-        public bool IsMainTain = false;
-        public bool StopLogin = false;
-        public bool ClearAlready = false;
 
         public static AJImode Instance
         {
@@ -35,6 +26,7 @@ namespace SagaMap.Tasks.System
                 return instance;
             }
         }
+
         public override void CallBack()
         {
             try
@@ -67,17 +59,19 @@ namespace SagaMap.Tasks.System
                 Logger.ShowError(ex);
             }
         }
-        void Announce(string text)
+
+        private void Announce(string text)
         {
-            foreach (MapClient i in SagaMap.Manager.MapClientManager.Instance.OnlinePlayer)
+            foreach (var i in MapClientManager.Instance.OnlinePlayer)
                 i.SendAnnounce(text);
         }
-        void MainTainStart(byte type)
+
+        private void MainTainStart(byte type)
         {
             IsMainTain = true;
             if (type == 0)
             {
-                foreach (MapClient i in SagaMap.Manager.MapClientManager.Instance.OnlinePlayer)
+                foreach (var i in MapClientManager.Instance.OnlinePlayer)
                     i.netIO.Disconnect();
             }
             else if (type == 1 && !ClearAlready)
@@ -85,7 +79,8 @@ namespace SagaMap.Tasks.System
                 //MapServer.charDB.AJIClear();
             }
         }
-        void MainTainStop()
+
+        private void MainTainStop()
         {
             IsMainTain = false;
             StopLogin = false;

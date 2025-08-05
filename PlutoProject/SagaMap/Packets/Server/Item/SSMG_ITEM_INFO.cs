@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
@@ -11,43 +6,34 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_INFO()
         {
-            this.data = new byte[216];
-            this.offset = 2;
-            this.ID = 0x0203;
+            data = new byte[216];
+            offset = 2;
+            ID = 0x0203;
         }
 
         public Item Item
         {
             set
             {
-                this.offset = 8;
-                this.ItemDetail = value;
-                this.PutByte((byte)(this.data.Length - 4), 3);
+                offset = 8;
+                ItemDetail = value;
+                PutByte((byte)(data.Length - 4), 3);
             }
         }
 
         public byte Size
         {
-            set
-            {
-                this.PutByte(value, 3);
-            }
+            set => PutByte(value, 3);
         }
 
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 4);
-            }
+            set => PutUInt(value, 4);
         }
 
         public uint ItemID
         {
-            set
-            {
-                this.PutUInt(value, 8);
-            }
+            set => PutUInt(value, 8);
         }
 
         public ContainerType Container
@@ -55,11 +41,10 @@ namespace SagaMap.Packets.Server
             set
             {
                 if (value >= ContainerType.HEAD2)
-                    this.PutByte((byte)(value - 200), 16);
+                    PutByte((byte)(value - 200), 16);
                 else
-                    this.PutByte((byte)value, 16);
+                    PutByte((byte)value, 16);
             }
         }
     }
 }
-

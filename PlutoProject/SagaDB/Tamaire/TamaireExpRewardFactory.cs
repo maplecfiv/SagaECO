@@ -1,30 +1,26 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaLib.VirtualFileSystem;
 using System.Xml;
+using SagaLib;
+
 namespace SagaDB.Tamaire
 {
     public class TamaireReward
     {
+        public ulong cexp, jexp, cexp2, jexp3, demcexp, demjexp;
         public byte level;
-        public ulong cexp,  jexp, cexp2, jexp3,  demcexp, demjexp;
     }
+
     public class TamaireExpRewardFactory : Factory<TamaireExpRewardFactory, TamaireReward>
     {
         public TamaireExpRewardFactory()
         {
-            this.loadingTab = "Loading Tamaire Rewards";
-            this.loadedTab = " Tamaire Rewards loaded.";
-            this.databaseName = "TamaireReward";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Tamaire Rewards";
+            loadedTab = " Tamaire Rewards loaded.";
+            databaseName = "TamaireReward";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, TamaireReward item)
+        protected override void ParseXML(XmlElement root, XmlElement current, TamaireReward item)
         {
             throw new NotImplementedException();
         }

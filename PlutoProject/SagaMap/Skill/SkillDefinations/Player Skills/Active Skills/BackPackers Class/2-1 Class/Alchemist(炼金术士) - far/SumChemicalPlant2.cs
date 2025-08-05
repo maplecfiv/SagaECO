@@ -1,34 +1,31 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.Alchemist
 {
     /// <summary>
-    /// 化工廠（ケミカルプラント）[接續技能]
+    ///     化工廠（ケミカルプラント）[接續技能]
     /// </summary>
     public class SumChemicalPlant2 : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            float factor = 1.0f + 3.0f * level;
-            ActorMob mob = (ActorMob)sActor.Slave[0];
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 150, true);
-            List<Actor> affected = new List<Actor>();
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var factor = 1.0f + 3.0f * level;
+            var mob = (ActorMob)sActor.Slave[0];
+            var actors = MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 150, true);
+            var affected = new List<Actor>();
             foreach (var item in actors)
-            {
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, item))
                     affected.Add(item);
-            }
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
             sActor.Slave.Remove(mob);
             map.DeleteActor(mob);
@@ -48,6 +45,7 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
             //sActor.Slave.Remove(mob);
             //map.DeleteActor(mob);
         }
+
         #endregion
     }
 }

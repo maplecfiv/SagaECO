@@ -1,11 +1,5 @@
-using SagaDB.DualJob;
 using SagaLib;
 using SagaMap.Network.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SagaMap.Packets.Client
 {
@@ -13,23 +7,20 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_DUALJOB_CHANGE_CONFIRM()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte DualJobID
-        {
-            get { return byte.Parse(this.GetShort(offset).ToString()); }
-        }
+        public byte DualJobID => byte.Parse(GetShort(offset).ToString());
 
         public uint[] DualJobSkillList
         {
             get
             {
-                uint[] skills = new uint[this.GetByte(offset)];
+                var skills = new uint[GetByte(offset)];
 
-                for (int i = 0; i < skills.Length; i++)
+                for (var i = 0; i < skills.Length; i++)
                 {
-                    var x = this.GetShort(offset).ToString();
+                    var x = GetShort(offset).ToString();
                     if (x == "-1")
                         skills[i] = 0;
                     else
@@ -42,12 +33,12 @@ namespace SagaMap.Packets.Client
 
         public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_DUALJOB_CHANGE_CONFIRM();
+            return new CSMG_DUALJOB_CHANGE_CONFIRM();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnDualChangeRequest(this);
+            ((MapClient)client).OnDualChangeRequest(this);
         }
     }
 }

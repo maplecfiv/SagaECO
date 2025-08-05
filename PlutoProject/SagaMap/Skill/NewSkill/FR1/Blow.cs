@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Swordman
 {
     /// <summary>
-    /// 乾坤一擊
+    ///     乾坤一擊
     /// </summary>
-    public class Blow:ISkill
+    public class Blow : ISkill
     {
         #region ISkill Members
 
@@ -18,22 +14,21 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
         {
             if (CheckPossible(pc))
                 return 0;
-            else
-                return -5;
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) || pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
+                    pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
                     return true;
-                else
-                    return false;
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)

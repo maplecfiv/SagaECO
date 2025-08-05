@@ -1,21 +1,12 @@
 using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 
 namespace SagaLib
 {
     public partial class Logger
     {
-        public static Logger defaultlogger;
-        public static Logger CurrentLogger = defaultlogger;
-        private string path;
-        private string filename;
-
-        public LogContent LogLevel = (LogContent)31;
-
         public enum LogContent
         {
             Info = 1,
@@ -23,15 +14,24 @@ namespace SagaLib
             Error = 4,
             SQL = 8,
             Debug = 16,
-            Custom = 32,
+            Custom = 32
         }
+
+        public static Logger defaultlogger;
+        public static Logger CurrentLogger = defaultlogger;
+        public static NLog.Logger DefaultLogger = null;
+        private readonly string filename;
+
+        public LogContent LogLevel = (LogContent)31;
+        private string path;
+
         public Logger(string filename)
         {
             this.filename = filename;
             path = GetLogFile();
             if (!File.Exists(path))
             {
-                FileStream f =  File.Create(path);
+                var f = File.Create(path);
                 f.Close();
             }
         }
@@ -53,9 +53,10 @@ namespace SagaLib
             try
             {
                 path = GetLogFile();
-                FileStream file = new FileStream(path, FileMode.Append);
-                StreamWriter sw = new StreamWriter(file);
-                string final = GetDate() + "|" + p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
+                var file = new FileStream(path, FileMode.Append);
+                var sw = new StreamWriter(file);
+                var final = GetDate() + "|" +
+                            p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
                 sw.WriteLine(final);
                 sw.Close();
             }
@@ -63,26 +64,24 @@ namespace SagaLib
             {
                 ShowError(ex);
             }
-
         }
 
-        public void WriteLog(string prefix,string p)
+        public void WriteLog(string prefix, string p)
         {
             try
             {
-                path = GetLogFile(); 
+                path = GetLogFile();
                 p = string.Format("{0}->{1}", prefix, p);
-                FileStream file = new FileStream(path, FileMode.Append);
-                StreamWriter sw = new StreamWriter(file);
-                string final = GetDate() + "|" + p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
+                var file = new FileStream(path, FileMode.Append);
+                var sw = new StreamWriter(file);
+                var final = GetDate() + "|" +
+                            p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
                 sw.WriteLine(final);
                 sw.Close();
             }
             catch (Exception)
             {
-                
             }
-
         }
 
         public static void ShowInfo(Exception ex, Logger log)
@@ -93,10 +92,7 @@ namespace SagaLib
             Console.Write("[Info]");
             Console.ResetColor();
             Console.WriteLine(ex.Message + "\r\n" + ex.StackTrace);
-            if (log != null)
-            {
-                log.WriteLog(ex.Message);
-            }
+            if (log != null) log.WriteLog(ex.Message);
         }
 
         public static void ShowInfo(string ex)
@@ -117,12 +113,9 @@ namespace SagaLib
             Console.Write("[Info]");
             Console.ResetColor();
             Console.WriteLine(ex);
-            if (log != null)
-            {
-                log.WriteLog(ex);
-            }
+            if (log != null) log.WriteLog(ex);
         }
-        public static NLog.Logger DefaultLogger = null;
+
         public static void ShowSQL(Exception ex)
         {
             LoggerIntern.EnqueueMsg(Level.SQL, ex.ToString(), DefaultLogger);
@@ -167,19 +160,15 @@ namespace SagaLib
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("[Debug]");
             Console.ForegroundColor = ConsoleColor.White;
-            StackTrace Stacktrace = new StackTrace(1, true);
-            string txt = ex;
-            foreach (StackFrame i in Stacktrace.GetFrames())
-            {
-                txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name + " " + i.GetFileName() + ":" + i.GetFileLineNumber();
-            }
+            var Stacktrace = new StackTrace(1, true);
+            var txt = ex;
+            foreach (var i in Stacktrace.GetFrames())
+                txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name + " " +
+                      i.GetFileName() + ":" + i.GetFileLineNumber();
             txt = FilterSQL(txt);
             Console.WriteLine(txt);
             Console.ResetColor();
-            if (log != null)
-            {
-                log.WriteLog("[Debug]" + txt);
-            }
+            if (log != null) log.WriteLog("[Debug]" + txt);
         }
 
         public static void ShowSQL(Exception ex, Logger log)
@@ -197,17 +186,15 @@ namespace SagaLib
 
         private static string FilterSQL(string input)
         {
-            string[] tmp = input.Split('\n');
-            string tmp2 = "";
-            foreach (string i in tmp)
-            {
+            var tmp = input.Split('\n');
+            var tmp2 = "";
+            foreach (var i in tmp)
                 if (!i.Contains(" MySql.") && !i.Contains(" System."))
                     tmp2 = tmp2 + i + "\n";
-            }
             return tmp2;
         }
 
-        public static void ShowSQL(String ex, Logger log)
+        public static void ShowSQL(string ex, Logger log)
         {
             if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
                 return;
@@ -228,10 +215,7 @@ namespace SagaLib
             Console.Write("[Warning]");
             Console.ResetColor();
             Console.WriteLine(ex.Message + "\r\n" + ex.StackTrace);
-            if (log != null)
-            {
-                log.WriteLog("Warning:" + ex.ToString());
-            }
+            if (log != null) log.WriteLog("Warning:" + ex);
         }
 
         public static void ShowWarning(string ex, Logger log)
@@ -242,11 +226,9 @@ namespace SagaLib
             Console.Write("[Warning]");
             Console.ResetColor();
             Console.WriteLine(ex);
-            if (log != null)
-            {
-                log.WriteLog("Warning:" + ex);
-            }
+            if (log != null) log.WriteLog("Warning:" + ex);
         }
+
         public static void ShowError(Exception ex, Logger log)
         {
             try
@@ -261,7 +243,9 @@ namespace SagaLib
                 Console.ResetColor();
                 log.WriteLog("[Error]" + ex.Message + "\r\n" + ex.StackTrace);
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public static void ShowError(string ex, Logger log)
@@ -278,7 +262,9 @@ namespace SagaLib
                 Console.ResetColor();
                 log.WriteLog("[Error]" + ex);
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public static void ShowError(string ex)
@@ -298,10 +284,12 @@ namespace SagaLib
         public string GetLogFile()
         {
             // Read in from XML here if needed.
-            if (!System.IO.Directory.Exists("Log"))
-                System.IO.Directory.CreateDirectory("Log");
+            if (!Directory.Exists("Log"))
+                Directory.CreateDirectory("Log");
 
-            return "Log/[" + string.Format("{0}-{1}-{2}", DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day) + "]" + filename;
+            return "Log/[" +
+                   string.Format("{0}-{1}-{2}", DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day) + "]" +
+                   filename;
         }
 
         public string GetDate()
@@ -314,12 +302,12 @@ namespace SagaLib
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("\r[Info]");
             Console.ResetColor();
-            Console.Write(string.Format("{0} [", label));
-            StringBuilder sb = new StringBuilder();
+            Console.Write("{0} [", label);
+            var sb = new StringBuilder();
             //sb.AppendFormat("\r{0} [", label);
-            uint barPos = progressPos * 40 / progressTotal + 1;
+            var barPos = progressPos * 40 / progressTotal + 1;
             for (uint p = 0; p < barPos; p++) sb.AppendFormat("#");
-            for (uint p = barPos; p < 40; p++) sb.AppendFormat(" ");
+            for (var p = barPos; p < 40; p++) sb.AppendFormat(" ");
             sb.AppendFormat("] {0}%\r", progressPos * 100 / progressTotal);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(sb.ToString());
@@ -334,7 +322,9 @@ namespace SagaLib
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("\r[Info]");
             Console.ResetColor();
-            Console.Write(string.Format("{0}                                                                                            \r", label));
+            Console.Write(
+                "{0}                                                                                            \r",
+                label);
         }
     }
 }

@@ -1,33 +1,33 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Data;
+using System.Data.OleDb;
 using System.Security.Cryptography;
-
-using SagaDB.Actor;
-using SagaDB.Item;
+using System.Text;
 using SagaLib;
 //引入OLEDB
-using System.Data.OleDb;
-using System.Data;
+
 namespace SagaDB
 {
     public class AccessAccountDB : AccessConnectivity, AccountDB
     {
-        private Encoding encoder = System.Text.Encoding.UTF8;
-        private string Source;
-        private DateTime tick = DateTime.Now;
+        private readonly string Source;
+        private Encoding encoder = Encoding.UTF8;
         private bool isconnected;
+        private DateTime tick = DateTime.Now;
 
 
         public AccessAccountDB(string Source)
         {
             this.Source = Source;
-            this.isconnected = false;
+            isconnected = false;
             try
             {
-                db = new OleDbConnection(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", this.Source));
-                dbinactive = new OleDbConnection(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", this.Source));
+                db = new OleDbConnection(
+                    string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};", this.Source));
+                dbinactive =
+                    new OleDbConnection(string.Format("Provider=Microsoft.Jet.OLEDB.4.0;Data Source={0};",
+                        this.Source));
                 db.Open();
             }
             catch (OleDbException ex)
@@ -38,28 +38,46 @@ namespace SagaDB
             {
                 Logger.ShowError(ex, null);
             }
-            if (db != null) { if (db.State != ConnectionState.Closed)this.isconnected = true; else { Console.WriteLine("SQL Connection error"); } }
 
+            if (db != null)
+            {
+                if (db.State != ConnectionState.Closed) isconnected = true;
+                else Console.WriteLine("SQL Connection error");
+            }
         }
 
         public bool Connect()
         {
-            if (!this.isconnected)
+            if (!isconnected)
             {
-                if (db.State == ConnectionState.Open) { this.isconnected = true; return true; }
+                if (db.State == ConnectionState.Open)
+                {
+                    isconnected = true;
+                    return true;
+                }
+
                 try
                 {
                     db.Open();
                 }
-                catch (Exception) { }
-                if (db != null) { if (db.State != ConnectionState.Closed)return true; else return false; }
+                catch (Exception)
+                {
+                }
+
+                if (db != null)
+                {
+                    if (db.State != ConnectionState.Closed) return true;
+                    return false;
+                }
             }
+
             return true;
         }
 
         public bool isConnected()
         {
             #region 暂时清除
+
             //if (this.isconnected)
             //{
             //    TimeSpan newtime = DateTime.Now - tick;
@@ -93,8 +111,17 @@ namespace SagaDB
             //    }
             //}
             //return this.isconnected;
+
             #endregion
-            if (db.State == ConnectionState.Open) { this.isconnected = true; return true; } else { this.isconnected =false; return false; }
+
+            if (db.State == ConnectionState.Open)
+            {
+                isconnected = true;
+                return true;
+            }
+
+            isconnected = false;
+            return false;
         }
 
 
@@ -104,14 +131,15 @@ namespace SagaDB
         {
             return null;
         }
+
         public void WriteUser(Account user)
         {
             string sqlstr;
-            if (user != null && this.isConnected() == true)
+            if (user != null && isConnected())
             {
                 sqlstr = string.Format("UPDATE `login` SET `username`='{0}',`password`='{1}',`deletepass`='{2}'" +
-                     " WHERE account_id='{3}'",
-                     user.Name, user.Password, user.DeletePassword, user.AccountID);
+                                       " WHERE account_id='{3}'",
+                    user.Name, user.Password, user.DeletePassword, user.AccountID);
                 try
                 {
                     SQLExecuteNonQuery(sqlstr);
@@ -139,9 +167,10 @@ namespace SagaDB
                 Logger.ShowError(ex);
                 return null;
             }
+
             if (result.Count == 0) return null;
             account = new Account();
-         //   Console.WriteLine(result[0]["account_id"].ToString());
+            //   Console.WriteLine(result[0]["account_id"].ToString());
             account.AccountID = (int)result[0]["account_id"];
             account.Name = name;
             account.Password = (string)result[0]["password"];
@@ -153,7 +182,7 @@ namespace SagaDB
         public bool CheckPassword(string user, string password, uint frontword, uint backword)
         {
             string sqlstr;
-            SHA1 sha1 = SHA1.Create();
+            var sha1 = SHA1.Create();
             DataRowCollection result = null;
             sqlstr = "SELECT top 1 * FROM `login` WHERE username='" + user + "'";
             try
@@ -165,10 +194,11 @@ namespace SagaDB
                 Logger.ShowError(ex);
                 return false;
             }
+
             if (result.Count == 0) return false;
             byte[] buf;
-            string str = string.Format("{0}{1}{2}", frontword, ((string)result[0]["password"]).ToLower(), backword);
-            buf = sha1.ComputeHash(System.Text.Encoding.ASCII.GetBytes(str));
+            var str = string.Format("{0}{1}{2}", frontword, ((string)result[0]["password"]).ToLower(), backword);
+            buf = sha1.ComputeHash(Encoding.ASCII.GetBytes(str));
             return password == Conversions.bytes2HexString(buf).ToLower();
         }
 
@@ -186,11 +216,11 @@ namespace SagaDB
                 Logger.ShowError(ex);
                 return -1;
             }
+
             if (result.Count == 0) return -1;
             return (int)result[0]["account_id"];
         }
+
         #endregion
-
-
     }
 }

@@ -1,49 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
-
 
 namespace SagaMap.Skill.SkillDefinations.Maestro
 {
     //ウエポンエンハンス
-    class WeaponAtkUp : ISkill
+    internal class WeaponAtkUp : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             int[] lifetime = { 0, 120, 120, 180, 180, 210 };
-            List<Actor> affected = map.GetActorsArea(dActor, 200, true);
+            var affected = map.GetActorsArea(dActor, 200, true);
             //List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
+            foreach (var act in affected)
                 if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
-                    DefaultBuff skill = new DefaultBuff(args.skill, act, "MA_WeaponAtkUp", lifetime[level] * 1000);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, act, "MA_WeaponAtkUp", lifetime[level] * 1000);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(act, skill);
-                    EffectArg arg = new EffectArg();
+                    var arg = new EffectArg();
                     arg.effectID = 4334;
                     arg.actorID = act.ActorID;
-                    Manager.MapManager.Instance.GetMap(dActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, act, true);
+                    MapManager.Instance.GetMap(dActor.MapID)
+                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, act, true);
                 }
-            }
-
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int[] atk_up = { 0, 15, 30, 45, 60, 75 };
 
@@ -75,11 +67,12 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
 
             actor.Buff.三转红锤子ウェポンエンハンス = true;
             actor.Buff.CriticalRateUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
 
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
             //最大攻擊
             actor.Status.max_atk1_skill -= (short)skill.Variable["MA_ATK_UP"];
 
@@ -102,9 +95,12 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
             actor.Status.cri_skill_rate -= (short)(skill.Variable["MA_ATK_UP"] / 5);
             actor.Buff.三转红锤子ウェポンエンハンス = false;
             actor.Buff.CriticalRateUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
+
         //public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         //{
         //    return 0;

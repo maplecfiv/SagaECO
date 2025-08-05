@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,29 +8,29 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_MASTERENHANCE_LIST()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x1F54;
+            data = new byte[4];
+            offset = 2;
+            ID = 0x1F54;
         }
 
         public List<Item> Items
         {
             set
             {
-                byte[] buf = new byte[4 + 4 * value.Count];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var buf = new byte[4 + 4 * value.Count];
+                data.CopyTo(buf, 0);
+                data = buf;
 
                 PutByte((byte)value.Count, 2);
-                int j = 0;
-                foreach (Item i in value)
+                var j = 0;
+                foreach (var i in value)
                 {
                     PutUInt(i.Slot, (ushort)(3 + 4 * j));
                     j++;
                 }
-                this.PutByte(0x0, 4 + 4 * value.Count);
+
+                PutByte(0x0, 4 + 4 * value.Count);
             }
         }
     }
 }
-

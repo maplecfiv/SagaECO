@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -17,47 +10,34 @@ namespace SagaMap.Packets.Server
             FAILED = -1,
             NOT_ENOUGH_EP = -2,
             CL_MAXIMUM = -3,
-            LV_MAXIMUM = -4,
+            LV_MAXIMUM = -4
         }
 
         public SSMG_DEM_COST_LIMIT_UPDATE()
         {
-            this.data = new byte[9];
-            this.offset = 2;
-            this.ID = 0x1E5D;
+            data = new byte[9];
+            offset = 2;
+            ID = 0x1E5D;
         }
 
         public Results Result
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
 
         public short CurrentEP
         {
-            set
-            {
-                this.PutShort(value, 3);
-            }
+            set => PutShort(value, 3);
         }
 
         public short EPRequired
         {
-            set
-            {
-                this.PutShort(value, 5);
-            }
+            set => PutShort(value, 5);
         }
 
         public short CL
         {
-            set
-            {
-                this.PutShort(value, 7);
-            }
+            set => PutShort(value, 7);
         }
     }
 }
-

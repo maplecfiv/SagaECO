@@ -1,54 +1,56 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Fencer
 {
     /// <summary>
-    /// 重裝鎧化（ディフェンス・バースト）
+    ///     重裝鎧化（ディフェンス・バースト）
     /// </summary>
     public class MobDefUpSelf : ISkill
     {
-        bool MobUse;
+        private readonly bool MobUse;
+
         public MobDefUpSelf()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         public MobDefUpSelf(bool MobUse)
         {
             this.MobUse = MobUse;
         }
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             args.dActor = sActor.ActorID;
             //int[] life = { 0, 5000 };
-            int lifetime = 280000 - level * 20000;
+            var lifetime = 280000 - level * 20000;
             //DefaultBuff skill = new DefaultBuff(args.skill, dActor, "铁壁", life[level]);
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "重装铠化", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, dActor, "重装铠化", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
 
-            if (this.MobUse)
+            if (MobUse)
                 level = 5;
 
-            int[] leftdef = new int[] { 0, 5, 5, 8, 8, 11 };
-            int rightdef = 8 + 2 * skill.skill.Level;
-            int[] leftmdef = new int[] { 0, 4, 4, 7, 7, 10 };
-            int rightmdef = 5 + 2 * skill.skill.Level;
+            var leftdef = new[] { 0, 5, 5, 8, 8, 11 };
+            var rightdef = 8 + 2 * skill.skill.Level;
+            var leftmdef = new[] { 0, 4, 4, 7, 7, 10 };
+            var rightmdef = 5 + 2 * skill.skill.Level;
 
             if (skill.Variable.ContainsKey("重装铠化_leftdef"))
                 skill.Variable.Remove("重装铠化_leftdef");
@@ -73,12 +75,14 @@ namespace SagaMap.Skill.SkillDefinations.Fencer
             actor.Buff.DefUp = true;
             actor.Buff.MagicDefUp = true;
             if (actor is ActorMob)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.mdef_add_skill -= (short)skill.Variable["重装铠化_rightmdef"];
             skill.Variable.Remove("重装铠化_rightmdef");
@@ -93,10 +97,13 @@ namespace SagaMap.Skill.SkillDefinations.Fencer
             actor.Buff.DefUp = false;
             actor.Buff.MagicDefUp = false;
             if (actor is ActorMob)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

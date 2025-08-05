@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
 using SagaDB.Map;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,10 +8,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTOR_EVENT_APPEAR()
         {
-            this.data = new byte[19];
-            this.offset = 2;
-            this.ID = 0x0BB8;
-          
+            data = new byte[19];
+            offset = 2;
+            ID = 0x0BB8;
         }
 
         public ActorEvent Actor
@@ -24,9 +18,9 @@ namespace SagaMap.Packets.Server
             set
             {
                 byte[] objName = null;
-                byte[] title = Global.Unicode.GetBytes(value.Title + "\0");
-                MapInfo info = MapInfoFactory.Instance.MapInfo[value.MapID];
-                
+                var title = Global.Unicode.GetBytes(value.Title + "\0");
+                var info = MapInfoFactory.Instance.MapInfo[value.MapID];
+
                 switch (value.Type)
                 {
                     case ActorEventTypes.ROPE:
@@ -36,29 +30,30 @@ namespace SagaMap.Packets.Server
                         objName = Global.Unicode.GetBytes("33_tent01\0");
                         break;
                 }
-                byte[] buf = new byte[19 + objName.Length + title.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutUInt(value.ActorID, 2);
-                this.PutByte((byte)objName.Length);
-                this.PutBytes(objName);
-                this.PutByte(Global.PosX16to8(value.X, info.width));
-                this.PutByte(Global.PosY16to8(value.Y, info.height));
+
+                var buf = new byte[19 + objName.Length + title.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutUInt(value.ActorID, 2);
+                PutByte((byte)objName.Length);
+                PutBytes(objName);
+                PutByte(Global.PosX16to8(value.X, info.width));
+                PutByte(Global.PosY16to8(value.Y, info.height));
                 switch (value.Type)
                 {
                     case ActorEventTypes.ROPE:
-                        this.PutByte(6);
+                        PutByte(6);
                         break;
-                    case ActorEventTypes.TENT :
-                        this.PutByte(4);
+                    case ActorEventTypes.TENT:
+                        PutByte(4);
                         break;
                 }
-                this.PutUInt(value.EventID);
-                this.PutByte((byte)title.Length);
-                this.PutBytes(title);
-                this.PutUInt(value.Caster.CharID);
+
+                PutUInt(value.EventID);
+                PutByte((byte)title.Length);
+                PutBytes(title);
+                PutUInt(value.Caster.CharID);
             }
         }
     }
 }
-

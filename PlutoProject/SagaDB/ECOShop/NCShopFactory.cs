@@ -1,23 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.ECOShop
 {
     public class NCShopFactory : Factory<NCShopFactory, NCShopCategory>
     {
-        ShopItem lastItem;
+        private ShopItem lastItem;
+
         public NCShopFactory()
         {
-            this.loadingTab = "Loading NC shop database";
-            this.loadedTab = " NCshop caterories loaded.";
-            this.databaseName = " NC shop";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading NC shop database";
+            loadedTab = " NCshop caterories loaded.";
+            databaseName = " NC shop";
+            FactoryType = FactoryType.XML;
         }
 
         protected override uint GetKey(NCShopCategory item)
@@ -42,19 +38,21 @@ namespace SagaDB.ECOShop
                             break;
                         case "name":
                             item.Name = current.InnerText;
-                            break;                        
+                            break;
                     }
+
                     break;
                 case "item":
                     switch (current.Name.ToLower())
                     {
                         case "id":
-                            ShopItem newItem = new ShopItem();
-                            uint itemID = uint.Parse(current.InnerText);
+                            var newItem = new ShopItem();
+                            var itemID = uint.Parse(current.InnerText);
                             if (!item.Items.ContainsKey(itemID))
                                 item.Items.Add(itemID, newItem);
                             else
-                                Logger.ShowWarning(string.Format("Item:{0} already added for shop category:{1}! overwriting....", itemID, item.ID));
+                                Logger.ShowWarning(string.Format(
+                                    "Item:{0} already added for shop category:{1}! overwriting....", itemID, item.ID));
                             lastItem = newItem;
                             break;
                         case "points":
@@ -67,6 +65,7 @@ namespace SagaDB.ECOShop
                             lastItem.rental = int.Parse(current.InnerText);
                             break;
                     }
+
                     break;
             }
         }

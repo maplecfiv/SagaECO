@@ -1,43 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Alchemist
 {
     /// <summary>
-    /// 植物傷害增加（植物系ダメージ上昇）
+    ///     植物傷害增加（植物系ダメージ上昇）
     /// </summary>
     public class PlaDamUp : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //ushort[] Values = { 0, 3, 6, 9, 12, 15 };//%
 
             //ushort value = Values[level];
 
-            DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "魔鬼体质", true);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultPassiveSkill(args.skill, sActor, "魔鬼体质", true);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            float rate = skill.skill.Level * 0.05f;
-            int addmaxatk1 = (int)(actor.Status.max_atk1 * rate);
-            int addmaxatk2 = (int)(actor.Status.max_atk2 * rate);
-            int addmaxatk3 = (int)(actor.Status.max_atk3 * rate);
-            int addminatk1 = (int)(actor.Status.min_atk1 * rate);
-            int addminatk2 = (int)(actor.Status.min_atk2 * rate);
-            int addminatk3 = (int)(actor.Status.min_atk3 * rate);
-            int addmaxmatk = (int)(actor.Status.max_matk * rate);
-            int addminmatk = (int)(actor.Status.min_matk * rate);
+            var rate = skill.skill.Level * 0.05f;
+            var addmaxatk1 = (int)(actor.Status.max_atk1 * rate);
+            var addmaxatk2 = (int)(actor.Status.max_atk2 * rate);
+            var addmaxatk3 = (int)(actor.Status.max_atk3 * rate);
+            var addminatk1 = (int)(actor.Status.min_atk1 * rate);
+            var addminatk2 = (int)(actor.Status.min_atk2 * rate);
+            var addminatk3 = (int)(actor.Status.min_atk3 * rate);
+            var addmaxmatk = (int)(actor.Status.max_matk * rate);
+            var addminmatk = (int)(actor.Status.min_matk * rate);
             //int reducehp = (int)(actor.MaxHP * rate);
 
             if (skill.Variable.ContainsKey("魔鬼体质addmaxatk1"))
@@ -86,9 +86,9 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
             skill.Variable.Add("魔鬼体质reducehp", reducehp);
             actor.Status.hp_skill -= (short)reducehp;
             */
-
         }
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             actor.Status.max_atk1_skill -= (short)skill.Variable["魔鬼体质addmaxatk1"];
             actor.Status.max_atk2_skill -= (short)skill.Variable["魔鬼体质addmaxatk2"];
@@ -100,6 +100,7 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
             actor.Status.max_matk_skill -= (short)skill.Variable["魔鬼体质addmaxmatk"];
             //actor.Status.hp_skill += (short)skill.Variable["魔鬼体质reducehp"];
         }
+
         #endregion
     }
 }

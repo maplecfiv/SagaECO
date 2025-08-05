@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
 using SagaDB.Ring;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -16,34 +10,33 @@ namespace SagaMap.Packets.Server
             CREATE,
             JOIN,
             NONE,
-            UPDATED,
+            UPDATED
         }
-        
+
         public SSMG_RING_INFO()
         {
-            this.data = new byte[28];
-            this.offset = 2;
-            this.ID = 0x1ACC;
+            data = new byte[28];
+            offset = 2;
+            ID = 0x1ACC;
         }
 
         public void Ring(Ring ring, Reason reason)
         {
-            this.PutUInt(ring.ID, 2);
-            byte[] buf = Global.Unicode.GetBytes(ring.Name + "\0");
-            byte[] buff = new byte[28 + buf.Length];
-            byte size = (byte)buf.Length;
-            this.data.CopyTo(buff, 0);
-            this.data = buff;
-            this.PutByte(size, 6);
-            this.PutBytes(buf, 7);
-            this.PutUInt(0);
-            this.PutByte(2);
-            this.PutInt(0x0D);
+            PutUInt(ring.ID, 2);
+            var buf = Global.Unicode.GetBytes(ring.Name + "\0");
+            var buff = new byte[28 + buf.Length];
+            var size = (byte)buf.Length;
+            data.CopyTo(buff, 0);
+            data = buff;
+            PutByte(size, 6);
+            PutBytes(buf, 7);
+            PutUInt(0);
+            PutByte(2);
+            PutInt(0x0D);
             //this.PutUInt(0);
-            this.PutUInt(ring.Fame);
-            this.PutInt(ring.MemberCount);
-            this.PutInt(ring.MaxMemberCount);
+            PutUInt(ring.Fame);
+            PutInt(ring.MemberCount);
+            PutInt(ring.MaxMemberCount);
         }
     }
 }
-

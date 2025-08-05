@@ -1,39 +1,28 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
 {
     public class CSMG_RING_INVITE_ANSWER : Packet
     {
-        bool accepted = false;
+        private readonly bool accepted;
+
         public CSMG_RING_INVITE_ANSWER(bool accepted)
         {
-            this.offset = 2;
+            offset = 2;
             this.accepted = accepted;
         }
 
-        public uint CharID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint CharID => GetUInt(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_RING_INVITE_ANSWER(this.accepted);
+            return new CSMG_RING_INVITE_ANSWER(accepted);
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRingInviteAnswer(this, accepted);
+            ((MapClient)client).OnRingInviteAnswer(this, accepted);
         }
-
     }
 }

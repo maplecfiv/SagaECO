@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,30 +6,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_BOND_POINTS()
         {
-            this.data = new byte[11];
-            this.offset = 2;
-            this.ID = 0x1FEC;
+            data = new byte[11];
+            offset = 2;
+            ID = 0x1FEC;
         }
+
         public int TeachingPoint
         {
-            set
-            {
-                this.PutInt(value, 2);
-            }
+            set => PutInt(value, 2);
         }
+
         public int AchievementPoint
         {
-            set
-            {
-                this.PutInt(value, 6);
-            }
+            set => PutInt(value, 6);
         }
+
         public byte StudentLimit
         {
-            set
-            {
-                this.PutByte(value, 10);
-            }
+            set => PutByte(value, 10);
         }
     }
 }

@@ -1,9 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,27 +7,23 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTIVITY_RECYCLE_MODE()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x2260;
+            data = new byte[10];
+            offset = 2;
+            ID = 0x2260;
         }
 
         public DateTime EndTime
         {
             set
             {
-                uint date = (uint)(value - new DateTime(1970, 1, 1)).TotalSeconds;
-                this.PutUInt(date, 2);
+                var date = (uint)(value - new DateTime(1970, 1, 1)).TotalSeconds;
+                PutUInt(date, 2);
             }
         }
 
         public uint Result
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
     }
 }
-

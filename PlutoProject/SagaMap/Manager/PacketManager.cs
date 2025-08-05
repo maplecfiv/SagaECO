@@ -1,47 +1,34 @@
 using System;
-using System.Collections.Generic;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Microsoft.CSharp;
-using System.IO;
-using System.Linq;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaMap.Localization;
-using SagaMap.Localization.Languages;
-using SagaMap.Scripting;
 
 namespace SagaMap.Manager
 {
     public class PacketManager : Singleton<PacketManager>
     {
-        List<uint> packetsID = new List<uint>();
-        string path;
-        public List<uint> PacketsID { get { return this.packetsID; } }
-
-        public PacketManager()
-        {
-
-        }
+        private string path;
+        public List<uint> PacketsID { get; } = new List<uint>();
 
         public void LoadPacketFiles(string path)
         {
             Logger.ShowInfo("Loading uncompiled PacketFiles");
-            Dictionary<string, string> dic = new Dictionary<string, string>() { { "CompilerVersion", "v3.5" } };
-            CSharpCodeProvider provider = new CSharpCodeProvider(dic);
+            var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
+            var provider = new CSharpCodeProvider(dic);
             Directory.SetCurrentDirectory(Directory.GetParent(path).FullName);
             path = Directory.GetCurrentDirectory();
-            int i = path.LastIndexOf("\\");
+            var i = path.LastIndexOf("\\");
             path = path.Substring(0, i);
             path = path + "\\SagaMap\\Packets\\Server";
 
-            int Packetcount = 0;
+            var Packetcount = 0;
             this.path = path;
             try
             {
-                string[] files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
+                var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
                 Assembly newAssembly;
                 int tmp;
                 if (files.Length > 0)
@@ -60,9 +47,10 @@ namespace SagaMap.Manager
                 Logger.ShowError(ex);
             }
         }
+
         private Assembly CompilePacket(string[] Source, CodeDomProvider Provider)
         {
-            CompilerParameters parms = new CompilerParameters();
+            var parms = new CompilerParameters();
             CompilerResults results;
             parms.CompilerOptions = "/target:library /optimize";
             parms.GenerateExecutable = false;
@@ -72,38 +60,36 @@ namespace SagaMap.Manager
             parms.ReferencedAssemblies.Add("SagaLib.dll");
             parms.ReferencedAssemblies.Add("SagaDB.dll");
             parms.ReferencedAssemblies.Add("SagaMap.exe");
-            foreach (string i in Configuration.Instance.ScriptReference)
-            {
-                parms.ReferencedAssemblies.Add(i);
-            }
+            foreach (var i in Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
             // Compile
             results = Provider.CompileAssemblyFromFile(parms, Source);
             if (results.Errors.HasErrors)
             {
                 foreach (CompilerError error in results.Errors)
-                {
                     if (!error.IsWarning)
                     {
                         Logger.ShowError("Compile Error:" + error.ErrorText, null);
                         Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
                     }
-                }
+
                 return null;
             }
+
             return results.CompiledAssembly;
         }
+
         private int LoadAssembly(Assembly newAssembly)
         {
-            Module[] newPackets = newAssembly.GetModules();
-            int count = 0;
-            foreach (Module newScript in newPackets)
+            var newPackets = newAssembly.GetModules();
+            var count = 0;
+            foreach (var newScript in newPackets)
             {
-                Type[] types = newScript.GetTypes();
-                foreach (Type npcType in types)
+                var types = newScript.GetTypes();
+                foreach (var npcType in types)
                 {
                     try
                     {
-                        if (npcType.IsAbstract == true) continue;
+                        if (npcType.IsAbstract) continue;
                         if (npcType.GetCustomAttributes(false).Length > 0) continue;
                         Packet newPacket;
                         try
@@ -114,18 +100,18 @@ namespace SagaMap.Manager
                         {
                             continue;
                         }
-                        if (!this.packetsID.Contains(newPacket.ID) && newPacket.ID != 0)
-                        {
-                            this.packetsID.Add(newPacket.ID);
-                        }
+
+                        if (!PacketsID.Contains(newPacket.ID) && newPacket.ID != 0) PacketsID.Add(newPacket.ID);
                     }
                     catch (Exception ex)
                     {
                         Logger.ShowError(ex);
                     }
+
                     count++;
                 }
             }
+
             return count;
         }
     }

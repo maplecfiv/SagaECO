@@ -1,41 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Druid
 {
     /// <summary>
-    /// 強身健體（ラウズボディ）
+    ///     強身健體（ラウズボディ）
     /// </summary>
     public class STR_VIT_AGI_UP : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //SkillArg SkillFireBolt = new SkillArg();
             //int[] lifetime ={15, 20, 25, 27, 30};
             //DefaultBuff skill = new DefaultBuff(args.skill, dActor, "STR_VIT_AGI_UP", lifetime[level - 1] * 1000);
-            int lifetime = 180;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "STR_VIT_AGI_UP", lifetime * 1000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 180;
+            var skill = new DefaultBuff(args.skill, dActor, "STR_VIT_AGI_UP", lifetime * 1000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             if (dActor == sActor)
             {
-                Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
-                EffectArg arg2 = new EffectArg();
+                var map = MapManager.Instance.GetMap(dActor.MapID);
+                var arg2 = new EffectArg();
                 arg2.effectID = 5177;
                 arg2.actorID = dActor.ActorID;
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, dActor, true);
             }
+
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             short[] STR = { 3, 4, 5, 6, 8 };
@@ -60,20 +62,22 @@ namespace SagaMap.Skill.SkillDefinations.Druid
             actor.Buff.STRUp = true;
             actor.Buff.AGIUp = true;
             actor.Buff.VITUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
 
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
             actor.Status.str_skill -= (short)skill.Variable["STR_VIT_AGI_UP_STR"];
             actor.Status.vit_skill -= (short)skill.Variable["STR_VIT_AGI_UP_VIT"];
             actor.Status.agi_skill -= (short)skill.Variable["STR_VIT_AGI_UP_AGI"];
             actor.Buff.STRUp = false;
             actor.Buff.AGIUp = false;
             actor.Buff.VITUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }
-

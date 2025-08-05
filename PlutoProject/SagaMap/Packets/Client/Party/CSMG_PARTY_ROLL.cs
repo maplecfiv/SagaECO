@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,16 +7,10 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_PARTY_ROLL()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint status
-        {
-            get
-            {
-                return GetByte(2);
-            }
-        }
+        public uint status => GetByte(2);
 
         public override Packet New()
         {
@@ -30,8 +19,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnPartyRoll(this);
+            ((MapClient)client).OnPartyRoll(this);
         }
-
     }
 }

@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
 using SagaDB.FGarden;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,34 +7,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_EQUIPT()
         {
-            this.data = new byte[11];
-            this.offset = 2;
-            this.ID = 0x1BF9;
+            data = new byte[11];
+            offset = 2;
+            ID = 0x1BF9;
         }
 
         public uint ItemID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public FGardenSlot Place
         {
-            set
-            {
-                this.PutUInt((uint)value, 6);
-            }
+            set => PutUInt((uint)value, 6);
         }
 
         public byte Color
         {
-            set
-            {
-                this.PutByte(value, 10);
-            }
+            set => PutByte(value, 10);
         }
     }
 }
-

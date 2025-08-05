@@ -1,83 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
 using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Astralist
 {
     public class EarthQuake : ISkill
     {
-        #region ISkill Members
-
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
-            Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
-            if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 300))
-            {
-                return -17;
-            }
-            return 0;
-        }
-
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            //创建设置型技能技能体
-            ActorSkill actor = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            //设定技能体位置
-            actor.MapID = sActor.MapID;
-            actor.X = dActor.X;
-            actor.Y = dActor.Y;
-            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
-            actor.e = new ActorEventHandlers.NullEventHandler();
-            //在指定地图注册技能体Actor
-            map.RegisterActor(actor);
-            //设置Actor隐身属性为非
-            actor.invisble = false;
-            //广播隐身属性改变事件，以便让玩家看到技能体
-            map.OnActorVisibilityChange(actor);
-            //設置系
-            actor.Stackable = false;
-            //创建技能效果处理对象
-            Activator timer = new Activator(sActor, actor, args, level);
-            timer.Activate();
-        }
-
-        #endregion
-
         #region Timer
 
         private class Activator : MultiRunTask
         {
-            ActorSkill actor;
-            Actor caster;
-            SkillArg skill;
-            Map map;
-            float factor = 1.0f;
-            int countMax = 3, count = 0;
-            int TotalLv = 0;
+            private readonly ActorSkill actor;
+            private readonly Actor caster;
+            private readonly int countMax = 3;
+            private readonly float factor = 1.0f;
+            private readonly Map map;
+            private readonly SkillArg skill;
+            private readonly int TotalLv;
+            private int count;
 
             public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
             {
                 this.actor = actor;
                 this.caster = caster;
-                this.skill = args.Clone();
-                map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                this.period = 400;
-                this.dueTime = 0;
+                skill = args.Clone();
+                map = MapManager.Instance.GetMap(actor.MapID);
+                period = 400;
+                dueTime = 0;
 
                 factor = 0.95f + level * 0.05f;
                 int[] LvCount = { 0, 5, 5, 6, 6, 7 };
                 countMax = LvCount[level];
                 if (caster.type == ActorType.PC)
                 {
-                    ActorPC pc = (ActorPC)caster;
+                    var pc = (ActorPC)caster;
                     if (pc.Skills2_1.ContainsKey(3049) || pc.DualJobSkill.Exists(x => x.ID == 3049))
                     {
-
                         var duallv = 0;
                         if (pc.DualJobSkill.Exists(x => x.ID == 3049))
                             duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3049).Level;
@@ -104,12 +67,11 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                             case 5:
                                 factor += 0.9f;
                                 break;
-
                         }
                     }
+
                     if (pc.Skills2_1.ContainsKey(3025) || pc.DualJobSkill.Exists(x => x.ID == 3025))
                     {
-
                         var duallv = 0;
                         if (pc.DualJobSkill.Exists(x => x.ID == 3025))
                             duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3025).Level;
@@ -140,6 +102,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                                         countMax = 7;
                                         break;
                                 }
+
                                 break;
                             case 2:
                                 switch (level)
@@ -160,6 +123,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                                         countMax = 8;
                                         break;
                                 }
+
                                 break;
                             case 3:
                                 switch (level)
@@ -180,6 +144,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                                         countMax = 9;
                                         break;
                                 }
+
                                 break;
                             case 4:
                                 switch (level)
@@ -200,6 +165,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                                         countMax = 10;
                                         break;
                                 }
+
                                 break;
                             case 5:
                                 switch (level)
@@ -220,13 +186,12 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                                         countMax = 12;
                                         break;
                                 }
-                                break;
 
+                                break;
                         }
                     }
                 }
             }
-
 
 
             public override void CallBack()
@@ -238,21 +203,20 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                     if (count < countMax)
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
-                        List<Actor> actors = map.GetActorsArea(actor, 300, false);
-                        List<Actor> affected = new List<Actor>();
+                        var actors = map.GetActorsArea(actor, 300, false);
+                        var affected = new List<Actor>();
                         //取得有效Actor（即怪物）
 
                         //施加火属性魔法伤害
                         skill.affectedActors.Clear();
-                        foreach (Actor i in actors)
-                        {
+                        foreach (var i in actors)
                             if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
                             {
-                                Additions.Global.Stiff Stiff = new SagaMap.Skill.Additions.Global.Stiff(skill.skill, i, 100);//Mob can not move as soon as attacked.
+                                var Stiff = new Stiff(skill.skill, i, 100); //Mob can not move as soon as attacked.
                                 SkillHandler.ApplyAddition(i, Stiff);
                                 affected.Add(i);
                             }
-                        }
+
                         //SkillHandler.Instance.MagicAttack(caster, affected, skill, Elements.Fire, factor);
                         SkillHandler.Instance.MagicAttack(caster, affected, skill, Elements.Earth, factor);
 
@@ -262,7 +226,7 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                     }
                     else
                     {
-                        this.Deactivate();
+                        Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
@@ -275,6 +239,43 @@ namespace SagaMap.Skill.SkillDefinations.Astralist
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
         }
+
+        #endregion
+
+        #region ISkill Members
+
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
+        {
+            var map = MapManager.Instance.GetMap(pc.MapID);
+            if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
+                    SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return -17;
+            return 0;
+        }
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
+        {
+            //创建设置型技能技能体
+            var actor = new ActorSkill(args.skill, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            //设定技能体位置
+            actor.MapID = sActor.MapID;
+            actor.X = dActor.X;
+            actor.Y = dActor.Y;
+            //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
+            actor.e = new NullEventHandler();
+            //在指定地图注册技能体Actor
+            map.RegisterActor(actor);
+            //设置Actor隐身属性为非
+            actor.invisble = false;
+            //广播隐身属性改变事件，以便让玩家看到技能体
+            map.OnActorVisibilityChange(actor);
+            //設置系
+            actor.Stackable = false;
+            //创建技能效果处理对象
+            var timer = new Activator(sActor, actor, args, level);
+            timer.Activate();
+        }
+
         #endregion
     }
 }

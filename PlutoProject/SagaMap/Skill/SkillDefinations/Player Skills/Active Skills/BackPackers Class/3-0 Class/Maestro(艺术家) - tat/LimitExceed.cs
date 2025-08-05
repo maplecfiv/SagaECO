@@ -1,58 +1,29 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Maestro
 {
     /// <summary>
-    /// レールガン
+    ///     レールガン
     /// </summary>
     public class LimitExceed : ISkill
     {
-        #region ISkill Members
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
-
-            return -54;//已经写好了逻辑,但问题太多,放弃治疗,先封印
-            //ActorPet pet = SkillHandler.Instance.GetPet(sActor);
-            //if (pet == null)
-            //{
-            //    return -54;//需回傳"需裝備寵物"
-            //}
-            //if (SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT"))
-            //{
-            //    return 0;
-            //}
-            //return -54;//需回傳"需裝備寵物"
-        }
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            int lifetime = 180000;
-            DefaultBuff skill = new DefaultBuff(args.skill, sActor, "LimitExceed", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
-            skill.OnCheckValid += this.ValidCheck;
-            SkillHandler.ApplyAddition(sActor, skill);
-        }
-        #endregion
-
-        void ValidCheck(ActorPC pc, Actor dActor, out int result)
+        private void ValidCheck(ActorPC pc, Actor dActor, out int result)
         {
             result = TryCast(pc, dActor, null);
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-
-            float trans_am_atk_up = 0.3f + 0.1f * skill.skill.Level;
-            float trans_am_defadd_up = 0.3f + 0.1f * skill.skill.Level;
-            float trans_am_def_up = 0.3f + 0.1f * skill.skill.Level;
+            var trans_am_atk_up = 0.3f + 0.1f * skill.skill.Level;
+            var trans_am_defadd_up = 0.3f + 0.1f * skill.skill.Level;
+            var trans_am_def_up = 0.3f + 0.1f * skill.skill.Level;
             if (actor is ActorPC)
             {
-                ActorPC pc = actor as ActorPC;
+                var pc = actor as ActorPC;
 
                 if (pc.Skills3.ContainsKey(2489) || pc.DualJobSkill.Exists(x => x.ID == 2489))
                 {
@@ -64,7 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
                     if (pc.Skills3.ContainsKey(2489))
                         mainlv = pc.Skills3[2489].Level;
 
-                    int maxlv = Math.Max(duallv, mainlv);
+                    var maxlv = Math.Max(duallv, mainlv);
                     float atkendup = 0;
                     switch (skill.skill.Level)
                     {
@@ -101,7 +72,7 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
                     if (pc.Skills3.ContainsKey(2500))
                         mainlv = pc.Skills3[2500].Level;
 
-                    int maxlv = Math.Max(duallv, mainlv);
+                    var maxlv = Math.Max(duallv, mainlv);
                     float defaddendup = 0;
                     float defendup = 0;
                     switch (skill.skill.Level)
@@ -133,17 +104,16 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
                             break;
                     }
                 }
-
-
             }
-            int minatk1up = (int)(actor.Status.min_atk1 * trans_am_atk_up);
-            int minatk2up = (int)(actor.Status.min_atk2 * trans_am_atk_up);
-            int minatk3up = (int)(actor.Status.min_atk3 * trans_am_atk_up);
-            int maxatk1up = (int)(actor.Status.max_atk1 * trans_am_atk_up);
-            int maxatk2up = (int)(actor.Status.max_atk2 * trans_am_atk_up);
-            int maxatk3up = (int)(actor.Status.max_atk3 * trans_am_atk_up);
-            int defaddup = (int)(actor.Status.def_add * trans_am_defadd_up);
-            int defup = (int)(actor.Status.def * trans_am_def_up);
+
+            var minatk1up = (int)(actor.Status.min_atk1 * trans_am_atk_up);
+            var minatk2up = (int)(actor.Status.min_atk2 * trans_am_atk_up);
+            var minatk3up = (int)(actor.Status.min_atk3 * trans_am_atk_up);
+            var maxatk1up = (int)(actor.Status.max_atk1 * trans_am_atk_up);
+            var maxatk2up = (int)(actor.Status.max_atk2 * trans_am_atk_up);
+            var maxatk3up = (int)(actor.Status.max_atk3 * trans_am_atk_up);
+            var defaddup = (int)(actor.Status.def_add * trans_am_defadd_up);
+            var defup = (int)(actor.Status.def * trans_am_def_up);
             if (skill.Variable.ContainsKey("Robotminatk1Up"))
                 skill.Variable.Remove("Robotminatk1Up");
             skill.Variable.Add("Robotminatk1Up", minatk1up);
@@ -181,50 +151,52 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
             actor.Status.def_skill += (short)defup;
             actor.Buff.三转2足ATKUP = true;
             actor.Buff.三转铁匠2足DEFUP = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
-            actor.Status.min_atk1_skill -= (short)(skill.Variable["Robotminatk1Up"]);
-            actor.Status.min_atk2_skill -= (short)(skill.Variable["Robotminatk2Up"]);
-            actor.Status.min_atk3_skill -= (short)(skill.Variable["Robotminatk3Up"]);
-            actor.Status.max_atk1_skill -= (short)(skill.Variable["Robotmaxatk1Up"]);
-            actor.Status.max_atk2_skill -= (short)(skill.Variable["Robotmaxatk2Up"]);
-            actor.Status.max_atk3_skill -= (short)(skill.Variable["Robotmaxatk3Up"]);
 
-            actor.Status.def_add_skill -= (short)(skill.Variable["RobotdefaddUp"]);
-            actor.Status.def_skill -= (short)(skill.Variable["RobotdefUp"]);
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
+            actor.Status.min_atk1_skill -= (short)skill.Variable["Robotminatk1Up"];
+            actor.Status.min_atk2_skill -= (short)skill.Variable["Robotminatk2Up"];
+            actor.Status.min_atk3_skill -= (short)skill.Variable["Robotminatk3Up"];
+            actor.Status.max_atk1_skill -= (short)skill.Variable["Robotmaxatk1Up"];
+            actor.Status.max_atk2_skill -= (short)skill.Variable["Robotmaxatk2Up"];
+            actor.Status.max_atk3_skill -= (short)skill.Variable["Robotmaxatk3Up"];
+
+            actor.Status.def_add_skill -= (short)skill.Variable["RobotdefaddUp"];
+            actor.Status.def_skill -= (short)skill.Variable["RobotdefUp"];
             actor.Buff.三转2足ATKUP = false;
             actor.Buff.三转铁匠2足DEFUP = false;
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-            ActorPet pet = SkillHandler.Instance.GetPet(actor);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            var pet = SkillHandler.Instance.GetPet(actor);
             if (pet != null && SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT"))
             {
                 int[] lifetime = { 0, 50000, 70000, 80000, 100000, 100000 };
-                DefaultBuff skill2 = new DefaultBuff(skill.skill, actor, "LimitExceedDown", lifetime[skill.skill.Level]);
-                skill.OnAdditionStart += this.StartEventHandler2;
-                skill.OnAdditionEnd += this.EndEventHandler2;
-                skill.OnCheckValid += this.ValidCheck;
+                var skill2 = new DefaultBuff(skill.skill, actor, "LimitExceedDown", lifetime[skill.skill.Level]);
+                skill.OnAdditionStart += StartEventHandler2;
+                skill.OnAdditionEnd += EndEventHandler2;
+                skill.OnCheckValid += ValidCheck;
                 SkillHandler.ApplyAddition(actor, skill);
             }
-
         }
 
-        void StartEventHandler2(Actor actor, DefaultBuff skill)
+        private void StartEventHandler2(Actor actor, DefaultBuff skill)
         {
-            float trans_am_atk_down = new float[] { 0, 0.2f, 0.35f, 0.45f, 0.65f, 0.75f }[skill.skill.Level];
-            float trans_am_defadd_down = 0.1f * skill.skill.Level;//没有wiki资料，暂定为下降10%每等级
-            float trans_am_def_down = 0.1f * skill.skill.Level;
+            var trans_am_atk_down = new[] { 0, 0.2f, 0.35f, 0.45f, 0.65f, 0.75f }[skill.skill.Level];
+            var trans_am_defadd_down = 0.1f * skill.skill.Level; //没有wiki资料，暂定为下降10%每等级
+            var trans_am_def_down = 0.1f * skill.skill.Level;
 
-            int minatk1down = (int)(actor.Status.min_atk1 * trans_am_atk_down);
-            int minatk2down = (int)(actor.Status.min_atk2 * trans_am_atk_down);
-            int minatk3down = (int)(actor.Status.min_atk3 * trans_am_atk_down);
-            int maxatk1down = (int)(actor.Status.max_atk1 * trans_am_atk_down);
-            int maxatk2down = (int)(actor.Status.max_atk2 * trans_am_atk_down);
-            int maxatk3down = (int)(actor.Status.max_atk3 * trans_am_atk_down);
-            int defadddown = (int)(actor.Status.def_add * trans_am_defadd_down);
-            int defdown = (int)(actor.Status.def * trans_am_def_down);
+            var minatk1down = (int)(actor.Status.min_atk1 * trans_am_atk_down);
+            var minatk2down = (int)(actor.Status.min_atk2 * trans_am_atk_down);
+            var minatk3down = (int)(actor.Status.min_atk3 * trans_am_atk_down);
+            var maxatk1down = (int)(actor.Status.max_atk1 * trans_am_atk_down);
+            var maxatk2down = (int)(actor.Status.max_atk2 * trans_am_atk_down);
+            var maxatk3down = (int)(actor.Status.max_atk3 * trans_am_atk_down);
+            var defadddown = (int)(actor.Status.def_add * trans_am_defadd_down);
+            var defdown = (int)(actor.Status.def * trans_am_def_down);
             if (skill.Variable.ContainsKey("Robotminatk1down"))
                 skill.Variable.Remove("Robotminatk1down");
             skill.Variable.Add("Robotminatk1down", minatk1down);
@@ -263,22 +235,54 @@ namespace SagaMap.Skill.SkillDefinations.Maestro
 
             actor.Buff.RobotUnknowStateDown3RD = true;
             actor.Buff.三转机器人UNKNOWS = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler2(Actor actor, DefaultBuff skill)
-        {
-            actor.Status.min_atk1_skill += (short)(skill.Variable["Robotminatk1down"]);
-            actor.Status.min_atk2_skill += (short)(skill.Variable["Robotminatk2down"]);
-            actor.Status.min_atk3_skill += (short)(skill.Variable["Robotminatk3down"]);
-            actor.Status.max_atk1_skill += (short)(skill.Variable["Robotmaxatk1down"]);
-            actor.Status.max_atk2_skill += (short)(skill.Variable["Robotmaxatk2down"]);
-            actor.Status.max_atk3_skill += (short)(skill.Variable["Robotmaxatk3down"]);
 
-            actor.Status.def_add_skill += (short)(skill.Variable["Robotdefadddown"]);
-            actor.Status.def_skill += (short)(skill.Variable["Robotdefdown"]);
+        private void EndEventHandler2(Actor actor, DefaultBuff skill)
+        {
+            actor.Status.min_atk1_skill += (short)skill.Variable["Robotminatk1down"];
+            actor.Status.min_atk2_skill += (short)skill.Variable["Robotminatk2down"];
+            actor.Status.min_atk3_skill += (short)skill.Variable["Robotminatk3down"];
+            actor.Status.max_atk1_skill += (short)skill.Variable["Robotmaxatk1down"];
+            actor.Status.max_atk2_skill += (short)skill.Variable["Robotmaxatk2down"];
+            actor.Status.max_atk3_skill += (short)skill.Variable["Robotmaxatk3down"];
+
+            actor.Status.def_add_skill += (short)skill.Variable["Robotdefadddown"];
+            actor.Status.def_skill += (short)skill.Variable["Robotdefdown"];
             actor.Buff.RobotUnknowStateDown3RD = false;
             actor.Buff.三转机器人UNKNOWS = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
+        #region ISkill Members
+
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
+        {
+            return -54; //已经写好了逻辑,但问题太多,放弃治疗,先封印
+            //ActorPet pet = SkillHandler.Instance.GetPet(sActor);
+            //if (pet == null)
+            //{
+            //    return -54;//需回傳"需裝備寵物"
+            //}
+            //if (SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT"))
+            //{
+            //    return 0;
+            //}
+            //return -54;//需回傳"需裝備寵物"
+        }
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
+        {
+            var lifetime = 180000;
+            var skill = new DefaultBuff(args.skill, sActor, "LimitExceed", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
+            skill.OnCheckValid += ValidCheck;
+            SkillHandler.ApplyAddition(sActor, skill);
+        }
+
+        #endregion
     }
 }

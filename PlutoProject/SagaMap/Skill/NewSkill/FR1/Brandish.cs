@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Scout
 {
-    public class Brandish:ISkill
+    public class Brandish : ISkill
     {
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-            if (!(pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) || pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0))
+            if (!(pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
+                  pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0))
                 return -5;
-            else
-                return 0;
+            return 0;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             int combo;
             int min = 1, max = 1;
-            float factor = 1f;
+            var factor = 1f;
             args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.SLASH;
             switch (level)
@@ -41,14 +37,13 @@ namespace SagaMap.Skill.SkillDefinations.Scout
                     max = 6;
                     break;
             }
+
             combo = SagaLib.Global.Random.Next(min, max);
-            List<Actor> target = new List<Actor>();
-            for (int i = 0; i < combo; i++)
-            {
-                target.Add(dActor);
-            }
+            var target = new List<Actor>();
+            for (var i = 0; i < combo; i++) target.Add(dActor);
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
+
         #endregion
     }
 }

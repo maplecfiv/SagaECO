@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Warlock
 {
     public class ChaosWidow : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
+
+            return -14;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
@@ -29,28 +23,34 @@ namespace SagaMap.Skill.SkillDefinations.Warlock
             factor = 1.10f + 0.25f * level;
             if (dActor.Darks == 1)
             {
-                float factor2 = 1.5f + 0.5f * level;
+                var factor2 = 1.5f + 0.5f * level;
                 if (level == 6)
                 {
                     factor2 = 3f;
                     SuckBlood = 0.3f;
                 }
                 else
+                {
                     SuckBlood = 0.05f;
-                Manager.MapManager.Instance.GetMap(sActor.MapID).SendEffect(dActor, 5202);
+                }
+
+                MapManager.Instance.GetMap(sActor.MapID).SendEffect(dActor, 5202);
                 dActor.Darks = 0;
-                SkillArg add = new SkillArg();
+                var add = new SkillArg();
                 add = args.Clone();
                 add.skill.BaseData.id = 100;
-                SkillHandler.Instance.MagicAttack(sActor, dActor, add, SagaLib.Elements.Dark, factor2);
-                Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, add, sActor, true);
+                SkillHandler.Instance.MagicAttack(sActor, dActor, add, Elements.Dark, factor2);
+                MapManager.Instance.GetMap(sActor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, add, sActor, true);
                 add.skill.BaseData.id = 3134;
             }
-            List<Actor> list = new List<Actor>();
+
+            var list = new List<Actor>();
             list.Add(dActor);
             if (level == 6)
                 factor = 5f;
-            SkillHandler.Instance.MagicAttack(sActor, list, args, SkillHandler.DefType.MDef, SagaLib.Elements.Dark, 200, factor, 0, false, false, SuckBlood);
+            SkillHandler.Instance.MagicAttack(sActor, list, args, SkillHandler.DefType.MDef, Elements.Dark, 200, factor,
+                0, false, false, SuckBlood);
         }
 
         #endregion

@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -21,20 +16,19 @@ namespace SagaMap.Packets.Server
 
         public SSMG_IRIS_ADD_SLOT_RESULT()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x13E4;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x13E4;
         }
 
         public Results Result
         {
             set
             {
-                this.PutByte((byte)value, 2);
-                this.PutByte(0x00);
-                this.PutByte(0x64);
+                PutByte((byte)value, 2);
+                PutByte(0x00);
+                PutByte(0x64);
             }
         }
     }
 }
-

@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
 
 namespace SagaMap.Partner
@@ -11,10 +8,10 @@ namespace SagaMap.Partner
     {
         public PartnerAIFactory()
         {
-            this.loadingTab = "Loading PartnerAI database";
-            this.loadedTab = " AIs loaded.";
-            this.databaseName = "Partner AI";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading PartnerAI database";
+            loadedTab = " AIs loaded.";
+            databaseName = "Partner AI";
+            FactoryType = FactoryType.XML;
         }
 
         protected override uint GetKey(AIMode item)
@@ -27,7 +24,7 @@ namespace SagaMap.Partner
             throw new NotImplementedException();
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, AIMode item)
+        protected override void ParseXML(XmlElement root, XmlElement current, AIMode item)
         {
             switch (root.Name.ToLower())
             {
@@ -42,17 +39,13 @@ namespace SagaMap.Partner
                             break;
                         case "eventattackingonskillcast":
                             if (current.Attributes.Count > 0)
-                            {
                                 item.EventAttackingSkillRate = int.Parse(current.Attributes["Rate"].InnerText);
-                            }
                             else
                                 item.EventAttackingSkillRate = 50;
                             break;
                         case "eventmastercombatonskillcast":
                             if (current.Attributes.Count > 0)
-                            {
                                 item.EventMasterCombatSkillRate = int.Parse(current.Attributes["Rate"].InnerText);
-                            }
                             else
                                 item.EventMasterCombatSkillRate = 50;
                             break;
@@ -67,11 +60,11 @@ namespace SagaMap.Partner
                             break;
                         case "useskilllist":
                             item.isAnAI = true;
-                            uint ID = uint.Parse(current.Attributes["ID"].InnerText);
-                            int MaxHP = int.Parse(current.Attributes["MaxHP"].InnerText);
-                            int MinHP = int.Parse(current.Attributes["MinHP"].InnerText);
-                            int Rate = int.Parse(current.Attributes["Rate"].InnerText);
-                            AIMode.SkillList sl = new AIMode.SkillList();
+                            var ID = uint.Parse(current.Attributes["ID"].InnerText);
+                            var MaxHP = int.Parse(current.Attributes["MaxHP"].InnerText);
+                            var MinHP = int.Parse(current.Attributes["MinHP"].InnerText);
+                            var Rate = int.Parse(current.Attributes["Rate"].InnerText);
+                            var sl = new AIMode.SkillList();
                             sl.MaxHP = MaxHP;
                             sl.MinHP = MinHP;
                             sl.Rate = Rate;
@@ -81,49 +74,54 @@ namespace SagaMap.Partner
                                 case "skill":
                                     break;
                             }
+
                             break;
                     }
+
                     break;
                 case "useskilllist":
                     switch (current.Name.ToLower())
                     {
                         case "skill":
-                            uint listid = uint.Parse(current.Attributes["ListID"].InnerText);
-                            AIMode.SkillsInfo si = new AIMode.SkillsInfo();
+                            var listid = uint.Parse(current.Attributes["ListID"].InnerText);
+                            var si = new AIMode.SkillsInfo();
                             si.Delay = int.Parse(current.Attributes["Delay"].InnerText);
                             si.SkillID = uint.Parse(current.InnerText);
-                            uint Sequence = uint.Parse(current.Attributes["Sequence"].InnerText);
+                            var Sequence = uint.Parse(current.Attributes["Sequence"].InnerText);
                             item.AnAI_SkillAssemblage[listid].AnAI_SkillList.Add(Sequence, si);
                             break;
                     }
+
                     break;
                 case "eventattackingonskillcast":
                     switch (current.Name.ToLower())
                     {
                         case "skill":
-                            uint id = uint.Parse(current.InnerText);
-                            int rate = int.Parse(current.Attributes["Rate"].InnerText);
+                            var id = uint.Parse(current.InnerText);
+                            var rate = int.Parse(current.Attributes["Rate"].InnerText);
                             item.EventAttacking.Add(id, rate);
                             break;
                     }
+
                     break;
                 case "eventmastercombatonskillcast":
                     switch (current.Name.ToLower())
                     {
                         case "skill":
-                            uint id = uint.Parse(current.InnerText);
-                            int rate = int.Parse(current.Attributes["Rate"].InnerText);
+                            var id = uint.Parse(current.InnerText);
+                            var rate = int.Parse(current.Attributes["Rate"].InnerText);
                             item.EventMasterCombat.Add(id, rate);
                             break;
                     }
+
                     break;
 
                 case "useskillofshortrange":
                     switch (current.Name.ToLower())
                     {
                         case "skill":
-                            uint id = uint.Parse(current.InnerText);
-                            AIMode.SkilInfo si = new AIMode.SkilInfo();
+                            var id = uint.Parse(current.InnerText);
+                            var si = new AIMode.SkilInfo();
                             si.CD = int.Parse(current.Attributes["CD"].InnerText);
                             si.Rate = int.Parse(current.Attributes["Rate"].InnerText);
                             si.MaxHP = int.Parse(current.Attributes["MaxHP"].InnerText);
@@ -131,13 +129,14 @@ namespace SagaMap.Partner
                             item.SkillOfShort.Add(id, si);
                             break;
                     }
+
                     break;
                 case "useskilloflongrange":
                     switch (current.Name.ToLower())
                     {
                         case "skill":
-                            uint id = uint.Parse(current.InnerText);
-                            AIMode.SkilInfo si = new AIMode.SkilInfo();
+                            var id = uint.Parse(current.InnerText);
+                            var si = new AIMode.SkilInfo();
                             si.CD = int.Parse(current.Attributes["CD"].InnerText);
                             si.Rate = int.Parse(current.Attributes["Rate"].InnerText);
                             si.MaxHP = int.Parse(current.Attributes["MaxHP"].InnerText);
@@ -145,6 +144,7 @@ namespace SagaMap.Partner
                             item.SkillOfLong.Add(id, si);
                             break;
                     }
+
                     break;
             }
         }

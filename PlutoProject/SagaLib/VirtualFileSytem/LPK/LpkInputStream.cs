@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
 
@@ -8,72 +6,48 @@ namespace SagaLib.VirtualFileSystem.Lpk
 {
     public class LpkInputStream : Stream
     {
-        Stream baseStream;
-        LpkFileInfo info;
+        private readonly Stream baseStream;
 
-        GZipStream gzip;
+        private readonly GZipStream gzip;
+        private readonly LpkFileInfo info;
 
         public LpkInputStream(Stream lpk, LpkFileInfo file)
         {
-            this.baseStream = lpk;
-            this.info = file;
+            baseStream = lpk;
+            info = file;
             baseStream.Position = file.DataOffset;
             gzip = new GZipStream(baseStream, CompressionMode.Compress, true);
             file.FileSize = 0;
             file.UncompressedSize = 0;
         }
-        
+
+        public override bool CanRead => false;
+
+        public override bool CanSeek => true;
+
+        public override bool CanWrite => true;
+
+        public override long Length => info.UncompressedSize;
+
+        public long CompressedLength => baseStream.Position - info.DataOffset;
+
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
         public override void Close()
         {
             base.Close();
             gzip.Close();
-            info.FileSize = (uint)this.CompressedLength;
+            info.FileSize = (uint)CompressedLength;
             info.WriteToStream(baseStream);
-        }
-
-        public override bool CanRead
-        {
-            get { return false; }
-        }
-
-        public override bool CanSeek
-        {
-            get { return true; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return true; }
         }
 
         public override void Flush()
         {
             baseStream.Flush();
-        }
-
-        public override long Length
-        {
-            get { return info.UncompressedSize; }
-        }
-
-        public long CompressedLength
-        {
-            get
-            {
-                return baseStream.Position - info.DataOffset;
-            }
-        }
-
-        public override long Position
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
         }
 
         public override int Read(byte[] buffer, int offset, int count)

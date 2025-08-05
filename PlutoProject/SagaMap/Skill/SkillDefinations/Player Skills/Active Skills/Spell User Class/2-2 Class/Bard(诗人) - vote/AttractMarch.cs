@@ -1,32 +1,29 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
+using SagaLib;
 using SagaMap.ActorEventHandlers;
+using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Bard
 {
     /// <summary>
-    /// 攻擊進行曲（アトラクトマーチ）
+    ///     攻擊進行曲（アトラクトマーチ）
     /// </summary>
     public class AttractMarch : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (Skill.SkillHandler.Instance.isEquipmentRight(sActor, SagaDB.Item.ItemType.STRINGS) || sActor.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
-            {
-                return 0;
-            }
+            if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.STRINGS) ||
+                sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0) return 0;
             return -5;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 5000 + 1000 * level;
-            int rate = 20 * level - 10;
+            var lifetime = 5000 + 1000 * level;
+            var rate = 20 * level - 10;
             if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, "AttractMarch", rate))
             {
                 if (dActor.type == ActorType.PC)
@@ -35,44 +32,47 @@ namespace SagaMap.Skill.SkillDefinations.Bard
                     dActor.e.OnDie();
                     args.affectedActors.Add(dActor);
                     args.Init();
-                    args.flag[0] = SagaLib.AttackFlag.DIE;
+                    args.flag[0] = AttackFlag.DIE;
                 }
                 else
                 {
-                    AttractMarchBuff skill = new AttractMarchBuff(args.skill, sActor, dActor, lifetime);
+                    var skill = new AttractMarchBuff(args.skill, sActor, dActor, lifetime);
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
             }
         }
+
         public class AttractMarchBuff : DefaultBuff
         {
-            Actor sActor;
+            private readonly Actor sActor;
+
             public AttractMarchBuff(SagaDB.Skill.Skill skill, Actor sActor, Actor dActor, int lifetime)
                 : base(skill, dActor, "AttractMarch", lifetime)
             {
-                this.OnAdditionStart += this.StartEvent;
-                this.OnAdditionEnd += this.EndEvent;
+                OnAdditionStart += StartEvent;
+                OnAdditionEnd += EndEvent;
                 this.sActor = sActor;
             }
 
-            void StartEvent(Actor actor, DefaultBuff skill)
+            private void StartEvent(Actor actor, DefaultBuff skill)
             {
                 if (actor.type == ActorType.MOB)
                 {
-                    MobEventHandler mh = (MobEventHandler)actor.e;
+                    var mh = (MobEventHandler)actor.e;
                     mh.AI.Master = sActor;
                 }
             }
 
-            void EndEvent(Actor actor, DefaultBuff skill)
+            private void EndEvent(Actor actor, DefaultBuff skill)
             {
                 if (actor.type == ActorType.MOB)
                 {
-                    MobEventHandler mh = (MobEventHandler)actor.e;
+                    var mh = (MobEventHandler)actor.e;
                     mh.AI.Master = null;
                 }
             }
         }
+
         #endregion
     }
 }

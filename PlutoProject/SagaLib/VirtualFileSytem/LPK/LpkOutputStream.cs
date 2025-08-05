@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.IO.Compression;
 
@@ -8,68 +6,44 @@ namespace SagaLib.VirtualFileSystem.Lpk
 {
     public class LpkOutputStream : Stream
     {
-        Stream baseStream;
-        LpkFileInfo info;
+        private readonly Stream baseStream;
 
-        GZipStream gzip;
+        private readonly GZipStream gzip;
+        private readonly LpkFileInfo info;
 
         public LpkOutputStream(Stream lpk, LpkFileInfo file)
         {
-            this.baseStream = lpk;
-            this.info = file;
+            baseStream = lpk;
+            info = file;
             baseStream.Position = file.DataOffset;
             gzip = new GZipStream(baseStream, CompressionMode.Decompress, true);
         }
-        
+
+        public override bool CanRead => true;
+
+        public override bool CanSeek => true;
+
+        public override bool CanWrite => false;
+
+        public override long Length => info.UncompressedSize;
+
+        public long CompressedLength => info.FileSize;
+
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
         public override void Close()
         {
             base.Close();
             gzip.Close();
         }
 
-        public override bool CanRead
-        {
-            get { return true; }
-        }
-
-        public override bool CanSeek
-        {
-            get { return true; }
-        }
-
-        public override bool CanWrite
-        {
-            get { return false; }
-        }
-
         public override void Flush()
         {
             throw new NotSupportedException();
-        }
-
-        public override long Length
-        {
-            get { return info.UncompressedSize; }
-        }
-
-        public long CompressedLength
-        {
-            get
-            {
-                return info.FileSize;
-            }
-        }
-
-        public override long Position
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
         }
 
         public override int Read(byte[] buffer, int offset, int count)

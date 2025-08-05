@@ -1,60 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using SevenZip.Compression.LZMA;
+﻿using System.IO;
 using SevenZip;
+using SevenZip.Compression.LZMA;
 
 namespace SagaLib.VirtualFileSystem.Lpk.LZMA
 {
     public static class LzmaHelper
     {
-        static int dictionary = 1 << 23;
-        static bool eos = false;
+        private static readonly int dictionary = 1 << 23;
+        private static readonly bool eos = false;
 
-        static CoderPropID[] propIDs = 
-				{
-					CoderPropID.DictionarySize,
-					CoderPropID.PosStateBits,
-					CoderPropID.LitContextBits,
-					CoderPropID.LitPosBits,
-					CoderPropID.Algorithm,
-					CoderPropID.NumFastBytes,
-					CoderPropID.MatchFinder,
-					CoderPropID.EndMarker
-				};
+        private static readonly CoderPropID[] propIDs =
+        {
+            CoderPropID.DictionarySize,
+            CoderPropID.PosStateBits,
+            CoderPropID.LitContextBits,
+            CoderPropID.LitPosBits,
+            CoderPropID.Algorithm,
+            CoderPropID.NumFastBytes,
+            CoderPropID.MatchFinder,
+            CoderPropID.EndMarker
+        };
 
         // these are the default properties, keeping it simple for now:
-        static object[] properties = 
-				{
-					(Int32)(dictionary),
-					(Int32)(2),
-					(Int32)(3),
-					(Int32)(0),
-					(Int32)(2),
-					(Int32)(128),
-					"bt4",
-					eos
-				};
-        static byte[] props = new byte[5]
+        private static readonly object[] properties =
+        {
+            dictionary,
+            2,
+            3,
+            0,
+            2,
+            128,
+            "bt4",
+            eos
+        };
+
+        private static readonly byte[] props = new byte[5]
         {
             0x5D,
             0,
             0,
             0x80,
-            0,
+            0
         };
 
         public static void Compress(Stream inStream, Stream outStream, ICodeProgress progress)
         {
-            SevenZip.Compression.LZMA.Encoder encoder = new SevenZip.Compression.LZMA.Encoder();
+            var encoder = new Encoder();
             encoder.SetCoderProperties(propIDs, properties);
             //encoder.WriteCoderProperties(outStream);
             encoder.Code(inStream, outStream, -1, -1, progress);
         }
 
-        public static void Decompress(Stream inStream, Stream outStream, long size, long uncompressedSize, ICodeProgress progress)
+        public static void Decompress(Stream inStream, Stream outStream, long size, long uncompressedSize,
+            ICodeProgress progress)
         {
-            Decoder decoder = new Decoder();
+            var decoder = new Decoder();
 
             decoder.SetDecoderProperties(props);
 
@@ -63,9 +63,9 @@ namespace SagaLib.VirtualFileSystem.Lpk.LZMA
 
         public static uint CRC32(Stream inStream)
         {
-            CRC crc = new CRC();
+            var crc = new CRC();
             crc.Init();
-            byte[] buf = new byte[1024];
+            var buf = new byte[1024];
             while (inStream.Position < inStream.Length)
             {
                 int read;
@@ -76,6 +76,7 @@ namespace SagaLib.VirtualFileSystem.Lpk.LZMA
                 inStream.Read(buf, 0, read);
                 crc.Update(buf, 0, (uint)read);
             }
+
             return crc.GetDigest();
         }
     }

@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,11 +6,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_SHOP_APPEAR_ONLINE()
         {
-            this.data = new byte[2]; //TitleBytes.Length+2+4+5
-            this.offset = 2;
-            this.ID = 0x0032;
+            data = new byte[2]; //TitleBytes.Length+2+4+5
+            offset = 2;
+            ID = 0x0032;
         }
-
     }
 }
-

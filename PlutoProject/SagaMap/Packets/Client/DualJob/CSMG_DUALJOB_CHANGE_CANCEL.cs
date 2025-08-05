@@ -1,8 +1,5 @@
 using SagaLib;
 using SagaMap.Network.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SagaMap.Packets.Client
 {
@@ -10,7 +7,7 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_DUALJOB_CHANGE_CANCEL()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public override Packet New()
@@ -20,7 +17,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnDualJobWindowClose();
+            ((MapClient)client).OnDualJobWindowClose();
         }
     }
 }

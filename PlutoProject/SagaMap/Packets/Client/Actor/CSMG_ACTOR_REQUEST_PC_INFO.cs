@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,26 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ACTOR_REQUEST_PC_INFO()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint ActorID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint ActorID => GetUInt(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_ACTOR_REQUEST_PC_INFO();
+            return new CSMG_ACTOR_REQUEST_PC_INFO();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRequestPCInfo(this);
+            ((MapClient)client).OnRequestPCInfo(this);
         }
-
     }
 }

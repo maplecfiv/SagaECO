@@ -1,354 +1,625 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Partner;
-using SagaDB.Iris;
 using System.IO;
+using System.Linq;
+using SagaDB.Actor;
+using SagaDB.Iris;
+using SagaDB.Partner;
+using SagaLib;
 
 namespace SagaDB.Item
 {
     [Serializable]
     public class Item
     {
-        public class ItemData
-        {
-            public string name, desc;
-            public uint id, price;
-            public uint iconID;
-            public uint imageID;
-            public uint equipVolume, possessionWeight, weight, volume;
-            public ItemType itemType;
-            public uint repairItem, enhancementItem;
-            public uint events;
-            public bool receipt, dye, stock, doubleHand, usable;
-            public byte color;
-            public ushort durability;
-            public PC_JOB jointJob;
-            public uint eventID, effectID;
-            public ushort activateSkill, possibleSkill, passiveSkill, possessionSkill, possessionPassiveSkill;
-            public TargetType target;
-            public ActiveType activeType;
-            public byte range;
-            public uint duration;
-            public byte effectRange;
-            public bool isRate;
-            public uint cast, delay;
-            public short hp, mp, sp, weightUp, volumeUp, speedUp;
-            public short str, dex, intel, vit, agi, mag, luk, cha;
-            public short atk1, atk2, atk3, matk, def, mdef;
-            public short hitMelee, hitRanged, hitMagic;
-            public short avoidMelee, avoidRanged, avoidMagic;
-            public short hitCritical, avoidCritical;
-            public short hpRecover, mpRecover, spRecover;
-            public Dictionary<Elements, short> element = new Dictionary<Elements, short>();
-            public Dictionary<AbnormalStatus, short> abnormalStatus = new Dictionary<AbnormalStatus, short>();
-            public Dictionary<PC_RACE, bool> possibleRace = new Dictionary<PC_RACE, bool>();
-            public Dictionary<PC_GENDER, bool> possibleGender = new Dictionary<PC_GENDER, bool>();
-            public byte possibleLv;
-            public bool possibleRebirth;
-            public ushort possibleStr, possibleDex, possibleInt, possibleVit, possibleAgi, possibleMag, possibleLuk, possibleCha;
-            public Dictionary<PC_JOB, bool> possibleJob = new Dictionary<PC_JOB, bool>();
-            public Dictionary<Country, bool> possibleCountry = new Dictionary<Country, bool>();
-            public uint marionetteID, petID;
-
-            public byte currentSlot, maxSlot;
-
-            public ushort handMotion;
-            public byte handMotion2;
-            public bool noTrade;
-            public ItemAddition ItemAddition = new ItemAddition();
-            public override string ToString()
-            {
-                return name;
-            }
-        }
-        uint db_id, id;
-        string name = "";
-        ushort stack;
-        ushort durability, maxdurability;
-        public byte identified;
-        bool old; //旧物品标记
-        bool potential, release;//潜强，性能解放。
-        byte dye; //染色相关
-        bool locked;
-        bool changeMode, changeMode2;
-        private uint slot;
-
-        short hp, mp, sp, weightUp, volumeUp, speedUp;
-        short str, dex, intel, vit, agi, mag, luk, cha;
-        short atk1, atk2, atk3, matk, def, mdef;
-        short hitMelee, hitRanged, hitMagic;
-        short avoidMelee, avoidRanged, avoidMagic;
-        short hitCritical, avoidCritical;
-        short hpRecover, mpRecover, spRecover;
-        short aspd, cspd;
-        uint pict_id;
-        bool rental;
-        DateTime rentalTime = DateTime.Now;
-        byte partnerLevel, partnerRebirth;
-        byte currentSlot, maxSlot;
-
-        byte lifeenhance = 0;
-        byte powerenhance = 0;
-        byte critenhance = 0;
-        byte magenhance = 0;
-
-        ushort refine;
-
-        public short atk_refine, matk_refine, hp_refine, def_refine, mdef_refine, recover_refine, cri_refine, spd_refine, atkrate_refine, matkrate_refine,
-            defrate_refine, mdefrate_refine, hit_refine, mhit_refine;
-        List<Iris.IrisCard> cards = new List<SagaDB.Iris.IrisCard>();
-
-        public class EnItem
-        {
-            public short hp, mp, sp, weightUp, volumeUp, speedUp;
-            public short str, dex, intel, vit, agi, mag;
-            public short atk1, atk2, atk3, matk, def, mdef;
-            public short aspd, cspd;
-        }
-
-        Dictionary<RefineType, ushort> refineType;
-
-
-        uint refine_sharp, refine_enchanted, refine_vitality, refine_regeneration, refine_lucky, refine_dexterity, refine_ATKrate, refine_MATKrate, refine_def, refine_mdef, refine_hit, refine_mhit;
+        /// <summary>
+        ///     道具版本
+        /// </summary>
+        private static ushort Version = 11;
 
         /// <summary>
-        /// 该道具的宠物ID
+        ///     该道具的宠物ID
         /// </summary>
-        uint actorpartnerid;
+        private uint actorpartnerid;
 
-        /// <summary>
-        /// 道具版本
-        /// </summary>
-        static ushort Version = 11;
+        private short aspd, cspd;
 
-        [NonSerialized]
-        ActorPC possessionedActor;
-        [NonSerialized]
-        ActorPC possessionOwner;
+        public short atk_refine,
+            matk_refine,
+            hp_refine,
+            def_refine,
+            mdef_refine,
+            recover_refine,
+            cri_refine,
+            spd_refine,
+            atkrate_refine,
+            matkrate_refine,
+            defrate_refine,
+            mdefrate_refine,
+            hit_refine,
+            mhit_refine;
 
-        public uint Refine_Sharp { get { return refine_sharp; } set { refine_sharp = value; } }
-        public uint Refine_Enchanted { get { return refine_enchanted; } set { refine_enchanted = value; } }
-        public uint Refine_Vitality { get { return refine_vitality; } set { refine_vitality = value; } }
-        public uint Refine_Regeneration { get { return refine_regeneration; } set { refine_regeneration = value; } }
-        public uint Refine_Hit { get { return refine_def; } set { refine_def = value; } }
-        public uint Refine_Mhit { get { return refine_mdef; } set { refine_mdef = value; } }
-        public uint Refine_Lucky { get { return refine_lucky; } set { refine_lucky = value; } }
-        public uint Refine_Dexterity { get { return refine_dexterity; } set { refine_dexterity = value; } }
-        public uint Refine_ATKrate { get { return refine_ATKrate; } set { refine_ATKrate = value; } }
-        public uint Refine_MATKrate { get { return refine_MATKrate; } set { refine_MATKrate = value; } }
-        public uint Refine_Def { get { return refine_def; } set { refine_def = value; } }
-        public uint Refine_Mdef { get { return refine_mdef; } set { refine_mdef = value; } }
+        private short atk1, atk2, atk3, matk, def, mdef;
+        private short avoidMelee, avoidRanged, avoidMagic;
+
+        private List<IrisCard> cards = new List<IrisCard>();
+        private bool changeMode, changeMode2;
+        private byte critenhance;
+        private byte currentSlot, maxSlot;
+
+        private uint db_id;
+        private ushort durability, maxdurability;
+        private byte dye; //染色相关
 
         public Dictionary<Elements, short> Element = new Dictionary<Elements, short>();
 
         /// <summary>
-        /// 该装备附魔的其他套装装备
+        ///     该装备附魔的其他套装装备
         /// </summary>
         public Dictionary<uint, EnItem> EnChangeList = new Dictionary<uint, EnItem>();
 
-        /// <summary>
-        /// 生命强化次数
-        /// </summary>
-        public byte LifeEnhance { get { return this.lifeenhance; } set { this.lifeenhance = value; } }
-        /// <summary>
-        /// 力量强化次数
-        /// </summary>
-        public byte PowerEnhance { get { return this.powerenhance; } set { this.powerenhance = value; } }
-        /// <summary>
-        /// 致命强化次数
-        /// </summary>
-        public byte CritEnhance { get { return this.critenhance; } set { this.critenhance = value; } }
-        /// <summary>
-        /// 魔力强化次数
-        /// </summary>
-        public byte MagEnhance { get { return this.magenhance; } set { this.magenhance = value; } }
+        private short hitCritical, avoidCritical;
+        private short hitMelee, hitRanged, hitMagic;
 
-        /// <summary>
-        /// 强化装备提升的HP
-        /// </summary>
-        public short HP { get { return hp; } set { hp = value; } }
-        /// <summary>
-        /// 强化装备提升的MP
-        /// </summary>
-        public short MP { get { return mp; } set { mp = value; } }
-        /// <summary>
-        /// 强化装备提升的SP
-        /// </summary>
-        public short SP { get { return sp; } set { sp = value; } }
-        /// <summary>
-        /// 强化装备提升的负重
-        /// </summary>
-        public short WeightUp { get { return weightUp; } set { weightUp = value; } }
-        /// <summary>
-        /// 强化装备提升的体积
-        /// </summary>
-        public short VolumeUp { get { return volumeUp; } set { volumeUp = value; } }
-        /// <summary>
-        /// 强化装备提升的速度
-        /// </summary>
-        public short SpeedUp { get { return speedUp; } set { speedUp = value; } }
-        /// <summary>
-        /// 强化装备提升的Str
-        /// </summary>
-        public short Str { get { return str; } set { str = value; } }
-        /// <summary>
-        /// 强化装备提升的Dex
-        /// </summary>
-        public short Dex { get { return dex; } set { dex = value; } }
-        /// <summary>
-        /// 强化装备提升的Int
-        /// </summary>
-        public short Int { get { return intel; } set { intel = value; } }
-        /// <summary>
-        /// 强化装备提升的Vit
-        /// </summary>
-        public short Vit { get { return vit; } set { vit = value; } }
-        /// <summary>
-        /// 强化装备提升的Agi
-        /// </summary>
-        public short Agi { get { return agi; } set { agi = value; } }
-        /// <summary>
-        /// 强化装备提升的Mag
-        /// </summary>
-        public short Mag { get { return mag; } set { mag = value; } }
-        /// <summary>
-        /// 强化装备提升的Mag
-        /// </summary>
-        public short Luk { get { return luk; } set { luk = value; } }
-        /// <summary>
-        /// 强化装备提升的Mag
-        /// </summary>
-        public short Cha { get { return cha; } set { cha = value; } }
-        /// <summary>
-        /// 强化装备提升的Atk1
-        /// </summary>
-        public short Atk1 { get { return atk1; } set { atk1 = value; } }
-        /// <summary>
-        /// 强化装备提升的Atk2
-        /// </summary>
-        public short Atk2 { get { return atk2; } set { atk2 = value; } }
-        /// <summary>
-        /// 强化装备提升的Atk3
-        /// </summary>
-        public short Atk3 { get { return atk3; } set { atk3 = value; } }
-        /// <summary>
-        /// 强化装备提升的MAtk
-        /// </summary>
-        public short MAtk { get { return matk; } set { matk = value; } }
-        /// <summary>
-        /// 强化装备提升的Def
-        /// </summary>
-        public short Def { get { return def; } set { def = value; } }
-        /// <summary>
-        /// 强化装备提升的MDef
-        /// </summary>
-        public short MDef { get { return mdef; } set { mdef = value; } }
-        /// <summary>
-        /// 强化装备提升的HitMelee
-        /// </summary>
-        public short HitMelee { get { return hitMelee; } set { hitMelee = value; } }
-        /// <summary>
-        /// 强化装备提升的HitMagic
-        /// </summary>
-        public short HitMagic { get { return hitMagic; } set { hitMagic = value; } }
-        /// <summary>
-        /// 强化装备提升的HitRanged
-        /// </summary>
-        public short HitRanged { get { return hitRanged; } set { hitRanged = value; } }
-        /// <summary>
-        /// 强化装备提升的AvoidMelee
-        /// </summary>
-        public short AvoidMelee { get { return avoidMelee; } set { avoidMelee = value; } }
-        /// <summary>
-        /// 强化装备提升的AvoidMagic
-        /// </summary>
-        public short AvoidMagic { get { return avoidMagic; } set { avoidMagic = value; } }
-        /// <summary>
-        /// 强化装备提升的AvoidRanged
-        /// </summary>
-        public short AvoidRanged { get { return avoidRanged; } set { avoidRanged = value; } }
-        /// <summary>
-        /// 强化装备提升的HitCritical
-        /// </summary>
-        public short HitCritical { get { return hitCritical; } set { hitCritical = value; } }
-        /// <summary>
-        /// 强化装备提升的AvoidCritical
-        /// </summary>
-        public short AvoidCritical { get { return avoidCritical; } set { avoidCritical = value; } }
-        /// <summary>
-        /// 强化装备提升的HPRecover 宠物相关 待检查
-        /// </summary>
-        public short HPRecover { get { return hpRecover; } set { hpRecover = value; } }
-        /// <summary>
-        /// 强化装备提升的MPRecover 宠物相关 待检查 暂时不要使用
-        /// </summary>
-        public short MPRecover { get { return mpRecover; } set { mpRecover = value; } }
-        /// <summary>
-        /// 强化装备提升的SPRecover 宠物相关 待检查 暂时不要使用
-        /// </summary>
-        public short SPRecover { get { return spRecover; } set { spRecover = value; } }
+        private short hp, mp, sp, weightUp, volumeUp, speedUp;
+        private short hpRecover, mpRecover, spRecover;
+        public byte identified;
 
-        /// <summary>
-        /// 强化装备提升的ASPD 宠物相关 待检查
-        /// </summary>
-        public short ASPD { get { return aspd; } set { aspd = value; } }
+        private byte lifeenhance;
+        private bool locked;
+        private byte magenhance;
+        private string name = "";
+        private bool old; //旧物品标记
+        private byte partnerLevel, partnerRebirth;
+        private uint pict_id;
 
-        /// <summary>
-        /// 强化装备提升的CSPD 宠物相关 待检查
-        /// </summary>
-        public short CSPD { get { return cspd; } set { cspd = value; } }
+        [NonSerialized] private ActorPC possessionedActor;
+        [NonSerialized] private ActorPC possessionOwner;
+        private bool potential, release; //潜强，性能解放。
+        private byte powerenhance;
 
-        /// <summary>
-        /// 道具详细情报显示的名字
-        /// </summary>
-        public string Name { get { return name; } set { name = value; } }
-
-        /// <summary>
-        /// 是否是旧版本道具
-        /// </summary>
-        public bool Old { get { return old; } set { old = value; } }
-
-        /// <summary>
-        /// 是否已经潜在强化
-        /// </summary>
-        public bool Potential { get { return potential; } set { potential = value; } }
-
-        /// <summary>
-        /// 是否已经性能解放
-        /// </summary>
-        public bool Release { get { return release; } set { release = value; } }
-
-        /// <summary>
-        /// Partner等级
-        /// </summary>
-        public byte PartnerLevel { get { return partnerLevel; } set { partnerLevel = value; } }
-
-        /// <summary>
-        /// Partner转生标志 0=未转生 1=已转生
-        /// </summary>
-        public byte PartnerRebirth { get { return partnerRebirth; } set { partnerRebirth = value; } }
+        private ushort refine;
 
 
-        /// <summary>
-        /// 是否是出租道具
-        /// </summary>
-        public bool Rental { get { return rental; } set { rental = value; } }
+        private uint refine_sharp,
+            refine_enchanted,
+            refine_vitality,
+            refine_regeneration,
+            refine_lucky,
+            refine_dexterity,
+            refine_ATKrate,
+            refine_MATKrate,
+            refine_def,
+            refine_mdef,
+            refine_hit,
+            refine_mhit;
+
+        private Dictionary<RefineType, ushort> refineType;
+        private bool rental;
+        private DateTime rentalTime = DateTime.Now;
+        private uint slot;
+        private ushort stack;
+        private short str, dex, intel, vit, agi, mag, luk, cha;
+
+        public Item()
+        {
+        }
+
+        public Item(ItemData baseData)
+        {
+            ItemID = baseData.id;
+            maxdurability = baseData.durability;
+            //出错备份Element = baseData.element;
+        }
+
+        public Item(Stream InputStream)
+        {
+            FromStream(InputStream);
+        }
+
+        public uint Refine_Sharp
+        {
+            get => refine_sharp;
+            set => refine_sharp = value;
+        }
+
+        public uint Refine_Enchanted
+        {
+            get => refine_enchanted;
+            set => refine_enchanted = value;
+        }
+
+        public uint Refine_Vitality
+        {
+            get => refine_vitality;
+            set => refine_vitality = value;
+        }
+
+        public uint Refine_Regeneration
+        {
+            get => refine_regeneration;
+            set => refine_regeneration = value;
+        }
+
+        public uint Refine_Hit
+        {
+            get => refine_def;
+            set => refine_def = value;
+        }
+
+        public uint Refine_Mhit
+        {
+            get => refine_mdef;
+            set => refine_mdef = value;
+        }
+
+        public uint Refine_Lucky
+        {
+            get => refine_lucky;
+            set => refine_lucky = value;
+        }
+
+        public uint Refine_Dexterity
+        {
+            get => refine_dexterity;
+            set => refine_dexterity = value;
+        }
+
+        public uint Refine_ATKrate
+        {
+            get => refine_ATKrate;
+            set => refine_ATKrate = value;
+        }
+
+        public uint Refine_MATKrate
+        {
+            get => refine_MATKrate;
+            set => refine_MATKrate = value;
+        }
+
+        public uint Refine_Def
+        {
+            get => refine_def;
+            set => refine_def = value;
+        }
+
+        public uint Refine_Mdef
+        {
+            get => refine_mdef;
+            set => refine_mdef = value;
+        }
 
         /// <summary>
-        /// 出租道具到期时间
+        ///     生命强化次数
         /// </summary>
-        public DateTime RentalTime { get { return rentalTime; } set { rentalTime = value; } }
+        public byte LifeEnhance
+        {
+            get => lifeenhance;
+            set => lifeenhance = value;
+        }
 
-        public uint PictID { get { return pict_id; } set { pict_id = value; } }
+        /// <summary>
+        ///     力量强化次数
+        /// </summary>
+        public byte PowerEnhance
+        {
+            get => powerenhance;
+            set => powerenhance = value;
+        }
 
-        public uint ItemID { get { return id; } }
-        public uint DBID { get { return db_id; } set { db_id = value; } }
-        public ushort maxDurability { get { return maxdurability; } set { maxdurability = value; } }
-        public uint Slot { get { return slot; } set { slot = value; } }
+        /// <summary>
+        ///     致命强化次数
+        /// </summary>
+        public byte CritEnhance
+        {
+            get => critenhance;
+            set => critenhance = value;
+        }
+
+        /// <summary>
+        ///     魔力强化次数
+        /// </summary>
+        public byte MagEnhance
+        {
+            get => magenhance;
+            set => magenhance = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HP
+        /// </summary>
+        public short HP
+        {
+            get => hp;
+            set => hp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的MP
+        /// </summary>
+        public short MP
+        {
+            get => mp;
+            set => mp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的SP
+        /// </summary>
+        public short SP
+        {
+            get => sp;
+            set => sp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的负重
+        /// </summary>
+        public short WeightUp
+        {
+            get => weightUp;
+            set => weightUp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的体积
+        /// </summary>
+        public short VolumeUp
+        {
+            get => volumeUp;
+            set => volumeUp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的速度
+        /// </summary>
+        public short SpeedUp
+        {
+            get => speedUp;
+            set => speedUp = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Str
+        /// </summary>
+        public short Str
+        {
+            get => str;
+            set => str = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Dex
+        /// </summary>
+        public short Dex
+        {
+            get => dex;
+            set => dex = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Int
+        /// </summary>
+        public short Int
+        {
+            get => intel;
+            set => intel = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Vit
+        /// </summary>
+        public short Vit
+        {
+            get => vit;
+            set => vit = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Agi
+        /// </summary>
+        public short Agi
+        {
+            get => agi;
+            set => agi = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Mag
+        /// </summary>
+        public short Mag
+        {
+            get => mag;
+            set => mag = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Mag
+        /// </summary>
+        public short Luk
+        {
+            get => luk;
+            set => luk = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Mag
+        /// </summary>
+        public short Cha
+        {
+            get => cha;
+            set => cha = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Atk1
+        /// </summary>
+        public short Atk1
+        {
+            get => atk1;
+            set => atk1 = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Atk2
+        /// </summary>
+        public short Atk2
+        {
+            get => atk2;
+            set => atk2 = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Atk3
+        /// </summary>
+        public short Atk3
+        {
+            get => atk3;
+            set => atk3 = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的MAtk
+        /// </summary>
+        public short MAtk
+        {
+            get => matk;
+            set => matk = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的Def
+        /// </summary>
+        public short Def
+        {
+            get => def;
+            set => def = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的MDef
+        /// </summary>
+        public short MDef
+        {
+            get => mdef;
+            set => mdef = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HitMelee
+        /// </summary>
+        public short HitMelee
+        {
+            get => hitMelee;
+            set => hitMelee = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HitMagic
+        /// </summary>
+        public short HitMagic
+        {
+            get => hitMagic;
+            set => hitMagic = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HitRanged
+        /// </summary>
+        public short HitRanged
+        {
+            get => hitRanged;
+            set => hitRanged = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的AvoidMelee
+        /// </summary>
+        public short AvoidMelee
+        {
+            get => avoidMelee;
+            set => avoidMelee = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的AvoidMagic
+        /// </summary>
+        public short AvoidMagic
+        {
+            get => avoidMagic;
+            set => avoidMagic = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的AvoidRanged
+        /// </summary>
+        public short AvoidRanged
+        {
+            get => avoidRanged;
+            set => avoidRanged = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HitCritical
+        /// </summary>
+        public short HitCritical
+        {
+            get => hitCritical;
+            set => hitCritical = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的AvoidCritical
+        /// </summary>
+        public short AvoidCritical
+        {
+            get => avoidCritical;
+            set => avoidCritical = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的HPRecover 宠物相关 待检查
+        /// </summary>
+        public short HPRecover
+        {
+            get => hpRecover;
+            set => hpRecover = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的MPRecover 宠物相关 待检查 暂时不要使用
+        /// </summary>
+        public short MPRecover
+        {
+            get => mpRecover;
+            set => mpRecover = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的SPRecover 宠物相关 待检查 暂时不要使用
+        /// </summary>
+        public short SPRecover
+        {
+            get => spRecover;
+            set => spRecover = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的ASPD 宠物相关 待检查
+        /// </summary>
+        public short ASPD
+        {
+            get => aspd;
+            set => aspd = value;
+        }
+
+        /// <summary>
+        ///     强化装备提升的CSPD 宠物相关 待检查
+        /// </summary>
+        public short CSPD
+        {
+            get => cspd;
+            set => cspd = value;
+        }
+
+        /// <summary>
+        ///     道具详细情报显示的名字
+        /// </summary>
+        public string Name
+        {
+            get => name;
+            set => name = value;
+        }
+
+        /// <summary>
+        ///     是否是旧版本道具
+        /// </summary>
+        public bool Old
+        {
+            get => old;
+            set => old = value;
+        }
+
+        /// <summary>
+        ///     是否已经潜在强化
+        /// </summary>
+        public bool Potential
+        {
+            get => potential;
+            set => potential = value;
+        }
+
+        /// <summary>
+        ///     是否已经性能解放
+        /// </summary>
+        public bool Release
+        {
+            get => release;
+            set => release = value;
+        }
+
+        /// <summary>
+        ///     Partner等级
+        /// </summary>
+        public byte PartnerLevel
+        {
+            get => partnerLevel;
+            set => partnerLevel = value;
+        }
+
+        /// <summary>
+        ///     Partner转生标志 0=未转生 1=已转生
+        /// </summary>
+        public byte PartnerRebirth
+        {
+            get => partnerRebirth;
+            set => partnerRebirth = value;
+        }
+
+
+        /// <summary>
+        ///     是否是出租道具
+        /// </summary>
+        public bool Rental
+        {
+            get => rental;
+            set => rental = value;
+        }
+
+        /// <summary>
+        ///     出租道具到期时间
+        /// </summary>
+        public DateTime RentalTime
+        {
+            get => rentalTime;
+            set => rentalTime = value;
+        }
+
+        public uint PictID
+        {
+            get => pict_id;
+            set => pict_id = value;
+        }
+
+        public uint ItemID { get; private set; }
+
+        public uint DBID
+        {
+            get => db_id;
+            set => db_id = value;
+        }
+
+        public ushort maxDurability
+        {
+            get => maxdurability;
+            set => maxdurability = value;
+        }
+
+        public uint Slot
+        {
+            get => slot;
+            set => slot = value;
+        }
 
         public ItemData BaseData
         {
@@ -357,39 +628,63 @@ namespace SagaDB.Item
                 ItemData baseData = null;
                 if (baseData == null)
                 {
-                    if (ItemFactory.Instance.Items.ContainsKey(id))
-                        baseData = ItemFactory.Instance.Items[id];
+                    if (ItemFactory.Instance.Items.ContainsKey(ItemID))
+                        baseData = ItemFactory.Instance.Items[ItemID];
                     else
                         baseData = new ItemData();
                 }
+
                 return baseData;
             }
         }
 
         /// <summary>
-        /// 数量
+        ///     数量
         /// </summary>
-        public ushort Stack { get { return stack; } set { stack = value; } }
-        /// <summary>
-        /// 染色
-        /// </summary>
-        public byte Dye { get { return dye; } set { dye = value; } }
-        /// <summary>
-        /// 持久
-        /// </summary>
-        public ushort Durability { get { return durability; } set { durability = value; } }
+        public ushort Stack
+        {
+            get => stack;
+            set => stack = value;
+        }
 
         /// <summary>
-        /// 凭依在此道具上的Actor
+        ///     染色
         /// </summary>
-        public Actor.ActorPC PossessionedActor { get { return possessionedActor; } set { possessionedActor = value; } }
-        /// <summary>
-        /// 此道具被凭依前的主人
-        /// </summary>
-        public Actor.ActorPC PossessionOwner { get { return possessionOwner; } set { possessionOwner = value; } }
+        public byte Dye
+        {
+            get => dye;
+            set => dye = value;
+        }
 
         /// <summary>
-        /// 装备当前插槽
+        ///     持久
+        /// </summary>
+        public ushort Durability
+        {
+            get => durability;
+            set => durability = value;
+        }
+
+        /// <summary>
+        ///     凭依在此道具上的Actor
+        /// </summary>
+        public ActorPC PossessionedActor
+        {
+            get => possessionedActor;
+            set => possessionedActor = value;
+        }
+
+        /// <summary>
+        ///     此道具被凭依前的主人
+        /// </summary>
+        public ActorPC PossessionOwner
+        {
+            get => possessionOwner;
+            set => possessionOwner = value;
+        }
+
+        /// <summary>
+        ///     装备当前插槽
         /// </summary>
         public byte CurrentSlot
         {
@@ -399,11 +694,11 @@ namespace SagaDB.Item
                     currentSlot = BaseData.currentSlot;
                 return currentSlot;
             }
-            set { currentSlot = value; }
+            set => currentSlot = value;
         }
 
         /// <summary>
-        /// 装备最大插槽
+        ///     装备最大插槽
         /// </summary>
         public byte MaxSlot
         {
@@ -413,13 +708,13 @@ namespace SagaDB.Item
                     maxSlot = BaseData.maxSlot;
                 return maxSlot;
             }
-            set { maxSlot = value; }
+            set => maxSlot = value;
         }
 
         /// <summary>
-        /// 已经插入的卡
+        ///     已经插入的卡
         /// </summary>
-        public List<Iris.IrisCard> Cards
+        public List<IrisCard> Cards
         {
             get
             {
@@ -430,9 +725,13 @@ namespace SagaDB.Item
         }
 
         /// <summary>
-        /// 装备强化次数
+        ///     装备强化次数
         /// </summary>
-        public ushort Refine { get { return refine; } set { refine = value; } }
+        public ushort Refine
+        {
+            get => refine;
+            set => refine = value;
+        }
 
         public bool Identified
         {
@@ -440,12 +739,11 @@ namespace SagaDB.Item
             {
                 if (identified == 0)
                     return false;
-                else
-                    return true;
+                return true;
             }
             set
             {
-                if (value == true)
+                if (value)
                     identified = 1;
                 else
                     identified = 0;
@@ -454,42 +752,27 @@ namespace SagaDB.Item
 
         public bool Locked
         {
-            get
-            {
-                return locked;
-            }
-            set
-            {
-                locked = value;
-            }
+            get => locked;
+            set => locked = value;
         }
+
         /// <summary>
-        /// 觉醒状态
+        ///     觉醒状态
         /// </summary>
         public bool ChangeMode
         {
-            get
-            {
-                return changeMode;
-            }
-            set
-            {
-                changeMode = value;
-            }
+            get => changeMode;
+            set => changeMode = value;
         }
+
         public bool ChangeMode2
         {
-            get
-            {
-                return changeMode2;
-            }
-            set
-            {
-                changeMode2 = value;
-            }
+            get => changeMode2;
+            set => changeMode2 = value;
         }
+
         /// <summary>
-        /// 强化类型
+        ///     强化类型
         /// </summary>
         public Dictionary<RefineType, ushort> RefineType
         {
@@ -497,62 +780,477 @@ namespace SagaDB.Item
             {
                 if (refineType == null)
                     refineType = new Dictionary<RefineType, ushort>();
-                if (!refineType.ContainsKey((RefineType)0))
-                    refineType.Add(((RefineType)0), 0);
+                if (!refineType.ContainsKey(0))
+                    refineType.Add(0, 0);
                 if (!refineType.ContainsKey((RefineType)1))
-                    refineType.Add(((RefineType)1), 0);
+                    refineType.Add((RefineType)1, 0);
                 if (!refineType.ContainsKey((RefineType)2))
-                    refineType.Add(((RefineType)2), 0);
+                    refineType.Add((RefineType)2, 0);
                 if (!refineType.ContainsKey((RefineType)3))
-                    refineType.Add(((RefineType)3), 0);
+                    refineType.Add((RefineType)3, 0);
                 if (!refineType.ContainsKey((RefineType)4))
-                    refineType.Add(((RefineType)4), 0);
+                    refineType.Add((RefineType)4, 0);
                 if (!refineType.ContainsKey((RefineType)5))
-                    refineType.Add(((RefineType)5), 0);
+                    refineType.Add((RefineType)5, 0);
                 if (!refineType.ContainsKey((RefineType)6))
-                    refineType.Add(((RefineType)6), 0);
+                    refineType.Add((RefineType)6, 0);
                 if (!refineType.ContainsKey((RefineType)7))
-                    refineType.Add(((RefineType)7), 0);
+                    refineType.Add((RefineType)7, 0);
                 if (!refineType.ContainsKey((RefineType)8))
-                    refineType.Add(((RefineType)8), 0);
+                    refineType.Add((RefineType)8, 0);
                 if (!refineType.ContainsKey((RefineType)9))
-                    refineType.Add(((RefineType)9), 0);
+                    refineType.Add((RefineType)9, 0);
                 if (!refineType.ContainsKey((RefineType)10))
-                    refineType.Add(((RefineType)10), 0);
+                    refineType.Add((RefineType)10, 0);
                 if (!refineType.ContainsKey((RefineType)11))
-                    refineType.Add(((RefineType)11), 0);
+                    refineType.Add((RefineType)11, 0);
                 return refineType;
             }
-            set
+            set => refineType = value;
+        }
+
+        public bool Stackable
+        {
+            get
             {
-                refineType = value;
+                if (BaseData.stock)
+                    return true;
+                return false;
             }
         }
 
-        public Item()
+        /// <summary>
+        ///     检查是否是装备 这样的判定太蛋疼了 有空我要改掉！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+        /// </summary>
+        public bool IsEquipt
         {
+            get
+            {
+                var type = (int)BaseData.itemType;
+                if (type >= (int)ItemType.ACCESORY_HEAD && type <= (int)ItemType.PET_NEKOMATA)
+                    return true;
+                if (type == (int)ItemType.EXSWORD || type == (int)ItemType.EXGUN)
+                    return true;
+                if (type == (int)ItemType.EFFECT)
+                    return true;
+                if (type == (int)ItemType.PARTNER || type == (int)ItemType.RIDE_PARTNER)
+                    return true;
+                return false;
+            }
         }
 
-        public Item(ItemData baseData)
+        /// <summary>
+        ///     检查是否是DEM部件
+        /// </summary>
+        public bool IsParts
         {
-            id = baseData.id;
-            maxdurability = baseData.durability;
-            //出错备份Element = baseData.element;
+            get
+            {
+                var type = (int)BaseData.itemType;
+                if (type >= (int)ItemType.PARTS_HEAD && type <= (int)ItemType.PARTS_LONGRANGE)
+                    return true;
+                return false;
+            }
         }
 
-        public Item(Stream InputStream)
+        /// <summary>
+        ///     检查一个道具是否是武器
+        /// </summary>
+        public bool IsWeapon
         {
-            FromStream(InputStream);
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.AXE:
+                    case ItemType.BOOK:
+                    case ItemType.HAMMER:
+                    case ItemType.HANDBAG:
+                    case ItemType.RAPIER:
+                    case ItemType.SHORT_SWORD:
+                    case ItemType.SPEAR:
+                    case ItemType.STAFF:
+                    case ItemType.SWORD:
+                    case ItemType.ROPE:
+                    case ItemType.BOW:
+                    case ItemType.DUALGUN:
+                    case ItemType.GUN:
+                    case ItemType.RIFLE:
+                    case ItemType.CARD:
+                    case ItemType.THROW:
+                    case ItemType.CLAW:
+                    case ItemType.STRINGS:
+                    case ItemType.ETC_WEAPON:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
         }
 
-        public void ToStream(System.IO.Stream ms)
+        /// <summary>
+        ///     检查武器是否需要弹药（是否是弓箭枪械类）
+        /// </summary>
+        public bool NeedAmmo
         {
-            BinaryWriter bw = new BinaryWriter(ms);
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.BOW:
+                    case ItemType.DUALGUN:
+                    case ItemType.GUN:
+                    case ItemType.RIFLE:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     检查是否是弹药(不含card和throw)
+        /// </summary>
+        public bool IsAmmo
+        {
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.ARROW:
+                    case ItemType.BULLET:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     检查道具是否是衣服
+        /// </summary>
+        public bool IsArmor
+        {
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.ONEPIECE:
+                    case ItemType.COSTUME:
+                    case ItemType.BODYSUIT:
+                    case ItemType.WEDDING:
+                    case ItemType.OVERALLS:
+                    case ItemType.ARMOR_UPPER:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     检查道具是否是宠物
+        /// </summary>
+        public bool IsPet
+        {
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.PET:
+                    case ItemType.PET_NEKOMATA:
+                    case ItemType.RIDE_PET:
+                    case ItemType.RIDE_PET_ROBOT:
+                    case ItemType.PARTNER:
+                    case ItemType.RIDE_PARTNER:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     检查道具是否是partner
+        /// </summary>
+        public bool IsPartner
+        {
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.PARTNER:
+                    case ItemType.RIDE_PARTNER:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     取得该装备需要的装备槽
+        /// </summary>
+        public List<EnumEquipSlot> EquipSlot
+        {
+            get
+            {
+                var slots = new List<EnumEquipSlot>();
+                if (!IsEquipt && !IsParts)
+                    Logger.ShowDebug("Cannot equip a non equipment item!", Logger.defaultlogger);
+                switch (BaseData.itemType)
+                {
+                    //head&face
+                    case ItemType.ACCESORY_HEAD:
+                        slots.Add(EnumEquipSlot.HEAD_ACCE);
+                        slots.Add(EnumEquipSlot.HEAD);
+                        break;
+                    case ItemType.PARTS_HEAD:
+                    case ItemType.HELM:
+                        slots.Add(EnumEquipSlot.HEAD);
+                        break;
+                    case ItemType.ACCESORY_FACE:
+                        slots.Add(EnumEquipSlot.FACE_ACCE);
+                        break;
+                    case ItemType.FULLFACE:
+                        slots.Add(EnumEquipSlot.HEAD);
+                        slots.Add(EnumEquipSlot.FACE);
+                        slots.Add(EnumEquipSlot.HEAD_ACCE);
+                        slots.Add(EnumEquipSlot.FACE_ACCE);
+                        break;
+                    //necklace
+                    case ItemType.ACCESORY_NECK:
+                    case ItemType.JOINT_SYMBOL:
+                        slots.Add(EnumEquipSlot.CHEST_ACCE);
+                        break;
+                    //tops
+                    case ItemType.PARTS_BODY:
+                    case ItemType.ARMOR_UPPER:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        break;
+                    case ItemType.OVERALLS:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        break;
+                    case ItemType.ONEPIECE:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        break;
+                    //downs
+                    case ItemType.PARTS_LEG:
+                    case ItemType.SLACKS:
+                    case ItemType.ARMOR_LOWER:
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        break;
+                    case ItemType.SOCKS:
+                        slots.Add(EnumEquipSlot.SOCKS);
+                        break;
+                    //shoes
+                    case ItemType.SHOES:
+                    case ItemType.BOOTS:
+                    case ItemType.HALFBOOTS:
+                        slots.Add(EnumEquipSlot.SHOES);
+                        break;
+                    case ItemType.LONGBOOTS:
+                        slots.Add(EnumEquipSlot.SHOES);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        break;
+                    //weapons&ammos&shield&lefts
+                    case ItemType.PARTS_LONGRANGE:
+                    case ItemType.PARTS_SLASH:
+                    case ItemType.PARTS_STAB:
+                    case ItemType.PARTS_BLOW:
+                    case ItemType.BOOK:
+                    case ItemType.STAFF:
+                    case ItemType.SWORD:
+                    case ItemType.AXE:
+                    case ItemType.SPEAR:
+                    case ItemType.RAPIER:
+                    case ItemType.CARD:
+                    case ItemType.HANDBAG:
+                    case ItemType.SHORT_SWORD:
+                    case ItemType.ETC_WEAPON:
+                    case ItemType.THROW:
+                    case ItemType.ROPE:
+                    case ItemType.HAMMER:
+                        if (BaseData.doubleHand)
+                        {
+                            slots.Add(EnumEquipSlot.RIGHT_HAND);
+                            slots.Add(EnumEquipSlot.LEFT_HAND);
+                        }
+                        else
+                        {
+                            slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        }
+
+                        break;
+                    case ItemType.BOW:
+                    case ItemType.GUN:
+                    case ItemType.RIFLE:
+                    case ItemType.DUALGUN:
+                        slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        break;
+                    case ItemType.CLAW:
+                    case ItemType.STRINGS:
+                        slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        slots.Add(EnumEquipSlot.LEFT_HAND);
+                        break;
+                    case ItemType.ACCESORY_FINGER:
+                    case ItemType.SHIELD:
+                    case ItemType.LEFT_HANDBAG:
+                    case ItemType.BULLET:
+                    case ItemType.ARROW:
+                        slots.Add(EnumEquipSlot.LEFT_HAND);
+                        break;
+                    //backs&pets&effects
+                    case ItemType.PARTS_BACK:
+                    case ItemType.BACKPACK:
+                        slots.Add(EnumEquipSlot.BACK);
+                        break;
+                    case ItemType.BACK_DEMON:
+                        //slots.Add(EnumEquipSlot.PET);
+                        slots.Add(EnumEquipSlot.BACK);
+                        break;
+                    case ItemType.PET_NEKOMATA:
+                    case ItemType.PET:
+                    case ItemType.RIDE_PET:
+                    case ItemType.PARTNER:
+                    case ItemType.RIDE_PARTNER:
+                    case ItemType.RIDE_PET_ROBOT:
+                        slots.Add(EnumEquipSlot.PET);
+                        break;
+                    case ItemType.EFFECT:
+                        slots.Add(EnumEquipSlot.EFFECT);
+                        break;
+                    //complexes
+                    case ItemType.EXSWORD:
+                    case ItemType.EXGUN:
+                        slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        slots.Add(EnumEquipSlot.SHOES);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        break;
+                    case ItemType.WEDDING:
+                        slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        slots.Add(EnumEquipSlot.LEFT_HAND);
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        slots.Add(EnumEquipSlot.PET);
+                        break;
+                    case ItemType.BODYSUIT:
+                    case ItemType.FACEBODYSUIT:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        slots.Add(EnumEquipSlot.SHOES);
+                        slots.Add(EnumEquipSlot.SOCKS);
+                        break;
+                    case ItemType.COSTUME:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.HEAD_ACCE);
+                        slots.Add(EnumEquipSlot.HEAD);
+                        slots.Add(EnumEquipSlot.FACE);
+                        slots.Add(EnumEquipSlot.FACE_ACCE);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        slots.Add(EnumEquipSlot.SHOES);
+                        slots.Add(EnumEquipSlot.SOCKS);
+                        break;
+                    case ItemType.EQ_ALLSLOT:
+                        slots.Add(EnumEquipSlot.UPPER_BODY);
+                        slots.Add(EnumEquipSlot.HEAD);
+                        slots.Add(EnumEquipSlot.FACE);
+                        slots.Add(EnumEquipSlot.FACE_ACCE);
+                        slots.Add(EnumEquipSlot.CHEST_ACCE);
+                        slots.Add(EnumEquipSlot.RIGHT_HAND);
+                        slots.Add(EnumEquipSlot.LEFT_HAND);
+                        slots.Add(EnumEquipSlot.BACK);
+                        slots.Add(EnumEquipSlot.LOWER_BODY);
+                        slots.Add(EnumEquipSlot.SHOES);
+                        slots.Add(EnumEquipSlot.SOCKS);
+                        slots.Add(EnumEquipSlot.PET);
+                        break;
+                }
+
+                return slots;
+            }
+        }
+
+        /// <summary>
+        ///     取得该Partner装备需要的装备槽
+        /// </summary>
+        public List<EnumPartnerEquipSlot> PartnerEquipSlot
+        {
+            get
+            {
+                var slots = new List<EnumPartnerEquipSlot>();
+                if (BaseData.itemType != ItemType.UNION_WEAPON && BaseData.itemType != ItemType.UNION_COSTUME)
+                    Logger.ShowDebug("Cannot equip partner a non partner equipment item!", Logger.defaultlogger);
+                switch (BaseData.itemType)
+                {
+                    //head&face
+                    case ItemType.UNION_WEAPON:
+                        slots.Add(EnumPartnerEquipSlot.WEAPON);
+                        break;
+                    case ItemType.UNION_COSTUME:
+                        slots.Add(EnumPartnerEquipSlot.COSTUME);
+                        break;
+                }
+
+                return slots;
+            }
+        }
+
+        public ATTACK_TYPE AttackType
+        {
+            get
+            {
+                switch (BaseData.itemType)
+                {
+                    case ItemType.SWORD:
+                    case ItemType.CARD:
+                    case ItemType.SHORT_SWORD:
+                    case ItemType.PARTS_SLASH:
+                        return ATTACK_TYPE.SLASH;
+                    case ItemType.RIFLE:
+                    case ItemType.CLAW:
+                    case ItemType.BOW:
+                    case ItemType.GUN:
+                    case ItemType.DUALGUN:
+                    case ItemType.SPEAR:
+                    case ItemType.ARROW:
+                    case ItemType.RAPIER:
+                    case ItemType.THROW:
+                    case ItemType.PARTS_STAB:
+                    case ItemType.PARTS_LONGRANGE:
+                        return ATTACK_TYPE.STAB;
+                    case ItemType.LEFT_HANDBAG:
+                    case ItemType.HANDBAG:
+                    case ItemType.HAMMER:
+                    case ItemType.AXE:
+                    case ItemType.BOOK:
+                    case ItemType.STAFF:
+                    case ItemType.ETC_WEAPON:
+                    case ItemType.STRINGS:
+                    case ItemType.PARTS_BLOW:
+                        return ATTACK_TYPE.BLOW;
+                    default:
+                        return ATTACK_TYPE.BLOW;
+                }
+            }
+        }
+
+        public uint ActorPartnerID
+        {
+            get => actorpartnerid;
+            set => actorpartnerid = value;
+        }
+
+        public void ToStream(Stream ms)
+        {
+            var bw = new BinaryWriter(ms);
             //Version
             bw.Write(Version);
 
             //Version 1
-            bw.Write(id);
+            bw.Write(ItemID);
             bw.Write(durability);
             bw.Write(stack);
             bw.Write(identified);
@@ -597,10 +1295,7 @@ namespace SagaDB.Item
             if (cards == null)
                 cards = new List<IrisCard>();
             bw.Write((byte)cards.Count);
-            foreach (Iris.IrisCard i in cards)
-            {
-                bw.Write(i.ID);
-            }
+            foreach (var i in cards) bw.Write(i.ID);
             bw.Write(locked);
 
             //Version 3
@@ -688,11 +1383,11 @@ namespace SagaDB.Item
         {
             try
             {
-                BinaryReader br = new BinaryReader(InputStream);
-                ushort item_version = br.ReadUInt16();
+                var br = new BinaryReader(InputStream);
+                var item_version = br.ReadUInt16();
                 if (item_version >= 1)
                 {
-                    id = br.ReadUInt32();
+                    ItemID = br.ReadUInt32();
                     durability = br.ReadUInt16();
                     stack = br.ReadUInt16();
                     identified = br.ReadByte();
@@ -733,32 +1428,35 @@ namespace SagaDB.Item
                     pict_id = br.ReadUInt32();
                     slot = br.ReadUInt32();
                 }
+
                 if (item_version >= 2)
                 {
                     currentSlot = br.ReadByte();
                     int count = br.ReadByte();
-                    for (int i = 0; i < count; i++)
+                    for (var i = 0; i < count; i++)
                     {
-                        uint id = br.ReadUInt32();
-                        if (Iris.IrisCardFactory.Instance.Items.ContainsKey(id))
-                        {
-                            cards.Add(Iris.IrisCardFactory.Instance.Items[id]);
-                        }
+                        var id = br.ReadUInt32();
+                        if (IrisCardFactory.Instance.Items.ContainsKey(id))
+                            cards.Add(IrisCardFactory.Instance.Items[id]);
                     }
+
                     locked = br.ReadBoolean();
                 }
+
                 if (item_version >= 3)
                 {
                     rental = br.ReadBoolean();
                     rentalTime = DateTime.FromBinary(br.ReadInt64());
                 }
+
                 if (item_version >= 4)
                 {
                     changeMode = br.ReadBoolean();
                     changeMode2 = br.ReadBoolean();
                 }
+
                 if (item_version >= 5)
-                    for (int i = 0; i < 12; i++)
+                    for (var i = 0; i < 12; i++)
                         RefineType[(RefineType)i] = (ushort)br.ReadInt16();
                 if (item_version >= 6)
                 {
@@ -773,12 +1471,14 @@ namespace SagaDB.Item
                     refine_def = br.ReadUInt32();
                     refine_mdef = br.ReadUInt32();
                 }
+
                 if (item_version >= 7)
                 {
                     refine_hit = br.ReadUInt32();
                     refine_mhit = br.ReadUInt32();
                     actorpartnerid = br.ReadUInt32();
                 }
+
                 if (item_version >= 8)
                 {
                     name = br.ReadString();
@@ -789,10 +1489,7 @@ namespace SagaDB.Item
                     release = br.ReadBoolean();
                 }
 
-                if (item_version >= 9)
-                {
-                    maxDurability = br.ReadUInt16();
-                }
+                if (item_version >= 9) maxDurability = br.ReadUInt16();
 
                 if (item_version >= 10)
                 {
@@ -802,10 +1499,7 @@ namespace SagaDB.Item
                     magenhance = br.ReadByte();
                 }
 
-                if (item_version >= 11)
-                {
-                    dye = br.ReadByte();
-                }
+                if (item_version >= 11) dye = br.ReadByte();
 
                 //if (item_version >= 12)
                 //{
@@ -859,7 +1553,7 @@ namespace SagaDB.Item
             weightUp = 0;
             aspd = 0;
             cspd = 0;
-            name = "";//虽然不明白是什么,还原吧
+            name = ""; //虽然不明白是什么,还原吧
             partnerLevel = 0;
             partnerRebirth = 0;
             refine = 0;
@@ -887,8 +1581,8 @@ namespace SagaDB.Item
 
         public Item Clone()
         {
-            Item item = new Item();
-            item.id = id;
+            var item = new Item();
+            item.ItemID = ItemID;
             item.db_id = db_id;
             item.durability = durability;
             item.maxdurability = maxDurability;
@@ -937,10 +1631,7 @@ namespace SagaDB.Item
             item.locked = locked;
             item.changeMode = changeMode;
             item.changeMode2 = changeMode2;
-            foreach (Iris.IrisCard i in cards)
-            {
-                item.cards.Add(i);
-            }
+            foreach (var i in cards) item.cards.Add(i);
             item.rental = rental;
             item.rentalTime = rentalTime;
             item.refine_sharp = refine_sharp;
@@ -988,500 +1679,70 @@ namespace SagaDB.Item
             return item;
         }
 
-        public bool Stackable
-        {
-            get
-            {
-                if (BaseData.stock == true)
-                    return true;
-                else
-                    return false;
-            }
-        }
-
         /// <summary>
-        /// 检查是否是装备 这样的判定太蛋疼了 有空我要改掉！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-        /// </summary>
-        public bool IsEquipt
-        {
-            get
-            {
-                int type = (int)BaseData.itemType;
-                if (type >= (int)ItemType.ACCESORY_HEAD && type <= (int)ItemType.PET_NEKOMATA)
-                    return true;
-                else if (type == (int)ItemType.EXSWORD || type == (int)ItemType.EXGUN)
-                    return true;
-                else if (type == (int)ItemType.EFFECT)
-                    return true;
-                else if ((type == (int)ItemType.PARTNER) || (type == (int)ItemType.RIDE_PARTNER))
-                    return true;
-                else
-                    return false;
-
-            }
-        }
-
-        /// <summary>
-        /// 检查是否是DEM部件
-        /// </summary>
-        public bool IsParts
-        {
-            get
-            {
-                int type = (int)BaseData.itemType;
-                if (type >= (int)ItemType.PARTS_HEAD && type <= (int)ItemType.PARTS_LONGRANGE)
-                    return true;
-                else
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// 检查一个道具是否是武器
-        /// </summary>
-        public bool IsWeapon
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.AXE:
-                    case ItemType.BOOK:
-                    case ItemType.HAMMER:
-                    case ItemType.HANDBAG:
-                    case ItemType.RAPIER:
-                    case ItemType.SHORT_SWORD:
-                    case ItemType.SPEAR:
-                    case ItemType.STAFF:
-                    case ItemType.SWORD:
-                    case ItemType.ROPE:
-                    case ItemType.BOW:
-                    case ItemType.DUALGUN:
-                    case ItemType.GUN:
-                    case ItemType.RIFLE:
-                    case ItemType.CARD:
-                    case ItemType.THROW:
-                    case ItemType.CLAW:
-                    case ItemType.STRINGS:
-                    case ItemType.ETC_WEAPON:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 检查武器是否需要弹药（是否是弓箭枪械类）
-        /// </summary>
-        public bool NeedAmmo
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.BOW:
-                    case ItemType.DUALGUN:
-                    case ItemType.GUN:
-                    case ItemType.RIFLE:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 检查是否是弹药(不含card和throw)
-        /// </summary>
-        public bool IsAmmo
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.ARROW:
-                    case ItemType.BULLET:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 检查道具是否是衣服
-        /// </summary>
-        public bool IsArmor
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.ONEPIECE:
-                    case ItemType.COSTUME:
-                    case ItemType.BODYSUIT:
-                    case ItemType.WEDDING:
-                    case ItemType.OVERALLS:
-                    case ItemType.ARMOR_UPPER:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 检查道具是否是宠物
-        /// </summary>
-        public bool IsPet
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.PET:
-                    case ItemType.PET_NEKOMATA:
-                    case ItemType.RIDE_PET:
-                    case ItemType.RIDE_PET_ROBOT:
-                    case ItemType.PARTNER:
-                    case ItemType.RIDE_PARTNER:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 检查道具是否是partner
-        /// </summary>
-        public bool IsPartner
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.PARTNER:
-                    case ItemType.RIDE_PARTNER:
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        }
-        /// <summary>
-        /// 取得该装备需要的装备槽 
-        /// </summary>
-        public List<EnumEquipSlot> EquipSlot
-        {
-            get
-            {
-                List<EnumEquipSlot> slots = new List<EnumEquipSlot>();
-                if (!IsEquipt && !IsParts)
-                    Logger.ShowDebug("Cannot equip a non equipment item!", Logger.defaultlogger);
-                switch (BaseData.itemType)
-                {
-                    //head&face
-                    case ItemType.ACCESORY_HEAD:
-                        slots.Add(EnumEquipSlot.HEAD_ACCE);
-                        slots.Add(EnumEquipSlot.HEAD);
-                        break;
-                    case ItemType.PARTS_HEAD:
-                    case ItemType.HELM:
-                        slots.Add(EnumEquipSlot.HEAD);
-                        break;
-                    case ItemType.ACCESORY_FACE:
-                        slots.Add(EnumEquipSlot.FACE_ACCE);
-                        break;
-                    case ItemType.FULLFACE:
-                        slots.Add(EnumEquipSlot.HEAD);
-                        slots.Add(EnumEquipSlot.FACE);
-                        slots.Add(EnumEquipSlot.HEAD_ACCE);
-                        slots.Add(EnumEquipSlot.FACE_ACCE);
-                        break;
-                    //necklace
-                    case ItemType.ACCESORY_NECK:
-                    case ItemType.JOINT_SYMBOL:
-                        slots.Add(EnumEquipSlot.CHEST_ACCE);
-                        break;
-                    //tops
-                    case ItemType.PARTS_BODY:
-                    case ItemType.ARMOR_UPPER:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        break;
-                    case ItemType.OVERALLS:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        break;
-                    case ItemType.ONEPIECE:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        break;
-                    //downs
-                    case ItemType.PARTS_LEG:
-                    case ItemType.SLACKS:
-                    case ItemType.ARMOR_LOWER:
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        break;
-                    case ItemType.SOCKS:
-                        slots.Add(EnumEquipSlot.SOCKS);
-                        break;
-                    //shoes
-                    case ItemType.SHOES:
-                    case ItemType.BOOTS:
-                    case ItemType.HALFBOOTS:
-                        slots.Add(EnumEquipSlot.SHOES);
-                        break;
-                    case ItemType.LONGBOOTS:
-                        slots.Add(EnumEquipSlot.SHOES);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        break;
-                    //weapons&ammos&shield&lefts
-                    case ItemType.PARTS_LONGRANGE:
-                    case ItemType.PARTS_SLASH:
-                    case ItemType.PARTS_STAB:
-                    case ItemType.PARTS_BLOW:
-                    case ItemType.BOOK:
-                    case ItemType.STAFF:
-                    case ItemType.SWORD:
-                    case ItemType.AXE:
-                    case ItemType.SPEAR:
-                    case ItemType.RAPIER:
-                    case ItemType.CARD:
-                    case ItemType.HANDBAG:
-                    case ItemType.SHORT_SWORD:
-                    case ItemType.ETC_WEAPON:
-                    case ItemType.THROW:
-                    case ItemType.ROPE:
-                    case ItemType.HAMMER:
-                        if (BaseData.doubleHand)
-                        {
-                            slots.Add(EnumEquipSlot.RIGHT_HAND);
-                            slots.Add(EnumEquipSlot.LEFT_HAND);
-                        }
-                        else
-                        {
-                            slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        }
-                        break;
-                    case ItemType.BOW:
-                    case ItemType.GUN:
-                    case ItemType.RIFLE:
-                    case ItemType.DUALGUN:
-                        slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        break;
-                    case ItemType.CLAW:
-                    case ItemType.STRINGS:
-                        slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        slots.Add(EnumEquipSlot.LEFT_HAND);
-                        break;
-                    case ItemType.ACCESORY_FINGER:
-                    case ItemType.SHIELD:
-                    case ItemType.LEFT_HANDBAG:
-                    case ItemType.BULLET:
-                    case ItemType.ARROW:
-                        slots.Add(EnumEquipSlot.LEFT_HAND);
-                        break;
-                    //backs&pets&effects
-                    case ItemType.PARTS_BACK:
-                    case ItemType.BACKPACK:
-                        slots.Add(EnumEquipSlot.BACK);
-                        break;
-                    case ItemType.BACK_DEMON:
-                        //slots.Add(EnumEquipSlot.PET);
-                        slots.Add(EnumEquipSlot.BACK);
-                        break;
-                    case ItemType.PET_NEKOMATA:
-                    case ItemType.PET:
-                    case ItemType.RIDE_PET:
-                    case ItemType.PARTNER:
-                    case ItemType.RIDE_PARTNER:
-                    case ItemType.RIDE_PET_ROBOT:
-                        slots.Add(EnumEquipSlot.PET);
-                        break;
-                    case ItemType.EFFECT:
-                        slots.Add(EnumEquipSlot.EFFECT);
-                        break;
-                    //complexes
-                    case ItemType.EXSWORD:
-                    case ItemType.EXGUN:
-                        slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        slots.Add(EnumEquipSlot.SHOES);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        break;
-                    case ItemType.WEDDING:
-                        slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        slots.Add(EnumEquipSlot.LEFT_HAND);
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        slots.Add(EnumEquipSlot.PET);
-                        break;
-                    case ItemType.BODYSUIT:
-                    case ItemType.FACEBODYSUIT:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        slots.Add(EnumEquipSlot.SHOES);
-                        slots.Add(EnumEquipSlot.SOCKS);
-                        break;
-                    case ItemType.COSTUME:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.HEAD_ACCE);
-                        slots.Add(EnumEquipSlot.HEAD);
-                        slots.Add(EnumEquipSlot.FACE);
-                        slots.Add(EnumEquipSlot.FACE_ACCE);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        slots.Add(EnumEquipSlot.SHOES);
-                        slots.Add(EnumEquipSlot.SOCKS);
-                        break;
-                    case ItemType.EQ_ALLSLOT:
-                        slots.Add(EnumEquipSlot.UPPER_BODY);
-                        slots.Add(EnumEquipSlot.HEAD);
-                        slots.Add(EnumEquipSlot.FACE);
-                        slots.Add(EnumEquipSlot.FACE_ACCE);
-                        slots.Add(EnumEquipSlot.CHEST_ACCE);
-                        slots.Add(EnumEquipSlot.RIGHT_HAND);
-                        slots.Add(EnumEquipSlot.LEFT_HAND);
-                        slots.Add(EnumEquipSlot.BACK);
-                        slots.Add(EnumEquipSlot.LOWER_BODY);
-                        slots.Add(EnumEquipSlot.SHOES);
-                        slots.Add(EnumEquipSlot.SOCKS);
-                        slots.Add(EnumEquipSlot.PET);
-                        break;
-                }
-                return slots;
-            }
-        }
-        /// <summary>
-        /// 取得该Partner装备需要的装备槽 
-        /// </summary>
-        public List<EnumPartnerEquipSlot> PartnerEquipSlot
-        {
-            get
-            {
-                List<EnumPartnerEquipSlot> slots = new List<EnumPartnerEquipSlot>();
-                if ((BaseData.itemType != ItemType.UNION_WEAPON) && (BaseData.itemType != ItemType.UNION_COSTUME))
-                    Logger.ShowDebug("Cannot equip partner a non partner equipment item!", Logger.defaultlogger);
-                switch (BaseData.itemType)
-                {
-                    //head&face
-                    case ItemType.UNION_WEAPON:
-                        slots.Add(EnumPartnerEquipSlot.WEAPON);
-                        break;
-                    case ItemType.UNION_COSTUME:
-                        slots.Add(EnumPartnerEquipSlot.COSTUME);
-                        break;
-                }
-                return slots;
-            }
-        }
-
-        public ATTACK_TYPE AttackType
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
-                    case ItemType.SWORD:
-                    case ItemType.CARD:
-                    case ItemType.SHORT_SWORD:
-                    case ItemType.PARTS_SLASH:
-                        return ATTACK_TYPE.SLASH;
-                    case ItemType.RIFLE:
-                    case ItemType.CLAW:
-                    case ItemType.BOW:
-                    case ItemType.GUN:
-                    case ItemType.DUALGUN:
-                    case ItemType.SPEAR:
-                    case ItemType.ARROW:
-                    case ItemType.RAPIER:
-                    case ItemType.THROW:
-                    case ItemType.PARTS_STAB:
-                    case ItemType.PARTS_LONGRANGE:
-                        return ATTACK_TYPE.STAB;
-                    case ItemType.LEFT_HANDBAG:
-                    case ItemType.HANDBAG:
-                    case ItemType.HAMMER:
-                    case ItemType.AXE:
-                    case ItemType.BOOK:
-                    case ItemType.STAFF:
-                    case ItemType.ETC_WEAPON:
-                    case ItemType.STRINGS:
-                    case ItemType.PARTS_BLOW:
-                        return ATTACK_TYPE.BLOW;
-                    default:
-                        return ATTACK_TYPE.BLOW;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 装备所有插的卡的能力向量
-        ///<param name="deck">是否是牌面</param>
+        ///     装备所有插的卡的能力向量
+        ///     <param name="deck">是否是牌面</param>
         /// </summary>
         public List<AbilityVector> AbilityVectors(bool deck)
         {
-            List<AbilityVector> list = new List<AbilityVector>();
-            List<IrisCard> cards = new List<IrisCard>();
+            var list = new List<AbilityVector>();
+            var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
                 cards.Add(this.cards[this.cards.Count - 1]);
             else
                 cards = this.cards;
-            foreach (IrisCard i in cards)
-            {
-                foreach (AbilityVector j in i.Abilities.Keys)
-                {
-                    if (!list.Contains(j))
-                        list.Add(j);
-                }
-            }
+            foreach (var i in cards)
+            foreach (var j in i.Abilities.Keys)
+                if (!list.Contains(j))
+                    list.Add(j);
+
             return list;
         }
 
         /// <summary>
-        /// 取得能力向量的值或等级
+        ///     取得能力向量的值或等级
         /// </summary>
         /// <param name="deck">是否是牌面</param>
         /// <param name="lv">是否是取得向量等级信息而非值信息</param>
         /// <returns></returns>
         public Dictionary<AbilityVector, int> VectorValues(bool deck, bool lv)
         {
-            Dictionary<AbilityVector, int> list = new Dictionary<AbilityVector, int>();
-            List<IrisCard> cards = new List<IrisCard>();
+            var list = new Dictionary<AbilityVector, int>();
+            var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
                 cards.Add(this.cards[this.cards.Count - 1]);
             else
                 cards = this.cards;
 
-            foreach (IrisCard i in cards)
-            {
-                foreach (AbilityVector j in i.Abilities.Keys)
-                {
-                    if (!list.ContainsKey(j))
-                        list.Add(j, i.Abilities[j]);
-                    else
-                        list[j] += i.Abilities[j];
-                }
-            }
+            foreach (var i in cards)
+            foreach (var j in i.Abilities.Keys)
+                if (!list.ContainsKey(j))
+                    list.Add(j, i.Abilities[j]);
+                else
+                    list[j] += i.Abilities[j];
 
             if (lv)
             {
-                int[] lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //new settings
-                AbilityVector[] keys = list.Keys.ToArray();
-                foreach (AbilityVector i in keys)
+                var lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //new settings
+                var keys = list.Keys.ToArray();
+                foreach (var i in keys)
                 {
-                    int value = list[i];
-                    int level = 0;
-                    foreach (int j in lvs)
-                    {
+                    var value = list[i];
+                    var level = 0;
+                    foreach (var j in lvs)
                         if (value >= j)
                             level++;
                         else
                             break;
-                    }
                     list[i] = level;
                 }
             }
+
             return list;
         }
 
         /// <summary>
-        /// 取得装备卡片的Release能力
+        ///     取得装备卡片的Release能力
         /// </summary>
         /// <param name="deck"></param>
         /// <returns></returns>
@@ -1492,79 +1753,134 @@ namespace SagaDB.Item
 
         public static Dictionary<ReleaseAbility, int> ReleaseAbilities(Dictionary<AbilityVector, int> vectors)
         {
-            Dictionary<ReleaseAbility, int> list = new Dictionary<ReleaseAbility, int>();
+            var list = new Dictionary<ReleaseAbility, int>();
 
-            foreach (AbilityVector i in vectors.Keys)
+            foreach (var i in vectors.Keys)
             {
-                Dictionary<ReleaseAbility, int> ability = i.ReleaseAbilities[(byte)vectors[i]];
-                foreach (ReleaseAbility j in ability.Keys)
-                {
+                var ability = i.ReleaseAbilities[(byte)vectors[i]];
+                foreach (var j in ability.Keys)
                     if (list.ContainsKey(j))
                         list[j] += ability[j];
                     else
                         list.Add(j, ability[j]);
-                }
             }
+
             return list;
         }
 
         /// <summary>
-        /// 取得插入的卡的属性加成
+        ///     取得插入的卡的属性加成
         /// </summary>
         /// <param name="deck">是否是牌面</param>
         /// <returns></returns>
         public Dictionary<Elements, int> IrisElements(bool deck)
         {
-            Dictionary<Elements, int> list = new Dictionary<Elements, int>();
-            List<IrisCard> cards = new List<IrisCard>();
+            var list = new Dictionary<Elements, int>();
+            var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
                 cards.Add(this.cards[this.cards.Count - 1]);
             else
                 cards = this.cards;
-            list.Add(SagaLib.Elements.Neutral, 0);
-            list.Add(SagaLib.Elements.Fire, 0);
-            list.Add(SagaLib.Elements.Water, 0);
-            list.Add(SagaLib.Elements.Wind, 0);
-            list.Add(SagaLib.Elements.Earth, 0);
-            list.Add(SagaLib.Elements.Holy, 0);
-            list.Add(SagaLib.Elements.Dark, 0);
+            list.Add(Elements.Neutral, 0);
+            list.Add(Elements.Fire, 0);
+            list.Add(Elements.Water, 0);
+            list.Add(Elements.Wind, 0);
+            list.Add(Elements.Earth, 0);
+            list.Add(Elements.Holy, 0);
+            list.Add(Elements.Dark, 0);
 
-            foreach (IrisCard i in cards)
-            {
-                foreach (SagaLib.Elements j in i.Elements.Keys)
-                {
-                    if (!list.ContainsKey(j))
-                        list.Add(j, i.Elements[j]);
-                    else
-                        list[j] += i.Elements[j];
-                }
-            }
+            foreach (var i in cards)
+            foreach (var j in i.Elements.Keys)
+                if (!list.ContainsKey(j))
+                    list.Add(j, i.Elements[j]);
+                else
+                    list[j] += i.Elements[j];
+
             return list;
         }
 
         public static Dictionary<Elements, int> ElementsZero()
         {
-            Dictionary<Elements, int> list = new Dictionary<Elements, int>();
-            list.Add(SagaLib.Elements.Neutral, 0);
-            list.Add(SagaLib.Elements.Fire, 0);
-            list.Add(SagaLib.Elements.Water, 0);
-            list.Add(SagaLib.Elements.Wind, 0);
-            list.Add(SagaLib.Elements.Earth, 0);
-            list.Add(SagaLib.Elements.Holy, 0);
-            list.Add(SagaLib.Elements.Dark, 0);
+            var list = new Dictionary<Elements, int>();
+            list.Add(Elements.Neutral, 0);
+            list.Add(Elements.Fire, 0);
+            list.Add(Elements.Water, 0);
+            list.Add(Elements.Wind, 0);
+            list.Add(Elements.Earth, 0);
+            list.Add(Elements.Holy, 0);
+            list.Add(Elements.Dark, 0);
             return list;
         }
 
-        public uint ActorPartnerID
+        public class ItemData
         {
-            get
+            public Dictionary<AbnormalStatus, short> abnormalStatus = new Dictionary<AbnormalStatus, short>();
+            public ushort activateSkill, possibleSkill, passiveSkill, possessionSkill, possessionPassiveSkill;
+            public ActiveType activeType;
+            public short atk1, atk2, atk3, matk, def, mdef;
+            public short avoidMelee, avoidRanged, avoidMagic;
+            public uint cast, delay;
+            public byte color;
+
+            public byte currentSlot, maxSlot;
+            public ushort durability;
+            public uint duration;
+            public byte effectRange;
+            public Dictionary<Elements, short> element = new Dictionary<Elements, short>();
+            public uint equipVolume, possessionWeight, weight, volume;
+            public uint eventID, effectID;
+            public uint events;
+
+            public ushort handMotion;
+            public byte handMotion2;
+            public short hitCritical, avoidCritical;
+            public short hitMelee, hitRanged, hitMagic;
+            public short hp, mp, sp, weightUp, volumeUp, speedUp;
+            public short hpRecover, mpRecover, spRecover;
+            public uint iconID;
+            public uint id, price;
+            public uint imageID;
+            public bool isRate;
+            public ItemAddition ItemAddition = new ItemAddition();
+            public ItemType itemType;
+            public PC_JOB jointJob;
+            public uint marionetteID, petID;
+            public string name, desc;
+            public bool noTrade;
+            public Dictionary<Country, bool> possibleCountry = new Dictionary<Country, bool>();
+            public Dictionary<PC_GENDER, bool> possibleGender = new Dictionary<PC_GENDER, bool>();
+            public Dictionary<PC_JOB, bool> possibleJob = new Dictionary<PC_JOB, bool>();
+            public byte possibleLv;
+            public Dictionary<PC_RACE, bool> possibleRace = new Dictionary<PC_RACE, bool>();
+            public bool possibleRebirth;
+
+            public ushort possibleStr,
+                possibleDex,
+                possibleInt,
+                possibleVit,
+                possibleAgi,
+                possibleMag,
+                possibleLuk,
+                possibleCha;
+
+            public byte range;
+            public bool receipt, dye, stock, doubleHand, usable;
+            public uint repairItem, enhancementItem;
+            public short str, dex, intel, vit, agi, mag, luk, cha;
+            public TargetType target;
+
+            public override string ToString()
             {
-                return actorpartnerid;
+                return name;
             }
-            set
-            {
-                actorpartnerid = value;
-            }
+        }
+
+        public class EnItem
+        {
+            public short aspd, cspd;
+            public short atk1, atk2, atk3, matk, def, mdef;
+            public short hp, mp, sp, weightUp, volumeUp, speedUp;
+            public short str, dex, intel, vit, agi, mag;
         }
     }
 }

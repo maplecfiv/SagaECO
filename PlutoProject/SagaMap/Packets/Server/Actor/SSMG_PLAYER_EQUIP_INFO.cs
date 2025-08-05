@@ -6,38 +6,29 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_EQUIP_INFO()
         {
-            this.data = new byte[215];
-            this.offset = 2;
-            this.ID = 0x0265;   
+            data = new byte[215];
+            offset = 2;
+            ID = 0x0265;
         }
 
         public Item Item
         {
             set
             {
-
-                this.offset = 7;
-                this.ItemDetail = value;
-                this.PutByte((byte)(data.Length - 3), 2);
+                offset = 7;
+                ItemDetail = value;
+                PutByte((byte)(data.Length - 3), 2);
             }
         }
+
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 3);
-            }
+            set => PutUInt(value, 3);
         }
 
         public ContainerType Container
         {
-            set
-            {
-                this.PutByte((byte)value, 15);
-            }
+            set => PutByte((byte)value, 15);
         }
-
-
     }
 }
-

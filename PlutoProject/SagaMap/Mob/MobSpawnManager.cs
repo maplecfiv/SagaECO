@@ -1,50 +1,46 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
 using System.Xml;
-
-using SagaLib;
 using SagaDB.Actor;
 using SagaDB.Mob;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
 
 namespace SagaMap.Mob
 {
     public class MobSpawnManager : Singleton<MobSpawnManager>
     {
-        Dictionary<uint, List<ActorMob>> mobs = new Dictionary<uint, List<ActorMob>>();
-        string path;
-        public MobSpawnManager()
-        {
+        private string path;
 
-        }
-
-        public Dictionary<uint, List<ActorMob>> Spawns { get { return this.mobs; } }
+        public Dictionary<uint, List<ActorMob>> Spawns { get; } = new Dictionary<uint, List<ActorMob>>();
 
         public int LoadOne(string f, uint setMap)
         {
             return LoadOne(f, setMap, true, true);
         }
+
         public void Reload()
         {
-            this.mobs.Clear();
-            this.Spawns.Clear();
+            Spawns.Clear();
+            Spawns.Clear();
             LoadSpawn(path);
         }
-        public int LoadOne(string f, uint setMap,bool loadDelay,bool loadNoDelay)
+
+        public int LoadOne(string f, uint setMap, bool loadDelay, bool loadNoDelay)
         {
-            int total = 0;
-            XmlDocument xml = new XmlDocument();
+            var total = 0;
+            var xml = new XmlDocument();
             try
             {
                 XmlElement root;
                 XmlNodeList list;
-                System.IO.Stream fs = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
-                xml.Load(fs);                
+                var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
+                xml.Load(fs);
                 root = xml["Spawns"];
                 list = root.ChildNodes;
-                foreach (object j in list)
+                foreach (var j in list)
                 {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
@@ -52,23 +48,23 @@ namespace SagaMap.Mob
                     switch (i.Name.ToLower())
                     {
                         case "spawn":
-                            XmlNodeList list2 = i.ChildNodes;
+                            var list2 = i.ChildNodes;
                             uint map = 0, mobid = 0;
                             byte x = 0, y = 0;
                             int amount = 0, range = 0;
-                            int delay = 30;
-                            int rate = 100;
-                            string announce = "";
+                            var delay = 30;
+                            var rate = 100;
+                            var announce = "";
 
-                            string attr = i.GetAttribute("rate");
+                            var attr = i.GetAttribute("rate");
                             if (attr != "")
                                 rate = int.Parse(attr);
-                            foreach (object l in list2)
+                            foreach (var l in list2)
                             {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
                                 k = (XmlElement)l;
-                                
+
                                 switch (k.Name.ToLower())
                                 {
                                     case "id":
@@ -100,29 +96,29 @@ namespace SagaMap.Mob
                                         break;
                                 }
                             }
+
                             if (map == 0) map = setMap;
                             if (map == 0) continue;
                             if (!loadDelay && delay != 0)
                                 continue;
                             if (!loadNoDelay && delay == 0)
                                 continue;
-                            else
-                                if (delay == 0)
-                                    rate = 100;
+                            if (delay == 0)
+                                rate = 100;
                             if (rate <= Global.Random.Next(0, 99))
                                 continue;
                             if (!Configuration.Instance.HostedMaps.Contains(map))
                                 continue;
-                            for (int count = 0; count < amount; count++)
+                            for (var count = 0; count < amount; count++)
                             {
                                 if (!MobFactory.Instance.Mobs.ContainsKey(mobid))
                                     break;
-                                ActorMob mob = new ActorMob(mobid);
+                                var mob = new ActorMob(mobid);
                                 //现在宝箱的刷新应该又复活了.
                                 //if ((10360001 <= mob.MobID && mob.MobID <= 10370055) || (mob.MobID >= 30270000 && mob.MobID <= 30290107))
                                 //    break;
                                 mob.MapID = map;
-                                Map map_ = Manager.MapManager.Instance.GetMap(map);
+                                var map_ = MapManager.Instance.GetMap(map);
                                 int x_new, y_new;
                                 if (map_ == null)
                                     continue;
@@ -143,16 +139,14 @@ namespace SagaMap.Mob
                                 x_new = (byte)Global.Random.Next(min_x, max_x);
                                 y_new = (byte)Global.Random.Next(min_y, max_y);
 
-                                int counter = 0;
+                                var counter = 0;
                                 try
                                 {
                                     while (map_.Info.walkable[x_new, y_new] != 2)
                                     {
                                         if (counter > 1000 || range == 0)
-                                        {
-//Logger.ShowWarning(string.Format("Cannot find free place for mob:{0} map:{1}[{2},{3}]", mobid, map, x, y), Logger.defaultlogger);
+                                            //Logger.ShowWarning(string.Format("Cannot find free place for mob:{0} map:{1}[{2},{3}]", mobid, map, x, y), Logger.defaultlogger);
                                             break;
-                                        }
                                         x_new = (byte)Global.Random.Next(min_x, max_x);
                                         y_new = (byte)Global.Random.Next(min_y, max_y);
                                         counter++;
@@ -160,14 +154,15 @@ namespace SagaMap.Mob
                                 }
                                 catch (Exception ex)
                                 {
-                                    SagaLib.Logger.ShowError(ex);
+                                    Logger.ShowError(ex);
                                 }
+
                                 if (counter > 1000)
                                     continue;
                                 mob.X = Global.PosX8to16((byte)x_new, map_.Width);
                                 mob.Y = Global.PosY8to16((byte)y_new, map_.Height);
                                 mob.Dir = (ushort)Global.Random.Next(0, 7);
-                                ActorEventHandlers.MobEventHandler eh = new ActorEventHandlers.MobEventHandler(mob);
+                                var eh = new MobEventHandler(mob);
                                 mob.e = eh;
                                 if (MobAIFactory.Instance.Items.ContainsKey(mob.MobID))
                                     eh.AI.Mode = MobAIFactory.Instance.Items[mob.MobID];
@@ -187,54 +182,55 @@ namespace SagaMap.Mob
                                 map_.OnActorVisibilityChange(mob);
 
                                 List<ActorMob> lists = null;
-                                if (mobs.ContainsKey(map))
-                                    lists = mobs[map];
+                                if (Spawns.ContainsKey(map))
+                                {
+                                    lists = Spawns[map];
+                                }
                                 else
                                 {
                                     lists = new List<ActorMob>();
-                                    mobs.Add(map, lists);
+                                    Spawns.Add(map, lists);
                                 }
+
                                 lists.Add(mob);
                                 total++;
                             }
+
                             break;
                     }
                 }
+
                 fs.Close();
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
             }
+
             return total;
         }
 
         public int LoadAI(string f)
         {
-            int total = 0;
+            var total = 0;
 
             return total;
         }
+
         public void LoadSpawn(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
-            int total = 0;
-            foreach (string f in file)
-            {
-                total += LoadOne(f, 0);
-            }
-            Logger.ShowInfo(total.ToString() + " mobs spawned...");
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
+            var total = 0;
+            foreach (var f in file) total += LoadOne(f, 0);
+            Logger.ShowInfo(total + " mobs spawned...");
         }
 
         public void LoadAnAI(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
-            int total = 0;
-            foreach (string f in file)
-            {
-                total += LoadAI(f);
-            }
-            Logger.ShowInfo(total.ToString() + " 加载新的AI...");
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
+            var total = 0;
+            foreach (var f in file) total += LoadAI(f);
+            Logger.ShowInfo(total + " 加载新的AI...");
         }
     }
 }

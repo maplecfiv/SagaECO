@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.FR2_2
 {
     /// <summary>
-    /// 大地箭
+    ///     大地箭
     /// </summary>
     public class EarthArrow : ISkill
     {
@@ -30,10 +25,11 @@ namespace SagaMap.Skill.SkillDefinations.FR2_2
             if (level == 6)
             {
                 factor = 3.5f;
-                Stone stone = new Stone(args.skill, dActor, 3000);
+                var stone = new Stone(args.skill, dActor, 3000);
                 SkillHandler.ApplyAddition(dActor, stone);
             }
         }
+
         #endregion
     }
 }

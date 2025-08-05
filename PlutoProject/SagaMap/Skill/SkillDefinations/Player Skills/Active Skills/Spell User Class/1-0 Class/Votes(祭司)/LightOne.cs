@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Vates
 {
@@ -40,12 +36,14 @@ namespace SagaMap.Skill.SkillDefinations.Vates
                     factor = 20f;
                     break;
             }
+
             if (level == 6)
                 SkillHandler.Instance.Seals(sActor, dActor, 5);
             else
                 SkillHandler.Instance.Seals(sActor, dActor);
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
+
         #endregion
     }
 }

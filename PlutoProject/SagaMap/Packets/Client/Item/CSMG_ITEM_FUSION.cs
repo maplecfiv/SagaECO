@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,34 +7,21 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_ITEM_FUSION()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint EffectItem
-        {
-            get
-            {
-                return this.GetUInt(6);
-            }
-        }
+        public uint EffectItem => GetUInt(6);
 
-        public uint ViewItem
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint ViewItem => GetUInt(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_ITEM_FUSION();
+            return new CSMG_ITEM_FUSION();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnItemFusion(this);
+            ((MapClient)client).OnItemFusion(this);
         }
-
     }
 }

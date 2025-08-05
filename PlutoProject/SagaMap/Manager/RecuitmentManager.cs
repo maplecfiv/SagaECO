@@ -1,13 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Party;
 using SagaDB.Actor;
-
-using SagaMap.Network.Client;
+using SagaLib;
 
 namespace SagaMap.Manager
 {
@@ -21,27 +15,18 @@ namespace SagaMap.Manager
 
     public class Recruitment
     {
-        ActorPC creator;
-        string title;
-        string content;
-        RecruitmentType type;
+        public ActorPC Creator { get; set; }
 
-        public ActorPC Creator { get { return this.creator; } set { this.creator = value; } }
+        public string Title { get; set; }
 
-        public string Title { get { return this.title; } set { this.title = value; } }
+        public string Content { get; set; }
 
-        public string Content { get { return this.content; } set { this.content = value; } }
-
-        public RecruitmentType Type { get { return this.type; } set { this.type = value; } }
+        public RecruitmentType Type { get; set; }
     }
 
-    public class RecruitmentManager:Singleton<RecruitmentManager>
+    public class RecruitmentManager : Singleton<RecruitmentManager>
     {
-        List<Recruitment> items = new List<Recruitment>();
-        public RecruitmentManager()
-        {
-
-        }
+        private readonly List<Recruitment> items = new List<Recruitment>();
 
         public void CreateRecruiment(Recruitment rec)
         {
@@ -68,10 +53,7 @@ namespace SagaMap.Manager
                 where r.Creator == creator
                 select r;
 
-            if (res.Count() != 0)
-            {
-                items.Remove(res.First());
-            }
+            if (res.Count() != 0) items.Remove(res.First());
         }
 
         public List<Recruitment> GetRecruitments(RecruitmentType type, int page, out int maxPage)
@@ -80,25 +62,26 @@ namespace SagaMap.Manager
                 from r in items
                 where r.Type == type
                 select r;
-            List<Recruitment> list = res.ToList();
+            var list = res.ToList();
             if (list.Count % 15 == 0)
                 maxPage = list.Count / 15;
             else
-                maxPage = (list.Count / 15) + 1;
+                maxPage = list.Count / 15 + 1;
             res =
                 from r in list
-                where (list.IndexOf(r) >= (page) * 15) && (list.IndexOf(r) < ((page + 1) * 15))
+                where list.IndexOf(r) >= page * 15 && list.IndexOf(r) < (page + 1) * 15
                 select r;
             list = res.ToList();
             return list;
         }
+
         public List<Recruitment> GetRecruitments(RecruitmentType type)
         {
             var res =
                 from r in items
                 where r.Type == type
                 select r;
-            List<Recruitment> list = res.ToList();
+            var list = res.ToList();
             return list;
         }
     }

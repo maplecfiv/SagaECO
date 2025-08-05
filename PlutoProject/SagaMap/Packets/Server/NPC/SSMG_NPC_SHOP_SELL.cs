@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,34 +6,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_SHOP_SELL()
         {
-            this.data = new byte[27];
-            this.offset = 2;
-            this.ID = 0x0603;            
+            data = new byte[27];
+            offset = 2;
+            ID = 0x0603;
         }
 
         public uint Rate
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint ShopLimit
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public uint Bank
         {
-            set
-            {
-                this.PutUInt(value, 10);
-            }
+            set => PutUInt(value, 10);
         }
     }
 }
-

@@ -1,15 +1,11 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Harvest
 {
     /// <summary>
-    /// ツイステッドプラント
+    ///     ツイステッドプラント
     /// </summary>
     public class TwistedPlant : ISkill
     {
@@ -17,33 +13,35 @@ namespace SagaMap.Skill.SkillDefinations.Harvest
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (dActor.Status.Additions.ContainsKey("PlantShield"))
-            {
-                return -14;
-            }
+            if (dActor.Status.Additions.ContainsKey("PlantShield")) return -14;
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 15000 + 15000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "PlantShield", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 15000 + 15000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "PlantShield", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.PlantShield = actor.MaxHP;
             actor.Buff.三转植物寄生 = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.PlantShield = 0;
             actor.Buff.三转植物寄生 = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

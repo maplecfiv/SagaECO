@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,42 +7,23 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_NPC_EVENT_START()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint EventID
-        {
-            get
-            {
-                return this.GetUInt(2);
-            }
-        }
+        public uint EventID => GetUInt(2);
 
-        public byte X
-        {
-            get
-            {
-                return this.GetByte(6);
-            }
-        }
+        public byte X => GetByte(6);
 
-        public byte Y
-        {
-            get
-            {
-                return this.GetByte(7);
-            }
-        }
+        public byte Y => GetByte(7);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_NPC_EVENT_START();
+            return new CSMG_NPC_EVENT_START();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnNPCEventStart(this);
+            ((MapClient)client).OnNPCEventStart(this);
         }
-
     }
 }

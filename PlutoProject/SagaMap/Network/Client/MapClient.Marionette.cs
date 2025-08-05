@@ -1,18 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
-using SagaDB.Actor;
 using SagaDB.Marionette;
 using SagaDB.Skill;
 using SagaLib;
-using SagaMap;
-using SagaMap.Manager;
+using SagaMap.PC;
 using SagaMap.Skill;
+using Marionette = SagaMap.Tasks.PC.Marionette;
 
 namespace SagaMap.Network.Client
 {
@@ -23,66 +15,67 @@ namespace SagaMap.Network.Client
             MarionetteActivate(marionetteID, true, true);
         }
 
-        public void MarionetteActivate(uint marionetteID, bool delay,bool duration)
+        public void MarionetteActivate(uint marionetteID, bool delay, bool duration)
         {
-            Marionette marionette = MarionetteFactory.Instance[marionetteID];
+            var marionette = MarionetteFactory.Instance[marionetteID];
             if (marionette != null)
             {
-                Tasks.PC.Marionette task = new SagaMap.Tasks.PC.Marionette(this, marionette.Duration);
-                if (this.Character.Tasks.ContainsKey("Marionette") && duration)
+                var task = new Marionette(this, marionette.Duration);
+                if (Character.Tasks.ContainsKey("Marionette") && duration)
                 {
                     MarionetteDeactivate();
-                    this.Character.Tasks["Marionette"].Deactivate();
-                    this.Character.Tasks.Remove("Marionette");
+                    Character.Tasks["Marionette"].Deactivate();
+                    Character.Tasks.Remove("Marionette");
                 }
-                if (!duration && this.Character.Marionette != null)
+
+                if (!duration && Character.Marionette != null)
                 {
-                    foreach (uint i in this.Character.Marionette.skills)
+                    foreach (uint i in Character.Marionette.skills)
                     {
-                        SagaDB.Skill.Skill skill = SkillFactory.Instance.GetSkill(i, 1);
+                        var skill = SkillFactory.Instance.GetSkill(i, 1);
                         if (skill != null)
-                        {
-                            if (this.Character.Skills.ContainsKey(i))
-                            {
-                                this.Character.Skills.Remove(i);
-                            }
-                        }
+                            if (Character.Skills.ContainsKey(i))
+                                Character.Skills.Remove(i);
                     }
-                    SkillHandler.Instance.CastPassiveSkills(this.Character);            
+
+                    SkillHandler.Instance.CastPassiveSkills(Character);
                 }
-                if (!this.Character.Tasks.ContainsKey("Marionette"))
+
+                if (!Character.Tasks.ContainsKey("Marionette"))
                 {
-                    this.Character.Tasks.Add("Marionette", task);
+                    Character.Tasks.Add("Marionette", task);
                     task.Activate();
                 }
+
                 if (delay)
                 {
-                    if (!this.Character.Status.Additions.ContainsKey("MarioTimeUp"))
-                        this.Character.NextMarionetteTime = DateTime.Now + new TimeSpan(0, 0, marionette.Delay);
+                    if (!Character.Status.Additions.ContainsKey("MarioTimeUp"))
+                        Character.NextMarionetteTime = DateTime.Now + new TimeSpan(0, 0, marionette.Delay);
                     else
-                        this.Character.NextMarionetteTime = DateTime.Now + new TimeSpan(0, 0, (int)(marionette.Delay * 0.6f));
+                        Character.NextMarionetteTime =
+                            DateTime.Now + new TimeSpan(0, 0, (int)(marionette.Delay * 0.6f));
                 }
-                this.Character.Marionette = marionette;
+
+                Character.Marionette = marionette;
                 SendCharInfoUpdate();
                 foreach (uint i in marionette.skills)
                 {
-                    SagaDB.Skill.Skill skill = SkillFactory.Instance.GetSkill(i, 1);
+                    var skill = SkillFactory.Instance.GetSkill(i, 1);
                     if (skill != null)
-                    {
-                        if (!this.Character.Skills.ContainsKey(i))
+                        if (!Character.Skills.ContainsKey(i))
                         {
                             skill.NoSave = true;
-                            this.Character.Skills.Add(i, skill);
+                            Character.Skills.Add(i, skill);
                             if (!skill.BaseData.active)
                             {
-                                SkillArg arg = new SkillArg();
+                                var arg = new SkillArg();
                                 arg.skill = skill;
-                                SkillHandler.Instance.SkillCast(this.Character, this.Character, arg);
+                                SkillHandler.Instance.SkillCast(Character, Character, arg);
                             }
                         }
-                    }
                 }
-                PC.StatusFactory.Instance.CalcStatus(this.Character);
+
+                StatusFactory.Instance.CalcStatus(Character);
                 SendPlayerInfo();
             }
         }
@@ -94,24 +87,21 @@ namespace SagaMap.Network.Client
 
         public void MarionetteDeactivate(bool disconnecting)
         {
-            if (this.Character.Marionette == null)
+            if (Character.Marionette == null)
                 return;
-            Marionette marionette = this.Character.Marionette;
-            this.Character.Marionette = null;
+            var marionette = Character.Marionette;
+            Character.Marionette = null;
             if (!disconnecting) SendCharInfoUpdate();
             foreach (uint i in marionette.skills)
             {
-                SagaDB.Skill.Skill skill = SkillFactory.Instance.GetSkill(i, 1);
+                var skill = SkillFactory.Instance.GetSkill(i, 1);
                 if (skill != null)
-                {
-                    if (this.Character.Skills.ContainsKey(i))
-                    {
-                        this.Character.Skills.Remove(i);
-                    }
-                }
+                    if (Character.Skills.ContainsKey(i))
+                        Character.Skills.Remove(i);
             }
-            SkillHandler.Instance.CastPassiveSkills(this.Character);
-            PC.StatusFactory.Instance.CalcStatus(this.Character);
+
+            SkillHandler.Instance.CastPassiveSkills(Character);
+            StatusFactory.Instance.CalcStatus(Character);
             if (!disconnecting)
             {
                 SendPlayerInfo();

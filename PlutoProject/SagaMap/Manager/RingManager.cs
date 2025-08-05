@@ -1,30 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Ring;
 using SagaDB.Actor;
-
+using SagaDB.Ring;
+using SagaLib;
 using SagaMap.Network.Client;
+using SagaMap.Packets.Server;
 
 namespace SagaMap.Manager
 {
-    public class RingManager:Singleton<RingManager>
+    public class RingManager : Singleton<RingManager>
     {
-        Dictionary<uint, Ring> rings = new Dictionary<uint, Ring>();
-        public RingManager()
-        {
-
-        }
+        private readonly Dictionary<uint, Ring> rings = new Dictionary<uint, Ring>();
 
         public Ring GetRing(uint pattern)
         {
             Ring res;
             if (pattern == 0) return null;
             if (rings.ContainsKey(pattern))
+            {
                 res = rings[pattern];
+            }
             else
             {
                 res = new Ring();
@@ -39,12 +34,14 @@ namespace SagaMap.Manager
                         rings.Remove(pattern);
                         return null;
                     }
+
                     rings[res.ID] = res;
                 }
-                int[] index = res.Members.Keys.ToArray();
-                foreach (int i in index)
+
+                var index = res.Members.Keys.ToArray();
+                foreach (var i in index)
                 {
-                    MapClient client = MapClientManager.Instance.FindClient(res.Members[i]);
+                    var client = MapClientManager.Instance.FindClient(res.Members[i]);
                     if (client != null)
                     {
                         res.Members[i] = client.Character;
@@ -53,6 +50,7 @@ namespace SagaMap.Manager
                     }
                 }
             }
+
             return res;
         }
 
@@ -62,7 +60,9 @@ namespace SagaMap.Manager
             if (pattern == null) return null;
             if (pattern.ID == 0) return null;
             if (rings.ContainsKey(pattern.ID))
+            {
                 res = rings[pattern.ID];
+            }
             else
             {
                 res = pattern;
@@ -76,16 +76,18 @@ namespace SagaMap.Manager
                         rings.Remove(pattern.ID);
                         return null;
                     }
+
                     rings[res.ID] = res;
                 }
                 else
                 {
                     res = pattern;
                 }
-                int[] index = res.Members.Keys.ToArray();
-                foreach (int i in index)
+
+                var index = res.Members.Keys.ToArray();
+                foreach (var i in index)
                 {
-                    MapClient client = MapClientManager.Instance.FindClient(res.Members[i]);
+                    var client = MapClientManager.Instance.FindClient(res.Members[i]);
                     if (client != null)
                     {
                         res.Members[i] = client.Character;
@@ -94,6 +96,7 @@ namespace SagaMap.Manager
                     }
                 }
             }
+
             return res;
         }
 
@@ -106,9 +109,10 @@ namespace SagaMap.Manager
                 pc.Ring = null;
                 return;
             }
+
             ring.MemberOnline(pc);
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (i == pc || !i.Online) continue;
                 MapClient.FromActorPC(i).SendRingMemberInfo(pc);
@@ -120,25 +124,26 @@ namespace SagaMap.Manager
             if (ring == null)
                 return;
             pc.Online = false;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (i == pc || !i.Online) continue;
                 MapClient.FromActorPC(i).SendRingMemberState(pc);
             }
         }
 
-        public void UpdateRingInfo(Ring ring, Packets.Server.SSMG_RING_INFO.Reason reason)
+        public void UpdateRingInfo(Ring ring, SSMG_RING_INFO.Reason reason)
         {
             if (ring == null)
                 return;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (!i.Online) continue;
                 MapClient.FromActorPC(i).SendRingInfo(reason);
             }
-            if (reason == SagaMap.Packets.Server.SSMG_RING_INFO.Reason.UPDATED)
+
+            if (reason == SSMG_RING_INFO.Reason.UPDATED)
                 MapServer.charDB.SaveRing(ring, false);
         }
 
@@ -146,8 +151,8 @@ namespace SagaMap.Manager
         {
             if (ring == null)
                 return;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (!i.Online) continue;
                 MapClient.FromActorPC(i).SendChatRing(pc.Name, content);
@@ -156,7 +161,7 @@ namespace SagaMap.Manager
 
         public Ring CreateRing(ActorPC pc, string name)
         {
-            Ring ring = new Ring();
+            var ring = new Ring();
             ring.Name = name;
             MapServer.charDB.NewRing(ring);
             if (ring.ID != 0xFFFFFFFF)
@@ -167,8 +172,8 @@ namespace SagaMap.Manager
                 pc.Ring = ring;
                 return ring;
             }
-            else
-                return null;
+
+            return null;
         }
 
         public void AddMember(Ring ring, ActorPC pc)
@@ -177,13 +182,14 @@ namespace SagaMap.Manager
                 return;
             if (ring.IsMember(pc))
                 return;
-            int index = ring.NewMember(pc);
+            var index = ring.NewMember(pc);
             pc.Ring = ring;
             if (pc.Online)
-                MapClient.FromActorPC(pc).Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, pc, true);
+                MapClient.FromActorPC(pc).Map
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, pc, true);
             if (ring.MemberCount > 1)
             {
-                UpdateRingInfo(ring, SagaMap.Packets.Server.SSMG_RING_INFO.Reason.JOIN);
+                UpdateRingInfo(ring, SSMG_RING_INFO.Reason.JOIN);
             }
             else
             {
@@ -191,52 +197,58 @@ namespace SagaMap.Manager
                 ring.Rights[index].SetValue(RingRight.AddRight, true);
                 ring.Rights[index].SetValue(RingRight.KickRight, true);
                 ring.Rights[index].SetValue(RingRight.FFRight, true);
-                UpdateRingInfo(ring, SagaMap.Packets.Server.SSMG_RING_INFO.Reason.CREATE);
+                UpdateRingInfo(ring, SSMG_RING_INFO.Reason.CREATE);
             }
-            MapServer.charDB.SaveRing(ring, true);            
+
+            MapServer.charDB.SaveRing(ring, true);
         }
 
-        public void DeleteMember(Ring ring, ActorPC pc, Packets.Server.SSMG_RING_QUIT.Reasons reason)
+        public void DeleteMember(Ring ring, ActorPC pc, SSMG_RING_QUIT.Reasons reason)
         {
             if (ring == null)
                 return;
             if (!ring.IsMember(pc))
                 return;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (!i.Online) continue;
                 if (i.CharID == pc.CharID)
-                {                    
+                {
                     if (i.Online)
                     {
                         MapClient.FromActorPC(i).SendRingMeDelete(reason);
-                        i.Ring = null;                    
-                        MapClient.FromActorPC(i).Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, i, false);
+                        i.Ring = null;
+                        MapClient.FromActorPC(i).Map
+                            .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, i, false);
                     }
-                    i.Ring = null;                    
+
+                    i.Ring = null;
                 }
                 else
                 {
                     MapClient.FromActorPC(i).SendRingMemberDelete(pc);
                 }
             }
+
             ring.DeleteMemeber(pc);
-            MapServer.charDB.SaveRing(ring, true);            
+            MapServer.charDB.SaveRing(ring, true);
         }
 
         public void RingDismiss(Ring ring)
         {
             if (ring == null)
                 return;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
             {
                 if (!i.Online) continue;
-                MapClient.FromActorPC(i).SendRingMeDelete(SagaMap.Packets.Server.SSMG_RING_QUIT.Reasons.DISSOLVE);
+                MapClient.FromActorPC(i).SendRingMeDelete(SSMG_RING_QUIT.Reasons.DISSOLVE);
                 i.Ring = null;
-                MapClient.FromActorPC(i).Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, i, false);
+                MapClient.FromActorPC(i).Map
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.RING_NAME_UPDATE, null, i, false);
             }
+
             MapServer.charDB.DeleteRing(ring);
             if (rings.ContainsKey(ring.ID))
                 rings.Remove(ring.ID);
@@ -249,10 +261,10 @@ namespace SagaMap.Manager
             if (!ring.IsMember(pc))
                 return;
             ring.Rights[ring.IndexOf(pc)].Value = value;
-            ActorPC[] list = ring.Members.Values.ToArray();
-            foreach (ActorPC i in list)
-            {                
-                Packets.Server.SSMG_RING_RIGHT_UPDATE p = new SagaMap.Packets.Server.SSMG_RING_RIGHT_UPDATE();
+            var list = ring.Members.Values.ToArray();
+            foreach (var i in list)
+            {
+                var p = new SSMG_RING_RIGHT_UPDATE();
                 p.CharID = pc;
                 p.Right = ring.Rights[ring.IndexOf(pc)].Value;
                 if (i.Online)

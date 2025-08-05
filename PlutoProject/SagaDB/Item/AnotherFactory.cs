@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 using SagaLib.VirtualFileSystem;
+
 namespace SagaDB.Item
 {
     public class AnotherFactory : Singleton<AnotherFactory>
     {
-        Dictionary<uint, Dictionary<byte, Another>> another = new Dictionary<uint, Dictionary<byte, Another>>();
-        public Dictionary<uint, Dictionary<byte, Another>> AnotherPapers { get { return another; } }
-        public void Init(string path, System.Text.Encoding encoding)
-        {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+        public Dictionary<uint, Dictionary<byte, Another>> AnotherPapers { get; } =
+            new Dictionary<uint, Dictionary<byte, Another>>();
 
-            DateTime time = DateTime.Now;
+        public void Init(string path, Encoding encoding)
+        {
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -30,37 +30,30 @@ namespace SagaDB.Item
                         continue;
                     paras = line.Split(',');
 
-                    for (int i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "" || paras[i].ToLower() == "null")
                             paras[i] = "0";
-                    }
 
-                    Another paper = new Another();
+                    var paper = new Another();
                     paper.id = uint.Parse(paras[0]);
                     paper.name = paras[1];
                     paper.type = byte.Parse(paras[2]);
                     paper.lv = byte.Parse(paras[3]);
-                    for (int i = 0; i < 8; i++)
-                    {
-                        paper.paperItems1.Add(uint.Parse(paras[5 + i]));
-                    }
-                    for (int i = 0; i < 8; i++)
-                    {
-                        paper.paperItems2.Add(uint.Parse(paras[13 + i]));
-                    }
+                    for (var i = 0; i < 8; i++) paper.paperItems1.Add(uint.Parse(paras[5 + i]));
+                    for (var i = 0; i < 8; i++) paper.paperItems2.Add(uint.Parse(paras[13 + i]));
                     paper.requestItem1 = uint.Parse(paras[21]);
                     paper.requestItem2 = uint.Parse(paras[22]);
                     paper.awakeSkillID = uint.Parse(paras[23]);
                     paper.awakeSkillMaxLV = byte.Parse(paras[24]);
-                    for (int i = 0; i < 5; i++)
+                    for (var i = 0; i < 5; i++)
                     {
-                        uint skillid = uint.Parse(paras[25 + i * 2]);
-                        byte skillMaxLV = byte.Parse(paras[26 + i * 2]);
+                        var skillid = uint.Parse(paras[25 + i * 2]);
+                        var skillMaxLV = byte.Parse(paras[26 + i * 2]);
                         if (!paper.skills.ContainsKey(skillid))
                             paper.skills.Add(skillid, new List<byte>());
                         paper.skills[skillid].Add(skillMaxLV);
                     }
+
                     paper.str = ushort.Parse(paras[35]);
                     paper.mag = ushort.Parse(paras[36]);
                     paper.vit = ushort.Parse(paras[37]);
@@ -80,17 +73,19 @@ namespace SagaDB.Item
                     paper.hit_magic_add = ushort.Parse(paras[51]);
                     paper.avoid_melee_add = ushort.Parse(paras[52]);
                     paper.avoid_magic_add = ushort.Parse(paras[53]);
-                    if (!another.ContainsKey(paper.id))
-                        another.Add(paper.id, new Dictionary<byte, Another>());
-                    another[paper.id].Add(paper.lv, paper);
+                    if (!AnotherPapers.ContainsKey(paper.id))
+                        AnotherPapers.Add(paper.id, new Dictionary<byte, Another>());
+                    AnotherPapers[paper.id].Add(paper.lv, paper);
                 }
                 catch (Exception ex)
                 {
                     Logger.ShowError(ex);
                 }
             }
+
             sr.Close();
         }
+
         public byte GetPaperLv(ulong value)
         {
             byte lv = 0;
@@ -101,13 +96,14 @@ namespace SagaDB.Item
             if (value >= 0xffffffffff) lv = 5;
             return lv;
         }
+
         public ulong GetPaperValue(byte paperID, byte lv, uint ItemID)
         {
             ulong value = 0;
             if (!AnotherPapers.ContainsKey(paperID)) return 0;
             if (!AnotherPapers[paperID].ContainsKey(lv)) return 0;
             if (!AnotherPapers[paperID][lv].paperItems1.Contains(ItemID)) return 0;
-            int index = AnotherPapers[paperID][lv].paperItems1.IndexOf(ItemID);
+            var index = AnotherPapers[paperID][lv].paperItems1.IndexOf(ItemID);
             switch (index)
             {
                 case 0:
@@ -135,6 +131,7 @@ namespace SagaDB.Item
                     value = 0x80;
                     break;
             }
+
             if (lv > 1)
                 value = value * (ulong)((lv - 1) * 0x100);
             return value;

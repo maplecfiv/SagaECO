@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// イクスパンジアーム
+    ///     イクスパンジアーム
     /// </summary>
     public class IkspiariArmusing : ISkill
     {
@@ -19,15 +14,11 @@ namespace SagaMap.Skill.SkillDefinations.Global
             return 0;
         }
 
-        
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            bool cure = false;
-            if (SagaLib.Global.Random.Next(0, 99) < 70)
-            {
-                cure = true;
-            }
+            var cure = false;
+            if (SagaLib.Global.Random.Next(0, 99) < 70) cure = true;
             if (cure)
             {
                 RemoveAddition(sActor, "Poison");
@@ -40,24 +31,23 @@ namespace SagaMap.Skill.SkillDefinations.Global
                 RemoveAddition(sActor, "Frosen");
                 RemoveAddition(sActor, "Confuse");
             }
-            float factor = 1.4f + 0.3f * level;
+
+            var factor = 1.4f + 0.3f * level;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
 
-        public void RemoveAddition(Actor actor, String additionName)
+        public void RemoveAddition(Actor actor, string additionName)
         {
             if (actor.Status.Additions.ContainsKey(additionName))
             {
-                Addition addition = actor.Status.Additions[additionName];
+                var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
-                if (addition.Activated)
-                {
-                    addition.AdditionEnd();
-                }
+                if (addition.Activated) addition.AdditionEnd();
                 addition.Activated = false;
             }
         }
+
         #endregion
     }
 }

@@ -1,46 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Party;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
     public class SSMG_PARTY_MEMBER_DETAIL : Packet
     {
-
         public SSMG_PARTY_MEMBER_DETAIL()
         {
-            this.data = new byte[23];
-            this.offset = 2;
-            this.ID = 0x19F5;
+            data = new byte[23];
+            offset = 2;
+            ID = 0x19F5;
         }
 
         public uint PartyIndex
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public byte Form
         {
             set
             {
-                if(Configuration.Instance.Version >= SagaLib.Version.Saga10)
-                    this.PutByte(value, 10);
+                if (Configuration.Instance.Version >= Version.Saga10)
+                    PutByte(value, 10);
             }
         }
 
@@ -48,10 +35,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga10)
-                    this.PutUInt((uint)value, 11);
+                if (Configuration.Instance.Version >= Version.Saga10)
+                    PutUInt((uint)value, 11);
                 else
-                    this.PutUInt((uint)value, 10);
+                    PutUInt((uint)value, 10);
             }
         }
 
@@ -59,10 +46,10 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga10)
-                    this.PutUInt((uint)value, 15);
+                if (Configuration.Instance.Version >= Version.Saga10)
+                    PutUInt(value, 15);
                 else
-                    this.PutUInt((uint)value, 14);
+                    PutUInt(value, 14);
             }
         }
 
@@ -70,12 +57,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga10)
-                    this.PutUInt((uint)value, 19);
+                if (Configuration.Instance.Version >= Version.Saga10)
+                    PutUInt(value, 19);
                 else
-                    this.PutUInt((uint)value, 18);
+                    PutUInt(value, 18);
             }
         }
     }
 }
-

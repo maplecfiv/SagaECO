@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,66 +7,29 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_DEM_STATS_PRE_CALC()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public ushort Str
-        {
-            get
-            {
-                return this.GetUShort(5);
-            }
-        }
+        public ushort Str => GetUShort(5);
 
-        public ushort Dex
-        {
-            get
-            {
-                return this.GetUShort(7);
-            }
-        }
+        public ushort Dex => GetUShort(7);
 
-        public ushort Int
-        {
-            get
-            {
-                return this.GetUShort(9);
-            }
-        }
+        public ushort Int => GetUShort(9);
 
-        public ushort Vit
-        {
-            get
-            {
-                return this.GetUShort(11);
-            }
-        }
+        public ushort Vit => GetUShort(11);
 
-        public ushort Agi
-        {
-            get
-            {
-                return this.GetUShort(13);
-            }
-        }
+        public ushort Agi => GetUShort(13);
 
-        public ushort Mag
-        {
-            get
-            {
-                return this.GetUShort(15);
-            }
-        }
+        public ushort Mag => GetUShort(15);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_DEM_STATS_PRE_CALC();
+            return new CSMG_DEM_STATS_PRE_CALC();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnDEMStatsPreCalc(this);
+            ((MapClient)client).OnDEMStatsPreCalc(this);
         }
-
     }
 }

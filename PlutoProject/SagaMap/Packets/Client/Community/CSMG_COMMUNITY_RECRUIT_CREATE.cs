@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,22 +8,16 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_COMMUNITY_RECRUIT_CREATE()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public Manager.RecruitmentType Type
-        {
-            get
-            {
-                return (SagaMap.Manager.RecruitmentType)this.GetByte(2);
-            }
-        }
+        public RecruitmentType Type => (RecruitmentType)GetByte(2);
 
         public string Title
         {
             get
             {
-                string title = Global.Unicode.GetString(this.GetBytes((ushort)this.GetByte(3), 4));
+                var title = Global.Unicode.GetString(GetBytes(GetByte(3), 4));
                 return title.Replace("\0", "");
             }
         }
@@ -36,21 +26,20 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                byte size = this.GetByte(3);
-                string title = Global.Unicode.GetString(this.GetBytes((ushort)this.GetByte((ushort)(4 + size)), (ushort)(5 + size)));
+                var size = GetByte(3);
+                var title = Global.Unicode.GetString(GetBytes(GetByte((ushort)(4 + size)), (ushort)(5 + size)));
                 return title.Replace("\0", "");
             }
         }
-        
-        public override SagaLib.Packet New()
+
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_COMMUNITY_RECRUIT_CREATE();
+            return new CSMG_COMMUNITY_RECRUIT_CREATE();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnRecruitCreate(this);
+            ((MapClient)client).OnRecruitCreate(this);
         }
-
     }
 }

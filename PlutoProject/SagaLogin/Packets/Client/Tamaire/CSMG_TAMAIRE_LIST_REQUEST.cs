@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SagaLogin.Network.Client;
 using SagaLib;
+using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Client
 {
@@ -10,51 +7,26 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_TAMAIRE_LIST_REQUEST()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
+        public byte page => GetByte(3);
 
-        public override SagaLib.Packet New()
-        {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_TAMAIRE_LIST_REQUEST();
-        }
+        public byte minlevel => GetByte(5);
 
-        public byte page
-        {
-            get
-            {
-                return GetByte(3);
-            }
-        }
+        public byte maxlevel => GetByte(6);
 
-        public byte minlevel
-        {
-            get
-            {
-                return GetByte(5);
-            }
-        }
+        public byte JobType => GetByte(7);
 
-        public byte maxlevel
-        {
-            get
-            {
-                return GetByte(6);
-            }
-        }
 
-        public byte JobType
+        public override Packet New()
         {
-            get
-            {
-                return GetByte(7);
-            }
+            return new CSMG_TAMAIRE_LIST_REQUEST();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginClient)(client)).OnTamaireListRequest(this);
+            ((LoginClient)client).OnTamaireListRequest(this);
         }
-
     }
 }

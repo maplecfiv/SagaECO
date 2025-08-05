@@ -1,34 +1,31 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SagaDB.Actor;
 using SagaDB.Mob;
 
 namespace SagaMap.Skill.Additions.Global
 {
     /// <summary>
-    /// 當怪物為某系列時，迴避率提升
+    ///     當怪物為某系列時，迴避率提升
     /// </summary>
     public class SomeTypeAvoUp : DefaultPassiveSkill
     {
         /// <summary>
-        /// 怪物類型
+        ///     怪物類型
         /// </summary>
         public Dictionary<MobType, ushort> MobTypes = new Dictionary<MobType, ushort>();
 
         public SomeTypeAvoUp(SagaDB.Skill.Skill skill, Actor actor, string name)
             : base(skill, actor, name, true)
         {
-            this.OnAdditionStart += this.StartEvent;
-            this.OnAdditionEnd += this.EndEvent;
+            OnAdditionStart += StartEvent;
+            OnAdditionEnd += EndEvent;
         }
 
         public SomeTypeAvoUp(SagaDB.Skill.Skill skill, Actor actor, string name, int peroid, int lifetime)
             : base(skill, actor, name, true, peroid, lifetime)
         {
-            this.OnAdditionStart += this.StartEvent;
-            this.OnAdditionEnd += this.EndEvent;
+            OnAdditionStart += StartEvent;
+            OnAdditionEnd += EndEvent;
         }
 
         public void AddMobType(MobType type, ushort addValue)
@@ -36,11 +33,11 @@ namespace SagaMap.Skill.Additions.Global
             MobTypes.Add(type, addValue);
         }
 
-        void StartEvent(Actor actor, DefaultPassiveSkill skill)
+        private void StartEvent(Actor actor, DefaultPassiveSkill skill)
         {
         }
 
-        void EndEvent(Actor actor, DefaultPassiveSkill skill)
+        private void EndEvent(Actor actor, DefaultPassiveSkill skill)
         {
         }
     }

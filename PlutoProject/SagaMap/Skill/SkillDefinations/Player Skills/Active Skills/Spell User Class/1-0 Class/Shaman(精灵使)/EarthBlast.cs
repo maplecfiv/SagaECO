@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Shaman
 {
     public class EarthBlast : ISkill
     {
-        bool MobUse;
+        private readonly bool MobUse;
+
         public EarthBlast()
         {
-            this.MobUse = false;
+            MobUse = false;
         }
+
         public EarthBlast(bool MobUse)
         {
             this.MobUse = MobUse;
         }
+
         #region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
@@ -49,16 +50,15 @@ namespace SagaMap.Skill.SkillDefinations.Shaman
                     break;
             }
 
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
-            List<Actor> affected = new List<Actor>();
+            var actors = MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
+            var affected = new List<Actor>();
             //取得有效Actor（即怪物）
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Earth, factor / affected.Count);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Earth, factor / affected.Count);
         }
+
         #endregion
     }
 }

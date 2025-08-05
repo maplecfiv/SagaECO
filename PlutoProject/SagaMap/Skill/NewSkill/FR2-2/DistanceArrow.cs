@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Archer
 {
     /// <summary>
-    ///鷹眼
+    ///     鷹眼
     /// </summary>
-    public class DistanceArrow: ISkill
+    public class DistanceArrow : ISkill
     {
         #region ISkill Members
 
@@ -25,9 +19,8 @@ namespace SagaMap.Skill.SkillDefinations.Archer
         {
             SkillHandler.Instance.PcArrowDown(sActor);
             args.type = ATTACK_TYPE.STAB;
-            float factor = 1.5f;
+            var factor = 1.5f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-
         }
 
         #endregion

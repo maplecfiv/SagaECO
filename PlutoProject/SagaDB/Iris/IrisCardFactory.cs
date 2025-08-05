@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.Iris
 {
@@ -12,13 +8,13 @@ namespace SagaDB.Iris
     {
         public IrisCardFactory()
         {
-            this.loadingTab = "Loading Iris Card database";
-            this.loadedTab = " cards loaded.";
-            this.databaseName = "Iris Card";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Iris Card database";
+            loadedTab = " cards loaded.";
+            databaseName = "Iris Card";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, IrisCard item)
+        protected override void ParseXML(XmlElement root, XmlElement current, IrisCard item)
         {
             throw new NotImplementedException();
         }
@@ -31,7 +27,7 @@ namespace SagaDB.Iris
         protected override void ParseCSV(IrisCard item, string[] paras)
         {
             item.ID = uint.Parse(paras[0]);
-            
+
             item.Name = paras[3];
             item.Serial = paras[5];
             item.Page = uint.Parse(paras[6]);
@@ -46,17 +42,18 @@ namespace SagaDB.Iris
                 item.CanArmor = true;
             if (toBool(paras[14]))
                 item.CanNeck = true;
-            for (int i = 0; i < 7; i++)
+            for (var i = 0; i < 7; i++)
             {
-                Elements element = (Elements)i;
+                var element = (Elements)i;
                 item.Elements.Add(element, int.Parse(paras[15 + i]));
             }
-            for (int i = 0; i < 3; i++)
+
+            for (var i = 0; i < 3; i++)
             {
-                uint id = uint.Parse(paras[22 + i * 2]);
+                var id = uint.Parse(paras[22 + i * 2]);
                 if (IrisAbilityFactory.Instance.Items.ContainsKey(id))
                 {
-                    AbilityVector vector = IrisAbilityFactory.Instance.Items[id];
+                    var vector = IrisAbilityFactory.Instance.Items[id];
                     item.Abilities.Add(vector, int.Parse(paras[23 + i * 2]));
                 }
             }
@@ -64,7 +61,8 @@ namespace SagaDB.Iris
 
         private bool toBool(string input)
         {
-            if (input == "1") return true; else return false;
+            if (input == "1") return true;
+            return false;
         }
     }
 }

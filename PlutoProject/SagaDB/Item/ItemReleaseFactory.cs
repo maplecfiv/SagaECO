@@ -1,10 +1,6 @@
-using SagaLib;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using SagaLib;
 
 namespace SagaDB.Item
 {
@@ -12,11 +8,12 @@ namespace SagaDB.Item
     {
         public ItemReleaseFactory()
         {
-            this.loadingTab = "Loading item release database";
-            this.loadedTab = " item release loaded.";
-            this.databaseName = "ItemRelease";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading item release database";
+            loadedTab = " item release loaded.";
+            databaseName = "ItemRelease";
+            FactoryType = FactoryType.CSV;
         }
+
         protected override uint GetKey(ItemRelease item)
         {
             return item.ID;
@@ -77,13 +74,20 @@ namespace SagaDB.Item
             item.CAVOID.MinValue = short.Parse(paras[50]);
             item.CAVOID.MaxValue = short.Parse(paras[51]);
             item.Elements.Clear();
-            item.Elements.Add(Elements.Neutral, new ItemReleaseAbility() { MinValue = short.Parse(paras[52]), MaxValue = short.Parse(paras[53]) });
-            item.Elements.Add(Elements.Holy, new ItemReleaseAbility() { MinValue = short.Parse(paras[54]), MaxValue = short.Parse(paras[55]) });
-            item.Elements.Add(Elements.Dark, new ItemReleaseAbility() { MinValue = short.Parse(paras[56]), MaxValue = short.Parse(paras[57]) });
-            item.Elements.Add(Elements.Earth, new ItemReleaseAbility() { MinValue = short.Parse(paras[58]), MaxValue = short.Parse(paras[59]) });
-            item.Elements.Add(Elements.Water, new ItemReleaseAbility() { MinValue = short.Parse(paras[60]), MaxValue = short.Parse(paras[61]) });
-            item.Elements.Add(Elements.Fire, new ItemReleaseAbility() { MinValue = short.Parse(paras[62]), MaxValue = short.Parse(paras[63]) });
-            item.Elements.Add(Elements.Wind, new ItemReleaseAbility() { MinValue = short.Parse(paras[64]), MaxValue = short.Parse(paras[65]) });
+            item.Elements.Add(Elements.Neutral,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[52]), MaxValue = short.Parse(paras[53]) });
+            item.Elements.Add(Elements.Holy,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[54]), MaxValue = short.Parse(paras[55]) });
+            item.Elements.Add(Elements.Dark,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[56]), MaxValue = short.Parse(paras[57]) });
+            item.Elements.Add(Elements.Earth,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[58]), MaxValue = short.Parse(paras[59]) });
+            item.Elements.Add(Elements.Water,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[60]), MaxValue = short.Parse(paras[61]) });
+            item.Elements.Add(Elements.Fire,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[62]), MaxValue = short.Parse(paras[63]) });
+            item.Elements.Add(Elements.Wind,
+                new ItemReleaseAbility { MinValue = short.Parse(paras[64]), MaxValue = short.Parse(paras[65]) });
         }
 
         protected override void ParseXML(XmlElement root, XmlElement current, ItemRelease item)
@@ -91,62 +95,62 @@ namespace SagaDB.Item
             throw new NotImplementedException();
         }
 
-        public void ReleaseItem(SagaDB.Item.Item item)
+        public void ReleaseItem(Item item)
         {
-            var ability = this.items[item.ItemID];
+            var ability = items[item.ItemID];
 
-            if (!(ability.HP.MaxValue.Equals(ability.HP.MaxValue).Equals(0)))
+            if (!ability.HP.MaxValue.Equals(ability.HP.MaxValue).Equals(0))
                 item.HP += (short)Global.Random.Next(ability.HP.MinValue, ability.HP.MaxValue);
-            if (!(ability.MP.MaxValue.Equals(ability.MP.MaxValue).Equals(0)))
+            if (!ability.MP.MaxValue.Equals(ability.MP.MaxValue).Equals(0))
                 item.MP += (short)Global.Random.Next(ability.MP.MinValue, ability.MP.MaxValue);
-            if (!(ability.SP.MaxValue.Equals(ability.SP.MaxValue).Equals(0)))
+            if (!ability.SP.MaxValue.Equals(ability.SP.MaxValue).Equals(0))
                 item.SP += (short)Global.Random.Next(ability.SP.MinValue, ability.SP.MaxValue);
-            if (!(ability.Weight.MaxValue.Equals(ability.Weight.MaxValue).Equals(0)))
+            if (!ability.Weight.MaxValue.Equals(ability.Weight.MaxValue).Equals(0))
                 item.WeightUp += (short)Global.Random.Next(ability.Weight.MinValue, ability.Weight.MaxValue);
-            if (!(ability.Volume.MaxValue.Equals(ability.Volume.MaxValue).Equals(0)))
+            if (!ability.Volume.MaxValue.Equals(ability.Volume.MaxValue).Equals(0))
                 item.VolumeUp += (short)Global.Random.Next(ability.Volume.MinValue, ability.Volume.MaxValue);
-            if (!(ability.STR.MaxValue.Equals(ability.STR.MaxValue).Equals(0)))
+            if (!ability.STR.MaxValue.Equals(ability.STR.MaxValue).Equals(0))
                 item.Str += (short)Global.Random.Next(ability.STR.MinValue, ability.STR.MaxValue);
-            if (!(ability.DEX.MaxValue.Equals(ability.DEX.MaxValue).Equals(0)))
+            if (!ability.DEX.MaxValue.Equals(ability.DEX.MaxValue).Equals(0))
                 item.Dex += (short)Global.Random.Next(ability.DEX.MinValue, ability.DEX.MaxValue);
-            if (!(ability.INT.MaxValue.Equals(ability.INT.MaxValue).Equals(0)))
+            if (!ability.INT.MaxValue.Equals(ability.INT.MaxValue).Equals(0))
                 item.Int += (short)Global.Random.Next(ability.INT.MinValue, ability.INT.MaxValue);
-            if (!(ability.VIT.MaxValue.Equals(ability.VIT.MaxValue).Equals(0)))
+            if (!ability.VIT.MaxValue.Equals(ability.VIT.MaxValue).Equals(0))
                 item.Vit += (short)Global.Random.Next(ability.VIT.MinValue, ability.VIT.MaxValue);
-            if (!(ability.AGI.MaxValue.Equals(ability.AGI.MaxValue).Equals(0)))
+            if (!ability.AGI.MaxValue.Equals(ability.AGI.MaxValue).Equals(0))
                 item.Agi += (short)Global.Random.Next(ability.AGI.MinValue, ability.AGI.MaxValue);
-            if (!(ability.MAG.MaxValue.Equals(ability.MAG.MaxValue).Equals(0)))
+            if (!ability.MAG.MaxValue.Equals(ability.MAG.MaxValue).Equals(0))
                 item.Mag += (short)Global.Random.Next(ability.MAG.MinValue, ability.MAG.MaxValue);
-            if (!(ability.ATK1.MaxValue.Equals(ability.ATK1.MaxValue).Equals(0)))
+            if (!ability.ATK1.MaxValue.Equals(ability.ATK1.MaxValue).Equals(0))
                 item.Atk1 += (short)Global.Random.Next(ability.ATK1.MinValue, ability.ATK1.MaxValue);
-            if (!(ability.ATK2.MaxValue.Equals(ability.ATK2.MaxValue).Equals(0)))
+            if (!ability.ATK2.MaxValue.Equals(ability.ATK2.MaxValue).Equals(0))
                 item.Atk2 += (short)Global.Random.Next(ability.ATK2.MinValue, ability.ATK2.MaxValue);
-            if (!(ability.ATK3.MaxValue.Equals(ability.ATK3.MaxValue).Equals(0)))
+            if (!ability.ATK3.MaxValue.Equals(ability.ATK3.MaxValue).Equals(0))
                 item.Atk3 += (short)Global.Random.Next(ability.ATK3.MinValue, ability.ATK3.MaxValue);
-            if (!(ability.MATK.MaxValue.Equals(ability.MATK.MaxValue).Equals(0)))
+            if (!ability.MATK.MaxValue.Equals(ability.MATK.MaxValue).Equals(0))
                 item.MAtk += (short)Global.Random.Next(ability.MATK.MinValue, ability.MATK.MaxValue);
-            if (!(ability.DEF_ADD.MaxValue.Equals(ability.DEF_ADD.MaxValue).Equals(0)))
+            if (!ability.DEF_ADD.MaxValue.Equals(ability.DEF_ADD.MaxValue).Equals(0))
                 item.Def += (short)Global.Random.Next(ability.DEF_ADD.MinValue, ability.DEF_ADD.MaxValue);
-            if (!(ability.MDEF_ADD.MaxValue.Equals(ability.MDEF_ADD.MaxValue).Equals(0)))
+            if (!ability.MDEF_ADD.MaxValue.Equals(ability.MDEF_ADD.MaxValue).Equals(0))
                 item.MDef += (short)Global.Random.Next(ability.MDEF_ADD.MinValue, ability.MDEF_ADD.MaxValue);
 
-            if (!(ability.SHIT.MaxValue.Equals(ability.SHIT.MaxValue).Equals(0)))
+            if (!ability.SHIT.MaxValue.Equals(ability.SHIT.MaxValue).Equals(0))
                 item.HitMelee += (short)Global.Random.Next(ability.SHIT.MinValue, ability.SHIT.MaxValue);
-            if (!(ability.LHIT.MaxValue.Equals(ability.LHIT.MaxValue).Equals(0)))
+            if (!ability.LHIT.MaxValue.Equals(ability.LHIT.MaxValue).Equals(0))
                 item.HitRanged += (short)Global.Random.Next(ability.LHIT.MinValue, ability.LHIT.MaxValue);
-            if (!(ability.MHIT.MaxValue.Equals(ability.MHIT.MaxValue).Equals(0)))
+            if (!ability.MHIT.MaxValue.Equals(ability.MHIT.MaxValue).Equals(0))
                 item.HitMagic += (short)Global.Random.Next(ability.MHIT.MinValue, ability.MHIT.MaxValue);
 
-            if (!(ability.SAVOID.MaxValue.Equals(ability.SAVOID.MaxValue).Equals(0)))
+            if (!ability.SAVOID.MaxValue.Equals(ability.SAVOID.MaxValue).Equals(0))
                 item.AvoidMelee += (short)Global.Random.Next(ability.SAVOID.MinValue, ability.SAVOID.MaxValue);
-            if (!(ability.LAVOID.MaxValue.Equals(ability.LAVOID.MaxValue).Equals(0)))
+            if (!ability.LAVOID.MaxValue.Equals(ability.LAVOID.MaxValue).Equals(0))
                 item.AvoidRanged += (short)Global.Random.Next(ability.LAVOID.MinValue, ability.LAVOID.MaxValue);
-            if (!(ability.MAVOID.MaxValue.Equals(ability.MAVOID.MaxValue).Equals(0)))
+            if (!ability.MAVOID.MaxValue.Equals(ability.MAVOID.MaxValue).Equals(0))
                 item.AvoidMagic += (short)Global.Random.Next(ability.MAVOID.MinValue, ability.MAVOID.MaxValue);
 
-            if (!(ability.CRIT.MaxValue.Equals(ability.CRIT.MaxValue).Equals(0)))
+            if (!ability.CRIT.MaxValue.Equals(ability.CRIT.MaxValue).Equals(0))
                 item.HitCritical += (short)Global.Random.Next(ability.CRIT.MinValue, ability.CRIT.MaxValue);
-            if (!(ability.CAVOID.MaxValue.Equals(ability.CAVOID.MaxValue).Equals(0)))
+            if (!ability.CAVOID.MaxValue.Equals(ability.CAVOID.MaxValue).Equals(0))
                 item.AvoidCritical += (short)Global.Random.Next(ability.CAVOID.MinValue, ability.CAVOID.MaxValue);
 
 

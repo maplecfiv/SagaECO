@@ -1,14 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace SagaLib
 {
     public class SingleRunTask
     {
-        private Timer myTimer;
         public int dueTime;
+        private Timer myTimer;
 
         public SingleRunTask()
         {
@@ -22,19 +19,17 @@ namespace SagaLib
 
         public virtual void CallBack(object o)
         {
-
         }
 
 
         public void Activate()
         {
-            this.myTimer = new Timer(new TimerCallback(this.CallBack), null, dueTime, Timeout.Infinite);
+            myTimer = new Timer(CallBack, null, dueTime, Timeout.Infinite);
         }
 
         public void Deactivate()
         {
-            this.myTimer.Dispose();
+            myTimer.Dispose();
         }
-
     }
 }

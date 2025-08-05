@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaMap.Network.Client;
-using SagaMap.Manager;
+using SagaLib;
+using SagaMap.Skill;
 
 namespace SagaMap.Tasks.Mob
 {
     public class TimingSpeak : MultiRunTask
     {
-        private Actor actor;
-        string message;
+        private readonly Actor actor;
+        private readonly string message;
+
         public TimingSpeak(Actor actor, int delay, string message)
         {
-            this.dueTime = delay;
-            this.period = delay;
+            dueTime = delay;
+            period = delay;
             this.actor = actor;
             this.message = message;
         }
@@ -26,13 +22,12 @@ namespace SagaMap.Tasks.Mob
         {
             try
             {
-                if (actor != null)
-                {
-                    SagaMap.Skill.SkillHandler.Instance.ActorSpeak(actor, message);
-                }
-                this.Deactivate();
+                if (actor != null) SkillHandler.Instance.ActorSpeak(actor, message);
+                Deactivate();
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
         }
     }
 }

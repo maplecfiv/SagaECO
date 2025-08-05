@@ -1,411 +1,431 @@
 //Comment this out to deactivate the dead lock check!
+
 #define DeadLockCheck
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaMap;
+using SagaLib;
 using SagaMap.Network.Client;
-
+using SagaMap.Packets.Client;
 
 namespace SagaMap.Manager
 {
     public sealed class MapClientManager : ClientManager
     {
-        List<MapClient> clients;
         public Thread check;
-        MapClientManager()
+
+        private MapClientManager()
         {
-
-            this.clients = new List<MapClient>();
-            this.commandTable = new Dictionary<ushort, Packet>();
+            Clients = new List<MapClient>();
+            commandTable = new Dictionary<ushort, Packet>();
             //this.commandTable.Add(0x6000, new Packets.Client.TEST_YUMEMI_1());
-            this.commandTable.Add(0x205B, new Packets.Client.CSMG_FF_FURNITURE_USE());
+            commandTable.Add(0x205B, new CSMG_FF_FURNITURE_USE());
 
-            
-            commandTable.Add(0x0690, new Packets.Client.CSMG_CHAT_GIFT_TAKE());
 
-            this.commandTable.Add(0x1F76, new Packets.Client.CSMG_DAILYDUNGEON_OPEN());
-            this.commandTable.Add(0x1F78, new Packets.Client.CSMG_DAILYDUNGEON_JOIN());
+            commandTable.Add(0x0690, new CSMG_CHAT_GIFT_TAKE());
+
+            commandTable.Add(0x1F76, new CSMG_DAILYDUNGEON_OPEN());
+            commandTable.Add(0x1F78, new CSMG_DAILYDUNGEON_JOIN());
 
             /*稱號系統*/
-            this.commandTable.Add(0x2418, new Packets.Client.CSMG_PLAYER_SETTITLE());
-            this.commandTable.Add(0x254C, new Packets.Client.CSMG_PLAYER_TITLE_CANCLENEW());
-            this.commandTable.Add(0x241B, new Packets.Client.CSMG_PLAYER_TITLE_REQUIRE());
+            commandTable.Add(0x2418, new CSMG_PLAYER_SETTITLE());
+            commandTable.Add(0x254C, new CSMG_PLAYER_TITLE_CANCLENEW());
+            commandTable.Add(0x241B, new CSMG_PLAYER_TITLE_REQUIRE());
             /*稱號系統*/
 
             /*Another系统*/
-            this.commandTable.Add(0x23AA, new Packets.Client.CSMG_ANO_PAPER_EQUIP());
-            this.commandTable.Add(0x23AC, new Packets.Client.CSMG_ANO_PAPER_TAKEOFF());
-            this.commandTable.Add(0x23A4, new Packets.Client.CSMG_ANO_UI_OPEN());
-            this.commandTable.Add(0x23A6, new Packets.Client.CSMG_ANO_PAPER_USE());
-            this.commandTable.Add(0x23A8, new Packets.Client.CSMG_ANO_PAPER_COMPOUND());
+            commandTable.Add(0x23AA, new CSMG_ANO_PAPER_EQUIP());
+            commandTable.Add(0x23AC, new CSMG_ANO_PAPER_TAKEOFF());
+            commandTable.Add(0x23A4, new CSMG_ANO_UI_OPEN());
+            commandTable.Add(0x23A6, new CSMG_ANO_PAPER_USE());
+            commandTable.Add(0x23A8, new CSMG_ANO_PAPER_COMPOUND());
             /*Another系统*/
 
             /*潜在强化*/
-            this.commandTable.Add(0x1F59, new Packets.Client.CSMG_ITEM_MASTERENHANCE_CLOSE());
-            this.commandTable.Add(0x1F57, new Packets.Client.CSMG_ITEM_MASTERENHANCE_CONFIRM());
-            this.commandTable.Add(0x1F55, new Packets.Client.CSMG_ITEM_MASTERENHANCE_SELECT());
+            commandTable.Add(0x1F59, new CSMG_ITEM_MASTERENHANCE_CLOSE());
+            commandTable.Add(0x1F57, new CSMG_ITEM_MASTERENHANCE_CONFIRM());
+            commandTable.Add(0x1F55, new CSMG_ITEM_MASTERENHANCE_SELECT());
             /*潜在强化*/
 
             /*新道具界面類*/
-            this.commandTable.Add(0x1CF2, new Packets.Client.CSMG_ITEM_FACEVIEW());
-            this.commandTable.Add(0x1CF4, new Packets.Client.CSMG_ITEM_FACECHANGE());
-            this.commandTable.Add(0x1CF6, new Packets.Client.CSMG_ITEM_FACEVIEW_CLOSE());
+            commandTable.Add(0x1CF2, new CSMG_ITEM_FACEVIEW());
+            commandTable.Add(0x1CF4, new CSMG_ITEM_FACECHANGE());
+            commandTable.Add(0x1CF6, new CSMG_ITEM_FACEVIEW_CLOSE());
             /*新道具界面類*/
 
             /*飛空城*/
-            this.commandTable.Add(0x200D, new Packets.Client.CSMG_FF_FURNITURE_ROOM_APPEAR());
-            this.commandTable.Add(0x200E, new Packet());
-            this.commandTable.Add(0x205D, new Packets.Client.CSMG_FF_FURNITURE_REMOVE());
-            this.commandTable.Add(0x2010, new Packets.Client.CSMG_FFGARDEN_JOIN());
-            this.commandTable.Add(0x2012, new Packets.Client.CSMG_FFGARDEN_JOIN_OTHER());
-            this.commandTable.Add(0x203A, new Packets.Client.CSMG_FF_CASTLE_SETUP());
-            this.commandTable.Add(0x203C, new Packets.Client.CSMG_FF_FURNITURE_REMOVE_CASTLE());
-            this.commandTable.Add(0x2046, new Packets.Client.CSMG_FF_FURNITURE_ROOM_ENTER());
-            this.commandTable.Add(0x2059, new Packets.Client.CSMG_FF_FURNITURE_SETUP());
-            this.commandTable.Add(0x20DE, new Packets.Client.CSMG_FF_UNIT_SETUP());
+            commandTable.Add(0x200D, new CSMG_FF_FURNITURE_ROOM_APPEAR());
+            commandTable.Add(0x200E, new Packet());
+            commandTable.Add(0x205D, new CSMG_FF_FURNITURE_REMOVE());
+            commandTable.Add(0x2010, new CSMG_FFGARDEN_JOIN());
+            commandTable.Add(0x2012, new CSMG_FFGARDEN_JOIN_OTHER());
+            commandTable.Add(0x203A, new CSMG_FF_CASTLE_SETUP());
+            commandTable.Add(0x203C, new CSMG_FF_FURNITURE_REMOVE_CASTLE());
+            commandTable.Add(0x2046, new CSMG_FF_FURNITURE_ROOM_ENTER());
+            commandTable.Add(0x2059, new CSMG_FF_FURNITURE_SETUP());
+            commandTable.Add(0x20DE, new CSMG_FF_UNIT_SETUP());
             /*飛空城*/
 
-            this.commandTable.Add(0x2061, new Packets.Client.CSMG_FF_FURNITURE_RESET());
+            commandTable.Add(0x2061, new CSMG_FF_FURNITURE_RESET());
 
             //钓鱼
-            this.commandTable.Add(0x216C, new Packets.Client.CSMG_FF_FISHBAIT_EQUIP());//装备鱼饵
+            commandTable.Add(0x216C, new CSMG_FF_FISHBAIT_EQUIP()); //装备鱼饵
 
             //心憑依 たまいれ
-            this.commandTable.Add(0x22B1, new Packet());
-            this.commandTable.Add(0x22B2, new Packets.Client.CSMG_TAMAIRE_RENTAL_REQUEST());
-            this.commandTable.Add(0x22B4, new Packets.Client.CSMG_TAMAIRE_RENTAL_TERMINATE_REQUEST());
+            commandTable.Add(0x22B1, new Packet());
+            commandTable.Add(0x22B2, new CSMG_TAMAIRE_RENTAL_REQUEST());
+            commandTable.Add(0x22B4, new CSMG_TAMAIRE_RENTAL_TERMINATE_REQUEST());
 
-            this.commandTable.Add(0x000A, new Packets.Client.CSMG_SEND_VERSION());
-            this.commandTable.Add(0x0010, new Packets.Client.CSMG_LOGIN());
-            this.commandTable.Add(0x001E, new Packet());//dummy packet
-            this.commandTable.Add(0x001F, new Packets.Client.CSMG_LOGOUT());
-            this.commandTable.Add(0x001C, new Packets.Client.CSMG_SSO_LOGOUT());
-            this.commandTable.Add(0x0032, new Packets.Client.CSMG_PING());
-            this.commandTable.Add(0x00B8, new Packet());//dummy packet ClientCheck
-            this.commandTable.Add(0x01FD, new Packets.Client.CSMG_CHAR_SLOT());
-            this.commandTable.Add(0x0208, new Packets.Client.CSMG_PLAYER_STATS_UP());
-            this.commandTable.Add(0x0222, new Packets.Client.CSMG_PLAYER_ELEMENTS());
-            this.commandTable.Add(0x0227, new Packets.Client.CSMG_SKILL_LEARN());
-            this.commandTable.Add(0x022B, new Packets.Client.CSMG_SKILL_LEVEL_UP());
-            this.commandTable.Add(0x020C, new Packets.Client.CSMG_ACTOR_REQUEST_PC_INFO());
-            this.commandTable.Add(0x0258, new Packets.Client.CSMG_PLAYER_STATS_PRE_CALC());
-            this.commandTable.Add(0x02B2, new Packets.Client.CSMG_PLAYER_MIRROR_OPEN());
-            this.commandTable.Add(0x02BE, new Packets.Client.CSMG_NPC_JOB_SWITCH());
-            this.commandTable.Add(0x03E8, new Packets.Client.CSMG_CHAT_PUBLIC());
-            this.commandTable.Add(0x0406, new Packets.Client.CSMG_CHAT_PARTY());
-            this.commandTable.Add(0x0410, new Packets.Client.CSMG_CHAT_RING());
-            this.commandTable.Add(0x041A, new Packets.Client.CSMG_CHAT_SIGN());
-            this.commandTable.Add(0x05E6, new Packets.Client.CSMG_NPC_EVENT_START());
-            this.commandTable.Add(0x05F5, new Packets.Client.CSMG_NPC_INPUTBOX());
-            this.commandTable.Add(0x05F7, new Packets.Client.CSMG_NPC_SELECT());
-            this.commandTable.Add(0x0602, new Packets.Client.CSMG_NPC_SHOP_BUY());
+            commandTable.Add(0x000A, new CSMG_SEND_VERSION());
+            commandTable.Add(0x0010, new CSMG_LOGIN());
+            commandTable.Add(0x001E, new Packet()); //dummy packet
+            commandTable.Add(0x001F, new CSMG_LOGOUT());
+            commandTable.Add(0x001C, new CSMG_SSO_LOGOUT());
+            commandTable.Add(0x0032, new CSMG_PING());
+            commandTable.Add(0x00B8, new Packet()); //dummy packet ClientCheck
+            commandTable.Add(0x01FD, new CSMG_CHAR_SLOT());
+            commandTable.Add(0x0208, new CSMG_PLAYER_STATS_UP());
+            commandTable.Add(0x0222, new CSMG_PLAYER_ELEMENTS());
+            commandTable.Add(0x0227, new CSMG_SKILL_LEARN());
+            commandTable.Add(0x022B, new CSMG_SKILL_LEVEL_UP());
+            commandTable.Add(0x020C, new CSMG_ACTOR_REQUEST_PC_INFO());
+            commandTable.Add(0x0258, new CSMG_PLAYER_STATS_PRE_CALC());
+            commandTable.Add(0x02B2, new CSMG_PLAYER_MIRROR_OPEN());
+            commandTable.Add(0x02BE, new CSMG_NPC_JOB_SWITCH());
+            commandTable.Add(0x03E8, new CSMG_CHAT_PUBLIC());
+            commandTable.Add(0x0406, new CSMG_CHAT_PARTY());
+            commandTable.Add(0x0410, new CSMG_CHAT_RING());
+            commandTable.Add(0x041A, new CSMG_CHAT_SIGN());
+            commandTable.Add(0x05E6, new CSMG_NPC_EVENT_START());
+            commandTable.Add(0x05F5, new CSMG_NPC_INPUTBOX());
+            commandTable.Add(0x05F7, new CSMG_NPC_SELECT());
+            commandTable.Add(0x0602, new CSMG_NPC_SHOP_BUY());
 
-            this.commandTable.Add(0x0604, new Packets.Client.CSMG_NPC_SHOP_SELL());
-            this.commandTable.Add(0x0605, new Packets.Client.CSMG_NPC_SHOP_CLOSE());
-            this.commandTable.Add(0x0611, new Packets.Client.CSMG_ITEM_EXCHANGE_CLOSE());
-            this.commandTable.Add(0x060F, new Packets.Client.CSMG_ITEM_EXCHANGE_CONFIRM());
-            this.commandTable.Add(0x0637, new Packets.Client.CSMG_DEM_CHIP_CLOSE());
-            this.commandTable.Add(0x0638, new Packets.Client.CSMG_DEM_CHIP_CATEGORY());
-            this.commandTable.Add(0x063C, new Packets.Client.CSMG_DEM_CHIP_BUY());
-            this.commandTable.Add(0x062D, new Packets.Client.CSMG_NCSHOP_CLOSE());
-            this.commandTable.Add(0x062E, new Packets.Client.CSMG_NCSHOP_CATEGORY_REQUEST());
-            this.commandTable.Add(0x0632, new Packets.Client.CSMG_NCSHOP_BUY());
-            this.commandTable.Add(0x0641, new Packets.Client.CSMG_VSHOP_CLOSE());
-            this.commandTable.Add(0x064A, new Packets.Client.CSMG_VSHOP_CATEGORY_REQUEST());
-            this.commandTable.Add(0x0654, new Packets.Client.CSMG_VSHOP_BUY());
-            this.commandTable.Add(0x07D0, new Packets.Client.CSMG_ITEM_DROP());
-            this.commandTable.Add(0x07E4, new Packets.Client.CSMG_ITEM_GET());
-            this.commandTable.Add(0x09C4, new Packets.Client.CSMG_ITEM_USE());
-            this.commandTable.Add(0x09E2, new Packets.Client.CSMG_ITEM_MOVE());
-            this.commandTable.Add(0x09E7, new Packets.Client.CSMG_ITEM_EQUIPT());
-            this.commandTable.Add(0x09EA, new Packets.Client.CSMG_ITEM_CHANGE_SLOT());
-            this.commandTable.Add(0x09F7, new Packets.Client.CSMG_ITEM_WARE_CLOSE());
-            this.commandTable.Add(0x09FA, new Packets.Client.CSMG_ITEM_WARE_GET());
-            this.commandTable.Add(0x09FC, new Packets.Client.CSMG_ITEM_WARE_PUT());
-            this.commandTable.Add(0x09FE, new Packets.Client.CSMG_ITEM_WARE_PAGE());
-            this.commandTable.Add(0x0A0A, new Packets.Client.CSMG_TRADE_REQUEST());
-            this.commandTable.Add(0x0A14, new Packets.Client.CSMG_TRADE_CONFIRM());
-            this.commandTable.Add(0x0A15, new Packets.Client.CSMG_TRADE_PERFORM());
-            this.commandTable.Add(0x0A16, new Packets.Client.CSMG_TRADE_CANCEL());
-            this.commandTable.Add(0x0A1B, new Packets.Client.CSMG_TRADE_ITEM());
-            this.commandTable.Add(0x0A0D, new Packets.Client.CSMG_TRADE_REQUEST_ANSWER());
-            this.commandTable.Add(0x0FAA, new Packets.Client.CSMG_SKILL_RANGE_ATTACK());
-            this.commandTable.Add(0x0F96, new Packet());//Dummy packet, dunno what this packet does, if someone knows, tell me    -by liiir1985
-            this.commandTable.Add(0x0F9F, new Packets.Client.CSMG_SKILL_ATTACK());
-            this.commandTable.Add(0x0FA3, new Packets.Client.CSMG_PLAYER_RETURN_HOME());
-            this.commandTable.Add(0x0FA5, new Packets.Client.CSMG_SKILL_CHANGE_BATTLE_STATUS());
-            this.commandTable.Add(0x0FD2, new Packet());//Dummy packet, player dead, dunno why should client tell server,that player is dead
-            this.commandTable.Add(0x11F8, new Packets.Client.CSMG_PLAYER_MOVE());
-            this.commandTable.Add(0x11FE, new Packets.Client.CSMG_PLAYER_MAP_LOADED());
-            this.commandTable.Add(0x121D, new Packets.Client.CSMG_CHAT_WAITTYPE());
-            this.commandTable.Add(0x1D0B, new Packets.Client.CSMG_CHAT_EXPRESSION());
-            this.commandTable.Add(0x1216, new Packets.Client.CSMG_CHAT_EMOTION());
-            this.commandTable.Add(0x121B, new Packets.Client.CSMG_CHAT_MOTION());
-            this.commandTable.Add(0x12CB, new Packets.Client.CSMG_NPC_PET_SELECT());
-            this.commandTable.Add(0x1387, new Packets.Client.CSMG_SKILL_CAST());
-            this.commandTable.Add(0x13B6, new Packets.Client.CSMG_NPC_SYNTHESE());
-            this.commandTable.Add(0x13B9, new Packets.Client.CSMG_NPC_SYNTHESE_FINISH());
-            this.commandTable.Add(0x13BA, new Packets.Client.CSMG_CHAT_SIT());
-            this.commandTable.Add(0x13C0, new Packets.Client.CSMG_ITEM_EQUIPT_REPAIR());
-            this.commandTable.Add(0x13C5, new Packets.Client.CSMG_ITEM_ENHANCE_CONFIRM());
-            this.commandTable.Add(0x13C7, new Packets.Client.CSMG_ITEM_ENHANCE_CLOSE());
-            this.commandTable.Add(0x13D9, new Packets.Client.CSMG_ITEM_FUSION());
-            this.commandTable.Add(0x13DD, new Packets.Client.CSMG_ITEM_FUSION_CANCEL());
+            commandTable.Add(0x0604, new CSMG_NPC_SHOP_SELL());
+            commandTable.Add(0x0605, new CSMG_NPC_SHOP_CLOSE());
+            commandTable.Add(0x0611, new CSMG_ITEM_EXCHANGE_CLOSE());
+            commandTable.Add(0x060F, new CSMG_ITEM_EXCHANGE_CONFIRM());
+            commandTable.Add(0x0637, new CSMG_DEM_CHIP_CLOSE());
+            commandTable.Add(0x0638, new CSMG_DEM_CHIP_CATEGORY());
+            commandTable.Add(0x063C, new CSMG_DEM_CHIP_BUY());
+            commandTable.Add(0x062D, new CSMG_NCSHOP_CLOSE());
+            commandTable.Add(0x062E, new CSMG_NCSHOP_CATEGORY_REQUEST());
+            commandTable.Add(0x0632, new CSMG_NCSHOP_BUY());
+            commandTable.Add(0x0641, new CSMG_VSHOP_CLOSE());
+            commandTable.Add(0x064A, new CSMG_VSHOP_CATEGORY_REQUEST());
+            commandTable.Add(0x0654, new CSMG_VSHOP_BUY());
+            commandTable.Add(0x07D0, new CSMG_ITEM_DROP());
+            commandTable.Add(0x07E4, new CSMG_ITEM_GET());
+            commandTable.Add(0x09C4, new CSMG_ITEM_USE());
+            commandTable.Add(0x09E2, new CSMG_ITEM_MOVE());
+            commandTable.Add(0x09E7, new CSMG_ITEM_EQUIPT());
+            commandTable.Add(0x09EA, new CSMG_ITEM_CHANGE_SLOT());
+            commandTable.Add(0x09F7, new CSMG_ITEM_WARE_CLOSE());
+            commandTable.Add(0x09FA, new CSMG_ITEM_WARE_GET());
+            commandTable.Add(0x09FC, new CSMG_ITEM_WARE_PUT());
+            commandTable.Add(0x09FE, new CSMG_ITEM_WARE_PAGE());
+            commandTable.Add(0x0A0A, new CSMG_TRADE_REQUEST());
+            commandTable.Add(0x0A14, new CSMG_TRADE_CONFIRM());
+            commandTable.Add(0x0A15, new CSMG_TRADE_PERFORM());
+            commandTable.Add(0x0A16, new CSMG_TRADE_CANCEL());
+            commandTable.Add(0x0A1B, new CSMG_TRADE_ITEM());
+            commandTable.Add(0x0A0D, new CSMG_TRADE_REQUEST_ANSWER());
+            commandTable.Add(0x0FAA, new CSMG_SKILL_RANGE_ATTACK());
+            commandTable.Add(0x0F96,
+                new Packet()); //Dummy packet, dunno what this packet does, if someone knows, tell me    -by liiir1985
+            commandTable.Add(0x0F9F, new CSMG_SKILL_ATTACK());
+            commandTable.Add(0x0FA3, new CSMG_PLAYER_RETURN_HOME());
+            commandTable.Add(0x0FA5, new CSMG_SKILL_CHANGE_BATTLE_STATUS());
+            commandTable.Add(0x0FD2,
+                new Packet()); //Dummy packet, player dead, dunno why should client tell server,that player is dead
+            commandTable.Add(0x11F8, new CSMG_PLAYER_MOVE());
+            commandTable.Add(0x11FE, new CSMG_PLAYER_MAP_LOADED());
+            commandTable.Add(0x121D, new CSMG_CHAT_WAITTYPE());
+            commandTable.Add(0x1D0B, new CSMG_CHAT_EXPRESSION());
+            commandTable.Add(0x1216, new CSMG_CHAT_EMOTION());
+            commandTable.Add(0x121B, new CSMG_CHAT_MOTION());
+            commandTable.Add(0x12CB, new CSMG_NPC_PET_SELECT());
+            commandTable.Add(0x1387, new CSMG_SKILL_CAST());
+            commandTable.Add(0x13B6, new CSMG_NPC_SYNTHESE());
+            commandTable.Add(0x13B9, new CSMG_NPC_SYNTHESE_FINISH());
+            commandTable.Add(0x13BA, new CSMG_CHAT_SIT());
+            commandTable.Add(0x13C0, new CSMG_ITEM_EQUIPT_REPAIR());
+            commandTable.Add(0x13C5, new CSMG_ITEM_ENHANCE_CONFIRM());
+            commandTable.Add(0x13C7, new CSMG_ITEM_ENHANCE_CLOSE());
+            commandTable.Add(0x13D9, new CSMG_ITEM_FUSION());
+            commandTable.Add(0x13DD, new CSMG_ITEM_FUSION_CANCEL());
             //this.commandTable.Add(0x13E3, new Packets.Client.CSMG_IRIS_ADD_SLOT_ITEM_SELECT());
-            this.commandTable.Add(0x13E3, new Packets.Client.CSMG_IRIS_ADD_SLOT_CONFIRM()); //从13E5改为13E3
-            this.commandTable.Add(0x13E5, new Packets.Client.CSMG_IRIS_ADD_SLOT_CANCEL()); //从13E7改为 13C7和取消强化合并了.
-            this.commandTable.Add(0x140B, new Packets.Client.CSMG_IRIS_CARD_ASSEMBLE_CONFIRM());
-            this.commandTable.Add(0x140D, new Packets.Client.CSMG_IRIS_CARD_ASSEMBLE_CANCEL());
+            commandTable.Add(0x13E3, new CSMG_IRIS_ADD_SLOT_CONFIRM()); //从13E5改为13E3
+            commandTable.Add(0x13E5, new CSMG_IRIS_ADD_SLOT_CANCEL()); //从13E7改为 13C7和取消强化合并了.
+            commandTable.Add(0x140B, new CSMG_IRIS_CARD_ASSEMBLE_CONFIRM());
+            commandTable.Add(0x140D, new CSMG_IRIS_CARD_ASSEMBLE_CANCEL());
 
             /*憑依系統*/
-            this.commandTable.Add(0x177A, new Packets.Client.CSMG_POSSESSION_REQUEST());
-            this.commandTable.Add(0x177F, new Packets.Client.CSMG_POSSESSION_CANCEL());
-            this.commandTable.Add(0x178E, new Packets.Client.CSMG_POSSESSION_CATALOG_REQUEST());
-            this.commandTable.Add(0x1791, new Packets.Client.CSMG_POSSESSION_CATALOG_ITEM_INFO_REQUEST());
-            this.commandTable.Add(0x17A2, new Packets.Client.CSMG_POSSESSION_PARTNER_REQUEST());
-            this.commandTable.Add(0x17A4, new Packets.Client.CSMG_POSSESSION_PARTNER_CANCEL());
+            commandTable.Add(0x177A, new CSMG_POSSESSION_REQUEST());
+            commandTable.Add(0x177F, new CSMG_POSSESSION_CANCEL());
+            commandTable.Add(0x178E, new CSMG_POSSESSION_CATALOG_REQUEST());
+            commandTable.Add(0x1791, new CSMG_POSSESSION_CATALOG_ITEM_INFO_REQUEST());
+            commandTable.Add(0x17A2, new CSMG_POSSESSION_PARTNER_REQUEST());
+            commandTable.Add(0x17A4, new CSMG_POSSESSION_PARTNER_CANCEL());
             /*憑依系統*/
 
-            this.commandTable.Add(0x17E8, new Packets.Client.CSMG_GOLEM_SHOP_SELL());
-            this.commandTable.Add(0x17EA, new Packets.Client.CSMG_GOLEM_SHOP_SELL_CLOSE());
-            this.commandTable.Add(0x17EB, new Packets.Client.CSMG_GOLEM_SHOP_SELL_SETUP());
-            this.commandTable.Add(0x17F2, new Packets.Client.CSMG_GOLEM_WAREHOUSE());
-            this.commandTable.Add(0x17F4, new Packets.Client.CSMG_GOLEM_WAREHOUSE_SET());
-            this.commandTable.Add(0x17F8, new Packets.Client.CSMG_GOLEM_WAREHOUSE_GET());
-            this.commandTable.Add(0x17FC, new Packets.Client.CSMG_GOLEM_SHOP_OPEN());
-            this.commandTable.Add(0x17FF, new Packet());
-            this.commandTable.Add(0x1803, new Packets.Client.CSMG_GOLEM_SHOP_SELL_BUY());
-            this.commandTable.Add(0x181A, new Packets.Client.CSMG_GOLEM_SHOP_BUY());
-            this.commandTable.Add(0x181C, new Packets.Client.CSMG_GOLEM_SHOP_BUY_CLOSE());
-            this.commandTable.Add(0x181D, new Packets.Client.CSMG_GOLEM_SHOP_BUY_SETUP());
-            this.commandTable.Add(0x1825, new Packet());
-            this.commandTable.Add(0x1827, new Packets.Client.CSMG_GOLEM_SHOP_BUY_SELL());
-            this.commandTable.Add(0x1991, new Packets.Client.CSMG_QUEST_DETAIL_REQUEST());
-            this.commandTable.Add(0x1965, new Packets.Client.CSMG_QUEST_SELECT());
+            commandTable.Add(0x17E8, new CSMG_GOLEM_SHOP_SELL());
+            commandTable.Add(0x17EA, new CSMG_GOLEM_SHOP_SELL_CLOSE());
+            commandTable.Add(0x17EB, new CSMG_GOLEM_SHOP_SELL_SETUP());
+            commandTable.Add(0x17F2, new CSMG_GOLEM_WAREHOUSE());
+            commandTable.Add(0x17F4, new CSMG_GOLEM_WAREHOUSE_SET());
+            commandTable.Add(0x17F8, new CSMG_GOLEM_WAREHOUSE_GET());
+            commandTable.Add(0x17FC, new CSMG_GOLEM_SHOP_OPEN());
+            commandTable.Add(0x17FF, new Packet());
+            commandTable.Add(0x1803, new CSMG_GOLEM_SHOP_SELL_BUY());
+            commandTable.Add(0x181A, new CSMG_GOLEM_SHOP_BUY());
+            commandTable.Add(0x181C, new CSMG_GOLEM_SHOP_BUY_CLOSE());
+            commandTable.Add(0x181D, new CSMG_GOLEM_SHOP_BUY_SETUP());
+            commandTable.Add(0x1825, new Packet());
+            commandTable.Add(0x1827, new CSMG_GOLEM_SHOP_BUY_SELL());
+            commandTable.Add(0x1991, new CSMG_QUEST_DETAIL_REQUEST());
+            commandTable.Add(0x1965, new CSMG_QUEST_SELECT());
 
-            this.commandTable.Add(0x191A, new Packets.Client.CSMG_PLAYER_SHOP_SELL_BUY());//商人开店
-            this.commandTable.Add(0x1915, new Packet());
-            this.commandTable.Add(0x190A, new Packets.Client.CSMG_PLAYER_SETSHOP_OPEN());//商人开店
-            this.commandTable.Add(0x190C, new Packets.Client.CSMG_PLAYER_SETSHOP_CLOSE());//商人开店
-            this.commandTable.Add(0x190D, new Packets.Client.CSMG_PLAYER_SETSHOP_SETUP());//商人开店
-            this.commandTable.Add(0x1900, new Packets.Client.CSMG_PLAYER_SHOP_OPEN());//商人开店
+            commandTable.Add(0x191A, new CSMG_PLAYER_SHOP_SELL_BUY()); //商人开店
+            commandTable.Add(0x1915, new Packet());
+            commandTable.Add(0x190A, new CSMG_PLAYER_SETSHOP_OPEN()); //商人开店
+            commandTable.Add(0x190C, new CSMG_PLAYER_SETSHOP_CLOSE()); //商人开店
+            commandTable.Add(0x190D, new CSMG_PLAYER_SETSHOP_SETUP()); //商人开店
+            commandTable.Add(0x1900, new CSMG_PLAYER_SHOP_OPEN()); //商人开店
 
-            this.commandTable.Add(0x19C9, new Packets.Client.CSMG_PARTY_INVITE());
-            this.commandTable.Add(0x19CB, new Packets.Client.CSMG_PARTY_INVITE_ANSWER());
-            this.commandTable.Add(0x19CD, new Packets.Client.CSMG_PARTY_QUIT());
-            this.commandTable.Add(0x19D2, new Packets.Client.CSMG_PARTY_KICK());
-            this.commandTable.Add(0x19D7, new Packets.Client.CSMG_PARTY_NAME());
-            this.commandTable.Add(0x19FF, new Packets.Client.CSMG_PARTY_ROLL());
-            this.commandTable.Add(0x1AAE, new Packets.Client.CSMG_RING_INVITE());
-            this.commandTable.Add(0x1AB7, new Packets.Client.CSMG_RING_INVITE_ANSWER(false));
-            this.commandTable.Add(0x1AB8, new Packets.Client.CSMG_RING_INVITE_ANSWER(true));
-            this.commandTable.Add(0x1ABD, new Packets.Client.CSMG_RING_QUIT());
-            this.commandTable.Add(0x1AC2, new Packets.Client.CSMG_RING_KICK());
-            this.commandTable.Add(0x1AD6, new Packets.Client.CSMG_RING_RIGHT_SET());
-            this.commandTable.Add(0x1ADB, new Packets.Client.CSMG_RING_EMBLEM_UPLOAD());
-            this.commandTable.Add(0x1AF5, new Packets.Client.CSMG_COMMUNITY_BBS_CLOSE());
-            this.commandTable.Add(0x1AFE, new Packets.Client.CSMG_COMMUNITY_BBS_POST());
-            this.commandTable.Add(0x1B08, new Packets.Client.CSMG_COMMUNITY_BBS_REQUEST_PAGE());
-            this.commandTable.Add(0x1B8A, new Packets.Client.CSMG_COMMUNITY_RECRUIT_CREATE());
-            this.commandTable.Add(0x1B94, new Packets.Client.CSMG_COMMUNITY_RECRUIT_DELETE());
-            this.commandTable.Add(0x1B9E, new Packets.Client.CSMG_COMMUNITY_RECRUIT());
-            this.commandTable.Add(0x1BA8, new Packets.Client.CSMG_COMMUNITY_RECRUIT_JOIN());
-            this.commandTable.Add(0x1BAE, new Packets.Client.CSMG_COMMUNITY_RECRUIT_REQUEST_ANS());
-            this.commandTable.Add(0x1BF8, new Packets.Client.CSMG_FGARDEN_EQUIPT());
-            this.commandTable.Add(0x1C02, new Packets.Client.CSMG_FGARDEN_FURNITURE_SETUP());
-            this.commandTable.Add(0x1C07, new Packets.Client.CSMG_FGARDEN_FURNITURE_USE());
-            this.commandTable.Add(0x1C0C, new Packets.Client.CSMG_FGARDEN_FURNITURE_REMOVE());
-            this.commandTable.Add(0x1C11, new Packets.Client.CSMG_FGARDEN_FURNITURE_RECONFIG());
-            this.commandTable.Add(0x1C21, new Packets.Client.CSMG_FG_WARE_CLOSE());
-            this.commandTable.Add(0x1C2A, new Packets.Client.CSMG_FG_WARE_GET());
-            this.commandTable.Add(0x1C2F, new Packets.Client.CSMG_FG_WARE_PUT());
-            this.commandTable.Add(0x1D4C, new Packets.Client.CSMG_PLAYER_GREETINGS());
-            this.commandTable.Add(0x1DB0, new Packets.Client.CSMG_IRIS_CARD_OPEN());
-            this.commandTable.Add(0x1DB2, new Packets.Client.CSMG_IRIS_CARD_CLOSE());
-            this.commandTable.Add(0x1DB6, new Packets.Client.CSMG_IRIS_CARD_INSERT());
-            this.commandTable.Add(0x1DBB, new Packets.Client.CSMG_IRIS_CARD_REMOVE());
-            this.commandTable.Add(0x1DC9, new Packets.Client.CSMG_IRIS_CARD_LOCK());
-            this.commandTable.Add(0x1DCB, new Packets.Client.CSMG_IRIS_CARD_UNLOCK());
-            this.commandTable.Add(0x1DD9, new Packets.Client.CSMG_IRIS_GACHA_DRAW());
-            this.commandTable.Add(0x1DDB, new Packets.Client.CSMG_IRIS_GACHA_CANCEL());
-            this.commandTable.Add(0x1E47, new Packets.Client.CSMG_DEM_DEMIC_CLOSE());
-            this.commandTable.Add(0x1E4C, new Packets.Client.CSMG_DEM_DEMIC_INITIALIZE());
-            this.commandTable.Add(0x1E4E, new Packets.Client.CSMG_DEM_DEMIC_CONFIRM());
-            this.commandTable.Add(0x1E50, new Packets.Client.CSMG_DEM_STATS_PRE_CALC());
-            this.commandTable.Add(0x1E5B, new Packets.Client.CSMG_DEM_COST_LIMIT_CLOSE());
-            this.commandTable.Add(0x1E5C, new Packets.Client.CSMG_DEM_COST_LIMIT_BUY());
-            this.commandTable.Add(0x1E7D, new Packets.Client.CSMG_DEM_FORM_CHANGE());
-            this.commandTable.Add(0x1E83, new Packets.Client.CSMG_DEM_PARTS_CLOSE());
-            this.commandTable.Add(0x1E87, new Packets.Client.CSMG_DEM_PARTS_EQUIP());
-            this.commandTable.Add(0x1E88, new Packets.Client.CSMG_DEM_PARTS_UNEQUIP());
+            commandTable.Add(0x19C9, new CSMG_PARTY_INVITE());
+            commandTable.Add(0x19CB, new CSMG_PARTY_INVITE_ANSWER());
+            commandTable.Add(0x19CD, new CSMG_PARTY_QUIT());
+            commandTable.Add(0x19D2, new CSMG_PARTY_KICK());
+            commandTable.Add(0x19D7, new CSMG_PARTY_NAME());
+            commandTable.Add(0x19FF, new CSMG_PARTY_ROLL());
+            commandTable.Add(0x1AAE, new CSMG_RING_INVITE());
+            commandTable.Add(0x1AB7, new CSMG_RING_INVITE_ANSWER(false));
+            commandTable.Add(0x1AB8, new CSMG_RING_INVITE_ANSWER(true));
+            commandTable.Add(0x1ABD, new CSMG_RING_QUIT());
+            commandTable.Add(0x1AC2, new CSMG_RING_KICK());
+            commandTable.Add(0x1AD6, new CSMG_RING_RIGHT_SET());
+            commandTable.Add(0x1ADB, new CSMG_RING_EMBLEM_UPLOAD());
+            commandTable.Add(0x1AF5, new CSMG_COMMUNITY_BBS_CLOSE());
+            commandTable.Add(0x1AFE, new CSMG_COMMUNITY_BBS_POST());
+            commandTable.Add(0x1B08, new CSMG_COMMUNITY_BBS_REQUEST_PAGE());
+            commandTable.Add(0x1B8A, new CSMG_COMMUNITY_RECRUIT_CREATE());
+            commandTable.Add(0x1B94, new CSMG_COMMUNITY_RECRUIT_DELETE());
+            commandTable.Add(0x1B9E, new CSMG_COMMUNITY_RECRUIT());
+            commandTable.Add(0x1BA8, new CSMG_COMMUNITY_RECRUIT_JOIN());
+            commandTable.Add(0x1BAE, new CSMG_COMMUNITY_RECRUIT_REQUEST_ANS());
+            commandTable.Add(0x1BF8, new CSMG_FGARDEN_EQUIPT());
+            commandTable.Add(0x1C02, new CSMG_FGARDEN_FURNITURE_SETUP());
+            commandTable.Add(0x1C07, new CSMG_FGARDEN_FURNITURE_USE());
+            commandTable.Add(0x1C0C, new CSMG_FGARDEN_FURNITURE_REMOVE());
+            commandTable.Add(0x1C11, new CSMG_FGARDEN_FURNITURE_RECONFIG());
+            commandTable.Add(0x1C21, new CSMG_FG_WARE_CLOSE());
+            commandTable.Add(0x1C2A, new CSMG_FG_WARE_GET());
+            commandTable.Add(0x1C2F, new CSMG_FG_WARE_PUT());
+            commandTable.Add(0x1D4C, new CSMG_PLAYER_GREETINGS());
+            commandTable.Add(0x1DB0, new CSMG_IRIS_CARD_OPEN());
+            commandTable.Add(0x1DB2, new CSMG_IRIS_CARD_CLOSE());
+            commandTable.Add(0x1DB6, new CSMG_IRIS_CARD_INSERT());
+            commandTable.Add(0x1DBB, new CSMG_IRIS_CARD_REMOVE());
+            commandTable.Add(0x1DC9, new CSMG_IRIS_CARD_LOCK());
+            commandTable.Add(0x1DCB, new CSMG_IRIS_CARD_UNLOCK());
+            commandTable.Add(0x1DD9, new CSMG_IRIS_GACHA_DRAW());
+            commandTable.Add(0x1DDB, new CSMG_IRIS_GACHA_CANCEL());
+            commandTable.Add(0x1E47, new CSMG_DEM_DEMIC_CLOSE());
+            commandTable.Add(0x1E4C, new CSMG_DEM_DEMIC_INITIALIZE());
+            commandTable.Add(0x1E4E, new CSMG_DEM_DEMIC_CONFIRM());
+            commandTable.Add(0x1E50, new CSMG_DEM_STATS_PRE_CALC());
+            commandTable.Add(0x1E5B, new CSMG_DEM_COST_LIMIT_CLOSE());
+            commandTable.Add(0x1E5C, new CSMG_DEM_COST_LIMIT_BUY());
+            commandTable.Add(0x1E7D, new CSMG_DEM_FORM_CHANGE());
+            commandTable.Add(0x1E83, new CSMG_DEM_PARTS_CLOSE());
+            commandTable.Add(0x1E87, new CSMG_DEM_PARTS_EQUIP());
+            commandTable.Add(0x1E88, new CSMG_DEM_PARTS_UNEQUIP());
 
             //Navi
-            this.commandTable.Add(0x1EAA, new Packets.Client.CSMG_NAVI_OPEN());
+            commandTable.Add(0x1EAA, new CSMG_NAVI_OPEN());
 
-            this.commandTable.Add(0x1EBE, new Packets.Client.CSMG_ITEM_CHANGE());//110武器人形
-            this.commandTable.Add(0x1EC0, new Packets.Client.CSMG_ITEM_CHANGE_CANCEL());//110武器人形
+            commandTable.Add(0x1EBE, new CSMG_ITEM_CHANGE()); //110武器人形
+            commandTable.Add(0x1EC0, new CSMG_ITEM_CHANGE_CANCEL()); //110武器人形
 
-            this.commandTable.Add(0x1EDC, new Packets.Client.CSMG_PLAYER_REQUIRE_REBIRTHREWARD()); // 3转特典选择窗口打开请求
-            this.commandTable.Add(0x1EDE, new Packets.Client.CSMG_CHAR_FORM()); // 3转特典外观确定
-            this.commandTable.Add(0x1EDF, new Packet()); // 3转特典道具获取
-            this.commandTable.Add(0x0064, new Packets.Client.CSMG_0064());//未知封包
+            commandTable.Add(0x1EDC, new CSMG_PLAYER_REQUIRE_REBIRTHREWARD()); // 3转特典选择窗口打开请求
+            commandTable.Add(0x1EDE, new CSMG_CHAR_FORM()); // 3转特典外观确定
+            commandTable.Add(0x1EDF, new Packet()); // 3转特典道具获取
+            commandTable.Add(0x0064, new CSMG_0064()); //未知封包
 
             //Partner system
-            this.commandTable.Add(0x217C, new Packets.Client.CSMG_PARTNER_PERK_PREVIEW());
-            this.commandTable.Add(0x217E, new Packets.Client.CSMG_PARTNER_PERK_CONFIRM());
-            this.commandTable.Add(0x2180, new Packets.Client.CSMG_PARTNER_AI_MODE_SELECTION());
-            this.commandTable.Add(0x2182, new Packets.Client.CSMG_PARTNER_AI_DETAIL_OPEN());
-            this.commandTable.Add(0x2184, new Packets.Client.CSMG_PARTNER_AI_DETAIL_SETUP());
-            this.commandTable.Add(0x2186, new Packets.Client.CSMG_PARTNER_AI_DETAIL_CLOSE());
-            this.commandTable.Add(0x218A, new Packets.Client.CSMG_PARTNER_SETEQUIP());
-            this.commandTable.Add(0x2199, new Packets.Client.CSMG_PARTNER_SETFOOD());
-            this.commandTable.Add(0x219B, new Packets.Client.CSMG_PARTNER_AUTOFEED());
-            this.commandTable.Add(0x219D, new Packets.Client.CSMG_PARTNER_UPDATE_REQUEST());
-            this.commandTable.Add(0x21A0, new Packets.Client.CSMG_PARTNER_TALK());
-            this.commandTable.Add(0x21A1, new Packets.Client.CSMG_PARTNER_PARTNER_MOTION());
-            this.commandTable.Add(0x2188, new Packets.Client.CSMG_PARTNER_CUBE_DELETE());
+            commandTable.Add(0x217C, new CSMG_PARTNER_PERK_PREVIEW());
+            commandTable.Add(0x217E, new CSMG_PARTNER_PERK_CONFIRM());
+            commandTable.Add(0x2180, new CSMG_PARTNER_AI_MODE_SELECTION());
+            commandTable.Add(0x2182, new CSMG_PARTNER_AI_DETAIL_OPEN());
+            commandTable.Add(0x2184, new CSMG_PARTNER_AI_DETAIL_SETUP());
+            commandTable.Add(0x2186, new CSMG_PARTNER_AI_DETAIL_CLOSE());
+            commandTable.Add(0x218A, new CSMG_PARTNER_SETEQUIP());
+            commandTable.Add(0x2199, new CSMG_PARTNER_SETFOOD());
+            commandTable.Add(0x219B, new CSMG_PARTNER_AUTOFEED());
+            commandTable.Add(0x219D, new CSMG_PARTNER_UPDATE_REQUEST());
+            commandTable.Add(0x21A0, new CSMG_PARTNER_TALK());
+            commandTable.Add(0x21A1, new CSMG_PARTNER_PARTNER_MOTION());
+            commandTable.Add(0x2188, new CSMG_PARTNER_CUBE_DELETE());
 
             //查看装备
-            this.commandTable.Add(0x0262, new Packets.Client.CSMG_PLAYER_EQUIP_OPEN());
+            commandTable.Add(0x0262, new CSMG_PLAYER_EQUIP_OPEN());
 
             //家具联动
-            this.commandTable.Add(0x1C35, new Packets.Client.CSMG_PLAYER_FURNITURE_SIT());
-            this.commandTable.Add(0x2064, new Packets.Client.CSMG_PLAYER_FURNITURE_SIT());
+            commandTable.Add(0x1C35, new CSMG_PLAYER_FURNITURE_SIT());
+            commandTable.Add(0x2064, new CSMG_PLAYER_FURNITURE_SIT());
 
             //無限迴廊中層, 下層
-            this.commandTable.Add(0x229C, new Packets.Client.CSMG_INFINITECORRIDOR_TRAP());
-            this.commandTable.Add(0x2294, new Packets.Client.CSMG_INFINITECORRIDOR_WARP());
+            commandTable.Add(0x229C, new CSMG_INFINITECORRIDOR_TRAP());
+            commandTable.Add(0x2294, new CSMG_INFINITECORRIDOR_WARP());
 
             //奈落隊伍
-            this.commandTable.Add(0x22E3, new Packets.Client.CSMG_ABYSSTEAM_LIST_REQUEST());
-            this.commandTable.Add(0x22E5, new Packets.Client.CSMG_ABYSSTEAM_LIST_CLOSE());
-            this.commandTable.Add(0x22E6, new Packets.Client.CSMG_ABYSSTEAM_SET_OPEN_REQUEST());
-            this.commandTable.Add(0x22E8, new Packet());
-            this.commandTable.Add(0x22E9, new Packets.Client.CSMG_ABYSSTEAM_SET_CREATE_REQUEST());
-            this.commandTable.Add(0x22EC, new Packets.Client.CSMG_ABYSSTEAM_REGIST_REQUEST());
-            this.commandTable.Add(0x22EF, new Packets.Client.CSMG_ABYSSTEAM_REGIST_APPROVAL());
-            this.commandTable.Add(0x22F2, new Packets.Client.CSMG_ABYSSTEAM_LEAVE_REQUEST());
-            this.commandTable.Add(0x22F4, new Packets.Client.CSMG_ABYSSTEAM_BREAK_REQUEST());
+            commandTable.Add(0x22E3, new CSMG_ABYSSTEAM_LIST_REQUEST());
+            commandTable.Add(0x22E5, new CSMG_ABYSSTEAM_LIST_CLOSE());
+            commandTable.Add(0x22E6, new CSMG_ABYSSTEAM_SET_OPEN_REQUEST());
+            commandTable.Add(0x22E8, new Packet());
+            commandTable.Add(0x22E9, new CSMG_ABYSSTEAM_SET_CREATE_REQUEST());
+            commandTable.Add(0x22EC, new CSMG_ABYSSTEAM_REGIST_REQUEST());
+            commandTable.Add(0x22EF, new CSMG_ABYSSTEAM_REGIST_APPROVAL());
+            commandTable.Add(0x22F2, new CSMG_ABYSSTEAM_LEAVE_REQUEST());
+            commandTable.Add(0x22F4, new CSMG_ABYSSTEAM_BREAK_REQUEST());
 
             //寵物保護
-            this.commandTable.Add(0x235B, new Packets.Client.CSMG_PPROTECT_LIST_OPEN());
-            this.commandTable.Add(0x235E, new Packets.Client.CSMG_PPROTECT_CREATED_INITI());
-            this.commandTable.Add(0x2361, new Packets.Client.CSMG_PPROTECT_CREATED_INFO());
-            this.commandTable.Add(0x2363, new Packets.Client.CSMG_PPROTECT_CREATED_REVISE());
-            this.commandTable.Add(0x2365, new Packets.Client.CSMG_PPROTECT_ADD_1());
-            this.commandTable.Add(0x2367, new Packets.Client.CSMG_PPROTECT_ADD());
-            this.commandTable.Add(0x2369, new Packets.Client.CSMG_PPROTECT_CREATED_OUT());
-            this.commandTable.Add(0x236B, new Packets.Client.CSMG_PPROTECT_CREATED_OUT());
-            this.commandTable.Add(0x2374, new Packets.Client.CSMG_PPROTECT_READY());
+            commandTable.Add(0x235B, new CSMG_PPROTECT_LIST_OPEN());
+            commandTable.Add(0x235E, new CSMG_PPROTECT_CREATED_INITI());
+            commandTable.Add(0x2361, new CSMG_PPROTECT_CREATED_INFO());
+            commandTable.Add(0x2363, new CSMG_PPROTECT_CREATED_REVISE());
+            commandTable.Add(0x2365, new CSMG_PPROTECT_ADD_1());
+            commandTable.Add(0x2367, new CSMG_PPROTECT_ADD());
+            commandTable.Add(0x2369, new CSMG_PPROTECT_CREATED_OUT());
+            commandTable.Add(0x236B, new CSMG_PPROTECT_CREATED_OUT());
+            commandTable.Add(0x2374, new CSMG_PPROTECT_READY());
 
             //師徒
-            this.commandTable.Add(0x1FE0, new Packets.Client.CSMG_BOND_REQUEST_FROM_MASTER());
-            this.commandTable.Add(0x1FE3, new Packets.Client.CSMG_BOND_REQUEST_PUPILIN_ANSWER());
-            this.commandTable.Add(0x1FE4, new Packets.Client.CSMG_BOND_REQUEST_FROM_PUPILIN());
-            this.commandTable.Add(0x1FE7, new Packets.Client.CSMG_BOND_REQUEST_MASTER_ANSWER());
-            this.commandTable.Add(0x1FE8, new Packets.Client.CSMG_BOND_CANCEL());
+            commandTable.Add(0x1FE0, new CSMG_BOND_REQUEST_FROM_MASTER());
+            commandTable.Add(0x1FE3, new CSMG_BOND_REQUEST_PUPILIN_ANSWER());
+            commandTable.Add(0x1FE4, new CSMG_BOND_REQUEST_FROM_PUPILIN());
+            commandTable.Add(0x1FE7, new CSMG_BOND_REQUEST_MASTER_ANSWER());
+            commandTable.Add(0x1FE8, new CSMG_BOND_CANCEL());
 
             //角色設定
-            this.commandTable.Add(0x1A5E, new Packets.Client.CSMG_PLAYER_SETOPTION());
+            commandTable.Add(0x1A5E, new CSMG_PLAYER_SETOPTION());
 
             //副职相关
-            this.commandTable.Add(0x22CF, new Packets.Client.CSMG_DUALJOB_CHANGE_CANCEL());
-            this.commandTable.Add(0x22D0, new Packets.Client.CSMG_DUALJOB_CHANGE_CONFIRM());
+            commandTable.Add(0x22CF, new CSMG_DUALJOB_CHANGE_CANCEL());
+            commandTable.Add(0x22D0, new CSMG_DUALJOB_CHANGE_CONFIRM());
             //this.commandTable.Add(0x003c, new Packets.Client.CSMG_NO_NYASHIELD());//没装喵盾
 
 
             //Daily Stamp
-            
-            this.commandTable.Add(0x1F73, new Packets.Client.CSMG_DAILY_STAMP_OPEN());
-            this.commandTable.Add(0x1F74, new Packets.Client.CSMG_DAILY_STAMP_OPEN());
 
-            this.waitressQueue = new AutoResetEvent(true);
+            commandTable.Add(0x1F73, new CSMG_DAILY_STAMP_OPEN());
+            commandTable.Add(0x1F74, new CSMG_DAILY_STAMP_OPEN());
+
+            waitressQueue = new AutoResetEvent(true);
 
             //deadlock check
-            check = new Thread(new ThreadStart(this.checkCriticalArea));
+            check = new Thread(checkCriticalArea);
             check.Name = string.Format("DeadLock checker({0})", check.ManagedThreadId);
 #if DeadLockCheck
             check.Start();
 #endif
         }
 
-        public void Abort()
-        {
-            check.Abort();
-            this.packetCoordinator.Abort();
-        }
+        public static MapClientManager Instance => Nested.instance;
 
-        public static MapClientManager Instance
+        public List<MapClient> Clients { get; }
+
+        public List<MapClient> OnlinePlayer
         {
             get
             {
-                return Nested.instance;
+                var list = new List<MapClient>();
+                foreach (var i in Clients)
+                {
+                    if (i.netIO.Disconnected)
+                        continue;
+                    if (i.Character == null)
+                        continue;
+                    if (!i.Character.Online)
+                        continue;
+                    list.Add(i);
+                }
+
+                return list;
             }
         }
 
-        class Nested
+        public List<MapClient> OnlinePlayerOnlyIP
         {
-            // Explicit static constructor to tell C# compiler
-            // not to mark type as beforefieldinit
-            static Nested()
+            get
             {
-            }
+                var ips = new List<string>();
+                var list = new List<MapClient>();
+                foreach (var i in Clients)
+                {
+                    if (i.netIO.Disconnected)
+                        continue;
+                    if (i.Character == null)
+                        continue;
+                    if (!i.Character.Online)
+                        continue;
+                    if (!ips.Contains(i.Character.Account.LastIP))
+                    {
+                        ips.Add(i.Character.Account.LastIP);
+                        list.Add(i);
+                    }
+                }
 
-            internal static readonly MapClientManager instance = new MapClientManager();
+                return list;
+            }
+        }
+
+        public void Abort()
+        {
+            check.Abort();
+            packetCoordinator.Abort();
         }
 
         public void Announce(string txt)
         {
             try
             {
-                foreach (MapClient i in OnlinePlayer)
-                {
+                foreach (var i in OnlinePlayer)
                     try
                     {
                         i.SendAnnounce(txt);
                     }
-                    catch { }
-                }
+                    catch
+                    {
+                    }
             }
-            catch { }
+            catch
+            {
+            }
         }
 
 
         /// <summary>
-        /// Connects new clients
+        ///     Connects new clients
         /// </summary>
         public override void NetworkLoop(int maxNewConnections)
         {
-            for (int i = 0; listener.Pending() && i < maxNewConnections; i++)
+            for (var i = 0; listener.Pending() && i < maxNewConnections; i++)
             {
-                Socket sock = listener.AcceptSocket();
-                string ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
-                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint.ToString()), null);
-                MapClient client = new MapClient(sock, this.commandTable);
-                clients.Add(client);
-            }
-        }
-
-        public List<MapClient> Clients
-        {
-            get
-            {
-                return this.clients;
+                var sock = listener.AcceptSocket();
+                var ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
+                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
+                var client = new MapClient(sock, commandTable);
+                Clients.Add(client);
             }
         }
 
         public override void OnClientDisconnect(Client client_t)
         {
-            clients.Remove((MapClient)client_t);
+            Clients.Remove((MapClient)client_t);
         }
 
         public MapClient FindClient(ActorPC pc)
@@ -416,74 +436,42 @@ namespace SagaMap.Manager
         public override Client GetClient(uint actorID)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.ActorID == actorID
-                      select c;
+                where c.Character.ActorID == actorID
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
-            else
-                return null;
+            return null;
         }
+
         public override Client GetClientForName(string actorName)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.Name == actorName
-                      select c;
+                where c.Character.Name == actorName
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
-            else
-                return null;
-        }
-        public List<MapClient> OnlinePlayer
-        {
-            get
-            {
-                List<MapClient> list = new List<MapClient>();
-                foreach (MapClient i in clients)
-                {
-                    if (i.netIO.Disconnected)
-                        continue;
-                    if (i.Character == null)
-                        continue;
-                    if (!i.Character.Online)
-                        continue;
-                    list.Add(i);
-                }
-                return list;
-            }
-        }
-        public List<MapClient> OnlinePlayerOnlyIP
-        {
-            get
-            {
-                List<string> ips = new List<string>();
-                List<MapClient> list = new List<MapClient>();
-                foreach (MapClient i in clients)
-                {
-                    if (i.netIO.Disconnected)
-                        continue;
-                    if (i.Character == null)
-                        continue;
-                    if (!i.Character.Online)
-                        continue;
-                    if (!ips.Contains(i.Character.Account.LastIP))
-                    { 
-                        ips.Add(i.Character.Account.LastIP);
-                        list.Add(i);
-                    }
-                }
-                return list;
-            }
+            return null;
         }
 
         public MapClient FindClient(uint charID)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.CharID == charID
-                      select c;
+                where c.Character.CharID == charID
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
-            else
-                return null;
+            return null;
+        }
+
+        private class Nested
+        {
+            internal static readonly MapClientManager instance = new MapClientManager();
+
+            // Explicit static constructor to tell C# compiler
+            // not to mark type as beforefieldinit
+            static Nested()
+            {
+            }
         }
     }
 }

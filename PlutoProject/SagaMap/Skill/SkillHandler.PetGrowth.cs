@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SagaDB.Actor;
 using SagaDB.Item;
-
-using SagaDB;
-using SagaDB.Actor;
 using SagaLib;
-using SagaMap.Skill.SkillDefinations;
 using SagaMap.Network.Client;
-using SagaMap.Mob;
-using SagaMap.ActorEventHandlers;
+using SagaMap.Packets.Server;
+using SagaMap.PC;
+
 namespace SagaMap.Skill
 {
     public enum PetGrowthReason
@@ -21,22 +15,22 @@ namespace SagaMap.Skill
         PhysicalHit,
         SkillHit,
         CriticalHit,
-        ItemRecover,
+        ItemRecover
     }
 
     public partial class SkillHandler : Singleton<SkillHandler>
     {
-        void SendPetGrowth(Actor actor, Packets.Server.SSMG_ACTOR_PET_GROW.GrowType growType, uint value)
+        private void SendPetGrowth(Actor actor, SSMG_ACTOR_PET_GROW.GrowType growType, uint value)
         {
             if (actor.type != ActorType.PET)
                 return;
-            ActorPet pet = (ActorPet)actor;
+            var pet = (ActorPet)actor;
             if (pet.Owner == null)
                 return;
             if (!pet.Owner.Online)
                 return;
 
-            Packets.Server.SSMG_ACTOR_PET_GROW p = new SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW();
+            var p = new SSMG_ACTOR_PET_GROW();
             if (pet.Ride)
                 p.PetActorID = pet.Owner.ActorID;
             else
@@ -51,13 +45,13 @@ namespace SagaMap.Skill
         {
             if (actor.type != ActorType.PET)
                 return;
-            ActorPet pet = (ActorPet)actor;
+            var pet = (ActorPet)actor;
             if (!pet.Owner.Online)
                 return;
-            Packets.Server.SSMG_ACTOR_PET_GROW.GrowType growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
-            if (pet.Owner.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.PET))
+            var growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
+            if (pet.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
             {
-                Item item = pet.Owner.Inventory.Equipments[EnumEquipSlot.PET];
+                var item = pet.Owner.Inventory.Equipments[EnumEquipSlot.PET];
                 int rate;
                 switch (reason)
                 {
@@ -73,6 +67,7 @@ namespace SagaMap.Skill
                         rate = 3;
                         break;
                 }
+
                 if (pet.Ride)
                     rate = 15;
                 else
@@ -95,8 +90,9 @@ namespace SagaMap.Skill
                                         {
                                             item.HP++;
                                             pet.MaxHP++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.atk_max > item.Atk1)
@@ -111,66 +107,75 @@ namespace SagaMap.Skill
                                             pet.Status.max_atk2++;
                                             pet.Status.min_atk3++;
                                             pet.Status.max_atk3++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.ATK1;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.ATK1;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.hit_melee > item.HitMelee)
                                         {
                                             item.HitMelee++;
                                             pet.Status.hit_melee++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitMelee;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitMelee;
                                         }
+
                                         break;
                                     case 3:
                                         if (pet.Limits.hit_ranged > item.HitRanged)
                                         {
                                             item.HitRanged++;
                                             pet.Status.hit_ranged++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitRanged;
                                         }
+
                                         break;
                                     case 4:
                                         if (pet.Limits.aspd > item.ASPD)
                                         {
                                             item.ASPD++;
                                             pet.Status.aspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.ASPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.ASPD;
                                         }
+
                                         break;
                                     case 5:
                                         if (pet.Limits.def_add > item.Def)
                                         {
                                             item.Def++;
                                             pet.Status.def_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Def;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Def;
                                         }
+
                                         break;
                                     case 6:
                                         if (pet.Limits.mdef_add > item.MDef)
                                         {
                                             item.MDef++;
                                             pet.Status.mdef_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MDef;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MDef;
                                         }
+
                                         break;
                                     case 7:
                                         if (pet.Limits.avoid_melee > item.AvoidMelee)
                                         {
                                             item.AvoidMelee++;
                                             pet.Status.avoid_melee++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
                                         }
+
                                         break;
                                     case 8:
                                         if (pet.Limits.avoid_ranged > item.AvoidRanged)
                                         {
                                             item.AvoidRanged++;
                                             pet.Status.avoid_ranged++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
                                         }
+
                                         break;
                                 }
+
                                 break;
                             case PetGrowthReason.UseSkill:
                                 type = Global.Random.Next(0, 2);
@@ -182,26 +187,30 @@ namespace SagaMap.Skill
                                             item.MAtk++;
                                             pet.Status.min_matk++;
                                             pet.Status.max_matk++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MATK;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MATK;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.hit_ranged > item.HitMagic)
                                         {
                                             item.HitMagic++;
                                             pet.Status.hit_magic++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.cspd > item.CSPD)
                                         {
                                             item.CSPD++;
                                             pet.Status.cspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.CSPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.CSPD;
                                         }
+
                                         break;
                                 }
+
                                 break;
                             case PetGrowthReason.PhysicalHit:
                                 type = Global.Random.Next(0, 3);
@@ -212,34 +221,39 @@ namespace SagaMap.Skill
                                         {
                                             item.HP++;
                                             pet.MaxHP++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.def_add > item.Def)
                                         {
                                             item.Def++;
                                             pet.Status.def_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Def;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Def;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.avoid_melee > item.AvoidMelee)
                                         {
                                             item.AvoidMelee++;
                                             pet.Status.avoid_melee++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
                                         }
+
                                         break;
                                     case 3:
                                         if (pet.Limits.avoid_ranged > item.AvoidRanged)
                                         {
                                             item.AvoidRanged++;
                                             pet.Status.avoid_ranged++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
                                         }
+
                                         break;
                                 }
+
                                 break;
                             case PetGrowthReason.SkillHit:
                                 type = Global.Random.Next(0, 5);
@@ -250,52 +264,58 @@ namespace SagaMap.Skill
                                         {
                                             item.HP++;
                                             pet.MaxHP++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.mdef_add > item.MDef)
                                         {
                                             item.MDef++;
                                             pet.Status.mdef_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MDef;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MDef;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.mp > item.MPRecover)
                                         {
                                             item.MPRecover++;
                                             pet.Status.mp_recover_skill++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
                                         }
+
                                         break;
                                     case 3:
                                         if (pet.Limits.avoid_ranged > item.AvoidRanged)
                                         {
                                             item.AvoidRanged++;
                                             pet.Status.avoid_ranged++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
                                         }
+
                                         break;
                                     case 4:
                                         if (pet.Limits.def_add > item.Def)
                                         {
                                             item.Def++;
                                             pet.Status.def_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Def;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Def;
                                         }
+
                                         break;
                                     case 5:
                                         if (pet.Limits.avoid_magic > item.AvoidMagic)
                                         {
                                             item.AvoidMagic++;
                                             pet.Status.avoid_magic++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidMagic;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidMagic;
                                         }
+
                                         break;
                                 }
-                                break;
 
+                                break;
                         }
                     }
                     else
@@ -312,32 +332,36 @@ namespace SagaMap.Skill
                                         {
                                             item.HP++;
                                             pet.MaxHP++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.hit_melee > item.HitMelee)
                                         {
                                             item.HitMelee++;
                                             pet.Status.hit_melee++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitMelee;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitMelee;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.hit_ranged > item.HitRanged)
                                         {
                                             item.HitRanged++;
                                             pet.Status.hit_ranged++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitRanged;
                                         }
+
                                         break;
                                     case 3:
                                         if (pet.Limits.aspd > item.ASPD)
                                         {
                                             item.ASPD++;
                                             pet.Status.aspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.ASPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.ASPD;
                                         }
+
                                         break;
                                     case 4:
                                         if (pet.Limits.matk_max > item.MAtk)
@@ -345,32 +369,36 @@ namespace SagaMap.Skill
                                             item.MAtk++;
                                             pet.Status.min_matk++;
                                             pet.Status.max_matk++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MATK;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MATK;
                                         }
+
                                         break;
                                     case 5:
                                         if (pet.Limits.hit_ranged > item.HitMagic)
                                         {
                                             item.HitMagic++;
                                             pet.Status.hit_magic++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
                                         }
+
                                         break;
                                     case 6:
                                         if (pet.Limits.cspd > item.CSPD)
                                         {
                                             item.CSPD++;
                                             pet.Status.cspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.CSPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.CSPD;
                                         }
+
                                         break;
                                     case 7:
                                         if (pet.Limits.aspd > item.ASPD)
                                         {
                                             item.ASPD++;
                                             pet.Status.aspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.ASPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.ASPD;
                                         }
+
                                         break;
                                     case 8:
                                         if (pet.Limits.atk_max > item.Atk1)
@@ -385,58 +413,66 @@ namespace SagaMap.Skill
                                             pet.Status.max_atk2++;
                                             pet.Status.min_atk3++;
                                             pet.Status.max_atk3++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.ATK1;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.ATK1;
                                         }
+
                                         break;
                                     case 9:
                                         if (pet.Limits.cri > item.HitCritical)
                                         {
                                             item.HitCritical++;
                                             pet.Status.hit_critical++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Critical;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Critical;
                                         }
+
                                         break;
                                     case 10:
                                         if (pet.Limits.criavd > item.AvoidCritical)
                                         {
                                             item.AvoidCritical++;
                                             pet.Status.avoid_critical++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidCri;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidCri;
                                         }
+
                                         break;
                                     case 11:
                                         if (pet.Limits.def_add > item.Def)
                                         {
                                             item.Def++;
                                             pet.Status.def_add++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Def;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Def;
                                         }
+
                                         break;
                                     case 12:
                                         if (pet.Limits.mdef_add > item.MDef)
                                         {
                                             item.MDef++;
                                             pet.Status.mdef_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MDef;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MDef;
                                         }
+
                                         break;
                                     case 13:
                                         if (pet.Limits.avoid_melee > item.AvoidMelee)
                                         {
                                             item.AvoidMelee++;
                                             pet.Status.avoid_melee++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidMelee;
                                         }
+
                                         break;
                                     case 14:
                                         if (pet.Limits.avoid_ranged > item.AvoidRanged)
                                         {
                                             item.AvoidRanged++;
                                             pet.Status.avoid_ranged++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidRanged;
                                         }
+
                                         break;
                                 }
+
                                 break;
                             case PetGrowthReason.UseSkill:
                                 type = Global.Random.Next(0, 6);
@@ -447,8 +483,9 @@ namespace SagaMap.Skill
                                         {
                                             item.HitMagic++;
                                             pet.Status.hit_magic++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HitMagic;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.matk_max > item.MAtk)
@@ -456,50 +493,57 @@ namespace SagaMap.Skill
                                             item.MAtk++;
                                             pet.Status.min_matk++;
                                             pet.Status.max_matk++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MATK;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MATK;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.cspd > item.CSPD)
                                         {
                                             item.CSPD++;
                                             pet.Status.cspd++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.CSPD;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.CSPD;
                                         }
+
                                         break;
                                     case 3:
                                         if (pet.Limits.mdef_add > item.MDef)
                                         {
                                             item.MDef++;
                                             pet.Status.mdef_add++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MDef;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MDef;
                                         }
+
                                         break;
                                     case 4:
                                         if (pet.Limits.mp > item.MPRecover)
                                         {
                                             item.MPRecover++;
                                             pet.Status.mp_recover_skill++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
                                         }
+
                                         break;
                                     case 5:
                                         if (pet.Limits.def_add > item.Def)
                                         {
                                             item.Def++;
                                             pet.Status.def_add++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Def;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Def;
                                         }
+
                                         break;
                                     case 6:
                                         if (pet.Limits.avoid_magic > item.AvoidMagic)
                                         {
                                             item.AvoidMagic++;
                                             pet.Status.avoid_magic++;
-                                            growType = Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.AvoidMagic;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.AvoidMagic;
                                         }
+
                                         break;
                                 }
+
                                 break;
                             case PetGrowthReason.ItemRecover:
                                 type = Global.Random.Next(0, 2);
@@ -510,38 +554,45 @@ namespace SagaMap.Skill
                                         {
                                             item.HP++;
                                             pet.MaxHP++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.HP;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.HP;
                                         }
+
                                         break;
                                     case 1:
                                         if (pet.Limits.mp > item.MPRecover)
                                         {
                                             item.MPRecover++;
                                             pet.Status.mp_recover_skill++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.MPRecover;
                                         }
+
                                         break;
                                     case 2:
                                         if (pet.Limits.hp > item.HPRecover)
                                         {
                                             item.HPRecover++;
                                             pet.Status.hp_recover_skill++;
-                                            growType = SagaMap.Packets.Server.SSMG_ACTOR_PET_GROW.GrowType.Recover;
+                                            growType = SSMG_ACTOR_PET_GROW.GrowType.Recover;
                                         }
+
                                         break;
                                 }
+
                                 break;
                         }
                     }
+
                     if (pet.Owner.Online)
                     {
                         if (pet.Ride)
                         {
-                            PC.StatusFactory.Instance.CalcStatus(pet.Owner);
+                            StatusFactory.Instance.CalcStatus(pet.Owner);
                             MapClient.FromActorPC(pet.Owner).SendPlayerInfo();
                         }
+
                         MapClient.FromActorPC(pet.Owner).SendItemInfo(item);
                     }
+
                     SendPetGrowth(actor, growType, 1);
                 }
             }

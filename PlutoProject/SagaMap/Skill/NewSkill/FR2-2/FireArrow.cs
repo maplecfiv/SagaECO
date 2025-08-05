@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.FR2_2
 {
     /// <summary>
-    /// 火燄箭
+    ///     火燄箭
     /// </summary>
-    public class FireArrow: ISkill
+    public class FireArrow : ISkill
     {
         #region ISkill Members
 
@@ -24,13 +19,14 @@ namespace SagaMap.Skill.SkillDefinations.FR2_2
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             SkillHandler.Instance.PcArrowDown(sActor);
-            SkillArg args2 = args.Clone();
+            var args2 = args.Clone();
             float factor = 0;
             factor = 1.0f + 0.5f * level;
-            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, SagaLib.Elements.Fire, factor);
+            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Fire, factor);
             //SkillHandler.Instance.MagicAttack(sActor, dActor, args2, SagaLib.Elements.Fire, factor);
             args.AddSameActor(args2);
         }
+
         #endregion
     }
 }

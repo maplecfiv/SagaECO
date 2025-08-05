@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SagaDB.MasterEnchance
+﻿namespace SagaDB.MasterEnchance
 {
     public class MasterEnhanceMaterial
     {
@@ -22,6 +16,6 @@ namespace SagaDB.MasterEnchance
         INT = 2,
         VIT = 3,
         AGI = 4,
-        MAG = 5,
+        MAG = 5
     }
 }

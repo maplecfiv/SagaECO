@@ -1,19 +1,18 @@
-﻿using SagaDB.Actor;
+﻿using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
-using SagaMap.Skill.Additions.Global;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Guardian
 {
     /// <summary>
-    /// フォートレスサークル
+    ///     フォートレスサークル
     /// </summary>
     public class FortressCircle : ISkill
     {
         #region ISkill Members
+
         public List<int> range = new List<int>();
         //public FortressCircle()
         //{
@@ -24,39 +23,37 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
             //Map map = Manager.MapManager.Instance.GetMap(pc.MapID);
             if (CheckPossible(pc))
                 return 0;
-            else
-                return -5;
+            return -5;
         }
 
-        bool CheckPossible(Actor sActor)
+        private bool CheckPossible(Actor sActor)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                 {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SPEAR ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.RAPIER ||
-                        pc.Inventory.GetContainer(SagaDB.Item.ContainerType.RIGHT_HAND2).Count > 0)
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.SPEAR ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.RAPIER ||
+                        pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
                         return true;
-                    else
-                        return false;
-                }
-                else
                     return false;
+                }
+
+                return false;
             }
-            else
-                return true;
+
+            return true;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //wiki没写明威力,先假定满级是350%
-            float factor = 1.0f + 0.5f * level;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            var factor = 1.0f + 0.5f * level;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             //设定范围200,也就是以玩家为中心5*5范围
-            List<Actor> affected = map.GetActorsArea(sActor, 200, false);
-            List<Actor> realAffected = new List<Actor>();
+            var affected = map.GetActorsArea(sActor, 200, false);
+            var realAffected = new List<Actor>();
             range.Add(SkillHandler.Instance.CalcPosHashCode(1, 0, 2));
             range.Add(SkillHandler.Instance.CalcPosHashCode(2, 0, 2));
             range.Add(SkillHandler.Instance.CalcPosHashCode(-1, 0, 2));
@@ -69,9 +66,7 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
             range.Add(SkillHandler.Instance.CalcPosHashCode(0, -1, 2));
             range.Add(SkillHandler.Instance.CalcPosHashCode(-1, -1, 2));
             range.Add(SkillHandler.Instance.CalcPosHashCode(0, -2, 2));
-            foreach (Actor act in affected)
-            {
-
+            foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     int XDiff, YDiff;
@@ -82,8 +77,8 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
                         SkillHandler.Instance.PushBack(sActor, act, 4);
                     }
                 }
-            }
-            SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, SagaLib.Elements.Neutral, factor);
+
+            SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, Elements.Neutral, factor);
             //SkillArg args2 = args.Clone();
             //SkillHandler.Instance.MagicAttack(sActor, realAffected, args2, SagaLib.Elements.Earth, factor);
             //args.AddSameActor(args2);
@@ -376,6 +371,7 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
         //        Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         //    }
         //}
+
         #endregion
     }
 }

@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
+﻿using SagaDB.Actor;
 using SagaLib;
-using SagaMap;
-using SagaMap.Skill.Additions.Global;
-
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Cardinal
 {
     /// <summary>
-    /// リカバリー 
+    ///     リカバリー
     /// </summary>
-    class Recovery : ISkill
+    internal class Recovery : ISkill
     {
         #region ISkill Members
 
@@ -26,8 +18,8 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float rank = 0.3f + 0.1f * level;
-            uint heal = (uint)(dActor.MaxHP * rank);
+            var rank = 0.3f + 0.1f * level;
+            var heal = (uint)(dActor.MaxHP * rank);
             if (dActor.Buff.NoRegen)
                 return;
             dActor.HP += heal;
@@ -37,12 +29,14 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
             args.Init();
             if (args.flag.Count > 0)
             {
-                args.flag[0] |= SagaLib.AttackFlag.HP_HEAL | SagaLib.AttackFlag.NO_DAMAGE;
-                args.hp[0]=((int)heal);
+                args.flag[0] |= AttackFlag.HP_HEAL | AttackFlag.NO_DAMAGE;
+                args.hp[0] = (int)heal;
             }
-            Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
+
+            var map = MapManager.Instance.GetMap(dActor.MapID);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, dActor, true);
         }
+
         #endregion
     }
 }

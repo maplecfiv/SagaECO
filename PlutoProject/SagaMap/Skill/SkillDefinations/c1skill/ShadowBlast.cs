@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.C1skill
 {
@@ -37,24 +35,24 @@ namespace SagaMap.Skill.SkillDefinations.C1skill
                     factor = 3.0f;
                     break;
             }
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
-            List<Actor> affected = new List<Actor>();
+
+            var actors = MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
+            var affected = new List<Actor>();
             //取得有效Actor（即怪物）
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {
                     affected.Add(i);
                     if (dActor.Darks == 1)
                     {
-                        Manager.MapManager.Instance.GetMap(sActor.MapID).SendEffect(dActor, 5202);
-                        SkillArg add = new SkillArg();
+                        MapManager.Instance.GetMap(sActor.MapID).SendEffect(dActor, 5202);
+                        var add = new SkillArg();
                         add.argType = SkillArg.ArgType.Actor_Active;
                         add.skill = args.skill;
-                        SkillHandler.Instance.MagicAttack(sActor, i, add, SagaLib.Elements.Dark, 1.1f + 0.1f * level);
+                        SkillHandler.Instance.MagicAttack(sActor, i, add, Elements.Dark, 1.1f + 0.1f * level);
                     }
                 }
-            }
+
             dActor.Darks = 0;
             SkillHandler.Instance.MagicAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }

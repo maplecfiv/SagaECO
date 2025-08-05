@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.ForceMaster
@@ -34,13 +29,13 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             //    }
             //该技能没有任何武器要求    
             //}
-            DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, sActor, "PlusElement", true);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultPassiveSkill(args.skill, sActor, "PlusElement", true);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
-        void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             //ActorPC pc = (ActorPC)actor;
             //float rate = 0.02f+0.002f*skill.skill.Level;
@@ -54,7 +49,7 @@ namespace SagaMap.Skill.SkillDefinations.ForceMaster
             //pc.Status.PlusElement_rate += elements * rate;
         }
 
-        void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
+        private void EndEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
             //actor.Status.PlusElement_rate = 0;
         }

@@ -1,25 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaDB.Actor;
-using SagaLib.VirtualFileSystem;
 using System.Xml;
+using SagaLib;
+
 namespace SagaDB.Title
 {
     public class TitleFactory : Factory<TitleFactory, Title>
     {
         public TitleFactory()
         {
-            this.loadingTab = "Loading Title database";
-            this.loadedTab = " titles loaded.";
-            this.databaseName = "title";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Title database";
+            loadedTab = " titles loaded.";
+            databaseName = "title";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, Title item)
+        protected override void ParseXML(XmlElement root, XmlElement current, Title item)
         {
             throw new NotImplementedException();
         }
@@ -55,8 +50,8 @@ namespace SagaDB.Title
             item.aspd = int.Parse(paras[84]);
             item.cspd = int.Parse(paras[85]);
             item.PrerequisiteCount = uint.Parse(paras[86]);
-            int offset = 86;
-            for (int i = 0; i < item.PrerequisiteCount; i++)
+            var offset = 86;
+            for (var i = 0; i < item.PrerequisiteCount; i++)
             {
                 item.Prerequisites.Add(uint.Parse(paras[offset + 1]), ulong.Parse(paras[offset + 2]));
                 offset += 2;

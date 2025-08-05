@@ -1,26 +1,25 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
-using SagaLib;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.Alchemist
 {
     /// <summary>
-    /// 化工廠（ケミカルプラント）
+    ///     化工廠（ケミカルプラント）
     /// </summary>
     public class SumChemicalPlant : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            ActorMob mob = map.SpawnMob(10580004, (short)(dActor.X + SagaLib.Global.Random.Next(1, 10)), (short)(dActor.Y + SagaLib.Global.Random.Next(1, 10)), 2500, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var mob = map.SpawnMob(10580004, (short)(dActor.X + SagaLib.Global.Random.Next(1, 10)),
+                (short)(dActor.Y + SagaLib.Global.Random.Next(1, 10)), 2500, sActor);
             mob.Status.max_atk1 = (ushort)(sActor.Status.max_atk1 * 0.16 * level);
             mob.Status.max_atk2 = (ushort)(sActor.Status.max_atk2 * 0.16 * level);
             mob.Status.max_atk3 = (ushort)(sActor.Status.max_atk3 * 0.16 * level);
@@ -30,12 +29,13 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
             mob.Status.hit_melee = (ushort)(sActor.Status.hit_melee * 0.16 * level);
             mob.Status.hit_ranged = (ushort)(sActor.Status.hit_ranged * 0.16 * level);
             sActor.Slave.Add(mob);
-            AutoCastInfo aci = new AutoCastInfo();
-            aci.skillID = 3344;//化工廠[接續技能]
+            var aci = new AutoCastInfo();
+            aci.skillID = 3344; //化工廠[接續技能]
             aci.level = level;
             aci.delay = 0;
             args.autoCast.Add(aci);
         }
+
         #endregion
 
         //#region Timer
@@ -77,6 +77,3 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
         //#endregion
     }
 }
-
-
-

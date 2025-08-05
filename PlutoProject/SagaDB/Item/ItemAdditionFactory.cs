@@ -1,10 +1,7 @@
-using SagaLib;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using SagaLib;
 
 namespace SagaDB.Item
 {
@@ -12,18 +9,17 @@ namespace SagaDB.Item
     {
         public ItemAdditionFactory()
         {
-            this.loadingTab = "Loading item addition database";
-            this.loadedTab = " item additions loaded.";
-            this.databaseName = "ItemAddition";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading item addition database";
+            loadedTab = " item additions loaded.";
+            databaseName = "ItemAddition";
+            FactoryType = FactoryType.CSV;
         }
 
         public ItemAddition GetItemAddition(uint itemID)
         {
-            if (this.Items.ContainsKey(itemID))
-                return this.Items[itemID];
-            else
-                return null;
+            if (Items.ContainsKey(itemID))
+                return Items[itemID];
+            return null;
         }
 
         protected override uint GetKey(ItemAddition item)
@@ -50,14 +46,14 @@ namespace SagaDB.Item
             if (item.BonusList == null)
                 item.BonusList = new List<ItemBonus>();
 
-            for (int i = 0; i < bonusstr.Length; i++)
+            for (var i = 0; i < bonusstr.Length; i++)
             {
                 if (bonusstr[i] == "")
                     continue;
                 item.BonusString.Add(bonusstr[i]);
                 var str = bonusstr[i];
                 var type = str.Split(' ')[0].Substring(str.Split(' ')[0].Length - 1);
-                ItemBonus itemBonus = new ItemBonus();
+                var itemBonus = new ItemBonus();
                 switch (type)
                 {
                     case "s":
@@ -93,8 +89,6 @@ namespace SagaDB.Item
                         itemBonus.Values3 = int.Parse(str.Split(' ')[1].Split(',')[3]);
                         itemBonus.Values4 = int.Parse(str.Split(' ')[1].Split(',')[4]);
                         item.BonusList.Add(itemBonus);
-                        break;
-                    default:
                         break;
                 }
             }

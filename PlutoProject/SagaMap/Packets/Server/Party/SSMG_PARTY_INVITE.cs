@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Party;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,35 +6,31 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTY_INVITE()
         {
-            this.data = new byte[9];
-            this.offset = 2;
-            this.ID = 0x19CA;
+            data = new byte[9];
+            offset = 2;
+            ID = 0x19CA;
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public string Name
         {
             set
             {
-                byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[9 + buf.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                byte size = (byte)buf.Length;
-                this.PutByte(size, 6);
-                this.PutBytes(buf, 7);
+                var buf = Global.Unicode.GetBytes(value + "\0");
+                var buff = new byte[9 + buf.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
+                var size = (byte)buf.Length;
+                PutByte(size, 6);
+                PutBytes(buf, 7);
 
                 //unknown byte
-                this.PutByte(1, (ushort)(7 + size));
+                PutByte(1, (ushort)(7 + size));
             }
         }
     }
 }
-

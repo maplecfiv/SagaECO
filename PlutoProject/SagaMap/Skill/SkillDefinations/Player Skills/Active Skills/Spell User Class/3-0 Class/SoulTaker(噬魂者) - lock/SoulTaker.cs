@@ -1,10 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
 {
     public class SoulTaker : ISkill
@@ -13,13 +10,14 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             if (!dActor.Status.Additions.ContainsKey("SoulTaker"))
             {
-                int lifetime = (30 + level * 30) * 1000;
-                int rate = 175 + level * 25;
-                SoulTakerBuff skill = new SoulTakerBuff(args.skill, sActor, lifetime, rate);
+                var lifetime = (30 + level * 30) * 1000;
+                var rate = 175 + level * 25;
+                var skill = new SoulTakerBuff(args.skill, sActor, lifetime, rate);
                 //skill.OnUpdate += this.UpdateEventHandler;
                 SkillHandler.ApplyAddition(sActor, skill);
             }
@@ -27,8 +25,8 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
             {
                 sActor.Status.Additions["SoulTaker"].OnTimerEnd();
             }
-
         }
+
         //void UpdateEventHandler(Actor actor, DefaultBuff skill)
         //{
         //    //SagaMap.Network.Client.MapClient.FromActorPC((ActorPC)actor).SendSystemMessage("��ǰ�ٶ�Ϊ" + actor.Speed);
@@ -43,14 +41,15 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
             public SoulTakerBuff(SagaDB.Skill.Skill skill, Actor actor, int lifetime, int rate)
                 : base(skill, actor, "SoulTaker", lifetime, 1000)
             {
-                this.OnAdditionStart += this.StartEvent;
-                this.OnAdditionEnd += this.EndEvent;
+                OnAdditionStart += StartEvent;
+                OnAdditionEnd += EndEvent;
                 this["rate"] = rate;
             }
-            void StartEvent(Actor actor, DefaultBuff skill)
+
+            private void StartEvent(Actor actor, DefaultBuff skill)
             {
                 int level = skill.skill.Level;
-                int rate = 175 + level * 25;
+                var rate = 175 + level * 25;
 
 
                 if (skill.Variable.ContainsKey("SoulTaker"))
@@ -59,15 +58,17 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
 
                 skill.Variable.Add("SoulTaker", rate);
                 //Speed Limit 
-                int speed_add = 100;
+                var speed_add = 100;
                 if (skill.Variable.ContainsKey("SoulTaker_speed"))
                     skill.Variable.Remove("SoulTaker_speed");
                 skill.Variable.Add("SoulTaker_speed", speed_add);
                 actor.Status.speed_skill -= (ushort)speed_add;
                 actor.Buff.MainSkillPowerUp3RD = true;
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
-            void EndEvent(Actor actor, DefaultBuff skill)
+
+            private void EndEvent(Actor actor, DefaultBuff skill)
             {
                 if (skill.Variable.ContainsKey("SoulTaker"))
                     skill.Variable.Remove("SoulTaker");
@@ -75,7 +76,8 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                 if (skill.Variable.ContainsKey("SoulTaker_speed"))
                     skill.Variable.Remove("SoulTaker_speed");
                 actor.Buff.MainSkillPowerUp3RD = false;
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
         }
     }

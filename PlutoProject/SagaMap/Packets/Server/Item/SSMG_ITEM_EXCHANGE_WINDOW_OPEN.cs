@@ -6,17 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_EXCHANGE_WINDOW_OPEN()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x060E;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x060E;
         }
 
         public int SetWindowType
         {
-            set
-            {
-                this.PutInt(value, 2);
-            }
+            set => PutInt(value, 2);
         }
     }
 }

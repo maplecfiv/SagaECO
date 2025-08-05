@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
-
 using SagaDB.Item;
 
 namespace SagaLogin.Configurations
@@ -11,8 +6,8 @@ namespace SagaLogin.Configurations
     [Serializable]
     public class StartupSetting
     {
-        public ushort Str, Dex, Int, Vit, Agi, Mag;
         public uint StartMap;
+        public ushort Str, Dex, Int, Vit, Agi, Mag;
         public byte X, Y;
 
         public override string ToString()
@@ -25,8 +20,8 @@ namespace SagaLogin.Configurations
     [Serializable]
     public class StartItem
     {
+        public byte Count;
         public uint ItemID;
         public ContainerType Slot;
-        public byte Count;
     }
 }

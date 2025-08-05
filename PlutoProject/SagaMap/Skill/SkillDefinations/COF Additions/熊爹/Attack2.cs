@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.X
 {
@@ -36,8 +31,8 @@ namespace SagaMap.Skill.SkillDefinations.X
             //创建技能效果处理对象
             Activator timer = new Activator(sActor, actor, args, level);
             timer.Activate();*/
-
         }
+
         #endregion
     }
 }

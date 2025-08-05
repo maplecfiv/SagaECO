@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,15 +7,15 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_CHAT_PARTY()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public string Sender
         {
             get
             {
-                byte size = this.GetByte(2);
-                string buf = Global.Unicode.GetString(this.GetBytes(size, 3));
+                var size = GetByte(2);
+                var buf = Global.Unicode.GetString(GetBytes(size, 3));
                 return buf.Replace("\0", "");
             }
         }
@@ -29,22 +24,21 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                byte sender = this.GetByte(2);
-                byte size = this.GetByte((ushort)(3 + sender));
-                string buf = Global.Unicode.GetString(this.GetBytes(size, (ushort)(4 + sender)));
+                var sender = GetByte(2);
+                var size = GetByte((ushort)(3 + sender));
+                var buf = Global.Unicode.GetString(GetBytes(size, (ushort)(4 + sender)));
                 return buf.Replace("\0", "");
             }
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_CHAT_PARTY();
+            return new CSMG_CHAT_PARTY();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnChatParty(this);
+            ((MapClient)client).OnChatParty(this);
         }
-
     }
 }

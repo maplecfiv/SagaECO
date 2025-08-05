@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaMap.Mob;
 using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Mob;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
@@ -20,8 +19,8 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //创建设置型技能技能体
-            ActorSkill actor = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            var actor = new ActorSkill(args.skill, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             //设定技能体位置            
             actor.MapID = sActor.MapID;
             actor.X = sActor.X;
@@ -29,36 +28,39 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             actor.Speed = 500;
 
             //创建AI类
-            Mob.MobAI ai = new SagaMap.Mob.MobAI(actor, true);
+            var ai = new MobAI(actor, true);
             //寻路
-            List<MapNode> path = ai.FindPath(SagaLib.Global.PosX16to8(sActor.X, map.Width), SagaLib.Global.PosY16to8(sActor.Y, map.Height), args.x, args.y);
+            var path = ai.FindPath(SagaLib.Global.PosX16to8(sActor.X, map.Width),
+                SagaLib.Global.PosY16to8(sActor.Y, map.Height), args.x, args.y);
 
             if (path.Count >= 2)
             {
                 //根据现有路径推算一步
-                int deltaX = path[path.Count - 1].x - path[path.Count - 2].x;
-                int deltaY = path[path.Count - 1].y - path[path.Count - 2].y;
+                var deltaX = path[path.Count - 1].x - path[path.Count - 2].x;
+                var deltaY = path[path.Count - 1].y - path[path.Count - 2].y;
                 deltaX = path[path.Count - 1].x + deltaX;
                 deltaY = path[path.Count - 1].y + deltaY;
-                MapNode node = new MapNode();
+                var node = new MapNode();
                 node.x = (byte)deltaX;
                 node.y = (byte)deltaY;
                 path.Add(node);
             }
+
             if (path.Count == 1)
             {
                 //根据现有路径推算一步
-                int deltaX = path[path.Count - 1].x - SagaLib.Global.PosX16to8(sActor.X, map.Width);
-                int deltaY = path[path.Count - 1].y - SagaLib.Global.PosY16to8(sActor.Y, map.Height);
+                var deltaX = path[path.Count - 1].x - SagaLib.Global.PosX16to8(sActor.X, map.Width);
+                var deltaY = path[path.Count - 1].y - SagaLib.Global.PosY16to8(sActor.Y, map.Height);
                 deltaX = path[path.Count - 1].x + deltaX;
                 deltaY = path[path.Count - 1].y + deltaY;
-                MapNode node = new MapNode();
+                var node = new MapNode();
                 node.x = (byte)deltaX;
                 node.y = (byte)deltaY;
                 path.Add(node);
             }
+
             //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
-            actor.e = new ActorEventHandlers.NullEventHandler();
+            actor.e = new NullEventHandler();
             //在指定地图注册技能体Actor
             map.RegisterActor(actor);
             //设置Actor隐身属性为非
@@ -67,7 +69,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             map.OnActorVisibilityChange(actor);
             //创建技能效果处理对象
 
-            Activator timer = new Activator(sActor, actor, args, path, Elements.Water);
+            var timer = new Activator(sActor, actor, args, path, Elements.Water);
             timer.Activate();
         }
 
@@ -75,35 +77,35 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
         private class Activator : MultiRunTask
         {
-            ActorSkill actor;
-            Actor caster;
-            SkillArg skill;
-            Map map;
-            List<MapNode> path;
-            int count = 0;
-            float factor = 1f;
-            Elements element;
-            bool stop = false;
+            private readonly ActorSkill actor;
+            private readonly Actor caster;
+            private readonly Elements element;
+            private readonly float factor = 1f;
+            private readonly Map map;
+            private readonly List<MapNode> path;
+            private readonly SkillArg skill;
+            private int count;
+            private bool stop;
 
             public Activator(Actor caster, ActorSkill actor, SkillArg args, List<MapNode> path, Elements element)
             {
                 this.actor = actor;
                 this.caster = caster;
-                this.skill = args.Clone();
-                map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                this.period = 200;
-                this.dueTime = 200;
+                skill = args.Clone();
+                map = MapManager.Instance.GetMap(actor.MapID);
+                period = 200;
+                dueTime = 200;
                 this.path = path;
                 factor = CalcFactor(args.skill.Level);
                 this.element = element;
             }
 
             /// <summary>
-            /// 计算伤害加成
+            ///     计算伤害加成
             /// </summary>
             /// <param name="level">技能等级</param>
             /// <returns>伤害加成</returns>
-            float CalcFactor(byte level)
+            private float CalcFactor(byte level)
             {
                 switch (level)
                 {
@@ -128,9 +130,9 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
                 try
                 {
-                    if ((path.Count <= count + 1) || (count > skill.skill.Level + 2))
+                    if (path.Count <= count + 1 || count > skill.skill.Level + 2)
                     {
-                        this.Deactivate();
+                        Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
@@ -138,8 +140,8 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                     {
                         try
                         {
-                            short[] pos = new short[2];
-                            short[] pos2 = new short[2];
+                            var pos = new short[2];
+                            var pos2 = new short[2];
                             pos[0] = SagaLib.Global.PosX8to16(path[count].x, map.Width);
                             pos[1] = SagaLib.Global.PosY8to16(path[count].y, map.Height);
                             pos2[0] = SagaLib.Global.PosX8to16(path[count + 1].x, map.Width);
@@ -147,59 +149,55 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                             map.MoveActor(Map.MOVE_TYPE.START, actor, pos, 0, 200);
 
                             //取得当前格子内的Actor
-                            List<Actor> list = map.GetActorsArea(actor, 50, false);
-                            List<Actor> affected = new List<Actor>();
+                            var list = map.GetActorsArea(actor, 50, false);
+                            var affected = new List<Actor>();
 
                             //筛选有效对象
-                            foreach (Actor i in list)
-                            {
+                            foreach (var i in list)
                                 if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                                {
                                     affected.Add(i);
-                                }
 
-                            }
-                            if (map.GetActorsArea(pos2[0], pos2[1], 50).Count != 0 || map.Info.walkable[path[count + 1].x, path[count + 1].y] != 2)
+                            if (map.GetActorsArea(pos2[0], pos2[1], 50).Count != 0 ||
+                                map.Info.walkable[path[count + 1].x, path[count + 1].y] != 2)
                             {
                                 if (stop)
                                 {
-                                    this.Deactivate();
+                                    Deactivate();
                                     //在指定地图删除技能体（技能效果结束）
                                     map.DeleteActor(actor);
                                     //return 前必须解锁
                                     ClientManager.LeaveCriticalArea();
                                     return;
                                 }
-                                else
-                                    stop = true;
+
+                                stop = true;
                             }
 
-                            foreach (Actor i in affected)
-                            {
+                            foreach (var i in affected)
                                 if (!i.Status.Additions.ContainsKey("FortressCircleSEQ") &&
                                     !i.Status.Additions.ContainsKey("SolidBody"))
                                 {
                                     //CannotMove addition = new CannotMove(skill.skill, i, 400);
-                                    Additions.Global.Stiff addition = new SagaMap.Skill.Additions.Global.Stiff(skill.skill, i, 400);
+                                    var addition = new Stiff(skill.skill, i, 400);
                                     SkillHandler.ApplyAddition(i, addition);
-                                    if (i.type == ActorType.MOB || i.type == ActorType.PET || i.type == ActorType.SHADOW|| i.type == ActorType.PARTNER)
+                                    if (i.type == ActorType.MOB || i.type == ActorType.PET ||
+                                        i.type == ActorType.SHADOW || i.type == ActorType.PARTNER)
                                     {
-                                        ActorEventHandlers.MobEventHandler mob = (ActorEventHandlers.MobEventHandler)i.e;
+                                        var mob = (MobEventHandler)i.e;
                                         mob.AI.OnPathInterupt();
                                     }
                                 }
-
-                            }
 
                             skill.affectedActors.Clear();
                             SkillHandler.Instance.MagicAttack(caster, affected, skill, element, factor);
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, true);
                         }
-                        catch { }
+                        catch
+                        {
+                        }
+
                         count++;
                     }
-
-
                 }
                 catch (Exception ex)
                 {
@@ -209,6 +207,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
         }
+
         #endregion
     }
 }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System.Collections.Concurrent;
 using System.Threading;
-using System.Text;
 
 namespace SagaLib
 {
@@ -20,15 +16,16 @@ namespace SagaLib
         Info,
         Warn,
         Error,
-        SQL,
+        SQL
     }
 
     public class LoggerIntern
     {
-        static ConcurrentQueue<LogData> queue = new ConcurrentQueue<LogData>();
-        static Thread thread;
-        static AutoResetEvent waiter = new AutoResetEvent(false);
-        public static bool Ready = false;
+        private static readonly ConcurrentQueue<LogData> queue = new ConcurrentQueue<LogData>();
+        private static Thread thread;
+        private static readonly AutoResetEvent waiter = new AutoResetEvent(false);
+        public static bool Ready;
+
         public static void Init()
         {
             if (thread == null)
@@ -39,19 +36,18 @@ namespace SagaLib
             }
         }
 
-        static void MainLoop()
+        private static void MainLoop()
         {
             while (true)
             {
                 LogData data;
                 while (queue.TryDequeue(out data))
-                {
                     switch (data.LogLevel)
                     {
                         case Level.Debug:
                             data.Logger.Debug(data.Text);
                             break;
-                        case Level.Info :
+                        case Level.Info:
                             data.Logger.Info(data.Text);
                             break;
                         case Level.Warn:
@@ -64,14 +60,14 @@ namespace SagaLib
                             data.Logger.Debug(data.Text);
                             break;
                     }
-                }
+
                 waiter.WaitOne();
             }
         }
 
         public static void EnqueueMsg(Level level, string msg, NLog.Logger logger)
         {
-            LogData data = new LogData();
+            var data = new LogData();
             data.LogLevel = level;
             data.Text = msg;
             data.Logger = logger;

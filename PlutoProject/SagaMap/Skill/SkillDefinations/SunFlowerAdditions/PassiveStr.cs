@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
@@ -16,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, dActor, "PassiveStr", true);
+            var skill = new DefaultPassiveSkill(args.skill, dActor, "PassiveStr", true);
             skill.OnAdditionStart += skill_OnAdditionStart;
             skill.OnAdditionEnd += skill_OnAdditionEnd;
             SkillHandler.ApplyAddition(dActor, skill);

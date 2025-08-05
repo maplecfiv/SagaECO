@@ -1,55 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Sorcerer
 {
     /// <summary>
-    /// 弱化（ディビリテイト）
+    ///     弱化（ディビリテイト）
     /// </summary>
     public class StrVitAgiDownOne : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int rate = 10 + 10 * level;
-            int lifetime = new int[] { 0, 15000, 20000, 25000, 27000, 30000 }[level];
+            var rate = 10 + 10 * level;
+            var lifetime = new[] { 0, 15000, 20000, 25000, 27000, 30000 }[level];
             if (SagaLib.Global.Random.Next(0, 99) < rate)
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "StrVitAgiDownOne", lifetime);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var skill = new DefaultBuff(args.skill, dActor, "StrVitAgiDownOne", lifetime);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             if (actor is ActorPC)
             {
                 //STR
-                int str_add = new int[] { 0, 5, 6, 7, 8, 10 }[level];
+                var str_add = new[] { 0, 5, 6, 7, 8, 10 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_str"))
                     skill.Variable.Remove("StrVitAgiDownOne_str");
                 skill.Variable.Add("StrVitAgiDownOne_str", str_add);
                 actor.Status.str_skill -= (short)str_add;
 
                 //AGI
-                int agi_add = new int[] { 0, 9, 12, 14, 16, 18 }[level];
+                var agi_add = new[] { 0, 9, 12, 14, 16, 18 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_agi"))
                     skill.Variable.Remove("StrVitAgiDownOne_agi");
                 skill.Variable.Add("StrVitAgiDownOne_agi", agi_add);
                 actor.Status.agi_skill -= (short)agi_add;
 
                 //VIT
-                int vit_add = new int[] { 0, 6, 7, 8, 11, 12 }[level];
+                var vit_add = new[] { 0, 6, 7, 8, 11, 12 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_vit"))
                     skill.Variable.Remove("StrVitAgiDownOne_vit");
                 skill.Variable.Add("StrVitAgiDownOne_vit", vit_add);
@@ -60,14 +60,14 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
             else if (actor is ActorMob)
             {
-                int min_atk1_add = (int)(actor.Status.min_atk1 * (0.1f + 0.04f * level));
-                int min_atk2_add = (int)(actor.Status.min_atk2 * (0.1f + 0.04f * level));
-                int min_atk3_add = (int)(actor.Status.min_atk3 * (0.1f + 0.04f * level));
-                int max_atk1_add = (int)(actor.Status.max_atk1 * (0.1f + 0.04f * level));
-                int max_atk2_add = (int)(actor.Status.max_atk2 * (0.1f + 0.04f * level));
-                int max_atk3_add = (int)(actor.Status.max_atk3 * (0.1f + 0.04f * level));
-                int savoid_add = (int)(actor.Status.avoid_melee * (0.1f + 0.04f * level));
-                int def_add = 10 + 4 * level;
+                var min_atk1_add = (int)(actor.Status.min_atk1 * (0.1f + 0.04f * level));
+                var min_atk2_add = (int)(actor.Status.min_atk2 * (0.1f + 0.04f * level));
+                var min_atk3_add = (int)(actor.Status.min_atk3 * (0.1f + 0.04f * level));
+                var max_atk1_add = (int)(actor.Status.max_atk1 * (0.1f + 0.04f * level));
+                var max_atk2_add = (int)(actor.Status.max_atk2 * (0.1f + 0.04f * level));
+                var max_atk3_add = (int)(actor.Status.max_atk3 * (0.1f + 0.04f * level));
+                var savoid_add = (int)(actor.Status.avoid_melee * (0.1f + 0.04f * level));
+                var def_add = 10 + 4 * level;
 
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_minatk1"))
                     skill.Variable.Remove("StrVitAgiDownOne_minatk1");
@@ -116,11 +116,14 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -153,10 +156,13 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
+
         #endregion
     }
 }

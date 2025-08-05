@@ -1,26 +1,23 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Fish;
 
 namespace SagaDB.Fish
 {
     public class FishFactory : FactoryString<FishFactory, FishList>
     {
-        public FishFactory()
-        {
-            this.loadingTab = "Loading FishList database";
-            this.loadedTab = " Fish groups loaded.";
-            this.databaseName = "Fish";
-            this.FactoryType = FactoryType.XML;
-        }
         public List<Fish> items = new List<Fish>();
         public int TotalRate;
+
+        public FishFactory()
+        {
+            loadingTab = "Loading FishList database";
+            loadedTab = " Fish groups loaded.";
+            databaseName = "Fish";
+            FactoryType = FactoryType.XML;
+        }
+
         protected override string GetKey(FishList item)
         {
             return "钓鱼";
@@ -36,7 +33,7 @@ namespace SagaDB.Fish
             switch (current.Name.ToLower())
             {
                 case "item":
-                    Fish fish = new Fish();
+                    var fish = new Fish();
                     fish.ID = uint.Parse(current.InnerText);
                     fish.Rate = int.Parse(current.GetAttribute("rate"));
                     fish.Count = int.Parse(current.GetAttribute("count"));
@@ -50,21 +47,20 @@ namespace SagaDB.Fish
         {
             if (items != null)
             {
-                int ran = Global.Random.Next(0, TotalRate);
-                int determinator = 0;
-                foreach (Fish i in items)
+                var ran = Global.Random.Next(0, TotalRate);
+                var determinator = 0;
+                foreach (var i in items)
                 {
                     determinator += i.Rate;
                     if (ran <= determinator)
                         return i;
                 }
+
                 return null;
             }
-            else
-            {
-                Logger.ShowDebug("Cannot find FishGroup:" + groupName, Logger.defaultlogger);
-                return null;
-            }
+
+            Logger.ShowDebug("Cannot find FishGroup:" + groupName, Logger.defaultlogger);
+            return null;
         }
     }
 }

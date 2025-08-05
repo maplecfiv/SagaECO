@@ -1,32 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using SagaLib;
+using System.Xml;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
+using SagaMap.Mob;
 
 namespace SagaMap.Dungeon
 {
     public class DungeonFactory : Factory<DungeonFactory, Dungeon>
     {
-        private Dictionary<uint, Dungeon> dungeons = new Dictionary<uint, Dungeon>();
-        int count = 0;
+        private readonly Dictionary<uint, Dungeon> dungeons = new Dictionary<uint, Dungeon>();
+        private int count;
+
         public DungeonFactory()
         {
-            this.loadingTab = "Loading Dungeon database";
-            this.loadedTab = " dungeons loaded.";
-            this.databaseName = "dungeon";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Dungeon database";
+            loadedTab = " dungeons loaded.";
+            databaseName = "dungeon";
+            FactoryType = FactoryType.XML;
         }
 
         public Dungeon GetDungeon(uint id)
         {
             if (dungeons.ContainsKey(id))
                 return dungeons[id];
-            else
-                return null;
+            return null;
         }
 
         public void RemoveDungeon(uint id)
@@ -45,7 +46,7 @@ namespace SagaMap.Dungeon
             throw new NotImplementedException();
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, Dungeon item)
+        protected override void ParseXML(XmlElement root, XmlElement current, Dungeon item)
         {
             switch (root.Name.ToLower())
             {
@@ -80,6 +81,7 @@ namespace SagaMap.Dungeon
                             item.SpawnFile = current.InnerText;
                             break;
                     }
+
                     break;
             }
         }
@@ -90,18 +92,18 @@ namespace SagaMap.Dungeon
             if (items.ContainsKey(id))
             {
                 count++;
-                Dungeon dungeon = items[id].Clone();
+                var dungeon = items[id].Clone();
                 dungeon.Creator = creator;
                 dungeon.DungeonID = (uint)count;
                 List<DungeonMap> rooms;
                 List<DungeonMap> cross;
                 List<DungeonMap> floors;
-                DungeonMap[,] mapping = new DungeonMap[20, 20];
-                List<DungeonMap> openMaps = new List<DungeonMap>();
-                int roomcount = dungeon.MaxRoomCount;
-                int crosscount = dungeon.MaxCrossCount;
-                int floorcount = dungeon.MaxFloorCount;
-                int endcount = 1;
+                var mapping = new DungeonMap[20, 20];
+                var openMaps = new List<DungeonMap>();
+                var roomcount = dungeon.MaxRoomCount;
+                var crosscount = dungeon.MaxCrossCount;
+                var floorcount = dungeon.MaxFloorCount;
+                var endcount = 1;
 
                 var maps =
                     from m in DungeonMapsFactory.Instance.Items.Values
@@ -126,7 +128,9 @@ namespace SagaMap.Dungeon
 
                 //creating entrance
                 dungeon.Start = DungeonMapsFactory.Instance.Items[dungeon.StartMap].Clone();
-                dungeon.Start.Map = MapManager.Instance.GetMap(MapManager.Instance.CreateMapInstance(creator, dungeon.StartMap, exitMap, exitX, exitY));
+                dungeon.Start.Map =
+                    MapManager.Instance.GetMap(
+                        MapManager.Instance.CreateMapInstance(creator, dungeon.StartMap, exitMap, exitX, exitY));
                 dungeon.Start.Map.IsDungeon = true;
                 dungeon.Start.Map.DungeonMap = dungeon.Start;
                 dungeon.Start.X = x;
@@ -141,35 +145,41 @@ namespace SagaMap.Dungeon
                 {
                     if (openMaps.Count == 0)
                     {
-                        Logger.ShowWarning("Dungeon(" + id.ToString() + "): All nodes closed, but still rooms remaining, Recreating....");
+                        Logger.ShowWarning("Dungeon(" + id +
+                                           "): All nodes closed, but still rooms remaining, Recreating....");
                         dungeon.Destory(DestroyType.QuestCancel);
 
                         goto recreate;
                     }
-                    DungeonMap source = openMaps[Global.Random.Next(0, openMaps.Count - 1)];
+
+                    var source = openMaps[Global.Random.Next(0, openMaps.Count - 1)];
 
                     //determinate the exit of the source
-                    List<GateType> gates = new List<GateType>();
+                    var gates = new List<GateType>();
                     GateType nowDir, dstDir;
                     if (source.Gates.ContainsKey(GateType.North))
                         if (source.Gates[GateType.North].ConnectedMap == null)
                             if (source.GetXForGate(GateType.North) < 20 && source.GetYForGate(GateType.North) < 20)
-                                if (mapping[source.GetXForGate(GateType.North), source.GetYForGate(GateType.North)] == null)
+                                if (mapping[source.GetXForGate(GateType.North), source.GetYForGate(GateType.North)] ==
+                                    null)
                                     gates.Add(GateType.North);
                     if (source.Gates.ContainsKey(GateType.East))
                         if (source.Gates[GateType.East].ConnectedMap == null)
                             if (source.GetXForGate(GateType.East) < 20 && source.GetYForGate(GateType.East) < 20)
-                                if (mapping[source.GetXForGate(GateType.East), source.GetYForGate(GateType.East)] == null)
+                                if (mapping[source.GetXForGate(GateType.East), source.GetYForGate(GateType.East)] ==
+                                    null)
                                     gates.Add(GateType.East);
                     if (source.Gates.ContainsKey(GateType.South))
                         if (source.Gates[GateType.South].ConnectedMap == null)
                             if (source.GetXForGate(GateType.South) < 20 && source.GetYForGate(GateType.South) < 20)
-                                if (mapping[source.GetXForGate(GateType.South), source.GetYForGate(GateType.South)] == null)
+                                if (mapping[source.GetXForGate(GateType.South), source.GetYForGate(GateType.South)] ==
+                                    null)
                                     gates.Add(GateType.South);
                     if (source.Gates.ContainsKey(GateType.West))
                         if (source.Gates[GateType.West].ConnectedMap == null)
                             if (source.GetXForGate(GateType.West) < 20 && source.GetYForGate(GateType.West) < 20)
-                                if (mapping[source.GetXForGate(GateType.West), source.GetYForGate(GateType.West)] == null)
+                                if (mapping[source.GetXForGate(GateType.West), source.GetYForGate(GateType.West)] ==
+                                    null)
                                     gates.Add(GateType.West);
 
                     if (gates.Count == 0)
@@ -200,7 +210,7 @@ namespace SagaMap.Dungeon
                     }
 
                     //choose a new map type
-                    List<MapType> types = new List<MapType>();
+                    var types = new List<MapType>();
                     if (roomcount > 0)
                         types.Add(MapType.Room);
                     if (crosscount > 0)
@@ -216,7 +226,7 @@ namespace SagaMap.Dungeon
                     else
                         nowType = MapType.End;
                     DungeonMap nowMap = null;
-                    bool ifEnd = false;
+                    var ifEnd = false;
                     switch (nowType)
                     {
                         case MapType.Room:
@@ -238,20 +248,23 @@ namespace SagaMap.Dungeon
                             endcount--;
                             break;
                     }
+
                     nowMap.X = source.GetXForGate(nowDir);
                     nowMap.Y = source.GetYForGate(nowDir);
-                    nowMap.Map = MapManager.Instance.GetMap(MapManager.Instance.CreateMapInstance(creator, nowMap.ID, exitMap, exitX, exitY));
+                    nowMap.Map =
+                        MapManager.Instance.GetMap(
+                            MapManager.Instance.CreateMapInstance(creator, nowMap.ID, exitMap, exitX, exitY));
                     nowMap.Map.IsDungeon = true;
                     nowMap.Map.DungeonMap = nowMap;
                     if (ifEnd)
-                        Mob.MobSpawnManager.Instance.LoadOne(dungeon.SpawnFile, nowMap.Map.ID, false, true);
+                        MobSpawnManager.Instance.LoadOne(dungeon.SpawnFile, nowMap.Map.ID, false, true);
                     else
-                        Mob.MobSpawnManager.Instance.LoadOne(dungeon.SpawnFile, nowMap.Map.ID, true, false);
+                        MobSpawnManager.Instance.LoadOne(dungeon.SpawnFile, nowMap.Map.ID, true, false);
                     dungeon.Maps.Add(nowMap);
                     mapping[nowMap.X, nowMap.Y] = nowMap;
 
                     times = Global.Random.Next(1, 3);
-                    for (int i = 0; i < times; i++)
+                    for (var i = 0; i < times; i++)
                         nowMap.Rotate();
                     times = 0;
                     while (!nowMap.Gates.ContainsKey(dstDir))
@@ -261,6 +274,7 @@ namespace SagaMap.Dungeon
                         if (times > 3)
                             break;
                     }
+
                     if (!nowMap.Gates.ContainsKey(dstDir))
                         continue;
                     source.Gates[nowDir].ConnectedMap = nowMap;
@@ -278,18 +292,16 @@ namespace SagaMap.Dungeon
 
                 if (creator.Party != null)
                 {
-                    foreach (ActorPC i in creator.Party.Members.Values)
-                    {
+                    foreach (var i in creator.Party.Members.Values)
                         if (i.Online)
                         {
-                            ActorEventHandlers.PCEventHandler eh = (SagaMap.ActorEventHandlers.PCEventHandler)i.e;
+                            var eh = (PCEventHandler)i.e;
                             eh.Client.SendSystemMessage(creator.Name + LocalManager.Instance.Strings.ITD_CREATED);
                         }
-                    }
                 }
                 else
                 {
-                    ActorEventHandlers.PCEventHandler eh = (SagaMap.ActorEventHandlers.PCEventHandler)creator.e;
+                    var eh = (PCEventHandler)creator.e;
                     eh.Client.SendSystemMessage(creator.Name + LocalManager.Instance.Strings.ITD_CREATED);
                 }
 
@@ -297,8 +309,8 @@ namespace SagaMap.Dungeon
                 dungeons.Add(dungeon.DungeonID, dungeon);
                 return dungeon;
             }
-            else
-                return null;
+
+            return null;
         }
     }
 }

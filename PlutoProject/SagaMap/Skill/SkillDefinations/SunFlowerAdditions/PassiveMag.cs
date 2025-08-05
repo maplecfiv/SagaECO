@@ -1,13 +1,8 @@
 ﻿using SagaDB.Actor;
 using SagaMap.Skill.Additions.Global;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 {
-
     public class PassiveMag : ISkill
     {
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
@@ -17,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            DefaultPassiveSkill skill = new DefaultPassiveSkill(args.skill, dActor, "PassiveMag", true);
+            var skill = new DefaultPassiveSkill(args.skill, dActor, "PassiveMag", true);
             skill.OnAdditionStart += skill_OnAdditionStart;
             skill.OnAdditionEnd += skill_OnAdditionEnd;
             SkillHandler.ApplyAddition(dActor, skill);

@@ -1,29 +1,20 @@
-﻿
-using SagaLib;
-using SagaDB.Party;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaDB.Tamaire;
-using SagaMap.Network.Client;
-using System.Xml;
-using SagaLib.VirtualFileSystem;
-using SagaMap.Scripting;
-using System.Collections.Generic;
 using SagaDB.Team;
+using SagaLib;
 
 namespace SagaMap.Manager
 {
     public class AbyssTeamManager : Singleton<AbyssTeamManager>
     {
-        Dictionary<uint, Team> teams = new Dictionary<uint, Team>();
-        int RegistLimit=10;
-        public AbyssTeamManager()
-        {
+        private readonly int RegistLimit = 10;
+        private readonly Dictionary<uint, Team> teams = new Dictionary<uint, Team>();
 
-        }
         public bool CheckRegistLimit()
         {
-            return (teams.Count <= RegistLimit);
+            return teams.Count <= RegistLimit;
         }
+
         public Team GetTeam(uint leaderID)
         {
             if (leaderID == 0)
@@ -32,6 +23,7 @@ namespace SagaMap.Manager
                 return teams[leaderID];
             return null;
         }
+
         public void PlayerOnline(Team team, ActorPC pc)
         {
             if (team == null)
@@ -41,16 +33,18 @@ namespace SagaMap.Manager
                 pc.Team = null;
                 return;
             }
+
             team.MemberOnline(pc);
-            foreach (ActorPC i in team.Members.Values)
-            {
-                if (i == pc || !i.Online) continue;
-                //MapClient.FromActorPC(i).SendPartyMemberInfo(pc);
-            }
+            foreach (var i in team.Members.Values)
+                if (i == pc || !i.Online)
+                    continue;
+            //MapClient.FromActorPC(i).SendPartyMemberInfo(pc);
         }
-        public void CreateTeam(ActorPC pc, string name, string comment,string pass, bool isFromSave, byte minlv,byte maxlv,List<PC_JOB> job)
+
+        public void CreateTeam(ActorPC pc, string name, string comment, string pass, bool isFromSave, byte minlv,
+            byte maxlv, List<PC_JOB> job)
         {
-            Team team = new Team();
+            var team = new Team();
             team.Name = name;
             team.Comment = comment;
             team.Pass = pass;
@@ -87,10 +81,7 @@ namespace SagaMap.Manager
             if (!team.IsMember(pc))
                 return;
             team.DeleteMemeber(pc);
-            if (team.Members.Count == 1 || pc==team.Leader.CharID)
-            {
-                TeamDismiss(team);
-            }
+            if (team.Members.Count == 1 || pc == team.Leader.CharID) TeamDismiss(team);
         }
 
         public void TeamDismiss(Team team)

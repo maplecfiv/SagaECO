@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,17 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_SHOP_SELL_ANSWER()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1804;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1804;
         }
 
         public int Result
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
         /*
         GAME_SMSG_GOLEM_SHOPDEALERR1,"なんらかの原因で失敗しました"
@@ -37,4 +28,3 @@ namespace SagaMap.Packets.Server
         */
     }
 }
-

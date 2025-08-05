@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.PProtect;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,44 +7,39 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PPROTECT_CHAT_INFO()
         {
-            this.data = new byte[17];
-            this.offset = 2;
-            this.ID = 0x236D;
+            data = new byte[17];
+            offset = 2;
+            ID = 0x236D;
         }
 
 
-        public void SetData(ActorPC pc,byte id
+        public void SetData(ActorPC pc, byte id
             , byte unknown1, byte unknown2, byte unknown3, byte unknown4, byte unknown5)
         {
-            this.PutUInt(pc.CharID);
-            this.PutByte(id);
-            setString(pc.Name, this.offset);
-            if(pc.Pet!= null)
-            {
-                this.PutUInt(pc.Pet.PetID);
-            }
+            PutUInt(pc.CharID);
+            PutByte(id);
+            setString(pc.Name, offset);
+            if (pc.Pet != null)
+                PutUInt(pc.Pet.PetID);
             else
-            {
-                this.offset += 4;
-            }
-            this.PutByte(unknown1);
-            this.PutByte(unknown2);
-            this.PutByte(unknown3);
-            this.PutByte(unknown4);
-            this.PutByte(unknown5);
+                offset += 4;
+            PutByte(unknown1);
+            PutByte(unknown2);
+            PutByte(unknown3);
+            PutByte(unknown4);
+            PutByte(unknown5);
         }
 
 
-        void setString(string str,int i)
+        private void setString(string str, int i)
         {
-            byte[] buf = Global.Unicode.GetBytes(str + "\0");
-            byte[] buff = new byte[this.data.Length + buf.Length];
-            byte size = (byte)buf.Length;
-            this.data.CopyTo(buff, 0);
-            this.data = buff;
-            this.PutByte(size, i);
-            this.PutBytes(buf, i + 1);
+            var buf = Global.Unicode.GetBytes(str + "\0");
+            var buff = new byte[data.Length + buf.Length];
+            var size = (byte)buf.Length;
+            data.CopyTo(buff, 0);
+            data = buff;
+            PutByte(size, i);
+            PutBytes(buf, i + 1);
         }
     }
 }
-

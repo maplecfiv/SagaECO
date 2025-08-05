@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaLib;
 
-using SagaMap.Network.Client;
 namespace SagaMap.Tasks.PC
 {
     public class TimeOnline : MultiRunTask
     {
-        ActorPC pc;
+        private readonly ActorPC pc;
+
         public TimeOnline(ActorPC pc)
         {
-            this.period = 1000;
+            period = 1000;
             this.pc = pc;
         }
 
@@ -22,14 +18,17 @@ namespace SagaMap.Tasks.PC
         {
             if (pc.Status == null)
             {
-                this.Deactivate();
+                Deactivate();
                 return;
             }
+
             ClientManager.EnterCriticalArea();
             try
             {
                 if (pc.TimeOnline[0].Day == DateTime.Now.Day)
+                {
                     pc.TimeOnline[1].AddSeconds(1);
+                }
                 else
                 {
                     pc.TimeOnline[0] = DateTime.Now;
@@ -40,6 +39,7 @@ namespace SagaMap.Tasks.PC
             {
                 Logger.ShowError(ex);
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

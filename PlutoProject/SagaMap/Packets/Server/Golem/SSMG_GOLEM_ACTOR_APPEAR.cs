@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,86 +7,62 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_ACTOR_APPEAR()
         {
-            this.data = new byte[30];
-            this.offset = 2;
-            this.ID = 0x17D4;
+            data = new byte[30];
+            offset = 2;
+            ID = 0x17D4;
         }
 
         public uint PictID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public byte X
         {
-            set
-            {
-                this.PutByte(value, 10);
-            }
+            set => PutByte(value, 10);
         }
 
         public byte Y
         {
-            set
-            {
-                this.PutByte(value, 11);
-            }
+            set => PutByte(value, 11);
         }
 
         public ushort Speed
         {
-            set
-            {
-                this.PutUShort(value, 12);
-            }
+            set => PutUShort(value, 12);
         }
 
         public byte Dir
         {
-            set
-            {
-                this.PutByte(value, 14);
-            }
+            set => PutByte(value, 14);
         }
 
         public uint GolemID
         {
-            set
-            {
-                this.PutUInt(value, 15);
-            }
+            set => PutUInt(value, 15);
         }
 
         public GolemType GolemType
         {
-            set
-            {
-                this.PutByte((byte)value, 19);
-            }
+            set => PutByte((byte)value, 19);
         }
 
         public string CharName
         {
             set
             {
-                byte[] name = Global.Unicode.GetBytes(value + "\0");
-                byte[] buf = new byte[30 + name.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var name = Global.Unicode.GetBytes(value + "\0");
+                var buf = new byte[30 + name.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)name.Length, 20);
-                this.PutBytes(name, 21);
+                PutByte((byte)name.Length, 20);
+                PutBytes(name, 21);
             }
         }
 
@@ -99,14 +70,14 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte[] title = Global.Unicode.GetBytes(value + "\0");
-                byte len = GetByte(20);
-                byte[] buf = new byte[30 + len + title.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var title = Global.Unicode.GetBytes(value + "\0");
+                var len = GetByte(20);
+                var buf = new byte[30 + len + title.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)title.Length, (ushort)(21 + len));
-                this.PutBytes(title, (ushort)(22 + len));
+                PutByte((byte)title.Length, (ushort)(21 + len));
+                PutBytes(title, (ushort)(22 + len));
             }
         }
 
@@ -114,12 +85,11 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                byte len = GetByte(20);
+                var len = GetByte(20);
                 len += GetByte((ushort)(21 + len));
-                this.PutUInt(value, (ushort)(22 + len));
-                this.PutUInt(value, (ushort)(26 + len));
+                PutUInt(value, (ushort)(22 + len));
+                PutUInt(value, (ushort)(26 + len));
             }
         }
     }
 }
-

@@ -1,29 +1,23 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
 using SagaDB.Actor;
-using SagaLib;
+
 namespace SagaMap.Skill.SkillDefinations.BountyHunter
 {
     /// <summary>
-    /// 連續居合斬（連続居合い斬り）
+    ///     連續居合斬（連続居合い斬り）
     /// </summary>
     public class ComboIai : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor)) return 0;
+
+            return -14;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //建立設置型技能實體
@@ -43,13 +37,13 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
             //map.OnActorVisibilityChange(actor);
             //建立技能效果處理物件
             SkillHandler.Instance.SetNextComboSkill(sActor, 2115);
-            uint Iai_SkillID=2115;
-            ActorPC sActorPC=(ActorPC)sActor;
+            uint Iai_SkillID = 2115;
+            var sActorPC = (ActorPC)sActor;
             //args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.SLASH;
             if (sActorPC.Skills.ContainsKey(Iai_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai_SkillID))
             {
-                AutoCastInfo info = new AutoCastInfo();
+                var info = new AutoCastInfo();
                 info.skillID = Iai_SkillID;
 
                 var duallv = 0;
@@ -64,14 +58,15 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                 info.delay = 300;
                 args.autoCast.Add(info);
                 //SkillHandler.Instance.SetNextComboSkill(sActor, 2115);//取消吟唱
-                
-            //    Activator timer = new Activator(sActor, dActor, args, level);
-            //    timer.Activate();
+
+                //    Activator timer = new Activator(sActor, dActor, args, level);
+                //    timer.Activate();
             }
+
             uint Iai2_SkillID = 2201;
             if (sActorPC.Skills.ContainsKey(Iai2_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai2_SkillID))
             {
-                AutoCastInfo info = new AutoCastInfo();
+                var info = new AutoCastInfo();
                 info.skillID = Iai2_SkillID;
                 var duallv = 0;
                 if (sActorPC.DualJobSkill.Exists(x => x.ID == Iai2_SkillID))
@@ -85,10 +80,11 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                 info.delay = 1000;
                 args.autoCast.Add(info);
             }
+
             uint Iai3_SkillID = 2202;
             if (sActorPC.Skills.ContainsKey(Iai3_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai3_SkillID))
             {
-                AutoCastInfo info = new AutoCastInfo();
+                var info = new AutoCastInfo();
                 info.skillID = Iai3_SkillID;
                 var duallv = 0;
                 if (sActorPC.DualJobSkill.Exists(x => x.ID == Iai3_SkillID))
@@ -103,9 +99,7 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                 args.autoCast.Add(info);
             }
         }
+
         #endregion
     }
 }
-
-
-

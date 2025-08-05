@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,26 +6,19 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTIVITY_RECYCLE_WINDOW()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x226B;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x226B;
         }
 
         public ushort Percent
         {
-            set
-            {
-                this.PutUShort(value, 2);
-            }
+            set => PutUShort(value, 2);
         }
 
         public uint PCount
         {
-            set
-            {
-                this.PutUInt(value, 4);
-            }
+            set => PutUInt(value, 4);
         }
     }
 }
-

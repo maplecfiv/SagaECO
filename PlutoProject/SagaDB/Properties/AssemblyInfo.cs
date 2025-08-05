@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -36,7 +35,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.238.428")]
 
 
-
 namespace SagaDB
 {
     public class GlobalInfo
@@ -45,4 +43,3 @@ namespace SagaDB
         public static string ModifyDate = "2017/06/29 00:09:43";
     }
 }
-

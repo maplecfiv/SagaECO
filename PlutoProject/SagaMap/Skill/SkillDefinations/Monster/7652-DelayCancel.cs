@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
@@ -20,27 +16,29 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             args.dActor = 0;
-            int life = 20000;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "DelayCancel", life);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var life = 20000;
+            var skill = new DefaultBuff(args.skill, dActor, "DelayCancel", life);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             //actor.Status.aspd_skill_perc += (float)(0.2f + 0.3f * skill.skill.Level);应该是魔物专用迅捷?
-            actor.Status.aspd_skill_perc += (float)1.7f;
+            actor.Status.aspd_skill_perc += 1.7f;
             actor.Buff.DelayCancel = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //actor.Status.aspd_skill_perc -= (float)(0.2f + 0.3f * skill.skill.Level);
-            actor.Status.aspd_skill_perc -= (float)1.7f;
+            actor.Status.aspd_skill_perc -= 1.7f;
             actor.Buff.DelayCancel = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
         #endregion

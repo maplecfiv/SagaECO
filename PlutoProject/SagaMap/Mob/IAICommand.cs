@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SagaMap.Mob
+﻿namespace SagaMap.Mob
 {
     public interface AICommand //Interface for all AI commands
     {
+        CommandStatus Status { get; set; }
         string GetName();
         void Update(object para);
-        CommandStatus Status { get; set; }
         void Dispose();
     }
 
@@ -19,7 +15,6 @@ namespace SagaMap.Mob
         RUNNING_NOTUPDATE,
         PAUSED,
         FINISHED,
-        DELETING,
+        DELETING
     }
-
 }

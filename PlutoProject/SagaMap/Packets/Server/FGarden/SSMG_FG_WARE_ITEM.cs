@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,28 +7,27 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_WARE_ITEM()
         {
-            if (Configuration.Instance.Version < SagaLib.Version.Saga9_Iris)
-                this.data = new byte[170];
+            if (Configuration.Instance.Version < Version.Saga9_Iris)
+                data = new byte[170];
             else
-                this.data = new byte[217];
-            this.offset = 2;
-            this.ID = 0x1c26;
+                data = new byte[217];
+            offset = 2;
+            ID = 0x1c26;
         }
+
         public Item Item
         {
             set
             {
-                this.offset = 7;
-                this.ItemDetail = value;
-                this.PutByte((byte)(this.data.Length - 3), 2);
+                offset = 7;
+                ItemDetail = value;
+                PutByte((byte)(data.Length - 3), 2);
             }
         }
+
         public uint InventorySlot
         {
-            set
-            {
-                this.PutUInt(value, 3);
-            }
+            set => PutUInt(value, 3);
         }
     }
 }

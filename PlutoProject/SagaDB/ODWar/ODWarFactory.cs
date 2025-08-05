@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.ODWar
 {
@@ -13,12 +8,12 @@ namespace SagaDB.ODWar
     {
         public ODWarFactory()
         {
-            this.loadingTab = "Loading ODWar database";
-            this.loadedTab = " OD War loaded.";
-            this.databaseName = "OD War";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading ODWar database";
+            loadedTab = " OD War loaded.";
+            databaseName = "OD War";
+            FactoryType = FactoryType.XML;
         }
-       
+
         protected override uint GetKey(ODWar item)
         {
             return item.MapID;
@@ -36,14 +31,14 @@ namespace SagaDB.ODWar
                 case "odwar":
                     switch (current.Name.ToLower())
                     {
-                       case "map":
+                        case "map":
                             item.MapID = uint.Parse(current.InnerText);
                             break;
                         case "symboltrash":
                             item.SymbolTrash = uint.Parse(current.InnerText);
                             break;
                         case "symbol":
-                            ODWar.Symbol symbol = new ODWar.Symbol();
+                            var symbol = new ODWar.Symbol();
                             symbol.id = int.Parse(current.GetAttribute("id"));
                             symbol.x = byte.Parse(current.GetAttribute("x"));
                             symbol.y = byte.Parse(current.GetAttribute("y"));
@@ -51,17 +46,19 @@ namespace SagaDB.ODWar
                             item.Symbols.Add(symbol.id, symbol);
                             break;
                     }
+
                     break;
                 case "schedules":
                     switch (current.Name.ToLower())
                     {
                         case "schedule":
-                            int time = int.Parse(current.GetAttribute("time"));
-                            int day = int.Parse(current.InnerText);
+                            var time = int.Parse(current.GetAttribute("time"));
+                            var day = int.Parse(current.InnerText);
                             if (!item.StartTime.ContainsKey(day))
                                 item.StartTime.Add(day, time);
                             break;
                     }
+
                     break;
                 case "demchamp":
                     switch (current.Name.ToLower())
@@ -70,6 +67,7 @@ namespace SagaDB.ODWar
                             item.DEMChamp.Add(uint.Parse(current.InnerText));
                             break;
                     }
+
                     break;
                 case "dem":
                     switch (current.Name.ToLower())
@@ -78,6 +76,7 @@ namespace SagaDB.ODWar
                             item.DEMNormal.Add(uint.Parse(current.InnerText));
                             break;
                     }
+
                     break;
                 case "boss":
                     switch (current.Name.ToLower())
@@ -86,6 +85,7 @@ namespace SagaDB.ODWar
                             item.Boss.Add(uint.Parse(current.InnerText));
                             break;
                     }
+
                     break;
                 case "wavestrong":
                     if (item.WaveStrong == null)
@@ -99,6 +99,7 @@ namespace SagaDB.ODWar
                             item.WaveStrong.DEMNormal = int.Parse(current.InnerText);
                             break;
                     }
+
                     break;
                 case "waveweak":
                     if (item.WaveWeak == null)
@@ -112,6 +113,7 @@ namespace SagaDB.ODWar
                             item.WaveWeak.DEMNormal = int.Parse(current.InnerText);
                             break;
                     }
+
                     break;
             }
         }

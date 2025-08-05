@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
-using SagaMap;
-using SagaMap.Network.Client;
 using SagaDB.Actor;
-using SagaDB.Map;
 
 namespace SagaMap.Scripting
 {
     public class SkillEvent : Event
     {
-        static SkillEvent instance;
+        private static SkillEvent instance;
 
         public static SkillEvent Instance
         {

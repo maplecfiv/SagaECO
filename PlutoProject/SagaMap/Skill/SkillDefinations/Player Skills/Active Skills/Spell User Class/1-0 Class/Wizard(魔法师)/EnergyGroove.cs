@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Skill.SkillDefinations.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Wizard
@@ -19,7 +15,7 @@ namespace SagaMap.Skill.SkillDefinations.Wizard
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            this.ProcSub(sActor, dActor, args, level, SagaLib.Elements.Neutral);
+            ProcSub(sActor, dActor, args, level, Elements.Neutral);
         }
 
         #endregion

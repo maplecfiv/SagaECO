@@ -1,22 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
     public class SSMG_PLAYER_EXP_MESSAGE : Packet
     {
-        public SSMG_PLAYER_EXP_MESSAGE()
-        {
-            this.data = new byte[27];
-            this.offset = 2;
-            this.ID = 0x0238;
-        }
-
         public enum EXP_MESSAGE_TYPE
         {
             NormalGain,
@@ -25,45 +12,40 @@ namespace SagaMap.Packets.Server
             TamaireGain
         }
 
-        /// <summary>
-        /// Base EXP
-        /// </summary>
-        public long EXP
+        public SSMG_PLAYER_EXP_MESSAGE()
         {
-            set
-            {
-                this.PutLong(value, 2);
-            }
-        }
-        /// <summary>
-        /// Job EXP
-        /// </summary>
-        public long JEXP
-        {
-            set
-            {
-                this.PutLong(value, 10);
-            }
+            data = new byte[27];
+            offset = 2;
+            ID = 0x0238;
         }
 
         /// <summary>
-        /// Another Page EXP
+        ///     Base EXP
+        /// </summary>
+        public long EXP
+        {
+            set => PutLong(value, 2);
+        }
+
+        /// <summary>
+        ///     Job EXP
+        /// </summary>
+        public long JEXP
+        {
+            set => PutLong(value, 10);
+        }
+
+        /// <summary>
+        ///     Another Page EXP
         /// </summary>
         public long PEXP
         {
-            set
-            {
-                this.PutLong(value, 18);
-            }
+            set => PutLong(value, 18);
         }
 
         public EXP_MESSAGE_TYPE Type
         {
-            set
-            {
-                this.PutByte((byte)value,26);
-            }
+            set => PutByte((byte)value, 26);
         }
     }
 }
-

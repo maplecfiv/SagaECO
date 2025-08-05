@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
-using System.Text;
-
-using SagaDB;
 using SagaDB.Actor;
+using SagaDB.Item;
+using SagaDB.Map;
+using SagaDB.Mob;
+using SagaDB.Skill;
 using SagaLib;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
+using SagaMap.Packets.Client;
 using SagaMap.Skill.Additions.Global;
-
-
 
 namespace SagaMap.Skill
 {
-
     public partial class SkillHandler
     {
-        internal int physicalCounter = 0;
-        internal int magicalCounter = 0;
-        ActorPC thispc = new ActorPC();
-        Elements Toelements = Elements.Neutral;
         public enum DefType
         {
             Def,
@@ -35,8 +30,13 @@ namespace SagaMap.Skill
             DefIgnoreRight
         }
 
+        internal int magicalCounter = 0;
+        internal int physicalCounter = 0;
+        private ActorPC thispc = new ActorPC();
+        private Elements Toelements = Elements.Neutral;
+
         /// <summary>
-        /// 对单一目标进行物理攻击
+        ///     对单一目标进行物理攻击
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标</param>
@@ -45,13 +45,13 @@ namespace SagaMap.Skill
         /// <param name="ATKBonus">攻击加成</param>
         public int PhysicalAttack(Actor sActor, Actor dActor, SkillArg arg, Elements element, float ATKBonus)
         {
-            List<Actor> list = new List<Actor>();
+            var list = new List<Actor>();
             list.Add(dActor);
             return PhysicalAttack(sActor, list, arg, element, ATKBonus);
         }
 
         /// <summary>
-        /// 对多个目标进行物理攻击
+        ///     对多个目标进行物理攻击
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标集合</param>
@@ -64,7 +64,7 @@ namespace SagaMap.Skill
         }
 
         /// <summary>
-        /// 对多个目标进行物理攻击
+        ///     对多个目标进行物理攻击
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标集合</param>
@@ -72,7 +72,8 @@ namespace SagaMap.Skill
         /// <param name="element">元素</param>
         /// <param name="index">arg中参数偏移</param>
         /// <param name="ATKBonus">攻击加成</param>
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int index, float ATKBonus)
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int index,
+            float ATKBonus)
         {
             //if(index >0)
             /*if (dActor.Count > 12)
@@ -85,97 +86,96 @@ namespace SagaMap.Skill
             }*/
             return PhysicalAttack(sActor, dActor, arg, DefType.Def, element, index, ATKBonus, false);
         }
+
         /// <summary>
-        /// 对多个目标进行物理攻击
+        ///     对多个目标进行物理攻击
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标集合</param>
         /// <param name="arg">技能参数</param>
         /// <param name="element">元素</param>
         /// <param name="index">arg中参数偏移</param>
-        ///<param name="defType">使用的防御类型</param>
+        /// <param name="defType">使用的防御类型</param>
         /// <param name="ATKBonus">攻击加成</param>
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int index, float ATKBonus, bool setAtk)
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int index, float ATKBonus, bool setAtk)
         {
             return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, 0, false);
         }
 
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate)
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate)
         {
-            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate, 0, 0);
+            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate,
+                0, 0);
         }
 
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus)
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus)
         {
-            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate, shitbonus, scribonus, "noeffect", 0);
+            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate,
+                shitbonus, scribonus, "noeffect", 0);
         }
 
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus, string effectname, int lifetime, float ignore = 0)
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus,
+            string effectname, int lifetime, float ignore = 0)
         {
-            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate, shitbonus, scribonus, 0, "noeffect", 0);
+            return PhysicalAttack(sActor, dActor, arg, defType, element, index, ATKBonus, setAtk, SuckBlood, doublehate,
+                shitbonus, scribonus, 0, "noeffect", 0);
         }
 
         /// <summary>
-        /// 对多个目标进行物理攻击
+        ///     对多个目标进行物理攻击
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标集合</param>
         /// <param name="arg">技能参数</param>
         /// <param name="element">元素</param>
         /// <param name="index">arg中参数偏移</param>
-        ///<param name="defType">使用的防御类型</param>
+        /// <param name="defType">使用的防御类型</param>
         /// <param name="ATKBonus">攻击加成</param>
-        ///  <param name="ignore">无视防御比</param>
-        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus, int cridamagebonus, string effectname, int lifetime, float ignore = 0)
+        /// <param name="ignore">无视防御比</param>
+        public int PhysicalAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int index, float ATKBonus, bool setAtk, float SuckBlood, bool doublehate, int shitbonus, int scribonus,
+            int cridamagebonus, string effectname, int lifetime, float ignore = 0)
         {
             if (dActor.Count == 0) return 0;
             if (sActor.Status == null)
                 return 0;
-            if (sActor.Status.Additions.ContainsKey("ArmBreak") && arg.skill != null)//断腕击状态无法使用物理技能
+            if (sActor.Status.Additions.ContainsKey("ArmBreak") && arg.skill != null) //断腕击状态无法使用物理技能
             {
                 if (sActor.type == ActorType.PC)
                 {
-                    ActorPC pc = (ActorPC)sActor;
-                    SagaMap.Network.Client.MapClient.FromActorPC(pc).SendSystemMessage("目前处于物理技能封印状态");
+                    var pc = (ActorPC)sActor;
+                    MapClient.FromActorPC(pc).SendSystemMessage("目前处于物理技能封印状态");
                 }
+
                 return 0;
             }
-            if (sActor.type == ActorType.PC && arg.skill == null)//要求不是技能
-            {
-                ActorPC pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                {
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW)
-                    {
-                        if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                        {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.ARROW)
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack > 0)
-                                {
-                                    GetlongARROW(pc, arg);
-                                    //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                                }
 
-                            }
-                        }
-                    }
-                    if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.GUN ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.DUALGUN ||
-                        pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.RIFLE)
-                    {
-                        if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                        {
-                            if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BULLET)
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack > 0)
+            if (sActor.type == ActorType.PC && arg.skill == null) //要求不是技能
+            {
+                var pc = (ActorPC)sActor;
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                {
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW)
+                        if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.ARROW)
+                                if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack > 0)
                                     GetlongARROW(pc, arg);
-                                //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                            }
-                        }
-                    }
+                    //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
+                    if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.GUN ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.DUALGUN ||
+                        pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.RIFLE)
+                        if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                            if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.BULLET)
+                                if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack > 0)
+                                    GetlongARROW(pc, arg);
+                    //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
                 }
             }
+
             if (dActor.Count > 10)
             {
                 foreach (var item in dActor)
@@ -183,18 +183,18 @@ namespace SagaMap.Skill
                 return 0;
             }
 
-            int damage = 0;
+            var damage = 0;
 
             int atk;
-            int mindamage = 0;
-            int maxdamage = 0;
-            int counter = 0;
-            Map map = Manager.MapManager.Instance.GetMap(dActor[0].MapID);
+            var mindamage = 0;
+            var maxdamage = 0;
+            var counter = 0;
+            var map = MapManager.Instance.GetMap(dActor[0].MapID);
 
             if (index == 0)
             {
                 arg.affectedActors = new List<Actor>();
-                foreach (Actor i in dActor)
+                foreach (var i in dActor)
                     arg.affectedActors.Add(i);
                 arg.Init();
             }
@@ -222,7 +222,7 @@ namespace SagaMap.Skill
             //    maxdamage = sActor.Status.max_matk;
             //}
             if (mindamage > maxdamage) maxdamage = mindamage;
-            foreach (Actor i in dActor)
+            foreach (var i in dActor)
             {
                 if (i.Status == null)
                     continue;
@@ -231,41 +231,38 @@ namespace SagaMap.Skill
                 //NOTOUCH類MOB 跳過判定
                 if (i.type == ActorType.MOB)
                 {
-                    ActorMob checkmob = (ActorMob)i;
+                    var checkmob = (ActorMob)i;
                     switch (checkmob.BaseData.mobType)
                     {
-                        case SagaDB.Mob.MobType.ANIMAL_NOTOUCH:
-                        case SagaDB.Mob.MobType.BIRD_NOTOUCH:
-                        case SagaDB.Mob.MobType.ELEMENT_BOSS_NOTOUCH:
-                        case SagaDB.Mob.MobType.HUMAN_NOTOUCH:
-                        case SagaDB.Mob.MobType.ELEMENT_NOTOUCH:
-                        case SagaDB.Mob.MobType.PLANT_NOTOUCH:
-                        case SagaDB.Mob.MobType.MACHINE_NOTOUCH:
-                        case SagaDB.Mob.MobType.NONE_NOTOUCH:
-                        case SagaDB.Mob.MobType.UNDEAD_NOTOUCH:
-                        case SagaDB.Mob.MobType.WATER_ANIMAL_NOTOUCH:
-                        case SagaDB.Mob.MobType.PLANT_BOSS_NOTOUCH:
+                        case MobType.ANIMAL_NOTOUCH:
+                        case MobType.BIRD_NOTOUCH:
+                        case MobType.ELEMENT_BOSS_NOTOUCH:
+                        case MobType.HUMAN_NOTOUCH:
+                        case MobType.ELEMENT_NOTOUCH:
+                        case MobType.PLANT_NOTOUCH:
+                        case MobType.MACHINE_NOTOUCH:
+                        case MobType.NONE_NOTOUCH:
+                        case MobType.UNDEAD_NOTOUCH:
+                        case MobType.WATER_ANIMAL_NOTOUCH:
+                        case MobType.PLANT_BOSS_NOTOUCH:
                             continue;
-
                     }
                 }
 
                 //投掷武器
                 if (sActor.type == ActorType.PC)
                 {
-                    ActorPC pc = (ActorPC)sActor;
+                    var pc = (ActorPC)sActor;
 
-                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                    {
-                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.THROW ||
-                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CARD)
+                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                        if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.THROW ||
+                            pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.CARD)
                         {
-
-
                             if (pc.Skills3.ContainsKey(989) || pc.DualJobSkill.Exists(x => x.ID == 989))
                             {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CARD &&
-                                   pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Stack > 0)
+                                if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                    ItemType.CARD &&
+                                    pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Stack > 0)
                                 {
                                     var duallv = 0;
                                     if (pc.DualJobSkill.Exists(x => x.ID == 989))
@@ -275,36 +272,26 @@ namespace SagaMap.Skill
                                     if (pc.Skills3.ContainsKey(989))
                                         mainlv = pc.Skills3[989].Level;
 
-                                    int maxlv = Math.Max(duallv, mainlv);
-                                    if (arg.skill == null)//普通攻击
+                                    var maxlv = Math.Max(duallv, mainlv);
+                                    if (arg.skill == null) //普通攻击
                                     {
-                                        if (SagaLib.Global.Random.Next(0, 99) > maxlv * 5)
-                                        {
-                                            GetlongCARD(pc, arg);
-                                            //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
-                                        }
-
-
+                                        if (Global.Random.Next(0, 99) > maxlv * 5) GetlongCARD(pc, arg);
+                                        //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
                                     }
-                                    else if (arg.skill.ID == 2517 || arg.skill.ID == 2518)//ストレートフラッシュ
+                                    else if (arg.skill.ID == 2517 || arg.skill.ID == 2518) //ストレートフラッシュ
                                     {
-                                        if (SagaLib.Global.Random.Next(0, 99) > maxlv * 3)
-                                        {
-                                            GetlongCARD(pc, arg);
-                                            //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
-                                        }
+                                        if (Global.Random.Next(0, 99) > maxlv * 3) GetlongCARD(pc, arg);
+                                        //MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
                                     }
                                 }
-
                             }
                             else
                             {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Stack > 0)
-                                    MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
+                                if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Stack > 0)
+                                    MapClient.FromActorPC(pc)
+                                        .DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
                             }
-
                         }
-                    }
                 }
 
                 ////弓箭，枪
@@ -373,35 +360,27 @@ namespace SagaMap.Skill
                 //if (arg.argType == SkillArg.ArgType.Active)
                 //    shitbonus = 50;
 
-                AttackResult res = CalcAttackResult(sActor, i, sActor.Range > 3, shitbonus, scribonus);
-                if (i.Status.Additions.ContainsKey("Warn"))//警戒
-                {
+                var res = CalcAttackResult(sActor, i, sActor.Range > 3, shitbonus, scribonus);
+                if (i.Status.Additions.ContainsKey("Warn")) //警戒
                     if (res == AttackResult.Critical)
-                    {
                         res = AttackResult.Hit;
-                    }
-                }
+
                 if (sActor.Status.Additions.ContainsKey("PerfectRiotStamp"))
-                {
                     if (arg.skill != null && arg.skill.ID != 0)
-                    {
                         if (arg.skill.ID == 2180)
                             res = AttackResult.Hit;
-                    }
 
-                }
                 if (sActor.Status.Additions.ContainsKey("Super_A_T_PJoint"))
-                {
                     if (arg.skill != null && arg.skill.ID != 0)
                     {
                         RemoveAddition(sActor, "Super_A_T_PJoint");
                         res = AttackResult.Critical;
                     }
 
-                }
-                Actor target = i;
+                var target = i;
 
-                if (res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard || res == AttackResult.Parry)
+                if (res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard ||
+                    res == AttackResult.Parry)
                 {
                     if (res == AttackResult.Miss)
                         arg.flag[index + counter] = AttackFlag.MISS;
@@ -414,28 +393,26 @@ namespace SagaMap.Skill
 
                     try
                     {
-                        string y = "普通攻击";
+                        var y = "普通攻击";
                         if (arg != null)
-                        {
                             if (arg.skill != null)
                                 y = arg.skill.Name;
-                        }
                         //string s = "物理伤害";
-                        SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "被你 " + res.ToString());
-                        SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res.ToString());
+                        SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "被你 " + res);
+                        SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res);
                     }
                     catch (Exception ex)
                     {
-                        SagaLib.Logger.ShowError(ex);
+                        Logger.ShowError(ex);
                     }
                 }
                 else
                 {
-                    int restKryrie = 0;
+                    var restKryrie = 0;
                     if (i.type == ActorType.PC)
                     {
-                        ActorPC me = (ActorPC)i;
-                        if (me.Skills2_2.ContainsKey(956) || me.DualJobSkill.Exists(x => x.ID == 956))//二段斩击，已激活副职判定
+                        var me = (ActorPC)i;
+                        if (me.Skills2_2.ContainsKey(956) || me.DualJobSkill.Exists(x => x.ID == 956)) //二段斩击，已激活副职判定
                         {
                             var duallv = 0;
                             if (me.DualJobSkill.Exists(x => x.ID == 956))
@@ -446,70 +423,71 @@ namespace SagaMap.Skill
                                 mainlv = me.Skills2_2[956].Level;
 
 
-                            int TotalLv = Math.Max(duallv, mainlv);
-                            int nr = SagaLib.Global.Random.Next(0, 1000);
-                            if ((TotalLv * 20) > nr)
-                            {
+                            var TotalLv = Math.Max(duallv, mainlv);
+                            var nr = Global.Random.Next(0, 1000);
+                            if (TotalLv * 20 > nr)
                                 if (i.Status.Additions.ContainsKey("ConSword"))
                                 {
                                     arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.NO_DAMAGE;
-                                    EffectArg arg2 = new EffectArg();
+                                    var arg2 = new EffectArg();
                                     arg2.effectID = 4173;
                                     arg2.actorID = i.ActorID;
                                     map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, i, true);
                                     restKryrie = 1;
                                 }
-                            }
                         }
                     }
 
                     if (i.Status.Additions.ContainsKey("MobKyrie"))
                     {
-                        Additions.Global.DefaultBuff buf = (Additions.Global.DefaultBuff)i.Status.Additions["MobKyrie"];
+                        var buf = (DefaultBuff)i.Status.Additions["MobKyrie"];
                         restKryrie = buf["MobKyrie"];
                         arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.NO_DAMAGE;
                         if (restKryrie > 0)
                         {
                             buf["MobKyrie"]--;
-                            EffectArg arg2 = new EffectArg();
+                            var arg2 = new EffectArg();
                             arg2.effectID = 4173;
                             arg2.actorID = i.ActorID;
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, i, true);
                             if (restKryrie == 1)
                             {
-                                SkillHandler.RemoveAddition(i, "MobKyrie");
-                                SkillHandler.RemoveAddition(i, "KyrieEleison");
+                                RemoveAddition(i, "MobKyrie");
+                                RemoveAddition(i, "KyrieEleison");
                             }
-
                         }
                     }
+
                     if (i.Status.Additions.ContainsKey("ArtFullTrap1"))
                     {
-                        int healnum = i.Status.max_matk_bs + i.Status.max_atk_bs;
+                        var healnum = i.Status.max_matk_bs + i.Status.max_atk_bs;
                         i.HP += (uint)healnum;
                         if (i.HP > i.MaxHP)
                             i.HP = i.MaxHP;
-                        SkillHandler.Instance.ShowVessel(i, -healnum);
+                        Instance.ShowVessel(i, -healnum);
                         //SkillHandler.RemoveAddition(i, "ArtFullTrap1");
                     }
+
                     if (i.Status.Additions.ContainsKey("ArtFullTrap2"))
                     {
-                        int healnum = (int)((i.Status.max_matk_bs + i.Status.max_atk_bs) / 5.0f);
+                        var healnum = (int)((i.Status.max_matk_bs + i.Status.max_atk_bs) / 5.0f);
                         i.SP += (uint)healnum;
                         if (i.SP > i.MaxSP)
                             i.SP = i.MaxSP;
-                        SkillHandler.Instance.ShowVessel(i, 0, 0, -healnum);
+                        Instance.ShowVessel(i, 0, 0, -healnum);
                         //SkillHandler.RemoveAddition(i, "ArtFullTrap2");
                     }
+
                     if (i.Status.Additions.ContainsKey("ArtFullTrap3"))
                     {
-                        int healnum = (int)((i.Status.max_matk_bs + i.Status.max_atk_bs) / 5.0f);
+                        var healnum = (int)((i.Status.max_matk_bs + i.Status.max_atk_bs) / 5.0f);
                         i.MP += (uint)healnum;
                         if (i.MP > i.MaxMP)
                             i.MP = i.MaxMP;
-                        SkillHandler.Instance.ShowVessel(i, 0, -healnum);
+                        Instance.ShowVessel(i, 0, -healnum);
                         //SkillHandler.RemoveAddition(i, "ArtFullTrap3");
                     }
+
                     //if (i.Status.Additions.ContainsKey("ArtFullTrap4"))
                     //{
                     //    arg.argType = SkillArg.ArgType.Attack;
@@ -533,51 +511,52 @@ namespace SagaMap.Skill
                     //}
                     if (restKryrie == 0)
                     {
-                        bool isPossession = false;
-                        bool isHost = false;
+                        var isPossession = false;
+                        var isHost = false;
                         if (i.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)i;
+                            var pc = (ActorPC)i;
                             if (pc.PossesionedActors.Count > 0 && pc.PossessionTarget == 0)
                             {
                                 isPossession = true;
                                 isHost = true;
                             }
+
                             if (pc.PossessionTarget != 0)
                             {
                                 isPossession = true;
                                 isHost = false;
                             }
                         }
+
                         //处理凭依伤害
                         if (isHost && isPossession && ATKBonus > 0)
                         {
-                            List<Actor> possessionDamage = ProcessAttackPossession(i);
+                            var possessionDamage = ProcessAttackPossession(i);
                             if (possessionDamage.Count > 0)
                             {
                                 arg.Remove(i);
-                                int oldcount = arg.flag.Count;
+                                var oldcount = arg.flag.Count;
                                 arg.Extend(possessionDamage.Count);
-                                foreach (Actor j in possessionDamage)
-                                {
+                                foreach (var j in possessionDamage)
                                     if (Global.Random.Next(0, 99) < i.Status.possessionTakeOver)
                                         arg.affectedActors.Add(i);
                                     else
                                         arg.affectedActors.Add(j);
-                                }
                                 PhysicalAttack(sActor, possessionDamage, arg, element, oldcount, ATKBonus);
                                 continue;
                             }
                         }
+
                         if (!setAtk)
                         {
                             atk = Global.Random.Next(mindamage, maxdamage);
                             //TODO: element bonus, range bonus
-                            float eleBonus = CalcElementBonus(sActor, i, element, 0, false);
+                            var eleBonus = CalcElementBonus(sActor, i, element, 0, false);
 
                             if (i.Status.Contract_Lv != 0)
                             {
-                                Elements tmpele = Elements.Neutral;
+                                var tmpele = Elements.Neutral;
                                 switch (i.Status.Contract_Lv)
                                 {
                                     case 1:
@@ -593,30 +572,35 @@ namespace SagaMap.Skill
                                         tmpele = Elements.Wind;
                                         break;
                                 }
+
                                 if (tmpele == element)
                                     eleBonus -= 0.15f;
                                 else
                                     eleBonus += 1.0f;
-
                             }
-                            if ((sActor.Status.Additions.ContainsKey("EvilSoul") || sActor.Status.Additions.ContainsKey("SoulTaker")) && element == Elements.Dark && eleBonus > 0 &&
-                                (arg.skill.ID == 2537 ||//黑暗之光
-                                arg.skill.ID == 2230 ||//吸收灵魂
-                                arg.skill.ID == 2229 //死神之刃
-                                ))//邪恶灵魂仅对物理攻击本身为暗属性的技能有效
+
+                            if ((sActor.Status.Additions.ContainsKey("EvilSoul") ||
+                                 sActor.Status.Additions.ContainsKey("SoulTaker")) && element == Elements.Dark &&
+                                eleBonus > 0 &&
+                                (arg.skill.ID == 2537 || //黑暗之光
+                                 arg.skill.ID == 2230 || //吸收灵魂
+                                 arg.skill.ID == 2229 //死神之刃
+                                )) //邪恶灵魂仅对物理攻击本身为暗属性的技能有效
                             {
                                 if (sActor.Status.Additions.ContainsKey("EvilSoul"))
-                                {
                                     //atkValue += (sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"];
-                                    eleBonus += ((float)((sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"]) / 100.0f);
-                                }
-                                if (sActor.Status.Additions.ContainsKey("SoulTaker") && arg.skill != null && arg.skill.ID != 0)
-                                {
+                                    eleBonus +=
+                                        (sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"] /
+                                        100.0f;
+                                if (sActor.Status.Additions.ContainsKey("SoulTaker") && arg.skill != null &&
+                                    arg.skill.ID != 0)
                                     //atkValue += (sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable["SoulTaker"];
-                                    eleBonus += ((float)((sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable["SoulTaker"]) / 100.0f);
-                                }
+                                    eleBonus +=
+                                        (sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable["SoulTaker"] /
+                                        100.0f;
                             }
-                            atk = (int)(Math.Ceiling(atk * eleBonus * ATKBonus));
+
+                            atk = (int)Math.Ceiling(atk * eleBonus * ATKBonus);
                             /*
                             if (i.Buff.Frosen == true && element == Elements.Fire)
                             {
@@ -628,15 +612,13 @@ namespace SagaMap.Skill
                             }
                             */
                             if (arg.skill != null)
-                            {
                                 if (sActor.Status.doubleUpList.Contains((ushort)arg.skill.ID))
-                                {
                                     atk *= 2;
-                                }
-                            }
                         }
                         else
+                        {
                             atk = (int)ATKBonus;
+                        }
 
                         damage = CalcPhyDamage(sActor, i, defType, atk, ignore, res);
 
@@ -655,24 +637,21 @@ namespace SagaMap.Skill
                             case ATTACK_TYPE.STAB:
                                 damage = (int)(damage * (1f - i.Status.damage_atk3_discount));
                                 break;
-
                         }
 
 
                         if (sActor.type == ActorType.PC && target.type == ActorType.PC)
-                        {
                             damage = (int)(damage * Configuration.Instance.PVPDamageRatePhysic);
-                        }
 
                         if (damage <= 0) damage = 1;
 
 
                         if (isPossession && isHost && target.Status.Additions.ContainsKey("DJoint"))
                         {
-                            Additions.Global.DefaultBuff buf = (Additions.Global.DefaultBuff)target.Status.Additions["DJoint"];
+                            var buf = (DefaultBuff)target.Status.Additions["DJoint"];
                             if (Global.Random.Next(0, 99) < buf["Rate"])
                             {
-                                Actor dst = map.GetActor((uint)buf["Target"]);
+                                var dst = map.GetActor((uint)buf["Target"]);
                                 if (dst != null)
                                 {
                                     target = dst;
@@ -682,26 +661,28 @@ namespace SagaMap.Skill
                         }
 
 
-
                         //计算暴击增益
                         if (res == AttackResult.Critical)
                         {
-                            damage = (int)(((float)damage) * (float)(CalcCritBonus(sActor, target, scribonus) + (float)cridamagebonus));
+                            damage = (int)(damage * (CalcCritBonus(sActor, target, scribonus) + cridamagebonus));
                             if (sActor.Status.Additions.ContainsKey("CriDamUp"))
                             {
-                                float rate = (float)((float)(sActor.Status.Additions["CriDamUp"] as DefaultPassiveSkill).Variable["CriDamUp"] / 100.0f + 1.0f);
-                                damage = (int)((float)damage * rate);
+                                var rate =
+                                    (sActor.Status.Additions["CriDamUp"] as DefaultPassiveSkill).Variable["CriDamUp"] /
+                                    100.0f + 1.0f;
+                                damage = (int)(damage * rate);
                             }
                         }
 
                         //宠判定？
-                        bool ride = false;
+                        var ride = false;
                         if (target.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)target;
+                            var pc = (ActorPC)target;
                             if (pc.Pet != null)
                                 ride = pc.Pet.Ride;
                         }
+
                         //宠物成长
                         if (res == AttackResult.Critical)
                         {
@@ -711,12 +692,9 @@ namespace SagaMap.Skill
                                 ProcessPetGrowth(i, PetGrowthReason.PhysicalBeenHit);
                             if (i.type == ActorType.PC && damage > 0)
                             {
-                                ActorPC pc = (ActorPC)target;
+                                var pc = (ActorPC)target;
 
-                                if (ride)
-                                {
-                                    ProcessPetGrowth(pc.Pet, PetGrowthReason.PhysicalBeenHit);
-                                }
+                                if (ride) ProcessPetGrowth(pc.Pet, PetGrowthReason.PhysicalBeenHit);
                             }
                         }
                         else
@@ -724,29 +702,24 @@ namespace SagaMap.Skill
                             if (sActor.type == ActorType.PET)
                                 ProcessPetGrowth(sActor, PetGrowthReason.PhysicalHit);
                             if (i.type == ActorType.PET && damage > 0)
-                            {
                                 ProcessPetGrowth(i, PetGrowthReason.PhysicalBeenHit);
-                            }
                             if (i.type == ActorType.PC && damage > 0)
                             {
-                                ActorPC pc = (ActorPC)target;
+                                var pc = (ActorPC)target;
 
-                                if (ride)
-                                {
-                                    ProcessPetGrowth(pc.Pet, PetGrowthReason.PhysicalBeenHit);
-                                }
+                                if (ride) ProcessPetGrowth(pc.Pet, PetGrowthReason.PhysicalBeenHit);
                             }
                         }
 
                         //技能以及状态判定
                         if (sActor.type == ActorType.PC)
                         {
-                            ActorPC pcsActor = (ActorPC)sActor;
-                            if (sActor.Status.Additions.ContainsKey("BurnRate"))// && SkillHandler.Instance.isEquipmentRight(pcsActor, SagaDB.Item.ItemType.CARD))//皇家贸易商
-                            {
+                            var pcsActor = (ActorPC)sActor;
+                            if (sActor.Status.Additions
+                                .ContainsKey(
+                                    "BurnRate")) // && SkillHandler.Instance.isEquipmentRight(pcsActor, SagaDB.Item.ItemType.CARD))//皇家贸易商
                                 //副职不存在3371技能,不进行副职逻辑判定
                                 if (pcsActor.Skills3.ContainsKey(3371))
-                                {
                                     if (pcsActor.Skills3[3371].Level > 1)
                                     {
                                         int[] gold = { 0, 0, 100, 250, 500, 1000 };
@@ -756,8 +729,6 @@ namespace SagaMap.Skill
                                             damage += gold[pcsActor.Skills3[3371].Level];
                                         }
                                     }
-                                }
-                            }
                         }
                         //if (sActor.type == ActorType.PC && target.type == ActorType.MOB)
                         //{
@@ -773,24 +744,20 @@ namespace SagaMap.Skill
                         //        score = 1;
                         //    ODWarManager.Instance.UpdateScore(sActor.MapID, sActor.ActorID, score);
                         //}
-                        if (target.Status.Additions.ContainsKey("DamageUp"))//伤害标记
+                        if (target.Status.Additions.ContainsKey("DamageUp")) //伤害标记
                         {
-                            float DamageUpRank = target.Status.Damage_Up_Lv * 0.1f + 1.1f;
+                            var DamageUpRank = target.Status.Damage_Up_Lv * 0.1f + 1.1f;
                             damage = (int)(damage * DamageUpRank);
                         }
 
-                        if (target.Status.PhysiceReduceRate > 0)//物理抗性
-                        {
-                            damage -= (int)((float)damage * (target.Status.PhysiceReduceRate / 100.0f));
-                            //if (target.Status.PhysiceReduceRate > 1)
-                            //    damage = (int)((float)damage / target.Status.PhysiceReduceRate);
-                            //else
-                            //    damage = (int)((float)damage / (1.0f + target.Status.PhysiceReduceRate));
-                        }
+                        if (target.Status.PhysiceReduceRate > 0) //物理抗性
+                            damage -= (int)(damage * (target.Status.PhysiceReduceRate / 100.0f));
+                        //if (target.Status.PhysiceReduceRate > 1)
+                        //    damage = (int)((float)damage / target.Status.PhysiceReduceRate);
+                        //else
+                        //    damage = (int)((float)damage / (1.0f + target.Status.PhysiceReduceRate));
                         if (target.Status.physice_rate_iris < 100)
-                        {
-                            damage = (int)(damage * (float)(target.Status.physice_rate_iris / 100.0f));
-                        }
+                            damage = (int)(damage * (target.Status.physice_rate_iris / 100.0f));
 
                         //加伤处理下
                         //if (target.Seals > 0)
@@ -808,96 +775,68 @@ namespace SagaMap.Skill
                         //加伤处理上
 
                         //减伤处理下(已完成副职逻辑)
-                        if (target.Status.Additions.ContainsKey("DamageNullify"))//boss状态
-                            damage = (int)(damage * (float)0f);
-                        if (target.Status.Additions.ContainsKey("EnergyShield"))//能量加护
+                        if (target.Status.Additions.ContainsKey("DamageNullify")) //boss状态
+                            damage = (int)(damage * 0f);
+                        if (target.Status.Additions.ContainsKey("EnergyShield")) //能量加护
                         {
                             if (target.type == ActorType.PC)
-                                damage = (int)(damage * (float)(1f - 0.02f * ((ActorPC)target).TInt["EnergyShieldlv"]));
+                                damage = (int)(damage * (1f - 0.02f * ((ActorPC)target).TInt["EnergyShieldlv"]));
                             else
-                                damage = (int)(damage * (float)0.9f);
-                        }
-                        if (target.Status.Additions.ContainsKey("Counter"))
-                        {
-                            damage /= 2;
+                                damage = (int)(damage * 0.9f);
                         }
 
-                        if (target.Status.Additions.ContainsKey("Assumptio"))
-                        {
-                            damage = (int)((damage / 3.0f) * 2.0f);
-                        }
+                        if (target.Status.Additions.ContainsKey("Counter")) damage /= 2;
+
+                        if (target.Status.Additions.ContainsKey("Assumptio")) damage = (int)(damage / 3.0f * 2.0f);
 
                         if (target.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)target;
+                            var pc = (ActorPC)target;
                             if (pc.Party != null && pc.Status.pt_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.pt_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.pt_dmg_up_iris / 100.0f));
                             if (pc.Status.Element_down_iris < 100 && element != Elements.Neutral)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.Element_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.Element_down_iris / 100.0f));
 
                             //iris卡种族减伤部分
                             if (sActor.Race == Race.HUMAN && pc.Status.human_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.human_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.human_dmg_down_iris / 100.0f));
 
                             else if (sActor.Race == Race.BIRD && pc.Status.bird_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.bird_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.bird_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ANIMAL && pc.Status.animal_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.animal_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.animal_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.MAGIC_CREATURE && pc.Status.magic_c_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.magic_c_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.magic_c_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.PLANT && pc.Status.plant_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.plant_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.plant_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.WATER_ANIMAL && pc.Status.water_a_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.water_a_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.water_a_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.MACHINE && pc.Status.machine_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.machine_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.machine_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ROCK && pc.Status.rock_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.rock_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.rock_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ELEMENT && pc.Status.element_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.element_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.element_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.UNDEAD && pc.Status.undead_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.undead_dmg_down_iris / 100.0f));
-                            }
-
-
+                                damage = (int)(damage * (pc.Status.undead_dmg_down_iris / 100.0f));
                         }
-                        if (target.Status.Additions.ContainsKey("Blocking") && target.Status.Blocking_LV != 0 && target.type == ActorType.PC)//3转骑士格挡
+
+                        if (target.Status.Additions.ContainsKey("Blocking") && target.Status.Blocking_LV != 0 &&
+                            target.type == ActorType.PC) //3转骑士格挡
                         {
-                            ActorPC pc = (ActorPC)target;
-                            if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) &&
-                                pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHIELD ||
-                                    pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHIELD)
+                            var pc = (ActorPC)target;
+                            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) &&
+                                pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
+                                if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                    ItemType.SHIELD ||
+                                    pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType ==
+                                    ItemType.SHIELD)
                                 {
-                                    int SutanOdds = target.Status.Blocking_LV * 5;
-                                    int SutanTime = 1000 + i.Status.Blocking_LV * 500;
-                                    int ParryOdds = new int[] { 0, 15, 25, 35, 65, 75 }[target.Status.Blocking_LV];
+                                    var SutanOdds = target.Status.Blocking_LV * 5;
+                                    var SutanTime = 1000 + i.Status.Blocking_LV * 500;
+                                    var ParryOdds = new[] { 0, 15, 25, 35, 65, 75 }[target.Status.Blocking_LV];
                                     float ParryResult = 4 + 6 * target.Status.Blocking_LV;
-                                    SagaDB.Skill.Skill args = new SagaDB.Skill.Skill();
+                                    var args = new SagaDB.Skill.Skill();
                                     //不管是主职还是副职,判定盾牌专精知识是否存在
                                     if (pc.Skills.ContainsKey(116) || pc.DualJobSkill.Exists(x => x.ID == 116))
                                     {
@@ -912,42 +851,43 @@ namespace SagaMap.Skill
                                             mainlv = pc.Skills[116].Level;
 
                                         //这里取等级最高的剑圣等级用来做居合的倍率加成
-                                        int level = Math.Max(duallv, mainlv);
+                                        var level = Math.Max(duallv, mainlv);
 
                                         ParryResult += level * 3;
                                         //ParryResult += pc.Skills[116].Level * 3;
                                     }
+
                                     if (Global.Random.Next(1, 100) <= ParryOdds)
                                     {
                                         damage = damage - (int)(damage * ParryResult / 100.0f);
-                                        if (SkillHandler.Instance.CanAdditionApply(target, sActor, SkillHandler.DefaultAdditions.Stun, SutanOdds))
+                                        if (Instance.CanAdditionApply(target, sActor, DefaultAdditions.Stun, SutanOdds))
                                         {
-                                            Additions.Global.Stun skill = new SagaMap.Skill.Additions.Global.Stun(args, sActor, 1000 + 500 * target.Status.Blocking_LV);
-                                            SkillHandler.ApplyAddition(sActor, skill);
+                                            var skill = new Stun(args, sActor, 1000 + 500 * target.Status.Blocking_LV);
+                                            ApplyAddition(sActor, skill);
                                         }
                                     }
                                 }
-                            }
                         }
                         //减伤处理上
 
                         //开始处理最终伤害放大
 
-                        if (sActor.Status.Additions.ContainsKey("HpLostDamUp"))//暂时判定血色战刃在该位置,因为wiki明确提出龙眼有效,所以推测最终伤害百分比增益都有效
+                        if (sActor.Status.Additions
+                            .ContainsKey("HpLostDamUp")) //暂时判定血色战刃在该位置,因为wiki明确提出龙眼有效,所以推测最终伤害百分比增益都有效
                         {
-                            Additions.Global.DefaultBuff buf = (Additions.Global.DefaultBuff)sActor.Status.Additions["HpLostDamUp"];
+                            var buf = (DefaultBuff)sActor.Status.Additions["HpLostDamUp"];
                             if (sActor.HP > buf["HPLost"])
                             {
                                 sActor.HP -= (uint)buf["HPLost"];
                                 damage += buf["DamUp"];
-                                SkillArg tmp = new SkillArg();
+                                var tmp = new SkillArg();
                                 tmp.sActor = sActor.ActorID;
                                 tmp.dActor = 0xffffffff;
                                 tmp.x = arg.x;
                                 tmp.y = arg.y;
                                 tmp.argType = SkillArg.ArgType.Active;
                                 tmp.autoCast = arg.autoCast;
-                                tmp.skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(2200, 1);
+                                tmp.skill = SkillFactory.Instance.GetSkill(2200, 1);
                                 tmp.affectedActors.Add(sActor);
                                 tmp.Init();
                                 tmp.hp[0] = buf["HPLost"];
@@ -958,85 +898,62 @@ namespace SagaMap.Skill
 
                         //杀戮
                         if (sActor.Status.Additions.ContainsKey("Efuikasu"))
-                            damage = (int)((float)damage * (1.0f + (float)sActor.KillingMarkCounter * 0.05f));
+                            damage = (int)(damage * (1.0f + sActor.KillingMarkCounter * 0.05f));
 
                         //血印
                         if (target.Status.Additions.ContainsKey("BradStigma") && element == Elements.Dark)
                         {
-                            int rate = (target.Status.Additions["BradStigma"] as DefaultBuff).Variable["BradStigma"];
+                            var rate = (target.Status.Additions["BradStigma"] as DefaultBuff).Variable["BradStigma"];
                             //MapClient.FromActorPC((ActorPC)sActor).SendSystemMessage("你的血印技能，使你的暗屬攻擊加成(" + rate + "%)。");
-                            damage += (int)((double)damage * (double)((double)rate / 100.0f));
+                            damage += (int)(damage * ((double)rate / 100.0f));
                         }
 
                         //火心放大
                         if (sActor.Status.Additions.ContainsKey("FrameHart"))
                         {
-                            int rate = (sActor.Status.Additions["FrameHart"] as DefaultBuff).Variable["FrameHart"];
-                            damage = (int)((double)damage * (double)((double)rate / 100.0f));
+                            var rate = (sActor.Status.Additions["FrameHart"] as DefaultBuff).Variable["FrameHart"];
+                            damage = (int)(damage * ((double)rate / 100.0f));
                         }
 
                         //友情的一击
-                        if (sActor.Status.Additions.ContainsKey("BlowOfFriendship"))
-                        {
-                            damage = (int)(damage * 1.15f);
-                        }
+                        if (sActor.Status.Additions.ContainsKey("BlowOfFriendship")) damage = (int)(damage * 1.15f);
 
                         //竜眼放大
                         if (sActor.Status.Additions.ContainsKey("DragonEyeOpen"))
                         {
-                            int rate = (sActor.Status.Additions["DragonEyeOpen"] as DefaultBuff).Variable["DragonEyeOpen"];
-                            damage = (int)((double)damage * (double)((double)rate / 100.0f));
+                            var rate =
+                                (sActor.Status.Additions["DragonEyeOpen"] as DefaultBuff).Variable["DragonEyeOpen"];
+                            damage = (int)(damage * ((double)rate / 100.0f));
                         }
+
                         if (sActor.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)sActor;
+                            var pc = (ActorPC)sActor;
                             if (pc.Party != null && sActor.Status.pt_dmg_up_iris > 100)
-                            {
-                                damage = (int)((float)damage * (float)(sActor.Status.pt_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (sActor.Status.pt_dmg_up_iris / 100.0f));
                             //iris卡种族增伤部分
                             if (target.Race == Race.HUMAN && pc.Status.human_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.human_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.human_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.BIRD && pc.Status.bird_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.bird_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.bird_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.ANIMAL && pc.Status.animal_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.animal_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.animal_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.MAGIC_CREATURE && pc.Status.magic_c_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.magic_c_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.magic_c_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.PLANT && pc.Status.plant_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.plant_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.plant_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.WATER_ANIMAL && pc.Status.water_a_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.water_a_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.water_a_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.MACHINE && pc.Status.machine_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.machine_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.machine_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.ROCK && pc.Status.rock_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.rock_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.rock_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.ELEMENT && pc.Status.element_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.element_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.element_dmg_up_iris / 100.0f));
                             else if (target.Race == Race.UNDEAD && pc.Status.undead_dmg_up_iris > 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.undead_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.undead_dmg_up_iris / 100.0f));
 
-                            if (pc.Skills2_1.ContainsKey(310) || pc.DualJobSkill.Exists(x => x.ID == 310))//HAW2-1追魂箭
+                            if (pc.Skills2_1.ContainsKey(310) || pc.DualJobSkill.Exists(x => x.ID == 310)) //HAW2-1追魂箭
                             {
                                 var duallv = 0;
                                 if (pc.DualJobSkill.Exists(x => x.ID == 310))
@@ -1046,59 +963,54 @@ namespace SagaMap.Skill
                                 if (pc.Skills2_1.ContainsKey(310))
                                     mainlv = pc.Skills2_1[310].Level;
 
-                                int level = Math.Max(duallv, mainlv);
+                                var level = Math.Max(duallv, mainlv);
                                 if (target.Buff.Stun ||
-                                   target.Buff.Stone ||
-                                   target.Buff.Frosen ||
-                                   target.Buff.Poison ||
-                                   target.Buff.Sleep ||
-                                   target.Buff.SpeedDown ||
-                                   target.Buff.Confused ||
-                                   target.Buff.Paralysis ||
-                                   target.Buff.STRDown ||
-                                   target.Buff.VITDown ||
-                                   target.Buff.INTDown ||
-                                   target.Buff.DEXDown ||
-                                   target.Buff.AGIDown ||
-                                   target.Buff.MAGDown ||
-                                   target.Buff.MaxHPDown ||
-                                   target.Buff.MaxMPDown ||
-                                   target.Buff.MaxSPDown ||
-                                   target.Buff.MinAtkDown ||
-                                   target.Buff.MaxAtkDown ||
-                                   target.Buff.MinMagicAtkDown ||
-                                   target.Buff.MaxMagicAtkDown ||
-                                   target.Buff.DefDown ||
-                                   target.Buff.DefRateDown ||
-                                   target.Buff.MagicDefDown ||
-                                   target.Buff.MagicDefRateDown ||
-                                   target.Buff.ShortHitDown ||
-                                   target.Buff.LongHitDown ||
-                                   target.Buff.MagicHitDown ||
-                                   target.Buff.ShortDodgeDown ||
-                                   target.Buff.LongDodgeDown ||
-                                   target.Buff.MagicAvoidDown ||
-                                   target.Buff.CriticalRateDown ||
-                                   target.Buff.CriticalDodgeDown ||
-                                   target.Buff.HPRegenDown ||
-                                   target.Buff.MPRegenDown ||
-                                   target.Buff.SPRegenDown ||
-                                   target.Buff.AttackSpeedDown ||
-                                   target.Buff.CastSpeedDown ||
-                                   target.Buff.SpeedDown ||
-                                   target.Buff.Berserker)
-                                {
-                                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                                    {
-                                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BOW)
-                                        {
+                                    target.Buff.Stone ||
+                                    target.Buff.Frosen ||
+                                    target.Buff.Poison ||
+                                    target.Buff.Sleep ||
+                                    target.Buff.SpeedDown ||
+                                    target.Buff.Confused ||
+                                    target.Buff.Paralysis ||
+                                    target.Buff.STRDown ||
+                                    target.Buff.VITDown ||
+                                    target.Buff.INTDown ||
+                                    target.Buff.DEXDown ||
+                                    target.Buff.AGIDown ||
+                                    target.Buff.MAGDown ||
+                                    target.Buff.MaxHPDown ||
+                                    target.Buff.MaxMPDown ||
+                                    target.Buff.MaxSPDown ||
+                                    target.Buff.MinAtkDown ||
+                                    target.Buff.MaxAtkDown ||
+                                    target.Buff.MinMagicAtkDown ||
+                                    target.Buff.MaxMagicAtkDown ||
+                                    target.Buff.DefDown ||
+                                    target.Buff.DefRateDown ||
+                                    target.Buff.MagicDefDown ||
+                                    target.Buff.MagicDefRateDown ||
+                                    target.Buff.ShortHitDown ||
+                                    target.Buff.LongHitDown ||
+                                    target.Buff.MagicHitDown ||
+                                    target.Buff.ShortDodgeDown ||
+                                    target.Buff.LongDodgeDown ||
+                                    target.Buff.MagicAvoidDown ||
+                                    target.Buff.CriticalRateDown ||
+                                    target.Buff.CriticalDodgeDown ||
+                                    target.Buff.HPRegenDown ||
+                                    target.Buff.MPRegenDown ||
+                                    target.Buff.SPRegenDown ||
+                                    target.Buff.AttackSpeedDown ||
+                                    target.Buff.CastSpeedDown ||
+                                    target.Buff.SpeedDown ||
+                                    target.Buff.Berserker)
+                                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                                        if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                            ItemType.BOW)
                                             damage = (int)(damage * (1.1f + 0.02f * level));
-                                        }
-                                    }
-
-                                }
                             }
-                            if (pc.Skills2_2.ContainsKey(314) || pc.DualJobSkill.Exists(x => x.ID == 314))//GU2-1追魂刃
+
+                            if (pc.Skills2_2.ContainsKey(314) || pc.DualJobSkill.Exists(x => x.ID == 314)) //GU2-1追魂刃
                             {
                                 var duallv = 0;
                                 if (pc.DualJobSkill.Exists(x => x.ID == 314))
@@ -1108,158 +1020,144 @@ namespace SagaMap.Skill
                                 if (pc.Skills2_2.ContainsKey(314))
                                     mainlv = pc.Skills2_2[314].Level;
 
-                                int level = Math.Max(duallv, mainlv);
+                                var level = Math.Max(duallv, mainlv);
                                 if (target.Buff.Stun ||
-                                   target.Buff.Stone ||
-                                   target.Buff.Frosen ||
-                                   target.Buff.Poison ||
-                                   target.Buff.Sleep ||
-                                   target.Buff.SpeedDown ||
-                                   target.Buff.Confused ||
-                                   target.Buff.Paralysis ||
-                                   target.Buff.STRDown ||
-                                   target.Buff.VITDown ||
-                                   target.Buff.INTDown ||
-                                   target.Buff.DEXDown ||
-                                   target.Buff.AGIDown ||
-                                   target.Buff.MAGDown ||
-                                   target.Buff.MaxHPDown ||
-                                   target.Buff.MaxMPDown ||
-                                   target.Buff.MaxSPDown ||
-                                   target.Buff.MinAtkDown ||
-                                   target.Buff.MaxAtkDown ||
-                                   target.Buff.MinMagicAtkDown ||
-                                   target.Buff.MaxMagicAtkDown ||
-                                   target.Buff.DefDown ||
-                                   target.Buff.DefRateDown ||
-                                   target.Buff.MagicDefDown ||
-                                   target.Buff.MagicDefRateDown ||
-                                   target.Buff.ShortHitDown ||
-                                   target.Buff.LongHitDown ||
-                                   target.Buff.MagicHitDown ||
-                                   target.Buff.ShortDodgeDown ||
-                                   target.Buff.LongDodgeDown ||
-                                   target.Buff.MagicAvoidDown ||
-                                   target.Buff.CriticalRateDown ||
-                                   target.Buff.CriticalDodgeDown ||
-                                   target.Buff.HPRegenDown ||
-                                   target.Buff.MPRegenDown ||
-                                   target.Buff.SPRegenDown ||
-                                   target.Buff.AttackSpeedDown ||
-                                   target.Buff.CastSpeedDown ||
-                                   target.Buff.SpeedDown ||
-                                   target.Buff.Berserker)
-                                {
-                                    if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND))
-                                    {
-                                        if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHORT_SWORD ||
-                                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SWORD ||
-                                            pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.RAPIER)
-                                        {
+                                    target.Buff.Stone ||
+                                    target.Buff.Frosen ||
+                                    target.Buff.Poison ||
+                                    target.Buff.Sleep ||
+                                    target.Buff.SpeedDown ||
+                                    target.Buff.Confused ||
+                                    target.Buff.Paralysis ||
+                                    target.Buff.STRDown ||
+                                    target.Buff.VITDown ||
+                                    target.Buff.INTDown ||
+                                    target.Buff.DEXDown ||
+                                    target.Buff.AGIDown ||
+                                    target.Buff.MAGDown ||
+                                    target.Buff.MaxHPDown ||
+                                    target.Buff.MaxMPDown ||
+                                    target.Buff.MaxSPDown ||
+                                    target.Buff.MinAtkDown ||
+                                    target.Buff.MaxAtkDown ||
+                                    target.Buff.MinMagicAtkDown ||
+                                    target.Buff.MaxMagicAtkDown ||
+                                    target.Buff.DefDown ||
+                                    target.Buff.DefRateDown ||
+                                    target.Buff.MagicDefDown ||
+                                    target.Buff.MagicDefRateDown ||
+                                    target.Buff.ShortHitDown ||
+                                    target.Buff.LongHitDown ||
+                                    target.Buff.MagicHitDown ||
+                                    target.Buff.ShortDodgeDown ||
+                                    target.Buff.LongDodgeDown ||
+                                    target.Buff.MagicAvoidDown ||
+                                    target.Buff.CriticalRateDown ||
+                                    target.Buff.CriticalDodgeDown ||
+                                    target.Buff.HPRegenDown ||
+                                    target.Buff.MPRegenDown ||
+                                    target.Buff.SPRegenDown ||
+                                    target.Buff.AttackSpeedDown ||
+                                    target.Buff.CastSpeedDown ||
+                                    target.Buff.SpeedDown ||
+                                    target.Buff.Berserker)
+                                    if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
+                                        if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                            ItemType.SHORT_SWORD ||
+                                            pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                            ItemType.SWORD ||
+                                            pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==
+                                            ItemType.RAPIER)
                                             damage = (int)(damage * (1.1f + 0.02f * level));
-                                        }
-                                    }
+                            }
+                        }
 
-                                }
-                            }
-                        }
                         if (sActor.WeaponElement == Elements.Holy)
-                        {
                             if (target.Status.Additions.ContainsKey("Oratio"))
-                            {
-                                damage = (int)((float)damage * 1.25f);
-                            }
-                        }
+                                damage = (int)(damage * 1.25f);
+
                         //"ChgstSwoDamUp"
-                        if (sActor.Status.Additions.ContainsKey("ホークアイ"))//HAW站桩
-                        {
-                            damage = (int)(damage * ((sActor.Status.Additions["ホークアイ"] as DefaultBuff).Variable["ホークアイ"] / 100.0f));
-                        }
+                        if (sActor.Status.Additions.ContainsKey("ホークアイ")) //HAW站桩
+                            damage = (int)(damage *
+                                           ((sActor.Status.Additions["ホークアイ"] as DefaultBuff).Variable["ホークアイ"] /
+                                            100.0f));
                         //最终伤害放大处理结束
 
-                        if (sActor.Status.Additions.ContainsKey("RoyalDealer"))//皇家贸易商站桩追加不受任何因素影响的1000伤害
+                        if (sActor.Status.Additions.ContainsKey("RoyalDealer")) //皇家贸易商站桩追加不受任何因素影响的1000伤害
                         {
-                            ActorPC pc = (ActorPC)sActor;
-                            int maxlv = 0;
+                            var pc = (ActorPC)sActor;
+                            var maxlv = 0;
                             if (pc.Skills3.ContainsKey(3371))
                                 maxlv = pc.Skills3[3371].Level;
-                            damage += new int[] { 0, 0, 100, 250, 500, 1000 }[maxlv];
+                            damage += new[] { 0, 0, 100, 250, 500, 1000 }[maxlv];
                         }
 
                         if (i.Status.NeutralDamegeDown_rate > 0 && element == Elements.Neutral)
-                        {
-                            damage = (int)(damage * (1.0f - (i.Status.NeutralDamegeDown_rate / 100.0f)));
-
-                        }
+                            damage = (int)(damage * (1.0f - i.Status.NeutralDamegeDown_rate / 100.0f));
                         if (i.Status.NeutralDamegeDown_rate > 0 && element != Elements.Neutral)
-                        {
-                            damage = (int)(damage * (1.0f - (i.Status.ElementDamegeDown_rate / 100.0f)));
-
-                        }
+                            damage = (int)(damage * (1.0f - i.Status.ElementDamegeDown_rate / 100.0f));
                         //金刚不坏处理
                         if (i.Status.Additions.ContainsKey("MentalStrength"))
                         {
-                            int rate = (i.Status.Additions["MentalStrength"] as DefaultBuff).Variable["MentalStrength"];
-                            damage = (int)((double)damage * (double)(1.0f - (double)rate / 100.0f));
+                            var rate = (i.Status.Additions["MentalStrength"] as DefaultBuff).Variable["MentalStrength"];
+                            damage = (int)(damage * (1.0f - (double)rate / 100.0f));
                         }
 
                         //处理bonus的技能伤害控制
                         uint skid = 0;
                         if (arg != null)
-                        {
                             if (arg.skill != null)
                                 skid = arg.skill.ID;
-                        }
                         if (skid != 0)
                         {
                             if (sActor.Status.SkillRate.ContainsKey(skid))
-                                damage = (int)(damage * (float)(1.0f + (float)((float)sActor.Status.SkillRate[skid] / 100.0f)));
+                                damage = (int)(damage * (1.0f + sActor.Status.SkillRate[skid] / 100.0f));
                             if (sActor.Status.SkillDamage.ContainsKey(skid))
                                 damage += (int)sActor.Status.SkillDamage[skid];
                         }
 
 
                         //处理无法恢复
-                        if (target.Buff.NoRegen == true && damage < 0)
+                        if (target.Buff.NoRegen && damage < 0)
                             damage = 0;
 
                         //吸血效果下
                         if (SuckBlood != 0 && damage != 0)
-                        {
                             if (sActor.type == ActorType.PC)
                             {
-                                int hp = (int)(damage * SuckBlood);
+                                var hp = (int)(damage * SuckBlood);
                                 if (((ActorPC)sActor).TInt["SuckBlood"] > 0)
-                                    hp = (int)(hp * (float)(1f + ((ActorPC)sActor).TInt["SuckBlood"] * 0.1f));
+                                    hp = (int)(hp * (1f + ((ActorPC)sActor).TInt["SuckBlood"] * 0.1f));
                                 sActor.HP += (uint)hp;
                                 if (sActor.HP > sActor.MaxHP)
                                     sActor.HP = sActor.MaxHP;
-                                SkillHandler.Instance.ShowVessel(sActor, -hp);
+                                Instance.ShowVessel(sActor, -hp);
 
                                 try
                                 {
-                                    string y1 = "普通攻击";
+                                    var y1 = "普通攻击";
                                     if (arg != null)
-                                    {
                                         if (arg.skill != null)
                                             y1 = arg.skill.Name;
-                                    }
-                                    SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "", "受到了 " + (-damage).ToString() + " 点" + "恢复效果");
+                                    SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "",
+                                        "受到了 " + (-damage) + " 点" + "恢复效果");
                                 }
-                                catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
-
+                                catch (Exception ex)
+                                {
+                                    Logger.ShowError(ex);
+                                }
                             }
-                        }
+
                         //吸血效果上(已完成副职逻辑)
                         if (i.type == ActorType.PC)
                         {
-                            ActorPC pcs = (ActorPC)i;
+                            var pcs = (ActorPC)i;
 
 
                             //不管是主职还是副职,判定技能黑玫瑰的刺是否存在(前部逻辑不明暂且无视)
-                            if (i.Status.Additions.ContainsKey("Bounce") && Global.Random.Next(0, 100) < 35 && (pcs.Skills3.ContainsKey(2497) || pcs.DualJobSkill.Exists(x => x.ID == 2497)))//黒薔薇の棘
+                            if (i.Status.Additions.ContainsKey("Bounce") && Global.Random.Next(0, 100) < 35 &&
+                                (pcs.Skills3.ContainsKey(2497) || pcs.DualJobSkill.Exists(x => x.ID == 2497))) //黒薔薇の棘
                             {
-
                                 //这里取副职的黑玫瑰的刺等级
                                 var duallv = 0;
                                 if (pcs.DualJobSkill.Exists(x => x.ID == 2497))
@@ -1271,18 +1169,13 @@ namespace SagaMap.Skill
                                     mainlv = pcs.Skills3[2497].Level;
 
                                 //这里取等级最高的黑玫瑰的刺等级
-                                int skilllv = Math.Max(duallv, mainlv);
+                                var skilllv = Math.Max(duallv, mainlv);
                                 //byte skilllv = pcs.Skills3[2497].Level;
                                 float rank = 0;
-                                int damage1 = 0;
+                                var damage1 = 0;
                                 if (sActor.type == ActorType.PC)
-                                {
                                     rank = 0.4f + 0.2f * skilllv;
-                                }
-                                else if (sActor.type == ActorType.MOB)
-                                {
-                                    rank = 2.0f + 0.2f * skilllv;
-                                }
+                                else if (sActor.type == ActorType.MOB) rank = 2.0f + 0.2f * skilllv;
                                 damage1 = (int)(damage * rank);
                                 arg.affectedActors.Add(sActor);
                                 arg.hp.Add(damage1);
@@ -1290,42 +1183,42 @@ namespace SagaMap.Skill
                                 arg.mp.Add(0);
                                 arg.flag.Add(AttackFlag.HP_DAMAGE);
                                 if (sActor.HP < damage1 + 1)
-                                {
                                     sActor.HP -= sActor.HP + 1;
-                                }
                                 else
                                     sActor.HP -= (uint)damage1;
                             }
-
                         }
+
                         try
                         {
-                            string y = "普通攻击";
+                            var y = "普通攻击";
                             if (arg != null)
-                            {
                                 if (arg.skill != null)
                                     y = arg.skill.Name;
-                            }
-                            string s = "物理伤害";
+                            var s = "物理伤害";
                             if (res == AttackResult.Critical)
                                 s = "物理暴击伤害";
                             if (damage < 0)
                                 s = "治疗效果";
                             if (damage > 0)
-                                SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "受到了 " + damage.ToString() + " 点" + s);
-                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "造成了 " + damage.ToString() + " 点" + s);
+                                SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "",
+                                    "受到了 " + damage + " 点" + s);
+                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "",
+                                "造成了 " + damage + " 点" + s);
                         }
-                        catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
+                        catch (Exception ex)
+                        {
+                            Logger.ShowError(ex);
+                        }
 
                         //伤害结算之前附加中毒效果,如果有涂毒而且目标没中毒的话
-                        if (sActor.Status.Additions.ContainsKey("AppliePoison") && !i.Status.Additions.ContainsKey("Poison"))
-                        {
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, i, DefaultAdditions.Poison, 95))
+                        if (sActor.Status.Additions.ContainsKey("AppliePoison") &&
+                            !i.Status.Additions.ContainsKey("Poison"))
+                            if (Instance.CanAdditionApply(sActor, i, DefaultAdditions.Poison, 95))
                             {
-                                Poison poi = new Poison(arg.skill, i, 15000);
-                                SkillHandler.ApplyAddition(i, poi);
+                                var poi = new Poison(arg.skill, i, 15000);
+                                ApplyAddition(i, poi);
                             }
-                        }
 
                         if (target.HP != 0)
                         {
@@ -1342,15 +1235,12 @@ namespace SagaMap.Skill
                                         if (target.HP > Math.Abs(dmgleft))
                                             target.HP = (uint)(target.HP + dmgleft);
                                         else
-                                        {
                                             target.HP = 0;
-                                        }
                                     }
                                     else
                                     {
                                         target.Status.PlantShield -= (uint)damage;
                                     }
-
                                 }
                                 else
                                 {
@@ -1361,7 +1251,9 @@ namespace SagaMap.Skill
                                 }
                             }
                             else
+                            {
                                 target.HP = (uint)(target.HP - damage);
+                            }
                         }
 
                         if (target.HP > target.MaxHP)
@@ -1381,29 +1273,39 @@ namespace SagaMap.Skill
                                 //处理反击
                                 if (target.Status.Additions.ContainsKey("Counter"))
                                 {
-                                    SkillArg newArg = new SkillArg();
-                                    float rate = (target.Status.Additions["Counter"] as DefaultBuff).Variable["Counter"] / 100.0f;
-                                    SkillHandler.Instance.Attack(target, sActor, newArg, rate);
+                                    var newArg = new SkillArg();
+                                    var rate = (target.Status.Additions["Counter"] as DefaultBuff).Variable["Counter"] /
+                                               100.0f;
+                                    Instance.Attack(target, sActor, newArg, rate);
                                     target.Status.Additions["Counter"].AdditionEnd();
-                                    MapManager.Instance.GetMap(target.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target, true);
+                                    MapManager.Instance.GetMap(target.MapID)
+                                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target,
+                                            true);
                                 }
+
                                 if (target.Status.Additions.ContainsKey("Gladiator"))
                                 {
-                                    ActorPC pcs = (ActorPC)target;
+                                    var pcs = (ActorPC)target;
                                     //if (Global.Random.Next(0, 100) >= 50 && i.HP > damage)
-                                    if (Global.Random.Next(0, 100) <= 30 + (10 * pcs.Skills3[3362].Level) && i.HP > 0)//不认可需要进行HP与伤害的互动判定,修改为生命值大于0即可,目前运作正常
+                                    if (Global.Random.Next(0, 100) <= 30 + 10 * pcs.Skills3[3362].Level &&
+                                        i.HP > 0) //不认可需要进行HP与伤害的互动判定,修改为生命值大于0即可,目前运作正常
                                     {
-                                        SkillArg newArg = new SkillArg();
-                                        SkillHandler.Instance.Attack(target, sActor, newArg, 1.5f);
-                                        MapManager.Instance.GetMap(target.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target, true);
+                                        var newArg = new SkillArg();
+                                        Instance.Attack(target, sActor, newArg, 1.5f);
+                                        MapManager.Instance.GetMap(target.MapID)
+                                            .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target,
+                                                true);
                                     }
                                 }
+
                                 if (target.Status.Additions.ContainsKey("ArtFullTrap4"))
                                 {
-                                    SkillArg newArg = new SkillArg();
-                                    SkillHandler.Instance.Attack(target, sActor, newArg, 1.0f);
-                                    Poison skill = new Poison(newArg.skill, sActor, 7000);
-                                    MapManager.Instance.GetMap(target.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target, true);
+                                    var newArg = new SkillArg();
+                                    Instance.Attack(target, sActor, newArg, 1.0f);
+                                    var skill = new Poison(newArg.skill, sActor, 7000);
+                                    MapManager.Instance.GetMap(target.MapID)
+                                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target,
+                                            true);
                                 }
                             }
                             else
@@ -1411,7 +1313,8 @@ namespace SagaMap.Skill
                                 //damage = (int)target.HP;
                                 target.HP = 0;
                                 if (!ride && !target.Buff.Reborn)
-                                    arg.flag[index + counter] = AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
+                                    arg.flag[index + counter] =
+                                        AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                                 else
                                     arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                                 if (res == AttackResult.Critical)
@@ -1424,7 +1327,8 @@ namespace SagaMap.Skill
                         else
                         {
                             if (!ride && !target.Buff.Reborn)
-                                arg.flag[index + counter] = AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
+                                arg.flag[index + counter] =
+                                    AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                             else
                                 arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                             if (res == AttackResult.Critical)
@@ -1435,30 +1339,29 @@ namespace SagaMap.Skill
                         //吸血？
                         if (sActor.Status.Additions.ContainsKey("BloodLeech") && !sActor.Buff.NoRegen)
                         {
-                            Additions.Global.BloodLeech add = (Additions.Global.BloodLeech)sActor.Status.Additions["BloodLeech"];
+                            var add = (BloodLeech)sActor.Status.Additions["BloodLeech"];
                             if (sActor.type == ActorType.PC)
                             {
-                                int b = 0;
-                                b = SagaLib.Global.Random.Next(0, 10000);
-                                if (b <= 10000 - (2000 + 1000 * add.rate / 0.1))//wiki没写具体,所以根据内容,推算为1级吸收概率50%,5级10%
+                                var b = 0;
+                                b = Global.Random.Next(0, 10000);
+                                if (b <= 10000 - (2000 + 1000 * add.rate / 0.1)) //wiki没写具体,所以根据内容,推算为1级吸收概率50%,5级10%
                                 {
-                                    uint heal = (uint)(damage * add.rate);//吸收量
-                                    uint healmax = (uint)(sActor.MaxHP * (0.08 + 0.02 * add.rate / 0.1));
-                                    if (heal > healmax)
-                                    {
-                                        heal = healmax;
-                                    }
+                                    var heal = (uint)(damage * add.rate); //吸收量
+                                    var healmax = (uint)(sActor.MaxHP * (0.08 + 0.02 * add.rate / 0.1));
+                                    if (heal > healmax) heal = healmax;
 
                                     sActor.HP += heal;
                                     if (sActor.HP > sActor.MaxHP)
                                         sActor.HP = sActor.MaxHP;
-                                    SkillHandler.Instance.ShowVessel(sActor, (int)-heal, 0, 0);
-                                    Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor, true);
+                                    Instance.ShowVessel(sActor, (int)-heal);
+                                    MapManager.Instance.GetMap(sActor.MapID)
+                                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor,
+                                            true);
                                 }
                             }
                             else
                             {
-                                int heal = (int)(damage * add.rate);
+                                var heal = (int)(damage * add.rate);
                                 arg.affectedActors.Add(sActor);
                                 arg.hp.Add(heal);
                                 arg.sp.Add(0);
@@ -1471,19 +1374,21 @@ namespace SagaMap.Skill
                             }
 
 
-                            Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor, true);
+                            MapManager.Instance.GetMap(sActor.MapID)
+                                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor, true);
                         }
+
                         //SP吸收
                         if (sActor.Status.Additions.ContainsKey("SpLeech") && !sActor.Buff.NoRegen)
                         {
-                            Additions.Global.SpLeech add = (Additions.Global.SpLeech)sActor.Status.Additions["SpLeech"];
+                            var add = (SpLeech)sActor.Status.Additions["SpLeech"];
                             if (sActor.type == ActorType.PC)
                             {
-                                int SpLevel = (int)(add.rate / 0.05f);
-                                if (SagaLib.Global.Random.Next(0, 99) < SpLevel * 10)
+                                var SpLevel = (int)(add.rate / 0.05f);
+                                if (Global.Random.Next(0, 99) < SpLevel * 10)
                                 {
                                     //uint Spheal = (uint)(damage*);//吸收量,SP吸收没有吸收概率,都是100%
-                                    uint Sphealmax = (uint)(Math.Min(damage, (uint)(sActor.MaxSP * 0.05 * SpLevel)));
+                                    var Sphealmax = (uint)Math.Min(damage, (uint)(sActor.MaxSP * 0.05 * SpLevel));
                                     //if (Spheal > Sphealmax)
                                     //{
                                     //    Spheal = Sphealmax;
@@ -1493,116 +1398,125 @@ namespace SagaMap.Skill
                                     //arg.sp.Add((int)Spheal);
                                     //arg.mp.Add(0);
                                     sActor.SP += Sphealmax;
-                                    SkillHandler.Instance.ShowVessel(sActor, 0, 0, (int)-Sphealmax);
+                                    Instance.ShowVessel(sActor, 0, 0, (int)-Sphealmax);
                                     //arg.flag.Add(AttackFlag.SP_HEAL | AttackFlag.NO_DAMAGE);
 
                                     //sActor.SP += (uint)Spheal;
                                     if (sActor.SP > sActor.MaxSP)
                                         sActor.SP = sActor.MaxSP;
-                                    Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor, true);
+                                    MapManager.Instance.GetMap(sActor.MapID)
+                                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor,
+                                            true);
                                 }
-
                             }
                             else
                             {
-                                uint Spheal = (uint)(damage * add.rate);//吸收量,SP吸收没有吸收概率,都是100%
-                                if (Spheal > (uint)sActor.MaxSP * 0.5 * 5)
-                                {
-                                    Spheal = (uint)(sActor.MaxSP * 0.5 * 5);
-                                }
+                                var Spheal = (uint)(damage * add.rate); //吸收量,SP吸收没有吸收概率,都是100%
+                                if (Spheal > sActor.MaxSP * 0.5 * 5) Spheal = (uint)(sActor.MaxSP * 0.5 * 5);
                                 sActor.SP += Spheal;
-                                SkillHandler.Instance.ShowVessel(sActor, 0, 0, (int)-Spheal);
-                                sActor.SP += (uint)Spheal;
+                                Instance.ShowVessel(sActor, 0, 0, (int)-Spheal);
+                                sActor.SP += Spheal;
                                 if (sActor.SP > sActor.MaxSP)
                                     sActor.SP = sActor.MaxSP;
-                                Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor, true);
+                                MapManager.Instance.GetMap(sActor.MapID)
+                                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, sActor,
+                                        true);
                             }
-
-
-
                         }
                     }
                 }
 
                 ApplyDamage(sActor, target, damage, doublehate, arg);
-                if ((res == AttackResult.Critical || res == AttackResult.Hit) && sActor.Status.Additions.ContainsKey("WithinWeeks") && sActor.type == ActorType.PC)
+                if ((res == AttackResult.Critical || res == AttackResult.Hit) &&
+                    sActor.Status.Additions.ContainsKey("WithinWeeks") && sActor.type == ActorType.PC)
                 {
-                    ActorPC thispc = (ActorPC)sActor;
-                    int level = thispc.CInt["WithinWeeksLevel"];
+                    var thispc = (ActorPC)sActor;
+                    var level = thispc.CInt["WithinWeeksLevel"];
                     switch (thispc.CInt["WithinWeeksLevel"])
                     {
                         case 1:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Silence, 5))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Silence, 5))
                             {
-                                Additions.Global.Silence skill = new SagaMap.Skill.Additions.Global.Silence(arg.skill, target, (int)(750 + 250 * level));
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Silence(arg.skill, target, 750 + 250 * level);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 2:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.CannotMove, 5))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.CannotMove, 5))
                             {
-                                Additions.Global.CannotMove skill = new SagaMap.Skill.Additions.Global.CannotMove(arg.skill, target, 1000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new CannotMove(arg.skill, target, 1000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 3:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Stiff, 5))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Stiff, 5))
                             {
-                                Additions.Global.Stiff skill = new SagaMap.Skill.Additions.Global.Stiff(arg.skill, target, 1000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Stiff(arg.skill, target, 1000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 4:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Confuse, 5))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Confuse, 5))
                             {
-                                Additions.Global.Confuse skill = new SagaMap.Skill.Additions.Global.Confuse(arg.skill, target, 3000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Confuse(arg.skill, target, 3000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 5:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Stun, 10 * level))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Stun, 10 * level))
                             {
-                                Additions.Global.Stun skill = new SagaMap.Skill.Additions.Global.Stun(arg.skill, target, 2000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Stun(arg.skill, target, 2000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                     }
                 }
 
-                if ((res == AttackResult.Critical || res == AttackResult.Hit) && sActor.Status.Additions.ContainsKey("EnchantWeapon") && sActor.type == ActorType.PC && dActor.Count == 1)
+                if ((res == AttackResult.Critical || res == AttackResult.Hit) &&
+                    sActor.Status.Additions.ContainsKey("EnchantWeapon") && sActor.type == ActorType.PC &&
+                    dActor.Count == 1)
                 {
-                    ActorPC thispc = (ActorPC)sActor;
-                    int level = thispc.CInt["EnchantWeaponLevel"];
+                    var thispc = (ActorPC)sActor;
+                    var level = thispc.CInt["EnchantWeaponLevel"];
                     switch (thispc.CInt["EnchantWeaponLevel"])
                     {
                         case 1:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.CannotMove, 25))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.CannotMove, 25))
                             {
-                                Additions.Global.CannotMove skill = new SagaMap.Skill.Additions.Global.CannotMove(arg.skill, target, 6000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new CannotMove(arg.skill, target, 6000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 2:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Frosen, 20))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Frosen, 20))
                             {
-                                Additions.Global.Freeze skill = new SagaMap.Skill.Additions.Global.Freeze(arg.skill, target, 4000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Freeze(arg.skill, target, 4000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                         case 3:
-                            if (SkillHandler.Instance.CanAdditionApply(sActor, target, SkillHandler.DefaultAdditions.Stiff, 15))
+                            if (Instance.CanAdditionApply(sActor, target, DefaultAdditions.Stiff, 15))
                             {
-                                Additions.Global.Stiff skill = new SagaMap.Skill.Additions.Global.Stiff(arg.skill, target, 2000);
-                                SkillHandler.ApplyAddition(target, skill);
+                                var skill = new Stiff(arg.skill, target, 2000);
+                                ApplyAddition(target, skill);
                             }
+
                             break;
                     }
                 }
 
 
-                if ((res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard) && dActor.Count == 1)//弓3转23级技能
-                {
-                    if (sActor.Status.MissRevenge_rate > 0 && Global.Random.Next(0, 100) < sActor.Status.MissRevenge_rate)
+                if ((res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard) &&
+                    dActor.Count == 1) //弓3转23级技能
+                    if (sActor.Status.MissRevenge_rate > 0 &&
+                        Global.Random.Next(0, 100) < sActor.Status.MissRevenge_rate)
                     {
                         sActor.Status.MissRevenge_hit = true;
                         arg.sActor = sActor.ActorID;
@@ -1611,59 +1525,50 @@ namespace SagaMap.Skill
                         arg.delayRate = 1f;
                         PhysicalAttack(sActor, target, arg, sActor.WeaponElement, 1f);
                     }
-                }
 
-                if (i.Status.Additions.ContainsKey("TranceBody") && element != Elements.Neutral && element != Elements.Holy && element != Elements.Dark)//ASJOB13技能
+                if (i.Status.Additions.ContainsKey("TranceBody") && element != Elements.Neutral &&
+                    element != Elements.Holy && element != Elements.Dark) //ASJOB13技能
                 {
                     thispc = (ActorPC)i;
                     if (i.Status.Additions.ContainsKey("HolyShield"))
-                        SkillHandler.RemoveAddition(i, "HolyShield");
+                        RemoveAddition(i, "HolyShield");
                     if (i.Status.Additions.ContainsKey("DarkShield"))
-                        SkillHandler.RemoveAddition(i, "DarkShield");
+                        RemoveAddition(i, "DarkShield");
                     if (i.Status.Additions.ContainsKey("FireShield"))
-                        SkillHandler.RemoveAddition(i, "FireShield");
+                        RemoveAddition(i, "FireShield");
                     if (i.Status.Additions.ContainsKey("WaterShield"))
-                        SkillHandler.RemoveAddition(i, "WaterShield");
+                        RemoveAddition(i, "WaterShield");
                     if (i.Status.Additions.ContainsKey("WindShield"))
-                        SkillHandler.RemoveAddition(i, "WindShield");
+                        RemoveAddition(i, "WindShield");
                     if (i.Status.Additions.ContainsKey("EarthShield"))
-                        SkillHandler.RemoveAddition(i, "EarthShield");
-                    SkillHandler.RemoveAddition(i, "TranceBody");
+                        RemoveAddition(i, "EarthShield");
+                    RemoveAddition(i, "TranceBody");
                     i.Buff.BodyDarkElementUp = false;
                     i.Buff.BodyEarthElementUp = false;
                     i.Buff.BodyFireElementUp = false;
                     i.Buff.BodyWaterElementUp = false;
                     i.Buff.BodyWindElementUp = false;
                     i.Buff.BodyHolyElementUp = false;
-                    int life = 150000 + 30000 * arg.skill.Level;
-                    if (element == Elements.Earth)//魔法属性
-                    {
+                    var life = 150000 + 30000 * arg.skill.Level;
+                    if (element == Elements.Earth) //魔法属性
                         Toelements = Elements.Earth;
-                    }
                     else if (element == Elements.Wind)
-                    {
                         Toelements = Elements.Wind;
-                    }
                     else if (element == Elements.Fire)
-                    {
                         Toelements = Elements.Fire;
-                    }
-                    else if (element == Elements.Water)
-                    {
-                        Toelements = Elements.Water;
-                    }
-                    DefaultBuff skill = new DefaultBuff(arg.skill, i, Toelements.ToString() + "Shield", life);
-                    skill.OnAdditionStart += this.StartEventHandlerMele;
-                    skill.OnAdditionEnd += this.EndEventHandlerMele;
-                    SkillHandler.ApplyAddition(i, skill);
-
+                    else if (element == Elements.Water) Toelements = Elements.Water;
+                    var skill = new DefaultBuff(arg.skill, i, Toelements + "Shield", life);
+                    skill.OnAdditionStart += StartEventHandlerMele;
+                    skill.OnAdditionEnd += EndEventHandlerMele;
+                    ApplyAddition(i, skill);
                 }
 
                 counter++;
-                Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, target, true);
+                MapManager.Instance.GetMap(sActor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, target, true);
             }
 
-            short aspd = (short)(sActor.Status.aspd + sActor.Status.aspd_skill);
+            var aspd = (short)(sActor.Status.aspd + sActor.Status.aspd_skill);
             if (aspd > 800)
                 aspd = 800;
             //可能的攻速位置?备注
@@ -2405,27 +2310,34 @@ namespace SagaMap.Skill
         {
             return MagicAttack(sActor, dActor, arg, element, 50, MATKBonus);
         }
-        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, Elements element, float MATKBonus, float ignore)
+
+        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, Elements element, float MATKBonus,
+            float ignore)
         {
-            List<Actor> list = new List<Actor>();
+            var list = new List<Actor>();
             list.Add(dActor);
-            return MagicAttack(sActor, list, arg, DefType.MDef, element, 50, MATKBonus, 0, false, false, 0, false, ignore);
+            return MagicAttack(sActor, list, arg, DefType.MDef, element, 50, MATKBonus, 0, false, false, 0, false,
+                ignore);
         }
-        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, Elements element, int elementValue, float MATKBonus)
+
+        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, Elements element, int elementValue,
+            float MATKBonus)
         {
-            List<Actor> list = new List<Actor>();
+            var list = new List<Actor>();
             list.Add(dActor);
             return MagicAttack(sActor, list, arg, element, elementValue, MATKBonus);
         }
 
-        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, DefType defType, Elements element, float MATKBonus)
+        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, DefType defType, Elements element,
+            float MATKBonus)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, 50, MATKBonus);
         }
 
-        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus)
+        public int MagicAttack(Actor sActor, Actor dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus)
         {
-            List<Actor> list = new List<Actor>();
+            var list = new List<Actor>();
             list.Add(dActor);
             return MagicAttack(sActor, list, arg, defType, element, elementValue, MATKBonus);
         }
@@ -2435,52 +2347,67 @@ namespace SagaMap.Skill
             return MagicAttack(sActor, dActor, arg, element, 50, MATKBonus);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int elementValue, float MATKBonus)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int elementValue,
+            float MATKBonus)
         {
             return MagicAttack(sActor, dActor, arg, element, elementValue, MATKBonus, 0);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, float MATKBonus)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            float MATKBonus)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, 50, MATKBonus);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus)
         {
-            return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, 0);//Use element holy to represent not using this param.
+            return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus,
+                0); //Use element holy to represent not using this param.
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int elementValue, float MATKBonus, int index)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, Elements element, int elementValue,
+            float MATKBonus, int index)
         {
             return MagicAttack(sActor, dActor, arg, DefType.MDef, element, elementValue, MATKBonus, index);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int index)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus, int index)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, index, false);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, float MATKBonus, int index, bool setAtk)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            float MATKBonus, int index, bool setAtk)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, 50, MATKBonus, index, setAtk);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int index, bool setAtk)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus, int index, bool setAtk)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, index, setAtk, false);
         }
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int index, bool setAtk, bool noReflect)
+
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus, int index, bool setAtk, bool noReflect)
         {
             return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, index, setAtk, false, 0);
         }
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int index, bool setAtk, bool noReflect, float SuckBlood, bool WeaponAttack = false, float ignore = 0)
+
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus, int index, bool setAtk, bool noReflect, float SuckBlood,
+            bool WeaponAttack = false, float ignore = 0)
         {
-            return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, 0, index, setAtk, false, SuckBlood, WeaponAttack, ignore);
+            return MagicAttack(sActor, dActor, arg, defType, element, elementValue, MATKBonus, 0, index, setAtk, false,
+                SuckBlood, WeaponAttack, ignore);
         }
 
-        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int mcridamagebonus, int index, bool setAtk, bool noReflect, float SuckBlood, bool WeaponAttack = false, float ignore = 0)
+        public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element,
+            int elementValue, float MATKBonus, int mcridamagebonus, int index, bool setAtk, bool noReflect,
+            float SuckBlood, bool WeaponAttack = false, float ignore = 0)
         {
-
             if (dActor.Count == 0)
                 return 0;
             if (sActor.Status == null)
@@ -2497,24 +2424,26 @@ namespace SagaMap.Skill
                 return 0;
             }
 
-            int damage = 0;
+            var damage = 0;
 
             //calculate the MATK
             int matk;
-            int mindamage = 0;
-            int maxdamage = 0;
-            int counter = 0;
-            Map map = Manager.MapManager.Instance.GetMap(dActor[0].MapID);
+            var mindamage = 0;
+            var maxdamage = 0;
+            var counter = 0;
+            var map = MapManager.Instance.GetMap(dActor[0].MapID);
             if (index == 0)
             {
                 arg.affectedActors = new List<Actor>();
-                foreach (Actor i in dActor)
+                foreach (var i in dActor)
                     arg.affectedActors.Add(i);
                 arg.Init();
             }
+
             if (WeaponAttack)
             {
-                mindamage = ((ActorPC)sActor).Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].MAtk + ((ActorPC)sActor).Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.matk;
+                mindamage = ((ActorPC)sActor).Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].MAtk +
+                            ((ActorPC)sActor).Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.matk;
 
                 maxdamage = mindamage;
             }
@@ -2526,10 +2455,10 @@ namespace SagaMap.Skill
 
             if (mindamage > maxdamage) maxdamage = mindamage;
 
-            foreach (Actor i in dActor)
+            foreach (var i in dActor)
             {
                 damage = 0;
-                Actor target = i;
+                var target = i;
                 if (i.Status == null)
                     continue;
                 if (i.type == ActorType.ITEM)
@@ -2537,27 +2466,27 @@ namespace SagaMap.Skill
                 //NOTOUCH類MOB 跳過判定
                 if (i.type == ActorType.MOB)
                 {
-                    ActorMob checkmob = (ActorMob)i;
+                    var checkmob = (ActorMob)i;
                     switch (checkmob.BaseData.mobType)
                     {
-                        case SagaDB.Mob.MobType.ANIMAL_NOTOUCH:
-                        case SagaDB.Mob.MobType.BIRD_NOTOUCH:
-                        case SagaDB.Mob.MobType.ELEMENT_BOSS_NOTOUCH:
-                        case SagaDB.Mob.MobType.HUMAN_NOTOUCH:
-                        case SagaDB.Mob.MobType.ELEMENT_NOTOUCH:
-                        case SagaDB.Mob.MobType.PLANT_NOTOUCH:
-                        case SagaDB.Mob.MobType.MACHINE_NOTOUCH:
-                        case SagaDB.Mob.MobType.NONE_NOTOUCH:
-                        case SagaDB.Mob.MobType.UNDEAD_NOTOUCH:
-                        case SagaDB.Mob.MobType.WATER_ANIMAL_NOTOUCH:
-                        case SagaDB.Mob.MobType.PLANT_BOSS_NOTOUCH:
+                        case MobType.ANIMAL_NOTOUCH:
+                        case MobType.BIRD_NOTOUCH:
+                        case MobType.ELEMENT_BOSS_NOTOUCH:
+                        case MobType.HUMAN_NOTOUCH:
+                        case MobType.ELEMENT_NOTOUCH:
+                        case MobType.PLANT_NOTOUCH:
+                        case MobType.MACHINE_NOTOUCH:
+                        case MobType.NONE_NOTOUCH:
+                        case MobType.UNDEAD_NOTOUCH:
+                        case MobType.WATER_ANIMAL_NOTOUCH:
+                        case MobType.PLANT_BOSS_NOTOUCH:
                             continue;
-
                     }
                 }
+
                 if (i.type == ActorType.PC && i.Status.Additions.ContainsKey("GoodLucky"))
                 {
-                    ActorPC pc = (ActorPC)i;
+                    var pc = (ActorPC)i;
                     if (pc.Skills2_2.ContainsKey(960) || pc.DualJobSkill.Exists(x => x.ID == 960))
                     {
                         var duallv = 0;
@@ -2569,41 +2498,44 @@ namespace SagaMap.Skill
                         if (pc.Skills2_2.ContainsKey(960))
                             mainlv = pc.Skills2_2[960].Level;
 
-                        int maxlv = Math.Max(duallv, mainlv) * 4;
-                        if (SagaLib.Global.Random.Next(0, 99) < maxlv)
+                        var maxlv = Math.Max(duallv, mainlv) * 4;
+                        if (Global.Random.Next(0, 99) < maxlv)
                         {
-                            SagaMap.Network.Client.MapClient.FromActorPC(pc).SendSystemMessage("魔法被回避了");
+                            MapClient.FromActorPC(pc).SendSystemMessage("魔法被回避了");
                             continue;
                         }
                     }
                 }
-                int restKryrie = 0;
+
+                var restKryrie = 0;
                 if (i.Status.Additions.ContainsKey("DispelField"))
                 {
-                    Additions.Global.DefaultBuff buf = (Additions.Global.DefaultBuff)i.Status.Additions["DispelField"];
+                    var buf = (DefaultBuff)i.Status.Additions["DispelField"];
                     restKryrie = buf["DispelField"];
                     arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.NO_DAMAGE;
                     if (restKryrie > 0)
                     {
                         buf["DispelField"]--;
-                        EffectArg arg2 = new EffectArg();
+                        var arg2 = new EffectArg();
                         arg2.effectID = 4173;
                         arg2.actorID = i.ActorID;
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, i, true);
                         if (restKryrie == 1)
-                            SkillHandler.RemoveAddition(i, "DispelField");
+                            RemoveAddition(i, "DispelField");
                     }
                 }
+
                 if (restKryrie == 0)
                 {
                     //判断命中结果
                     //short dis = Map.Distance(sActor, i);
                     //if (arg.argType == SkillArg.ArgType.Active)
                     //    shitbonus = 50;
-                    AttackResult res = CalcMagicAttackResult(sActor, i);
+                    var res = CalcMagicAttackResult(sActor, i);
                     //res = AttackResult.Miss;
 
-                    if (res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard || res == AttackResult.Parry)
+                    if (res == AttackResult.Miss || res == AttackResult.Avoid || res == AttackResult.Guard ||
+                        res == AttackResult.Parry)
                     {
                         if (res == AttackResult.Miss)
                             arg.flag[index + counter] = AttackFlag.MISS;
@@ -2616,103 +2548,102 @@ namespace SagaMap.Skill
 
                         try
                         {
-                            string y = "普通攻击";
+                            var y = "普通攻击";
                             if (arg != null)
-                            {
                                 if (arg.skill != null)
                                     y = arg.skill.Name;
-                            }
                             //string s = "物理伤害";
-                            SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "被你 " + res.ToString());
-                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res.ToString());
+                            SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "被你 " + res);
+                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res);
                         }
                         catch (Exception ex)
                         {
-                            SagaLib.Logger.ShowError(ex);
+                            Logger.ShowError(ex);
                         }
                     }
                     else
                     {
-
                         if (i.Status.Additions.ContainsKey("MagicReflect") && i != sActor && !noReflect)
                         {
                             arg.Remove(i);
-                            int oldcount = arg.flag.Count;
+                            var oldcount = arg.flag.Count;
                             arg.Extend(1);
                             arg.affectedActors.Add(sActor);
-                            List<Actor> dst = new List<Actor>();
+                            var dst = new List<Actor>();
                             dst.Add(sActor);
                             RemoveAddition(i, "MagicReflect");
-                            MagicAttack(sActor, dst, arg, DefType.MDef, element, elementValue, MATKBonus, oldcount, setAtk, true);
+                            MagicAttack(sActor, dst, arg, DefType.MDef, element, elementValue, MATKBonus, oldcount,
+                                setAtk, true);
                             continue;
                         }
-                        if (i.Status.reflex_odds > 0 && i.type == ActorType.PC)//3转骑士反射盾
+
+                        if (i.Status.reflex_odds > 0 && i.type == ActorType.PC) //3转骑士反射盾
                         {
-                            ActorPC pc = (ActorPC)i;
-                            if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))//右手不可能持盾
-                            {
-                                if (pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHIELD)
-                                {
+                            var pc = (ActorPC)i;
+                            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND)) //右手不可能持盾
+                                if (pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType ==
+                                    ItemType.SHIELD)
                                     if (Global.Random.Next(0, 100) < 100 * i.Status.reflex_odds)
                                     {
                                         arg.Remove(i);
-                                        int oldcount = arg.flag.Count;
+                                        var oldcount = arg.flag.Count;
                                         arg.Extend(1);
                                         arg.affectedActors.Add(sActor);
-                                        List<Actor> dst = new List<Actor>();
+                                        var dst = new List<Actor>();
                                         dst.Add(sActor);
-                                        MagicAttack(sActor, dst, arg, DefType.MDef, element, elementValue, MATKBonus, oldcount, false, true);
+                                        MagicAttack(sActor, dst, arg, DefType.MDef, element, elementValue, MATKBonus,
+                                            oldcount, false, true);
                                         continue;
                                     }
-                                }
-                            }
                         }
 
-                        bool isPossession = false;
-                        bool isHost = false;
+                        var isPossession = false;
+                        var isHost = false;
 
                         if (i.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)i;
+                            var pc = (ActorPC)i;
                             if (pc.PossesionedActors.Count > 0 && pc.PossessionTarget == 0)
                             {
                                 isPossession = true;
                                 isHost = true;
                             }
+
                             if (pc.PossessionTarget != 0)
                             {
                                 isPossession = true;
                                 isHost = false;
                             }
                         }
+
                         //处理凭依伤害
                         if (isHost && isPossession && MATKBonus > 0)
                         {
-                            List<Actor> possessionDamage = ProcessAttackPossession(i);
+                            var possessionDamage = ProcessAttackPossession(i);
                             if (possessionDamage.Count > 0)
                             {
                                 arg.Remove(i);
-                                int oldcount = arg.flag.Count;
+                                var oldcount = arg.flag.Count;
                                 arg.Extend(possessionDamage.Count);
-                                foreach (Actor j in possessionDamage)
-                                {
+                                foreach (var j in possessionDamage)
                                     if (Global.Random.Next(0, 99) < i.Status.possessionTakeOver)
                                         arg.affectedActors.Add(i);
                                     else
                                         arg.affectedActors.Add(j);
-                                }
                                 MagicAttack(sActor, possessionDamage, arg, element, elementValue, MATKBonus, oldcount);
                                 continue;
                             }
                         }
+
                         //先校验施法者是不是玩家
                         if (sActor.type == ActorType.PC)
                         {
                             //wiz3转JOB3,属性对无属性魔法增伤
-                            ActorPC pci = sActor as ActorPC;
+                            var pci = sActor as ActorPC;
                             float rates = 0;
                             //不管是主职还是副职, 只要习得技能,则进入增伤判定
-                            if ((pci.Skills3.ContainsKey(986) || pci.DualJobSkill.Exists(x => x.ID == 986)) && element == Elements.Neutral)
+                            if ((pci.Skills3.ContainsKey(986) || pci.DualJobSkill.Exists(x => x.ID == 986)) &&
+                                element == Elements.Neutral)
                             {
                                 //这里取副职的等级
                                 var duallv = 0;
@@ -2725,9 +2656,9 @@ namespace SagaMap.Skill
                                     mainlv = pci.Skills3[986].Level;
                                 rates = 0.02f + 0.002f * mainlv;
                                 //int elements = (int)pci.WeaponElement[pci.WeaponElement];
-                                int elements = pci.Status.attackElements_item[pci.WeaponElement]
-                                    + pci.Status.attackElements_skill[pci.WeaponElement]
-                                    + pci.Status.attackelements_iris[pci.WeaponElement];
+                                var elements = pci.Status.attackElements_item[pci.WeaponElement]
+                                               + pci.Status.attackElements_skill[pci.WeaponElement]
+                                               + pci.Status.attackelements_iris[pci.WeaponElement];
 
                                 //int elements = pci.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.element[SagaLib.Elements.Dark] +
                                 //pci.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.element[SagaLib.Elements.Earth] +
@@ -2737,36 +2668,37 @@ namespace SagaMap.Skill
                                 //pci.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.element[SagaLib.Elements.Water] +
                                 //pci.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.element[SagaLib.Elements.Wind];
 
-                                if (elements > 0)
-                                {
-                                    MATKBonus += rates * elements;
-                                }
-
+                                if (elements > 0) MATKBonus += rates * elements;
                             }
-
                         }
+
                         if (!setAtk)
                         {
                             matk = Global.Random.Next(mindamage, maxdamage);
                             if (element != Elements.Neutral)
                             {
-                                float eleBonus = CalcElementBonus(sActor, i, element, 1, ((MATKBonus < 0) && !((i.Status.undead == true) && (element == Elements.Holy))));
-                                if ((sActor.Status.Additions.ContainsKey("EvilSoul") || sActor.Status.Additions.ContainsKey("SoulTaker")) && element == Elements.Dark && eleBonus > 0)
+                                var eleBonus = CalcElementBonus(sActor, i, element, 1,
+                                    MATKBonus < 0 && !(i.Status.undead && element == Elements.Holy));
+                                if ((sActor.Status.Additions.ContainsKey("EvilSoul") ||
+                                     sActor.Status.Additions.ContainsKey("SoulTaker")) && element == Elements.Dark &&
+                                    eleBonus > 0)
                                 {
                                     if (sActor.Status.Additions.ContainsKey("EvilSoul"))
-                                    {
                                         //atkValue += (sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"];
-                                        eleBonus += ((float)((sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"]) / 100.0f);
-                                    }
-                                    if (sActor.Status.Additions.ContainsKey("SoulTaker") && arg.skill != null && arg.skill.ID != 0)
-                                    {
+                                        eleBonus +=
+                                            (sActor.Status.Additions["EvilSoul"] as DefaultBuff).Variable["EvilSoul"] /
+                                            100.0f;
+                                    if (sActor.Status.Additions.ContainsKey("SoulTaker") && arg.skill != null &&
+                                        arg.skill.ID != 0)
                                         //atkValue += (sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable["SoulTaker"];
-                                        eleBonus += ((float)((sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable["SoulTaker"]) / 100.0f);
-                                    }
+                                        eleBonus +=
+                                            (sActor.Status.Additions["SoulTaker"] as DefaultBuff).Variable
+                                                ["SoulTaker"] / 100.0f;
                                 }
-                                if (sActor.Status.Contract_Lv != 0)//CAJOB40
+
+                                if (sActor.Status.Contract_Lv != 0) //CAJOB40
                                 {
-                                    Elements tmpele = Elements.Neutral;
+                                    var tmpele = Elements.Neutral;
                                     switch (sActor.Status.Contract_Lv)
                                     {
                                         case 1:
@@ -2782,15 +2714,16 @@ namespace SagaMap.Skill
                                             tmpele = Elements.Wind;
                                             break;
                                     }
+
                                     if (tmpele == element)
                                         eleBonus += 0.5f;
                                     else
                                         eleBonus -= 0.65f;
-
                                 }
+
                                 if (i.Status.Contract_Lv != 0)
                                 {
-                                    Elements tmpele = Elements.Neutral;
+                                    var tmpele = Elements.Neutral;
                                     switch (i.Status.Contract_Lv)
                                     {
                                         case 1:
@@ -2806,30 +2739,29 @@ namespace SagaMap.Skill
                                             tmpele = Elements.Wind;
                                             break;
                                     }
+
                                     if (tmpele == element)
                                         eleBonus -= 0.15f;
                                     else
                                         eleBonus += 1.0f;
-
                                 }
 
                                 matk = (int)(matk * eleBonus * MATKBonus);
-
                             }
                             else
+                            {
                                 matk = (int)(matk * 1f * MATKBonus);
+                            }
                         }
                         else
+                        {
                             matk = (int)MATKBonus;
+                        }
 
                         if (MATKBonus > 0)
-                        {
                             damage = CalcMagDamage(sActor, i, defType, matk, ignore);
-                        }
                         else
-                        {
                             damage = matk;
-                        }
 
                         //AttackResult res = AttackResult.Hit;
                         //AttackResult res = CalcAttackResult(sActor, target, true);
@@ -2847,31 +2779,28 @@ namespace SagaMap.Skill
                         */
 
                         if (sActor.type == ActorType.PC && target.type == ActorType.PC)
-                        {
                             if (damage > 0)
                                 damage = (int)(damage * Configuration.Instance.PVPDamageRateMagic);
-                        }
 
-                        if (target.Status.Additions.ContainsKey("DamageUp"))//伤害标记
+                        if (target.Status.Additions.ContainsKey("DamageUp")) //伤害标记
                         {
-                            float DamageUpRank = target.Status.Damage_Up_Lv * 0.1f + 1.1f;
+                            var DamageUpRank = target.Status.Damage_Up_Lv * 0.1f + 1.1f;
                             damage = (int)(damage * DamageUpRank);
                         }
-                        if (target.Status.Additions.ContainsKey("DamageNullify"))//boss状态
-                            damage = (int)(damage * (float)0f);
 
-                        if (target.Status.MagicRuduceRate > 0)//魔法抵抗力
+                        if (target.Status.Additions.ContainsKey("DamageNullify")) //boss状态
+                            damage = (int)(damage * 0f);
+
+                        if (target.Status.MagicRuduceRate > 0) //魔法抵抗力
                         {
                             if (target.Status.MagicRuduceRate > 1)
-                                damage = (int)((float)damage / target.Status.MagicRuduceRate);
+                                damage = (int)(damage / target.Status.MagicRuduceRate);
                             else
-                                damage = (int)((float)damage / (1.0f + target.Status.MagicRuduceRate));
+                                damage = (int)(damage / (1.0f + target.Status.MagicRuduceRate));
                         }
 
-                        if (target.Status.magic_rate_iris < 100 && MATKBonus >= 0)//iris卡片提供的魔法伤害减少
-                        {
-                            damage = (int)(damage * (float)(target.Status.magic_rate_iris / 100.0f));
-                        }
+                        if (target.Status.magic_rate_iris < 100 && MATKBonus >= 0) //iris卡片提供的魔法伤害减少
+                            damage = (int)(damage * (target.Status.magic_rate_iris / 100.0f));
 
 
                         if (damage <= 0 && MATKBonus >= 0)
@@ -2879,10 +2808,10 @@ namespace SagaMap.Skill
 
                         if (isPossession && isHost && target.Status.Additions.ContainsKey("DJoint"))
                         {
-                            Additions.Global.DefaultBuff buf = (Additions.Global.DefaultBuff)target.Status.Additions["DJoint"];
+                            var buf = (DefaultBuff)target.Status.Additions["DJoint"];
                             if (Global.Random.Next(0, 99) < buf["Rate"])
                             {
-                                Actor dst = map.GetActor((uint)buf["Target"]);
+                                var dst = map.GetActor((uint)buf["Target"]);
                                 if (dst != null)
                                 {
                                     target = dst;
@@ -2890,15 +2819,16 @@ namespace SagaMap.Skill
                                 }
                             }
                         }
+
                         if (sActor.type == ActorType.PET)
                             ProcessPetGrowth(sActor, PetGrowthReason.SkillHit);
                         if (i.type == ActorType.PET && damage > 0)
                             ProcessPetGrowth(i, PetGrowthReason.MagicalBeenHit);
 
-                        bool ride = false;
+                        var ride = false;
                         if (target.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)target;
+                            var pc = (ActorPC)target;
                             if (pc.Pet != null)
                                 ride = pc.Pet.Ride;
                         }
@@ -2923,76 +2853,48 @@ namespace SagaMap.Skill
                             damage = 0;
 
 
-                        if (target.Status.Additions.ContainsKey("MagicShield"))//魔力加护
+                        if (target.Status.Additions.ContainsKey("MagicShield")) //魔力加护
                         {
                             if (target.type == ActorType.PC)
-                                damage = (int)(damage * (float)(1f - 0.02f * ((ActorPC)target).TInt["MagicShieldlv"]));
+                                damage = (int)(damage * (1f - 0.02f * ((ActorPC)target).TInt["MagicShieldlv"]));
                             else
-                                damage = (int)(damage * (float)0.9f);
+                                damage = (int)(damage * 0.9f);
                         }
+
                         if (target.Status.MagicRuduceRate != 0)
-                        {
-                            damage = (int)(damage * (float)1f - target.Status.MagicRuduceRate);
-                        }
-                        if (target.Status.Additions.ContainsKey("Assumptio"))
-                        {
-                            damage = (int)((damage / 3.0f) * 2.0f);
-                        }
+                            damage = (int)(damage * 1f - target.Status.MagicRuduceRate);
+                        if (target.Status.Additions.ContainsKey("Assumptio")) damage = (int)(damage / 3.0f * 2.0f);
 
                         if (target.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)target;
+                            var pc = (ActorPC)target;
                             if (pc.Party != null && pc.Status.pt_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.pt_dmg_up_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.pt_dmg_up_iris / 100.0f));
                             if (pc.Status.Element_down_iris < 100 && element != Elements.Neutral)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.Element_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.Element_down_iris / 100.0f));
 
                             //iris卡种族减伤部分
                             if (sActor.Race == Race.HUMAN && pc.Status.human_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.human_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.human_dmg_down_iris / 100.0f));
 
                             else if (sActor.Race == Race.BIRD && pc.Status.bird_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.bird_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.bird_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ANIMAL && pc.Status.animal_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.animal_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.animal_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.MAGIC_CREATURE && pc.Status.magic_c_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.magic_c_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.magic_c_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.PLANT && pc.Status.plant_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.plant_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.plant_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.WATER_ANIMAL && pc.Status.water_a_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.water_a_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.water_a_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.MACHINE && pc.Status.machine_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.machine_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.machine_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ROCK && pc.Status.rock_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.rock_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.rock_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.ELEMENT && pc.Status.element_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.element_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.element_dmg_down_iris / 100.0f));
                             else if (sActor.Race == Race.UNDEAD && pc.Status.undead_dmg_down_iris < 100)
-                            {
-                                damage = (int)(damage * (float)(pc.Status.undead_dmg_down_iris / 100.0f));
-                            }
+                                damage = (int)(damage * (pc.Status.undead_dmg_down_iris / 100.0f));
                         }
                         //减伤处理上
                         //开始处理最终伤害放大
@@ -3001,7 +2903,7 @@ namespace SagaMap.Skill
                         {
                             //杀戮放大
                             if (sActor.Status.Additions.ContainsKey("Efuikasu"))
-                                damage = (int)((float)damage * (1.0f + (float)sActor.KillingMarkCounter * 0.05f));
+                                damage = (int)(damage * (1.0f + sActor.KillingMarkCounter * 0.05f));
 
                             //魔法攻擊不再有火心加成
                             //By KK 2018-04-09
@@ -3016,86 +2918,65 @@ namespace SagaMap.Skill
                             //血印
                             if (target.Status.Additions.ContainsKey("BradStigma") && element == Elements.Dark)
                             {
-                                int rate = (target.Status.Additions["BradStigma"] as DefaultBuff).Variable["BradStigma"];
+                                var rate = (target.Status.Additions["BradStigma"] as DefaultBuff)
+                                    .Variable["BradStigma"];
                                 //MapClient.FromActorPC((ActorPC)sActor).SendSystemMessage("你的血印技能，使你的暗屬攻擊加成(" + rate + "%)。");
-                                damage += (int)((double)damage * (double)((double)rate / 100.0f));
+                                damage += (int)(damage * ((double)rate / 100.0f));
                             }
+
                             //友情的一击
-                            if (sActor.Status.Additions.ContainsKey("BlowOfFriendship"))
-                            {
-                                damage = (int)(damage * 1.15f);
-                            }
+                            if (sActor.Status.Additions.ContainsKey("BlowOfFriendship")) damage = (int)(damage * 1.15f);
 
                             //竜眼放大
                             if (sActor.Status.Additions.ContainsKey("DragonEyeOpen"))
                             {
-                                int rate = (sActor.Status.Additions["DragonEyeOpen"] as DefaultBuff).Variable["DragonEyeOpen"];
-                                damage = (int)((double)damage * (double)((double)rate / 100));
+                                var rate =
+                                    (sActor.Status.Additions["DragonEyeOpen"] as DefaultBuff).Variable["DragonEyeOpen"];
+                                damage = (int)(damage * ((double)rate / 100));
                             }
+
                             //极大放大
-                            if (sActor.Status.Additions.ContainsKey("Zensss") && !sActor.ZenOutLst.Contains(arg.skill.ID))
+                            if (sActor.Status.Additions.ContainsKey("Zensss") &&
+                                !sActor.ZenOutLst.Contains(arg.skill.ID))
                             {
-                                float zenbonus = (float)((float)(sActor.Status.Additions["Zensss"] as DefaultBuff).Variable["Zensss"] / 10.0f);
+                                var zenbonus = (sActor.Status.Additions["Zensss"] as DefaultBuff).Variable["Zensss"] /
+                                               10.0f;
                                 //MATKBonus *= zenbonus;
-                                damage = (int)((float)damage * zenbonus);
+                                damage = (int)(damage * zenbonus);
                             }
+
                             if (sActor.type == ActorType.PC)
                             {
-                                ActorPC pc = (ActorPC)sActor;
+                                var pc = (ActorPC)sActor;
                                 if (pc.Party != null && pc.Status.pt_dmg_up_iris > 100)
-                                {
-                                    damage = (int)((float)damage * (float)(pc.Status.pt_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.pt_dmg_up_iris / 100.0f));
 
                                 //iris卡种族增伤部分
                                 if (target.Race == Race.BIRD && pc.Status.human_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.human_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.human_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.HUMAN && pc.Status.bird_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.bird_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.bird_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.ANIMAL && pc.Status.animal_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.animal_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.animal_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.MAGIC_CREATURE && pc.Status.magic_c_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.magic_c_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.magic_c_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.PLANT && pc.Status.plant_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.plant_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.plant_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.WATER_ANIMAL && pc.Status.water_a_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.water_a_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.water_a_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.MACHINE && pc.Status.machine_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.machine_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.machine_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.ROCK && pc.Status.rock_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.rock_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.rock_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.ELEMENT && pc.Status.element_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.element_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.element_dmg_up_iris / 100.0f));
                                 else if (target.Race == Race.UNDEAD && pc.Status.undead_dmg_up_iris > 100)
-                                {
-                                    damage = (int)(damage * (float)(pc.Status.undead_dmg_up_iris / 100.0f));
-                                }
+                                    damage = (int)(damage * (pc.Status.undead_dmg_up_iris / 100.0f));
                             }
+
                             if (sActor.WeaponElement == Elements.Holy)
-                            {
                                 if (target.Status.Additions.ContainsKey("Oratio"))
-                                {
                                     damage = (int)(damage / 0.8f);
-                                }
-                            }
                             //if (sActor.Status.Additions.ContainsKey("ホークアイ"))//HAW站桩
                             //{
                             //    damage *= (int)((sActor.Status.Additions["ホークアイ"] as DefaultBuff).Variable["ホークアイ"] / 100.0f);
@@ -3106,90 +2987,84 @@ namespace SagaMap.Skill
                         //金刚不坏处理
                         if (i.Status.Additions.ContainsKey("MentalStrength") && MATKBonus > 0)
                         {
-                            int rate = (i.Status.Additions["MentalStrength"] as DefaultBuff).Variable["MentalStrength"];
-                            damage = (int)((double)damage * (double)(1.0f - (double)rate / 100.0f));
+                            var rate = (i.Status.Additions["MentalStrength"] as DefaultBuff).Variable["MentalStrength"];
+                            damage = (int)(damage * (1.0f - (double)rate / 100.0f));
                         }
 
                         if (i.Status.NeutralDamegeDown_rate > 0 && element == Elements.Neutral)
-                        {
-                            damage = (int)(damage * (1.0f - (i.Status.NeutralDamegeDown_rate / 100.0f)));
-
-                        }
+                            damage = (int)(damage * (1.0f - i.Status.NeutralDamegeDown_rate / 100.0f));
                         if (i.Status.NeutralDamegeDown_rate > 0 && element != Elements.Neutral)
-                        {
-                            damage = (int)(damage * (1.0f - (i.Status.ElementDamegeDown_rate / 100.0f)));
+                            damage = (int)(damage * (1.0f - i.Status.ElementDamegeDown_rate / 100.0f));
 
-                        }
-
-                        if (i.Status.Additions.ContainsKey("BarrierShield") && MATKBonus > 0)
-                        {
-                            damage = 0;
-                        }
+                        if (i.Status.Additions.ContainsKey("BarrierShield") && MATKBonus > 0) damage = 0;
                         //处理bonus的技能伤害控制
                         uint skid = 0;
                         if (arg != null)
-                        {
                             if (arg.skill != null)
                                 skid = arg.skill.ID;
-                        }
                         if (skid != 0)
                         {
                             if (sActor.Status.SkillRate.ContainsKey(skid))
-                                damage = (int)(damage * (float)(1.0f + (float)((float)sActor.Status.SkillRate[skid] / 100.0f)));
+                                damage = (int)(damage * (1.0f + sActor.Status.SkillRate[skid] / 100.0f));
                             if (sActor.Status.SkillDamage.ContainsKey(skid))
                                 damage += (int)sActor.Status.SkillDamage[skid];
                         }
 
                         //吸血效果下
-                        if (SuckBlood != 0 && damage != 0 && !sActor.Buff.NoRegen)//吸血效果
-                        {
+                        if (SuckBlood != 0 && damage != 0 && !sActor.Buff.NoRegen) //吸血效果
                             if (sActor.type == ActorType.PC)
                             {
-                                int hp = (int)(damage * SuckBlood);
+                                var hp = (int)(damage * SuckBlood);
                                 sActor.HP += (uint)hp;
                                 if (sActor.HP > sActor.MaxHP)
                                     sActor.HP = sActor.MaxHP;
-                                SkillHandler.Instance.ShowVessel(sActor, -hp);
+                                Instance.ShowVessel(sActor, -hp);
 
                                 try
                                 {
-                                    string y1 = "攻击";
+                                    var y1 = "攻击";
                                     if (arg != null)
-                                    {
                                         if (arg.skill != null)
                                             y1 = arg.skill.Name;
-                                    }
-                                    SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "", "受到了 " + (-damage).ToString() + " 点" + "治疗效果");
+                                    SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y1 + "",
+                                        "受到了 " + (-damage) + " 点" + "治疗效果");
                                 }
-                                catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
+                                catch (Exception ex)
+                                {
+                                    Logger.ShowError(ex);
+                                }
                             }
-                        }
                         //吸血效果上
 
                         try
                         {
-                            string s = "魔法伤害";
-                            string y = "攻击";
+                            var s = "魔法伤害";
+                            var y = "攻击";
                             if (arg != null)
-                            {
                                 if (arg.skill != null)
                                     y = arg.skill.Name;
-                            }
                             if (damage < 0)
                             {
                                 if (target.Buff.NoRegen)
                                     damage = 0;
                                 s = "治疗效果";
-                                SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y + "", "接受了 " + (-damage).ToString() + " 点" + s);
+                                SendAttackMessage(1, target, "从 " + sActor.Name + " 处的 " + y + "",
+                                    "接受了 " + (-damage) + " 点" + s);
                             }
                             else
-                                SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "", "受到了 " + damage.ToString() + " 点" + s);
-                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "造成了 " + (damage >= 0 ? damage.ToString() : (-damage).ToString()) + " 点" + s);
+                            {
+                                SendAttackMessage(2, target, "从 " + sActor.Name + " 处的 " + y + "",
+                                    "受到了 " + damage + " 点" + s);
+                            }
+
+                            SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "",
+                                "造成了 " + (damage >= 0 ? damage.ToString() : (-damage).ToString()) + " 点" + s);
                         }
                         catch (Exception ex)
                         {
-                            SagaLib.Logger.ShowError(ex);
+                            Logger.ShowError(ex);
                         }
+
                         arg.hp[index + counter] = damage;
 
                         if (target.HP != 0)
@@ -3207,15 +3082,12 @@ namespace SagaMap.Skill
                                         if (target.HP > Math.Abs(dmgleft))
                                             target.HP = (uint)(target.HP + dmgleft);
                                         else
-                                        {
                                             target.HP = 0;
-                                        }
                                     }
                                     else
                                     {
                                         target.Status.PlantShield -= (uint)damage;
                                     }
-
                                 }
                                 else
                                 {
@@ -3239,9 +3111,9 @@ namespace SagaMap.Skill
                             }
                             else
                             {
-
                                 if (!ride && !target.Buff.Reborn)
-                                    arg.flag[index + counter] = AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
+                                    arg.flag[index + counter] =
+                                        AttackFlag.DIE | AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                                 else
                                     arg.flag[index + counter] = AttackFlag.HP_DAMAGE | AttackFlag.ATTACK_EFFECT;
                             }
@@ -3250,126 +3122,101 @@ namespace SagaMap.Skill
                         {
                             arg.flag[index + counter] = AttackFlag.HP_HEAL | AttackFlag.NO_DAMAGE;
                         }
+
                         if (target.HP > target.MaxHP)
                             target.HP = target.MaxHP;
-
                     }
                 }
+
                 ApplyDamage(sActor, target, damage, arg);
-                if (sActor.Status.Additions.ContainsKey("Relement") && element != Elements.Neutral && element != Elements.Holy && element != Elements.Dark)//ASJOB20技能
+                if (sActor.Status.Additions.ContainsKey("Relement") && element != Elements.Neutral &&
+                    element != Elements.Holy && element != Elements.Dark) //ASJOB20技能
                 {
                     int Skilllevel = (sActor.Status.Additions["Relement"] as DefaultBuff).skill.Level;
                     thispc = (ActorPC)sActor;
-                    SkillHandler.RemoveAddition(target, "HolyShield");
-                    SkillHandler.RemoveAddition(target, "DarkShield");
-                    SkillHandler.RemoveAddition(target, "FireShield");
-                    SkillHandler.RemoveAddition(target, "WaterShield");
-                    SkillHandler.RemoveAddition(target, "WindShield");
-                    SkillHandler.RemoveAddition(target, "EarthShield");
+                    RemoveAddition(target, "HolyShield");
+                    RemoveAddition(target, "DarkShield");
+                    RemoveAddition(target, "FireShield");
+                    RemoveAddition(target, "WaterShield");
+                    RemoveAddition(target, "WindShield");
+                    RemoveAddition(target, "EarthShield");
                     target.Buff.BodyDarkElementUp = false;
                     target.Buff.BodyEarthElementUp = false;
                     target.Buff.BodyFireElementUp = false;
                     target.Buff.BodyWaterElementUp = false;
                     target.Buff.BodyWindElementUp = false;
                     target.Buff.BodyHolyElementUp = false;
-                    int life = 150000 + 30000 * Skilllevel;
-                    if (element == Elements.Earth)//魔法属性
-                    {
+                    var life = 150000 + 30000 * Skilllevel;
+                    if (element == Elements.Earth) //魔法属性
                         Toelements = Elements.Wind;
-                    }
                     else if (element == Elements.Wind)
-                    {
                         Toelements = Elements.Fire;
-                    }
                     else if (element == Elements.Fire)
-                    {
                         Toelements = Elements.Water;
-                    }
-                    else if (element == Elements.Water)
-                    {
-                        Toelements = Elements.Earth;
-                    }
-                    DefaultBuff skill = new DefaultBuff(arg.skill, target, Toelements.ToString() + "Shield", life);
-                    skill.OnAdditionStart += this.StartEventHandlerSele;
-                    skill.OnAdditionEnd += this.EndEventHandlerSele;
-                    SkillHandler.ApplyAddition(target, skill);
-
+                    else if (element == Elements.Water) Toelements = Elements.Earth;
+                    var skill = new DefaultBuff(arg.skill, target, Toelements + "Shield", life);
+                    skill.OnAdditionStart += StartEventHandlerSele;
+                    skill.OnAdditionEnd += EndEventHandlerSele;
+                    ApplyAddition(target, skill);
                 }
 
-                if (i.Status.Additions.ContainsKey("TranceBody") && element != Elements.Neutral && element != Elements.Holy && element != Elements.Dark)//ASJOB13技能
+                if (i.Status.Additions.ContainsKey("TranceBody") && element != Elements.Neutral &&
+                    element != Elements.Holy && element != Elements.Dark) //ASJOB13技能
                 {
                     int Skilllevel = (i.Status.Additions["TranceBody"] as DefaultBuff).skill.Level;
                     //(sActor.Status.Additions["DragonEyeOpen"] as DefaultBuff)
                     thispc = (ActorPC)i;
-                    SkillHandler.RemoveAddition(i, "HolyShield");
-                    SkillHandler.RemoveAddition(i, "DarkShield");
-                    SkillHandler.RemoveAddition(i, "FireShield");
-                    SkillHandler.RemoveAddition(i, "WaterShield");
-                    SkillHandler.RemoveAddition(i, "WindShield");
-                    SkillHandler.RemoveAddition(i, "EarthShield");
+                    RemoveAddition(i, "HolyShield");
+                    RemoveAddition(i, "DarkShield");
+                    RemoveAddition(i, "FireShield");
+                    RemoveAddition(i, "WaterShield");
+                    RemoveAddition(i, "WindShield");
+                    RemoveAddition(i, "EarthShield");
                     i.Buff.BodyDarkElementUp = false;
                     i.Buff.BodyEarthElementUp = false;
                     i.Buff.BodyFireElementUp = false;
                     i.Buff.BodyWaterElementUp = false;
                     i.Buff.BodyWindElementUp = false;
                     i.Buff.BodyHolyElementUp = false;
-                    int life = 150000 + 30000 * Skilllevel;
-                    if (element == Elements.Earth)//魔法属性
-                    {
+                    var life = 150000 + 30000 * Skilllevel;
+                    if (element == Elements.Earth) //魔法属性
                         Toelements = Elements.Earth;
-                    }
                     else if (element == Elements.Wind)
-                    {
                         Toelements = Elements.Wind;
-                    }
                     else if (element == Elements.Fire)
-                    {
                         Toelements = Elements.Fire;
-                    }
-                    else if (element == Elements.Water)
-                    {
-                        Toelements = Elements.Water;
-                    }
-                    DefaultBuff skill = new DefaultBuff(arg.skill, i, Toelements.ToString() + "Shield", life);
-                    skill.OnAdditionStart += this.StartEventHandlerMele;
-                    skill.OnAdditionEnd += this.EndEventHandlerMele;
-                    SkillHandler.ApplyAddition(i, skill);
-
+                    else if (element == Elements.Water) Toelements = Elements.Water;
+                    var skill = new DefaultBuff(arg.skill, i, Toelements + "Shield", life);
+                    skill.OnAdditionStart += StartEventHandlerMele;
+                    skill.OnAdditionEnd += EndEventHandlerMele;
+                    ApplyAddition(i, skill);
                 }
-                Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, target, true);
+
+                MapManager.Instance.GetMap(sActor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, target, true);
                 counter++;
                 //return ;
             }
-            SkillHandler.RemoveAddition(sActor, "Relement");
+
+            RemoveAddition(sActor, "Relement");
             return damage;
             //magicalCounter--;
         }
 
-        void StartEventHandlerSele(Actor actor, DefaultBuff skill)
+        private void StartEventHandlerSele(Actor actor, DefaultBuff skill)
         {
-            int atk1 = (thispc.Status.Additions["Relement"] as DefaultBuff).skill.Level * 5;
+            var atk1 = (thispc.Status.Additions["Relement"] as DefaultBuff).skill.Level * 5;
             uint SkillID = 0;
             if (Toelements == Elements.Earth)
-            {
                 SkillID = 3110;
-            }
             else if (Toelements == Elements.Wind)
-            {
                 SkillID = 3108;
-            }
             else if (Toelements == Elements.Fire)
-            {
                 SkillID = 3107;
-            }
-            else if (Toelements == Elements.Water)
-            {
-                SkillID = 3109;
-            }
+            else if (Toelements == Elements.Water) SkillID = 3109;
 
             if (thispc.Skills2_2.ContainsKey(SkillID) || thispc.DualJobSkill.Exists(x => x.ID == SkillID))
             {
-
-
                 //这里取副职等级
                 var duallv = 0;
                 if (thispc.DualJobSkill.Exists(x => x.ID == SkillID))
@@ -3383,55 +3230,47 @@ namespace SagaMap.Skill
                 //这里取等级最高等级用来做倍率加成
                 atk1 += 10 * Math.Max(duallv, mainlv);
             }
+
             if (skill.Variable.ContainsKey("ElementShield"))
                 skill.Variable.Remove("ElementShield");
             skill.Variable.Add("ElementShield", atk1);
             actor.Status.elements_skill[Toelements] += atk1;
 
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + Toelements.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + Toelements + "ElementUp");
             propertyInfo.SetValue(actor.Buff, true, null);
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandlerSele(Actor actor, DefaultBuff skill)
+        private void EndEventHandlerSele(Actor actor, DefaultBuff skill)
         {
-            int value = skill.Variable["ElementShield"];
+            var value = skill.Variable["ElementShield"];
             actor.Status.elements_skill[Toelements] -= (short)value;
 
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + Toelements.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + Toelements + "ElementUp");
             propertyInfo.SetValue(actor.Buff, false, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
 
-        void StartEventHandlerMele(Actor actor, DefaultBuff skill)
+        private void StartEventHandlerMele(Actor actor, DefaultBuff skill)
         {
-            int atk1 = 15 + (thispc.Status.Additions["TranceBody"] as DefaultBuff).skill.Level * 5;
+            var atk1 = 15 + (thispc.Status.Additions["TranceBody"] as DefaultBuff).skill.Level * 5;
             uint SkillID = 0;
             if (Toelements == Elements.Earth)
-            {
                 SkillID = 3042;
-            }
             else if (Toelements == Elements.Wind)
-            {
                 SkillID = 3018;
-            }
             else if (Toelements == Elements.Fire)
-            {
                 SkillID = 3007;
-            }
-            else if (Toelements == Elements.Water)
-            {
-                SkillID = 3030;
-            }
+            else if (Toelements == Elements.Water) SkillID = 3030;
 
             if (thispc.Skills.ContainsKey(SkillID) || thispc.DualJobSkill.Exists(x => x.ID == SkillID))
             {
-
-
                 //这里取副职等级
                 var duallv = 0;
                 if (thispc.DualJobSkill.Exists(x => x.ID == SkillID))
@@ -3445,26 +3284,29 @@ namespace SagaMap.Skill
                 //这里取等级最高等级用来做倍率加成
                 atk1 += 5 * Math.Max(duallv, mainlv);
             }
+
             if (skill.Variable.ContainsKey("ElementShield"))
                 skill.Variable.Remove("ElementShield");
             skill.Variable.Add("ElementShield", atk1);
             actor.Status.elements_skill[Toelements] += atk1;
 
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + Toelements.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + Toelements + "ElementUp");
             propertyInfo.SetValue(actor.Buff, true, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void EndEventHandlerMele(Actor actor, DefaultBuff skill)
+        private void EndEventHandlerMele(Actor actor, DefaultBuff skill)
         {
-            int value = skill.Variable["ElementShield"];
+            var value = skill.Variable["ElementShield"];
             actor.Status.elements_skill[Toelements] -= (short)value;
 
-            Type type = actor.Buff.GetType();
-            System.Reflection.PropertyInfo propertyInfo = type.GetProperty("Body" + Toelements.ToString() + "ElementUp");
+            var type = actor.Buff.GetType();
+            var propertyInfo = type.GetProperty("Body" + Toelements + "ElementUp");
             propertyInfo.SetValue(actor.Buff, false, null);
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
         //public int MagicAttack(Actor sActor, List<Actor> dActor, SkillArg arg, DefType defType, Elements element, int elementValue, float MATKBonus, int mcridamagebonus, int index, bool setAtk, bool noReflect, float SuckBlood, bool WeaponAttack = false, float ignore = 0)
         //{
@@ -3802,7 +3644,7 @@ namespace SagaMap.Skill
         //}
 
         /// <summary>
-        /// 对指定目标附加伤害
+        ///     对指定目标附加伤害
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标</param>
@@ -3831,7 +3673,7 @@ namespace SagaMap.Skill
         //}
 
         /// <summary>
-        /// 对指定目标附加伤害
+        ///     对指定目标附加伤害
         /// </summary>
         /// <param name="sActor">原目标</param>
         /// <param name="dActor">对象目标</param>
@@ -3851,42 +3693,33 @@ namespace SagaMap.Skill
                     dActor.Status.attackingActors.Add(sActor);
             }
 
-            if (sActor.type == ActorType.PC)
-            {
-                WeaponWorn((ActorPC)sActor);
-            }
-            if (dActor.type == ActorType.PC && damage > (dActor.MaxHP / 100))
-            {
-                ArmorWorn((ActorPC)dActor);
-            }
+            if (sActor.type == ActorType.PC) WeaponWorn((ActorPC)sActor);
+            if (dActor.type == ActorType.PC && damage > dActor.MaxHP / 100) ArmorWorn((ActorPC)dActor);
 
-            if (arg2 != null && arg2.skill != null && arg2.skill.ID == 2541 && !arg2.flag.Contains(AttackFlag.MISS) && !arg2.flag.Contains(AttackFlag.AVOID) && !arg2.flag.Contains(AttackFlag.GUARD) && !arg2.flag.Contains(AttackFlag.AVOID2))
-            {
+            if (arg2 != null && arg2.skill != null && arg2.skill.ID == 2541 && !arg2.flag.Contains(AttackFlag.MISS) &&
+                !arg2.flag.Contains(AttackFlag.AVOID) && !arg2.flag.Contains(AttackFlag.GUARD) &&
+                !arg2.flag.Contains(AttackFlag.AVOID2))
                 //this.CreateAutoCastInfo()
-                arg2.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2542, arg2.skill.Level, 1000));
-            }
+                arg2.autoCast.Add(Instance.CreateAutoCastInfo(2542, arg2.skill.Level, 1000));
 
             //3转剑35级技能(已完成副职逻辑)
             if (dActor.Status.Pressure_lv > 0)
             {
-                int level = dActor.Status.Pressure_lv;
+                var level = dActor.Status.Pressure_lv;
                 float[] hprank = { 0.2f, 0.2f, 0.25f, 0.25f, 0.3f };
                 float[] rank = { 0, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f };
                 float[] rank2 = { 0, 0.1f, 0.1f, 0.15f, 0.15f, 0.2f };
-                float factor = 3f + 0.3f * level;
-                ActorPC pc = (ActorPC)dActor;
+                var factor = 3f + 0.3f * level;
+                var pc = (ActorPC)dActor;
                 //不管是主职还是副职,确定技能存在
                 if (pc.Skills3.ContainsKey(1113) || pc.DualJobSkill.Exists(x => x.ID == 1113))
-                {
-                    for (int i = 1; i < level; i++)
-                    {
-                        if (pc.HP < (uint)((float)pc.MaxHP * hprank[i - 1]) && pc.HP > damage)
-                        {
-                            if (SagaLib.Global.Random.Next(0, 100) <= (level * 10))
+                    for (var i = 1; i < level; i++)
+                        if (pc.HP < (uint)(pc.MaxHP * hprank[i - 1]) && pc.HP > damage)
+                            if (Global.Random.Next(0, 100) <= level * 10)
                             {
-                                Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
-                                List<Actor> affected = map.GetActorsArea(dActor, 400, false);
-                                List<Actor> realAffected = new List<Actor>();
+                                var map = MapManager.Instance.GetMap(dActor.MapID);
+                                var affected = map.GetActorsArea(dActor, 400, false);
+                                var realAffected = new List<Actor>();
                                 arg2 = new SkillArg();
                                 arg2.Init();
                                 //获取副职AutoHeal的等级
@@ -3900,9 +3733,9 @@ namespace SagaMap.Skill
                                     mainlv = pc.Skills3[1113].Level;
 
                                 //这里取等级最高的AutoHeal等级
-                                int level2 = Math.Max(duallv, mainlv);
+                                var level2 = Math.Max(duallv, mainlv);
 
-                                arg2.skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(1113, (byte)level2);
+                                arg2.skill = SkillFactory.Instance.GetSkill(1113, (byte)level2);
                                 var duallv2 = 0;
                                 //不屈意志触发模块
                                 if (pc.DualJobSkill.Exists(x => x.ID == 1100))
@@ -3914,20 +3747,21 @@ namespace SagaMap.Skill
                                     mainlv2 = pc.Skills3[1100].Level;
 
                                 //这里取等级最高的不屈斗志等级
-                                int level1100 = Math.Max(duallv2, mainlv2);
+                                var level1100 = Math.Max(duallv2, mainlv2);
                                 if (level1100 != 0 && pc.Buff.NoRegen == false)
                                 {
-                                    float[] recoveryrate = new float[] { 0.24f, 0.22f, 0.20f, 0.18f, 0.16f };
+                                    var recoveryrate = new[] { 0.24f, 0.22f, 0.20f, 0.18f, 0.16f };
                                     arg2 = new SkillArg();
                                     arg2.Init();
-                                    arg2.skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(2066, 5);
-                                    int hpheal = (int)(pc.MaxHP * recoveryrate[level2 - 1]);
-                                    int mpheal = (int)(pc.MaxMP * recoveryrate[level2 - 1]);
-                                    int spheal = (int)(pc.MaxSP * recoveryrate[level2 - 1]);
+                                    arg2.skill = SkillFactory.Instance.GetSkill(2066, 5);
+                                    var hpheal = (int)(pc.MaxHP * recoveryrate[level2 - 1]);
+                                    var mpheal = (int)(pc.MaxMP * recoveryrate[level2 - 1]);
+                                    var spheal = (int)(pc.MaxSP * recoveryrate[level2 - 1]);
                                     arg2.hp.Add(hpheal);
                                     arg2.mp.Add(mpheal);
                                     arg2.sp.Add(spheal);
-                                    arg2.flag.Add(AttackFlag.HP_HEAL | AttackFlag.SP_HEAL | AttackFlag.MP_HEAL | AttackFlag.NO_DAMAGE);
+                                    arg2.flag.Add(AttackFlag.HP_HEAL | AttackFlag.SP_HEAL | AttackFlag.MP_HEAL |
+                                                  AttackFlag.NO_DAMAGE);
                                     pc.HP += (uint)hpheal;
                                     pc.MP += (uint)mpheal;
                                     pc.SP += (uint)spheal;
@@ -3937,11 +3771,14 @@ namespace SagaMap.Skill
                                         pc.MP = pc.MaxMP;
                                     if (pc.SP > pc.MaxSP)
                                         pc.SP = pc.MaxSP;
-                                    ShowEffect((ActorPC)pc, pc, 4321);
-                                    SkillHandler.Instance.ShowVessel(pc, -hpheal, -mpheal, -spheal);
-                                    Manager.MapManager.Instance.GetMap(pc.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, arg2, pc, true);
+                                    ShowEffect(pc, pc, 4321);
+                                    Instance.ShowVessel(pc, -hpheal, -mpheal, -spheal);
+                                    MapManager.Instance.GetMap(pc.MapID)
+                                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, arg2, pc,
+                                            true);
                                 }
-                                foreach (Actor act in affected)
+
+                                foreach (var act in affected)
                                 {
                                     arg2.argType = SkillArg.ArgType.Attack;
                                     arg2.flag.Add(AttackFlag.HP_DAMAGE);
@@ -3950,27 +3787,24 @@ namespace SagaMap.Skill
                                     arg2.sp.Add(0);
                                     arg2.mp.Add(0);
                                     arg2.affectedActors.Add(act);
-                                    SkillHandler.Instance.PhysicalAttack(dActor, realAffected, arg2, SagaLib.Elements.Neutral, factor);
+                                    Instance.PhysicalAttack(dActor, realAffected, arg2, Elements.Neutral, factor);
                                     ShowEffect((ActorPC)dActor, act, 4002);
                                     ShowEffect((ActorPC)dActor, dActor, 4321);
-                                    SkillHandler.Instance.PushBack(dActor, act, 4);
-                                    if (SkillHandler.Instance.CanAdditionApply(sActor, act, DefaultAdditions.Stun, level * 10))
+                                    Instance.PushBack(dActor, act, 4);
+                                    if (Instance.CanAdditionApply(sActor, act, DefaultAdditions.Stun, level * 10))
                                     {
-                                        Stun stun = new Stun(arg2.skill, act, 4000);
-                                        SkillHandler.ApplyAddition(act, stun);
+                                        var stun = new Stun(arg2.skill, act, 4000);
+                                        ApplyAddition(act, stun);
                                     }
                                 }
                             }
-                        }
-                    }
-                }
             }
 
             //如果玩家有被动buff AutoHeal
             //自动治疗(已完成副职逻辑)
             if (dActor.type == ActorType.PC && dActor.Status.Additions.ContainsKey("AutoHeal") && !dActor.Buff.NoRegen)
             {
-                ActorPC pc = (ActorPC)dActor;
+                var pc = (ActorPC)dActor;
                 //不管是主职还是副职
                 //如果玩家加了被动技能AutoHeal,并且玩家有AutoHeal这个技能
                 if (pc.Skills3.ContainsKey(1109) || pc.DualJobSkill.Exists(x => x.ID == 1109))
@@ -3988,30 +3822,27 @@ namespace SagaMap.Skill
                         mainlv = pc.Skills3[1109].Level;
 
                     //这里取等级最高的AutoHeal等级
-                    int level = Math.Max(duallv, mainlv);
+                    var level = Math.Max(duallv, mainlv);
                     //声明触发治疗标记
-                    bool active = false;
+                    var active = false;
                     //触发治疗的血线
-                    float[] activerate = new float[] { 0.2f, 0.4f, 0.6f, 0.7f, 0.8f };
+                    var activerate = new[] { 0.2f, 0.4f, 0.6f, 0.7f, 0.8f };
 
                     //遍历触发血线数组
-                    for (int i = 1; i <= level; i++)
-                    {
+                    for (var i = 1; i <= level; i++)
                         //如果玩家当前的血量 小于触发血线
-                        if (pc.HP < (uint)((float)dActor.MaxHP * activerate[i - 1]) && pc.HP > damage)
-                        {
+                        if (pc.HP < (uint)(dActor.MaxHP * activerate[i - 1]) && pc.HP > damage)
                             // 40%机率触发治疗
-                            if (SagaLib.Global.Random.Next(1, 100) <= 40)
+                            if (Global.Random.Next(1, 100) <= 40)
                             {
                                 active = true;
                                 break;
                             }
-                        }
-                    }
+
                     if (active)
                     {
                         //自动咏唱Healing
-                        SkillArg autoheal = new SkillArg();
+                        var autoheal = new SkillArg();
                         //获取副职Healing的等级
                         var duallv2 = 0;
                         if (pc.DualJobSkill.Exists(x => x.ID == 3054))
@@ -4023,29 +3854,25 @@ namespace SagaMap.Skill
                             mainlv2 = pc.Skills[3054].Level;
 
                         //这里取等级最高的Healing等级
-                        int level2 = Math.Max(duallv2, mainlv2);
-                        if (level2 == 0)
-                        {
-                            level2 = 1;//習得していない場合はヒーリングLv1×0.8倍の回復量になる-wiki
-                        }
-                        SagaDB.Skill.Skill skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(3054, (byte)level2);
+                        var level2 = Math.Max(duallv2, mainlv2);
+                        if (level2 == 0) level2 = 1; //習得していない場合はヒーリングLv1×0.8倍の回復量になる-wiki
+                        var skill = SkillFactory.Instance.GetSkill(3054, (byte)level2);
                         //SagaDB.Skill.Skill skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(3054, pc.Skills[3054].Level);
                         autoheal.sActor = pc.ActorID;
                         autoheal.dActor = pc.ActorID;
                         autoheal.skill = skill;
                         autoheal.argType = SkillArg.ArgType.Cast;
                         autoheal.useMPSP = false;
-                        SagaMap.Network.Client.MapClient.FromActorPC(pc).OnSkillCastComplete(autoheal);
+                        MapClient.FromActorPC(pc).OnSkillCastComplete(autoheal);
                     }
                 }
             }
 
 
-
             //不屈の闘志(已完成副职逻辑)
             if (dActor.type == ActorType.PC && dActor.Status.Additions.ContainsKey("不屈の闘志"))
             {
-                ActorPC pc = (ActorPC)dActor;
+                var pc = (ActorPC)dActor;
                 //不管是主职还是副职
                 //如果玩家加了被动技能 不屈的斗志
                 if (pc.Skills3.ContainsKey(1100) || pc.DualJobSkill.Exists(x => x.ID == 1100))
@@ -4063,30 +3890,30 @@ namespace SagaMap.Skill
                         mainlv = pc.Skills3[1100].Level;
 
                     //这里取等级最高的不屈的斗志进行判定
-                    int level = Math.Max(duallv, mainlv);
+                    var level = Math.Max(duallv, mainlv);
 
                     //触发治疗的血线
-                    float[] activerate = new float[] { 0.08f, 0.16f, 0.24f, 0.32f, 0.4f };
+                    var activerate = new[] { 0.08f, 0.16f, 0.24f, 0.32f, 0.4f };
                     //治疗量
-                    float[] recoveryrate = new float[] { 0.24f, 0.22f, 0.20f, 0.18f, 0.16f };
+                    var recoveryrate = new[] { 0.24f, 0.22f, 0.20f, 0.18f, 0.16f };
                     //遍历触发血线数组
-                    for (int i = 1; i < level; i++)
-                    {
+                    for (var i = 1; i < level; i++)
                         //如果玩家当前的血量 小于触发血线
-                        if (pc.HP < (uint)((float)dActor.MaxHP * activerate[i - 1]) && pc.HP > damage)
+                        if (pc.HP < (uint)(dActor.MaxHP * activerate[i - 1]) && pc.HP > damage)
                         {
                             if (dActor.Buff.NoRegen)
                                 break;
                             arg2 = new SkillArg();
                             arg2.Init();
-                            ShowEffect((ActorPC)pc, pc, 4321);
-                            int hpheal = (int)(dActor.MaxHP * recoveryrate[i - 1]);
-                            int mpheal = (int)(dActor.MaxMP * recoveryrate[i - 1]);
-                            int spheal = (int)(dActor.MaxSP * recoveryrate[i - 1]);
+                            ShowEffect(pc, pc, 4321);
+                            var hpheal = (int)(dActor.MaxHP * recoveryrate[i - 1]);
+                            var mpheal = (int)(dActor.MaxMP * recoveryrate[i - 1]);
+                            var spheal = (int)(dActor.MaxSP * recoveryrate[i - 1]);
                             arg2.hp.Add(hpheal);
                             arg2.mp.Add(mpheal);
                             arg2.sp.Add(spheal);
-                            arg2.flag.Add(AttackFlag.HP_HEAL | AttackFlag.SP_HEAL | AttackFlag.MP_HEAL | AttackFlag.NO_DAMAGE);
+                            arg2.flag.Add(AttackFlag.HP_HEAL | AttackFlag.SP_HEAL | AttackFlag.MP_HEAL |
+                                          AttackFlag.NO_DAMAGE);
                             dActor.HP += (uint)hpheal;
                             dActor.MP += (uint)mpheal;
                             dActor.SP += (uint)spheal;
@@ -4096,10 +3923,10 @@ namespace SagaMap.Skill
                                 dActor.MP = dActor.MaxMP;
                             if (dActor.SP > dActor.MaxSP)
                                 dActor.SP = dActor.MaxSP;
-                            SkillHandler.Instance.ShowVessel(pc, -hpheal, -mpheal, -spheal);
-                            Manager.MapManager.Instance.GetMap(dActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, arg2, dActor, true);
+                            Instance.ShowVessel(pc, -hpheal, -mpheal, -spheal);
+                            MapManager.Instance.GetMap(dActor.MapID)
+                                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, arg2, dActor, true);
                         }
-                    }
                 }
             }
 
@@ -4110,10 +3937,10 @@ namespace SagaMap.Skill
                 //凭依中仇恨转移到寄主
                 if (sActor.type == ActorType.PC)
                 {
-                    ActorPC pc = (ActorPC)sActor;
+                    var pc = (ActorPC)sActor;
                     if (pc.PossessionTarget != 0)
                     {
-                        Actor possession = Manager.MapManager.Instance.GetMap(pc.MapID).GetActor(pc.PossessionTarget);
+                        var possession = MapManager.Instance.GetMap(pc.MapID).GetActor(pc.PossessionTarget);
                         if (possession != null)
                         {
                             if (possession.type == ActorType.PC)
@@ -4122,16 +3949,23 @@ namespace SagaMap.Skill
                                 attacker = sActor;
                         }
                         else
+                        {
                             attacker = sActor;
+                        }
                     }
                     else
+                    {
                         attacker = sActor;
+                    }
                 }
                 else
+                {
                     attacker = sActor;
+                }
+
                 if (dActor.type == ActorType.MOB)
                 {
-                    ActorEventHandlers.MobEventHandler mob = (ActorEventHandlers.MobEventHandler)dActor.e;
+                    var mob = (MobEventHandler)dActor.e;
                     if (sActor.Status.Additions.ContainsKey("柔和魔法"))
                         mob.AI.OnAttacked(attacker, damage / 2);
                     else
@@ -4141,7 +3975,7 @@ namespace SagaMap.Skill
                 }
                 else
                 {
-                    ActorEventHandlers.PetEventHandler mob = (ActorEventHandlers.PetEventHandler)dActor.e;
+                    var mob = (PetEventHandler)dActor.e;
                     if (sActor.Status.Additions.ContainsKey("柔和魔法"))
                         mob.AI.OnAttacked(attacker, damage / 2);
                     else
@@ -4155,40 +3989,46 @@ namespace SagaMap.Skill
             {
                 //如果凭依中受攻击解除凭依
                 //TODO: 支援スキル使用時の憑依解除設定
-                ActorPC pc = (ActorPC)dActor;
+                var pc = (ActorPC)dActor;
                 if (pc.Online)
                 {
-                    MapClient client = MapClient.FromActorPC(pc);
+                    var client = MapClient.FromActorPC(pc);
                     if (client.Character.Buff.GetReadyPossession)
                     {
                         client.Character.Buff.GetReadyPossession = false;
-                        client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, client.Character, true);
+                        client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null,
+                            client.Character, true);
                         if (client.Character.Tasks.ContainsKey("Possession"))
                         {
                             client.Character.Tasks["Possession"].Deactivate();
                             client.Character.Tasks.Remove("Possession");
                         }
                     }
+
                     if (dActor.Status.Additions.ContainsKey("Hiding"))
                     {
                         dActor.Status.Additions["Hiding"].AdditionEnd();
                         dActor.Status.Additions.Remove("Hiding");
                     }
+
                     if (dActor.Status.Additions.ContainsKey("fish"))
                     {
                         dActor.Status.Additions["fish"].AdditionEnd();
                         dActor.Status.Additions.Remove("fish");
                     }
+
                     if (dActor.Status.Additions.ContainsKey("Cloaking"))
                     {
                         dActor.Status.Additions["Cloaking"].AdditionEnd();
                         dActor.Status.Additions.Remove("Cloaking");
                     }
+
                     if (dActor.Status.Additions.ContainsKey("IAmTree"))
                     {
                         dActor.Status.Additions["IAmTree"].AdditionEnd();
                         dActor.Status.Additions.Remove("IAmTree");
                     }
+
                     if (dActor.Status.Additions.ContainsKey("Invisible"))
                     {
                         dActor.Status.Additions["Invisible"].AdditionEnd();
@@ -4200,13 +4040,14 @@ namespace SagaMap.Skill
             //魔力吸收
             if (dActor.Status.Additions.ContainsKey("Desist") && damage >= 0)
             {
-                float desistfactor = ((float)(dActor.Status.Additions["Desist"] as DefaultBuff).Variable["Desist"] / 100.0f);
-                int mpdesist = (int)Math.Floor((float)damage * desistfactor);
-                if (dActor.MaxMP < (dActor.MP + mpdesist))
+                var desistfactor = (dActor.Status.Additions["Desist"] as DefaultBuff).Variable["Desist"] / 100.0f;
+                var mpdesist = (int)Math.Floor(damage * desistfactor);
+                if (dActor.MaxMP < dActor.MP + mpdesist)
                     dActor.MP = dActor.MaxMP;
                 else
                     dActor.MP += (uint)mpdesist;
-                MapManager.Instance.GetMap(dActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, dActor, true);
+                MapManager.Instance.GetMap(dActor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, dActor, true);
             }
 
             //如果对象目标死亡
@@ -4224,125 +4065,138 @@ namespace SagaMap.Skill
                 {
                     if (dActor.type == ActorType.PC)
                     {
-                        ActorPC pc = (ActorPC)dActor;
+                        var pc = (ActorPC)dActor;
                         if (pc.Pet != null)
-                        {
                             if (pc.Pet.Ride)
                             {
-                                ActorEventHandlers.PCEventHandler eh = (ActorEventHandlers.PCEventHandler)pc.e;
-                                Packets.Client.CSMG_ITEM_MOVE p = new SagaMap.Packets.Client.CSMG_ITEM_MOVE();
+                                var eh = (PCEventHandler)pc.e;
+                                var p = new CSMG_ITEM_MOVE();
                                 p.data = new byte[11];
-                                if (pc.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.PET))
+                                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
                                 {
-                                    SagaDB.Item.Item item = pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.PET];
+                                    var item = pc.Inventory.Equipments[EnumEquipSlot.PET];
                                     if (item.Durability != 0) item.Durability--;
                                     eh.Client.SendItemInfo(item);
-                                    eh.Client.SendSystemMessage(string.Format(Manager.LocalManager.Instance.Strings.PET_FRIENDLY_DOWN, item.BaseData.name));
-                                    EffectArg arg = new EffectArg();
+                                    eh.Client.SendSystemMessage(string.Format(
+                                        LocalManager.Instance.Strings.PET_FRIENDLY_DOWN, item.BaseData.name));
+                                    var arg = new EffectArg();
                                     arg.actorID = eh.Client.Character.ActorID;
                                     arg.effectID = 8044;
                                     eh.OnShowEffect(eh.Client.Character, arg);
                                     p.InventoryID = item.Slot;
-                                    p.Target = SagaDB.Item.ContainerType.BODY;
+                                    p.Target = ContainerType.BODY;
                                     p.Count = 1;
                                     eh.Client.OnItemMove(p);
                                 }
                                 //return;
                             }
-                        }
 
                         //凭依者死亡自动解除凭依
                         if (pc.PossessionTarget != 0)
                         {
-                            Packets.Client.CSMG_POSSESSION_CANCEL p = new SagaMap.Packets.Client.CSMG_POSSESSION_CANCEL();
+                            var p = new CSMG_POSSESSION_CANCEL();
                             p.PossessionPosition = PossessionPosition.NONE;
                             MapClient.FromActorPC(pc).OnPossessionCancel(p);
                         }
-                        if (((ActorPC)dActor).Mode != PlayerMode.COLISEUM_MODE && ((ActorPC)dActor).Mode != PlayerMode.KNIGHT_WAR)
+
+                        if (((ActorPC)dActor).Mode != PlayerMode.COLISEUM_MODE &&
+                            ((ActorPC)dActor).Mode != PlayerMode.KNIGHT_WAR)
                             ExperienceManager.Instance.DeathPenalty((ActorPC)dActor);
                         //处理WRP
                         if (sActor.type == ActorType.PC)
                         {
-                            Map map = MapManager.Instance.GetMap(pc.MapID);
-                            if (map.Info.Flag.Test(SagaDB.Map.MapFlags.Wrp))
+                            var map = MapManager.Instance.GetMap(pc.MapID);
+                            if (map.Info.Flag.Test(MapFlags.Wrp))
                                 ExperienceManager.Instance.ProcessWrp((ActorPC)sActor, pc);
                         }
                     }
 
                     if (dActor.type == ActorType.MOB)
                     {
-                        ActorMob mob = (ActorMob)dActor;
+                        var mob = (ActorMob)dActor;
                         if (sActor.type == ActorType.PC)
                         {
-                            ActorPC pc = (ActorPC)sActor;
-                            ActorEventHandlers.PCEventHandler eh = (ActorEventHandlers.PCEventHandler)pc.e;
-                            Map map;// = SagaMap.Manager.MapManager.Instance.GetMap(dActor.MapID);
-                            List<Actor> eventactors;// = map.GetActorsArea(dActor, 3000, false, true);
-                            List<ActorPC> owners;// = new List<ActorPC>();
-                            if (SkillHandler.Instance.isBossMob(mob) && ((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.SpawnDelay >= 1800000)
+                            var pc = (ActorPC)sActor;
+                            var eh = (PCEventHandler)pc.e;
+                            Map map; // = SagaMap.Manager.MapManager.Instance.GetMap(dActor.MapID);
+                            List<Actor> eventactors; // = map.GetActorsArea(dActor, 3000, false, true);
+                            List<ActorPC> owners; // = new List<ActorPC>();
+                            if (Instance.isBossMob(mob) && ((MobEventHandler)mob.e).AI.SpawnDelay >= 1800000)
                             {
-                                map = SagaMap.Manager.MapManager.Instance.GetMap(dActor.MapID);
+                                map = MapManager.Instance.GetMap(dActor.MapID);
                                 eventactors = map.GetActorsArea(dActor, 12700, false, true);
-                                eventactors = eventactors.Where(x => x.type == ActorType.PC && (x as ActorPC).Online).ToList();
+                                eventactors = eventactors.Where(x => x.type == ActorType.PC && (x as ActorPC).Online)
+                                    .ToList();
                                 foreach (var item in eventactors)
                                 {
-                                    MapClient.FromActorPC((ActorPC)item).SendAnnounce("本次: [" + mob.Name + "]已经完成击杀,设置系召唤系技能造成的伤害不被统计为你的个人伤害.");
+                                    MapClient.FromActorPC((ActorPC)item)
+                                        .SendAnnounce("本次: [" + mob.Name + "]已经完成击杀,设置系召唤系技能造成的伤害不被统计为你的个人伤害.");
                                     MapClient.FromActorPC((ActorPC)item).SendAnnounce("正在分配击杀......");
                                 }
+
                                 owners = new List<ActorPC>();
-                                foreach (var item in ((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.DamageTable)
+                                foreach (var item in ((MobEventHandler)mob.e).AI.DamageTable)
                                 {
-                                    Actor act = eventactors.FirstOrDefault(x => x.ActorID == item.Key);
+                                    var act = eventactors.FirstOrDefault(x => x.ActorID == item.Key);
                                     if (act != null && act.type == ActorType.PC && (act as ActorPC).Online)
                                     {
-                                        MapClient.FromActorPC((ActorPC)act).SendAnnounce(string.Format("本次击杀: [{0}],你贡献了: {1}点伤害", mob.Name, item.Value));
+                                        MapClient.FromActorPC((ActorPC)act)
+                                            .SendAnnounce(string.Format("本次击杀: [{0}],你贡献了: {1}点伤害", mob.Name,
+                                                item.Value));
                                         owners.Add((ActorPC)act);
                                         if ((act as ActorPC).PossesionedActors.Count > 0)
-                                        {
                                             foreach (var pitem in (act as ActorPC).PossesionedActors)
                                             {
                                                 if (!pitem.Online)
                                                     continue;
-                                                if (((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.DamageTable.Where(x => x.Key == pitem.ActorID).ToList().Count == 0 && pitem.MapID == mob.MapID)
+                                                if (((MobEventHandler)mob.e).AI.DamageTable
+                                                    .Where(x => x.Key == pitem.ActorID).ToList().Count == 0 &&
+                                                    pitem.MapID == mob.MapID)
                                                 {
-                                                    MapClient.FromActorPC(pitem).SendAnnounce(string.Format("本次击杀: [{0}],你未提供伤害贡献,但是你混到了凭依击杀", mob.Name));
-                                                    owners.Add((ActorPC)pitem);
+                                                    MapClient.FromActorPC(pitem)
+                                                        .SendAnnounce(string.Format("本次击杀: [{0}],你未提供伤害贡献,但是你混到了凭依击杀",
+                                                            mob.Name));
+                                                    owners.Add(pitem);
                                                 }
                                             }
-                                        }
+
                                         if ((act as ActorPC).PossessionTarget != 0)
-                                        {
-                                            if (((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.DamageTable.Where(x => x.Key == (act as ActorPC).PossessionTarget).ToList().Count == 0 && act.MapID == mob.MapID)
+                                            if (((MobEventHandler)mob.e).AI.DamageTable
+                                                .Where(x => x.Key == (act as ActorPC).PossessionTarget).ToList()
+                                                .Count == 0 && act.MapID == mob.MapID)
                                             {
-                                                MapClient cli = MapClient.FromActorPC((ActorPC)eventactors.FirstOrDefault(x => x.ActorID == (act as ActorPC).PossessionTarget));
+                                                var cli = MapClient.FromActorPC((ActorPC)eventactors.FirstOrDefault(x =>
+                                                    x.ActorID == (act as ActorPC).PossessionTarget));
                                                 if (cli != null)
                                                 {
-                                                    cli.SendAnnounce(string.Format("本次击杀: [{0}],你没有提供伤害贡献,但是你混到了凭依跑者击杀", mob.Name));
-                                                    owners.Add((ActorPC)eventactors.First(x => x.ActorID == (act as ActorPC).PossessionTarget));
+                                                    cli.SendAnnounce(string.Format("本次击杀: [{0}],你没有提供伤害贡献,但是你混到了凭依跑者击杀",
+                                                        mob.Name));
+                                                    owners.Add((ActorPC)eventactors.First(x =>
+                                                        x.ActorID == (act as ActorPC).PossessionTarget));
                                                 }
                                             }
-                                        }
+
                                         if ((act as ActorPC).Party != null)
-                                        {
                                             foreach (var ptitem in (act as ActorPC).Party.Members)
-                                            {
-                                                if (((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.DamageTable.Where(x => x.Key == ptitem.Value.ActorID).ToList().Count == 0 && ptitem.Value.Online && ptitem.Value.MapID == mob.MapID)
+                                                if (((MobEventHandler)mob.e).AI.DamageTable
+                                                    .Where(x => x.Key == ptitem.Value.ActorID).ToList().Count == 0 &&
+                                                    ptitem.Value.Online && ptitem.Value.MapID == mob.MapID)
                                                 {
-                                                    MapClient.FromActorPC((ActorPC)ptitem.Value).SendAnnounce(string.Format("本次击杀: [{0}],你没有提供伤害贡献,但是你混到了组队击杀", mob.Name));
+                                                    MapClient.FromActorPC(ptitem.Value)
+                                                        .SendAnnounce(string.Format("本次击杀: [{0}],你没有提供伤害贡献,但是你混到了组队击杀",
+                                                            mob.Name));
                                                     owners.Add(ptitem.Value);
                                                 }
-                                            }
-                                        }
                                     }
                                 }
+
                                 foreach (var ac in owners)
                                 {
-
-                                    if ((ac as ActorPC) == null)
+                                    if (ac == null)
                                         continue;
-                                    if (!(ac as ActorPC).Online)
+                                    if (!ac.Online)
                                         continue;
-                                    ActorEventHandlers.PCEventHandler ieh = (ActorEventHandlers.PCEventHandler)(ac as ActorPC).e;
+                                    var ieh = (PCEventHandler)ac.e;
                                     ieh.Client.EventMobKilled(mob);
                                     ieh.Client.QuestMobKilled(mob, false);
                                 }
@@ -4352,12 +4206,13 @@ namespace SagaMap.Skill
                                 //处理任务信息
                                 if (pc.Party != null)
                                 {
-                                    foreach (ActorPC tmp in pc.Party.Members.Values)
+                                    foreach (var tmp in pc.Party.Members.Values)
                                     {
                                         if (!tmp.Online) continue;
                                         if (tmp == pc) continue;
-                                        ((ActorEventHandlers.PCEventHandler)tmp.e).Client.QuestMobKilled(mob, true);
+                                        ((PCEventHandler)tmp.e).Client.QuestMobKilled(mob, true);
                                     }
+
                                     eh.Client.QuestMobKilled(mob, false);
                                 }
                                 else
@@ -4365,19 +4220,19 @@ namespace SagaMap.Skill
                                     eh.Client.QuestMobKilled(mob, false);
                                 }
                             }
-                            map = SagaMap.Manager.MapManager.Instance.GetMap(dActor.MapID);
+
+                            map = MapManager.Instance.GetMap(dActor.MapID);
                             eventactors = map.GetActorsArea(dActor, 3000, false, true);
                             owners = new List<ActorPC>();
-                            foreach (Actor ac in eventactors)
-                            {
-                                if (((SagaMap.ActorEventHandlers.MobEventHandler)mob.e).AI.DamageTable.ContainsKey(ac.ActorID) && ac.type == ActorType.PC)
+                            foreach (var ac in eventactors)
+                                if (((MobEventHandler)mob.e).AI.DamageTable.ContainsKey(ac.ActorID) &&
+                                    ac.type == ActorType.PC)
                                     owners.Add((ActorPC)ac);
-                            }
-                            foreach (ActorPC i in owners)
+                            foreach (var i in owners)
                             {
                                 if (!i.Online) continue;
                                 if (i == null) continue;
-                                ActorEventHandlers.PCEventHandler ieh = (ActorEventHandlers.PCEventHandler)i.e;
+                                var ieh = (PCEventHandler)i.e;
                                 ieh.Client.EventMobKilled(mob);
                             }
                         }
@@ -4432,13 +4287,14 @@ namespace SagaMap.Skill
             }
         }
 
-        void GetlongARROW(ActorPC pc, SkillArg arg)
+        private void GetlongARROW(ActorPC pc, SkillArg arg)
         {
-            if (pc.Skills.ContainsKey(2035) || pc.Skills2_2.ContainsKey(2035) || pc.DualJobSkill.Exists(x => x.ID == 2035))
+            if (pc.Skills.ContainsKey(2035) || pc.Skills2_2.ContainsKey(2035) ||
+                pc.DualJobSkill.Exists(x => x.ID == 2035))
             {
-                if ((pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.ARROW ||
-                    pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.BULLET) &&
-                   pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Stack > 0)
+                if ((pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.ARROW ||
+                     pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.BULLET) &&
+                    pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack > 0)
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 2035))
@@ -4452,39 +4308,36 @@ namespace SagaMap.Skill
                     if (pc.Skills2_2.ContainsKey(2035))
                         mainlv2 = pc.Skills2_2[2035].Level;
 
-                    int maxlv = Math.Max(duallv, mainlv);
+                    var maxlv = Math.Max(duallv, mainlv);
                     maxlv = Math.Max(maxlv, mainlv2);
-                    if (arg.skill == null)//普通攻击
+                    if (arg.skill == null) //普通攻击
                     {
-                        if (SagaLib.Global.Random.Next(0, 99) >= maxlv * 10)
-                        {
-                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                        }
-
-
+                        if (Global.Random.Next(0, 99) >= maxlv * 10)
+                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot,
+                                1, false);
                     }
                     else
                     {
-                        if (SagaLib.Global.Random.Next(0, 99) >= maxlv * 10)
-                        {
-                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
-                        }
+                        if (Global.Random.Next(0, 99) >= maxlv * 10)
+                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot,
+                                1, false);
                     }
                 }
             }
             else
             {
-                MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].Slot, 1, false);
+                MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot, 1, false);
             }
         }
 
-        void GetlongCARD(ActorPC pc, SkillArg arg)
+        private void GetlongCARD(ActorPC pc, SkillArg arg)
         {
-            if (pc.Skills.ContainsKey(2035) || pc.Skills2_2.ContainsKey(2035) || pc.DualJobSkill.Exists(x => x.ID == 2035))
+            if (pc.Skills.ContainsKey(2035) || pc.Skills2_2.ContainsKey(2035) ||
+                pc.DualJobSkill.Exists(x => x.ID == 2035))
             {
-                if ((pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.THROW ||
-                    pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.CARD) &&
-                   pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Stack > 0)
+                if ((pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.THROW ||
+                     pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.CARD) &&
+                    pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Stack > 0)
                 {
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 2035))
@@ -4498,29 +4351,25 @@ namespace SagaMap.Skill
                     if (pc.Skills2_2.ContainsKey(2035))
                         mainlv2 = pc.Skills2_2[2035].Level;
 
-                    int maxlv = Math.Max(duallv, mainlv);
+                    var maxlv = Math.Max(duallv, mainlv);
                     maxlv = Math.Max(maxlv, mainlv2);
-                    if (arg.skill == null)//普通攻击
+                    if (arg.skill == null) //普通攻击
                     {
-                        if (SagaLib.Global.Random.Next(0, 99) >= maxlv * 10)
-                        {
-                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
-                        }
-
-
+                        if (Global.Random.Next(0, 99) >= maxlv * 10)
+                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot,
+                                1, false);
                     }
                     else
                     {
-                        if (SagaLib.Global.Random.Next(0, 99) >= maxlv * 10)
-                        {
-                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
-                        }
+                        if (Global.Random.Next(0, 99) >= maxlv * 10)
+                            MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot,
+                                1, false);
                     }
                 }
             }
             else
             {
-                MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
+                MapClient.FromActorPC(pc).DeleteItem(pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot, 1, false);
             }
         }
     }

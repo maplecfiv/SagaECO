@@ -1,52 +1,50 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
-using SagaLib;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.BountyHunter
 {
     /// <summary>
-    /// 3段擊劍（スラッシュコンビネーション）
+    ///     3段擊劍（スラッシュコンビネーション）
     /// </summary>
     public class PartsSlash : ISkill
     {
+        private static readonly uint[] skills = { 2274, 2272, 2271, 2273 };
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor)) return 0;
+
+            return -14;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int times = SagaLib.Global.Random.Next(0, 3);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+            var times = SagaLib.Global.Random.Next(0, 3);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             int[] delay = { 0, 1000, 700 };
-            ActorPC sActorPC = (ActorPC)sActor;
-            for (int i = 0; i < times; i++)
+            var sActorPC = (ActorPC)sActor;
+            for (var i = 0; i < times; i++)
             {
-                uint SkillID = PartsSlash.skills[SagaLib.Global.Random.Next(0, PartsSlash.skills.Length - 1)];
+                var SkillID = skills[SagaLib.Global.Random.Next(0, skills.Length - 1)];
                 if (sActorPC.Skills2.ContainsKey(SkillID))
                 {
-                    AutoCastInfo info = SkillHandler.Instance.CreateAutoCastInfo(SkillID, sActorPC.Skills2[SkillID].Level, delay[i]);
+                    var info = SkillHandler.Instance.CreateAutoCastInfo(SkillID, sActorPC.Skills2[SkillID].Level,
+                        delay[i]);
                     args.autoCast.Add(info);
                 }
                 else if (sActorPC.SkillsReserve.ContainsKey(SkillID))
                 {
-                    AutoCastInfo info = SkillHandler.Instance.CreateAutoCastInfo(SkillID, sActorPC.SkillsReserve[SkillID].Level, delay[i]);
+                    var info = SkillHandler.Instance.CreateAutoCastInfo(SkillID, sActorPC.SkillsReserve[SkillID].Level,
+                        delay[i]);
                     args.autoCast.Add(info);
                 }
             }
         }
+
         #endregion
-        static uint[] skills = { 2274, 2272, 2271, 2273 };
+
         //#region Timer
         //private class Activator : MultiRunTask
         //{

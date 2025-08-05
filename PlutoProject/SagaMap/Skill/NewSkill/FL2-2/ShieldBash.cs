@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.FL2_2
 {
-
     public class ShieldBash : ISkill
     {
-
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
@@ -19,14 +13,14 @@ namespace SagaMap.Skill.SkillDefinations.FL2_2
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1+0.2f*level;
+            var factor = 1 + 0.2f * level;
             args.type = ATTACK_TYPE.BLOW;
 
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-            if ((args.flag[0] & SagaLib.AttackFlag.HP_DAMAGE) != 0)
+            if ((args.flag[0] & AttackFlag.HP_DAMAGE) != 0)
             {
-                int rate = 100;
-                int lifetime = 0;
+                var rate = 100;
+                var lifetime = 0;
                 switch (level)
                 {
                     case 1:
@@ -45,10 +39,12 @@ namespace SagaMap.Skill.SkillDefinations.FL2_2
                         lifetime = 12000;
                         break;
                 }
-                lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime, SkillHandler.异常状态.昏迷, ((ActorPC)sActor).Str);
+
+                lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime, SkillHandler.异常状态.昏迷,
+                    ((ActorPC)sActor).Str);
                 if (lifetime > 0)
                 {
-                    Additions.Global.Stun skill = new SagaMap.Skill.Additions.Global.Stun(args.skill, dActor, lifetime);
+                    var skill = new Stun(args.skill, dActor, lifetime);
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
             }

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 {
     /// <summary>
-    /// 赞歌（Ragnarok）
+    ///     赞歌（Ragnarok）
     /// </summary>
     public class Adoramus : ISkill
     {
@@ -21,13 +17,11 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 15.0f;
+            var factor = 15.0f;
             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor))
-            {
-                SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
-            }
-
+                SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
+
         #endregion
     }
 }

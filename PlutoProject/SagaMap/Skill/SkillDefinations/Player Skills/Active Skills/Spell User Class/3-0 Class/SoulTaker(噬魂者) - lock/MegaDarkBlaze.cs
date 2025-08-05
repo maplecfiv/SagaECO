@@ -1,57 +1,52 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
 {
     public class MegaDarkBlaze : ISkill
     {
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if(sActor.PossessionTarget > 0)
-            {
-                return -25;
-            }
+            if (sActor.PossessionTarget > 0) return -25;
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 2f + 2f * level;
-            //²»¹ÜÊÇÖ÷Ö°»¹ÊÇ¸±Ö°, Ö»ÒªÏ°µÃºÚ°µ»ðÑæ¼¼ÄÜ£¬½øÐÐÅÐ¶Ï
-            if(sActor.type==ActorType.PC)
+            var factor = 2f + 2f * level;
+            //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ï¿½ï¿½Ç¸ï¿½Ö°, Ö»ÒªÏ°ï¿½ÃºÚ°ï¿½ï¿½ï¿½ï¿½æ¼¼ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+            if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = sActor as ActorPC;
+                var pc = sActor as ActorPC;
                 if (pc.Skills2_1.ContainsKey(3310) || pc.DualJobSkill.Exists(x => x.ID == 3310))
                 {
-                    //ÕâÀïÈ¡¸±Ö°µÄºÚ°µ»ðÑæµÈ¼¶
+                    //ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ö°ï¿½ÄºÚ°ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½
                     var duallv = 0;
                     if (pc.DualJobSkill.Exists(x => x.ID == 3310))
                         duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3310).Level;
 
-                    //ÕâÀïÈ¡Ö÷Ö°µÄºÚ°µ»ðÑæµÈ¼¶
+                    //ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ö°ï¿½ÄºÚ°ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½
                     var mainlv = 0;
                     if (pc.Skills2_1.ContainsKey(3310))
                         mainlv = pc.Skills2_1[3310].Level;
 
-                    //ÕâÀïÈ¡µÈ¼¶×î¸ßµÄºÚ°µ»ðÑæµÈ¼¶ÓÃÀ´±¶ÂÊ¼Ó³É
-                    factor += (2.5f + 0.5f * Math.Max(duallv, mainlv));
+                    //ï¿½ï¿½ï¿½ï¿½È¡ï¿½È¼ï¿½ï¿½ï¿½ßµÄºÚ°ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Ó³ï¿½
+                    factor += 2.5f + 0.5f * Math.Max(duallv, mainlv);
                 }
             }
-            
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 550, false);
-            List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
-                    realAffected.Add(act);
-                }
-            }
-            SkillHandler.Instance.MagicAttack(sActor, realAffected, args, SagaLib.Elements.Dark, factor);
-        }
 
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 550, false);
+            var realAffected = new List<Actor>();
+            foreach (var act in affected)
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
+                    realAffected.Add(act);
+
+            SkillHandler.Instance.MagicAttack(sActor, realAffected, args, Elements.Dark, factor);
+        }
     }
 }

@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Scripting;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,20 +6,15 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_EVENT_START_RESULT()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x05E7;
-            this.PutUInt(0, 6);//unknown
+            data = new byte[10];
+            offset = 2;
+            ID = 0x05E7;
+            PutUInt(0, 6); //unknown
         }
 
         public uint NPCID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
-
     }
 }
-

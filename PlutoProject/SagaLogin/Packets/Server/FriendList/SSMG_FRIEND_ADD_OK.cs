@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaDB.Actor;
-
 using SagaLib;
 
 namespace SagaLogin.Packets.Server
@@ -12,17 +6,13 @@ namespace SagaLogin.Packets.Server
     {
         public SSMG_FRIEND_ADD_OK()
         {
-            this.data = new byte[6];
-            this.ID = 0x00D5;
+            data = new byte[6];
+            ID = 0x00D5;
         }
 
         public uint CharID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }
-

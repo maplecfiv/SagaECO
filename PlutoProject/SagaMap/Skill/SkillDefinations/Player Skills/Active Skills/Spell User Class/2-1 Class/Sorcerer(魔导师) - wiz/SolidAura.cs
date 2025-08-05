@@ -1,41 +1,43 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
+using SagaMap.Network.Client;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Sorcerer
 {
     /// <summary>
-    /// 固体光环（ソリッドオーラ）
+    ///     固体光环（ソリッドオーラ）
     /// </summary>
     public class SolidAura : ISkill
     {
-        KyrieUser user = KyrieUser.Player;
         public enum KyrieUser
         {
             Player,
             Mob,
             Boss
         }
+
+        private readonly KyrieUser user = KyrieUser.Player;
+
         public SolidAura()
         {
         }
+
         public SolidAura(KyrieUser user)
         {
             this.user = user;
         }
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            int lifetime = 7000 + 1000 * level;
+            var lifetime = 7000 + 1000 * level;
             if (user == KyrieUser.Mob)
             {
                 lifetime = 16000;
@@ -46,21 +48,23 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
                 lifetime = 60000;
                 dActor = sActor;
             }
-            Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
+
+            var map = MapManager.Instance.GetMap(dActor.MapID);
             if (sActor.ActorID == dActor.ActorID)
             {
-                EffectArg arg2 = new EffectArg();
+                var arg2 = new EffectArg();
                 arg2.effectID = 5167;
                 arg2.actorID = dActor.ActorID;
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, dActor, true);
             }
 
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "MobKyrie", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, dActor, "MobKyrie", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             if (user == KyrieUser.Mob)
             {
@@ -76,19 +80,25 @@ namespace SagaMap.Skill.SkillDefinations.Sorcerer
                 skill["MobKyrie"] = times[skill.skill.Level];
                 if (actor.type == ActorType.PC)
                 {
-                    ActorPC pc = (ActorPC)actor;
-                    Network.Client.MapClient.FromActorPC(pc).SendSystemMessage(string.Format(Manager.LocalManager.Instance.Strings.SKILL_STATUS_ENTER, skill.skill.Name));
+                    var pc = (ActorPC)actor;
+                    MapClient.FromActorPC(pc)
+                        .SendSystemMessage(string.Format(LocalManager.Instance.Strings.SKILL_STATUS_ENTER,
+                            skill.skill.Name));
                 }
             }
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)actor;
-                Network.Client.MapClient.FromActorPC(pc).SendSystemMessage(string.Format(Manager.LocalManager.Instance.Strings.SKILL_STATUS_LEAVE, skill.skill.Name));
+                var pc = (ActorPC)actor;
+                MapClient.FromActorPC(pc)
+                    .SendSystemMessage(
+                        string.Format(LocalManager.Instance.Strings.SKILL_STATUS_LEAVE, skill.skill.Name));
             }
         }
+
         #endregion
     }
 }

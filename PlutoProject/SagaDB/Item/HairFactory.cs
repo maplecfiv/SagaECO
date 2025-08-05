@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 using SagaLib.VirtualFileSystem;
+
 namespace SagaDB.Item
 {
     public class HairFactory : Singleton<HairFactory>
     {
-        List<Hair> hairs = new List<Hair>();
-        public List<Hair> Hairs { get { return hairs; } }
-        public void Init(string path, System.Text.Encoding encoding)
-        {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+        public List<Hair> Hairs { get; } = new List<Hair>();
 
-            DateTime time = DateTime.Now;
+        public void Init(string path, Encoding encoding)
+        {
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -30,7 +29,7 @@ namespace SagaDB.Item
                         continue;
                     paras = line.Split(',');
 
-                    Hair hair = new Hair();
+                    var hair = new Hair();
                     hair.ItemID = uint.Parse(paras[0]);
                     hair.Gender = byte.Parse(paras[1]);
                     hair.HairStyle = short.Parse(paras[2]);
@@ -51,6 +50,5 @@ namespace SagaDB.Item
 
             sr.Close();
         }
-
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaLib;
 
 namespace SagaDB.Actor
@@ -31,7 +27,7 @@ namespace SagaDB.Actor
         UndeadCity,
         MaimaiDungeon,
         TitaniaField,
-        DominianField,
+        DominianField
     }
 
     public enum StampSlot
@@ -45,12 +41,13 @@ namespace SagaDB.Actor
         Seven = 0x40,
         Eight = 0x80,
         Nine = 0x100,
-        Ten = 0x200,
+        Ten = 0x200
     }
 
     public class Stamp
     {
-        Dictionary<StampGenre, BitMask<StampSlot>> stamps = new Dictionary<StampGenre, BitMask<StampSlot>>();
+        private Dictionary<StampGenre, BitMask<StampSlot>> stamps = new Dictionary<StampGenre, BitMask<StampSlot>>();
+
         public Stamp()
         {
             stamps.Add(StampGenre.Special, new BitMask<StampSlot>());
@@ -78,17 +75,11 @@ namespace SagaDB.Actor
             stamps.Add(StampGenre.DominianField, new BitMask<StampSlot>());
         }
 
+        public BitMask<StampSlot> this[StampGenre genre] => stamps[genre];
+
         public void Dispose()
         {
             stamps = null;
-        }
-
-        public BitMask<StampSlot> this[StampGenre genre]
-        {
-            get
-            {
-                return stamps[genre];
-            }
         }
     }
 }

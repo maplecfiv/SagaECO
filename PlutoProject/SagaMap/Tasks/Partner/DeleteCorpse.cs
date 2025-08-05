@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Tasks.Partner
 {
     public class DeleteCorpse : MultiRunTask
     {
-        private ActorPartner npc;
+        private readonly ActorPartner npc;
+
         public DeleteCorpse(ActorPartner partner)
         {
-            this.dueTime = 5000;
-            this.period = 5000;
-            this.npc = partner;
+            dueTime = 5000;
+            period = 5000;
+            npc = partner;
         }
 
         public override void CallBack()
@@ -25,13 +22,14 @@ namespace SagaMap.Tasks.Partner
             try
             {
                 npc.Tasks.Remove("DeleteCorpse");
-                Manager.MapManager.Instance.GetMap(npc.MapID).DeleteActor(npc);
-                this.Deactivate();
+                MapManager.Instance.GetMap(npc.MapID).DeleteActor(npc);
+                Deactivate();
             }
             catch (Exception)
             {
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_WAIT()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x05EB;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x05EB;
         }
 
         public uint Wait
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }
-

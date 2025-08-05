@@ -1,31 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaDB.Marionette;
 using SagaDB.Treasure;
-
-using SagaMap.Network.Client;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
 
 namespace SagaMap.Tasks.Golem
 {
     public class GolemTask : MultiRunTask
     {
-        ActorGolem golem;
-        int counter = 0;
-        DateTime nextGatherTime = DateTime.Now + new TimeSpan(2, 0, 0, 0);
-        TimeSpan gatherSpan;
+        private readonly TimeSpan gatherSpan;
+        private readonly ActorGolem golem;
+        private int counter;
+        private DateTime nextGatherTime = DateTime.Now + new TimeSpan(2, 0, 0, 0);
+
         public GolemTask(ActorGolem golem)
         {
-            this.dueTime = (int)60000;
-            this.period = (int)60000;
+            dueTime = 60000;
+            period = 60000;
             this.golem = golem;
 
-            Map map = Manager.MapManager.Instance.GetMap(golem.MapID);
+            var map = MapManager.Instance.GetMap(golem.MapID);
             switch (golem.GolemType)
             {
                 case GolemType.Plant:
@@ -34,6 +31,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Plant], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Mineral:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Mineral))
@@ -41,6 +39,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Mineral], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Magic:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Magic))
@@ -48,6 +47,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Magic], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.TreasureBox:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Treasurebox))
@@ -55,6 +55,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Treasurebox], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Excavation:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Excavation))
@@ -62,6 +63,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Excavation], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Any:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Any))
@@ -69,6 +71,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Any], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Strange:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Strange))
@@ -76,6 +79,7 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Strange], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
                 case GolemType.Food:
                     if (map.Info.gatherInterval.ContainsKey(GatherType.Food))
@@ -83,9 +87,9 @@ namespace SagaMap.Tasks.Golem
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Food], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
+
                     break;
             }
-
         }
 
         public override void CallBack()
@@ -95,27 +99,29 @@ namespace SagaMap.Tasks.Golem
             {
                 if (counter == 24 * 60)
                 {
-                    Map map = Manager.MapManager.Instance.GetMap(golem.MapID);
+                    var map = MapManager.Instance.GetMap(golem.MapID);
                     if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange)
                     {
-                        ActorEventHandlers.MobEventHandler eh = (SagaMap.ActorEventHandlers.MobEventHandler)golem.e;
-                        golem.e = new ActorEventHandlers.NullEventHandler();
+                        var eh = (MobEventHandler)golem.e;
+                        golem.e = new NullEventHandler();
                         eh.AI.Pause();
                     }
+
                     golem.invisble = true;
                     map.OnActorVisibilityChange(golem);
                     golem.Tasks.Remove("GolemTask");
-                    this.Deactivate();
+                    Deactivate();
                 }
-                if (this.nextGatherTime <= DateTime.Now)
+
+                if (nextGatherTime <= DateTime.Now)
                 {
                     if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange)
                     {
-                        Marionette mario = MarionetteFactory.Instance[golem.Item.BaseData.marionetteID];
+                        var mario = MarionetteFactory.Instance[golem.Item.BaseData.marionetteID];
                         if (mario != null)
                         {
                             TreasureItem item = null;
-                            int det = 0;
+                            var det = 0;
                             switch (golem.GolemType)
                             {
                                 case GolemType.Plant:
@@ -167,23 +173,23 @@ namespace SagaMap.Tasks.Golem
                                         item = TreasureFactory.Instance.GetRandomItem("Gather_Strange");
                                     break;
                             }
+
                             if (item != null)
-                            {
                                 if (item.ID != 0)
                                 {
-                                    SagaDB.Item.Item newItem = SagaDB.Item.ItemFactory.Instance.GetItem(item.ID, true); //免鉴定
+                                    var newItem = ItemFactory.Instance.GetItem(item.ID, true); //免鉴定
                                     newItem.Stack = (ushort)item.Count;
                                     if (newItem.Stack > 0)
-                                    {
-                                        Logger.LogItemGet(Logger.EventType.ItemGolemGet, this.golem.Owner.Name + "(" + this.golem.Owner.CharID + ")", newItem.BaseData.name + "(" + newItem.ItemID + ")",
+                                        Logger.LogItemGet(Logger.EventType.ItemGolemGet,
+                                            golem.Owner.Name + "(" + golem.Owner.CharID + ")",
+                                            newItem.BaseData.name + "(" + newItem.ItemID + ")",
                                             string.Format("GolemCollect Count:{0}", newItem.Stack), false);
-                                    }
 
-                                    golem.Owner.Inventory.AddItem(SagaDB.Item.ContainerType.GOLEMWAREHOUSE, newItem);
+                                    golem.Owner.Inventory.AddItem(ContainerType.GOLEMWAREHOUSE, newItem);
                                 }
-                            }
                         }
                     }
+
                     nextGatherTime += gatherSpan;
                 }
             }
@@ -191,7 +197,7 @@ namespace SagaMap.Tasks.Golem
             {
                 Logger.ShowError(ex);
                 golem.Tasks.Remove("GolemTask");
-                this.Deactivate();
+                Deactivate();
             }
         }
     }

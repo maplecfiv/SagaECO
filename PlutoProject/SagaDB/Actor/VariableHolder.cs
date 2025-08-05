@@ -1,25 +1,41 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 
 namespace SagaDB.Actor
 {
     /// <summary>
-    /// 变量不存在是自动返回默认Null值的变量存储器
+    ///     变量不存在是自动返回默认Null值的变量存储器
     /// </summary>
     /// <typeparam name="K"></typeparam>
     /// <typeparam name="T"></typeparam>
-    public class VariableHolder<K, T> : System.Collections.Generic.IDictionary<K, T>
+    public class VariableHolder<K, T> : IDictionary<K, T>
     {
+        private readonly T nullValue;
         public Dictionary<K, T> content = new Dictionary<K, T>();
-        T nullValue;
 
         public VariableHolder(T nullValue)
         {
             this.nullValue = nullValue;
         }
+
+        #region IEnumerable<KeyValuePair<K,T>> Members
+
+        public IEnumerator<KeyValuePair<K, T>> GetEnumerator()
+        {
+            return content.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return content.GetEnumerator();
+        }
+
+        #endregion
 
         #region IDictionary<K,T> Members
 
@@ -33,17 +49,13 @@ namespace SagaDB.Actor
             return content.ContainsKey(key);
         }
 
-        public ICollection<K> Keys
-        {
-            get { return content.Keys; }
-        }
+        public ICollection<K> Keys => content.Keys;
 
         public bool Remove(K key)
         {
             if (content.ContainsKey(key))
                 return content.Remove(key);
-            else
-                return false;
+            return false;
         }
 
         public bool TryGetValue(K key, out T value)
@@ -51,10 +63,7 @@ namespace SagaDB.Actor
             throw new NotImplementedException();
         }
 
-        public ICollection<T> Values
-        {
-            get { return content.Values; }
-        }
+        public ICollection<T> Values => content.Values;
 
         public T this[K key]
         {
@@ -62,10 +71,7 @@ namespace SagaDB.Actor
             {
                 if (content.ContainsKey(key))
                     return content[key];
-                else
-                {                    
-                    return nullValue;
-                }
+                return nullValue;
             }
             set
             {
@@ -100,37 +106,13 @@ namespace SagaDB.Actor
             throw new NotImplementedException();
         }
 
-        public int Count
-        {
-            get { return content.Count; }
-        }
+        public int Count => content.Count;
 
-        public bool IsReadOnly
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public bool IsReadOnly => throw new NotImplementedException();
 
         public bool Remove(KeyValuePair<K, T> item)
         {
             throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region IEnumerable<KeyValuePair<K,T>> Members
-
-        public IEnumerator<KeyValuePair<K, T>> GetEnumerator()
-        {
-            return content.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IEnumerable Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return content.GetEnumerator();
         }
 
         #endregion

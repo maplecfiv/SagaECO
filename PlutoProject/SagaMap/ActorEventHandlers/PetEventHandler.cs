@@ -1,150 +1,143 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaMap.Network.Client;
-
-using SagaLib;
-using SagaDB;
 using SagaDB.Actor;
 using SagaDB.Item;
+using SagaLib;
+using SagaMap.Manager;
+using SagaMap.Mob;
+using SagaMap.Packets.Client;
+using SagaMap.Tasks.Mob;
 
 namespace SagaMap.ActorEventHandlers
 {
     public class PetEventHandler : ActorEventHandler
     {
-        ActorPet mob;
-        public Mob.MobAI AI;
+        private readonly ActorPet mob;
+        public MobAI AI;
+
         public PetEventHandler(ActorPet mob)
         {
             this.mob = mob;
-            this.AI = new SagaMap.Mob.MobAI(mob);
+            AI = new MobAI(mob);
         }
 
         #region ActorEventHandler Members
+
         public void OnActorSkillCancel(Actor sActor)
         {
-
         }
+
         public void OnActorReturning(Actor sActor)
         {
-
         }
+
         public void OnActorPaperChange(ActorPC aActor)
         {
         }
+
         public void OnActorAppears(Actor aActor)
         {
             if (!mob.VisibleActors.Contains(aActor.ActorID))
                 mob.VisibleActors.Add(aActor.ActorID);
-            if (aActor.ActorID == this.mob.Owner.ActorID && this.mob.type != ActorType.SHADOW)
-            {
-                if (!this.AI.Hate.ContainsKey(aActor.ActorID))
-                    this.AI.Hate.Add(aActor.ActorID, 1);
-            }
+            if (aActor.ActorID == mob.Owner.ActorID && mob.type != ActorType.SHADOW)
+                if (!AI.Hate.ContainsKey(aActor.ActorID))
+                    AI.Hate.Add(aActor.ActorID, 1);
         }
 
         public void OnPlayerShopChange(Actor aActor)
         {
-
         }
+
         public void OnPlayerShopChangeClose(Actor aActor)
         {
-
         }
+
         public void OnActorChangeEquip(Actor sActor, MapEventArgs args)
         {
-            
         }
 
         public void OnActorChat(Actor cActor, MapEventArgs args)
         {
-            
         }
 
         public void OnActorDisappears(Actor dActor)
         {
             if (mob.VisibleActors.Contains(dActor.ActorID))
                 mob.VisibleActors.Remove(dActor.ActorID);
-            if (dActor.type == ActorType.PC && dActor.ActorID != this.mob.Owner.ActorID)
-            {
-                if (this.AI.Hate.ContainsKey(dActor.ActorID))
-                    this.AI.Hate.Remove(dActor.ActorID);
-            }
+            if (dActor.type == ActorType.PC && dActor.ActorID != mob.Owner.ActorID)
+                if (AI.Hate.ContainsKey(dActor.ActorID))
+                    AI.Hate.Remove(dActor.ActorID);
         }
 
         public void OnActorSkillUse(Actor sActor, MapEventArgs args)
         {
-            
         }
 
         public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
         {
-            
         }
+
         public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed, MoveType moveType)
         {
         }
+
         public void OnActorStopsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
         {
-           
         }
 
         public void OnCreate(bool success)
         {
-           
         }
 
 
         public void OnActorChangeEmotion(Actor aActor, MapEventArgs args)
         {
-           
         }
 
         public void OnActorChangeMotion(Actor aActor, MapEventArgs args)
         {
-            
         }
-        public void OnActorChangeWaitType(Actor aActor) { }
+
+        public void OnActorChangeWaitType(Actor aActor)
+        {
+        }
+
         public void OnDelete()
         {
             //TODO: add something
-            this.mob.VisibleActors.Clear();
+            mob.VisibleActors.Clear();
             AI.Pause();
         }
 
 
         public void OnCharInfoUpdate(Actor aActor)
         {
-
         }
 
 
         public void OnPlayerSizeChange(Actor aActor)
         {
-
         }
 
         public void OnDie()
         {
-            this.mob.Buff.Dead = true;
-            this.mob.ClearTaskAddition();
-            if (this.mob.type != ActorType.SHADOW)
+            mob.Buff.Dead = true;
+            mob.ClearTaskAddition();
+            if (mob.type != ActorType.SHADOW)
             {
-                ActorEventHandlers.PCEventHandler eh = (ActorEventHandlers.PCEventHandler)mob.Owner.e;
+                var eh = (PCEventHandler)mob.Owner.e;
                 eh.Client.DeletePet();
-                Packets.Client.CSMG_ITEM_MOVE p = new SagaMap.Packets.Client.CSMG_ITEM_MOVE();
+                var p = new CSMG_ITEM_MOVE();
                 p.data = new byte[11];
                 if (mob.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
                 {
-                    Item item = mob.Owner.Inventory.Equipments[EnumEquipSlot.PET];
+                    var item = mob.Owner.Inventory.Equipments[EnumEquipSlot.PET];
                     if (item.Durability != 0) item.Durability--;
 
                     eh.Client.SendItemInfo(item);
 
-                    eh.Client.SendSystemMessage(string.Format(Manager.LocalManager.Instance.Strings.PET_FRIENDLY_DOWN, mob.Name));
-                    EffectArg arg = new EffectArg();
+                    eh.Client.SendSystemMessage(
+                        string.Format(LocalManager.Instance.Strings.PET_FRIENDLY_DOWN, mob.Name));
+                    var arg = new EffectArg();
                     arg.actorID = eh.Client.Character.ActorID;
                     arg.effectID = 8044;
                     eh.OnShowEffect(eh.Client.Character, arg);
@@ -156,15 +149,15 @@ namespace SagaMap.ActorEventHandlers
             }
             else
             {
-                this.mob.Owner.Slave.Remove(this.mob);
-                this.AI.Pause();
-                Tasks.Mob.DeleteCorpse task = new SagaMap.Tasks.Mob.DeleteCorpse(this.mob);
-                this.mob.Tasks.Add("DeleteCorpse", task);
+                mob.Owner.Slave.Remove(mob);
+                AI.Pause();
+                var task = new DeleteCorpse(mob);
+                mob.Tasks.Add("DeleteCorpse", task);
                 task.Activate();
-                if (this.mob.Tasks.ContainsKey("Shadow"))
+                if (mob.Tasks.ContainsKey("Shadow"))
                 {
-                    this.mob.Tasks["Shadow"].Deactivate();
-                    this.mob.Tasks.Remove("Shadow");
+                    mob.Tasks["Shadow"].Deactivate();
+                    mob.Tasks.Remove("Shadow");
                 }
             }
         }
@@ -201,26 +194,24 @@ namespace SagaMap.ActorEventHandlers
 
         public void OnAttack(Actor aActor, MapEventArgs args)
         {
-
         }
 
         public void OnHPMPSPUpdate(Actor sActor)
         {
-
         }
 
         public void OnPlayerChangeStatus(ActorPC aActor)
         {
-
         }
 
         public void OnActorChangeBuff(Actor sActor)
         {
-
         }
+
         public void OnLevelUp(Actor sActor, MapEventArgs args)
         {
         }
+
         public void OnPlayerMode(Actor aActor)
         {
         }
@@ -231,21 +222,18 @@ namespace SagaMap.ActorEventHandlers
 
         public void OnActorPossession(Actor aActor, MapEventArgs args)
         {
-            
         }
 
         public void OnActorPartyUpdate(ActorPC aActor)
         {
-
         }
+
         public void OnActorSpeedChange(Actor mActor)
         {
-
         }
 
         public void OnSignUpdate(Actor aActor)
         {
-
         }
 
         public void PropertyUpdate(UpdateEvent arg, int para)
@@ -253,7 +241,7 @@ namespace SagaMap.ActorEventHandlers
             switch (arg)
             {
                 case UpdateEvent.SPEED:
-                    AI.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SPEED_UPDATE, null, this.mob, true);
+                    AI.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SPEED_UPDATE, null, mob, true);
                     break;
             }
         }
@@ -263,20 +251,29 @@ namespace SagaMap.ActorEventHandlers
         }
 
         public void OnActorRingUpdate(ActorPC aActor)
-        { }
+        {
+        }
 
         public void OnActorWRPRankingUpdate(ActorPC aActor)
-        { }
+        {
+        }
 
         public void OnActorChangeAttackType(ActorPC aActor)
-        { }
+        {
+        }
+
         public void OnActorFurnitureSit(ActorPC aActor)
-        { }
-        public void OnActorFurnitureList(Object obj)
-        { }
+        {
+        }
+
+        public void OnActorFurnitureList(object obj)
+        {
+        }
+
         public void OnUpdate(Actor aActor)
         {
         }
+
         #endregion
     }
 }

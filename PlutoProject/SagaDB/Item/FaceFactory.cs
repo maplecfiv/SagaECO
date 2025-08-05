@@ -1,30 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 using SagaLib.VirtualFileSystem;
+
 namespace SagaDB.Item
 {
     public class FaceFactory : Singleton<FaceFactory>
     {
         /*List<Face> faces = new List<Face>();
         public List<Face> Faces { get { return faces; } }*/
-        Dictionary<uint, uint> faces = new Dictionary<uint, uint>();
-        List<uint> faceitemidlist = new List<uint>();
+
         /// <summary>
-        /// 左FACEID 右道具ID
+        ///     左FACEID 右道具ID
         /// </summary>
-        public Dictionary<uint, uint> Faces { get { return faces; } }
+        public Dictionary<uint, uint> Faces { get; } = new Dictionary<uint, uint>();
 
-        public List<uint> FaceItemIDList { get { return faceitemidlist; } }
-        public void Init(string path, System.Text.Encoding encoding)
+        public List<uint> FaceItemIDList { get; } = new List<uint>();
+
+        public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
-            DateTime time = DateTime.Now;
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -37,10 +36,10 @@ namespace SagaDB.Item
                     if (line.Substring(0, 1) == "#")
                         continue;
                     paras = line.Split(',');
-                    uint itemID = uint.Parse(paras[0]);
-                    uint FaceID = uint.Parse(paras[1]);
-                    if(!Faces.ContainsKey(FaceID))
-                    Faces.Add(FaceID, itemID);
+                    var itemID = uint.Parse(paras[0]);
+                    var FaceID = uint.Parse(paras[1]);
+                    if (!Faces.ContainsKey(FaceID))
+                        Faces.Add(FaceID, itemID);
                     if (!FaceItemIDList.Contains(itemID)) FaceItemIDList.Add(itemID);
                 }
                 catch (Exception ex)
@@ -51,6 +50,5 @@ namespace SagaDB.Item
 
             sr.Close();
         }
-
     }
 }

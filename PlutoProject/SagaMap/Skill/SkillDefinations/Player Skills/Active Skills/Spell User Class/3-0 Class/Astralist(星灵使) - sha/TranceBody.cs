@@ -1,43 +1,43 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Astralist
 {
     /// <summary>
-    /// トランスボディ
+    ///     トランスボディ
     /// </summary>
     public class TranceBody : ISkill
     {
+        public SkillArg arg = new SkillArg();
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
-        public SkillArg arg = new SkillArg();
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             Actor realdActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
-            int lifetime = 150000 + 30000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, realdActor, "TranceBody", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 150000 + 30000 * level;
+            var skill = new DefaultBuff(args.skill, realdActor, "TranceBody", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(realdActor, skill);
-
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Buff.三转元素身体属性赋予 = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Buff.三转元素身体属性赋予 = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
         //public void Passive(Actor sActor, Actor dActor, Elements element, int elementValue, int damage)
         //{

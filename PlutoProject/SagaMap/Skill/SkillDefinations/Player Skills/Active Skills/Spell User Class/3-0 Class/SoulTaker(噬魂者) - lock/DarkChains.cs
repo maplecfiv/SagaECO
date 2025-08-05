@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
+﻿using SagaDB.Actor;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
-
 
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
 {
-    class DarkChains : ISkill
+    internal class DarkChains : ISkill
     {
         #region ISkill Members
 
@@ -23,30 +16,28 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            float factor = 1.2f + 0.3f * level;
+            var factor = 1.2f + 0.3f * level;
 
             if (sActor.type == ActorType.MOB)
-            {
                 //MobUse
                 //Check if target is using 反射
                 if (dActor.Status.Additions.ContainsKey("MagicReflect"))
                 {
-                    Actor temp = dActor;
+                    var temp = dActor;
                     dActor = sActor;
                     sActor = temp;
                     temp.Status.Additions.Remove("MagicReflect");
                 }
-            }
 
             SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Dark, factor);
-            int lifetime = 10000 + 5000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "DarkChains", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 10000 + 5000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, "DarkChains", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int[] down = { 0, 13, 15, 18, 18, 18 };
             if (actor.type == ActorType.PC)
@@ -69,7 +60,6 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
             }
             else
             {
-
                 actor.Buff.MinAtkDown = true;
                 actor.Buff.MaxAtkDown = true;
                 actor.Buff.ShortHitDown = true;
@@ -97,9 +87,11 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                 actor.Status.mdef_skill -= (short)down[skill.skill.Level];
             }
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor.type == ActorType.PC)
             {
@@ -136,12 +128,12 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                 actor.Status.avoid_melee_skill += (short)skill.Variable["DarkChains"];
                 actor.Status.avoid_ranged_skill += (short)skill.Variable["DarkChains"];
                 actor.Status.mdef_skill += (short)skill.Variable["DarkChains"];
-
-
             }
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

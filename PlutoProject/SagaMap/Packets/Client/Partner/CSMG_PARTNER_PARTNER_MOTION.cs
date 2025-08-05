@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -14,19 +7,13 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_PARTNER_PARTNER_MOTION()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public uint id
         {
-            get
-            {
-                return this.GetUInt(2);
-            }
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            get => GetUInt(2);
+            set => PutUInt(value, 2);
         }
 
         public override Packet New()
@@ -36,8 +23,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnPartnerMotion(this);
+            ((MapClient)client).OnPartnerMotion(this);
         }
-
     }
 }

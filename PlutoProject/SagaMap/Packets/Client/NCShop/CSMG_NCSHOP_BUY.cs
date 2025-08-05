@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,19 +7,16 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_NCSHOP_BUY()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public uint[] Items
         {
             get
             {
-                byte count = GetByte(2);
-                uint[] items = new uint[count];
-                for (int i = 0; i < count; i++)
-                {
-                    items[i] = GetUInt((ushort)(3 + i * 4));
-                }
+                var count = GetByte(2);
+                var items = new uint[count];
+                for (var i = 0; i < count; i++) items[i] = GetUInt((ushort)(3 + i * 4));
                 return items;
             }
         }
@@ -33,12 +25,9 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                byte count = GetByte(2);
-                uint[] items = new uint[count];
-                for (int i = 0; i < count; i++)
-                {
-                    items[i] = GetUInt((ushort)(4 + count * 4 + i * 4));
-                }
+                var count = GetByte(2);
+                var items = new uint[count];
+                for (var i = 0; i < count; i++) items[i] = GetUInt((ushort)(4 + count * 4 + i * 4));
                 return items;
             }
         }
@@ -50,8 +39,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnNCShopBuy(this);
+            ((MapClient)client).OnNCShopBuy(this);
         }
-
     }
 }

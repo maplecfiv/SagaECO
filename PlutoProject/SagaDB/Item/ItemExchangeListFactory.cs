@@ -1,10 +1,9 @@
-﻿using SagaLib;
-using SagaLib.VirtualFileSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.Item
 {
@@ -14,9 +13,9 @@ namespace SagaDB.Item
 
         public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
-            DateTime time = DateTime.Now;
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)

@@ -1,28 +1,25 @@
 ﻿//#define FreeVersion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
+using System;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
 using SagaDB;
 using SagaDB.Item;
-using SagaDB.Mob;
-using SagaDB.Map;
-using SagaDB.Skill;
 using SagaLib;
 using SagaLib.VirtualFileSystem;
 using SagaLogin.Manager;
-using SagaLogin.Network.Client;
-using System.Runtime.InteropServices;
 
 namespace SagaLogin
 {
     public class LoginServer
     {
         /// <summary>
-        /// The characterdatabase associated to this mapserver.
+        ///     The characterdatabase associated to this mapserver.
         /// </summary>
         public static ActorDB charDB;
+
         public static AccountDB accountDB;
 
         public static bool StartDatabase()
@@ -33,9 +30,11 @@ namespace SagaLogin
                 {
                     case 0:
                         charDB = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
+                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
+                            Configuration.Instance.DBPass);
                         accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
+                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
+                            Configuration.Instance.DBPass);
                         charDB.Connect();
                         accountDB.Connect();
                         return true;
@@ -45,7 +44,7 @@ namespace SagaLogin
                         charDB.Connect();
                         accountDB.Connect();
                         return true;
-                    default :
+                    default:
                         return false;
                 }
             }
@@ -57,13 +56,14 @@ namespace SagaLogin
 
         public static void EnsureCharDB()
         {
-            bool notConnected = false;
+            var notConnected = false;
 
             if (!charDB.isConnected())
             {
                 Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
+
             while (notConnected)
             {
                 Logger.ShowInfo("Trying to reconnect to char db server ..", null);
@@ -71,7 +71,7 @@ namespace SagaLogin
                 if (!charDB.isConnected())
                 {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
-                    System.Threading.Thread.Sleep(10000);
+                    Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
@@ -82,16 +82,17 @@ namespace SagaLogin
                 }
             }
         }
-        
+
         public static void EnsureAccountDB()
         {
-            bool notConnected = false;
+            var notConnected = false;
 
             if (!accountDB.isConnected())
             {
                 Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
+
             while (notConnected)
             {
                 Logger.ShowInfo("Trying to reconnect to char db server ..", null);
@@ -99,7 +100,7 @@ namespace SagaLogin
                 if (!accountDB.isConnected())
                 {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
-                    System.Threading.Thread.Sleep(10000);
+                    Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
@@ -113,23 +114,25 @@ namespace SagaLogin
 
         [DllImport("User32.dll ", EntryPoint = "FindWindow")]
         private static extern int FindWindow(string lpClassName, string lpWindowName);
+
         [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
-        extern static IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
+
         [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
-        extern static int RemoveMenu(IntPtr hMenu, int nPos, int flags);
+        private static extern int RemoveMenu(IntPtr hMenu, int nPos, int flags);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            string fullPath = System.Environment.CurrentDirectory + "\\SagaLogin.exe";
-            int WINDOW_HANDLER = FindWindow(null, fullPath);
-            IntPtr CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
-            int SC_CLOSE = 0xF060;
+            var fullPath = Environment.CurrentDirectory + "\\SagaLogin.exe";
+            var WINDOW_HANDLER = FindWindow(null, fullPath);
+            var CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
+            var SC_CLOSE = 0xF060;
             RemoveMenu(CLOSE_MENU, SC_CLOSE, 0x0);
-            
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(ShutingDown);
 
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            Logger Log = new Logger("SagaLogin.log");
+            Console.CancelKeyPress += ShutingDown;
+
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            var Log = new Logger("SagaLogin.log");
             Logger.defaultlogger = Log;
             Logger.CurrentLogger = Log;
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -155,7 +158,7 @@ namespace SagaLogin
             Console.Write("SagaDB");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(":SVN Rev." + SagaDB.GlobalInfo.Version + "(" + SagaDB.GlobalInfo.ModifyDate + ")");
-            
+
             Logger.ShowInfo("Starting Initialization...", null);
 
             Configuration.Instance.Initialization("./Config/SagaLogin.xml");
@@ -168,15 +171,17 @@ namespace SagaLogin
 #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
 #endif
-            ItemFactory.Instance.Init(VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv", System.IO.SearchOption.TopDirectoryOnly), System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            ItemFactory.Instance.Init(
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
+                    SearchOption.TopDirectoryOnly), Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
-            
+
             if (!StartDatabase())
             {
                 Logger.ShowError("cannot connect to dbserver", null);
                 Logger.ShowError("Shutting down in 20sec.", null);
-                System.Threading.Thread.Sleep(20000);
+                Thread.Sleep(20000);
                 return;
             }
 
@@ -185,12 +190,12 @@ namespace SagaLogin
             {
                 Logger.ShowError("cannot listen on port: " + Configuration.Instance.Port);
                 Logger.ShowInfo("Shutting down in 20sec.");
-                System.Threading.Thread.Sleep(20000);
+                Thread.Sleep(20000);
                 return;
             }
 
 
-            Global.clientMananger = (ClientManager)LoginClientManager.Instance;
+            Global.clientMananger = LoginClientManager.Instance;
 
             Console.WriteLine("Accepting clients.");
 
@@ -203,20 +208,20 @@ namespace SagaLogin
 #if FreeVersion
                 if (LoginClientManager.Instance.Clients.Count < int.Parse("15"))
 #endif
-                    LoginClientManager.Instance.NetworkLoop(10);
+                LoginClientManager.Instance.NetworkLoop(10);
 
-                    System.Threading.Thread.Sleep(10);
+                Thread.Sleep(10);
             }
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
         {
-            Logger.ShowInfo("Closing.....", null);            
+            Logger.ShowInfo("Closing.....", null);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            Exception ex = e.ExceptionObject as Exception;
+            var ex = e.ExceptionObject as Exception;
             Logger.ShowError("Fatal: An unhandled exception is thrown, terminating...");
             Logger.ShowError("Error Message:" + ex.Message);
             Logger.ShowError("Call Stack:" + ex.StackTrace);

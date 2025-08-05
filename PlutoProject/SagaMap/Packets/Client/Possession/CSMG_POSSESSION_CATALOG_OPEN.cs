@@ -1,4 +1,3 @@
-
 using SagaLib;
 using SagaMap.Network.Client;
 
@@ -8,33 +7,21 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_POSSESSION_CATALOG_REQUEST()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public PossessionPosition Position
-        {
-            get
-            {
-                return (PossessionPosition)this.GetByte(2);
-            }
-        }
-        public ushort Page
-        {
-            get
-            {
-                return this.GetUShort(3);
-            }
-        }
+        public PossessionPosition Position => (PossessionPosition)GetByte(2);
 
-        public override SagaLib.Packet New()
+        public ushort Page => GetUShort(3);
+
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_POSSESSION_CATALOG_REQUEST();
+            return new CSMG_POSSESSION_CATALOG_REQUEST();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnPossessionCatalogRequest(this);
+            ((MapClient)client).OnPossessionCatalogRequest(this);
         }
-
     }
 }

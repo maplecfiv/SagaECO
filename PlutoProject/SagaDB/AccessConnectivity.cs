@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
-using System.Security.Cryptography;
-
-using SagaDB.Actor;
-using SagaDB.Item;
+using System.Data.OleDb;
 using SagaLib;
 //引入OLEDB
-using System.Data.OleDb;
-using System.Data;
 
 namespace SagaDB
 {
@@ -20,14 +13,14 @@ namespace SagaDB
 
         public void SQLExecuteNonQuery(string sqlstr)
         {
-            bool criticalarea = ClientManager.Blocked;
+            var criticalarea = ClientManager.Blocked;
             if (criticalarea)
                 ClientManager.LeaveCriticalArea();
             DatabaseWaitress.EnterCriticalArea();
             try
             {
                 //    MySqlHelper.ExecuteNonQuery(db, sqlstr, null);
-                OleDbCommand tmp = new OleDbCommand(sqlstr, db);
+                var tmp = new OleDbCommand(sqlstr, db);
                 tmp.ExecuteNonQuery();
             }
             catch (Exception ex)
@@ -35,6 +28,7 @@ namespace SagaDB
                 Logger.ShowSQL("Error on query:" + sqlstr, null);
                 Logger.ShowSQL(ex, null);
             }
+
             DatabaseWaitress.LeaveCriticalArea();
             if (criticalarea)
                 ClientManager.EnterCriticalArea();
@@ -43,7 +37,7 @@ namespace SagaDB
 
         public void SQLExecuteScalar(string sqlstr, ref uint index)
         {
-            bool criticalarea = ClientManager.Blocked;
+            var criticalarea = ClientManager.Blocked;
             if (criticalarea)
                 ClientManager.LeaveCriticalArea();
             DatabaseWaitress.EnterCriticalArea();
@@ -52,38 +46,36 @@ namespace SagaDB
                 if (sqlstr.Substring(sqlstr.Length - 1) != ";") sqlstr += ";";
                 sqlstr += "SELECT LAST_INSERT_ID();";
 
-                OleDbCommand tmp = new OleDbCommand(sqlstr, db);
+                var tmp = new OleDbCommand(sqlstr, db);
                 index = Convert.ToUInt32(tmp.ExecuteScalar());
                 //index = Convert.ToUInt32(MySqlHelper.ExecuteScalar(db, sqlstr));
-
             }
             catch (Exception ex)
             {
                 Logger.ShowSQL("Error on query:" + sqlstr, null);
                 Logger.ShowSQL(ex, null);
             }
+
             DatabaseWaitress.LeaveCriticalArea();
             if (criticalarea)
                 ClientManager.EnterCriticalArea();
         }
+
         public DataRowCollection SQLExecuteQuery(string sqlstr)
         {
             DataRowCollection result;
-            DataSet tmp =new DataSet();
-            bool criticalarea = ClientManager.Blocked;
+            var tmp = new DataSet();
+            var criticalarea = ClientManager.Blocked;
             if (criticalarea)
                 ClientManager.LeaveCriticalArea();
             DatabaseWaitress.EnterCriticalArea();
             try
             {
-                OleDbDataAdapter tmp2 = new OleDbDataAdapter(sqlstr, db);
+                var tmp2 = new OleDbDataAdapter(sqlstr, db);
                 tmp2.Fill(tmp);
 
                 //tmp = MySqlHelper.ExecuteDataset(db, sqlstr);
-                if (tmp.Tables.Count == 0)
-                {
-                    throw new Exception("Unexpected Empty Query Result!");
-                }
+                if (tmp.Tables.Count == 0) throw new Exception("Unexpected Empty Query Result!");
                 result = tmp.Tables[0].Rows;
                 DatabaseWaitress.LeaveCriticalArea();
                 if (criticalarea)
@@ -99,12 +91,12 @@ namespace SagaDB
                     ClientManager.EnterCriticalArea();
                 return null;
             }
-
         }
 
         internal string ToSQLDateTime(DateTime date)
         {
-            return string.Format("{0}-{1}-{2} {3}:{4}:{5}", date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+            return string.Format("{0}-{1}-{2} {3}:{4}:{5}", date.Year, date.Month, date.Day, date.Hour, date.Minute,
+                date.Second);
         }
 
         internal void CheckSQLString(ref string str)

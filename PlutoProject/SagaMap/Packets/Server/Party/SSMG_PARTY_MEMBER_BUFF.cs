@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,34 +7,31 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PARTY_MEMBER_BUFF()
         {
-            if (Configuration.Instance.Version < SagaLib.Version.Saga11)
-                this.data = new byte[42];
+            if (Configuration.Instance.Version < Version.Saga11)
+                data = new byte[42];
             else
-                this.data = new byte[58];
-            this.offset = 2;
-            this.ID = 0x19FA;
+                data = new byte[58];
+            offset = 2;
+            ID = 0x19FA;
         }
 
         public ActorPC Actor
         {
             set
             {
-                this.PutUInt(value.Party.IndexOf(value), 2);
-                this.PutUInt(value.CharID, 6);
-                this.PutInt(value.Buff.Buffs[0].Value, 10);
-                this.PutInt(value.Buff.Buffs[1].Value, 14);
-                this.PutInt(value.Buff.Buffs[2].Value, 18);
-                this.PutInt(value.Buff.Buffs[3].Value, 22);
-                this.PutInt(value.Buff.Buffs[4].Value, 26);
-                this.PutInt(value.Buff.Buffs[5].Value, 30);
-                this.PutInt(value.Buff.Buffs[6].Value, 34);
-                this.PutInt(value.Buff.Buffs[7].Value, 38);
-                this.PutInt(value.Buff.Buffs[8].Value, 42);
-                this.PutInt(value.Buff.Buffs[9].Value, 46);
+                PutUInt(value.Party.IndexOf(value), 2);
+                PutUInt(value.CharID, 6);
+                PutInt(value.Buff.Buffs[0].Value, 10);
+                PutInt(value.Buff.Buffs[1].Value, 14);
+                PutInt(value.Buff.Buffs[2].Value, 18);
+                PutInt(value.Buff.Buffs[3].Value, 22);
+                PutInt(value.Buff.Buffs[4].Value, 26);
+                PutInt(value.Buff.Buffs[5].Value, 30);
+                PutInt(value.Buff.Buffs[6].Value, 34);
+                PutInt(value.Buff.Buffs[7].Value, 38);
+                PutInt(value.Buff.Buffs[8].Value, 42);
+                PutInt(value.Buff.Buffs[9].Value, 46);
             }
         }
-
-
     }
 }
-

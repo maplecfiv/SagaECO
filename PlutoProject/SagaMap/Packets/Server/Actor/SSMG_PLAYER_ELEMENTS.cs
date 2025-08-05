@@ -1,10 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,23 +7,20 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_ELEMENTS()
         {
-            this.data = new byte[32];
-            this.offset = 2;
-            this.ID = 0x0223;
+            data = new byte[32];
+            offset = 2;
+            ID = 0x0223;
 
-            this.PutByte(7, 2);
-            this.PutByte(7, 17);
+            PutByte(7, 2);
+            PutByte(7, 17);
         }
 
         public Dictionary<Elements, int> AttackElements
         {
             set
             {
-                int j=0;
-                foreach (Elements i in value.Keys)
-                {
-                    this.PutShort((short)value[i], (ushort)(3 + j++ * 2));                    
-                }
+                var j = 0;
+                foreach (var i in value.Keys) PutShort((short)value[i], (ushort)(3 + j++ * 2));
             }
         }
 
@@ -36,13 +28,9 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                int j = 0;
-                foreach (Elements i in value.Keys)
-                {
-                    this.PutShort((short)value[i], (ushort)(18 + j++ * 2));
-                }
+                var j = 0;
+                foreach (var i in value.Keys) PutShort((short)value[i], (ushort)(18 + j++ * 2));
             }
         }
     }
 }
-        

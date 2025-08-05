@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using SagaLib;
-using SagaDB.Item;
 using SagaDB.Actor;
-using SagaDB.Iris;
 using SagaDB.DEMIC;
+using SagaDB.Iris;
+using SagaDB.Item;
+using SagaDB.Skill;
 using SagaDB.Title;
+using SagaLib;
+using SagaMap.Manager;
+using SagaMap.Network.Client;
+using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.PC
 {
     public partial class StatusFactory : Singleton<StatusFactory>
     {
         /// <summary>
-        /// 获取强化奖励数值
+        ///     获取强化奖励数值
         /// </summary>
         /// <param name="item">道具本身</param>
         /// <param name="Type">0: 生命 1: ATK DEF MATK 2: MDEF 3: 爆击相关</param>
@@ -21,42 +25,54 @@ namespace SagaMap.PC
         public short GetEnhanceBonus(Item item, int Type)
         {
             short value = 0;
-            short[] hps = new short[31] { 0,
-                                          100, 20, 70,  30,  80,  40,  90,  50,  100, 150,
-                                          150, 60, 110, 70,  200, 200, 120, 80,  130, 250,
-                                          250, 90, 140, 100, 250, 250, 150, 110, 160, 400  };
-            short[] atk_def_matk = new short[31] { 0,
-                                           10, 3, 5,  3, 6,  3,  7,  3, 8,  13,
-                                           13, 3, 9,  3, 15, 15, 10, 3, 11, 20,
-                                           20, 3, 12, 3, 22, 22, 13, 3, 14, 25 };
-            short[] mdef = new short[31] { 0,
-                                           10, 2, 5, 2, 6,  3,  6, 3, 6, 15,
-                                           15, 4, 7, 4, 10, 10, 7, 4, 7, 15,
-                                           15, 5, 8, 5, 15, 15, 8, 5, 8, 25 };
-            short[] cris = new short[31] { 0,
-                                           5, 1, 3, 2, 4, 3, 4, 3, 5, 9,
-                                           5, 1, 2, 3, 4, 5, 1, 2, 3, 4,
-                                           5, 1, 2, 3, 4, 5, 1, 2, 3, 5 };
+            var hps = new short[31]
+            {
+                0,
+                100, 20, 70, 30, 80, 40, 90, 50, 100, 150,
+                150, 60, 110, 70, 200, 200, 120, 80, 130, 250,
+                250, 90, 140, 100, 250, 250, 150, 110, 160, 400
+            };
+            var atk_def_matk = new short[31]
+            {
+                0,
+                10, 3, 5, 3, 6, 3, 7, 3, 8, 13,
+                13, 3, 9, 3, 15, 15, 10, 3, 11, 20,
+                20, 3, 12, 3, 22, 22, 13, 3, 14, 25
+            };
+            var mdef = new short[31]
+            {
+                0,
+                10, 2, 5, 2, 6, 3, 6, 3, 6, 15,
+                15, 4, 7, 4, 10, 10, 7, 4, 7, 15,
+                15, 5, 8, 5, 15, 15, 8, 5, 8, 25
+            };
+            var cris = new short[31]
+            {
+                0,
+                5, 1, 3, 2, 4, 3, 4, 3, 5, 9,
+                5, 1, 2, 3, 4, 5, 1, 2, 3, 4,
+                5, 1, 2, 3, 4, 5, 1, 2, 3, 5
+            };
             switch (Type)
             {
                 case 0:
-                    for (int i = 0; i <= item.LifeEnhance; i++)
+                    for (var i = 0; i <= item.LifeEnhance; i++)
                         value += hps[i];
                     break;
                 case 1:
-                    for (int i = 0; i <= item.PowerEnhance; i++)
+                    for (var i = 0; i <= item.PowerEnhance; i++)
                         value += atk_def_matk[i];
                     break;
                 case 2:
-                    for (int i = 0; i <= item.CritEnhance; i++)
+                    for (var i = 0; i <= item.CritEnhance; i++)
                         value += cris[i];
                     break;
                 case 3:
-                    for (int i = 0; i <= item.MagEnhance; i++)
+                    for (var i = 0; i <= item.MagEnhance; i++)
                         value += mdef[i];
                     break;
                 case 4:
-                    for (int i = 0; i <= item.MagEnhance; i++)
+                    for (var i = 0; i <= item.MagEnhance; i++)
                         value += atk_def_matk[i];
                     break;
                 default:
@@ -64,17 +80,17 @@ namespace SagaMap.PC
                     value = 0;
                     break;
             }
+
             return value;
         }
 
         private void CalcPlayerTitleBouns(ActorPC pc)
         {
-            uint TitleID = (uint)pc.AInt["称号_战斗"];
-            if (Network.Client.MapClient.FromActorPC(pc).CheckTitle((int)TitleID))
-            {
+            var TitleID = (uint)pc.AInt["称号_战斗"];
+            if (MapClient.FromActorPC(pc).CheckTitle((int)TitleID))
                 if (TitleID != 0 && TitleFactory.Instance.Items.ContainsKey(TitleID))
                 {
-                    Title item = TitleFactory.Instance.Items[TitleID];
+                    var item = TitleFactory.Instance.Items[TitleID];
                     pc.Status.hp_tit = (short)item.hp;
                     pc.Status.mp_tit = (short)item.mp;
                     pc.Status.sp_tit = (short)item.sp;
@@ -98,10 +114,10 @@ namespace SagaMap.PC
                     pc.Status.avoid_magic_tit = (short)item.avoid_range;
                     pc.Status.aspd_tit = (short)item.aspd;
                     pc.Status.cspd_tit = (short)item.cspd;
-                    Network.Client.MapClient.FromActorPC(pc).SendCharInfoUpdate();
+                    MapClient.FromActorPC(pc).SendCharInfoUpdate();
                     return;
                 }
-            }
+
             pc.Status.hit_magic_tit = 0;
             pc.Status.cri_avoid_tit = 0;
             pc.Status.avoid_magic_tit = 0;
@@ -139,44 +155,44 @@ namespace SagaMap.PC
             pc.Status.hit_ranged_tit = 0;
             pc.Status.avoid_melee_tit = 0;
             pc.Status.avoid_ranged_tit = 0;
-            SagaMap.Network.Client.MapClient.FromActorPC(pc).SendCharInfoUpdate();
+            MapClient.FromActorPC(pc).SendCharInfoUpdate();
         }
 
         private void CalcTamaireBonus(ActorPC pc)
         {
-            pc.Status.hp_tamaire = (short)pc.TamaireRental.hp;
-            pc.Status.mp_tamaire = (short)pc.TamaireRental.mp;
-            pc.Status.sp_tamaire = (short)pc.TamaireRental.sp;
-            pc.Status.min_atk1_tamaire = (short)pc.TamaireRental.atk_min;
-            pc.Status.min_atk2_tamaire = (short)pc.TamaireRental.atk_min;
-            pc.Status.min_atk3_tamaire = (short)pc.TamaireRental.atk_min;
-            pc.Status.max_atk1_tamaire = (short)pc.TamaireRental.atk_max;
-            pc.Status.max_atk2_tamaire = (short)pc.TamaireRental.atk_max;
-            pc.Status.max_atk3_tamaire = (short)pc.TamaireRental.atk_max;
-            pc.Status.min_matk_tamaire = (short)pc.TamaireRental.matk_min;
-            pc.Status.max_matk_tamaire = (short)pc.TamaireRental.matk_max;
-            pc.Status.def_add_tamaire = (short)pc.TamaireRental.def;
-            pc.Status.mdef_add_tamaire = (short)pc.TamaireRental.mdef;
-            pc.Status.hit_melee_tamaire = (short)pc.TamaireRental.hit_melee;
-            pc.Status.hit_ranged_tamaire = (short)pc.TamaireRental.hit_range;
-            pc.Status.avoid_melee_tamaire = (short)pc.TamaireRental.avoid_melee;
-            pc.Status.avoid_ranged_tamaire = (short)pc.TamaireRental.avoid_range;
-            pc.Status.aspd_tamaire = (short)pc.TamaireRental.aspd;
-            pc.Status.cspd_tamaire = (short)pc.TamaireRental.cspd;
-            Network.Client.MapClient.FromActorPC(pc).SendCharInfoUpdate();
+            pc.Status.hp_tamaire = pc.TamaireRental.hp;
+            pc.Status.mp_tamaire = pc.TamaireRental.mp;
+            pc.Status.sp_tamaire = pc.TamaireRental.sp;
+            pc.Status.min_atk1_tamaire = pc.TamaireRental.atk_min;
+            pc.Status.min_atk2_tamaire = pc.TamaireRental.atk_min;
+            pc.Status.min_atk3_tamaire = pc.TamaireRental.atk_min;
+            pc.Status.max_atk1_tamaire = pc.TamaireRental.atk_max;
+            pc.Status.max_atk2_tamaire = pc.TamaireRental.atk_max;
+            pc.Status.max_atk3_tamaire = pc.TamaireRental.atk_max;
+            pc.Status.min_matk_tamaire = pc.TamaireRental.matk_min;
+            pc.Status.max_matk_tamaire = pc.TamaireRental.matk_max;
+            pc.Status.def_add_tamaire = pc.TamaireRental.def;
+            pc.Status.mdef_add_tamaire = pc.TamaireRental.mdef;
+            pc.Status.hit_melee_tamaire = pc.TamaireRental.hit_melee;
+            pc.Status.hit_ranged_tamaire = pc.TamaireRental.hit_range;
+            pc.Status.avoid_melee_tamaire = pc.TamaireRental.avoid_melee;
+            pc.Status.avoid_ranged_tamaire = pc.TamaireRental.avoid_range;
+            pc.Status.aspd_tamaire = pc.TamaireRental.aspd;
+            pc.Status.cspd_tamaire = pc.TamaireRental.cspd;
+            MapClient.FromActorPC(pc).SendCharInfoUpdate();
         }
 
         private void CalcAnotherPaperBonus(ActorPC pc)
         {
             if (pc.UsingPaperID != 0 && pc.AnotherPapers.ContainsKey(pc.UsingPaperID))
             {
-                AnotherDetail paper = pc.AnotherPapers[pc.UsingPaperID];
-                int rate = 1;
+                var paper = pc.AnotherPapers[pc.UsingPaperID];
+                var rate = 1;
                 if (pc.Buff.Unknow13)
                     rate = 2;
                 if (AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID].ContainsKey(paper.lv))
                 {
-                    Another paperstatus = AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID][paper.lv];
+                    var paperstatus = AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID][paper.lv];
                     pc.Status.str_anthor = (short)(paperstatus.str * rate);
                     pc.Status.mag_anthor = (short)(paperstatus.mag * rate);
                     pc.Status.agi_anthor = (short)(paperstatus.agi * rate);
@@ -203,6 +219,7 @@ namespace SagaMap.PC
                     return;
                 }
             }
+
             pc.Status.str_anthor = 0;
             pc.Status.mag_anthor = 0;
             pc.Status.agi_anthor = 0;
@@ -247,23 +264,23 @@ namespace SagaMap.PC
                 equips = pc.Inventory.Equipments;
             else
                 equips = pc.Inventory.Parts;
-            foreach (SagaDB.Item.EnumEquipSlot j in equips.Keys)
+            foreach (var j in equips.Keys)
             {
                 if (equips[j] == null)
                     continue;
-                Item i = equips[j];
+                var i = equips[j];
                 if (i.Stack == 0)
                     continue;
 
                 if (j == EnumEquipSlot.LEFT_HAND)
-                {
-                    if (i.BaseData.itemType == ItemType.GUN || i.BaseData.itemType == ItemType.DUALGUN || i.BaseData.itemType == ItemType.RIFLE || i.BaseData.itemType == ItemType.BOW)
+                    if (i.BaseData.itemType == ItemType.GUN || i.BaseData.itemType == ItemType.DUALGUN ||
+                        i.BaseData.itemType == ItemType.RIFLE || i.BaseData.itemType == ItemType.BOW)
                         continue;
-                }
 
                 //去掉左手武器判定
                 if ((j != EnumEquipSlot.PET || i.BaseData.itemType == ItemType.BACK_DEMON)
-                    && !(j == EnumEquipSlot.LEFT_HAND && i.EquipSlot.Contains(EnumEquipSlot.RIGHT_HAND) && i.EquipSlot.Count == 1))
+                    && !(j == EnumEquipSlot.LEFT_HAND && i.EquipSlot.Contains(EnumEquipSlot.RIGHT_HAND) &&
+                         i.EquipSlot.Count == 1))
                 {
                     //int weapon_atk1_add = 0, weapon_atk2_add = 0, weapon_atk3_add = 0, weapon_matk_add = 0;
                     //float rate = pc.Status.weapon_rate;
@@ -278,9 +295,9 @@ namespace SagaMap.PC
                     //pc.Status.atk1_item = (short)((pc.Status.atk1_item + i.BaseData.atk1 + i.Atk1 + weapon_atk1_add + pc.Status.weapon_add_iris));
                     //pc.Status.atk2_item = (short)((pc.Status.atk2_item + i.BaseData.atk2 + i.Atk2 + weapon_atk2_add + pc.Status.weapon_add_iris));
                     //pc.Status.atk3_item = (short)((pc.Status.atk3_item + i.BaseData.atk3 + i.Atk3 + weapon_atk3_add + pc.Status.weapon_add_iris));
-                    pc.Status.atk1_item = (short)((pc.Status.atk1_item + i.BaseData.atk1 + i.Atk1));
-                    pc.Status.atk2_item = (short)((pc.Status.atk2_item + i.BaseData.atk2 + i.Atk2));
-                    pc.Status.atk3_item = (short)((pc.Status.atk3_item + i.BaseData.atk3 + i.Atk3));
+                    pc.Status.atk1_item = (short)(pc.Status.atk1_item + i.BaseData.atk1 + i.Atk1);
+                    pc.Status.atk2_item = (short)(pc.Status.atk2_item + i.BaseData.atk2 + i.Atk2);
+                    pc.Status.atk3_item = (short)(pc.Status.atk3_item + i.BaseData.atk3 + i.Atk3);
                     pc.Status.matk_item = (short)(pc.Status.matk_item + i.BaseData.matk + i.MAtk);
 
                     pc.Status.def_add_item = (short)(pc.Status.def_add_item + i.BaseData.def + i.Def);
@@ -288,8 +305,10 @@ namespace SagaMap.PC
 
                     pc.Status.hit_melee_item = (short)(pc.Status.hit_melee_item + i.BaseData.hitMelee + i.HitMelee);
                     pc.Status.hit_ranged_item = (short)(pc.Status.hit_ranged_item + i.BaseData.hitRanged + i.HitRanged);
-                    pc.Status.avoid_melee_item = (short)(pc.Status.avoid_melee_item + i.BaseData.avoidMelee + i.AvoidMelee);
-                    pc.Status.avoid_ranged_item = (short)(pc.Status.avoid_ranged_item + i.BaseData.avoidRanged + i.AvoidRanged);
+                    pc.Status.avoid_melee_item =
+                        (short)(pc.Status.avoid_melee_item + i.BaseData.avoidMelee + i.AvoidMelee);
+                    pc.Status.avoid_ranged_item =
+                        (short)(pc.Status.avoid_ranged_item + i.BaseData.avoidRanged + i.AvoidRanged);
 
                     pc.Status.str_item = (short)(pc.Status.str_item + i.BaseData.str + i.Str);
                     pc.Status.agi_item = (short)(pc.Status.agi_item + i.BaseData.agi + i.Agi);
@@ -298,106 +317,110 @@ namespace SagaMap.PC
                     pc.Status.int_item = (short)(pc.Status.int_item + i.BaseData.intel + i.Int);
                     pc.Status.mag_item = (short)(pc.Status.mag_item + i.BaseData.mag + i.Mag);
 
-                    pc.Status.hp_item = (pc.Status.hp_item + i.BaseData.hp + i.HP);
-                    pc.Status.sp_item = (pc.Status.sp_item + i.BaseData.sp + i.SP);
-                    pc.Status.mp_item = (pc.Status.mp_item + i.BaseData.mp + i.MP);
+                    pc.Status.hp_item = pc.Status.hp_item + i.BaseData.hp + i.HP;
+                    pc.Status.sp_item = pc.Status.sp_item + i.BaseData.sp + i.SP;
+                    pc.Status.mp_item = pc.Status.mp_item + i.BaseData.mp + i.MP;
 
                     pc.Status.cri_item = (short)(pc.Status.cri_item + i.BaseData.hitCritical + i.HitCritical);
                     pc.Status.criavd_item = (short)(pc.Status.criavd_item + i.BaseData.avoidCritical + i.AvoidCritical);
                     pc.Status.hit_magic_item = (short)(pc.Status.hit_magic_item + i.BaseData.hitMagic + i.HitMagic);
-                    pc.Status.avoid_magic_item = (short)(pc.Status.avoid_magic_item + i.BaseData.avoidMagic + i.AvoidMagic);
+                    pc.Status.avoid_magic_item =
+                        (short)(pc.Status.avoid_magic_item + i.BaseData.avoidMagic + i.AvoidMagic);
                     pc.Status.hit_magic_item = (short)(pc.Status.hit_magic_item + i.BaseData.hitMagic + i.HitMagic);
 
-                    pc.Status.speed_item = (int)(pc.Status.speed_item + i.BaseData.speedUp + i.SpeedUp);
+                    pc.Status.speed_item = pc.Status.speed_item + i.BaseData.speedUp + i.SpeedUp;
 
 
                     if (i.BaseData.speedUp != 0 || i.SpeedUp != 0)
-                    {
                         if (pc.Online)
-                        {
                             pc.e.PropertyUpdate(UpdateEvent.SPEED, 0);
-                        }
-                    }
 
                     if (i.IsWeapon)
-                    {
-                        foreach (Elements k in i.BaseData.element.Keys)
-                        {
+                        foreach (var k in i.BaseData.element.Keys)
                             if (i.Element.ContainsKey(k) && i.Element[k] != 0)
                                 pc.Status.attackElements_item[k] += i.Element[k];
                             else
                                 pc.Status.attackElements_item[k] += i.BaseData.element[k];
-                        }
-                    }
                     else if ((i.IsArmor || i.IsEquipt) && !i.IsAmmo)
-                    {
-                        foreach (Elements k in i.BaseData.element.Keys)
-                        {
+                        foreach (var k in i.BaseData.element.Keys)
                             if (i.Element.ContainsKey(k) && i.Element[k] != 0)
                                 pc.Status.elements_item[k] += i.Element[k];
                             else
                                 pc.Status.elements_item[k] += i.BaseData.element[k];
-                        }
-                    }
+
                     if (i.BaseData.itemType == ItemType.ARROW || i.BaseData.itemType == ItemType.BULLET)
-                    {
-                        foreach (Elements k in i.BaseData.element.Keys)
-                        {
+                        foreach (var k in i.BaseData.element.Keys)
                             if (i.Element.ContainsKey(k) && i.Element[k] != 0)
                                 pc.Status.attackElements_item[k] += i.Element[k];
                             else
                                 pc.Status.attackElements_item[k] += i.BaseData.element[k];
-                        }
-                    }
                 }
+
                 if (i.BaseData.weightUp != 0)
-                {
                     switch (j)
                     {
                         case EnumEquipSlot.PET:
-                            pc.Inventory.MaxPayload[ContainerType.BODY] = (uint)(pc.Inventory.MaxPayload[ContainerType.BODY] + i.BaseData.weightUp + i.WeightUp);
+                            pc.Inventory.MaxPayload[ContainerType.BODY] =
+                                (uint)(pc.Inventory.MaxPayload[ContainerType.BODY] + i.BaseData.weightUp + i.WeightUp);
                             break;
                         case EnumEquipSlot.BACK:
-                            pc.Inventory.MaxPayload[ContainerType.BACK_BAG] = (uint)(pc.Inventory.MaxPayload[ContainerType.BACK_BAG] + i.BaseData.weightUp + i.WeightUp);
+                            pc.Inventory.MaxPayload[ContainerType.BACK_BAG] =
+                                (uint)(pc.Inventory.MaxPayload[ContainerType.BACK_BAG] + i.BaseData.weightUp +
+                                       i.WeightUp);
                             break;
                         case EnumEquipSlot.LEFT_HAND:
-                            pc.Inventory.MaxPayload[ContainerType.LEFT_BAG] = (uint)(pc.Inventory.MaxPayload[ContainerType.LEFT_BAG] + i.BaseData.weightUp + i.WeightUp);
+                            pc.Inventory.MaxPayload[ContainerType.LEFT_BAG] =
+                                (uint)(pc.Inventory.MaxPayload[ContainerType.LEFT_BAG] + i.BaseData.weightUp +
+                                       i.WeightUp);
                             break;
                         case EnumEquipSlot.RIGHT_HAND:
-                            pc.Inventory.MaxPayload[ContainerType.RIGHT_BAG] = (uint)(pc.Inventory.MaxPayload[ContainerType.RIGHT_BAG] + i.BaseData.weightUp + i.WeightUp);
+                            pc.Inventory.MaxPayload[ContainerType.RIGHT_BAG] =
+                                (uint)(pc.Inventory.MaxPayload[ContainerType.RIGHT_BAG] + i.BaseData.weightUp +
+                                       i.WeightUp);
                             break;
                     }
-                }
+
                 if (i.BaseData.volumeUp != 0)
                 {
-                    float rate = 0f;
+                    var rate = 0f;
                     if (pc.Status.Additions.ContainsKey("Packing"))
                     {
-                        Skill.Additions.Global.DefaultPassiveSkill skill = (Skill.Additions.Global.DefaultPassiveSkill)pc.Status.Additions["Packing"];
+                        var skill = (DefaultPassiveSkill)pc.Status.Additions["Packing"];
                         rate = (float)skill["Packing"] / 100;
                     }
+
                     switch (j)
                     {
                         case EnumEquipSlot.PET:
-                            pc.Inventory.MaxVolume[ContainerType.BODY] = (uint)(pc.Inventory.MaxVolume[ContainerType.BODY] + (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
+                            pc.Inventory.MaxVolume[ContainerType.BODY] =
+                                (uint)(pc.Inventory.MaxVolume[ContainerType.BODY] +
+                                       (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
                             break;
                         case EnumEquipSlot.BACK:
-                            pc.Inventory.MaxVolume[ContainerType.BACK_BAG] = (uint)(pc.Inventory.MaxVolume[ContainerType.BACK_BAG] + (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
+                            pc.Inventory.MaxVolume[ContainerType.BACK_BAG] =
+                                (uint)(pc.Inventory.MaxVolume[ContainerType.BACK_BAG] +
+                                       (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
                             break;
                         case EnumEquipSlot.LEFT_HAND:
-                            pc.Inventory.MaxVolume[ContainerType.LEFT_BAG] = (uint)(pc.Inventory.MaxVolume[ContainerType.LEFT_BAG] + (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
+                            pc.Inventory.MaxVolume[ContainerType.LEFT_BAG] =
+                                (uint)(pc.Inventory.MaxVolume[ContainerType.LEFT_BAG] +
+                                       (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
                             break;
                         case EnumEquipSlot.RIGHT_HAND:
-                            pc.Inventory.MaxVolume[ContainerType.RIGHT_BAG] = (uint)(pc.Inventory.MaxVolume[ContainerType.RIGHT_BAG] + (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
+                            pc.Inventory.MaxVolume[ContainerType.RIGHT_BAG] =
+                                (uint)(pc.Inventory.MaxVolume[ContainerType.RIGHT_BAG] +
+                                       (i.BaseData.volumeUp + i.VolumeUp) * (1f + rate));
                             break;
                     }
                 }
+
                 ApplyIrisCardAbilities(pc, i);
                 AddItemAddition(pc, i);
             }
+
             ApplyIrisRes(pc);
 
-            var pcclient = SagaMap.Manager.MapClientManager.Instance.FindClient(pc);
+            var pcclient = MapClientManager.Instance.FindClient(pc);
             if (pcclient != null)
                 pcclient.OnPlayerElements();
             CalcDemicChips(pc);
@@ -484,10 +507,9 @@ namespace SagaMap.PC
                         case "defratioatk":
                             pc.Status.DefRatioAtk = bonus.Values1 == 1 ? true : false;
                             break;
-                        default:
-                            break;
                     }
                 }
+
                 if (bonus.BonusType == 1)
                 {
                     var b = bonus.Attribute.Substring(1).ToLower();
@@ -535,81 +557,68 @@ namespace SagaMap.PC
         }
 
         /// <summary>
-        /// Calculate item's card ability values on PC
+        ///     Calculate item's card ability values on PC
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="item"></param>
-        void ApplyIrisCardAbilities(ActorPC pc, Item item)
+        private void ApplyIrisCardAbilities(ActorPC pc, Item item)
         {
             if (!item.Locked)
                 return;
 
             #region Iris Card Ability Calculation
-            Dictionary<AbilityVector, int> IrisCardAbilityValues = item.VectorValues(false, false);
-            foreach (AbilityVector i in IrisCardAbilityValues.Keys)
-            {
-                if (!pc.IrisAbilityValues.ContainsKey(i))
-                {
-                    pc.IrisAbilityValues.Add(i, IrisCardAbilityValues[i]);
-                }
-                else
-                {
-                    pc.IrisAbilityValues[i] += IrisCardAbilityValues[i];
-                }
-            }
 
+            var IrisCardAbilityValues = item.VectorValues(false, false);
+            foreach (var i in IrisCardAbilityValues.Keys)
+                if (!pc.IrisAbilityValues.ContainsKey(i))
+                    pc.IrisAbilityValues.Add(i, IrisCardAbilityValues[i]);
+                else
+                    pc.IrisAbilityValues[i] += IrisCardAbilityValues[i];
 
             #endregion
 
-            Dictionary<Elements, int> elements = item.IrisElements(false);
+            var elements = item.IrisElements(false);
             if (item.IsArmor || item.IsWeapon)
             {
                 if (item.IsWeapon)
-                {
-                    foreach (Elements i in elements.Keys)
-                    {
+                    foreach (var i in elements.Keys)
                         pc.Status.attackelements_iris[i] += elements[i];
-                    }
-                }
+
                 if (item.IsArmor)
-                {
-                    foreach (Elements i in elements.Keys)
-                    {
+                    foreach (var i in elements.Keys)
                         pc.Status.elements_iris[i] += elements[i];
-                    }
-                }
             }
         }
 
         /// <summary>
-        /// Calculate item's card ability levels on PC and basic(original) RAs
+        ///     Calculate item's card ability levels on PC and basic(original) RAs
         /// </summary>
         /// <param name="pc"></param>
-        void ApplyIrisRes(ActorPC pc)
+        private void ApplyIrisRes(ActorPC pc)
         {
-            #region Iris Card Ability Level Calculation      
-            int[] lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //old/original settings
+            #region Iris Card Ability Level Calculation
+
+            var lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //old/original settings
             //int[] lvs = new int[10] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; new settings
-            foreach (AbilityVector i in pc.IrisAbilityValues.Keys)
+            foreach (var i in pc.IrisAbilityValues.Keys)
             {
                 var lv = 0;
                 foreach (var item in lvs)
-                {
                     if (pc.IrisAbilityValues[i] >= item)
                         lv++;
-                }
                 pc.IrisAbilityLevels.Add(i, lv);
             }
+
             #endregion
 
             #region ReleaseAbility for UI
 
-            Dictionary<ReleaseAbility, int> releaseabilities = UIStatusModRAs(pc, pc.IrisAbilityLevels);
+            var releaseabilities = UIStatusModRAs(pc, pc.IrisAbilityLevels);
 
-            foreach (ReleaseAbility i in releaseabilities.Keys)
+            foreach (var i in releaseabilities.Keys)
             {
-                int value = releaseabilities[i];
-                Status Status = pc.Status;
+                var value = releaseabilities[i];
+                var Status = pc.Status;
                 switch (i)
                 {
                     case ReleaseAbility.EXP_HUMAN:
@@ -741,7 +750,7 @@ namespace SagaMap.PC
                     case ReleaseAbility.HIT_UP:
                         //已不使用的属性
                         break;
-                    case ReleaseAbility.AVOID_UP://回避成功率
+                    case ReleaseAbility.AVOID_UP: //回避成功率
                         pc.Status.avoid_end_rate += (short)value;
                         break;
                     case ReleaseAbility.BDAMAGE_DOWN:
@@ -836,26 +845,16 @@ namespace SagaMap.PC
                     case ReleaseAbility.PART_R_HPMAX_FIX_UP:
                         //tbc
                         if (pc.Partner != null)
-                        {
                             pc.Partner.MaxHP += (uint)value;
-                        }
-                        else if (pc.Pet != null)
-                        {
-                            pc.Pet.MaxHP += (uint)value;
-                        }
+                        else if (pc.Pet != null) pc.Pet.MaxHP += (uint)value;
                         break;
                     case ReleaseAbility.PART_R_HPHEAL_UP:
                         //tbc
                         break;
                     case ReleaseAbility.PART_R_HPMAX_UP:
                         if (pc.Partner != null)
-                        {
                             pc.Partner.MaxHP += (uint)(pc.Partner.MaxHP * ((float)value / 100));
-                        }
-                        else if (pc.Pet != null)
-                        {
-                            pc.Pet.MaxHP += (uint)(pc.Pet.MaxHP * ((float)value / 100));
-                        }
+                        else if (pc.Pet != null) pc.Pet.MaxHP += (uint)(pc.Pet.MaxHP * ((float)value / 100));
                         break;
 
                     case ReleaseAbility.DUR_DAMAGE_DOWN:
@@ -1054,28 +1053,27 @@ namespace SagaMap.PC
             }
 
             #endregion
-
         }
 
         /// <summary>
-        /// Get all RAs for ui display
+        ///     Get all RAs for ui display
         /// </summary>
         /// <param name="irislevels"></param>
         /// <returns></returns>
-        Dictionary<ReleaseAbility, int> UIStatusModRAs(ActorPC pc, Dictionary<AbilityVector, int> irislevels)
+        private Dictionary<ReleaseAbility, int> UIStatusModRAs(ActorPC pc, Dictionary<AbilityVector, int> irislevels)
         {
-            Dictionary<ReleaseAbility, int> list = new Dictionary<ReleaseAbility, int>();
-            Dictionary<PC_GENDER, ushort> genderlist = new Dictionary<PC_GENDER, ushort>();
+            var list = new Dictionary<ReleaseAbility, int>();
+            var genderlist = new Dictionary<PC_GENDER, ushort>();
             genderlist.Add(PC_GENDER.FEMALE, 0);
             genderlist.Add(PC_GENDER.MALE, 0);
             genderlist.Add(PC_GENDER.NONE, 0);
-            Dictionary<PC_JOB, ushort> joblist = new Dictionary<PC_JOB, ushort>();
+            var joblist = new Dictionary<PC_JOB, ushort>();
             joblist.Add(PC_JOB.GLADIATOR, 0);
             joblist.Add(PC_JOB.HAWKEYE, 0);
             joblist.Add(PC_JOB.FORCEMASTER, 0);
             joblist.Add(PC_JOB.CARDINAL, 0);
             joblist.Add(PC_JOB.NOVICE, 0);
-            Dictionary<PC_RACE, ushort> racelist = new Dictionary<PC_RACE, ushort>();
+            var racelist = new Dictionary<PC_RACE, ushort>();
             racelist.Add(PC_RACE.EMIL, 0);
             racelist.Add(PC_RACE.TITANIA, 0);
             racelist.Add(PC_RACE.DOMINION, 0);
@@ -1083,42 +1081,25 @@ namespace SagaMap.PC
             racelist.Add(PC_RACE.NONE, 0);
 
             if (pc.Party != null)
-            {
-                foreach (ActorPC j in pc.Party.Members.Values)
+                foreach (var j in pc.Party.Members.Values)
                 {
                     if (genderlist.ContainsKey(j.Gender))
-                    {
                         genderlist[j.Gender]++;
-
-                    }
                     else
-                    {
                         genderlist.Add(j.Gender, 1);
-                    }
                     if (joblist.ContainsKey(j.Job))
-                    {
                         joblist[j.Job]++;
-
-                    }
                     else
-                    {
                         joblist.Add(j.Job, 1);
-                    }
                     if (racelist.ContainsKey(j.Race))
-                    {
                         racelist[j.Race]++;
-
-                    }
                     else
-                    {
                         racelist.Add(j.Race, 1);
-                    }
                 }
-            }
 
-            foreach (AbilityVector i in irislevels.Keys)
+            foreach (var i in irislevels.Keys)
             {
-                bool RAstate = false;
+                var RAstate = false;
                 if (i.ID < 1000) //原版能力
                 {
                     RAstate = true;
@@ -1133,151 +1114,140 @@ namespace SagaMap.PC
                     else //多人队伍条件
                     {
                         if (pc.Party != null)
-                        {
                             switch (i.ID)
                             {
                                 case 1101:
                                     if (pc.Party.Members.Count == 2 && genderlist[PC_GENDER.FEMALE] == 1)
-                                    {
                                         RAstate = true;
-                                    }
                                     break;
                                 case 1102:
-                                    if (pc.Party.Members.Count == 2 && genderlist[PC_GENDER.MALE] == 2)
-                                    {
-                                        RAstate = true;
-                                    }
+                                    if (pc.Party.Members.Count == 2 && genderlist[PC_GENDER.MALE] == 2) RAstate = true;
                                     break;
                                 case 1103:
                                     if (pc.Party.Members.Count == 2 && genderlist[PC_GENDER.FEMALE] == 2)
-                                    {
                                         RAstate = true;
-                                    }
                                     break;
                                 case 1801:
                                 case 1802:
-                                    if (joblist[PC_JOB.GLADIATOR] > 0 && joblist[PC_JOB.HAWKEYE] > 0 && joblist[PC_JOB.FORCEMASTER] > 0 && joblist[PC_JOB.CARDINAL] > 0)
-                                    {
-                                        RAstate = true;
-                                    }
+                                    if (joblist[PC_JOB.GLADIATOR] > 0 && joblist[PC_JOB.HAWKEYE] > 0 &&
+                                        joblist[PC_JOB.FORCEMASTER] > 0 && joblist[PC_JOB.CARDINAL] > 0) RAstate = true;
                                     break;
                                 case 1804:
-                                    if (joblist[PC_JOB.GLADIATOR] > 0 && joblist[PC_JOB.HAWKEYE] > 0 && joblist[PC_JOB.FORCEMASTER] > 0 && joblist[PC_JOB.CARDINAL] > 0)
-                                    {
-                                        if (joblist[PC_JOB.GLADIATOR] < 3 && joblist[PC_JOB.HAWKEYE] < 3 && joblist[PC_JOB.FORCEMASTER] < 3 && joblist[PC_JOB.CARDINAL] < 3)
+                                    if (joblist[PC_JOB.GLADIATOR] > 0 && joblist[PC_JOB.HAWKEYE] > 0 &&
+                                        joblist[PC_JOB.FORCEMASTER] > 0 && joblist[PC_JOB.CARDINAL] > 0)
+                                        if (joblist[PC_JOB.GLADIATOR] < 3 && joblist[PC_JOB.HAWKEYE] < 3 &&
+                                            joblist[PC_JOB.FORCEMASTER] < 3 && joblist[PC_JOB.CARDINAL] < 3)
                                             RAstate = true;
-                                    }
                                     break;
                                 case 1901:
                                 case 1902:
-                                    if (racelist[PC_RACE.EMIL] > 0 && racelist[PC_RACE.TITANIA] > 0 && racelist[PC_RACE.DOMINION] > 0)
-                                    {
-                                        RAstate = true;
-                                    }
+                                    if (racelist[PC_RACE.EMIL] > 0 && racelist[PC_RACE.TITANIA] > 0 &&
+                                        racelist[PC_RACE.DOMINION] > 0) RAstate = true;
                                     break;
                             }
-                        }
                     }
                 }
-                if (RAstate == true)
+
+                if (RAstate)
                 {
-                    Dictionary<ReleaseAbility, int> ability = i.ReleaseAbilities[(byte)irislevels[i]];
-                    foreach (ReleaseAbility j in ability.Keys)
-                    {
+                    var ability = i.ReleaseAbilities[(byte)irislevels[i]];
+                    foreach (var j in ability.Keys)
                         if (list.ContainsKey(j))
                             list[j] = Math.Max(list[j], ability[j]);
                         //list[j] += ability[j];
                         else
                             list.Add(j, ability[j]);
-                    }
                 }
             }
+
             return list;
         }
 
-        void CalcDemicChips(ActorPC pc)
+        private void CalcDemicChips(ActorPC pc)
         {
             Dictionary<byte, DEMICPanel> chips;
             if (pc.InDominionWorld)
                 chips = pc.Inventory.DominionDemicChips;
             else
                 chips = pc.Inventory.DemicChips;
-            Dictionary<uint, int> skills = new Dictionary<uint, int>();
+            var skills = new Dictionary<uint, int>();
 
             #region CalcChips
-            foreach (byte i in chips.Keys)
+
+            foreach (var i in chips.Keys)
+            foreach (var j in chips[i].Chips)
             {
-                foreach (Chip j in chips[i].Chips)
+                byte x1 = 255, y1 = 255, x2 = 255, y2 = 255;
+                if (chips[i].EngageTask1 != 255)
                 {
-                    byte x1 = 255, y1 = 255, x2 = 255, y2 = 255;
-                    if (chips[i].EngageTask1 != 255)
-                    {
-                        x1 = (byte)(chips[i].EngageTask1 % 9);
-                        y1 = (byte)(chips[i].EngageTask1 / 9);
-                    }
-                    if (chips[i].EngageTask2 != 255)
-                    {
-                        x2 = (byte)(chips[i].EngageTask2 % 9);
-                        y2 = (byte)(chips[i].EngageTask2 / 9);
-                    }
-                    bool nearEngage = j.IsNear(x1, y1) || j.IsNear(x2, y2);
+                    x1 = (byte)(chips[i].EngageTask1 % 9);
+                    y1 = (byte)(chips[i].EngageTask1 / 9);
+                }
 
-                    if (j.Data.type < 20)
-                    {
-                        int rate = 1;
-                        if (nearEngage)
-                            rate = 2;
-                        pc.Status.m_str_chip += (short)(rate * j.Data.str);
-                        pc.Status.m_agi_chip += (short)(rate * j.Data.agi);
-                        pc.Status.m_vit_chip += (short)(rate * j.Data.vit);
-                        pc.Status.m_dex_chip += (short)(rate * j.Data.dex);
-                        pc.Status.m_int_chip += (short)(rate * j.Data.intel);
-                        pc.Status.m_mag_chip += (short)(rate * j.Data.mag);
-                    }
-                    else if (j.Data.type < 30)
-                    {
-                        int level = 1;
-                        if (nearEngage)
-                            level = 2;
-                        if (skills.ContainsKey(j.Data.skill1))
-                            skills[j.Data.skill1] += level;
-                        else if (j.Data.skill1 != 0)
-                            skills.Add(j.Data.skill1, level);
+                if (chips[i].EngageTask2 != 255)
+                {
+                    x2 = (byte)(chips[i].EngageTask2 % 9);
+                    y2 = (byte)(chips[i].EngageTask2 / 9);
+                }
 
-                        if (skills.ContainsKey(j.Data.skill2))
-                            skills[j.Data.skill2] += level;
-                        else if (j.Data.skill2 != 0)
-                            skills.Add(j.Data.skill2, level);
+                var nearEngage = j.IsNear(x1, y1) || j.IsNear(x2, y2);
 
-                        if (skills.ContainsKey(j.Data.skill3))
-                            skills[j.Data.skill3] += level;
-                        else if (j.Data.skill3 != 0)
-                            skills.Add(j.Data.skill3, level);
-                    }
+                if (j.Data.type < 20)
+                {
+                    var rate = 1;
+                    if (nearEngage)
+                        rate = 2;
+                    pc.Status.m_str_chip += (short)(rate * j.Data.str);
+                    pc.Status.m_agi_chip += (short)(rate * j.Data.agi);
+                    pc.Status.m_vit_chip += (short)(rate * j.Data.vit);
+                    pc.Status.m_dex_chip += (short)(rate * j.Data.dex);
+                    pc.Status.m_int_chip += (short)(rate * j.Data.intel);
+                    pc.Status.m_mag_chip += (short)(rate * j.Data.mag);
+                }
+                else if (j.Data.type < 30)
+                {
+                    var level = 1;
+                    if (nearEngage)
+                        level = 2;
+                    if (skills.ContainsKey(j.Data.skill1))
+                        skills[j.Data.skill1] += level;
+                    else if (j.Data.skill1 != 0)
+                        skills.Add(j.Data.skill1, level);
+
+                    if (skills.ContainsKey(j.Data.skill2))
+                        skills[j.Data.skill2] += level;
+                    else if (j.Data.skill2 != 0)
+                        skills.Add(j.Data.skill2, level);
+
+                    if (skills.ContainsKey(j.Data.skill3))
+                        skills[j.Data.skill3] += level;
+                    else if (j.Data.skill3 != 0)
+                        skills.Add(j.Data.skill3, level);
+                }
+                else
+                {
+                    Chip next = null;
+                    if (ChipFactory.Instance.ByChipID.ContainsKey(j.Data.engageTaskChip) && nearEngage)
+                        next = new Chip(ChipFactory.Instance.ByChipID[j.Data.engageTaskChip]);
                     else
-                    {
-                        Chip next = null;
-                        if (ChipFactory.Instance.ByChipID.ContainsKey(j.Data.engageTaskChip) && nearEngage)
-                            next = new Chip(ChipFactory.Instance.ByChipID[j.Data.engageTaskChip]);
-                        else
-                            next = j;
-                        pc.Status.m_str_chip += (short)(next.Data.str);
-                        pc.Status.m_agi_chip += (short)(next.Data.agi);
-                        pc.Status.m_vit_chip += (short)(next.Data.vit);
-                        pc.Status.m_dex_chip += (short)(next.Data.dex);
-                        pc.Status.m_int_chip += (short)(next.Data.intel);
-                        pc.Status.m_mag_chip += (short)(next.Data.mag);
-                        pc.Status.hp_rate_item += (short)(next.Data.hp);
-                        pc.Status.sp_rate_item += (short)(next.Data.sp);
-                        pc.Status.mp_rate_item += (short)(next.Data.mp);
-                    }
+                        next = j;
+                    pc.Status.m_str_chip += next.Data.str;
+                    pc.Status.m_agi_chip += next.Data.agi;
+                    pc.Status.m_vit_chip += next.Data.vit;
+                    pc.Status.m_dex_chip += next.Data.dex;
+                    pc.Status.m_int_chip += next.Data.intel;
+                    pc.Status.m_mag_chip += next.Data.mag;
+                    pc.Status.hp_rate_item += next.Data.hp;
+                    pc.Status.sp_rate_item += next.Data.sp;
+                    pc.Status.mp_rate_item += next.Data.mp;
                 }
             }
+
             #endregion
 
-            foreach (uint i in skills.Keys)
+            foreach (var i in skills.Keys)
             {
-                int level = 0;
+                var level = 0;
                 if (pc.Form != DEM_FORM.MACHINA_FORM)
                     level = 0;
                 else
@@ -1293,7 +1263,7 @@ namespace SagaMap.PC
                 }
                 else
                 {
-                    SagaDB.Skill.Skill skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(i, 1);
+                    var skill = SkillFactory.Instance.GetSkill(i, 1);
                     skill.Level = (byte)level;
                     if (skill.Level > skill.MaxLevel)
                         skill.Level = skill.MaxLevel;

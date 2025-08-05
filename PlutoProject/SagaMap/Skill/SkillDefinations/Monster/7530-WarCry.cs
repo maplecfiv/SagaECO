@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
@@ -13,28 +11,29 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             args.type = ATTACK_TYPE.BLOW;
-            float factor = 1.1f;
-            int lifetime = 5000;
-            int rate = 30;
+            var factor = 1.1f;
+            var lifetime = 5000;
+            var rate = 30;
 
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 300, false);
-            List<Actor> realAffected = new List<Actor>();
-            foreach (Actor act in affected)
-            {
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 300, false);
+            var realAffected = new List<Actor>();
+            foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     realAffected.Add(act);
-                    if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.CannotMove, rate))
+                    if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.CannotMove,
+                            rate))
                     {
-                        Additions.Global.CannotMove skill = new SagaMap.Skill.Additions.Global.CannotMove(args.skill, act, lifetime);
+                        var skill = new CannotMove(args.skill, act, lifetime);
                         SkillHandler.ApplyAddition(act, skill);
                     }
                 }
-            }
+
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
             //if (SagaLib.Global.Random.Next(0, 99) < rate)
             //{

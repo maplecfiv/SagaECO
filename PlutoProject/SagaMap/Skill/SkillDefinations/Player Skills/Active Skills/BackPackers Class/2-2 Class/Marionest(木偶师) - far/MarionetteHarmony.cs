@@ -1,95 +1,88 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
-using SagaMap.Skill.Additions.Global;
+﻿using SagaDB.Actor;
 using SagaLib;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Marionest
 {
     /// <summary>
-    /// 木偶融和（マリオネットハーモニー）
+    ///     木偶融和（マリオネットハーモニー）
     /// </summary>
     public class MarionetteHarmony : ISkill
     {
         #region ISkill Members
-        Elements ele = Elements.Neutral;
+
+        private Elements ele = Elements.Neutral;
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
+                var pc = sActor;
                 if (pc.Marionette != null)
                 {
-                    if (pc.Marionette.ID == 10050700 && args.skill.Level == 1)//零式泰迪.无属性
+                    if (pc.Marionette.ID == 10050700 && args.skill.Level == 1) //零式泰迪.无属性
                         return 0;
-                    else if (pc.Marionette.ID == 10021700 && args.skill.Level == 5)//火焰凤凰.火属性
+                    if (pc.Marionette.ID == 10021700 && args.skill.Level == 5) //火焰凤凰.火属性
                         return 0;
-                    else if (pc.Marionette.ID == 10019300 && args.skill.Level == 3)//冰精灵.水属性
+                    if (pc.Marionette.ID == 10019300 && args.skill.Level == 3) //冰精灵.水属性
                         return 0;
-                    else if (pc.Marionette.ID == 10030001 && args.skill.Level == 4)//电路机械.风属性
+                    if (pc.Marionette.ID == 10030001 && args.skill.Level == 4) //电路机械.风属性
                         return 0;
-                    else if (pc.Marionette.ID == 10027000 && args.skill.Level == 2)//皮诺.地属性
+                    if (pc.Marionette.ID == 10027000 && args.skill.Level == 2) //皮诺.地属性
                         return 0;
-                    else
-                        return -12;
+                    return -12;
                 }
-
             }
-            return -12;
 
+            return -12;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 180000;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "MarionetteHarmony", lifetime, 1000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
-            skill.OnUpdate += this.UpDate;
+            var lifetime = 180000;
+            var skill = new DefaultBuff(args.skill, dActor, "MarionetteHarmony", lifetime, 1000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
+            skill.OnUpdate += UpDate;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void UpDate(Actor actor, DefaultBuff skill)
+
+        private void UpDate(Actor actor, DefaultBuff skill)
         {
             if (actor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)actor;
+                var pc = (ActorPC)actor;
                 if (pc.Marionette != null)
                 {
-                    if (pc.Marionette.ID != 10050700 &&//零式泰迪.无属性
-                        pc.Marionette.ID != 10021700 &&//火焰凤凰.火属性
-                        pc.Marionette.ID != 10019300 &&//冰精灵.水属性
-                        pc.Marionette.ID != 10030001 &&//电路机械.风属性
-                        pc.Marionette.ID != 10027000)//皮诺.地属性
-                    {
+                    if (pc.Marionette.ID != 10050700 && //零式泰迪.无属性
+                        pc.Marionette.ID != 10021700 && //火焰凤凰.火属性
+                        pc.Marionette.ID != 10019300 && //冰精灵.水属性
+                        pc.Marionette.ID != 10030001 && //电路机械.风属性
+                        pc.Marionette.ID != 10027000) //皮诺.地属性
                         pc.Status.Additions["MarionetteHarmony"].OnTimerEnd();
-                    }
                 }
                 else
                 {
                     pc.Status.Additions["MarionetteHarmony"].OnTimerEnd();
                 }
-
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
 
-            int MarionetteStr = 0;
-            int MarionetteDex = 0;
-            int MarionetteInt = 0;
-            int MarionetteVit = 0;
-            int MarionetteAgi = 0;
-            int MarionetteMag = 0;
-            int MarionetteHp = 0;
-            int MarionetteMp = 0;
-            int MarionetteSp = 0;
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
+        {
+            var MarionetteStr = 0;
+            var MarionetteDex = 0;
+            var MarionetteInt = 0;
+            var MarionetteVit = 0;
+            var MarionetteAgi = 0;
+            var MarionetteMag = 0;
+            var MarionetteHp = 0;
+            var MarionetteMp = 0;
+            var MarionetteSp = 0;
 
             if (actor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)actor;
+                var pc = (ActorPC)actor;
                 switch (pc.Marionette.ID)
                 {
                     case 10050700:
@@ -196,10 +189,9 @@ namespace SagaMap.Skill.SkillDefinations.Marionest
                 skill.Variable.Add("MarionetteSp", MarionetteSp);
                 actor.Status.sp_skill += (short)MarionetteSp;
             }
-
-
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.Status.elements_skill[ele] -= 50;
             actor.Status.str_skill -= (short)skill.Variable["MarionetteStr"];
@@ -212,6 +204,7 @@ namespace SagaMap.Skill.SkillDefinations.Marionest
             actor.Status.mp_skill -= (short)skill.Variable["MarionetteMp"];
             actor.Status.sp_skill -= (short)skill.Variable["MarionetteSp"];
         }
+
         #endregion
     }
 }

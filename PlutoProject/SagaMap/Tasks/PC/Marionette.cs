@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
 using SagaLib;
-using SagaDB.Actor;
-
 using SagaMap.Network.Client;
+
 namespace SagaMap.Tasks.PC
 {
     public class Marionette : MultiRunTask
     {
-        MapClient client;
+        private readonly MapClient client;
+
         public Marionette(MapClient client, int duration)
         {
-            this.dueTime = duration * 1000;
-            this.period = duration * 1000;
+            dueTime = duration * 1000;
+            period = duration * 1000;
             this.client = client;
         }
 
@@ -27,13 +23,14 @@ namespace SagaMap.Tasks.PC
                 client.MarionetteDeactivate();
                 if (client.Character.Tasks.ContainsKey("Marionette"))
                     client.Character.Tasks.Remove("Marionette");
-                this.Deactivate();
+                Deactivate();
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
 using SagaMap.Network.Client;
+
 namespace SagaMap.Tasks.PC
 {
     public class Regeneration : MultiRunTask
     {
-        MapClient client;
+        private readonly MapClient client;
+
         public Regeneration(MapClient client)
         {
-            this.dueTime = 5000;
-            this.period = 5000;
+            dueTime = 5000;
+            period = 5000;
             this.client = client;
         }
 
@@ -24,31 +21,35 @@ namespace SagaMap.Tasks.PC
             ClientManager.EnterCriticalArea();
             try
             {
-                if (client.Character.Mode == PlayerMode.KNIGHT_EAST)//除夕活动
+                if (client.Character.Mode == PlayerMode.KNIGHT_EAST) //除夕活动
                 {
-                    this.Deactivate();
-                    this.client.Character.Tasks.Remove("Regeneration");
+                    Deactivate();
+                    client.Character.Tasks.Remove("Regeneration");
                 }
+
                 //if (this.client != null)
                 {
-                    this.client.Character.HP += (uint)(0.1f * this.client.Character.MaxHP); ;
-                    if (this.client.Character.HP > this.client.Character.MaxHP)
-                        this.client.Character.HP = this.client.Character.MaxHP;
-                    this.client.Character.MP += (uint)(0.1f * this.client.Character.MaxMP);
-                    if (this.client.Character.MP > this.client.Character.MaxMP)
-                        this.client.Character.MP = this.client.Character.MaxMP;
-                    this.client.Character.SP += (uint)(0.1f * this.client.Character.MaxSP);
-                    if (this.client.Character.SP > this.client.Character.MaxSP)
-                        this.client.Character.SP = this.client.Character.MaxSP;
-                    this.client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, this.client.Character, true);
+                    client.Character.HP += (uint)(0.1f * client.Character.MaxHP);
+                    ;
+                    if (client.Character.HP > client.Character.MaxHP)
+                        client.Character.HP = client.Character.MaxHP;
+                    client.Character.MP += (uint)(0.1f * client.Character.MaxMP);
+                    if (client.Character.MP > client.Character.MaxMP)
+                        client.Character.MP = client.Character.MaxMP;
+                    client.Character.SP += (uint)(0.1f * client.Character.MaxSP);
+                    if (client.Character.SP > client.Character.MaxSP)
+                        client.Character.SP = client.Character.MaxSP;
+                    client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, client.Character,
+                        true);
                 }
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.Deactivate();
-                this.client.Character.Tasks.Remove("Regeneration");
+                Deactivate();
+                client.Character.Tasks.Remove("Regeneration");
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

@@ -1,45 +1,48 @@
-﻿using System;
-
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Vates
 {
     /// <summary>
-    /// 各種抗性
+    ///     各種抗性
     /// </summary>
     public class StatusRegi : ISkill
     {
-        private string StatusName;
+        private readonly string StatusName;
+
         public StatusRegi(string StatusName)
         {
             this.StatusName = StatusName;
         }
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int lifetime = 1200000 + 120000 * level;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, StatusName + "Regi", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 1200000 + 120000 * level;
+            var skill = new DefaultBuff(args.skill, dActor, StatusName + "Regi", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             ChangeBuffIcon(actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             ChangeBuffIcon(actor, false);
         }
-        void ChangeBuffIcon(Actor actor, bool OnOff)
+
+        private void ChangeBuffIcon(Actor actor, bool OnOff)
         {
             switch (StatusName)
             {
@@ -68,9 +71,11 @@ namespace SagaMap.Skill.SkillDefinations.Vates
                     actor.Buff.FrosenResist = OnOff;
                     break;
             }
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+
+            var map = MapManager.Instance.GetMap(actor.MapID);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SagaDB.Actor;
 using SagaLib;
-using SagaDB.Item;
-using SagaDB.Actor;
 
 namespace SagaMap.PC
 {
@@ -14,6 +9,4 @@ namespace SagaMap.PC
         {
         }
     }
-
- 
 }

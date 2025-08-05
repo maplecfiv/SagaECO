@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Iris;
 using SagaLib.VirtualFileSystem;
-using System.Xml;
 
 namespace SagaDB.Iris
 {
@@ -17,7 +14,7 @@ namespace SagaDB.Iris
 
         public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -50,7 +47,6 @@ namespace SagaDB.Iris
                 {
                     Logger.ShowError(ex);
                 }
-
             }
         }
     }

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaLib;
+using System.Threading;
 using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Network.Client;
-using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
@@ -16,34 +12,33 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public class Parameter
         {
-            public Actor sActor;
-            public Actor dActor;
             public SkillArg args;
+            public Actor dActor;
             public byte level;
+            public Actor sActor;
         }
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             if (MapClient.FromActorPC(pc).scriptThread != null)
                 return -59;
-            else
-                return 0;
+            return 0;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             args.dActor = 0;
             args.showEffect = false;
-            Parameter para = new Parameter();
+            var para = new Parameter();
             para.sActor = sActor;
             para.dActor = dActor;
             para.args = args;
             para.level = level;
-            MapClient.FromActorPC((ActorPC)sActor).scriptThread = new System.Threading.Thread(Run);
+            MapClient.FromActorPC((ActorPC)sActor).scriptThread = new Thread(Run);
             MapClient.FromActorPC((ActorPC)sActor).scriptThread.Start(para);
         }
 
-        void Run(object par)
+        private void Run(object par)
         {
             //ClientManager.EnterCriticalArea();
             try
@@ -52,8 +47,9 @@ namespace SagaMap.Skill.SkillDefinations.Global
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                Logger.ShowError(ex);
             }
+
             //ClientManager.LeaveCriticalArea();
             MapClient.FromActorPC((ActorPC)((Parameter)par).sActor).scriptThread = null;
         }
@@ -61,7 +57,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
         protected virtual void RunScript(Parameter para)
         {
         }
-       
+
         #endregion
     }
 }

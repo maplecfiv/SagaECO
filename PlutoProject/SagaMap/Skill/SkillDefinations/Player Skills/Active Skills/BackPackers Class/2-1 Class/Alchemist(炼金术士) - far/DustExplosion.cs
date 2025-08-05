@@ -1,42 +1,38 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Alchemist
 {
     /// <summary>
-    /// 塵土爆發（ダストエクスプロージョン）
+    ///     塵土爆發（ダストエクスプロージョン）
     /// </summary>
     public class DustExplosion : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            float factor = 4.0f + 0.5f * level;
-            int lifetime = 3000 + 2000 * level;
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 100, true);
-            List<Actor> affected = new List<Actor>();
+            var factor = 4.0f + 0.5f * level;
+            var lifetime = 3000 + 2000 * level;
+            var actors = MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 100, true);
+            var affected = new List<Actor>();
             foreach (var item in actors)
-            {
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, item))
                 {
-                    DefaultBuff skill = new DefaultBuff(args.skill, item, "DustExplosion", lifetime);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, item, "DustExplosion", lifetime);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(item, skill);
                     affected.Add(item);
                 }
 
-            }
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
             //float factor = 0.5f + 0.5f * level;
             //int lifetime = 2500 + 1500 * level;
@@ -66,28 +62,31 @@ namespace SagaMap.Skill.SkillDefinations.Alchemist
             //    }
             //}
             //SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
-
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             //近命中
-            int hit_melee_add = (int)(actor.Status.hit_melee * (0.2f + 0.05f * level));
+            var hit_melee_add = (int)(actor.Status.hit_melee * (0.2f + 0.05f * level));
             if (skill.Variable.ContainsKey("DustExplosion_hit_melee"))
                 skill.Variable.Remove("DustExplosion_hit_melee");
             skill.Variable.Add("DustExplosion_hit_melee", hit_melee_add);
             actor.Buff.ShortHitDown = true;
             actor.Status.hit_melee_skill -= (short)hit_melee_add;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             //近命中
             actor.Status.hit_melee_skill += (short)skill.Variable["DustExplosion_hit_melee"];
             actor.Buff.ShortHitDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

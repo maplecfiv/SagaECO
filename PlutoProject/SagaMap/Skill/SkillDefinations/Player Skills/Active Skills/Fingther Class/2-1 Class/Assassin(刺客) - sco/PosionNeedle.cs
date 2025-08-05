@@ -1,43 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Assassin
 {
     /// <summary>
-    ///  毒暗器（ポイズンニードル）
+    ///     毒暗器（ポイズンニードル）
     /// </summary>
     public class PosionNeedle : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            uint itemID = 10038102;//毒針
+            uint itemID = 10038102; //毒針
             if (SkillHandler.Instance.CountItem(sActor, itemID) >= 1)
             {
                 SkillHandler.Instance.TakeItem(sActor, itemID, 1);
                 return 0;
             }
-            return -57;
 
+            return -57;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int rate = 25 + 5 * level;
+            var rate = 25 + 5 * level;
             if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, "PosionNeedle", rate))
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "PosionNeedle", 3000);
-                skill.OnAdditionStart += this.StartEvent;
-                skill.OnAdditionEnd += this.EndEvent;
+                var skill = new DefaultBuff(args.skill, dActor, "PosionNeedle", 3000);
+                skill.OnAdditionStart += StartEvent;
+                skill.OnAdditionEnd += EndEvent;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
+
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, 1.0f);
         }
-        void StartEvent(Actor actor, DefaultBuff skill)
+
+        private void StartEvent(Actor actor, DefaultBuff skill)
         {
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+            var map = MapManager.Instance.GetMap(actor.MapID);
             actor.Buff.Poison = true;
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
 
@@ -68,13 +70,13 @@ namespace SagaMap.Skill.SkillDefinations.Assassin
             actor.Status.max_matk_skill -= (short)value;
         }
 
-        void EndEvent(Actor actor, DefaultBuff skill)
+        private void EndEvent(Actor actor, DefaultBuff skill)
         {
-            Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
+            var map = MapManager.Instance.GetMap(actor.MapID);
             actor.Buff.Poison = false;
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
 
-            int value = skill.Variable["PosionNeedle_ATK1"];
+            var value = skill.Variable["PosionNeedle_ATK1"];
             actor.Status.min_atk1_skill += (short)value;
             actor.Status.min_atk2_skill += (short)value;
             actor.Status.min_atk3_skill += (short)value;

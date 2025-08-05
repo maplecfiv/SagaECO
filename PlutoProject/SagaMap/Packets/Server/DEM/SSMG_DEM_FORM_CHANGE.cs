@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.FGarden;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,18 +7,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_DEM_FORM_CHANGE()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x1E7E;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x1E7E;
         }
 
         public DEM_FORM Form
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
     }
 }
-

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,35 +6,25 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NPC_NAVIGATION()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x1A2C;
-            this.Type = 255;
+            data = new byte[4];
+            offset = 2;
+            ID = 0x1A2C;
+            Type = 255;
         }
 
         public byte X
         {
-            set
-            {
-                this.PutByte(value, 2);
-            }
+            set => PutByte(value, 2);
         }
 
         public byte Y
         {
-            set
-            {
-                this.PutByte(value, 3);
-            }
+            set => PutByte(value, 3);
         }
+
         public byte Type
         {
-            set
-            {
-                this.PutByte(value, 4);
-            }
+            set => PutByte(value, 4);
         }
-
     }
 }
-

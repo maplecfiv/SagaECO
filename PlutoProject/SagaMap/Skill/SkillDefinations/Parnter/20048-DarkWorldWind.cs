@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
-    /// ダークワールウインド
+    ///     ダークワールウインド
     /// </summary>
     public class DarkWorldWind : ISkill
     {
@@ -21,8 +17,8 @@ namespace SagaMap.Skill.SkillDefinations.Global
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.3f;
-            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, SagaLib.Elements.Dark, factor);
+            var factor = 1.3f;
+            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Dark, factor);
         }
 
         #endregion

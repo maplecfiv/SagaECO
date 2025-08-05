@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 {
     /// <summary>
-    /// 神圣之光（Ragnarok）
+    ///     神圣之光（Ragnarok）
     /// </summary>
     public class HolyLight : ISkill
     {
@@ -21,13 +17,11 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.5f;
+            var factor = 1.5f;
             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor))
-            {
-                SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
-            }
-                
+                SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
+
         #endregion
     }
 }

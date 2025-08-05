@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.Iris
 {
@@ -12,13 +9,13 @@ namespace SagaDB.Iris
     {
         public IrisAbilityFactory()
         {
-            this.loadingTab = "Loading Ability database";
-            this.loadedTab = " abilities loaded.";
-            this.databaseName = "Iris Ability";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Ability database";
+            loadedTab = " abilities loaded.";
+            databaseName = "Iris Ability";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, AbilityVector item)
+        protected override void ParseXML(XmlElement root, XmlElement current, AbilityVector item)
         {
             throw new NotImplementedException();
         }
@@ -32,22 +29,19 @@ namespace SagaDB.Iris
         {
             ability.ID = uint.Parse(paras[0]);
             ability.Name = paras[1];
-            Dictionary<ReleaseAbility, int> list = new Dictionary<ReleaseAbility, int>();
-            for (int i = 0; i < 10; i++)
+            var list = new Dictionary<ReleaseAbility, int>();
+            for (var i = 0; i < 10; i++)
             {
                 if (paras[2 + i * 2] == "0")
                     continue;
-                string releaseability = paras[2 + i * 2];
-                string value = paras[3 + i * 2];
-                ReleaseAbility ra = (ReleaseAbility)Enum.Parse(typeof(ReleaseAbility), releaseability);
+                var releaseability = paras[2 + i * 2];
+                var value = paras[3 + i * 2];
+                var ra = (ReleaseAbility)Enum.Parse(typeof(ReleaseAbility), releaseability);
                 if (!list.ContainsKey(ra))
                     list.Add(ra, int.Parse(value));
                 else list[ra] = int.Parse(value);
-                Dictionary<ReleaseAbility, int> listcopy = new Dictionary<ReleaseAbility, int>();
-                foreach (ReleaseAbility j in list.Keys)
-                {
-                    listcopy.Add(j, list[j]);
-                }
+                var listcopy = new Dictionary<ReleaseAbility, int>();
+                foreach (var j in list.Keys) listcopy.Add(j, list[j]);
                 ability.ReleaseAbilities.Add((byte)(i + 1), listcopy);
             }
 

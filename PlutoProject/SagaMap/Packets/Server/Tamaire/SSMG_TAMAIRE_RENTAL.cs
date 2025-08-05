@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SagaDB.Tamaire;
 using SagaLib;
-using SagaDB.ECOShop;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,33 +7,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_TAMAIRE_RENTAL()
         {
-            this.data = new byte[10];
-            this.offset = 2;
-            this.ID = 0x22B3;
+            data = new byte[10];
+            offset = 2;
+            ID = 0x22B3;
         }
 
         public TimeSpan RentalDue
         {
-            set
-            {
-                this.PutInt((int)(value.TotalSeconds),3);
-            }
+            set => PutInt((int)value.TotalSeconds, 3);
         }
 
         public short Factor
         {
-            set
-            {
-                this.PutShort(value, 7);
-            }
+            set => PutShort(value, 7);
         }
 
         public byte JobType
         {
-            set
-            {
-                this.PutByte(value,9);
-            }
+            set => PutByte(value, 9);
         }
     }
 }

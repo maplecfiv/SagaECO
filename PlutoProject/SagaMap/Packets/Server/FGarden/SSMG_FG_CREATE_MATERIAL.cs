@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Party;
-
+using SagaMap.Scripting;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,18 +7,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_CREATE_MATERIAL()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1C34;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1C34;
         }
 
-        public BitMask<SagaMap.Scripting.FGardenParts> Parts
+        public BitMask<FGardenParts> Parts
         {
-            set
-            {
-                this.PutInt(value.Value, 2);
-            }
+            set => PutInt(value.Value, 2);
         }
     }
 }
-

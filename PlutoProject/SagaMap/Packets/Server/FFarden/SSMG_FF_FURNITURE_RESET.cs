@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,31 +6,24 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FF_FURNITURE_RESET()
         {
-            this.data = new byte[14];
-            this.offset = 2;
-            this.ID = 0x2062;
+            data = new byte[14];
+            offset = 2;
+            ID = 0x2062;
         }
 
         public uint AID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
+
         public uint RindID
         {
-            set
-            {
-                this.PutUInt(value, 10);
-            }
+            set => PutUInt(value, 10);
         }
     }
 }

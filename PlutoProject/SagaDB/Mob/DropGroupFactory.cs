@@ -1,46 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
 using SagaLib.VirtualFileSystem;
-using SagaDB.Actor;
 
 namespace SagaDB.Mob
 {
     public class DropGroupFactory : Singleton<DropGroupFactory>
     {
-        Dictionary<ushort, string[]> Dropgroup = new Dictionary<ushort, string[]>();
-
-        public DropGroupFactory()
-        {
-
-        }
+        private readonly Dictionary<ushort, string[]> Dropgroup = new Dictionary<ushort, string[]>();
 
         public string[] GetDropRate(ushort groupid)
         {
             if (Dropgroup.ContainsKey(groupid))
                 return Dropgroup[groupid];
-            else
-                return new string[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "什么也不掉" };
+            return new[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "什么也不掉" };
         }
 
-        public void Init(string path, System.Text.Encoding encoding)
+        public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
-            int count = 0;
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var count = 0;
 
 #if !Web
-            string label = "load dropgroup data...";
+            var label = "load dropgroup data...";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
 #endif
-            DateTime time = DateTime.Now;
+            var time = DateTime.Now;
             string[] paras;
-            string line = "";
+            var line = "";
 
             while (!sr.EndOfStream)
-            {
                 try
                 {
                     line = sr.ReadLine();
@@ -51,17 +42,12 @@ namespace SagaDB.Mob
 
                     paras = line.Split(',');
 
-                    for (int i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "" || paras[i].ToLower() == "null")
                             paras[i] = "0";
-                    }
 
-                    string[] data = new string[paras.Length - 1];
-                    for (int i = 1; i < paras.Length; i++)
-                    {
-                        data[i - 1] = paras[i];
-                    }
+                    var data = new string[paras.Length - 1];
+                    for (var i = 1; i < paras.Length; i++) data[i - 1] = paras[i];
                     if (Dropgroup.ContainsKey(ushort.Parse(paras[0])))
                         Logger.ShowError("the group id:" + paras[0] + "is exist, skip it");
                     else
@@ -84,7 +70,6 @@ namespace SagaDB.Mob
                     Logger.ShowError(ex);
 #endif
                 }
-            }
 #if !Web
             Logger.ProgressBarHide(count + " DropGroup loaded.");
 #endif

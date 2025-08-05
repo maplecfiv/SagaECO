@@ -1,52 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Eraser
 {
     /// <summary>
-    /// 悪鬼
+    ///     悪鬼
     /// </summary>
     public class EvilSpirit : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor)) return 0;
+
+            return -14;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.5f + 0.5f * level;
-            int lifetime = 15000 + 15000 * level;
-            byte rate = (byte)(20 * level);
+            var factor = 1.5f + 0.5f * level;
+            var lifetime = 15000 + 15000 * level;
+            var rate = (byte)(20 * level);
             args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.STAB;
-            List<Actor> dest = new List<Actor>();
-            for (int i = 0; i < 4; i++)
-            {
-                dest.Add(dActor);
-            }
+            var dest = new List<Actor>();
+            for (var i = 0; i < 4; i++) dest.Add(dActor);
             SkillHandler.Instance.SetNextComboSkill(sActor, 2543);
             SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor);
             if (SagaLib.Global.Random.Next(0, 100) < rate)
             {
-                DefaultBuff skill = new DefaultBuff(args.skill, dActor, "EvilSpirit", lifetime);
-                skill.OnAdditionStart += this.StartEventHandler;
-                skill.OnAdditionEnd += this.EndEventHandler;
+                var skill = new DefaultBuff(args.skill, dActor, "EvilSpirit", lifetime);
+                skill.OnAdditionStart += StartEventHandler;
+                skill.OnAdditionEnd += EndEventHandler;
                 SkillHandler.ApplyAddition(dActor, skill);
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -98,12 +91,16 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
                     actor.Buff.VITDown = true;
                 }
             }
+
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor is ActorPC)
             {
@@ -115,6 +112,7 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
                     actor.Buff.DEXDown = false;
                     actor.Buff.VITDown = false;
                 }
+
                 actor.Buff.AGIDown = false;
             }
             else
@@ -129,14 +127,18 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
                     actor.Buff.DEXDown = false;
                     actor.Buff.VITDown = false;
                 }
+
                 actor.Buff.AGIDown = false;
             }
 
             if (actor is ActorPC)
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             else
-                Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
+                MapManager.Instance.GetMap(actor.MapID)
+                    .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
+
         #endregion
     }
 }

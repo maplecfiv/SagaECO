@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-using SagaDB.DEMIC;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,10 +6,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_DEM_CHIP_SHOP_FOOTER()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x063B;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x063B;
         }
     }
 }
-

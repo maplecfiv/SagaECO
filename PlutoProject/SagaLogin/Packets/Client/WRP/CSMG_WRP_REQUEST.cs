@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaLogin;
 using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Client
@@ -13,18 +7,17 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_WRP_REQUEST()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_WRP_REQUEST();
+            return new CSMG_WRP_REQUEST();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginClient)(client)).OnWRPRequest(this);
+            ((LoginClient)client).OnWRPRequest(this);
         }
-
     }
 }

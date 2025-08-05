@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,69 +7,31 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_PLAYER_STATS_UP()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte Type
-        {
-            get
-            {
-                return this.GetByte(2);
-            }
-        }
+        public byte Type => GetByte(2);
 
-        public ushort Str
-        {
-            get
-            {
-                return this.GetUShort(3);
-            }
-        }
-        public ushort Dex
-        {
-            get
-            {
-                return this.GetUShort(5);
-            }
-        }
-        public ushort Int
-        {
-            get
-            {
-                return this.GetUShort(7);
-            }
-        }
-        public ushort Vit
-        {
-            get
-            {
-                return this.GetUShort(9);
-            }
-        }
-        public ushort Agi
-        {
-            get
-            {
-                return this.GetUShort(11);
-            }
-        }
-        public ushort Mag
-        {
-            get
-            {
-                return this.GetUShort(13);
-            }
-        }
+        public ushort Str => GetUShort(3);
 
-        public override SagaLib.Packet New()
+        public ushort Dex => GetUShort(5);
+
+        public ushort Int => GetUShort(7);
+
+        public ushort Vit => GetUShort(9);
+
+        public ushort Agi => GetUShort(11);
+
+        public ushort Mag => GetUShort(13);
+
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_PLAYER_STATS_UP();
+            return new CSMG_PLAYER_STATS_UP();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnStatsUp(this);
+            ((MapClient)client).OnStatsUp(this);
         }
-
     }
 }

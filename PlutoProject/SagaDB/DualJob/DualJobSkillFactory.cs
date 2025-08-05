@@ -1,11 +1,9 @@
-﻿using SagaLib;
-using SagaLib.VirtualFileSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.DualJob
 {
@@ -13,11 +11,11 @@ namespace SagaDB.DualJob
     {
         public Dictionary<ushort, List<DualJobSkill>> items = new Dictionary<ushort, List<DualJobSkill>>();
 
-        public void Init(string path, System.Text.Encoding encoding)
+        public void Init(string path, Encoding encoding)
         {
-            using (var sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
+            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
             {
-                DateTime time = DateTime.Now;
+                var time = DateTime.Now;
 
                 string[] paras;
                 while (!sr.EndOfStream)
@@ -31,20 +29,15 @@ namespace SagaDB.DualJob
                         if (line.Substring(0, 1) == "#") continue;
 
                         paras = line.Split(',');
-                        for (int i = 0; i < paras.Length; i++)
-                        {
+                        for (var i = 0; i < paras.Length; i++)
                             if (paras[i] == "")
                                 paras[i] = "0";
-                        }
-                        DualJobSkill item = new DualJobSkill();
+                        var item = new DualJobSkill();
                         item.DualJobID = byte.Parse(paras[0]);
                         item.SkillID = ushort.Parse(paras[1]);
                         item.SkillName = paras[2];
                         item.SkillJobID = byte.Parse(paras[3]);
-                        for (int i = 4; i <= 13; i++)
-                        {
-                            item.LearnSkillLevel.Add(byte.Parse(paras[i]));
-                        }
+                        for (var i = 4; i <= 13; i++) item.LearnSkillLevel.Add(byte.Parse(paras[i]));
 
                         if (items.ContainsKey(item.DualJobID))
                         {
@@ -55,9 +48,8 @@ namespace SagaDB.DualJob
                         }
                         else
                         {
-                            items.Add(item.DualJobID, new List<DualJobSkill>() { item });
+                            items.Add(item.DualJobID, new List<DualJobSkill> { item });
                         }
-
                     }
                     catch (Exception ex)
                     {

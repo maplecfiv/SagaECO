@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,17 +7,16 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_BOND_INFO()
         {
-            this.data = new byte[13];
-            this.offset = 2;
-            this.ID = 0x1FEB;
+            data = new byte[13];
+            offset = 2;
+            ID = 0x1FEB;
         }
+
         public uint TargetCharID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public string Name
         {
             set
@@ -32,36 +27,36 @@ namespace SagaMap.Packets.Server
                         value += "\0";
                 }
                 else
+                {
                     value = "\0";
-                byte[] namebuf = Encoding.UTF8.GetBytes(value);
-                byte[] buf = new byte[this.data.Length + namebuf.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutByte((byte)namebuf.Length, 6);
-                this.PutBytes(namebuf, 7);
-                this.offset = (ushort)(namebuf.Length + 7);
+                }
+
+                var namebuf = Encoding.UTF8.GetBytes(value);
+                var buf = new byte[data.Length + namebuf.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutByte((byte)namebuf.Length, 6);
+                PutBytes(namebuf, 7);
+                offset = (ushort)(namebuf.Length + 7);
             }
         }
+
         public byte Index
         {
-            set
-            {
-                this.PutByte(value);
-            }
+            set => PutByte(value);
         }
+
         public int MapID
         {
-            set
-            {
-                this.PutInt(value);
-            }
+            set => PutInt(value);
         }
+
         public bool IsOnline
         {
             set
             {
                 if (value)
-                    this.PutByte(0x01);
+                    PutByte(0x01);
             }
         }
     }

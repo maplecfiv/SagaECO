@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
+using SagaLib;
 
-using SagaMap.Network.Client;
 namespace SagaMap.Tasks.PC
 {
     public class AutoSave : MultiRunTask
     {
-        ActorPC pc;
+        private readonly ActorPC pc;
+
         public AutoSave(ActorPC pc)
         {
-            this.period = 300000;
+            period = 300000;
             this.pc = pc;
         }
 
@@ -22,25 +18,29 @@ namespace SagaMap.Tasks.PC
         {
             if (pc == null)
             {
-                this.Deactivate();
+                Deactivate();
                 return;
             }
+
             if (!pc.Online)
             {
-                this.Deactivate();
+                Deactivate();
                 return;
             }
+
             ClientManager.EnterCriticalArea();
             try
             {
-                DateTime now = DateTime.Now;
+                var now = DateTime.Now;
                 MapServer.charDB.SaveChar(pc, false);
-                Logger.ShowInfo("Autosaving " + pc.Name + "'s data, 耗时:" + (DateTime.Now - now).TotalMilliseconds + "ms");
+                Logger.ShowInfo(
+                    "Autosaving " + pc.Name + "'s data, 耗时:" + (DateTime.Now - now).TotalMilliseconds + "ms");
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

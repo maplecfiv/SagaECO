@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
+using SagaDB.Item;
 using SagaLib;
 
 namespace SagaDB.Npc
@@ -11,13 +9,13 @@ namespace SagaDB.Npc
     {
         public ShopFactory()
         {
-            this.loadingTab = "Loading Shop database";
-            this.loadedTab = " shops loaded.";
-            this.databaseName = "shop";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Shop database";
+            loadedTab = " shops loaded.";
+            databaseName = "shop";
+            FactoryType = FactoryType.XML;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, Shop item)
+        protected override void ParseXML(XmlElement root, XmlElement current, Shop item)
         {
             switch (root.Name.ToLower())
             {
@@ -28,11 +26,8 @@ namespace SagaDB.Npc
                             item.ID = uint.Parse(current.InnerText);
                             break;
                         case "npc":
-                            string[] npcs = current.InnerText.Split(',');
-                            foreach (string i in npcs)
-                            {
-                                item.RelatedNPC.Add(uint.Parse(i));                             
-                            }
+                            var npcs = current.InnerText.Split(',');
+                            foreach (var i in npcs) item.RelatedNPC.Add(uint.Parse(i));
                             break;
                         case "sellrate":
                             item.SellRate = uint.Parse(current.InnerText);
@@ -44,32 +39,30 @@ namespace SagaDB.Npc
                             item.BuyLimit = uint.Parse(current.InnerText);
                             break;
                         case "goods":
+                        {
+                            if (ItemFactory.Instance.GetItem(uint.Parse(current.InnerText)).BaseData.itemType !=
+                                ItemType.POTION
+                                && ItemFactory.Instance.GetItem(uint.Parse(current.InnerText)).BaseData.itemType !=
+                                ItemType.FOOD)
                             {
-                                if ((Item.ItemFactory.Instance.GetItem(uint.Parse(current.InnerText))).BaseData.itemType != Item.ItemType.POTION
-                                    && (Item.ItemFactory.Instance.GetItem(uint.Parse(current.InnerText))).BaseData.itemType != Item.ItemType.FOOD)
-                                {
-                                    item.Goods.Add(uint.Parse(current.InnerText));
-                                }
-                                else
-                                {
-                                    if (Item.ItemFactory.Instance.Items.ContainsKey(uint.Parse(current.InnerText)))
-                                    {
-                                        item.Goods.Add(uint.Parse(current.InnerText));
-                                    }
-                                    else
-                                    {
-                                        item.Goods.Add(10022900);
-                                    }
-                                }
+                                item.Goods.Add(uint.Parse(current.InnerText));
                             }
+                            else
+                            {
+                                if (ItemFactory.Instance.Items.ContainsKey(uint.Parse(current.InnerText)))
+                                    item.Goods.Add(uint.Parse(current.InnerText));
+                                else
+                                    item.Goods.Add(10022900);
+                            }
+                        }
                             break;
                         case "shoptype":
-                            {
-                                item.ShopType = (ShopType)byte.Parse(current.InnerText);
-                                
-                            }
+                        {
+                            item.ShopType = (ShopType)byte.Parse(current.InnerText);
+                        }
                             break;
                     }
+
                     break;
             }
         }
@@ -81,7 +74,7 @@ namespace SagaDB.Npc
 
         protected override void ParseCSV(Shop item, string[] paras)
         {
-            throw new NotImplementedException();    
+            throw new NotImplementedException();
         }
     }
 }

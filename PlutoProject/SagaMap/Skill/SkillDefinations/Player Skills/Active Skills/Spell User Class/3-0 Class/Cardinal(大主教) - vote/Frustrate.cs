@@ -1,55 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Cardinal
 {
     //挫败
-    class Frustrate : ISkill
+    internal class Frustrate : ISkill
     {
-        #region ISkill Members
-
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            return 0;
-        }
-
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-
-            int lifetime = 180000;
-            if (sActor.type == ActorType.MOB)
-            {
-                lifetime = 20000;
-            }
-            short[] range = { 0, 100, 200, 100, 200, 100 };
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(dActor, range[level], true);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
-                {
-                    DefaultBuff skill = new DefaultBuff(args.skill, i, "Frustrate", lifetime);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
-                    SkillHandler.ApplyAddition(i, skill);
-                }
-            }
-        }
-        #endregion
-
-        void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
-            float rankdef = 0.09f + 0.03f * skill.skill.Level;
-            float subdef = 0.16f + 0.08f * skill.skill.Level;
+            var rankdef = 0.09f + 0.03f * skill.skill.Level;
+            var subdef = 0.16f + 0.08f * skill.skill.Level;
             if (actor.type == ActorType.PC)
             {
                 RemoveAddition(actor, "PetPlantDefupSelf");
@@ -119,9 +81,11 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
                 actor.Buff.MagicDefDown = true;
             }
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor.type == ActorType.PC)
             {
@@ -142,21 +106,46 @@ namespace SagaMap.Skill.SkillDefinations.Cardinal
                 actor.Buff.MagicDefDown = false;
             }
 
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        public void RemoveAddition(Actor actor, String additionName)
+        public void RemoveAddition(Actor actor, string additionName)
         {
             if (actor.Status.Additions.ContainsKey(additionName))
             {
-                Addition addition = actor.Status.Additions[additionName];
+                var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
-                if (addition.Activated)
-                {
-                    addition.AdditionEnd();
-                }
+                if (addition.Activated) addition.AdditionEnd();
                 addition.Activated = false;
             }
         }
+
+        #region ISkill Members
+
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
+        {
+            return 0;
+        }
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
+        {
+            var lifetime = 180000;
+            if (sActor.type == ActorType.MOB) lifetime = 20000;
+            short[] range = { 0, 100, 200, 100, 200, 100 };
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(dActor, range[level], true);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
+                {
+                    var skill = new DefaultBuff(args.skill, i, "Frustrate", lifetime);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
+                    SkillHandler.ApplyAddition(i, skill);
+                }
+        }
+
+        #endregion
     }
 }

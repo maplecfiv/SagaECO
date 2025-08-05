@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Item
 {
@@ -13,14 +8,9 @@ namespace SagaMap.Skill.SkillDefinations.Item
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor))
-            {
-                return 0;
-            }
-            else
-            {
-                return -14;
-            }
+            if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
+
+            return -14;
         }
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)

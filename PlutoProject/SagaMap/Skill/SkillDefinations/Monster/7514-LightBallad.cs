@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
@@ -16,8 +12,8 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.1f;
-            SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Holy, factor);
+            var factor = 1.1f;
+            SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
     }
 }

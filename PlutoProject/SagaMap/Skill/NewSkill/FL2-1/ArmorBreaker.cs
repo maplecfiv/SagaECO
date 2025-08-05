@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
 using SagaLib;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.FL2_1
 {
-
     public class ArmorBreaker : ISkill
     {
         #region ISkill Members
@@ -24,10 +20,10 @@ namespace SagaMap.Skill.SkillDefinations.FL2_1
             args.type = ATTACK_TYPE.BLOW;
             factor = 1.4f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-            if ((args.flag[0] & SagaLib.AttackFlag.HP_DAMAGE) != 0)
+            if ((args.flag[0] & AttackFlag.HP_DAMAGE) != 0)
             {
-                int rate = 100;
-                int lifetime = 0;
+                var rate = 100;
+                var lifetime = 0;
                 switch (level)
                 {
                     case 1:
@@ -51,37 +47,41 @@ namespace SagaMap.Skill.SkillDefinations.FL2_1
                         lifetime = 18000;
                         break;
                 }
-                lifetime=SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime, SkillHandler.异常状态.无);
+
+                lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime);
                 if (lifetime > 0)
                 {
                     Logger.ShowError(dActor.Status.def_add_skill.ToString());
-                    DefaultBuff skill = new DefaultBuff(args.skill, dActor, "ArmorBreaker", lifetime);
-                    skill.OnAdditionStart += this.StartEventHandler;
-                    skill.OnAdditionEnd += this.EndEventHandler;
+                    var skill = new DefaultBuff(args.skill, dActor, "ArmorBreaker", lifetime);
+                    skill.OnAdditionStart += StartEventHandler;
+                    skill.OnAdditionEnd += EndEventHandler;
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
             }
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
 
-            int def_add = -(10 * level);
+            var def_add = -(10 * level);
             if (skill.Variable.ContainsKey("ArmorBreaker"))
                 skill.Variable.Remove("ArmorBreaker");
             skill.Variable.Add("ArmorBreaker", def_add);
             actor.Status.def_add_skill += (short)def_add;
             actor.Buff.DefDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
-
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
 
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
             actor.Status.def_add_skill -= (short)skill.Variable["ArmorBreaker"];
             actor.Buff.DefDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,31 +1,35 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.BountyHunter
 {
     /// <summary>
-    /// 一閃（一閃）
+    ///     一閃（一閃）
     /// </summary>
     public class IsSeN : ISkill
     {
+        public Dictionary<SkillHandler.ActorDirection, List<int>> range =
+            new Dictionary<SkillHandler.ActorDirection, List<int>>();
+
         public IsSeN()
         {
             init();
         }
-        public Dictionary<SagaMap.Skill.SkillHandler.ActorDirection, List<int>> range = new Dictionary<SkillHandler.ActorDirection, List<int>>();
+
         #region Init
+
         public void init()
         {
             //建立List
-            for (int i = 0; i < 8; i++)
-            {
-                range.Add((SkillHandler.ActorDirection)i, new List<int>());
-            }
+            for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
+
             #region RangePos
+
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 2));
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 2));
@@ -88,23 +92,24 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 0, 2));
 
             #endregion
-
         }
+
         #endregion
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-
             return 0;
-
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             float factor = 0;
             factor = 1.75f + 0.25f * level;
             if (sActor is ActorPC)
             {
-                ActorPC pc = sActor as ActorPC;
+                var pc = sActor as ActorPC;
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
                 if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkill.Exists(x => x.ID == 1117))
                 {
@@ -120,7 +125,7 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                         mainlv = pc.Skills3[1117].Level;
 
                     //这里取等级最高的剑圣等级用来做倍率加成
-                    factor += (7.0f + Math.Max(duallv, mainlv));
+                    factor += 7.0f + Math.Max(duallv, mainlv);
                     //factor += (7.0f + lv);
 
                     //居合
@@ -132,19 +137,18 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                 }
             }
 
-            int rate = 30 + 10 * level;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 250, false);
-            List<Actor> realAffected = new List<Actor>();
-            SkillHandler.ActorDirection dir = SkillHandler.Instance.GetDirection(sActor);
-            foreach (Actor act in affected)
-            {
+            var rate = 30 + 10 * level;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 250, false);
+            var realAffected = new List<Actor>();
+            var dir = SkillHandler.Instance.GetDirection(sActor);
+            foreach (var act in affected)
                 //需去掉不在範圍內的 - 完成
                 /*
                  * ■■■■■　□■□□□　　☆：使用者
                  * □■■■□　□■■□□　　■：攻撃判定
                  * □□☆□□　□☆■■□
-                 * 
+                 *
                  */
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
@@ -154,17 +158,14 @@ namespace SagaMap.Skill.SkillDefinations.BountyHunter
                     {
                         realAffected.Add(act);
                         if (act.type == ActorType.PC)
-                        {
                             if (SagaLib.Global.Random.Next(0, 99) < rate)
-                            {
-                                SkillHandler.Instance.PossessionCancel((ActorPC)act, SagaLib.PossessionPosition.NONE);
-                            }
-                        }
+                                SkillHandler.Instance.PossessionCancel((ActorPC)act, PossessionPosition.NONE);
                     }
                 }
-            }
+
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
+
         #endregion
     }
 }

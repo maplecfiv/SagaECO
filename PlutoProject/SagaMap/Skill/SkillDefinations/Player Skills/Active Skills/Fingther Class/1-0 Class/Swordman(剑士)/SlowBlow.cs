@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Swordman
 {
     /// <summary>
-    /// 致殘攻擊(スロウブロウ)
+    ///     致殘攻擊(スロウブロウ)
     /// </summary>
-    public class SlowBlow:ISkill
+    public class SlowBlow : ISkill
     {
         #region ISkill Members
 
@@ -25,10 +22,10 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
             args.type = ATTACK_TYPE.BLOW;
             factor = 1.4f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-            if (level > 1 && ((args.flag[0] & SagaLib.AttackFlag.HP_DAMAGE) != 0))
+            if (level > 1 && (args.flag[0] & AttackFlag.HP_DAMAGE) != 0)
             {
-                int rate = 0;
-                int lifetime = 0;
+                var rate = 0;
+                var lifetime = 0;
                 switch (level)
                 {
                     case 2:
@@ -48,9 +45,10 @@ namespace SagaMap.Skill.SkillDefinations.Swordman
                         lifetime = 6000;
                         break;
                 }
-                if (SkillHandler.Instance.CanAdditionApply(sActor,dActor, SkillHandler.DefaultAdditions.鈍足, rate))
+
+                if (SkillHandler.Instance.CanAdditionApply(sActor, dActor, SkillHandler.DefaultAdditions.鈍足, rate))
                 {
-                    Additions.Global.MoveSpeedDown skill = new SagaMap.Skill.Additions.Global.MoveSpeedDown(args.skill, dActor, lifetime);
+                    var skill = new MoveSpeedDown(args.skill, dActor, lifetime);
                     SkillHandler.ApplyAddition(dActor, skill);
                 }
             }

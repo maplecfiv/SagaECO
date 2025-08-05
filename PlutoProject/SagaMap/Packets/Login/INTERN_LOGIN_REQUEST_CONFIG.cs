@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Login
@@ -10,18 +6,14 @@ namespace SagaMap.Packets.Login
     {
         public INTERN_LOGIN_REQUEST_CONFIG()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0xFFF1;            
+            data = new byte[3];
+            offset = 2;
+            ID = 0xFFF1;
         }
 
-        public SagaLib.Version Version
+        public Version Version
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
     }
 }
-

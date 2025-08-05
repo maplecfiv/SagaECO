@@ -1,104 +1,105 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-
-using SagaDB;
+using System.Threading;
 using SagaDB.Actor;
+using SagaDB.ECOShop;
 using SagaDB.Item;
 using SagaDB.Npc;
-using SagaDB.ECOShop;
+using SagaDB.Quests;
 using SagaLib;
-using SagaMap;
 using SagaMap.Manager;
-
+using SagaMap.Packets.Client;
+using SagaMap.Packets.Server;
+using SagaMap.PC;
+using SagaMap.Scripting;
 
 namespace SagaMap.Network.Client
 {
     public partial class MapClient
     {
-        public int npcSelectResult;
-        public bool npcShopClosed;
-        uint currentEventID;
-        public Scripting.Event currentEvent;
-        public System.Threading.Thread scriptThread;
-        public Dictionary<uint, uint> syntheseItem;
-        public bool syntheseFinished;
+        public Event currentEvent;
+        private uint currentEventID;
         public Shop currentShop;
+        private uint currentVShopCategory;
         public string inputContent;
         public bool npcJobSwitch;
         public bool npcJobSwitchRes;
-        public bool vshopClosed = SagaMap.Configuration.Instance.VShopClosed;
-        uint currentVShopCategory = 0;
+        public int npcSelectResult;
+        public bool npcShopClosed;
+        public Thread scriptThread;
         public uint selectedPet;
+        public bool syntheseFinished;
+        public Dictionary<uint, uint> syntheseItem;
+        public bool vshopClosed = Configuration.Instance.VShopClosed;
 
-        public void OnNPCPetSelect(Packets.Client.CSMG_NPC_PET_SELECT p)
+        public void OnNPCPetSelect(CSMG_NPC_PET_SELECT p)
         {
-            this.selectedPet = p.Result;
+            selectedPet = p.Result;
         }
-        string ff() {
+
+        private string ff()
+        {
             return Environment.CurrentDirectory;
         }
 
-        public void OnVShopBuy(Packets.Client.CSMG_VSHOP_BUY p)
+        public void OnVShopBuy(CSMG_VSHOP_BUY p)
         {
             if (!vshopClosed)
             {
-                uint[] items = p.Items;
-                uint[] counts = p.Counts;
-                uint[] points = new uint[items.Length];
-                int[] rental = new int[items.Length];
-                int k = 0;
+                var items = p.Items;
+                var counts = p.Counts;
+                var points = new uint[items.Length];
+                var rental = new int[items.Length];
+                var k = 0;
                 uint neededPoints = 0;
-                for (int i = 0; i < items.Length; i++)
+                for (var i = 0; i < items.Length; i++)
                 {
                     var cat = from item in ECOShopFactory.Instance.Items.Values
-                              where item.Items.ContainsKey(items[i])
-                              select item;
+                        where item.Items.ContainsKey(items[i])
+                        select item;
 
                     if (cat.Count() > 0)
                     {
-                        ShopCategory category = cat.First();
+                        var category = cat.First();
                         if (counts[i] > 0)
                         {
-                            ShopItem chip = category.Items[items[i]];
+                            var chip = category.Items[items[i]];
                             points[i] = chip.points;
                             rental[i] = chip.rental;
                         }
                     }
                 }
-                for (k = 0; k < items.Length; k++)
+
+                for (k = 0; k < items.Length; k++) neededPoints += points[k] * counts[k];
+                if (Character.VShopPoints >= neededPoints)
                 {
-                    neededPoints += points[k] * counts[k];
-                }
-                if (this.Character.VShopPoints >= neededPoints)
-                {
-                    this.Character.UsedVShopPoints += neededPoints;
-                    this.Character.VShopPoints -= neededPoints;
+                    Character.UsedVShopPoints += neededPoints;
+                    Character.VShopPoints -= neededPoints;
                     for (k = 0; k < items.Length; k++)
                     {
                         if (counts[k] <= 0)
                             continue;
-                        Item item = ItemFactory.Instance.GetItem(items[k]);
+                        var item = ItemFactory.Instance.GetItem(items[k]);
                         item.Stack = (ushort)counts[k];
                         if (rental[k] > 0)
                         {
                             item.Rental = true;
                             item.RentalTime = DateTime.Now + new TimeSpan(0, rental[k], 0);
                         }
-                        Logger.LogItemGet(Logger.EventType.ItemVShopGet, this.Character.Name + "(" + this.Character.CharID + ")", item.BaseData.name + "(" + item.ItemID + ")",
+
+                        Logger.LogItemGet(Logger.EventType.ItemVShopGet, Character.Name + "(" + Character.CharID + ")",
+                            item.BaseData.name + "(" + item.ItemID + ")",
                             string.Format("VShopBuy Count:{0}", item.Stack), false);
                         AddItem(item, true);
                     }
                 }
             }
-            
         }
-        public void OnNCShopBuy(Packets.Client.CSMG_NCSHOP_BUY p)
+
+        public void OnNCShopBuy(CSMG_NCSHOP_BUY p)
         {
-            switch (this.Character.UsingShopType)
+            switch (Character.UsingShopType)
             {
                 case PlayerUsingShopType.None:
                     break;
@@ -108,165 +109,165 @@ namespace SagaMap.Network.Client
                 case PlayerUsingShopType.NCShop:
                     HandleNCShopBuy(p);
                     break;
-                default:
-                    break;
             }
         }
 
-        public void HandleNCShopBuy(Packets.Client.CSMG_NCSHOP_BUY p)
+        public void HandleNCShopBuy(CSMG_NCSHOP_BUY p)
         {
-            uint[] items = p.Items;
-            uint[] counts = p.Counts;
-            uint[] points = new uint[items.Length];
-            int[] rental = new int[items.Length];
-            int k = 0;
+            var items = p.Items;
+            var counts = p.Counts;
+            var points = new uint[items.Length];
+            var rental = new int[items.Length];
+            var k = 0;
             uint neededPoints = 0;
-            for (int i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Length; i++)
             {
                 var cat = from item in NCShopFactory.Instance.Items.Values
-                          where item.Items.ContainsKey(items[i])
-                          select item;
+                    where item.Items.ContainsKey(items[i])
+                    select item;
 
                 if (cat.Count() > 0)
                 {
-                    NCShopCategory category = cat.First();
+                    var category = cat.First();
                     if (counts[i] > 0)
                     {
-                        ShopItem chip = category.Items[items[i]];
+                        var chip = category.Items[items[i]];
                         points[i] = chip.points;
                         rental[i] = chip.rental;
                     }
                 }
             }
-            for (k = 0; k < items.Length; k++)
+
+            for (k = 0; k < items.Length; k++) neededPoints += points[k] * counts[k];
+            if (Character.CP >= neededPoints)
             {
-                neededPoints += points[k] * counts[k];
-            }
-            if (this.Character.CP >= neededPoints)
-            {
-                this.Character.UsedVShopPoints += neededPoints;
-                this.Character.CP -= neededPoints;
+                Character.UsedVShopPoints += neededPoints;
+                Character.CP -= neededPoints;
                 for (k = 0; k < items.Length; k++)
                 {
                     if (counts[k] <= 0)
                         continue;
-                    Item item = ItemFactory.Instance.GetItem(items[k]);
+                    var item = ItemFactory.Instance.GetItem(items[k]);
                     item.Stack = (ushort)counts[k];
                     if (rental[k] > 0)
                     {
                         item.Rental = true;
                         item.RentalTime = DateTime.Now + new TimeSpan(0, rental[k], 0);
                     }
-                    Logger.LogItemGet(Logger.EventType.ItemVShopGet, this.Character.Name + "(" + this.Character.CharID + ")", item.BaseData.name + "(" + item.ItemID + ")",
+
+                    Logger.LogItemGet(Logger.EventType.ItemVShopGet, Character.Name + "(" + Character.CharID + ")",
+                        item.BaseData.name + "(" + item.ItemID + ")",
                         string.Format("NCShopBuy Count:{0}", item.Stack), false);
                     AddItem(item, true);
                 }
             }
         }
 
-        public void HandleGShopBuy(Packets.Client.CSMG_NCSHOP_BUY p)
+        public void HandleGShopBuy(CSMG_NCSHOP_BUY p)
         {
-            uint[] items = p.Items;
-            uint[] counts = p.Counts;
-            uint[] points = new uint[items.Length];
-            int[] rental = new int[items.Length];
-            int k = 0;
+            var items = p.Items;
+            var counts = p.Counts;
+            var points = new uint[items.Length];
+            var rental = new int[items.Length];
+            var k = 0;
             uint neededPoints = 0;
-            for (int i = 0; i < items.Length; i++)
+            for (var i = 0; i < items.Length; i++)
             {
                 var cat = from item in GShopFactory.Instance.Items.Values
-                          where item.Items.ContainsKey(items[i])
-                          select item;
+                    where item.Items.ContainsKey(items[i])
+                    select item;
 
                 if (cat.Count() > 0)
                 {
-                    GShopCategory category = cat.First();
+                    var category = cat.First();
                     if (counts[i] > 0)
                     {
-                        ShopItem chip = category.Items[items[i]];
+                        var chip = category.Items[items[i]];
                         points[i] = chip.points;
                         rental[i] = chip.rental;
                     }
                 }
             }
-            for (k = 0; k < items.Length; k++)
+
+            for (k = 0; k < items.Length; k++) neededPoints += points[k] * counts[k];
+            if (Character.Gold >= neededPoints)
             {
-                neededPoints += points[k] * counts[k];
-            }
-            if (this.Character.Gold >= neededPoints)
-            {
-                this.Character.Gold -= neededPoints;
+                Character.Gold -= neededPoints;
                 for (k = 0; k < items.Length; k++)
                 {
                     if (counts[k] <= 0)
                         continue;
-                    Item item = ItemFactory.Instance.GetItem(items[k]);
+                    var item = ItemFactory.Instance.GetItem(items[k]);
                     item.Stack = (ushort)counts[k];
                     if (rental[k] > 0)
                     {
                         item.Rental = true;
                         item.RentalTime = DateTime.Now + new TimeSpan(0, rental[k], 0);
                     }
-                    Logger.LogItemGet(Logger.EventType.ItemNPCGet, this.Character.Name + "(" + this.Character.CharID + ")", item.BaseData.name + "(" + item.ItemID + ")",
+
+                    Logger.LogItemGet(Logger.EventType.ItemNPCGet, Character.Name + "(" + Character.CharID + ")",
+                        item.BaseData.name + "(" + item.ItemID + ")",
                         string.Format("GShopBuy Count:{0}", item.Stack), false);
                     AddItem(item, true);
                 }
             }
         }
 
-        public void OnNCShopCategoryRequest(Packets.Client.CSMG_NCSHOP_CATEGORY_REQUEST p)
+        public void OnNCShopCategoryRequest(CSMG_NCSHOP_CATEGORY_REQUEST p)
         {
-            NCShopCategory category = NCShopFactory.Instance.Items[p.Page + 1];
-            Packets.Server.SSMG_NCSHOP_INFO_HEADER p1 = new SagaMap.Packets.Server.SSMG_NCSHOP_INFO_HEADER();
+            var category = NCShopFactory.Instance.Items[p.Page + 1];
+            var p1 = new SSMG_NCSHOP_INFO_HEADER();
             p1.Page = p.Page;
-            this.netIO.SendPacket(p1);
-            this.currentVShopCategory = p.Page + 1;
-            foreach (uint i in category.Items.Keys)
+            netIO.SendPacket(p1);
+            currentVShopCategory = p.Page + 1;
+            foreach (var i in category.Items.Keys)
             {
-                Packets.Server.SSMG_NCSHOP_INFO p2 = new SagaMap.Packets.Server.SSMG_NCSHOP_INFO();
+                var p2 = new SSMG_NCSHOP_INFO();
                 p2.Point = category.Items[i].points;
                 p2.ItemID = i;
                 p2.Comment = category.Items[i].comment;
-                this.netIO.SendPacket(p2);
+                netIO.SendPacket(p2);
             }
 
-            Packets.Server.SSMG_NCSHOP_INFO_FOOTER p3 = new SagaMap.Packets.Server.SSMG_NCSHOP_INFO_FOOTER();
-            this.netIO.SendPacket(p3);
+            var p3 = new SSMG_NCSHOP_INFO_FOOTER();
+            netIO.SendPacket(p3);
         }
-        public void OnNCShopClose(Packets.Client.CSMG_NCSHOP_CLOSE p)
+
+        public void OnNCShopClose(CSMG_NCSHOP_CLOSE p)
         {
-            this.Character.UsingShopType = PlayerUsingShopType.None;
+            Character.UsingShopType = PlayerUsingShopType.None;
             vshopClosed = true;
         }
-        public void OnVShopClose(Packets.Client.CSMG_VSHOP_CLOSE p)
+
+        public void OnVShopClose(CSMG_VSHOP_CLOSE p)
         {
             vshopClosed = true;
         }
 
-        public void OnVShopCategoryRequest(Packets.Client.CSMG_VSHOP_CATEGORY_REQUEST p)
+        public void OnVShopCategoryRequest(CSMG_VSHOP_CATEGORY_REQUEST p)
         {
             if (!vshopClosed)
             {
-                ShopCategory category = ECOShopFactory.Instance.Items[p.Page + 1];
-                Packets.Server.SSMG_VSHOP_INFO_HEADER p1 = new SagaMap.Packets.Server.SSMG_VSHOP_INFO_HEADER();
+                var category = ECOShopFactory.Instance.Items[p.Page + 1];
+                var p1 = new SSMG_VSHOP_INFO_HEADER();
                 p1.Page = p.Page;
-                this.netIO.SendPacket(p1);
-                this.currentVShopCategory = p.Page + 1;
-                foreach (uint i in category.Items.Keys)
+                netIO.SendPacket(p1);
+                currentVShopCategory = p.Page + 1;
+                foreach (var i in category.Items.Keys)
                 {
-                    Packets.Server.SSMG_VSHOP_INFO p2 = new SagaMap.Packets.Server.SSMG_VSHOP_INFO();
+                    var p2 = new SSMG_VSHOP_INFO();
                     p2.Point = category.Items[i].points;
                     p2.ItemID = i;
                     p2.Comment = category.Items[i].comment;
-                    this.netIO.SendPacket(p2);
+                    netIO.SendPacket(p2);
                 }
 
-                Packets.Server.SSMG_VSHOP_INFO_FOOTER p3 = new SagaMap.Packets.Server.SSMG_VSHOP_INFO_FOOTER();
-                this.netIO.SendPacket(p3);
+                var p3 = new SSMG_VSHOP_INFO_FOOTER();
+                netIO.SendPacket(p3);
             }
         }
 
-        public void OnNPCJobSwitch(Packets.Client.CSMG_NPC_JOB_SWITCH p)
+        public void OnNPCJobSwitch(CSMG_NPC_JOB_SWITCH p)
         {
             if (!npcJobSwitch)
                 return;
@@ -274,181 +275,181 @@ namespace SagaMap.Network.Client
             if (p.Unknown != 0)
             {
                 npcJobSwitchRes = true;
-                Item item = this.Character.Inventory.GetItem(Configuration.Instance.JobSwitchReduceItem, Inventory.SearchType.ITEM_ID);
+                var item = Character.Inventory.GetItem(Configuration.Instance.JobSwitchReduceItem,
+                    Inventory.SearchType.ITEM_ID);
                 if (item != null || p.ItemUseCount == 0)
                 {
                     if (item != null)
                     {
                         if (item.Stack >= p.ItemUseCount)
-                        {
                             DeleteItem(item.Slot, (ushort)p.ItemUseCount, true);
-                        }
                         else
                             return;
                     }
-                    this.Character.SkillsReserve.Clear();
+
+                    Character.SkillsReserve.Clear();
                     //check maximal reservalbe skill count
-                    int count = 0;
-                    if (this.Character.Job == this.Character.Job2X)
-                        count = this.Character.JobLevel2X / 10;
-                    if (this.Character.Job == this.Character.Job2T)
-                        count = this.Character.JobLevel2T / 10;
+                    var count = 0;
+                    if (Character.Job == Character.Job2X)
+                        count = Character.JobLevel2X / 10;
+                    if (Character.Job == Character.Job2T)
+                        count = Character.JobLevel2T / 10;
                     if (count >= p.Skills.Length)
-                    {
                         //set reserved skills
-                        foreach (ushort i in p.Skills)
-                        {
-                            if (this.Character.Skills2.ContainsKey(i))
-                            {
-                                this.Character.SkillsReserve.Add(i, this.Character.Skills2[i]);
-                            }
-                        }
-                    }
+                        foreach (var i in p.Skills)
+                            if (Character.Skills2.ContainsKey(i))
+                                Character.SkillsReserve.Add(i, Character.Skills2[i]);
 
                     //clear skills
                     ResetSkill(2);
 
                     //change job and reduce job level
-                    int levelLost = 0;
-                    if (this.Character.Job == this.Character.Job2X)
+                    var levelLost = 0;
+                    if (Character.Job == Character.Job2X)
                     {
-                        this.Character.Job = this.Character.Job2T;
-                        levelLost = (int)(this.Character.JobLevel2T / 5 - p.ItemUseCount);
+                        Character.Job = Character.Job2T;
+                        levelLost = (int)(Character.JobLevel2T / 5 - p.ItemUseCount);
                         if (levelLost <= 0)
                             levelLost = 0;
-                        if (this.Character.SkillPoint2T > levelLost)
-                            this.Character.SkillPoint2T -= (ushort)levelLost;
+                        if (Character.SkillPoint2T > levelLost)
+                            Character.SkillPoint2T -= (ushort)levelLost;
                         else
-                            this.Character.SkillPoint2T = 0;
-                        this.Character.JobLevel2T -= (byte)levelLost;
-                        this.Character.JEXP = ExperienceManager.Instance.GetExpForLevel(this.Character.JobLevel2T, Scripting.LevelType.JLEVEL2T);
+                            Character.SkillPoint2T = 0;
+                        Character.JobLevel2T -= (byte)levelLost;
+                        Character.JEXP =
+                            ExperienceManager.Instance.GetExpForLevel(Character.JobLevel2T, LevelType.JLEVEL2T);
                     }
                     else
                     {
-                        this.Character.Job = this.Character.Job2X;
-                        levelLost = (int)(this.Character.JobLevel2X / 5 - p.ItemUseCount);
+                        Character.Job = Character.Job2X;
+                        levelLost = (int)(Character.JobLevel2X / 5 - p.ItemUseCount);
                         if (levelLost <= 0)
                             levelLost = 0;
-                        if (this.Character.SkillPoint2X > levelLost)
-                            this.Character.SkillPoint2X -= (ushort)levelLost;
+                        if (Character.SkillPoint2X > levelLost)
+                            Character.SkillPoint2X -= (ushort)levelLost;
                         else
-                            this.Character.SkillPoint2X = 0;
-                        this.Character.JobLevel2X -= (byte)levelLost;
-                        this.Character.JEXP = ExperienceManager.Instance.GetExpForLevel(this.Character.JobLevel2X, Scripting.LevelType.JLEVEL2);
+                            Character.SkillPoint2X = 0;
+                        Character.JobLevel2X -= (byte)levelLost;
+                        Character.JEXP =
+                            ExperienceManager.Instance.GetExpForLevel(Character.JobLevel2X, LevelType.JLEVEL2);
                     }
 
-                    PC.StatusFactory.Instance.CalcStatus(this.Character);
+                    StatusFactory.Instance.CalcStatus(Character);
                     SendPlayerInfo();
-                    
-                    EffectArg arg = new EffectArg();
+
+                    var arg = new EffectArg();
                     arg.effectID = 4131;
-                    arg.actorID = this.Character.ActorID;
-                    this.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, this.Character, true);
+                    arg.actorID = Character.ActorID;
+                    map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, Character, true);
                 }
             }
+
             npcJobSwitch = false;
         }
 
-        public void OnNPCInputBox(Packets.Client.CSMG_NPC_INPUTBOX p)
+        public void OnNPCInputBox(CSMG_NPC_INPUTBOX p)
         {
             inputContent = p.Content;
         }
 
-        public void OnNPCShopBuy(Packets.Client.CSMG_NPC_SHOP_BUY p)
+        public void OnNPCShopBuy(CSMG_NPC_SHOP_BUY p)
         {
-            uint[] goods = p.Goods;
-            uint[] counts = p.Counts;
+            var goods = p.Goods;
+            var counts = p.Counts;
             if (Character.HP == 0) return;
-            if (this.currentShop != null && goods.Length > 0)
+            if (currentShop != null && goods.Length > 0)
             {
                 uint gold = 0;
-                switch (this.currentShop.ShopType)
+                switch (currentShop.ShopType)
                 {
                     case ShopType.None:
-                        gold = (uint)this.Character.Gold;
+                        gold = (uint)Character.Gold;
                         break;
                     case ShopType.CP:
-                        gold = this.Character.CP;
+                        gold = Character.CP;
                         break;
                     case ShopType.ECoin:
-                        gold = this.Character.ECoin;
+                        gold = Character.ECoin;
                         break;
                 }
-                for (int i = 0; i < goods.Length; i++)
-                {
-                    if (this.currentShop.Goods.Contains(goods[i]))
+
+                for (var i = 0; i < goods.Length; i++)
+                    if (currentShop.Goods.Contains(goods[i]))
                     {
-                        Item item = ItemFactory.Instance.GetItem(goods[i]);
+                        var item = ItemFactory.Instance.GetItem(goods[i]);
                         item.Stack = (ushort)counts[i];
                         short buyrate = 0;
-                        if (this.currentShop.ShopType == ShopType.None)
-                            buyrate = this.chara.Status.buy_rate;
-                        uint price = (uint)(item.BaseData.price * (((float)(this.currentShop.SellRate + buyrate)) / 200));
+                        if (currentShop.ShopType == ShopType.None)
+                            buyrate = Character.Status.buy_rate;
+                        var price = (uint)(item.BaseData.price * ((float)(currentShop.SellRate + buyrate) / 200));
                         if (price == 0) price = 1;
                         price = price * item.Stack;
                         if (gold >= price)
                         {
-                            ushort stack = item.Stack;
+                            var stack = item.Stack;
                             gold -= price;
-                            Logger.LogItemGet(Logger.EventType.ItemNPCGet, this.Character.Name + "(" + this.Character.CharID + ")", item.BaseData.name + "(" + item.ItemID + ")",
+                            Logger.LogItemGet(Logger.EventType.ItemNPCGet,
+                                Character.Name + "(" + Character.CharID + ")",
+                                item.BaseData.name + "(" + item.ItemID + ")",
                                 string.Format("ShopBuy Count:{0}", item.Stack), false);
-                            this.AddItem(item, true);
+                            AddItem(item, true);
                         }
                     }
-                }
-                switch (this.currentShop.ShopType)
+
+                switch (currentShop.ShopType)
                 {
                     case ShopType.None:
-                        this.Character.Gold = (int)gold;
+                        Character.Gold = (int)gold;
                         break;
                     case ShopType.CP:
-                        this.Character.CP = gold;
+                        Character.CP = gold;
                         break;
                     case ShopType.ECoin:
-                        this.Character.ECoin = gold;
+                        Character.ECoin = gold;
                         break;
                 }
-                this.Character.Inventory.CalcPayloadVolume();
-                this.SendCapacity();
+
+                Character.Inventory.CalcPayloadVolume();
+                SendCapacity();
             }
             else
             {
-                if (this.currentEvent != null)
+                if (currentEvent != null)
                 {
-                    long gold = this.Character.Gold;
+                    var gold = Character.Gold;
 
                     switch (Character.TInt["ShopType"])
                     {
                         case 0:
-                            gold = (uint)this.Character.Gold;
+                            gold = (uint)Character.Gold;
                             break;
                         case 1:
-                            gold = this.Character.CP;
+                            gold = Character.CP;
                             break;
                         case 2:
-                            gold = this.Character.ECoin;
+                            gold = Character.ECoin;
                             break;
                     }
 
-                    for (int i = 0; i < goods.Length; i++)
-                    {
-                        if (this.currentEvent.Goods.Contains(goods[i]))
+                    for (var i = 0; i < goods.Length; i++)
+                        if (currentEvent.Goods.Contains(goods[i]))
                         {
-                            Item item = ItemFactory.Instance.GetItem(goods[i]);
+                            var item = ItemFactory.Instance.GetItem(goods[i]);
                             item.Stack = (ushort)counts[i];
-                            int price = (int)(item.BaseData.price * (((float)(this.Character.Status.buy_rate)) / 1000));
+                            var price = (int)(item.BaseData.price * ((float)Character.Status.buy_rate / 1000));
                             if (price == 0) price = 1;
                             price = price * item.Stack;
                             if (gold >= price)
                             {
-                                ushort stack = item.Stack;
+                                var stack = item.Stack;
                                 gold -= price;
-                                Logger.LogItemGet(Logger.EventType.ItemNPCGet, this.Character.Name + "(" + this.Character.CharID + ")", item.BaseData.name + "(" + item.ItemID + ")",
+                                Logger.LogItemGet(Logger.EventType.ItemNPCGet,
+                                    Character.Name + "(" + Character.CharID + ")",
+                                    item.BaseData.name + "(" + item.ItemID + ")",
                                     string.Format("AddItem Count:{0}", item.Stack), false);
-                                this.AddItem(item, true);
+                                AddItem(item, true);
                             }
                         }
-                    }
                     //this.Character.Gold = gold;
 
                     switch (Character.TInt["ShopType"])
@@ -464,103 +465,106 @@ namespace SagaMap.Network.Client
                             break;
                     }
 
-                    this.Character.Inventory.CalcPayloadVolume();
-                    this.SendCapacity();
+                    Character.Inventory.CalcPayloadVolume();
+                    SendCapacity();
                 }
             }
         }
 
-        public void OnNPCShopSell(Packets.Client.CSMG_NPC_SHOP_SELL p)
+        public void OnNPCShopSell(CSMG_NPC_SHOP_SELL p)
         {
-            uint[] goods = p.Goods;
-            uint[] counts = p.Counts;
+            var goods = p.Goods;
+            var counts = p.Counts;
 
-            if (this.currentShop != null)            
+            if (currentShop != null)
             {
                 uint total = 0;
-                for (int i = 0; i < goods.Length; i++)
+                for (var i = 0; i < goods.Length; i++)
                 {
-
-                    Item itemDroped = this.Character.Inventory.GetItem(goods[i]);
+                    var itemDroped = Character.Inventory.GetItem(goods[i]);
                     if (itemDroped == null)
                         return;
                     if (counts[i] > itemDroped.Stack)
                         counts[i] = itemDroped.Stack;
-                    Logger.LogItemLost(Logger.EventType.ItemNPCLost, this.Character.Name + "(" + this.Character.CharID + ")", itemDroped.BaseData.name + "(" + itemDroped.ItemID + ")",
-                    string.Format("NPCShopSell Count:{0}", counts[i]), false);
+                    Logger.LogItemLost(Logger.EventType.ItemNPCLost, Character.Name + "(" + Character.CharID + ")",
+                        itemDroped.BaseData.name + "(" + itemDroped.ItemID + ")",
+                        string.Format("NPCShopSell Count:{0}", counts[i]), false);
 
-                    this.DeleteItem(goods[i], (ushort)counts[i], true);
+                    DeleteItem(goods[i], (ushort)counts[i], true);
 
-                    uint price = (uint)(itemDroped.BaseData.price * counts[i] * (((float)(10 + this.Character.Status.sell_rate)) / 100));
+                    var price = (uint)(itemDroped.BaseData.price * counts[i] *
+                                       ((float)(10 + Character.Status.sell_rate) / 100));
                     total += price;
                 }
-                this.Character.Gold += (int)total;
-                this.Character.Inventory.CalcPayloadVolume();
-                this.SendCapacity();
+
+                Character.Gold += (int)total;
+                Character.Inventory.CalcPayloadVolume();
+                SendCapacity();
             }
             else
             {
-                if (this.currentEvent != null)
+                if (currentEvent != null)
                 {
                     uint total = 0;
-                    for (int i = 0; i < goods.Length; i++)
+                    for (var i = 0; i < goods.Length; i++)
                     {
-
-                        Item itemDroped = this.Character.Inventory.GetItem(goods[i]);
+                        var itemDroped = Character.Inventory.GetItem(goods[i]);
                         if (itemDroped == null)
-                            return;                    
-                        Logger.LogItemLost(Logger.EventType.ItemNPCLost, this.Character.Name + "(" + this.Character.CharID + ")", itemDroped.BaseData.name + "(" + itemDroped.ItemID + ")",
+                            return;
+                        Logger.LogItemLost(Logger.EventType.ItemNPCLost, Character.Name + "(" + Character.CharID + ")",
+                            itemDroped.BaseData.name + "(" + itemDroped.ItemID + ")",
                             string.Format("NPCShopSell Count:{0}", counts[i]), false);
-                    
-                        this.DeleteItem(goods[i], (ushort)counts[i], true);
 
-                        uint price = (uint)(itemDroped.BaseData.price * counts[i] * (((float)(10 + this.Character.Status.sell_rate)) / 100));
+                        DeleteItem(goods[i], (ushort)counts[i], true);
 
-                        total += price;                       
+                        var price = (uint)(itemDroped.BaseData.price * counts[i] *
+                                           ((float)(10 + Character.Status.sell_rate) / 100));
+
+                        total += price;
                     }
-                    this.Character.Gold += (int)total;
-                    this.Character.Inventory.CalcPayloadVolume();
-                    this.SendCapacity();
+
+                    Character.Gold += (int)total;
+                    Character.Inventory.CalcPayloadVolume();
+                    SendCapacity();
                 }
             }
         }
 
-        public void OnNPCShopClose(Packets.Client.CSMG_NPC_SHOP_CLOSE p)
+        public void OnNPCShopClose(CSMG_NPC_SHOP_CLOSE p)
         {
             npcShopClosed = true;
         }
 
-        public void OnNPCSelect(Packets.Client.CSMG_NPC_SELECT p)
+        public void OnNPCSelect(CSMG_NPC_SELECT p)
         {
             npcSelectResult = p.Result;
         }
 
-        public void OnNPCSynthese(Packets.Client.CSMG_NPC_SYNTHESE p)
+        public void OnNPCSynthese(CSMG_NPC_SYNTHESE p)
         {
-            Dictionary<uint, ushort> ids = p.SynIDs;
+            var ids = p.SynIDs;
             foreach (var item in ids)
-            {
-                if (!this.syntheseItem.ContainsKey(ids[item.Key]))
-                    this.syntheseItem.Add(item.Key, item.Value);
-            }
+                if (!syntheseItem.ContainsKey(ids[item.Key]))
+                    syntheseItem.Add(item.Key, item.Value);
         }
 
-        public void OnNPCSyntheseFinish(Packets.Client.CSMG_NPC_SYNTHESE_FINISH p)
+        public void OnNPCSyntheseFinish(CSMG_NPC_SYNTHESE_FINISH p)
         {
-            this.syntheseFinished = true;
+            syntheseFinished = true;
         }
 
-        public void OnNPCEventStart(Packets.Client.CSMG_NPC_EVENT_START p)
+        public void OnNPCEventStart(CSMG_NPC_EVENT_START p)
         {
-            if (this.scriptThread == null)
+            if (scriptThread == null)
             {
-                if (this.tradingTarget != null || trading || this.chara.Buff.GetReadyPossession)
+                if (tradingTarget != null || trading || Character.Buff.GetReadyPossession)
                 {
                     SendEventStart(p.EventID);
                     SendCurrentEvent(p.EventID);
                     SendEventEnd();
                     return;
                 }
+
                 //if (p.EventID < 20000000 || p.EventID >= 0xF0000000)Unknow为啥要限制编号
                 if (true)
                 {
@@ -568,21 +572,24 @@ namespace SagaMap.Network.Client
                     {
                         if (NPCFactory.Instance.Items.ContainsKey(p.EventID))
                         {
-                            NPC npc = NPCFactory.Instance.Items[p.EventID];
+                            var npc = NPCFactory.Instance.Items[p.EventID];
                             uint mapid;
-                            if (this.map.IsMapInstance)
+                            if (map.IsMapInstance)
                             {
                                 if (map.OriID != 0)
-                                    mapid = this.map.OriID;
+                                    mapid = map.OriID;
                                 else
                                     mapid = map.ID * 100 / 1000;
                             }
                             else
-                                mapid = this.map.ID;
+                            {
+                                mapid = map.ID;
+                            }
+
                             if (npc.MapID == mapid)
                             {
-                                if (Math.Abs(this.Character.X - Global.PosX8to16(npc.X, map.Width)) > 700 ||
-                                    Math.Abs(this.Character.Y - Global.PosY8to16(npc.Y, map.Height)) > 700)
+                                if (Math.Abs(Character.X - Global.PosX8to16(npc.X, map.Width)) > 700 ||
+                                    Math.Abs(Character.Y - Global.PosY8to16(npc.Y, map.Height)) > 700)
                                 {
                                     SendEventStart(p.EventID);
                                     SendCurrentEvent(p.EventID);
@@ -601,23 +608,22 @@ namespace SagaMap.Network.Client
                     }
                     else
                     {
-                        if (p.EventID != 10000315 && p.EventID != 10000316)//Exception for flying garden events
+                        if (p.EventID != 10000315 && p.EventID != 10000316) //Exception for flying garden events
                         {
-                            if (this.map.Info.events.ContainsKey(p.EventID))
+                            if (map.Info.events.ContainsKey(p.EventID))
                             {
-                                byte[] pos = this.map.Info.events[p.EventID];
+                                var pos = map.Info.events[p.EventID];
                                 byte x, y;
-                                x = Global.PosX16to8(this.chara.X, map.Width);
-                                y = Global.PosY16to8(this.chara.Y, map.Height);
-                                bool valid = false;
-                                for (int i = 0; i < pos.Length / 2; i++)
-                                {
-                                    if (Math.Abs((int)pos[i*2] - x) <= 3 && Math.Abs((int)pos[i*2 + 1] - y) <= 3)
+                                x = Global.PosX16to8(Character.X, map.Width);
+                                y = Global.PosY16to8(Character.Y, map.Height);
+                                var valid = false;
+                                for (var i = 0; i < pos.Length / 2; i++)
+                                    if (Math.Abs(pos[i * 2] - x) <= 3 && Math.Abs(pos[i * 2 + 1] - y) <= 3)
                                     {
                                         valid = true;
                                         break;
                                     }
-                                }
+
                                 if (!valid)
                                 {
                                     SendHack();
@@ -637,6 +643,7 @@ namespace SagaMap.Network.Client
                             }
                         }
                     }
+
                     EventActivate(p.EventID);
                 }
                 else
@@ -656,20 +663,22 @@ namespace SagaMap.Network.Client
 
         public void EventActivate(uint EventID)
         {
-            if(this.Character.Account.GMLevel > 100)
-            this.SendSystemMessage("触发ID:" + EventID.ToString());
+            if (Character.Account.GMLevel > 100)
+                SendSystemMessage("触发ID:" + EventID);
             if (ScriptManager.Instance.Events.ContainsKey(EventID))
             {
-                System.Threading.Thread thread = new System.Threading.Thread(RunScript);
-                thread.Name = string.Format("ScriptThread({0}) of player:{1}", thread.ManagedThreadId, this.Character.Name);
+                var thread = new Thread(RunScript);
+                thread.Name = string.Format("ScriptThread({0}) of player:{1}", thread.ManagedThreadId, Character.Name);
                 ClientManager.AddThread(thread);
-                if (this.scriptThread != null)
+                if (scriptThread != null)
                 {
-                    Logger.ShowDebug("current script thread != null, currently running:" + currentEventID.ToString(), Logger.defaultlogger);
-                    this.scriptThread.Abort();
+                    Logger.ShowDebug("current script thread != null, currently running:" + currentEventID,
+                        Logger.defaultlogger);
+                    scriptThread.Abort();
                 }
+
                 currentEventID = EventID;
-                this.scriptThread = thread;
+                scriptThread = thread;
                 thread.Start();
             }
             else
@@ -679,25 +688,22 @@ namespace SagaMap.Network.Client
                 SendCurrentEvent(EventID);
 
                 SendNPCMessageStart();
-                if (this.account.GMLevel > 0)
-                {
-                    SendNPCMessage(EventID, string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound, EventID), 131, "System Error");
-                }
+                if (account.GMLevel > 0)
+                    SendNPCMessage(EventID, string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound, EventID),
+                        131, "System Error");
                 else
-                {
-                    SendNPCMessage(EventID, string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound_Msg, EventID), 131, "");
-                }
+                    SendNPCMessage(EventID,
+                        string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound_Msg, EventID), 131, "");
                 SendNPCMessageEnd();
                 SendEventEnd();
                 Logger.ShowWarning("No script loaded for EventID:" + EventID);
-
             }
         }
 
-        void RunScript()
+        private void RunScript()
         {
             ClientManager.EnterCriticalArea();
-            Scripting.Event evnt = null;
+            Event evnt = null;
             try
             {
                 evnt = ScriptManager.Instance.Events[currentEventID];
@@ -706,253 +712,270 @@ namespace SagaMap.Network.Client
                     SendEventStart(currentEventID);
                     SendCurrentEvent(currentEventID);
                 }
-                this.currentEvent = evnt;
-                this.currentEvent.CurrentPC = this.Character;
-                bool runscript = true;
-                if (this.Character.Quest != null)
+
+                currentEvent = evnt;
+                currentEvent.CurrentPC = Character;
+                var runscript = true;
+                if (Character.Quest != null)
                 {
-                    if (this.Character.Quest.Detail.NPCSource == evnt.EventID)
+                    if (Character.Quest.Detail.NPCSource == evnt.EventID)
                     {
-                        if (this.Character.Quest.CurrentCount1 == 0 && this.Character.Quest.Status == SagaDB.Quests.QuestStatus.OPEN)
-                        {                           
-                            this.Character.Quest.CurrentCount1 = 1;
-                            evnt.OnTransportSource(this.Character);
-                            evnt.OnQuestUpdate(this.Character, this.Character.Quest);
+                        if (Character.Quest.CurrentCount1 == 0 && Character.Quest.Status == QuestStatus.OPEN)
+                        {
+                            Character.Quest.CurrentCount1 = 1;
+                            evnt.OnTransportSource(Character);
+                            evnt.OnQuestUpdate(Character, Character.Quest);
                             runscript = false;
                         }
                         else
                         {
-                            if (this.Character.Quest.CurrentCount2 == 1)
+                            if (Character.Quest.CurrentCount2 == 1)
                             {
-                                evnt.OnTransportCompleteSrc(this.Character);
+                                evnt.OnTransportCompleteSrc(Character);
                                 runscript = false;
                             }
                         }
                     }
-                    if (this.Character.Quest.Detail.NPCDestination == evnt.EventID)
+
+                    if (Character.Quest.Detail.NPCDestination == evnt.EventID)
                     {
-                        if (this.Character.Quest.CurrentCount2 == 0 && this.Character.Quest.Status == SagaDB.Quests.QuestStatus.OPEN)
+                        if (Character.Quest.CurrentCount2 == 0 && Character.Quest.Status == QuestStatus.OPEN)
                         {
-                            evnt.OnTransportDest(this.Character);
-                            if (this.Character.Quest.CurrentCount3 == 0)
+                            evnt.OnTransportDest(Character);
+                            if (Character.Quest.CurrentCount3 == 0)
                             {
-                                this.Character.Quest.CurrentCount2 = 1;
-                                this.Character.Quest.Status = SagaDB.Quests.QuestStatus.COMPLETED;
-                                evnt.OnQuestUpdate(this.Character, this.Character.Quest);
+                                Character.Quest.CurrentCount2 = 1;
+                                Character.Quest.Status = QuestStatus.COMPLETED;
+                                evnt.OnQuestUpdate(Character, Character.Quest);
                                 SendQuestStatus();
                                 runscript = false;
                             }
                         }
                         else
                         {
-                            evnt.OnTransportCompleteDest(this.Character);
+                            evnt.OnTransportCompleteDest(Character);
                             runscript = false;
                         }
                     }
                 }
-                if (runscript)
-                {
 
-                    this.currentEvent.OnEvent(this.Character);
-                }
+                if (runscript) currentEvent.OnEvent(Character);
                 if (currentEventID < 0xFFFF0000)
                     SendEventEnd();
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 try
                 {
-                    ClientManager.RemoveThread(this.scriptThread.Name);
-                    ClientManager.LeaveCriticalArea(this.scriptThread);
+                    ClientManager.RemoveThread(scriptThread.Name);
+                    ClientManager.LeaveCriticalArea(scriptThread);
                     if (evnt != null)
                         evnt.CurrentPC = null;
-                    this.currentEvent = null;
-                    if (this.Character != null)
-                        Logger.ShowWarning(string.Format("Player:{0} logged out while script thread is still running, terminating the script thread!", this.Character.Name));
+                    currentEvent = null;
+                    if (Character != null)
+                        Logger.ShowWarning(string.Format(
+                            "Player:{0} logged out while script thread is still running, terminating the script thread!",
+                            Character.Name));
                 }
-                catch { }
-                this.scriptThread = null;
+                catch
+                {
+                }
+
+                scriptThread = null;
             }
             catch (Exception ex)
             {
                 try
                 {
-                    if (this.Character.Online)
+                    if (Character.Online)
                     {
-                        if (this.Character.Account.GMLevel > 2)
+                        if (Character.Account.GMLevel > 2)
                         {
                             SendNPCMessageStart();
-                            SendNPCMessage(currentEventID, "Script Error(" + ScriptManager.Instance.Events[currentEventID].ToString() + "):" + ex.Message, 131, "System Error");
+                            SendNPCMessage(currentEventID,
+                                "Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" + ex.Message,
+                                131, "System Error");
                             SendNPCMessageEnd();
                         }
+
                         SendEventEnd();
                     }
 
-                    Logger.ShowWarning("Script Error(" + ScriptManager.Instance.Events[currentEventID].ToString() + "):" + ex.Message + "\r\n" + ex.StackTrace);
+                    Logger.ShowWarning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
+                                       ex.Message + "\r\n" + ex.StackTrace);
                 }
-                catch { }
+                catch
+                {
+                }
             }
+
             if (evnt != null)
                 evnt.CurrentPC = null;
-            this.scriptThread = null;
-            this.currentEvent = null;
-            ClientManager.RemoveThread(System.Threading.Thread.CurrentThread.Name);
+            scriptThread = null;
+            currentEvent = null;
+            ClientManager.RemoveThread(Thread.CurrentThread.Name);
             ClientManager.LeaveCriticalArea();
         }
 
         public void SendEventStart(uint id)
         {
-            if (!this.Character.Online)
+            if (!Character.Online)
                 return;
-            Packets.Server.SSMG_NPC_EVENT_START p = new SagaMap.Packets.Server.SSMG_NPC_EVENT_START();
-            this.netIO.SendPacket(p);
-            Packets.Server.SSMG_NPC_EVENT_START_RESULT p2 = new Packets.Server.SSMG_NPC_EVENT_START_RESULT();
+            var p = new SSMG_NPC_EVENT_START();
+            netIO.SendPacket(p);
+            var p2 = new SSMG_NPC_EVENT_START_RESULT();
             p2.NPCID = id;
-            this.netIO.SendPacket(p2);
-
+            netIO.SendPacket(p2);
         }
 
         public void SendEventEnd()
         {
-            if (!this.Character.Online)
+            if (!Character.Online)
                 return;
             /*string args = "05 F4 00";
             byte[] buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             Packet ps1 = new Packet();
             ps1.data = buf;*/
             //this.netIO.SendPacket(ps1);
-            Packets.Server.SSMG_NPC_EVENT_END p = new SagaMap.Packets.Server.SSMG_NPC_EVENT_END();
-            this.netIO.SendPacket(p);            
+            var p = new SSMG_NPC_EVENT_END();
+            netIO.SendPacket(p);
         }
 
         public void SendCurrentEvent(uint eventid)
         {
-            Packets.Server.SSMG_NPC_CURRENT_EVENT p = new SagaMap.Packets.Server.SSMG_NPC_CURRENT_EVENT();
+            var p = new SSMG_NPC_CURRENT_EVENT();
             p.EventID = eventid;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
 
         public void SendNPCMessageStart()
         {
-            if (!this.Character.Online)
+            if (!Character.Online)
                 return;
-            Packets.Server.SSMG_NPC_MESSAGE_START p = new SagaMap.Packets.Server.SSMG_NPC_MESSAGE_START();
-            this.netIO.SendPacket(p);
+            var p = new SSMG_NPC_MESSAGE_START();
+            netIO.SendPacket(p);
         }
 
         public void SendNPCMessageEnd()
         {
-            if (!this.Character.Online)
+            if (!Character.Online)
                 return;
-            Packets.Server.SSMG_NPC_MESSAGE_END p = new SagaMap.Packets.Server.SSMG_NPC_MESSAGE_END();
-            this.netIO.SendPacket(p);
+            var p = new SSMG_NPC_MESSAGE_END();
+            netIO.SendPacket(p);
         }
 
         public void SendNPCMessage(uint npcID, string message, ushort motion, string title)
         {
             try
             {
-                if (!this.Character.Online)
+                if (!Character.Online)
                     return;
-                Packets.Server.SSMG_NPC_MESSAGE p = new SagaMap.Packets.Server.SSMG_NPC_MESSAGE();
-                if(message.Contains('%'))
+                var p = new SSMG_NPC_MESSAGE();
+                if (message.Contains('%'))
                 {
-                    string newmessage = "";
-                    string temp = "";
-                    string[] paras = message.Split('%');
-                    for (int i = 0; i < paras.Length; i++)
+                    var newmessage = "";
+                    var temp = "";
+                    var paras = message.Split('%');
+                    for (var i = 0; i < paras.Length; i++)
                     {
                         temp = temp + paras[i];
                         temp = temp.Replace("$P", "");
-                        if (i != paras.Length -1)
+                        if (i != paras.Length - 1)
                             temp = temp + "$P";
                         newmessage += temp;
                     }
+
                     message = newmessage;
                 }
+
                 if (message.Length > 50)
                 {
-                    int count = message.Length / 50;
-                    List<string> messages = new List<string>();
-                    for (int i = 0; i < count; i++)
+                    var count = message.Length / 50;
+                    var messages = new List<string>();
+                    for (var i = 0; i < count; i++)
                         messages.Add(message.Substring(50 * i, 50));
                     if (message.Length != count * 50)
                         messages.Add(message.Substring(count * 50, message.Length - count * 50));
-                    foreach (string item in messages)
+                    foreach (var item in messages)
                     {
-                        p = new SagaMap.Packets.Server.SSMG_NPC_MESSAGE();
+                        p = new SSMG_NPC_MESSAGE();
                         p.SetMessage(npcID, 1, item, motion, title);
-                        this.netIO.SendPacket(p);
+                        netIO.SendPacket(p);
                     }
                 }
                 else
                 {
                     p.SetMessage(npcID, 1, message, motion, title);
-                    this.netIO.SendPacket(p);
+                    netIO.SendPacket(p);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                Logger.ShowError(ex);
             }
         }
 
         public void SendNPCWait(uint wait)
         {
-            Packets.Server.SSMG_NPC_WAIT p = new SagaMap.Packets.Server.SSMG_NPC_WAIT();
+            var p = new SSMG_NPC_WAIT();
             p.Wait = wait;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
+
         public void SendNPCPlaySound(uint soundID, byte loop, uint volume, byte balance)
         {
             SendNPCPlaySound(soundID, loop, volume, balance, false);
         }
-        public void SendNPCPlaySound(uint soundID, byte loop, uint volume, byte balance ,bool stopBGM)
+
+        public void SendNPCPlaySound(uint soundID, byte loop, uint volume, byte balance, bool stopBGM)
         {
-            Packets.Server.SSMG_NPC_PLAY_SOUND p = new SagaMap.Packets.Server.SSMG_NPC_PLAY_SOUND();
+            var p = new SSMG_NPC_PLAY_SOUND();
             if (stopBGM) p.ID = 0x05EE;
             p.SoundID = soundID;
             p.Loop = loop;
             p.Volume = volume;
             p.Balance = balance;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
+
         public void SendChangeBGM(uint soundID, byte loop, uint volume, byte balance)
         {
-            Packets.Server.SSMG_NPC_CHANGE_BGM p = new SagaMap.Packets.Server.SSMG_NPC_CHANGE_BGM();
+            var p = new SSMG_NPC_CHANGE_BGM();
             p.SoundID = soundID;
             p.Loop = loop;
             p.Volume = volume;
             p.Balance = balance;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
+
         public void SendNPCShowEffect(uint actorID, byte x, byte y, ushort height, uint effectID, bool oneTime)
         {
-            Packets.Server.SSMG_NPC_SHOW_EFFECT p = new SagaMap.Packets.Server.SSMG_NPC_SHOW_EFFECT();
+            var p = new SSMG_NPC_SHOW_EFFECT();
             p.ActorID = actorID;
             p.EffectID = effectID;
             p.X = x;
             p.Y = y;
             p.height = height;
             p.OneTime = oneTime;
-            this.netIO.SendPacket(p);
+            netIO.SendPacket(p);
         }
 
         public void SendNPCStates()
         {
-            Dictionary<uint, bool> AllInvolvedNPCStates = (from npc in NPCFactory.Instance.Items.Values where npc.MapID == this.Character.MapID select npc).ToDictionary(i => i.ID, i=>false);
-            for (int i=0;i<AllInvolvedNPCStates.Count;i++)
+            var AllInvolvedNPCStates =
+                (from npc in NPCFactory.Instance.Items.Values where npc.MapID == Character.MapID select npc)
+                .ToDictionary(i => i.ID, i => false);
+            for (var i = 0; i < AllInvolvedNPCStates.Count; i++)
             {
-                uint npcid = AllInvolvedNPCStates.Keys.ElementAt(i);
-                if (this.Character.NPCStates.ContainsKey(npcid))
-                    AllInvolvedNPCStates[npcid] = this.Character.NPCStates[npcid];
+                var npcid = AllInvolvedNPCStates.Keys.ElementAt(i);
+                if (Character.NPCStates.ContainsKey(npcid))
+                    AllInvolvedNPCStates[npcid] = Character.NPCStates[npcid];
             }
 
-            int unloadedCount = AllInvolvedNPCStates.Count;
-            int loadedCount = 0;
-            List<Dictionary<uint, bool>> pages = new List<Dictionary<uint, bool>>();
+            var unloadedCount = AllInvolvedNPCStates.Count;
+            var loadedCount = 0;
+            var pages = new List<Dictionary<uint, bool>>();
             while (unloadedCount > 0)
-            {
                 if (unloadedCount > 100)
                 {
                     pages.Add(AllInvolvedNPCStates.Skip(loadedCount).Take(100).ToDictionary(i => i.Key, i => i.Value));
@@ -961,16 +984,17 @@ namespace SagaMap.Network.Client
                 }
                 else
                 {
-                    pages.Add(AllInvolvedNPCStates.Skip(loadedCount).Take(unloadedCount).ToDictionary(i => i.Key, i => i.Value));
+                    pages.Add(AllInvolvedNPCStates.Skip(loadedCount).Take(unloadedCount)
+                        .ToDictionary(i => i.Key, i => i.Value));
                     loadedCount += unloadedCount;
                     unloadedCount = 0;
                 }
-            }
-            foreach (Dictionary<uint, bool> subpage in pages)
+
+            foreach (var subpage in pages)
             {
-                Packets.Server.SSMG_NPC_STATES p = new SagaMap.Packets.Server.SSMG_NPC_STATES();
+                var p = new SSMG_NPC_STATES();
                 p.PutNPCStates(subpage);
-                this.netIO.SendPacket(p);
+                netIO.SendPacket(p);
             }
             /*
             if (this.Character.NPCStates.ContainsKey(this.map.ID))
@@ -990,7 +1014,7 @@ namespace SagaMap.Network.Client
                         this.netIO.SendPacket(p);
                     }
                 }
-            } 
+            }
             */
         }
     }

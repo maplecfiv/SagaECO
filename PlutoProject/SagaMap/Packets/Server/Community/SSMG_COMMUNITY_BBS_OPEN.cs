@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_COMMUNITY_BBS_OPEN()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1AF4;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1AF4;
         }
 
         public uint Gold
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }
-

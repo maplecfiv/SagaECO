@@ -1,53 +1,49 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
+
 namespace SagaMap.Skill.SkillDefinations.Gambler
 {
     /// <summary>
-    /// 擲骰子（ランダムヒーリング）
+    ///     擲骰子（ランダムヒーリング）
     /// </summary>
     public class RandHeal : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (dActor.Buff.NoRegen)
-            {
-                return -1;
-            }
+            if (dActor.Buff.NoRegen) return -1;
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             int min = 0, max = 0;
-            if ((SagaLib.Global.Random.Next(0, 99)) < 40)
+            if (SagaLib.Global.Random.Next(0, 99) < 40)
             {
                 switch (level)
                 {
                     case 1:
-                        min = (int)((sActor.Status.max_matk * 0.36f) + 18);
-                        max = (int)((sActor.Status.max_matk * 0.65f) + 32);
+                        min = (int)(sActor.Status.max_matk * 0.36f + 18);
+                        max = (int)(sActor.Status.max_matk * 0.65f + 32);
                         break;
                     case 2:
-                        min = (int)((sActor.Status.max_matk * 0.45f) + 25);
-                        max = (int)((sActor.Status.max_matk * 1.16f) + 52);
+                        min = (int)(sActor.Status.max_matk * 0.45f + 25);
+                        max = (int)(sActor.Status.max_matk * 1.16f + 52);
                         break;
                     case 3:
-                        min = (int)((sActor.Status.max_matk * 0.6f) + 30);
-                        max = (int)((sActor.Status.max_matk * 1.60f) + 80);
+                        min = (int)(sActor.Status.max_matk * 0.6f + 30);
+                        max = (int)(sActor.Status.max_matk * 1.60f + 80);
                         break;
-
                 }
-                uint calc = (uint)(SagaLib.Global.Random.Next(min, max));
+
+                var calc = (uint)SagaLib.Global.Random.Next(min, max);
                 uint healhp = 0, healsp = 0, healmp = 0;
                 healhp = calc;
                 sActor.HP += healhp;
                 if (sActor.HP > sActor.MaxHP)
                     sActor.HP = sActor.MaxHP;
-                if ((SagaLib.Global.Random.Next(0, 99)) < 40)
+                if (SagaLib.Global.Random.Next(0, 99) < 40)
                 {
                     healsp = calc;
                     healmp = calc;
@@ -63,7 +59,7 @@ namespace SagaMap.Skill.SkillDefinations.Gambler
                     args.hp[0] = (int)healhp;
                     args.mp[0] = (int)healmp;
                     args.sp[0] = (int)healsp;
-                    args.flag[0] |= SagaLib.AttackFlag.MP_HEAL | SagaLib.AttackFlag.HP_HEAL | SagaLib.AttackFlag.SP_HEAL | SagaLib.AttackFlag.NO_DAMAGE;
+                    args.flag[0] |= AttackFlag.MP_HEAL | AttackFlag.HP_HEAL | AttackFlag.SP_HEAL | AttackFlag.NO_DAMAGE;
                 }
                 else
                 {
@@ -71,7 +67,7 @@ namespace SagaMap.Skill.SkillDefinations.Gambler
                     args.affectedActors.Add(dActor);
                     args.Init();
                     args.hp[0] = (int)healhp;
-                    args.flag[0] |= SagaLib.AttackFlag.HP_HEAL | SagaLib.AttackFlag.NO_DAMAGE;
+                    args.flag[0] |= AttackFlag.HP_HEAL | AttackFlag.NO_DAMAGE;
                 }
 
 
@@ -89,11 +85,11 @@ namespace SagaMap.Skill.SkillDefinations.Gambler
             else
             {
                 if (sActor.HP > sActor.Status.min_matk)
-                    SkillHandler.Instance.FixAttack(sActor, sActor, args, SagaLib.Elements.Neutral, sActor.Status.min_matk);
+                    SkillHandler.Instance.FixAttack(sActor, sActor, args, Elements.Neutral, sActor.Status.min_matk);
                 else if (sActor.HP == sActor.Status.min_matk)
-                    SkillHandler.Instance.FixAttack(sActor, sActor, args, SagaLib.Elements.Neutral, sActor.Status.min_matk - 1);
+                    SkillHandler.Instance.FixAttack(sActor, sActor, args, Elements.Neutral, sActor.Status.min_matk - 1);
                 else
-                    SkillHandler.Instance.FixAttack(sActor, sActor, args, SagaLib.Elements.Neutral, sActor.HP - 1);
+                    SkillHandler.Instance.FixAttack(sActor, sActor, args, Elements.Neutral, sActor.HP - 1);
             }
 
             /*
@@ -126,7 +122,7 @@ namespace SagaMap.Skill.SkillDefinations.Gambler
             {
                 dActor.SP = dActor.MaxSP;
             }
-            
+
             args.affectedActors.Clear();
             args.affectedActors.Add(dActor);
             args.Init();
@@ -145,19 +141,18 @@ namespace SagaMap.Skill.SkillDefinations.Gambler
             }
             */
         }
-        public void RemoveAddition(Actor actor, String additionName)
+
+        public void RemoveAddition(Actor actor, string additionName)
         {
             if (actor.Status.Additions.ContainsKey(additionName))
             {
-                Addition addition = actor.Status.Additions[additionName];
+                var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
-                if (addition.Activated)
-                {
-                    addition.AdditionEnd();
-                }
+                if (addition.Activated) addition.AdditionEnd();
                 addition.Activated = false;
             }
         }
+
         #endregion
     }
 }

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.FR2_2
 {
     /// <summary>
-    /// 寒冰箭
+    ///     寒冰箭
     /// </summary>
     public class WaterArrow : ISkill
     {
@@ -30,11 +26,13 @@ namespace SagaMap.Skill.SkillDefinations.FR2_2
             if (level == 6)
             {
                 factor = 3.5f;
-                Freeze f = new Freeze(args.skill, dActor, 3000);
+                var f = new Freeze(args.skill, dActor, 3000);
                 SkillHandler.ApplyAddition(dActor, f);
             }
-            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, SagaLib.Elements.Water, factor);
+
+            SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Water, factor);
         }
+
         #endregion
     }
 }

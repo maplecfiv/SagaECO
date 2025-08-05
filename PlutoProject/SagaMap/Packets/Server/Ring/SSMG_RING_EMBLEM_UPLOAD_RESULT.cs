@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Ring;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -16,23 +9,19 @@ namespace SagaMap.Packets.Server
             OK = 0,
             SERVER_ERROR = -1,
             WRONG_FORMAT = -2,
-            FAME_NOT_ENOUGH = -3,
+            FAME_NOT_ENOUGH = -3
         }
 
         public SSMG_RING_EMBLEM_UPLOAD_RESULT()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1ADC;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1ADC;
         }
 
         public Results Result
         {
-            set
-            {
-                this.PutInt((int)value, 2);
-            }
+            set => PutInt((int)value, 2);
         }
     }
 }
-

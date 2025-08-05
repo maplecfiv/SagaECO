@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using SagaDB.Actor;
 using SagaLib;
-using SagaLogin;
-using SagaLogin.Network.Client;
+using SagaLogin.Configurations;
 
 namespace SagaLogin.Packets.Map
 {
@@ -12,9 +11,9 @@ namespace SagaLogin.Packets.Map
     {
         public INTERN_LOGIN_REQUEST_CONFIG_ANSWER()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0xFFF2;
+            data = new byte[8];
+            offset = 2;
+            ID = 0xFFF2;
         }
 
         public bool AuthOK
@@ -22,25 +21,25 @@ namespace SagaLogin.Packets.Map
             set
             {
                 if (value)
-                    this.PutByte(1, 2);
+                    PutByte(1, 2);
                 else
-                    this.PutByte(0, 2);
+                    PutByte(0, 2);
             }
         }
 
-        public Dictionary<SagaDB.Actor.PC_RACE, Configurations.StartupSetting> StartupSetting
+        public Dictionary<PC_RACE, StartupSetting> StartupSetting
         {
             set
             {
-                System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                var ms = new MemoryStream();
+                var bf = new BinaryFormatter();
                 bf.Serialize(ms, value);
                 ms.Flush();
-                byte[] buf = new byte[8 + ms.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutUInt((uint)ms.Length, 3);
-                this.PutBytes(ms.ToArray(), 7);
+                var buf = new byte[8 + ms.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutUInt((uint)ms.Length, 3);
+                PutBytes(ms.ToArray(), 7);
             }
         }
     }

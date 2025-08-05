@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,19 +8,16 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_TRADE_ITEM()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
         public List<uint> InventoryID
         {
             get
             {
-                List<uint> list = new List<uint>();
-                byte count = this.GetByte(2);
-                for (int i = 0; i < count; i++)
-                {
-                    list.Add(this.GetUInt((ushort)(3 + i * 4)));
-                }
+                var list = new List<uint>();
+                var count = GetByte(2);
+                for (var i = 0; i < count; i++) list.Add(GetUInt((ushort)(3 + i * 4)));
                 return list;
             }
         }
@@ -33,12 +26,9 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                List<ushort> list = new List<ushort>();
-                byte count = this.GetByte(2);
-                for (int i = 0; i < count; i++)
-                {
-                    list.Add(this.GetUShort((ushort)(4 + count * 4 + i * 2)));
-                }
+                var list = new List<ushort>();
+                var count = GetByte(2);
+                for (var i = 0; i < count; i++) list.Add(GetUShort((ushort)(4 + count * 4 + i * 2)));
                 return list;
             }
         }
@@ -47,20 +37,19 @@ namespace SagaMap.Packets.Client
         {
             get
             {
-                byte count = this.GetByte(2);
-                return this.GetUInt((ushort)(8 + count * 6));
+                var count = GetByte(2);
+                return GetUInt((ushort)(8 + count * 6));
             }
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_TRADE_ITEM();
+            return new CSMG_TRADE_ITEM();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnTradeItem(this);
+            ((MapClient)client).OnTradeItem(this);
         }
-
     }
 }

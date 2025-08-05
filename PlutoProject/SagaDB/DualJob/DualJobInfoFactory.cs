@@ -1,11 +1,9 @@
-﻿using SagaLib;
-using SagaLib.VirtualFileSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+using SagaLib;
+using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.DualJob
 {
@@ -13,11 +11,11 @@ namespace SagaDB.DualJob
     {
         public Dictionary<byte, DualJobInfo> items = new Dictionary<byte, DualJobInfo>();
 
-        public void Init(string path, System.Text.Encoding encoding)
+        public void Init(string path, Encoding encoding)
         {
-            using (var sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
+            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
             {
-                DateTime time = DateTime.Now;
+                var time = DateTime.Now;
 
                 string[] paras;
                 while (!sr.EndOfStream)
@@ -31,7 +29,7 @@ namespace SagaDB.DualJob
                         if (line.Substring(0, 1) == "#") continue;
 
                         paras = line.Split(',');
-                        DualJobInfo item = new DualJobInfo();
+                        var item = new DualJobInfo();
                         item.DualJobID = byte.Parse(paras[0]);
                         item.DualJobName = paras[1];
                         item.BaseJobID = byte.Parse(paras[2]);
@@ -44,7 +42,6 @@ namespace SagaDB.DualJob
                             items.Add(item.DualJobID, item);
                         else
                             items[item.DualJobID] = item;
-
                     }
                     catch (Exception ex)
                     {

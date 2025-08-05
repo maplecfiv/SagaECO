@@ -1,6 +1,4 @@
 using SagaLib;
-using SagaDB.DefWar;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -8,18 +6,15 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_DEFWAR_TIME()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1BCD;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1BCD;
         }
 
 
         public uint Time
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }

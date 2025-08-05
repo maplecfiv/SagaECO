@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Map;
-
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -13,25 +7,23 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTOR_EVENT_TITLE_CHANGE()
         {
-            this.data = new byte[7];
-            this.offset = 2;
-            this.ID = 0x0BBA;
-          
+            data = new byte[7];
+            offset = 2;
+            ID = 0x0BBA;
         }
 
         public ActorEvent Actor
         {
             set
             {
-                byte[] title = Global.Unicode.GetBytes(value.Title + "\0");
-                byte[] buf = new byte[7 + title.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutUInt(value.ActorID, 2);                
-                this.PutByte((byte)title.Length);
-                this.PutBytes(title);
+                var title = Global.Unicode.GetBytes(value.Title + "\0");
+                var buf = new byte[7 + title.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutUInt(value.ActorID, 2);
+                PutByte((byte)title.Length);
+                PutBytes(title);
             }
         }
     }
 }
-

@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,32 +6,28 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_GOLEM_WAREHOUSE()
         {
-            this.data = new byte[8];
-            this.offset = 2;
-            this.ID = 0x17F3;
+            data = new byte[8];
+            offset = 2;
+            ID = 0x17F3;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 3);
-            }
+            set => PutUInt(value, 3);
         }
 
         public string Title
         {
             set
             {
-                byte[] title = Global.Unicode.GetBytes(value + "\0");
-                byte[] buf = new byte[8 + title.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                var title = Global.Unicode.GetBytes(value + "\0");
+                var buf = new byte[8 + title.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)title.Length, 7);
-                this.PutBytes(title, 8);
+                PutByte((byte)title.Length, 7);
+                PutBytes(title, 8);
             }
         }
     }
 }
-

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaLib;
 using SagaMap.Skill.SkillDefinations.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Elementaler
@@ -17,7 +13,7 @@ namespace SagaMap.Skill.SkillDefinations.Elementaler
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            this.ProcSub(sActor, dActor, args, level, SagaLib.Elements.Water);
+            ProcSub(sActor, dActor, args, level, Elements.Water);
         }
     }
 }

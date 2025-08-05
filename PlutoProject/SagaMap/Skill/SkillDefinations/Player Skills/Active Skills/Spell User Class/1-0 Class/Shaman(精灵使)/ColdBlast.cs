@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Shaman
 {
-    public class ColdBlast:ISkill
+    public class ColdBlast : ISkill
     {
         #region ISkill Members
 
@@ -37,15 +35,14 @@ namespace SagaMap.Skill.SkillDefinations.Shaman
                     factor = 4.0f;
                     break;
             }
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
-            List<Actor> affected = new List<Actor>();
+
+            var actors = MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
+            var affected = new List<Actor>();
             //取得有效Actor（即怪物）
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Water, factor / affected.Count);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Water, factor / affected.Count);
         }
 
         #endregion

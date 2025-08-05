@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB;
 using SagaLib;
 using SagaMap.Network.Client;
 
@@ -12,17 +7,17 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_NAVI_OPEN()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_NAVI_OPEN();
+            return new CSMG_NAVI_OPEN();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnNaviOpen(this);
+            ((MapClient)client).OnNaviOpen(this);
         }
     }
 }

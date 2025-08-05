@@ -1,5 +1,5 @@
-using SagaLib;
 using System.Collections.Generic;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -7,24 +7,22 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_OPEN_MIRROR_WINDOW()
         {
-            this.data = new byte[100];
-            this.ID = 0x02B3;
-            this.offset = 2;
+            data = new byte[100];
+            ID = 0x02B3;
+            offset = 2;
         }
 
         public List<ushort> SetFace
         {
             set
             {
-                this.PutByte(20);
+                PutByte(20);
 
-                for (int i = 0; i < 20; i++)
-                {
+                for (var i = 0; i < 20; i++)
                     if (i < value.Count)
-                        this.PutUShort(value[i]);
+                        PutUShort(value[i]);
                     else
-                        this.PutUShort(0xFFFF);
-                }
+                        PutUShort(0xFFFF);
             }
         }
 
@@ -32,14 +30,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutByte(20);
-                for (int i = 0; i < 20; i++)
-                {
+                PutByte(20);
+                for (var i = 0; i < 20; i++)
                     if (i < value.Count)
-                        this.PutUShort(value[i]);
+                        PutUShort(value[i]);
                     else
-                        this.PutUShort(0xFFFF);
-                }
+                        PutUShort(0xFFFF);
             }
         }
 
@@ -47,14 +43,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutByte(20);
-                for (int i = 0; i < 20; i++)
-                {
+                PutByte(20);
+                for (var i = 0; i < 20; i++)
                     if (i < value.Count)
-                        this.PutUShort(value[i]);
+                        PutUShort(value[i]);
                     else
-                        this.PutUShort(0xFFFF);
-                }
+                        PutUShort(0xFFFF);
             }
         }
 
@@ -62,14 +56,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutByte(20);
-                for (int i = 0; i < 20; i++)
-                {
+                PutByte(20);
+                for (var i = 0; i < 20; i++)
                     if (i < value.Count)
-                        this.PutUInt(0xFFFFFFFF);
+                        PutUInt(0xFFFFFFFF);
                     else
-                        this.PutUInt(0x00000000);
-                }
+                        PutUInt(0x00000000);
             }
         }
 
@@ -77,14 +69,12 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutByte(20);
-                for (int i = 0; i < 20; i++)
-                {
+                PutByte(20);
+                for (var i = 0; i < 20; i++)
                     if (i < value.Count)
-                        this.PutByte(0x32);
+                        PutByte(0x32);
                     else
-                        this.PutByte(0xFF);
-                }
+                        PutByte(0xFF);
             }
         }
     }

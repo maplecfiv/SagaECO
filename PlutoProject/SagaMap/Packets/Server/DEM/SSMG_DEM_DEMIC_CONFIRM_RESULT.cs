@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -16,32 +9,24 @@ namespace SagaMap.Packets.Server
             OK,
             FAILED = -1,
             TOO_MANY_ITEMS = -2,
-            NOT_ENOUGH_EP = -3,
+            NOT_ENOUGH_EP = -3
         }
 
         public SSMG_DEM_DEMIC_CONFIRM_RESULT()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x1E4F;
-            
+            data = new byte[4];
+            offset = 2;
+            ID = 0x1E4F;
         }
 
         public byte Page
         {
-            set
-            {
-                this.PutByte(value, 2);
-            }
+            set => PutByte(value, 2);
         }
 
         public Results Result
         {
-            set
-            {
-                this.PutByte((byte)value, 3);
-            }
+            set => PutByte((byte)value, 3);
         }
     }
 }
-

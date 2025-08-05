@@ -1,19 +1,16 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Quests;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
     public class SSMG_QUEST_LIST : Packet
-    {        
+    {
         public SSMG_QUEST_LIST()
         {
-            this.data = new byte[2];
-            this.offset = 2;
-            this.ID = 0x1964;            
+            data = new byte[2];
+            offset = 2;
+            ID = 0x1964;
         }
 
         public List<QuestInfo> Quests
@@ -21,43 +18,27 @@ namespace SagaMap.Packets.Server
             set
             {
                 //ADWORD QuestID
-                this.PutByte((byte)value.Count);
-                foreach (QuestInfo i in value)
-                {
-                    this.PutUInt(i.ID);
-                }
-                
+                PutByte((byte)value.Count);
+                foreach (var i in value) PutUInt(i.ID);
+
                 //ABYTE QuestType
-                this.PutByte((byte)value.Count);
-                foreach (var item in value)
-                {
-                    this.PutByte((byte)item.QuestType);
-                }
+                PutByte((byte)value.Count);
+                foreach (var item in value) PutByte((byte)item.QuestType);
 
 
                 //ATSTR QuestName
-                this.PutByte((byte)value.Count);
-                foreach (var item in value)
-                {
-                    this.PutTSTR(item.Name);
-                }
+                PutByte((byte)value.Count);
+                foreach (var item in value) PutTSTR(item.Name);
 
                 //ADWORD QuestTime
-                this.PutByte((byte)value.Count);
-                foreach (var item in value)
-                {
-                    this.PutInt(item.TimeLimit);
-                }
+                PutByte((byte)value.Count);
+                foreach (var item in value) PutInt(item.TimeLimit);
 
 
                 //ABYTE QuestLevel
-                this.PutByte((byte)value.Count);
-                foreach (var item in value)
-                {
-                    this.PutByte(item.MinLevel);
-                }
+                PutByte((byte)value.Count);
+                foreach (var item in value) PutByte(item.MinLevel);
             }
         }
     }
 }
-

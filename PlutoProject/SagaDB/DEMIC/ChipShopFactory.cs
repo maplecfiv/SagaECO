@@ -1,30 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Xml;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaDB.DEMIC
 {
     public class ChipShopFactory : Factory<ChipShopFactory, ChipShopCategory>
     {
-        ShopChip lastItem;
+        private ShopChip lastItem;
+
         public ChipShopFactory()
         {
-            this.loadingTab = "Loading Chip shop database";
-            this.loadedTab = " shop caterories loaded.";
-            this.databaseName = " Chip shop";
-            this.FactoryType = FactoryType.XML;
+            loadingTab = "Loading Chip shop database";
+            loadedTab = " shop caterories loaded.";
+            databaseName = " Chip shop";
+            FactoryType = FactoryType.XML;
         }
 
         public List<ChipShopCategory> GetCategoryFromLv(byte lv)
         {
             var r = from category in items.Values
-                    where category.PossibleLv <= lv
-                    select category;
+                where category.PossibleLv <= lv
+                select category;
             return r.ToList();
         }
 
@@ -50,22 +48,24 @@ namespace SagaDB.DEMIC
                             break;
                         case "name":
                             item.Name = current.InnerText;
-                            break;     
+                            break;
                         case "lv":
                             item.PossibleLv = byte.Parse(current.InnerText);
                             break;
                     }
+
                     break;
                 case "item":
                     switch (current.Name.ToLower())
                     {
                         case "id":
-                            ShopChip newItem = new ShopChip();
-                            uint itemID = uint.Parse(current.InnerText);
+                            var newItem = new ShopChip();
+                            var itemID = uint.Parse(current.InnerText);
                             if (!item.Items.ContainsKey(itemID))
                                 item.Items.Add(itemID, newItem);
                             else
-                                Logger.ShowWarning(string.Format("Item:{0} already added for shop category:{1}! overwriting....", itemID, item.ID));
+                                Logger.ShowWarning(string.Format(
+                                    "Item:{0} already added for shop category:{1}! overwriting....", itemID, item.ID));
                             newItem.ItemID = itemID;
                             lastItem = newItem;
                             break;
@@ -79,6 +79,7 @@ namespace SagaDB.DEMIC
                             lastItem.Description = current.InnerText;
                             break;
                     }
+
                     break;
             }
         }

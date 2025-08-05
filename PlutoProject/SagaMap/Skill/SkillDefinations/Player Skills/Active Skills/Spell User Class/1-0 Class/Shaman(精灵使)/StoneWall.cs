@@ -1,27 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaLib;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Shaman
 {
     /// <summary>
-    /// 大地之壁
+    ///     大地之壁
     /// </summary>
     public class StoneWall : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             #region OldMethod
+
             //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
             //List<ActorSkill> actorSkill = new List<ActorSkill>();
             //int deltaX = 0; int deltaY = 0;
@@ -128,29 +127,33 @@ namespace SagaMap.Skill.SkillDefinations.Shaman
             //}
             ////Activator timer = new Activator(sActor, args, level, flag, actorSkill);
             ////timer.Activate();
+
             #endregion
-            int r = SagaLib.Global.Random.Next(0, 99);
-            StoneWallBuff skill = new StoneWallBuff(args, sActor, 60000, r);
+
+            var r = SagaLib.Global.Random.Next(0, 99);
+            var skill = new StoneWallBuff(args, sActor, 60000, r);
             SkillHandler.ApplyAddition(sActor, skill);
         }
+
         public class StoneWallBuff : DefaultBuff
         {
-            private SkillArg args;
-            private List<ActorMob> MobLst = new List<ActorMob>();
+            private readonly SkillArg args;
+            private readonly List<ActorMob> MobLst = new List<ActorMob>();
+
             public StoneWallBuff(SkillArg skill, Actor actor, int lifetime, int rand)
-                : base(skill.skill, actor, "StoneWall" + rand.ToString(), lifetime)
+                : base(skill.skill, actor, "StoneWall" + rand, lifetime)
             {
-                this.OnAdditionStart += this.StartEvent;
-                this.OnAdditionEnd += this.EndEvent;
+                OnAdditionStart += StartEvent;
+                OnAdditionEnd += EndEvent;
                 args = skill.Clone();
             }
 
-            void StartEvent(Actor actor, DefaultBuff skill)
+            private void StartEvent(Actor actor, DefaultBuff skill)
             {
-                Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                uint MobID = (uint)(30470000 + skill.skill.Level - 1);
-                byte[] posX = new byte[3];
-                byte[] posY = new byte[3];
+                var map = MapManager.Instance.GetMap(actor.MapID);
+                var MobID = (uint)(30470000 + skill.skill.Level - 1);
+                var posX = new byte[3];
+                var posY = new byte[3];
 
                 SkillHandler.Instance.GetRelatedPos(actor, 0, 0, args.x, args.y, out posX[0], out posY[0]);
                 switch (SkillHandler.Instance.GetDirection(actor))
@@ -176,19 +179,19 @@ namespace SagaMap.Skill.SkillDefinations.Shaman
                         SkillHandler.Instance.GetRelatedPos(actor, 0, 1, args.x, args.y, out posX[2], out posY[2]);
                         break;
                 }
-                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[0], map.Width), SagaLib.Global.PosY8to16(posY[0], map.Height), 50, null));
-                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[1], map.Width), SagaLib.Global.PosY8to16(posY[1], map.Height), 50, null));
-                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[2], map.Width), SagaLib.Global.PosY8to16(posY[2], map.Height), 50, null));
 
+                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[0], map.Width),
+                    SagaLib.Global.PosY8to16(posY[0], map.Height), 50, null));
+                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[1], map.Width),
+                    SagaLib.Global.PosY8to16(posY[1], map.Height), 50, null));
+                MobLst.Add(map.SpawnMob(MobID, SagaLib.Global.PosX8to16(posX[2], map.Width),
+                    SagaLib.Global.PosY8to16(posY[2], map.Height), 50, null));
             }
 
-            void EndEvent(Actor actor, DefaultBuff skill)
+            private void EndEvent(Actor actor, DefaultBuff skill)
             {
-                Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
-                foreach (ActorMob m in MobLst)
-                {
-                    map.DeleteActor(m);
-                }
+                var map = MapManager.Instance.GetMap(actor.MapID);
+                foreach (var m in MobLst) map.DeleteActor(m);
             }
         }
 

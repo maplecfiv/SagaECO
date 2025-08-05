@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Eraser
 {
     /// <summary>
-    /// エフィカス
+    ///     エフィカス
     /// </summary>
     public class Efuikasu : ISkill
     {
         #region ISkill 成員
-        int KillingMarkCounter = 0;
-        Actor skilluser = null;
-        public int TryCast(SagaDB.Actor.ActorPC sActor, SagaDB.Actor.Actor dActor, SkillArg args)
+
+        private int KillingMarkCounter;
+        private Actor skilluser;
+
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
-        public void Proc(SagaDB.Actor.Actor sActor, SagaDB.Actor.Actor dActor, SkillArg args, byte level)
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            int[] lifetimes = new int[] { 0, 180000, 240000, 300000, 360000, 420000 };
-            int lifetime = lifetimes[level];
+            var lifetimes = new[] { 0, 180000, 240000, 300000, 360000, 420000 };
+            var lifetime = lifetimes[level];
             Actor realactor = SkillHandler.Instance.GetPossesionedActor(sActor as ActorPC);
             if (realactor.KillingMarkCounter != 0)
                 KillingMarkCounter = realactor.KillingMarkCounter;
@@ -30,12 +31,13 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
                 skilluser = sActor;
             else
                 skilluser = realactor;
-            DefaultBuff skill = new DefaultBuff(args.skill, realactor, "Efuikasu", lifetime);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var skill = new DefaultBuff(args.skill, realactor, "Efuikasu", lifetime);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             SkillHandler.ApplyAddition(realactor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             if (actor.ActorID == skilluser.ActorID)
             {
@@ -47,16 +49,21 @@ namespace SagaMap.Skill.SkillDefinations.Eraser
                 actor.KillingMarkSoulUse = true;
                 actor.KillingMarkCounter = Math.Min(KillingMarkCounter, 10);
             }
+
             actor.Buff.KillingMark = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
+
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
             actor.KillingMarkSoulUse = false;
             actor.KillingMarkCounter = 0;
             actor.Buff.KillingMark = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,17 +7,16 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_BOND_INVITE_PUPILIN_RESULT()
         {
-            this.data = new byte[7];
-            this.offset = 2;
-            this.ID = 0x1FE5;
+            data = new byte[7];
+            offset = 2;
+            ID = 0x1FE5;
         }
+
         public int Result
         {
-            set
-            {
-                this.PutInt(value, 2);
-            }
+            set => PutInt(value, 2);
         }
+
         public string Name
         {
             set
@@ -32,14 +27,17 @@ namespace SagaMap.Packets.Server
                         value += "\0";
                 }
                 else
+                {
                     value = "\0";
-                byte[] namebuf = Encoding.UTF8.GetBytes(value);
-                byte[] buf = new byte[this.data.Length + namebuf.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutByte((byte)namebuf.Length, 6);
-                this.PutBytes(namebuf, 7);
-                this.offset = (ushort)(namebuf.Length + 7);
+                }
+
+                var namebuf = Encoding.UTF8.GetBytes(value);
+                var buf = new byte[data.Length + namebuf.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutByte((byte)namebuf.Length, 6);
+                PutBytes(namebuf, 7);
+                offset = (ushort)(namebuf.Length + 7);
             }
         }
     }

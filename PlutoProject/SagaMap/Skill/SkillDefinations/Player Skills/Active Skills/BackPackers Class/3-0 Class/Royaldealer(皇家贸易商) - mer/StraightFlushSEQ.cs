@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
-using SagaLib;
-using SagaMap;
-using SagaMap.Skill.Additions.Global;
-using SagaDB.Item;
-
 
 namespace SagaMap.Skill.SkillDefinations.Royaldealer
 {
     /// <summary>
-    /// ストレートフラッシュ后续
+    ///     ストレートフラッシュ后续
     /// </summary>
-    class StraightFlushSEQ : ISkill
+    internal class StraightFlushSEQ : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
@@ -26,15 +17,14 @@ namespace SagaMap.Skill.SkillDefinations.Royaldealer
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-
-            float factor = 1.0f + 0.1f * level;
+            var factor = 1.0f + 0.1f * level;
             int minnumber = 0, maxnumber = 0;
-            minnumber = new int[] { 0, 1, 2, 4, 6, 6 }[level];
-            maxnumber = new int[] { 0, 4, 6, 8, 10, 10 }[level];
+            minnumber = new[] { 0, 1, 2, 4, 6, 6 }[level];
+            maxnumber = new[] { 0, 4, 6, 8, 10, 10 }[level];
             args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.STAB;
-            List<Actor> dest = new List<Actor>();
-            for (int i = 0; i < SagaLib.Global.Random.Next(minnumber, maxnumber); i++)
+            var dest = new List<Actor>();
+            for (var i = 0; i < SagaLib.Global.Random.Next(minnumber, maxnumber); i++)
                 dest.Add(dActor);
             args.delayRate = 9.0f;
             SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor);
@@ -74,11 +64,6 @@ namespace SagaMap.Skill.SkillDefinations.Royaldealer
             //    }
             //}
             //SkillHandler.Instance.MagicAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
-
-
-
-
-
         }
 
         //void StartEventHandler(Actor actor, DefaultBuff skill)
@@ -104,6 +89,7 @@ namespace SagaMap.Skill.SkillDefinations.Royaldealer
         //    actor.Buff.DEXDown = false;
         //    Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         //}
+
         #endregion
     }
 }

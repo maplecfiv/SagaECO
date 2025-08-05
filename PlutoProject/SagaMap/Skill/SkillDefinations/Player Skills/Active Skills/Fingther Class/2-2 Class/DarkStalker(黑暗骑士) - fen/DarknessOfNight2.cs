@@ -1,27 +1,27 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.DarkStalker
 {
     /// <summary>
-    /// 黑暗騎士（ダークネスオブナイト）[接續技能]
+    ///     黑暗騎士（ダークネスオブナイト）[接續技能]
     /// </summary>
     public class DarknessOfNight2 : ISkill
     {
-        public Dictionary<SagaMap.Skill.SkillHandler.ActorDirection, List<int>> range = new Dictionary<SkillHandler.ActorDirection, List<int>>();
+        public Dictionary<SkillHandler.ActorDirection, List<int>> range =
+            new Dictionary<SkillHandler.ActorDirection, List<int>>();
+
         #region Init
+
         public DarknessOfNight2()
         {
             //建立List
-            for (int i = 0; i < 8; i++)
-            {
-                range.Add((SkillHandler.ActorDirection)i, new List<int>());
-            }
+            for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
+
             #region RangePos
+
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 4));
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 4));
@@ -128,24 +128,26 @@ namespace SagaMap.Skill.SkillDefinations.DarkStalker
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-4, 4, 4));
 
             #endregion
-
         }
+
         #endregion
+
         #region ISkill Members
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             float[] factors = { 0f, 0.76f, 1.20f, 1.68f, 2.16f, 2.64f };
-            float factor = factors[level];
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = map.GetActorsArea(sActor, 400, false);
-            List<Actor> realAffected = new List<Actor>();
-            SkillHandler.ActorDirection dir = SkillHandler.Instance.GetDirection(sActor);
-            foreach (Actor act in affected)
-            {
+            var factor = factors[level];
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = map.GetActorsArea(sActor, 400, false);
+            var realAffected = new List<Actor>();
+            var dir = SkillHandler.Instance.GetDirection(sActor);
+            foreach (var act in affected)
                 //需去掉不在範圍內的 - 完成
                 /*
                  * □□□□□□　□□□■■□
@@ -153,20 +155,19 @@ namespace SagaMap.Skill.SkillDefinations.DarkStalker
                  * □☆■■■□　□■■■□□
                  * □□■■■□　□☆■□□□
                  * □□□□□□　□□□□□□
-                 * 
+                 *
                  */
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {
                     int XDiff, YDiff;
                     SkillHandler.Instance.GetXYDiff(map, sActor, act, out XDiff, out YDiff);
                     if (range[dir].Contains(SkillHandler.Instance.CalcPosHashCode(XDiff, YDiff, 4)))
-                    {
                         realAffected.Add(act);
-                    }
                 }
-            }
+
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
+
         #endregion
     }
 }

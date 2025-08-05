@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -21,23 +17,19 @@ namespace SagaMap.Packets.Server
             KNIGHT_NOT_FIT = -8,
             EVENT_ITEM = -9,
             LV_TOO_LOW = -10,
-            UNKNOWN_ERROR = -30,
+            UNKNOWN_ERROR = -30
         }
 
         public SSMG_ITEM_FUSION_RESULT()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x13DA;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x13DA;
         }
 
         public FusionResult Result
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte((byte)value, 2);
         }
     }
 }
-

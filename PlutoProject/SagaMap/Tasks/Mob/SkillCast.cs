@@ -1,34 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
 using SagaLib;
-using SagaDB.Actor;
-
-using SagaMap.Network.Client;
 using SagaMap.Mob;
 
 namespace SagaMap.Tasks.Mob
 {
     public class SkillCast : MultiRunTask
     {
-        MobAI client;
-        SkillArg skill;
+        private readonly MobAI client;
+        private readonly SkillArg skill;
+
         public SkillCast(MobAI ai, SkillArg skill)
         {
             if (skill.argType == SkillArg.ArgType.Cast)
             {
-                this.dueTime = (int)skill.delay;
-                this.period = (int)skill.delay;
+                dueTime = (int)skill.delay;
+                period = (int)skill.delay;
             }
-            this.client = ai;
+
+            client = ai;
             this.skill = skill;
         }
 
         public override void CallBack()
         {
-
             try
             {
                 ClientManager.EnterCriticalArea();
@@ -36,15 +30,14 @@ namespace SagaMap.Tasks.Mob
                 if (skill.argType == SkillArg.ArgType.Cast)
                     client.OnSkillCastComplete(skill);
                 client.Mob.TInt["CanNotInterrupted"] = 0;
-                this.Deactivate();
+                Deactivate();
                 ClientManager.LeaveCriticalArea();
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.Deactivate();
+                Deactivate();
             }
-
         }
     }
 }

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,76 +6,57 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ACTOR_MOB_APPEAR()
         {
-            this.data = new byte[31];
-            this.offset = 2;
-            this.ID = 0x1220;   
+            data = new byte[31];
+            offset = 2;
+            ID = 0x1220;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint MobID
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public byte X
         {
-            set
-            {
-                this.PutByte(value, 10);
-            }
+            set => PutByte(value, 10);
         }
 
         public byte Y
         {
-            set
-            {
-                this.PutByte(value, 11);
-            }
+            set => PutByte(value, 11);
         }
 
         public ushort Speed
         {
-            set
-            {
-                this.PutUShort(value, 12);
-            }
+            set => PutUShort(value, 12);
         }
 
         public byte Dir
         {
-            set
-            {
-                this.PutByte(value, 14);
-            }
+            set => PutByte(value, 14);
         }
 
         public uint HP
         {
             set
             {
-                this.PutUInt(value, 15);
-                this.PutUInt(value, 23);
+                PutUInt(value, 15);
+                PutUInt(value, 23);
             }
-        }        
+        }
 
         public uint MaxHP
         {
             set
             {
-                this.PutUInt(value, 19);
-                this.PutUInt(value, 27);
+                PutUInt(value, 19);
+                PutUInt(value, 27);
             }
         }
     }
 }
-

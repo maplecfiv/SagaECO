@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 using SagaLib.VirtualFileSystem;
 
 namespace SagaDB.Item
@@ -12,11 +10,12 @@ namespace SagaDB.Item
     public class ExchangeFactory : Singleton<ExchangeFactory>
     {
         public Dictionary<uint, Exchange> ExchangeItems = new Dictionary<uint, Exchange>();
-        public void Init(string path, System.Text.Encoding encoding)
-        {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
-            DateTime time = DateTime.Now;
+        public void Init(string path, Encoding encoding)
+        {
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -35,23 +34,20 @@ namespace SagaDB.Item
                     ex.OriItemID = uint.Parse(paras[2]);
                     ex.Type = short.Parse(paras[19]);
                     ex.OriItemName = paras[20];
-                    uint[] itemids = new uint[15];
-                    string[] itemnames = new string[15];
+                    var itemids = new uint[15];
+                    var itemnames = new string[15];
 
-                    for (int i = 2; i < 18; i++)
-                    {
+                    for (var i = 2; i < 18; i++)
                         if (paras[i + 1] != "0")
                         {
-
                             uint id = 0;
                             uint.TryParse(paras[i + 1], out id);
                             if (id != 0)
                             {
-                                itemids[(i + 1) - 3] = id;
-                                itemnames[(i + 1) - 3] = paras[18 + (i + 1)];
+                                itemids[i + 1 - 3] = id;
+                                itemnames[i + 1 - 3] = paras[18 + i + 1];
                             }
                         }
-                    }
 
                     ex.ItemsID = itemids;
                     ex.ItemsName = itemnames;
@@ -67,6 +63,5 @@ namespace SagaDB.Item
 
             sr.Close();
         }
-
     }
 }

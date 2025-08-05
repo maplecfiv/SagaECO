@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+using System.Xml;
 using SagaLib;
 
 namespace SagaDB.DefWar
@@ -11,13 +8,13 @@ namespace SagaDB.DefWar
     {
         public DefWarFactory()
         {
-            this.loadingTab = "Loading Defwar database";
-            this.loadedTab = " Defwars loaded.";
-            this.databaseName = "Defwar";
-            this.FactoryType = FactoryType.CSV;
+            loadingTab = "Loading Defwar database";
+            loadedTab = " Defwars loaded.";
+            databaseName = "Defwar";
+            FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(System.Xml.XmlElement root, System.Xml.XmlElement current, DefWar.DefWarData item)
+        protected override void ParseXML(XmlElement root, XmlElement current, DefWar.DefWarData item)
         {
             throw new NotImplementedException();
         }
@@ -39,10 +36,11 @@ namespace SagaDB.DefWar
         {
             if (items.ContainsKey(id))
             {
-                DefWar item = new DefWar(items[id]);
+                var item = new DefWar(items[id]);
 
                 return item;
             }
+
             return null;
         }
     }

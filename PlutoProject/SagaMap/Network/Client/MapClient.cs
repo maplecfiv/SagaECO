@@ -1,87 +1,86 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-
 using SagaDB;
-using SagaDB.Item;
 using SagaDB.Actor;
-using SagaDB.Map;
-using SagaLib;
-using SagaMap;
-using SagaMap.Manager;
-using SagaDB.Mob;
 using SagaDB.Marionette;
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
+using SagaMap.Mob;
+using SagaMap.Scripting;
+using SagaMap.Tasks.Golem;
 
 namespace SagaMap.Network.Client
 {
-    public partial class MapClient : SagaLib.Client 
+    public partial class MapClient : SagaLib.Client
     {
-        private string client_Version;
-
-        private uint frontWord, backWord;
+        public enum SESSION_STATE
+        {
+            LOGIN,
+            AUTHENTIFICATED,
+            REDIRECTING,
+            DISCONNECTED,
+            LOADING,
+            LOADED
+        }
 
         private Account account;
-        private ActorPC chara;
+        public MobAI AI;
+        public bool CheckAPI;
+        private string client_Version;
+        public bool firstLogin = true;
 
-        //an添加
-        byte shopswitch;
-        string shoptitle;
-
-        Dictionary<uint, PlayerShopItem> soldItem = new Dictionary<uint, PlayerShopItem>();
-        Dictionary<uint, PlayerShopItem> sellShop = new Dictionary<uint, PlayerShopItem>();
-
-        /// <summary>
-        /// 玩家商店变量(0为关 1为开)广播用
-        /// </summary>
-        public byte Shopswitch { get { return this.shopswitch; } set { this.shopswitch = value; } }
-        /// <summary>
-        /// 玩家商店标题
-        /// </summary>
-        public string Shoptitle { get { return this.shoptitle; } set { this.shoptitle = value; } }
+        private uint frontWord, backWord;
 
         //end
 
         public Map map;
-        public enum SESSION_STATE
-        {
-            LOGIN, AUTHENTIFICATED, REDIRECTING, DISCONNECTED, LOADING, LOADED
-        }
+        private Dictionary<uint, PlayerShopItem> sellShop = new Dictionary<uint, PlayerShopItem>();
+
+        //an添加
+
+        private Dictionary<uint, PlayerShopItem> soldItem = new Dictionary<uint, PlayerShopItem>();
         public SESSION_STATE state;
-        public bool firstLogin = true;
-        public Mob.MobAI AI;
-        public bool CheckAPI;
-        public ActorPC Character { get { return this.chara; } set { this.chara = value; } }
-        public Map Map { get { return this.map; } set { this.map = value; } }
 
         public MapClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
         {
-            this.netIO = new NetIO(mSock, mCommandTable, this);
-            this.netIO.SetMode(NetIO.Mode.Server);
-            this.netIO.FirstLevelLength = 2;
-            if (this.netIO.sock.Connected) this.OnConnect();
+            netIO = new NetIO(mSock, mCommandTable, this);
+            netIO.SetMode(NetIO.Mode.Server);
+            netIO.FirstLevelLength = 2;
+            if (netIO.sock.Connected) OnConnect();
+        }
+
+        /// <summary>
+        ///     玩家商店变量(0为关 1为开)广播用
+        /// </summary>
+        public byte Shopswitch { get; set; }
+
+        /// <summary>
+        ///     玩家商店标题
+        /// </summary>
+        public string Shoptitle { get; set; }
+
+        public ActorPC Character { get; set; }
+
+        public Map Map
+        {
+            get => map;
+            set => map = value;
         }
 
         public override string ToString()
         {
             try
             {
-                string ip = "";
-                string name = "";
-                if (this.netIO != null) 
-                    ip = this.netIO.sock.RemoteEndPoint.ToString();
-                if (chara != null)
-                {
-                    name = chara.Name;
-                }
-                if (ip != "" || name != "")
-                {
-                    return string.Format("{0}({1})", name, ip);
-                }
-                else
-                    return "MapClient";
+                var ip = "";
+                var name = "";
+                if (netIO != null)
+                    ip = netIO.sock.RemoteEndPoint.ToString();
+                if (Character != null) name = Character.Name;
+                if (ip != "" || name != "") return string.Format("{0}({1})", name, ip);
+
+                return "MapClient";
             }
             catch (Exception)
             {
@@ -91,16 +90,15 @@ namespace SagaMap.Network.Client
 
         public static MapClient FromActorPC(ActorPC pc)
         {
-            ActorEventHandlers.PCEventHandler eh = (SagaMap.ActorEventHandlers.PCEventHandler)pc.e;
+            var eh = (PCEventHandler)pc.e;
             return eh.Client;
         }
 
         public override void OnConnect()
         {
-
         }
 
-        void SendHack()
+        private void SendHack()
         {
             /*try
             {
@@ -123,42 +121,42 @@ namespace SagaMap.Network.Client
                     this.SendSystemMessage("Dont hack");
                 }
             }
-            catch { }*///暂时关闭HACK
+            catch { }*/ //暂时关闭HACK
         }
 
         public override void OnDisconnect()
         {
-            this.npcSelectResult = 0;
-            this.npcShopClosed = true;
+            npcSelectResult = 0;
+            npcShopClosed = true;
             try
             {
-                this.state = SESSION_STATE.DISCONNECTED;
+                state = SESSION_STATE.DISCONNECTED;
                 MapClientManager.Instance.Clients.Remove(this);
                 //如果脚本线程不为空，则强制中断
-                if (this.scriptThread != null)
-                {
+                if (scriptThread != null)
                     try
                     {
-                        this.scriptThread.Abort();
+                        scriptThread.Abort();
                     }
-                    catch { }
-                }
+                    catch
+                    {
+                    }
 
-                if (this.Character == null)
+                if (Character == null)
                     return;
 
-                this.Character.VisibleActors.Clear();
+                Character.VisibleActors.Clear();
 
-                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT, this.Character.Name));
-                Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO + MapClientManager.Instance.OnlinePlayer.Count);
+                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT, Character.Name));
+                Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                                MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
                 if (Logger.defaultSql != null)
-                {
-                    Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online` = 0 WHERE `char_id` = " + this.chara.CharID.ToString());
-                }
+                    Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online` = 0 WHERE `char_id` = " +
+                                                         Character.CharID);
 
-                if (this.Character.HP == 0)
+                if (Character.HP == 0)
                 {
                     /*this.Character.HP = 1;
                     if (this.Character.SaveMap == 0)
@@ -175,92 +173,92 @@ namespace SagaMap.Network.Client
                         this.Character.Y = Global.PosY8to16(this.Character.SaveY, info.height);
                     }*/
                 }
-                if (this.Character.TenkActor != null)
+
+                if (Character.TenkActor != null)
                 {
-                    SagaMap.Map map = MapManager.Instance.GetMap(this.Character.TenkActor.MapID);
-                    map.DeleteActor(this.Character.TenkActor);
-                    if (ScriptManager.Instance.Events.ContainsKey(this.Character.TenkActor.EventID))
-                    {
-                        ScriptManager.Instance.Events.Remove(this.Character.TenkActor.EventID);
-                    }
-                    this.Character.TenkActor = null;
+                    var map = MapManager.Instance.GetMap(Character.TenkActor.MapID);
+                    map.DeleteActor(Character.TenkActor);
+                    if (ScriptManager.Instance.Events.ContainsKey(Character.TenkActor.EventID))
+                        ScriptManager.Instance.Events.Remove(Character.TenkActor.EventID);
+                    Character.TenkActor = null;
                 }
-                if (this.Character.FGarden != null)
+
+                if (Character.FGarden != null)
                 {
-                    if (this.Character.FGarden.RopeActor != null)
+                    if (Character.FGarden.RopeActor != null)
                     {
-                        SagaMap.Map map = MapManager.Instance.GetMap(this.Character.FGarden.RopeActor.MapID);
-                        map.DeleteActor(this.Character.FGarden.RopeActor);
-                        if (ScriptManager.Instance.Events.ContainsKey(this.Character.FGarden.RopeActor.EventID))
-                        {
-                            ScriptManager.Instance.Events.Remove(this.Character.FGarden.RopeActor.EventID);
-                        }
-                        this.Character.FGarden.RopeActor = null;
+                        var map = MapManager.Instance.GetMap(Character.FGarden.RopeActor.MapID);
+                        map.DeleteActor(Character.FGarden.RopeActor);
+                        if (ScriptManager.Instance.Events.ContainsKey(Character.FGarden.RopeActor.EventID))
+                            ScriptManager.Instance.Events.Remove(Character.FGarden.RopeActor.EventID);
+                        Character.FGarden.RopeActor = null;
                     }
-                    if (this.Character.FGarden.RoomMapID != 0)
+
+                    if (Character.FGarden.RoomMapID != 0)
                     {
-                        SagaMap.Map roomMap = MapManager.Instance.GetMap(this.Character.FGarden.RoomMapID);
-                        SagaMap.Map gardenMap = MapManager.Instance.GetMap(this.Character.FGarden.MapID);
+                        var roomMap = MapManager.Instance.GetMap(Character.FGarden.RoomMapID);
+                        var gardenMap = MapManager.Instance.GetMap(Character.FGarden.MapID);
                         roomMap.ClientExitMap = gardenMap.ClientExitMap;
                         roomMap.ClientExitX = gardenMap.ClientExitX;
                         roomMap.ClientExitY = gardenMap.ClientExitY;
                         MapManager.Instance.DeleteMapInstance(roomMap.ID);
-                        this.Character.FGarden.RoomMapID = 0;
+                        Character.FGarden.RoomMapID = 0;
                     }
-                    if (this.Character.FGarden.MapID != 0)
+
+                    if (Character.FGarden.MapID != 0)
                     {
-                        MapManager.Instance.DeleteMapInstance(this.Character.FGarden.MapID);
-                        this.Character.FGarden.MapID = 0;
+                        MapManager.Instance.DeleteMapInstance(Character.FGarden.MapID);
+                        Character.FGarden.MapID = 0;
                     }
                 }
 
-                if (this.Map.IsMapInstance && this.Character.PossessionTarget == 0 && !golemLogout)
+                if (Map.IsMapInstance && Character.PossessionTarget == 0 && !golemLogout)
                 {
-                    this.Character.MapID = this.Map.ClientExitMap;
-                    SagaMap.Map map = MapManager.Instance.GetMap(this.Map.ClientExitMap);
-                    this.Character.X = Global.PosX8to16(this.Map.ClientExitX, map.Width);
-                    this.Character.Y = Global.PosY8to16(this.Map.ClientExitY, map.Width);
+                    Character.MapID = Map.ClientExitMap;
+                    var map = MapManager.Instance.GetMap(Map.ClientExitMap);
+                    Character.X = Global.PosX8to16(Map.ClientExitX, map.Width);
+                    Character.Y = Global.PosY8to16(Map.ClientExitY, map.Width);
                 }
 
-                this.Character.Online = false;
+                Character.Online = false;
                 if (logger != null)
                 {
                     logger.Dispose();
                     logger = null;
                 }
 
-                if (this.Character.Marionette != null)
-                    this.MarionetteDeactivate(true);
+                if (Character.Marionette != null)
+                    MarionetteDeactivate(true);
 
-                RecruitmentManager.Instance.DeleteRecruitment(this.Character);
+                RecruitmentManager.Instance.DeleteRecruitment(Character);
 
-                PartyManager.Instance.PlayerOffline(this.Character.Party, this.Character);
-                RingManager.Instance.PlayerOffline(this.Character.Ring, this.Character);
+                PartyManager.Instance.PlayerOffline(Character.Party, Character);
+                RingManager.Instance.PlayerOffline(Character.Ring, Character);
 
-                List<ActorPC> possessioned = this.Character.PossesionedActors;
-                foreach (ActorPC i in possessioned)
+                var possessioned = Character.PossesionedActors;
+                foreach (var i in possessioned)
                 {
-                    Item item = this.GetPossessionItem(this.Character, i.PossessionPosition);
-                    if (item.PossessionOwner != this.Character && item.PossessionOwner != null)
+                    var item = GetPossessionItem(Character, i.PossessionPosition);
+                    if (item.PossessionOwner != Character && item.PossessionOwner != null)
                     {
-                        ActorItem actor = PossessionItemAdd(i, i.PossessionPosition, "");
+                        var actor = PossessionItemAdd(i, i.PossessionPosition, "");
                         i.PossessionTarget = actor.ActorID;
 
-                        this.Character.Inventory.DeleteItem(item.Slot, 1);
-                        PossessionArg arg = new PossessionArg();
+                        Character.Inventory.DeleteItem(item.Slot, 1);
+                        var arg = new PossessionArg();
                         arg.fromID = i.ActorID;
                         arg.toID = i.ActorID;
                         arg.result = (int)i.PossessionPosition;
-                        this.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
+                        Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
                     }
                     else
                     {
-                        if (i != this.Character)
+                        if (i != Character)
                         {
                             i.PossessionTarget = 0;
                             if (i.Online)
                             {
-                                PossessionArg arg = new PossessionArg();
+                                var arg = new PossessionArg();
                                 arg.fromID = i.ActorID;
                                 arg.toID = i.PossessionTarget;
                                 arg.cancel = true;
@@ -268,7 +266,7 @@ namespace SagaMap.Network.Client
                                 arg.x = Global.PosX16to8(i.X, Map.Width);
                                 arg.y = Global.PosY16to8(i.Y, Map.Height);
                                 arg.dir = (byte)(i.Dir / 45);
-                                this.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
+                                Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg, i, true);
                             }
                             else
                             {
@@ -276,88 +274,87 @@ namespace SagaMap.Network.Client
                                     MapManager.Instance.GetMap(i.MapID).DeleteActor(i);
                                 MapServer.charDB.SaveChar(i, false, false);
                                 MapServer.accountDB.WriteUser(i.Account);
-                                MapClient.FromActorPC(i).DisposeActor();
+                                FromActorPC(i).DisposeActor();
                                 i.Account = null;
                                 continue;
                             }
                         }
                     }
+
                     MapServer.charDB.SaveChar(i, false, false);
                     MapServer.accountDB.WriteUser(i.Account);
                 }
 
-                if (golemLogout && this.chara.PossessionTarget == 0)
+                if (golemLogout && Character.PossessionTarget == 0)
                 {
-                    this.Character.Golem.MapID = this.Character.MapID;
-                    var mainfo = MarionetteFactory.Instance.Items[this.Character.Golem.Item.BaseData.marionetteID];
-                    this.Character.Golem.PictID = mainfo.PictID;
-                    this.Character.Golem.X = this.Character.X;
-                    this.Character.Golem.Y = this.Character.Y;
-                    this.Character.Golem.Dir = this.Character.Dir;
-                    this.Character.Golem.Owner = this.Character;
-                    this.Character.Golem.e = new ActorEventHandlers.NullEventHandler();
-                    if (this.Character.Golem.BuyLimit > this.Character.Gold)
-                        this.Character.Golem.BuyLimit = (uint)this.Character.Gold;
-                    if (this.Character.Golem.GolemType >= GolemType.Plant && this.Character.Golem.GolemType <= GolemType.Strange)
+                    Character.Golem.MapID = Character.MapID;
+                    var mainfo = MarionetteFactory.Instance.Items[Character.Golem.Item.BaseData.marionetteID];
+                    Character.Golem.PictID = mainfo.PictID;
+                    Character.Golem.X = Character.X;
+                    Character.Golem.Y = Character.Y;
+                    Character.Golem.Dir = Character.Dir;
+                    Character.Golem.Owner = Character;
+                    Character.Golem.e = new NullEventHandler();
+                    if (Character.Golem.BuyLimit > Character.Gold)
+                        Character.Golem.BuyLimit = (uint)Character.Gold;
+                    if (Character.Golem.GolemType >= GolemType.Plant && Character.Golem.GolemType <= GolemType.Strange)
                     {
-                        ActorEventHandlers.MobEventHandler eh = new ActorEventHandlers.MobEventHandler(this.Character.Golem);
-                        this.Character.Golem.e = eh;
-                        eh.AI.Mode = new SagaMap.Mob.AIMode(0);
-                        eh.AI.X_Ori = this.Character.X;
-                        eh.AI.Y_Ori = this.Character.Y;
-                        eh.AI.X_Spawn = this.Character.X;
-                        eh.AI.Y_Spawn = this.Character.Y;
-                        eh.AI.MoveRange = (short)(this.map.Width * 100);
+                        var eh = new MobEventHandler(Character.Golem);
+                        Character.Golem.e = eh;
+                        eh.AI.Mode = new AIMode(0);
+                        eh.AI.X_Ori = Character.X;
+                        eh.AI.Y_Ori = Character.Y;
+                        eh.AI.X_Spawn = Character.X;
+                        eh.AI.Y_Spawn = Character.Y;
+                        eh.AI.MoveRange = (short)(map.Width * 100);
                         eh.AI.Start();
-                        if (this.Character.Golem.GolemType != GolemType.Buy)
+                        if (Character.Golem.GolemType != GolemType.Buy)
                         {
-                            Tasks.Golem.GolemTask task = new SagaMap.Tasks.Golem.GolemTask(this.Character.Golem);
+                            var task = new GolemTask(Character.Golem);
                             task.Activate();
-                            this.Character.Golem.Tasks.Add("GolemTask", task);
+                            Character.Golem.Tasks.Add("GolemTask", task);
                         }
                     }
-                    this.map.RegisterActor(this.Character.Golem);
-                    this.Character.Golem.invisble = false;
-                    this.Character.Golem.Item.Durability--;
-                    this.map.OnActorVisibilityChange(this.Character.Golem);
+
+                    map.RegisterActor(Character.Golem);
+                    Character.Golem.invisble = false;
+                    Character.Golem.Item.Durability--;
+                    map.OnActorVisibilityChange(Character.Golem);
                 }
 
                 //release resource
-                this.chara.VisibleActors.Clear();
-                MapManager.Instance.DisposeMapInstanceOnLogout(this.chara.CharID);
+                Character.VisibleActors.Clear();
+                MapManager.Instance.DisposeMapInstanceOnLogout(Character.CharID);
 
-                this.Map.DeleteActor(this.Character);
-                MapServer.charDB.SaveChar(this.Character);
-                MapServer.accountDB.WriteUser(this.Character.Account);
+                Map.DeleteActor(Character);
+                MapServer.charDB.SaveChar(Character);
+                MapServer.accountDB.WriteUser(Character.Account);
 
                 //防止下线后还存取仓库
-                this.Character.Inventory.WareHouse = null;
+                Character.Inventory.WareHouse = null;
 
-                if (this.Character.Pet != null)
-                    this.DeletePet();
-                if (this.Character.Partner != null)
-                    this.DeletePartner();
+                if (Character.Pet != null)
+                    DeletePet();
+                if (Character.Partner != null)
+                    DeletePartner();
                 //release resource
-                if (!golemLogout && this.Character.PossessionTarget == 0)
+                if (!golemLogout && Character.PossessionTarget == 0)
                 {
                     DisposeActor();
                 }
                 else
                 {
-                    foreach (KeyValuePair<string, MultiRunTask> i in chara.Tasks)
+                    foreach (var i in Character.Tasks)
                     {
-                        if (i.Value is Scripting.Timer)
-                        {
-                            ScriptManager.Instance.Timers.Remove(i.Value.Name);
-                        }
+                        if (i.Value is Timer) ScriptManager.Instance.Timers.Remove(i.Value.Name);
                         i.Value.Deactivate();
                     }
-                    this.chara.Tasks.Clear();
+
+                    Character.Tasks.Clear();
                 }
 
                 //退出副本
                 OnPProtectCreatedOut(null);
-
             }
             catch (Exception ex)
             {
@@ -367,38 +364,36 @@ namespace SagaMap.Network.Client
 
         public void DisposeActor()
         {
-            MapManager.Instance.DisposeMapInstanceOnLogout(chara.CharID);
-            foreach (KeyValuePair<string, MultiRunTask> i in chara.Tasks)
+            MapManager.Instance.DisposeMapInstanceOnLogout(Character.CharID);
+            foreach (var i in Character.Tasks)
             {
-                if (i.Value is Scripting.Timer)
-                {
-                    ScriptManager.Instance.Timers.Remove(i.Value.Name);
-                }
+                if (i.Value is Timer) ScriptManager.Instance.Timers.Remove(i.Value.Name);
                 i.Value.Deactivate();
             }
-            this.chara.Tasks.Clear();
-            this.Character.ClearTaskAddition();
-            //this.chara.e = null;
-            this.chara.Inventory = null;
-            this.chara.Golem = null;
 
-            this.chara.Stamp.Dispose();
-            this.chara.FGarden = null;
-            this.chara.Status = null;
-            this.chara.ClearVarialbes();
-            this.chara.Marionette = null;
-            this.chara.NPCStates.Clear();
-            this.chara.Skills = null;
-            this.chara.Skills2 = null;
-            this.chara.SkillsReserve = null;
-            this.chara.Elements.Clear();
-            this.chara.Pet = null;
-            this.chara.Partner = null;
-            this.chara.Quest = null;
-            this.chara.Ring = null;
-            this.chara.Slave.Clear();
-            this.chara.Account = null;
-            this.chara = null;
+            Character.Tasks.Clear();
+            Character.ClearTaskAddition();
+            //this.chara.e = null;
+            Character.Inventory = null;
+            Character.Golem = null;
+
+            Character.Stamp.Dispose();
+            Character.FGarden = null;
+            Character.Status = null;
+            Character.ClearVarialbes();
+            Character.Marionette = null;
+            Character.NPCStates.Clear();
+            Character.Skills = null;
+            Character.Skills2 = null;
+            Character.SkillsReserve = null;
+            Character.Elements.Clear();
+            Character.Pet = null;
+            Character.Partner = null;
+            Character.Quest = null;
+            Character.Ring = null;
+            Character.Slave.Clear();
+            Character.Account = null;
+            Character = null;
         }
     }
 }

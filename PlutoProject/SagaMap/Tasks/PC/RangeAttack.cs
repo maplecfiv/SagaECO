@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaMap.Skill;
+using SagaLib;
 using SagaMap.Network.Client;
+using SagaMap.Skill;
+
 namespace SagaMap.Tasks.PC
 {
     public class RangeAttack : MultiRunTask
     {
-        MapClient client;
-        int count;
+        private readonly MapClient client;
+        private int count;
+
         public RangeAttack(MapClient client)
         {
             dueTime = 500;
@@ -36,7 +34,9 @@ namespace SagaMap.Tasks.PC
                     SkillHandler.Instance.ShowEffectOnActor(client.Character, 4230);
                 }
                 else if (count == 3 && (client.Character.TInt["绽放次数"] >= 5 || (client.Character.Status.Playman > 0 &&
-                    client.Character.MP == client.Character.MaxMP && client.Character.Job == PC_JOB.HAWKEYE)))
+                                                                               client.Character.MP ==
+                                                                               client.Character.MaxMP &&
+                                                                               client.Character.Job == PC_JOB.HAWKEYE)))
                 {
                     client.Character.TInt["RangeAttackMark"] = 2;
                     SkillHandler.Instance.ShowEffectOnActor(client.Character, 4163);
@@ -44,16 +44,18 @@ namespace SagaMap.Tasks.PC
                 }
                 else if (count == 5 && client.Character.TInt["绽放次数"] >= 5)
                 {
-
                 }
                 else if (count >= 5)
+                {
                     Deactivate();
+                }
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
                 Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

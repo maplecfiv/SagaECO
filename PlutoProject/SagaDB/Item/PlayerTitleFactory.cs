@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
 using SagaLib.VirtualFileSystem;
+
 namespace SagaDB.Item
 {
     public class PlayerTitleFactory : Singleton<PlayerTitleFactory>
     {
-        Dictionary<uint, PlayerTitle> titles = new Dictionary<uint, PlayerTitle>();
-        public Dictionary<uint, PlayerTitle> PlayerTitles { get { return titles; } }
-        public void Init(string path, System.Text.Encoding encoding)
-        {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+        public Dictionary<uint, PlayerTitle> PlayerTitles { get; } = new Dictionary<uint, PlayerTitle>();
 
-            DateTime time = DateTime.Now;
+        public void Init(string path, Encoding encoding)
+        {
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+
+            var time = DateTime.Now;
 
             string[] paras;
             while (!sr.EndOfStream)
@@ -29,7 +28,7 @@ namespace SagaDB.Item
                     if (line.Substring(0, 1) == "#")
                         continue;
                     paras = line.Split(',');
-                    PlayerTitle item = new PlayerTitle();
+                    var item = new PlayerTitle();
                     item.id = uint.Parse(paras[0]);
                     item.titlename = paras[1];
                     item.firstname = paras[2];
@@ -58,14 +57,15 @@ namespace SagaDB.Item
                     item.avoid_melee_add = ushort.Parse(paras[25]);
                     item.avoid_magic_add = ushort.Parse(paras[26]);
 
-                    if (!titles.ContainsKey(item.id))
-                        titles.Add(item.id, item);
+                    if (!PlayerTitles.ContainsKey(item.id))
+                        PlayerTitles.Add(item.id, item);
                 }
                 catch (Exception ex)
                 {
                     Logger.ShowError(ex);
                 }
             }
+
             sr.Close();
         }
     }

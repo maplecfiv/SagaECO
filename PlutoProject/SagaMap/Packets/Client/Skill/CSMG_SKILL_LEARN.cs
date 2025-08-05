@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,26 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_SKILL_LEARN()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public ushort SkillID
-        {
-            get
-            {
-                return this.GetUShort(2);
-            }
-        }
+        public ushort SkillID => GetUShort(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_SKILL_LEARN();
+            return new CSMG_SKILL_LEARN();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnSkillLearn(this);
+            ((MapClient)client).OnSkillLearn(this);
         }
-
     }
 }

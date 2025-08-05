@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
-using SagaLogin;
-using SagaLogin.Network.Client;
-
 using SagaDB.Actor;
+using SagaLib;
+using SagaLogin.Network.Client;
 
 namespace SagaLogin.Packets.Client
 {
@@ -14,16 +8,10 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_CHAR_CREATE()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public byte Slot
-        {
-            get
-            {
-                return this.GetByte(2);
-            }
-        }
+        public byte Slot => GetByte(2);
 
         public string Name
         {
@@ -31,9 +19,9 @@ namespace SagaLogin.Packets.Client
             {
                 byte size;
                 byte[] buf;
-                size = this.GetByte(3);
-                buf = this.GetBytes(size, 4);
-                string res = Global.Unicode.GetString(buf);
+                size = GetByte(3);
+                buf = GetBytes(size, 4);
+                var res = Global.Unicode.GetString(buf);
                 res = res.Replace("\0", "");
                 return res;
             }
@@ -44,7 +32,7 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset = GetDataOffset();
-                return (PC_RACE)this.GetByte((ushort)offset);
+                return (PC_RACE)GetByte((ushort)offset);
             }
         }
 
@@ -52,8 +40,8 @@ namespace SagaLogin.Packets.Client
         {
             get
             {
-                int offset = GetDataOffset() + 1;
-                return (PC_GENDER)this.GetByte((ushort)offset);
+                var offset = GetDataOffset() + 1;
+                return (PC_GENDER)GetByte((ushort)offset);
             }
         }
 
@@ -62,11 +50,11 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga11)
+                if (Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 3;
                 else
                     offset = GetDataOffset() + 2;
-                return this.GetByte((ushort)offset);
+                return GetByte((ushort)offset);
             }
         }
 
@@ -75,11 +63,11 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga11)
+                if (Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 4;
                 else
-                    offset = GetDataOffset() + 3; 
-                return this.GetByte((ushort)offset);
+                    offset = GetDataOffset() + 3;
+                return GetByte((ushort)offset);
             }
         }
 
@@ -88,28 +76,27 @@ namespace SagaLogin.Packets.Client
             get
             {
                 int offset;
-                if (Configuration.Instance.Version >= SagaLib.Version.Saga11)
+                if (Configuration.Instance.Version >= Version.Saga11)
                     offset = GetDataOffset() + 5;
                 else
-                    offset = GetDataOffset() + 4; 
-                return this.GetUShort((ushort)offset);
+                    offset = GetDataOffset() + 4;
+                return GetUShort((ushort)offset);
             }
         }
 
         private byte GetDataOffset()
         {
-            return (byte)(4 + this.GetByte(3));
+            return (byte)(4 + GetByte(3));
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_CHAR_CREATE();
+            return new CSMG_CHAR_CREATE();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((LoginClient)(client)).OnCharCreate(this);
+            ((LoginClient)client).OnCharCreate(this);
         }
-
     }
 }

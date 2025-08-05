@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-
-using SagaMap.Scripting;
 
 namespace SagaMap.Scripting
 {
@@ -24,18 +16,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_CHANGE_WEATHER()
         {
-            this.data = new byte[3];
-            this.offset = 2;
-            this.ID = 0x13BC;
+            data = new byte[3];
+            offset = 2;
+            ID = 0x13BC;
         }
 
         public byte Weather
         {
-            set
-            {
-                this.PutByte((byte)value, 2);
-            }
+            set => PutByte(value, 2);
         }
     }
 }
-

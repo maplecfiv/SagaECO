@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaLib;
+using SagaMap.Manager;
+
 namespace SagaMap.Skill.SkillDefinations.FR2_1
 {
-
     public class ThrowThrowThrow : ISkill
     {
         #region ISkill Members
@@ -19,15 +15,14 @@ namespace SagaMap.Skill.SkillDefinations.FR2_1
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.5f + 0.5f * level;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> affected = new List<Actor>();
-            List<Actor> list = map.GetRoundAreaActors(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 400, true);
-            foreach (Actor i in list)
-            {
+            var factor = 1.5f + 0.5f * level;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var affected = new List<Actor>();
+            var list = map.GetRoundAreaActors(SagaLib.Global.PosX8to16(args.x, map.Width),
+                SagaLib.Global.PosY8to16(args.y, map.Height), 400, true);
+            foreach (var i in list)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
             //args.affectedActors = affected;
             //args.Init();
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);

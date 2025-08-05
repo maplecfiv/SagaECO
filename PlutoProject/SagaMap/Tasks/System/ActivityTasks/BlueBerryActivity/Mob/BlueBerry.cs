@@ -1,21 +1,14 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SagaDB.Actor;
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
-using SagaMap.Scripting;
-using SagaMap.ActorEventHandlers;
 using SagaMap.Mob;
-using SagaDB.Mob;
+
 namespace SagaMap.Tasks.System
 {
-    public partial class 活动怪物
+    public class 活动怪物
     {
         public static ActorMob.MobInfo 活动蓝莓Info()
         {
-            ActorMob.MobInfo info = new ActorMob.MobInfo();
+            var info = new ActorMob.MobInfo();
             info.name = "蓝莓";
             info.level = 100;
             info.maxhp = 5000;
@@ -38,41 +31,43 @@ namespace SagaMap.Tasks.System
             info.avoid_ranged = 0;
             info.Aspd = 640;
             info.Cspd = 540;
-            info.elements[SagaLib.Elements.Neutral] = 0;
-            info.elements[SagaLib.Elements.Fire] = 0;
-            info.elements[SagaLib.Elements.Water] = 70;
-            info.elements[SagaLib.Elements.Wind] = 0;
-            info.elements[SagaLib.Elements.Earth] = 0;
-            info.elements[SagaLib.Elements.Holy] = 0;
-            info.elements[SagaLib.Elements.Dark] = 0;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Confused] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Frosen] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Paralyse] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Poisen] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Silence] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Sleep] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Stone] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.Stun] = 30;
-            info.abnormalstatus[SagaLib.AbnormalStatus.MoveSpeedDown] = 30;
+            info.elements[Elements.Neutral] = 0;
+            info.elements[Elements.Fire] = 0;
+            info.elements[Elements.Water] = 70;
+            info.elements[Elements.Wind] = 0;
+            info.elements[Elements.Earth] = 0;
+            info.elements[Elements.Holy] = 0;
+            info.elements[Elements.Dark] = 0;
+            info.abnormalstatus[AbnormalStatus.Confused] = 30;
+            info.abnormalstatus[AbnormalStatus.Frosen] = 30;
+            info.abnormalstatus[AbnormalStatus.Paralyse] = 30;
+            info.abnormalstatus[AbnormalStatus.Poisen] = 30;
+            info.abnormalstatus[AbnormalStatus.Silence] = 30;
+            info.abnormalstatus[AbnormalStatus.Sleep] = 30;
+            info.abnormalstatus[AbnormalStatus.Stone] = 30;
+            info.abnormalstatus[AbnormalStatus.Stun] = 30;
+            info.abnormalstatus[AbnormalStatus.MoveSpeedDown] = 30;
             info.baseExp = 0;
             info.jobExp = 0;
 
 
             return info;
         }
+
         public static AIMode 活动蓝莓AI()
         {
-            AIMode ai = new AIMode(6); ai.MobID = 10000000; ai.isNewAI = true;//1為主動，0為被動
-            ai.MobID = 10960002;//怪物ID
-            ai.isNewAI = true;//使用的是TT AI
-            ai.Distance = 3;//遠程進程切換距離，與敵人3格距離切換
-            ai.ShortCD = 3;//進程技能表最短釋放間隔，3秒一次
-            ai.LongCD = 3;//遠程技能表最短釋放間隔，3秒一次
-            AIMode.SkilInfo skillinfo = new AIMode.SkilInfo();
+            var ai = new AIMode(6);
+            ai.MobID = 10000000;
+            ai.isNewAI = true; //1為主動，0為被動
+            ai.MobID = 10960002; //怪物ID
+            ai.isNewAI = true; //使用的是TT AI
+            ai.Distance = 3; //遠程進程切換距離，與敵人3格距離切換
+            ai.ShortCD = 3; //進程技能表最短釋放間隔，3秒一次
+            ai.LongCD = 3; //遠程技能表最短釋放間隔，3秒一次
+            var skillinfo = new AIMode.SkilInfo();
 
 
             return ai;
         }
     }
 }
-

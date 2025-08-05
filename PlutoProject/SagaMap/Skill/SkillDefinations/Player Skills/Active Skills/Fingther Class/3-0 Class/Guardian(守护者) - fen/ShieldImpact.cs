@@ -1,70 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaDB.Item;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Guardian
 {
     public class ShieldImpact : ISkill
     {
+        private readonly short[] value = { 0, 0, 0, 13, 15, 18 };
+
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            if (sActor.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.RIGHT_HAND) &&
-                sActor.Inventory.Equipments.ContainsKey(SagaDB.Item.EnumEquipSlot.LEFT_HAND))
+            if (sActor.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) &&
+                sActor.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
             {
-                if (sActor.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.RIGHT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHIELD ||
-                    sActor.Inventory.Equipments[SagaDB.Item.EnumEquipSlot.LEFT_HAND].BaseData.itemType == SagaDB.Item.ItemType.SHIELD)
-                {
+                if (sActor.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.SHIELD ||
+                    sActor.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.SHIELD)
                     return 0;
-                }
-                else
-                    return -5;
+
+                return -5;
             }
-            else
-                return -12;
+
+            return -12;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = new float[] { 0, 6.20f, 7.00f, 8.10f, 8.60f, 9.00f }[level];
-            Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
-            List<Actor> actors = map.GetActorsArea(dActor, 100, false);
-            List<Actor> affected = new List<Actor>();
+            var factor = new[] { 0, 6.20f, 7.00f, 8.10f, 8.60f, 9.00f }[level];
+            var map = MapManager.Instance.GetMap(dActor.MapID);
+            var actors = map.GetActorsArea(dActor, 100, false);
+            var affected = new List<Actor>();
             affected.Add(dActor);
-            foreach (Actor i in actors)
-            {
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {
                     affected.Add(i);
                     if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Stun, 70))
                     {
-                        Stun stun = new Stun(args.skill, i, 2000);
+                        var stun = new Stun(args.skill, i, 2000);
                         SkillHandler.ApplyAddition(i, stun);
                     }
-                    if (SagaLib.Global.Random.Next(0, 99) <= 40)//ステータス減少は4割ほど-wiki
+
+                    if (SagaLib.Global.Random.Next(0, 99) <= 40) //ステータス減少は4割ほど-wiki
                     {
                         if (i.type == ActorType.PC)
                         {
                             if (level >= 3)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "AGI_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartAgiDown;
-                                skill.OnAdditionEnd += this.EndAgiDown;
+                                var skill = new DefaultBuff(args.skill, i, "AGI_DOWN", 20000);
+                                skill.OnAdditionStart += StartAgiDown;
+                                skill.OnAdditionEnd += EndAgiDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
+
                             if (level >= 4)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "STR_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartStrDown;
-                                skill.OnAdditionEnd += this.EndStrDown;
+                                var skill = new DefaultBuff(args.skill, i, "STR_DOWN", 20000);
+                                skill.OnAdditionStart += StartStrDown;
+                                skill.OnAdditionEnd += EndStrDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
+
                             if (level >= 5)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "DEX_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartDexDown;
-                                skill.OnAdditionEnd += this.EndDexDown;
+                                var skill = new DefaultBuff(args.skill, i, "DEX_DOWN", 20000);
+                                skill.OnAdditionStart += StartDexDown;
+                                skill.OnAdditionEnd += EndDexDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
                         }
@@ -72,91 +74,100 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
                         {
                             if (level >= 3)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "SAVOID_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartSavoidDown;
-                                skill.OnAdditionEnd += this.EndSavoidDown;
+                                var skill = new DefaultBuff(args.skill, i, "SAVOID_DOWN", 20000);
+                                skill.OnAdditionStart += StartSavoidDown;
+                                skill.OnAdditionEnd += EndSavoidDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
+
                             if (level >= 4)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "ATK_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartAtkDown;
-                                skill.OnAdditionEnd += this.EndAtkDown;
+                                var skill = new DefaultBuff(args.skill, i, "ATK_DOWN", 20000);
+                                skill.OnAdditionStart += StartAtkDown;
+                                skill.OnAdditionEnd += EndAtkDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
+
                             if (level >= 5)
                             {
-                                DefaultBuff skill = new DefaultBuff(args.skill, i, "SHIT_DOWN", 20000);
-                                skill.OnAdditionStart += this.StartShitDown;
-                                skill.OnAdditionEnd += this.EndShitDown;
+                                var skill = new DefaultBuff(args.skill, i, "SHIT_DOWN", 20000);
+                                skill.OnAdditionStart += StartShitDown;
+                                skill.OnAdditionEnd += EndShitDown;
                                 SkillHandler.ApplyAddition(i, skill);
                             }
                         }
                     }
                 }
 
-
-            }
-
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }
-        short[] value = { 0, 0, 0, 13, 15, 18 };
-        void StartAgiDown(Actor actor, DefaultBuff skill)
+
+        private void StartAgiDown(Actor actor, DefaultBuff skill)
         {
             if (skill.Variable.ContainsKey("SHIELD_AGI_DOWN"))
                 skill.Variable.Remove("SHIELD_AGI_DOWN");
             skill.Variable.Add("SHIELD_AGI_DOWN", value[skill.skill.Level]);
             actor.Status.agi_skill -= value[skill.skill.Level];
             actor.Buff.AGIDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndAgiDown(Actor actor, DefaultBuff skill)
+
+        private void EndAgiDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.agi_skill += (short)skill.Variable["SHIELD_AGI_DOWN"];
             actor.Buff.AGIDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void StartSavoidDown(Actor actor, DefaultBuff skill)
+        private void StartSavoidDown(Actor actor, DefaultBuff skill)
         {
-            ushort avoid_value = (ushort)(actor.Status.avoid_melee * ((100 - value[skill.skill.Level]) / 100.0f));
+            var avoid_value = (ushort)(actor.Status.avoid_melee * ((100 - value[skill.skill.Level]) / 100.0f));
             if (skill.Variable.ContainsKey("SHIELD_Savoid_DOWN"))
                 skill.Variable.Remove("SHIELD_Savoid_DOWN");
             skill.Variable.Add("SHIELD_Savoid_DOWN", avoid_value);
             actor.Status.avoid_melee -= avoid_value;
             actor.Buff.AGIDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndSavoidDown(Actor actor, DefaultBuff skill)
+
+        private void EndSavoidDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.avoid_melee += (ushort)skill.Variable["SHIELD_Savoid_DOWN"];
             actor.Buff.AGIDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void StartStrDown(Actor actor, DefaultBuff skill)
+
+        private void StartStrDown(Actor actor, DefaultBuff skill)
         {
             if (skill.Variable.ContainsKey("SHIELD_STR_DOWN"))
                 skill.Variable.Remove("SHIELD_STR_DOWN");
             skill.Variable.Add("SHIELD_STR_DOWN", value[skill.skill.Level]);
             actor.Status.str_skill -= value[skill.skill.Level];
             actor.Buff.STRDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndStrDown(Actor actor, DefaultBuff skill)
+
+        private void EndStrDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.str_skill += (short)skill.Variable["SHIELD_STR_DOWN"];
             actor.Buff.STRDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void StartAtkDown(Actor actor, DefaultBuff skill)
+        private void StartAtkDown(Actor actor, DefaultBuff skill)
         {
-            short min_atk1_value = (short)(actor.Status.min_atk1 * ((100 - value[skill.skill.Level]) / 100.0f));
-            short min_atk2_value = (short)(actor.Status.min_atk2 * ((100 - value[skill.skill.Level]) / 100.0f));
-            short min_atk3_value = (short)(actor.Status.min_atk3 * ((100 - value[skill.skill.Level]) / 100.0f));
-            short max_atk1_value = (short)(actor.Status.max_atk1 * ((100 - value[skill.skill.Level]) / 100.0f));
-            short max_atk2_value = (short)(actor.Status.max_atk2 * ((100 - value[skill.skill.Level]) / 100.0f));
-            short max_atk3_value = (short)(actor.Status.max_atk3 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var min_atk1_value = (short)(actor.Status.min_atk1 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var min_atk2_value = (short)(actor.Status.min_atk2 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var min_atk3_value = (short)(actor.Status.min_atk3 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var max_atk1_value = (short)(actor.Status.max_atk1 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var max_atk2_value = (short)(actor.Status.max_atk2 * ((100 - value[skill.skill.Level]) / 100.0f));
+            var max_atk3_value = (short)(actor.Status.max_atk3 * ((100 - value[skill.skill.Level]) / 100.0f));
 
             if (skill.Variable.ContainsKey("SHIELD_MINATK1_DOWN"))
                 skill.Variable.Remove("SHIELD_MINATK1_DOWN");
@@ -190,9 +201,11 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
 
             actor.Buff.MinAtkDown = true;
             actor.Buff.MaxAtkDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndAtkDown(Actor actor, DefaultBuff skill)
+
+        private void EndAtkDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.min_atk1_skill += (short)skill.Variable["SHIELD_MINATK1_DOWN"];
             actor.Status.min_atk2_skill += (short)skill.Variable["SHIELD_MINATK2_DOWN"];
@@ -203,40 +216,47 @@ namespace SagaMap.Skill.SkillDefinations.Guardian
             actor.Status.max_atk3_skill += (short)skill.Variable["SHIELD_MAXATK3_DOWN"];
             actor.Buff.MinAtkDown = false;
             actor.Buff.MaxAtkDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void StartShitDown(Actor actor, DefaultBuff skill)
+
+        private void StartShitDown(Actor actor, DefaultBuff skill)
         {
-            short hit_melee_value = (short)(actor.Status.hit_melee * ((100 - value[skill.skill.Level]) / 100.0f));
+            var hit_melee_value = (short)(actor.Status.hit_melee * ((100 - value[skill.skill.Level]) / 100.0f));
             if (skill.Variable.ContainsKey("SHIELD_SHIT_DOWN"))
                 skill.Variable.Remove("SHIELD_SHIT_DOWN");
             skill.Variable.Add("SHIELD_SHIT_DOWN", hit_melee_value);
             actor.Status.hit_melee_skill -= hit_melee_value;
             actor.Buff.ShortHitDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndShitDown(Actor actor, DefaultBuff skill)
+
+        private void EndShitDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.hit_melee_skill += (short)skill.Variable["SHIELD_SHIT_DOWN"];
             actor.Buff.ShortHitDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        void StartDexDown(Actor actor, DefaultBuff skill)
+        private void StartDexDown(Actor actor, DefaultBuff skill)
         {
-
             if (skill.Variable.ContainsKey("SHIELD_DEX_DOWN"))
                 skill.Variable.Remove("SHIELD_DEX_DOWN");
             skill.Variable.Add("SHIELD_DEX_DOWN", value[skill.skill.Level]);
             actor.Status.dex_skill -= value[skill.skill.Level];
             actor.Buff.DEXDown = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndDexDown(Actor actor, DefaultBuff skill)
+
+        private void EndDexDown(Actor actor, DefaultBuff skill)
         {
             actor.Status.dex_skill += (short)skill.Variable["SHIELD_DEX_DOWN"];
             actor.Buff.DEXDown = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
     }
 }

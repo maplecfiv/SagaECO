@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ANO_EQUIP_RESULT()
         {
-            this.data = new byte[5];
-            this.offset = 2;
-            this.ID = 0x23AB;
+            data = new byte[5];
+            offset = 2;
+            ID = 0x23AB;
         }
 
         public ushort PaperID
         {
-            set
-            {
-                this.PutUShort(value, 3);
-            }
+            set => PutUShort(value, 3);
         }
     }
 }
-

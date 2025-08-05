@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Gladiator
 {
     /// <summary>
-    /// ジリオンブレイド
+    ///     ジリオンブレイド
     /// </summary>
     public class ZillionBlade : ISkill
     {
@@ -15,14 +13,15 @@ namespace SagaMap.Skill.SkillDefinations.Gladiator
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = new float[] { 0, 10f, 20f, 22.4f, 35f, 42f }[level];
+            var factor = new[] { 0, 10f, 20f, 22.4f, 35f, 42f }[level];
             if (sActor is ActorPC)
             {
-                ActorPC pc = sActor as ActorPC;
+                var pc = sActor as ActorPC;
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                if (pc.Skills3.ContainsKey(1117)|| pc.DualJobSkill.Exists(x => x.ID == 1117))
+                if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkill.Exists(x => x.ID == 1117))
                 {
                     //神速斩
                     SkillHandler.Instance.SetNextComboSkill(sActor, 2527);
@@ -38,8 +37,9 @@ namespace SagaMap.Skill.SkillDefinations.Gladiator
                     SkillHandler.Instance.SetNextComboSkill(sActor, 2235);
                 }
             }
-            List<Actor> actors = Manager.MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 100, true);
-            List<Actor> affected = new List<Actor>();
+
+            var actors = MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 100, true);
+            var affected = new List<Actor>();
             if (level % 2 == 1)
                 foreach (var item in actors)
                 {
@@ -48,6 +48,7 @@ namespace SagaMap.Skill.SkillDefinations.Gladiator
                 }
             else
                 affected.Add(dActor);
+
             args.type = ATTACK_TYPE.SLASH;
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }

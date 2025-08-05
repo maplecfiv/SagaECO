@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
+using SagaDB.Skill;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
-
 
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
 {
-    class fuenriru : ISkill
+    internal class fuenriru : ISkill
     {
         #region ISkill Members
 
@@ -23,19 +19,21 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 200, null);
-            List<Actor> affected = new List<Actor>();
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
+                SagaLib.Global.PosY8to16(args.y, map.Height), 200, null);
+            var affected = new List<Actor>();
             switch (level)
             {
                 case 1:
-                    int a = new Random().Next(0, 100);
+                    var a = new Random().Next(0, 100);
                     if (a <= 30)
                     {
-                        DefaultBuff skill = new DefaultBuff(args.skill, dActor, "Pressure", 500000);
+                        var skill = new DefaultBuff(args.skill, dActor, "Pressure", 500000);
                         SkillHandler.ApplyAddition(sActor, skill);
-                        SkillHandler.Instance.MagicAttack(sActor, dActor, args, SagaLib.Elements.Dark, 11.0f);
+                        SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Dark, 11.0f);
                     }
+
                     //foreach (Actor i in actors)
                     //{
                     //    if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
@@ -46,16 +44,16 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                 case 2:
                     args = new SkillArg();
                     args.Init();
-                    args.skill = SagaDB.Skill.SkillFactory.Instance.GetSkill(2066, 5);
-                    int hpheal = (int)(sActor.MaxHP * (float)(5.0f / 100.0f));
-                    int mpheal = (int)(sActor.MaxMP * (float)(2.0f / 100.0f));
-                    int spheal = (int)(sActor.MaxSP * (float)(2.0f / 100.0f));
+                    args.skill = SkillFactory.Instance.GetSkill(2066, 5);
+                    var hpheal = (int)(sActor.MaxHP * (5.0f / 100.0f));
+                    var mpheal = (int)(sActor.MaxMP * (2.0f / 100.0f));
+                    var spheal = (int)(sActor.MaxSP * (2.0f / 100.0f));
                     if (sActor.Status.Additions.ContainsKey("Pressure"))
                     {
-                        int mul = new Random().Next(1, 10);
-                        hpheal = (int)Math.Min((sActor.MaxHP * (5.0f / 100.0f) * mul), (sActor.MaxHP * (50.0f / 100.0f)));
-                        mpheal = (int)Math.Min((sActor.MaxMP * (2.0f / 100.0f) * mul), (sActor.MaxMP * (25.0f / 100.0f)));
-                        spheal = (int)Math.Min((sActor.MaxSP * (2.0f / 100.0f)* mul), (sActor.MaxSP * (25.0f / 100.0f)));
+                        var mul = new Random().Next(1, 10);
+                        hpheal = (int)Math.Min(sActor.MaxHP * (5.0f / 100.0f) * mul, sActor.MaxHP * (50.0f / 100.0f));
+                        mpheal = (int)Math.Min(sActor.MaxMP * (2.0f / 100.0f) * mul, sActor.MaxMP * (25.0f / 100.0f));
+                        spheal = (int)Math.Min(sActor.MaxSP * (2.0f / 100.0f) * mul, sActor.MaxSP * (25.0f / 100.0f));
                         SkillHandler.RemoveAddition(sActor, "Pressure");
                     }
 
@@ -74,26 +72,26 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                         sActor.SP = sActor.MaxSP;
                     SkillHandler.Instance.ShowEffectByActor(sActor, 4178);
                     SkillHandler.Instance.ShowVessel(sActor, -hpheal, -mpheal, -spheal);
-                    Manager.MapManager.Instance.GetMap(sActor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, args, sActor, true);
+                    MapManager.Instance.GetMap(sActor.MapID)
+                        .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, args, sActor, true);
                     break;
                 case 3:
-                    foreach (Actor i in actors)
-                    {
+                    foreach (var i in actors)
                         if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                             affected.Add(i);
-                    }
-                    float factor = 11.0f;
+                    var factor = 11.0f;
                     if (sActor.Status.Additions.ContainsKey("Pressure"))
                     {
-                        int mul = new Random().Next(0, 10);
+                        var mul = new Random().Next(0, 10);
                         factor += mul;
                         SkillHandler.RemoveAddition(sActor, "Pressure");
                     }
-                    SkillHandler.Instance.PhysicalAttack(sActor, affected, args, SagaLib.Elements.Earth, factor);
-                    break;
 
+                    SkillHandler.Instance.PhysicalAttack(sActor, affected, args, Elements.Earth, factor);
+                    break;
             }
         }
+
         #endregion
     }
 }

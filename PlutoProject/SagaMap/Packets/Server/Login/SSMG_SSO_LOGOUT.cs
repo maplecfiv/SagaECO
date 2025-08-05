@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Packets.Server
@@ -10,10 +6,9 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_SSO_LOGOUT()
         {
-            this.data = new byte[2];
-            this.offset = 2;
-            this.ID = 0x001D;
+            data = new byte[2];
+            offset = 2;
+            ID = 0x001D;
         }
     }
 }
-

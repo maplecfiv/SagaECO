@@ -1,8 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using SagaLib;
 
 namespace SagaMap.Partner
@@ -18,69 +14,18 @@ namespace SagaMap.Partner
         HateHeal = 0x20,
         HateMagic = 0x40,
         Symbol = 0x80,
-        SymbolTrash = 0x100,
+        SymbolTrash = 0x100
     }
 
     /// <summary>
-    /// AI的模式
+    ///     AI的模式
     /// </summary>
     public class AIMode
     {
-        //新增AI部分 by:An
-        public class SkillsInfo
-        {
-            public uint SkillID { set; get; }
-            public int Delay { set; get; }
-        }
-        public bool isAnAI { set; get; }
-
-        public class SkillList
-        {
-            public int MaxHP { set; get; }
-            public int MinHP { set; get; }
-            public int Rate { set; get; }
-
-            Dictionary<uint, SkillsInfo> anAI_SkillList = new Dictionary<uint, SkillsInfo>();
-            public Dictionary<uint, SkillsInfo> AnAI_SkillList { get { return anAI_SkillList; } }
-        }
-
-        Dictionary<uint, SkillList> anAI_SkillAssemblage = new Dictionary<uint, SkillList>();
-        public Dictionary<uint, SkillList> AnAI_SkillAssemblage { get { return anAI_SkillAssemblage; } }
-        //新增结束
-        //新增AI部分 by:TT
-        public class SkilInfo
-        {
-            public int Rate { set; get; }
-            public int CD { set; get; }
-            public int MaxHP { set; get; }
-            public int MinHP { set; get; }
-        }
-
-        int distance = 20;
-
-        int shortCD = 0;
-        int longCD = 0;
-
-        Dictionary<uint, SkilInfo> skillOfShort = new Dictionary<uint, SkilInfo>();
-        Dictionary<uint, SkilInfo> skillOfLong = new Dictionary<uint, SkilInfo>();
-
-
-        public bool isNewAI { set; get; }
-        public int Distance { set { distance = value; } get { return distance; } }
-        public int ShortCD { set { shortCD = value; } get { return shortCD; } }
-        public int LongCD { set { longCD = value; } get { return longCD; } }
-        public Dictionary<uint, SkilInfo> SkillOfShort { get { return skillOfShort; } }
-        public Dictionary<uint, SkilInfo> SkillOfLong { get { return skillOfLong; } }
         //新增结束
 
 
         public BitMask mask;
-        uint partnerID;
-
-        Dictionary<uint, int> eventAttacking = new Dictionary<uint, int>();
-        Dictionary<uint, int> eventMasterCombat = new Dictionary<uint, int>();
-        int eventAttackingSkillRate;
-        int eventMasterCombatRate;
 
         public AIMode(int value)
         {
@@ -92,80 +37,125 @@ namespace SagaMap.Partner
             mask = new BitMask(0);
         }
 
-        /// <summary>
-        /// 怪物ID
-        /// </summary>
-        public uint PartnerID { get { return this.partnerID; } set { this.partnerID = value; } }
+        public bool isAnAI { set; get; }
+        public Dictionary<uint, SkillList> AnAI_SkillAssemblage { get; } = new Dictionary<uint, SkillList>();
+
+
+        public bool isNewAI { set; get; }
+
+        public int Distance { set; get; } = 20;
+
+        public int ShortCD { set; get; }
+
+        public int LongCD { set; get; }
+
+        public Dictionary<uint, SkilInfo> SkillOfShort { get; } = new Dictionary<uint, SkilInfo>();
+
+        public Dictionary<uint, SkilInfo> SkillOfLong { get; } = new Dictionary<uint, SkilInfo>();
 
         /// <summary>
-        /// 怪物的AI模式
+        ///     怪物ID
         /// </summary>
-        public int AI { get { return this.mask.Value; } set { this.mask.Value = value; } }
+        public uint PartnerID { get; set; }
 
         /// <summary>
-        /// 是否主动
+        ///     怪物的AI模式
         /// </summary>
-        public bool Active { get { return mask.Test(AIFlag.Active); } }
+        public int AI
+        {
+            get => mask.Value;
+            set => mask.Value = value;
+        }
 
         /// <summary>
-        /// 是否不会攻击
+        ///     是否主动
         /// </summary>
-        public bool NoAttack { get { return mask.Test(AIFlag.NoAttack); } }
+        public bool Active => mask.Test(AIFlag.Active);
 
         /// <summary>
-        /// 是否无法移动
+        ///     是否不会攻击
         /// </summary>
-        public bool NoMove { get { return mask.Test(AIFlag.NoMove); } }
+        public bool NoAttack => mask.Test(AIFlag.NoAttack);
 
         /// <summary>
-        /// 是否看见玩家会逃跑
+        ///     是否无法移动
         /// </summary>
-        public bool RunAway { get { return mask.Test(AIFlag.RunAway); } }
+        public bool NoMove => mask.Test(AIFlag.NoMove);
 
         /// <summary>
-        /// 是否帮助同类型怪物
+        ///     是否看见玩家会逃跑
         /// </summary>
-        public bool HelpSameType { get { return mask.Test(AIFlag.HelpSameType); } }
+        public bool RunAway => mask.Test(AIFlag.RunAway);
 
         /// <summary>
-        /// 是否仇恨治愈魔法
+        ///     是否帮助同类型怪物
         /// </summary>
-        public bool HateHeal { get { return mask.Test(AIFlag.HateHeal); } }
+        public bool HelpSameType => mask.Test(AIFlag.HelpSameType);
 
         /// <summary>
-        /// 是否仇恨吟唱魔法
+        ///     是否仇恨治愈魔法
         /// </summary>
-        public bool HateMagic { get { return mask.Test(AIFlag.HateMagic); } }
+        public bool HateHeal => mask.Test(AIFlag.HateHeal);
 
         /// <summary>
-        /// 是否是象征
+        ///     是否仇恨吟唱魔法
         /// </summary>
-        public bool Symbol { get { return mask.Test(AIFlag.Symbol); } }
+        public bool HateMagic => mask.Test(AIFlag.HateMagic);
 
         /// <summary>
-        /// 是否是象征残骸
+        ///     是否是象征
         /// </summary>
-        public bool SymbolTrash { get { return mask.Test(AIFlag.SymbolTrash); } }
-
-        
-        /// <summary>
-        /// 怪物在攻击时，需要使用技能时的技能列表，Key＝技能，Value＝几率
-        /// </summary>
-        public Dictionary<uint, int> EventAttacking { get { return this.eventAttacking; } set { this.eventAttacking = value; } }
+        public bool Symbol => mask.Test(AIFlag.Symbol);
 
         /// <summary>
-        /// 怪物在攻击时，使用技能的几率
+        ///     是否是象征残骸
         /// </summary>
-        public int EventAttackingSkillRate { get { return this.eventAttackingSkillRate; } set { this.eventAttackingSkillRate = value; } }
+        public bool SymbolTrash => mask.Test(AIFlag.SymbolTrash);
+
 
         /// <summary>
-        /// 怪物的主人在战斗中时，需要使用技能时的技能列表，Key＝技能，Value＝几率
+        ///     怪物在攻击时，需要使用技能时的技能列表，Key＝技能，Value＝几率
         /// </summary>
-        public Dictionary<uint, int> EventMasterCombat { get { return this.eventMasterCombat; } set { this.eventMasterCombat = value; } }
+        public Dictionary<uint, int> EventAttacking { get; set; } = new Dictionary<uint, int>();
 
         /// <summary>
-        /// 怪物的主人在战斗中时，使用技能的几率
+        ///     怪物在攻击时，使用技能的几率
         /// </summary>
-        public int EventMasterCombatSkillRate { get { return this.eventMasterCombatRate; } set { this.eventMasterCombatRate = value; } }
+        public int EventAttackingSkillRate { get; set; }
+
+        /// <summary>
+        ///     怪物的主人在战斗中时，需要使用技能时的技能列表，Key＝技能，Value＝几率
+        /// </summary>
+        public Dictionary<uint, int> EventMasterCombat { get; set; } = new Dictionary<uint, int>();
+
+        /// <summary>
+        ///     怪物的主人在战斗中时，使用技能的几率
+        /// </summary>
+        public int EventMasterCombatSkillRate { get; set; }
+
+        //新增AI部分 by:An
+        public class SkillsInfo
+        {
+            public uint SkillID { set; get; }
+            public int Delay { set; get; }
+        }
+
+        public class SkillList
+        {
+            public int MaxHP { set; get; }
+            public int MinHP { set; get; }
+            public int Rate { set; get; }
+            public Dictionary<uint, SkillsInfo> AnAI_SkillList { get; } = new Dictionary<uint, SkillsInfo>();
+        }
+
+        //新增结束
+        //新增AI部分 by:TT
+        public class SkilInfo
+        {
+            public int Rate { set; get; }
+            public int CD { set; get; }
+            public int MaxHP { set; get; }
+            public int MinHP { set; get; }
+        }
     }
 }

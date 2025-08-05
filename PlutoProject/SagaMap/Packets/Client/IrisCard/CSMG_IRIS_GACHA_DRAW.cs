@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -12,32 +7,14 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_IRIS_GACHA_DRAW()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public uint PayFlag
-        {
-            get
-            {
-                return GetUInt(2);
-            }
-        }
+        public uint PayFlag => GetUInt(2);
 
-        public uint SessionID
-        {
-            get
-            {
-                return this.GetUInt(6);
-            }
-        }
+        public uint SessionID => GetUInt(6);
 
-        public uint ItemID
-        {
-            get
-            {
-                return GetUInt(10);
-            }
-        }
+        public uint ItemID => GetUInt(10);
 
         public override Packet New()
         {
@@ -46,8 +23,7 @@ namespace SagaMap.Packets.Client
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnIrisGacha(this);
+            ((MapClient)client).OnIrisGacha(this);
         }
-
     }
 }

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
+using SagaMap.Skill.Additions.Global;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
-    class Roar : ISkill
+    internal class Roar : ISkill
     {
         #region ISkill Members
 
@@ -21,26 +17,25 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.8f;
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 500, null);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
+            var factor = 1.8f;
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
+                SagaLib.Global.PosY8to16(args.y, map.Height), 500, null);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {
                     affected.Add(i);
                     if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Stun, 50))
                     {
-                        Additions.Global.Stun skill = new SagaMap.Skill.Additions.Global.Stun(args.skill, i, 5000);
+                        var skill = new Stun(args.skill, i, 5000);
                         SkillHandler.ApplyAddition(i, skill);
                     }
                 }
-                    
-            }
 
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Neutral, factor);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Neutral, factor);
         }
+
         #endregion
     }
 }

@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
-
-using SagaLib;
 using SagaDB.Actor;
-
+using SagaLib;
+using SagaMap.ActorEventHandlers;
+using SagaMap.Manager;
 
 namespace SagaMap.Tasks.Mob
 {
     public class Respawn : MultiRunTask
     {
-        private ActorMob mob;
+        private readonly ActorMob mob;
+
         public Respawn(ActorMob mob, int delay)
         {
-            this.dueTime = delay;
-            this.period = delay;
+            dueTime = delay;
+            period = delay;
             this.mob = mob;
         }
 
@@ -24,12 +23,12 @@ namespace SagaMap.Tasks.Mob
             ClientManager.EnterCriticalArea();
             try
             {
-                Map map_ = Manager.MapManager.Instance.GetMap(mob.MapID);
+                var map_ = MapManager.Instance.GetMap(mob.MapID);
                 int x_new, y_new;
-                ActorEventHandlers.MobEventHandler eh = (SagaMap.ActorEventHandlers.MobEventHandler)mob.e;
+                var eh = (MobEventHandler)mob.e;
                 int min_x, max_x, min_y, max_y, ori_x, ori_y;
-                ori_x = Global.PosX16to8((short)(eh.AI.X_Ori), map_.Width);
-                ori_y = Global.PosY16to8((short)(eh.AI.Y_Ori), map_.Height);
+                ori_x = Global.PosX16to8(eh.AI.X_Ori, map_.Width);
+                ori_y = Global.PosY16to8(eh.AI.Y_Ori, map_.Height);
 
                 min_x = ori_x - eh.AI.MoveRange / 100;
                 max_x = ori_x + eh.AI.MoveRange / 100;
@@ -49,13 +48,15 @@ namespace SagaMap.Tasks.Mob
                     x_new = (byte)Global.Random.Next(min_x, max_x);
                     Thread.Sleep(1);
                 }
+
                 y_new = (byte)Global.Random.Next(min_y, max_y);
                 while (y_new < min_y || y_new > max_y)
                 {
                     y_new = (byte)Global.Random.Next(min_y, max_y);
                     Thread.Sleep(1);
                 }
-                int counter = 0;
+
+                var counter = 0;
                 while (map_.Info.walkable[x_new, y_new] != 2)
                 {
                     if (counter > 1000)
@@ -63,18 +64,21 @@ namespace SagaMap.Tasks.Mob
                         ClientManager.LeaveCriticalArea();
                         return;
                     }
+
                     x_new = (byte)Global.Random.Next(min_x, max_x);
                     while (x_new < min_x || x_new > max_x)
                     {
                         x_new = (byte)Global.Random.Next(min_x, max_x);
                         Thread.Sleep(1);
                     }
+
                     y_new = (byte)Global.Random.Next(min_y, max_y);
                     while (y_new < min_y || y_new > max_y)
                     {
                         y_new = (byte)Global.Random.Next(min_y, max_y);
                         Thread.Sleep(1);
                     }
+
                     counter++;
                 }
 
@@ -94,14 +98,15 @@ namespace SagaMap.Tasks.Mob
                 map_.SendVisibleActorsToActor(mob);
 
                 mob.Tasks.Remove("Respawn");
-                ((ActorEventHandlers.MobEventHandler)(mob.e)).AI.Start();
-                this.Deactivate();
+                ((MobEventHandler)mob.e).AI.Start();
+                Deactivate();
             }
             catch (Exception ex)
             {
                 Logger.ShowError(ex);
-                this.Deactivate();
+                Deactivate();
             }
+
             ClientManager.LeaveCriticalArea();
         }
     }

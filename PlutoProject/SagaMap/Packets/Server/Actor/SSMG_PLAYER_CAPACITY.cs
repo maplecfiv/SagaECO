@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.Item;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,38 +6,29 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_PLAYER_CAPACITY()
         {
-            this.data = new byte[18];
-            this.offset = 2;
-            this.ID = 0x0230;
+            data = new byte[18];
+            offset = 2;
+            ID = 0x0230;
         }
 
         public uint Volume
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
+
         public uint Payload
         {
-            set
-            {
-                this.PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
+
         public uint MaxVolume
         {
-            set
-            {
-                this.PutUInt(value, 10);
-            }
+            set => PutUInt(value, 10);
         }
+
         public uint MaxPayload
         {
-            set
-            {
-                this.PutUInt(value, 14);
-            }
+            set => PutUInt(value, 14);
         }
         /*public uint CapacityBody
         {
@@ -112,4 +97,3 @@ namespace SagaMap.Packets.Server
         }*/
     }
 }
-        

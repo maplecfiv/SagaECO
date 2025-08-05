@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.Actor;
-using SagaDB.FGarden;
-
 
 namespace SagaMap.Packets.Server
 {
@@ -13,19 +6,15 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_ACTOR_DISAPPEAR()
         {
-            this.data = new byte[6];
-            this.offset = 2;
+            data = new byte[6];
+            offset = 2;
 
-            this.ID = 0x1C0D;
+            ID = 0x1C0D;
         }
 
         public uint ActorID
         {
-            set
-            {
-                this.PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
     }
 }
-

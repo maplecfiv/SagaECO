@@ -1,40 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SagaDB.Actor;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions.Global;
+
 namespace SagaMap.Skill.SkillDefinations.Druid
 {
     /// <summary>
-    /// 心靈豐足（ラウズメンタル）
+    ///     心靈豐足（ラウズメンタル）
     /// </summary>
     public class MAG_INT_DEX_UP : ISkill
     {
         #region ISkill Members
+
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;
         }
+
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             //int[] lifetime ={15, 20, 25, 27, 30};
             //DefaultBuff skill = new DefaultBuff(args.skill, dActor, "MAG_INT_DEX_UP", lifetime[level - 1]*1000);
-            int lifetime = 180;
-            DefaultBuff skill = new DefaultBuff(args.skill, dActor, "MAG_INT_DEX_UP", lifetime * 1000);
-            skill.OnAdditionStart += this.StartEventHandler;
-            skill.OnAdditionEnd += this.EndEventHandler;
+            var lifetime = 180;
+            var skill = new DefaultBuff(args.skill, dActor, "MAG_INT_DEX_UP", lifetime * 1000);
+            skill.OnAdditionStart += StartEventHandler;
+            skill.OnAdditionEnd += EndEventHandler;
             if (dActor == sActor)
             {
-                Map map = Manager.MapManager.Instance.GetMap(dActor.MapID);
-                EffectArg arg2 = new EffectArg();
+                var map = MapManager.Instance.GetMap(dActor.MapID);
+                var arg2 = new EffectArg();
                 arg2.effectID = 5178;
                 arg2.actorID = dActor.ActorID;
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, dActor, true);
             }
+
             SkillHandler.ApplyAddition(dActor, skill);
         }
-        void StartEventHandler(Actor actor, DefaultBuff skill)
+
+        private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
             short[] DEX = { 6, 8, 10, 12, 14 };
@@ -59,19 +61,22 @@ namespace SagaMap.Skill.SkillDefinations.Druid
             actor.Buff.MagUp = true;
             actor.Buff.INTUp = true;
             actor.Buff.DEXUp = true;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
-        void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
 
+        private void EndEventHandler(Actor actor, DefaultBuff skill)
+        {
             actor.Status.dex_skill -= (short)skill.Variable["MAG_INT_DEX_UP_DEX"];
             actor.Status.int_skill -= (short)skill.Variable["MAG_INT_DEX_UP_INT"];
             actor.Status.mag_skill -= (short)skill.Variable["MAG_INT_DEX_UP_MAG"];
             actor.Buff.MagUp = false;
             actor.Buff.INTUp = false;
             actor.Buff.DEXUp = false;
-            Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
+            MapManager.Instance.GetMap(actor.MapID)
+                .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
+
         #endregion
     }
 }

@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaMap.Skill.SkillDefinations.Global;
 using SagaLib;
-using SagaMap;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
-    /// 魔物用毁天灭地
+    ///     魔物用毁天灭地
     /// </summary>
-    class EarthStorm : ISkill
+    internal class EarthStorm : ISkill
     {
         #region ISkill Members
 
@@ -24,20 +19,20 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 1.8f;
+            var factor = 1.8f;
 
-            ActorSkill actorS = new ActorSkill(args.skill, sActor);
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
-            List<Actor> actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height), 300, null);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
+            var actorS = new ActorSkill(args.skill, sActor);
+            var map = MapManager.Instance.GetMap(sActor.MapID);
+            var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
+                SagaLib.Global.PosY8to16(args.y, map.Height), 300, null);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
 
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Earth, factor);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Earth, factor);
         }
+
         #endregion
     }
 }

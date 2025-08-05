@@ -1,35 +1,31 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Actor;
-using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
-    public class SSMG_GOLEM_SHOP_BUY_ITEM :Packet
+    public class SSMG_GOLEM_SHOP_BUY_ITEM : Packet
     {
         public SSMG_GOLEM_SHOP_BUY_ITEM()
         {
-            this.data = new byte[1413];
-            this.offset = 2;
-            this.ID = 0x1826;
-            this.PutByte(100, 2);
-            this.PutByte(100, (ushort)(3 + 4 * 100));
-            this.PutByte(100, (ushort)(4 + 6 * 100));
+            data = new byte[1413];
+            offset = 2;
+            ID = 0x1826;
+            PutByte(100, 2);
+            PutByte(100, (ushort)(3 + 4 * 100));
+            PutByte(100, (ushort)(4 + 6 * 100));
         }
 
         public Dictionary<uint, GolemShopItem> Items
         {
             set
             {
-                int j = 0;
-                foreach (GolemShopItem i in value.Values)
+                var j = 0;
+                foreach (var i in value.Values)
                 {
-                    this.PutUInt(i.ItemID, (ushort)(3 + j * 4));
-                    this.PutUShort(i.Count, (ushort)(4 + 100 * 4 + j * 2));
-                    this.PutULong(i.Price, (ushort)(5 + 100 * 6 + j * 8));
+                    PutUInt(i.ItemID, (ushort)(3 + j * 4));
+                    PutUShort(i.Count, (ushort)(4 + 100 * 4 + j * 2));
+                    PutULong(i.Price, (ushort)(5 + 100 * 6 + j * 8));
                     j++;
                 }
             }
@@ -37,11 +33,7 @@ namespace SagaMap.Packets.Server
 
         public uint BuyLimit
         {
-            set
-            {
-                this.PutULong(value, 1405);
-            }
+            set => PutULong(value, 1405);
         }
     }
 }
-

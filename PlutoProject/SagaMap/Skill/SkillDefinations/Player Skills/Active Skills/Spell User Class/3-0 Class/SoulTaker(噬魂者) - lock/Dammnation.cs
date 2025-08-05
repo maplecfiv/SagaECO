@@ -1,26 +1,28 @@
-﻿using SagaDB.Actor;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using SagaDB.Actor;
+using SagaLib;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.SoulTaker
 {
     /// <summary>
-    /// 3431 ダムネイション (Dammnation) 天谴
+    ///     3431 ダムネイション (Dammnation) 天谴
     /// </summary>
     public class Dammnation : ISkill
     {
-        public int TryCast(SagaDB.Actor.ActorPC sActor, SagaDB.Actor.Actor dActor, SkillArg args)
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
             return 0;
         }
-        public void Proc(SagaDB.Actor.Actor sActor, SagaDB.Actor.Actor dActor, SkillArg args, byte level)
+
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            float factor = 9.0f + 4.5f * level;
+            var factor = 9.0f + 4.5f * level;
             if (sActor.type == ActorType.PC)
             {
-                ActorPC pc = (ActorPC)sActor;
+                var pc = (ActorPC)sActor;
                 //检测3392可能存在的位置
                 if (pc.Skills3.ContainsKey(3392) || pc.DualJobSkill.Exists(x => x.ID == 3392))
                 {
@@ -56,32 +58,26 @@ namespace SagaMap.Skill.SkillDefinations.SoulTaker
                     factor += 0.5f * Math.Max(duallv, mainlv);
                     //factor += pc.Skills3[3420].Level * 0.5f;
                 }
-                    
             }
-            
-            Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
+
+            var map = MapManager.Instance.GetMap(sActor.MapID);
             if (sActor.type != ActorType.PC)
             {
-                List<Actor> actorszero = map.GetActorsArea(sActor, 700, true);
-                foreach (Actor i in actorszero)
-                {
+                var actorszero = map.GetActorsArea(sActor, 700, true);
+                foreach (var i in actorszero)
                     if (SagaLib.Global.Random.Next(1, actorszero.Count()) == 1)
                     {
                         dActor = i;
                         break;
                     }
-
-                }
-
             }
-            List<Actor> actors = map.GetActorsArea(dActor, 300, true);
-            List<Actor> affected = new List<Actor>();
-            foreach (Actor i in actors)
-            {
+
+            var actors = map.GetActorsArea(dActor, 300, true);
+            var affected = new List<Actor>();
+            foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     affected.Add(i);
-            }
-            SkillHandler.Instance.MagicAttack(sActor, affected, args, SagaLib.Elements.Dark, factor);
+            SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Dark, factor);
         }
     }
 }

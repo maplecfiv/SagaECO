@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.ECOShop;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,39 +6,32 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_NCSHOP_INFO()
         {
-            this.data = new byte[11];
-            this.offset = 2;
-            this.ID = 0x0630;
+            data = new byte[11];
+            offset = 2;
+            ID = 0x0630;
         }
 
         public uint Point
         {
-            set
-            {
-                PutUInt(value, 2);
-            }
+            set => PutUInt(value, 2);
         }
 
         public uint ItemID
         {
-            set
-            {
-                PutUInt(value, 6);
-            }
+            set => PutUInt(value, 6);
         }
 
         public string Comment
         {
             set
             {
-                byte[] comment = Global.Unicode.GetBytes(value + "\0");
-                byte[] buf = new byte[11 + comment.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutByte((byte)comment.Length, 10);
-                this.PutBytes(comment, 11);
+                var comment = Global.Unicode.GetBytes(value + "\0");
+                var buf = new byte[11 + comment.Length];
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutByte((byte)comment.Length, 10);
+                PutBytes(comment, 11);
             }
         }
     }
 }
-

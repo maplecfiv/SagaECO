@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaDB.FGarden;
-using SagaMap;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Packets.Client
@@ -13,26 +7,19 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_DEM_COST_LIMIT_BUY()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public short EP
-        {
-            get
-            {
-                return this.GetShort(2);
-            }
-        }
+        public short EP => GetShort(2);
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_DEM_COST_LIMIT_BUY();
+            return new CSMG_DEM_COST_LIMIT_BUY();
         }
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)(client)).OnDEMCostLimitBuy(this);
+            ((MapClient)client).OnDEMCostLimitBuy(this);
         }
-
     }
 }

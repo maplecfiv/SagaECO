@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using SagaLib;
 using SagaDB.Item;
-using SagaDB.Iris;
+using SagaLib;
 
 namespace SagaMap.Packets.Server
 {
@@ -12,32 +7,29 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_ITEM_IRIS_CARD_INFO()
         {
-            this.data = new byte[9];
-            this.offset = 2;
-            this.ID = 0x09D5;   
+            data = new byte[9];
+            offset = 2;
+            ID = 0x09D5;
         }
 
         public Item Item
         {
             set
             {
-                this.PutUInt(value.Slot, 2);
-                byte[] buf = new byte[9 + 4 * value.CurrentSlot];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
+                PutUInt(value.Slot, 2);
+                var buf = new byte[9 + 4 * value.CurrentSlot];
+                data.CopyTo(buf, 0);
+                data = buf;
 
-                this.PutByte((byte)value.CurrentSlot, 6);
-                for (int i = 0; i < value.CurrentSlot; i++)
-                {
+                PutByte(value.CurrentSlot, 6);
+                for (var i = 0; i < value.CurrentSlot; i++)
                     if (i < value.Cards.Count)
-                        this.PutUInt(value.Cards[i].ID);
+                        PutUInt(value.Cards[i].ID);
                     else
-                        this.PutUInt(0);
-                }
+                        PutUInt(0);
 
-                this.PutShort(value.CurrentSlot);
+                PutShort(value.CurrentSlot);
             }
         }
     }
 }
-

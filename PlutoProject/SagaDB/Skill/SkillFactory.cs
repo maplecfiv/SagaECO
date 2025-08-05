@@ -1,51 +1,37 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Xml;
-
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.VirtualFileSystem;
-using SagaDB.Actor;
-using System.IO;
 
 namespace SagaDB.Skill
 {
     public class SkillFactory : Singleton<SkillFactory>
     {
-        public Dictionary<uint, Dictionary<byte, SkillData>> items = new Dictionary<uint, Dictionary<byte, SkillData>>();
-        Dictionary<PC_JOB, Dictionary<uint, byte>> skills = new Dictionary<PC_JOB, Dictionary<uint, byte>>();
-        Dictionary<PC_JOB, Dictionary<uint, PreconditionSkill>> skills2 = new Dictionary<PC_JOB, Dictionary<uint, PreconditionSkill>>();
-
-        string sklstpath = "";
-        string skdbpath = "";
-
-        public SkillFactory()
-        {
-
-        }
-
         public enum SkillPaga
         {
             p1,
             p21,
             p22,
             p3,
-            none,
-        }
-        class PreconditionSkill
-        {
-            //public uint LearnSkillID;
-            public SkillPaga paga;
-            public uint LearnSkillJobLv;
-            public Dictionary<uint, uint> PreconditionSkillInfo = new Dictionary<uint, uint>();
+            none
         }
 
-        class sspHeader
-        {
-            public uint offset;
-            public ushort size;
-        }
+        private readonly Dictionary<PC_JOB, Dictionary<uint, byte>> skills =
+            new Dictionary<PC_JOB, Dictionary<uint, byte>>();
+
+        private readonly Dictionary<PC_JOB, Dictionary<uint, PreconditionSkill>> skills2 =
+            new Dictionary<PC_JOB, Dictionary<uint, PreconditionSkill>>();
+
+        public Dictionary<uint, Dictionary<byte, SkillData>>
+            items = new Dictionary<uint, Dictionary<byte, SkillData>>();
+
+        private string skdbpath = "";
+
+        private string sklstpath = "";
 
         public void ReloadSkillDB()
         {
@@ -57,30 +43,35 @@ namespace SagaDB.Skill
                 LoadSkillList(sklstpath);
                 InitSSP(skdbpath, Encoding.Default);
             }
-            catch { }
+            catch
+            {
+            }
+
             ClientManager.noCheckDeadLock = false;
         }
+
         public Skill GetSkill(uint id, byte level)
         {
             try
             {
-                if (!this.items.ContainsKey(id))
+                if (!items.ContainsKey(id))
                 {
-                    Logger.ShowDebug("Cannot find skill:" + id.ToString(), null);
+                    Logger.ShowDebug("Cannot find skill:" + id, null);
                     return null;
                 }
+
                 if (level != 0)
                 {
-                    SkillData data = this.items[id][level];
-                    Skill skill = new Skill();
+                    var data = items[id][level];
+                    var skill = new Skill();
                     skill.BaseData = data;
                     skill.Level = level;
                     return skill;
                 }
                 else
                 {
-                    SkillData data = this.items[id][1];
-                    Skill skill = new Skill();
+                    var data = items[id][1];
+                    var skill = new Skill();
                     skill.BaseData = data;
                     skill.Level = level;
                     return skill;
@@ -97,66 +88,77 @@ namespace SagaDB.Skill
         {
             return CheckSkillList(pc, paga, false);
         }
+
         public Dictionary<uint, byte> CheckSkillList(ActorPC pc, SkillPaga paga, bool isread)
         {
-            Dictionary<uint, byte> result = new Dictionary<uint, byte>();
+            var result = new Dictionary<uint, byte>();
             if (!skills2.ContainsKey(pc.Job3)) return SkillList(pc.Job);
 
-            foreach (KeyValuePair<uint, PreconditionSkill> skill in skills2[pc.Job3])
+            foreach (var skill in skills2[pc.Job3])
             {
                 if (skill.Value.paga != paga) continue;
                 if (isread)
+                {
                     result.Add(skill.Key, (byte)skill.Value.LearnSkillJobLv);
+                }
                 else
                 {
                     byte count = 0;
-                    foreach (KeyValuePair<uint, uint> ps in skill.Value.PreconditionSkillInfo)
+                    foreach (var ps in skill.Value.PreconditionSkillInfo)
                     {
-                        if (!pc.Skills.ContainsKey(ps.Key) && !pc.Skills2_1.ContainsKey(ps.Key) && !pc.Skills2_2.ContainsKey(ps.Key) && !pc.Skills3.ContainsKey(ps.Key)) continue;
-                        if (pc.Skills.ContainsKey(ps.Key)) if (pc.Skills[ps.Key].Level < ps.Value) continue;
-                        if (pc.Skills2_1.ContainsKey(ps.Key)) if (pc.Skills2_1[ps.Key].Level < ps.Value) continue;
-                        if (pc.Skills2_2.ContainsKey(ps.Key)) if (pc.Skills2_2[ps.Key].Level < ps.Value) continue;
-                        if (pc.Skills3.ContainsKey(ps.Key)) if (pc.Skills3[ps.Key].Level < ps.Value) continue;
+                        if (!pc.Skills.ContainsKey(ps.Key) && !pc.Skills2_1.ContainsKey(ps.Key) &&
+                            !pc.Skills2_2.ContainsKey(ps.Key) && !pc.Skills3.ContainsKey(ps.Key)) continue;
+                        if (pc.Skills.ContainsKey(ps.Key))
+                            if (pc.Skills[ps.Key].Level < ps.Value)
+                                continue;
+                        if (pc.Skills2_1.ContainsKey(ps.Key))
+                            if (pc.Skills2_1[ps.Key].Level < ps.Value)
+                                continue;
+                        if (pc.Skills2_2.ContainsKey(ps.Key))
+                            if (pc.Skills2_2[ps.Key].Level < ps.Value)
+                                continue;
+                        if (pc.Skills3.ContainsKey(ps.Key))
+                            if (pc.Skills3[ps.Key].Level < ps.Value)
+                                continue;
                         count++;
                     }
+
                     if (count == skill.Value.PreconditionSkillInfo.Count && skill.Value.LearnSkillJobLv <= pc.JobLevel3)
                         result.Add(skill.Key, (byte)skill.Value.LearnSkillJobLv);
                 }
             }
+
             return result;
         }
 
         public Dictionary<uint, byte> SkillList(PC_JOB job)
         {
-            if (this.skills.ContainsKey(job))
-                return this.skills[job];
-            else
-                return new Dictionary<uint, byte>();
+            if (skills.ContainsKey(job))
+                return skills[job];
+            return new Dictionary<uint, byte>();
         }
 
         public void LoadSkillList2(string path)
         {
-            string[] file = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
-            int total = 0;
-            foreach (string f in file)
-            {
-                total += LoadOne(f);
-            }
+            var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
+            var total = 0;
+            foreach (var f in file) total += LoadOne(f);
             Logger.ShowInfo("Skill list for jobs loaded...");
         }
+
         public int LoadOne(string f)
         {
-            int total = 0;
-            XmlDocument xml = new XmlDocument();
+            var total = 0;
+            var xml = new XmlDocument();
             try
             {
                 XmlElement root;
                 XmlNodeList list;
-                System.IO.Stream fs = SagaLib.VirtualFileSystem.VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
+                var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
                 xml.Load(fs);
                 root = xml["SkillList"];
                 list = root.ChildNodes;
-                foreach (object j in list)
+                foreach (var j in list)
                 {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
@@ -164,20 +166,21 @@ namespace SagaDB.Skill
                     switch (i.Name.ToLower())
                     {
                         case "skills":
-                            Actor.PC_JOB job;
-                            job = (PC_JOB)Enum.Parse(typeof(Actor.PC_JOB), i.Attributes["Job"].Value, true);
+                            PC_JOB job;
+                            job = (PC_JOB)Enum.Parse(typeof(PC_JOB), i.Attributes["Job"].Value, true);
                             Dictionary<uint, PreconditionSkill> list2;
-                            if (!this.skills2.ContainsKey(job))
+                            if (!skills2.ContainsKey(job))
                             {
                                 list2 = new Dictionary<uint, PreconditionSkill>();
-                                this.skills2.Add(job, list2);
+                                skills2.Add(job, list2);
                             }
                             else
                             {
-                                list2 = this.skills2[job];
+                                list2 = skills2[job];
                             }
-                            XmlNodeList skills = i.ChildNodes;
-                            foreach (object l in skills)
+
+                            var skills = i.ChildNodes;
+                            foreach (var l in skills)
                             {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
@@ -185,15 +188,16 @@ namespace SagaDB.Skill
                                 switch (k.Name.ToLower())
                                 {
                                     case "skill":
-                                        PreconditionSkill ps = new PreconditionSkill();
-                                        uint LearnSkillID = uint.Parse(k.Attributes["ID"].InnerText);
-                                        ps.paga = (SkillPaga)Enum.Parse(typeof(SkillPaga), k.Attributes["Page"].InnerText);
+                                        var ps = new PreconditionSkill();
+                                        var LearnSkillID = uint.Parse(k.Attributes["ID"].InnerText);
+                                        ps.paga = (SkillPaga)Enum.Parse(typeof(SkillPaga),
+                                            k.Attributes["Page"].InnerText);
                                         ps.LearnSkillJobLv = uint.Parse(k.Attributes["JobLV"].InnerText);
                                         list2.Add(LearnSkillID, ps);
                                         //uint JobLv_ = uint.Parse(k.Attributes["JobLV"].InnerText);
 
-                                        XmlNodeList PreconditionSkills = k.ChildNodes;
-                                        foreach (object l2 in PreconditionSkills)
+                                        var PreconditionSkills = k.ChildNodes;
+                                        foreach (var l2 in PreconditionSkills)
                                         {
                                             XmlElement k2;
                                             if (l2.GetType() != typeof(XmlElement)) continue;
@@ -201,28 +205,38 @@ namespace SagaDB.Skill
                                             switch (k2.Name)
                                             {
                                                 case "PreconditionSkill":
-                                                    uint PreconditionSkillLv = uint.Parse(k2.Attributes["SkillLv"].InnerText);
-                                                    uint PreconditionSkillID = uint.Parse(k2.InnerText);
-                                                    if (!list2[LearnSkillID].PreconditionSkillInfo.ContainsKey(PreconditionSkillID))
-                                                        list2[LearnSkillID].PreconditionSkillInfo.Add(PreconditionSkillID, PreconditionSkillLv);
+                                                    var PreconditionSkillLv =
+                                                        uint.Parse(k2.Attributes["SkillLv"].InnerText);
+                                                    var PreconditionSkillID = uint.Parse(k2.InnerText);
+                                                    if (!list2[LearnSkillID].PreconditionSkillInfo
+                                                            .ContainsKey(PreconditionSkillID))
+                                                        list2[LearnSkillID].PreconditionSkillInfo
+                                                            .Add(PreconditionSkillID, PreconditionSkillLv);
                                                     break;
                                             }
                                         }
+
                                         break;
                                 }
                             }
+
                             break;
                     }
                 }
             }
-            catch (Exception ex) { SagaLib.Logger.ShowError(ex); }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
+            }
+
             return total;
         }
+
         public void LoadSkillList(string path)
         {
             sklstpath = path;
             Logger.ShowInfo("Now Loading Skill Tree...");
-            XmlDocument xml = new XmlDocument();
+            var xml = new XmlDocument();
             try
             {
                 XmlElement root;
@@ -230,7 +244,7 @@ namespace SagaDB.Skill
                 xml.Load(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path));
                 root = xml["SkillList"];
                 list = root.ChildNodes;
-                foreach (object j in list)
+                foreach (var j in list)
                 {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
@@ -238,8 +252,8 @@ namespace SagaDB.Skill
                     switch (i.Name.ToLower())
                     {
                         case "skills":
-                            Actor.PC_JOB job;
-                            job = (PC_JOB)Enum.Parse(typeof(Actor.PC_JOB), i.Attributes["Job"].Value, true);
+                            PC_JOB job;
+                            job = (PC_JOB)Enum.Parse(typeof(PC_JOB), i.Attributes["Job"].Value, true);
                             Dictionary<uint, byte> list2;
                             if (!this.skills.ContainsKey(job))
                             {
@@ -250,8 +264,9 @@ namespace SagaDB.Skill
                             {
                                 list2 = this.skills[job];
                             }
-                            XmlNodeList skills = i.ChildNodes;
-                            foreach (object l in skills)
+
+                            var skills = i.ChildNodes;
+                            foreach (var l in skills)
                             {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
@@ -264,9 +279,11 @@ namespace SagaDB.Skill
                                         break;
                                 }
                             }
+
                             break;
                     }
                 }
+
                 Logger.ShowInfo("Done Loaded Skill Tree...");
             }
             catch (Exception ex)
@@ -275,15 +292,15 @@ namespace SagaDB.Skill
             }
         }
 
-        public void Convert(string path, System.Text.Encoding encoding)
+        public void Convert(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(path, encoding);
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(path + ".csv", false, encoding);
+            var sr = new StreamReader(path, encoding);
+            var sw = new StreamWriter(path + ".csv", false, encoding);
             sw.WriteLine("#ID,Name,主动,最大Lv,Lv,JobLv,MP,SP,吟唱时间,延迟,射程,目标,目标2,范围,技能释放射程");
             Logger.ShowInfo("Loading skill database...");
             Console.ForegroundColor = ConsoleColor.Green;
-            int count = 0;
-            bool print = true;
+            var count = 0;
+            var print = true;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -297,11 +314,9 @@ namespace SagaDB.Skill
                         continue;
                     paras = line.Split(',');
 
-                    for (int i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "")
                             paras[i] = "0";
-                    }
                     skill = new SkillData();
                     skill.id = uint.Parse(paras[0]);
                     skill.name = paras[1];
@@ -320,9 +335,10 @@ namespace SagaDB.Skill
                     skill.castRange = (byte)ushort.Parse(paras[17]);
                     //#ID,Name,主动,最大Lv,Lv,JobLv,MP,SP,吟唱时间,延迟,射程,目标,目标2,范围,技能释放射程
 
-                    sw.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}", skill.id, skill.name, paras[3], skill.maxLv, skill.lv,
-                        1, skill.mp, skill.sp, 10, 10, skill.range, skill.target, skill.target2, skill.effectRange, skill.castRange));
-                    double perc = (double)sr.BaseStream.Position / sr.BaseStream.Length;
+                    sw.WriteLine("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14}", skill.id,
+                        skill.name, paras[3], skill.maxLv, skill.lv, 1, skill.mp, skill.sp, 10, 10, skill.range,
+                        skill.target, skill.target2, skill.effectRange, skill.castRange);
+                    var perc = (double)sr.BaseStream.Position / sr.BaseStream.Length;
                     if ((int)(perc * 100) % 3 == 0)
                     {
                         if (print)
@@ -335,6 +351,7 @@ namespace SagaDB.Skill
                     {
                         print = true;
                     }
+
                     count++;
                 }
                 catch (Exception ex)
@@ -343,6 +360,7 @@ namespace SagaDB.Skill
                     Logger.ShowError(ex);
                 }
             }
+
             Console.WriteLine();
             Console.ResetColor();
             Logger.ShowInfo(count + " skills loaded.");
@@ -350,22 +368,23 @@ namespace SagaDB.Skill
             sw.Close();
             sr.Close();
         }
-        public void InitSSP(string path, System.Text.Encoding encoding)
+
+        public void InitSSP(string path, Encoding encoding)
         {
             skdbpath = path;
             Logger.ShowInfo("Now Loading Skill Data...");
-            List<sspHeader> header = new List<sspHeader>();
-            System.Text.Encoding encoder = encoding;
-            string line = "";
-            int count = 0;
+            var header = new List<sspHeader>();
+            var encoder = encoding;
+            var line = "";
+            var count = 0;
             try
             {
-                DateTime time = DateTime.Now;
-                FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
-                BinaryReader br = new BinaryReader(fs);
-                for (int i = 0; i < 30000; i++) //技能最多可以有32767个，不是10000个（日服技能已经超过1w个）
+                var time = DateTime.Now;
+                var fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite);
+                var br = new BinaryReader(fs);
+                for (var i = 0; i < 30000; i++) //技能最多可以有32767个，不是10000个（日服技能已经超过1w个）
                 {
-                    sspHeader newHead = new sspHeader()
+                    var newHead = new sspHeader
                     {
                         offset = br.ReadUInt32(),
                         size = 0x02d8
@@ -374,15 +393,16 @@ namespace SagaDB.Skill
                         break;
                     header.Add(newHead);
                 }
-                foreach (sspHeader i in header)
+
+                foreach (var i in header)
                 {
                     fs.Position = i.offset;
-                    SkillData tskill = new SkillData() { id = br.ReadUInt16() };
+                    var tskill = new SkillData { id = br.ReadUInt16() };
                     if (tskill.id == 0)
                         continue;
                     tskill.icon = br.ReadUInt16();
                     //tskill.Name = br.ReadChars(116);
-                    string buf = Encoding.Unicode.GetString(br.ReadBytes(116));//名称后12字节被设定为castTime、delay、singleCD
+                    var buf = Encoding.Unicode.GetString(br.ReadBytes(116)); //名称后12字节被设定为castTime、delay、singleCD
                     tskill.name = buf.Remove(buf.IndexOf('\0'));
 
                     tskill.castTime = br.ReadInt32();
@@ -390,7 +410,7 @@ namespace SagaDB.Skill
                     tskill.SingleCD = br.ReadInt32();
 
                     buf = Encoding.Unicode.GetString(br.ReadBytes(512));
-                    tskill.description = buf.Remove(buf.IndexOf('\0'));//.Replace("$R", Environment.NewLine);
+                    tskill.description = buf.Remove(buf.IndexOf('\0')); //.Replace("$R", Environment.NewLine);
 
                     tskill.active = br.ReadByte() == 0x1 ? true : false;
                     tskill.maxLv = br.ReadByte();
@@ -407,7 +427,7 @@ namespace SagaDB.Skill
                     tskill.nHumei2 = br.ReadInt32();
                     tskill.skillFlag = br.ReadInt32();
 
-                    string b = string.Format("0x{0:X8}", tskill.skillFlag).Replace("0x", "");
+                    var b = string.Format("0x{0:X8}", tskill.skillFlag).Replace("0x", "");
                     tskill.flag.Value = (int)Conversions.HexStr2uint(b)[0];
 
                     tskill.eFlag1 = br.ReadInt32();
@@ -417,7 +437,7 @@ namespace SagaDB.Skill
                     //tskill.nHumei4 = br.ReadUInt16();
                     tskill.nHumei5 = br.ReadUInt16();
                     tskill.nHumei6 = br.ReadUInt16();
-                    tskill.nHumei7 = br.ReadUInt16();   //类型
+                    tskill.nHumei7 = br.ReadUInt16(); //类型
                     //tskill.nHumei9 = br.ReadUInt16();    //射程
                     //tskill.nHumei10 = br.ReadUInt16();
 
@@ -444,7 +464,9 @@ namespace SagaDB.Skill
                         items[tskill.id].Add(tskill.lv, tskill);
                     count++;
                 }
-                Logger.ProgressBarHide("Done Loaded " + count + " skills.  use time: " + (DateTime.Now - time).TotalMilliseconds.ToString() + "ms");
+
+                Logger.ProgressBarHide("Done Loaded " + count + " skills.  use time: " +
+                                       (DateTime.Now - time).TotalMilliseconds + "ms");
                 fs.Close();
                 br.Close();
             }
@@ -454,15 +476,16 @@ namespace SagaDB.Skill
                 Logger.ShowError(ex);
             }
         }
-        public void Init(string path, System.Text.Encoding encoding)
+
+        public void Init(string path, Encoding encoding)
         {
-            System.IO.StreamReader sr = new System.IO.StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
+            var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 #if !Web
-            string label = "Loading skill database";
+            var label = "Loading skill database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
 #endif
-            DateTime time = DateTime.Now;
-            int count = 0;
+            var time = DateTime.Now;
+            var count = 0;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -476,11 +499,9 @@ namespace SagaDB.Skill
                         continue;
                     paras = line.Split(',');
 
-                    for (int i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "")
                             paras[i] = "0";
-                    }
                     skill = new SkillData();
                     skill.id = uint.Parse(paras[0]);
                     skill.name = paras[1];
@@ -524,8 +545,25 @@ namespace SagaDB.Skill
 #endif
                 }
             }
+
             Logger.ProgressBarHide(count + " skills loaded.");
             sr.Close();
+        }
+
+        private class PreconditionSkill
+        {
+            public readonly Dictionary<uint, uint> PreconditionSkillInfo = new Dictionary<uint, uint>();
+
+            public uint LearnSkillJobLv;
+
+            //public uint LearnSkillID;
+            public SkillPaga paga;
+        }
+
+        private class sspHeader
+        {
+            public uint offset;
+            public ushort size;
         }
     }
 }

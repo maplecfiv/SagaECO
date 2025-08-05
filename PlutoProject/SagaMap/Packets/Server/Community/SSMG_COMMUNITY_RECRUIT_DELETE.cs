@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaMap.Manager;
 
 namespace SagaMap.Packets.Server
 {
@@ -11,18 +6,14 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_COMMUNITY_RECRUIT_DELETE()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x1B95;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x1B95;
         }
 
         public int Result
         {
-            set
-            {
-                this.PutInt(value, 2);
-            }
+            set => PutInt(value, 2);
         }
     }
 }
-
