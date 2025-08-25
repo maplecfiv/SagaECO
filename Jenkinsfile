@@ -1,12 +1,12 @@
 node {
-  tools {
-    // Define the .NET SDK tool, configured in Jenkins global tool configuration
-    dotnet 'built-in' 
-  }
   stage('SCM') {
     checkout scm
   }
   stage('SonarQube Analysis') {
+    tools {
+      // Define the .NET SDK tool, configured in Jenkins global tool configuration
+      dotnet 'built-in' 
+    }
     def scannerHome = tool 'SonarScanner for MSBuild'
     withSonarQubeEnv(){
       withDotNet() {
