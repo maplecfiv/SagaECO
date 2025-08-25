@@ -1,6 +1,6 @@
 node {
   environment{
-    sdk = built-in
+    sdk = 'built-in'
   }
   stage('SCM') {
     checkout scm
