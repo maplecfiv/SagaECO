@@ -1,7 +1,4 @@
 node {
-  environment{
-    sdk = 'built-in'
-  }
   stage('SCM') {
     checkout scm
   }
@@ -9,6 +6,9 @@ node {
     def scannerHome = tool 'SonarScanner for MSBuild'
     withSonarQubeEnv(){
       withDotNet() {
+        environment{
+          sdk = 'built-in'
+        }
         sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
         sh "dotnet build"
         sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
