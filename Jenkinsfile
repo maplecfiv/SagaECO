@@ -8,17 +8,22 @@ pipeline {
   }
   stages {
     stage('SCM') {
-      checkout scm
+      steps{
+        checkout scm
+      }
     }
     stage('SonarQube Analysis') {
-      def scannerHome = tool 'SonarScanner for MSBuild'
-      withSonarQubeEnv(){
-        withDotNet() {
-          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
-          sh "dotnet build"
-          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
+      steps{
+        def scannerHome = tool 'SonarScanner for MSBuild'
+        withSonarQubeEnv(){
+          withDotNet() {
+            sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
+            sh "dotnet build"
+            sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
+          }
         }
       }
+      
     }
   }
 
