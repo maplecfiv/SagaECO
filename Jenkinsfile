@@ -1,25 +1,13 @@
-pipeline {
-  agent any
-  environment {
-
+node {
+  stage('SCM') {
+    checkout scm
   }
-  stages {
-    stage('SCM') {
-      steps{
-        checkout scm
-      }
-    }
-    stage('SonarQube Analysis') {
-      steps{
-        def scannerHome = tool 'SonarScanner for MSBuild'
-        withSonarQubeEnv(){
-          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
-          sh "dotnet build"
-          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
-        }
-      }
-      
+  stage('SonarQube Analysis') {
+    def scannerHome = tool 'SonarScanner for MSBuild'
+    withSonarQubeEnv() {
+      sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
+      sh "dotnet build"
+      sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
     }
   }
-
 }
