@@ -3,9 +3,6 @@ pipeline {
   environment {
 
   }
-  tools {
-    dotnetsdk 'built-in'
-  }
   stages {
     stage('SCM') {
       steps{
@@ -16,11 +13,9 @@ pipeline {
       steps{
         def scannerHome = tool 'SonarScanner for MSBuild'
         withSonarQubeEnv(){
-          withDotNet() {
-            sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
-            sh "dotnet build"
-            sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
-          }
+          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll begin /k:\"maplecfiv_SagaECO_AZjVhprtx_QsD-k0ns95\""
+          sh "dotnet build"
+          sh "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
         }
       }
       
