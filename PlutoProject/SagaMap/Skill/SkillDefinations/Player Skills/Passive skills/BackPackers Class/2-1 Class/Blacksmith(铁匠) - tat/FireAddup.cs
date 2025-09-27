@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_1_Class.Blacksmith_铁匠____tat
 {

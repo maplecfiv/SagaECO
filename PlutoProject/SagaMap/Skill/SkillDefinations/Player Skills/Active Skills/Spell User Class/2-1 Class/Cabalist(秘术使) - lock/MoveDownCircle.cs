@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;

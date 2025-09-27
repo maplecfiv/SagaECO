@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 using SagaDB.FFGarden;
 using SagaDB.Item;
 using SagaDB.Server;

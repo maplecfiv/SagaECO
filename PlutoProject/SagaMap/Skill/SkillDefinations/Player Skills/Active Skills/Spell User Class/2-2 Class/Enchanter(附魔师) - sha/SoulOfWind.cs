@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Enchanter_附魔师____sha
 {

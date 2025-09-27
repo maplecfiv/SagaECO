@@ -6,7 +6,7 @@ using SagaDB.Actor;
 using SagaMap.Scripting;
 using System.Linq;
 using System.Collections;
-//ËùÔÚµØˆD:ÏÂ³Ç(10024000) NPC»ù±¾ÐÅÏ¢:ãy(11001172) X:132 Y:97
+//ï¿½ï¿½ï¿½ÚµØˆD:ï¿½Â³ï¿½(10024000) NPCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢:ï¿½y(11001172) X:132 Y:97
 namespace SagaScript.M80060050
 {
     public class S20010020 : Event
@@ -19,45 +19,45 @@ namespace SagaScript.M80060050
         public override void OnEvent(ActorPC pc)
         {
             PlaySound(pc, 2030, false, 100, 50);
-            Say(pc, 20010020, 131, "ÄãÓÐECOÖ®ÐÄÂð£¿" +
-                                    "$RÊÕ¼¯ÁË×ã¹»µÄÕâÖÖ¶«Î÷ÎÒ¾Í¿ÉÒÔÂòÂòÂòÁË£¡$R;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
-            Say(pc, 20010020, 111, "ËäÈ»¡­ºÃÏñ¡­" +
-                                    "$RÕâ¸öÊÀ½çºÃÏñ²»Ì«Ò»Ñù£¿¡­ËãÁË$R;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
+            Say(pc, 20010020, 131, "ï¿½ï¿½ï¿½ï¿½ECOÖ®ï¿½ï¿½ï¿½ï¿½" +
+                                    "$Rï¿½Õ¼ï¿½ï¿½ï¿½ï¿½ã¹»ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½Ò¾Í¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½$R;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
+            Say(pc, 20010020, 111, "ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" +
+                                    "$Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì«Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½$R;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
             if (CountItem(pc, 22000103) >= 5)
             {
-                Say(pc, 20010020, 111, "ÄãºÃÏñÓÐÐËÈ¤¸úÎÒ½»Ò×£¿" +
-                                    "$RÌ«ºÃÁË£¡ÎÒÖÕÓÚ²»ÓÃÈ¥¶×´óÂ½¶´ÁË£¡" +
-                                     "ÕâÐ©ÊÇÎÒµÄ´æ»õ£¡$R;" +
-                                     "²»¹ýÓÐÐ©¶«Î÷ÔÝÊ±ÓÃ²»ÁË,¿É±ðËµÎÒ¿ÓÄãÅ¶~$R;", "£¿£¿£¿");
+                Say(pc, 20010020, 111, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½Ò½ï¿½ï¿½×£ï¿½" +
+                                    "$RÌ«ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½È¥ï¿½×´ï¿½Â½ï¿½ï¿½ï¿½Ë£ï¿½" +
+                                     "ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ÒµÄ´ï¿½ï¿½ï¿½ï¿½$R;" +
+                                     "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ã²ï¿½ï¿½ï¿½,ï¿½É±ï¿½Ëµï¿½Ò¿ï¿½ï¿½ï¿½Å¶~$R;", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 
                 KujiTrade trade = new KujiTrade();
                 List<string> arrname = trade.tradelist.Keys.ToList();
-                arrname.Add("Ã»ÐËÈ¤");
+                arrname.Add("Ã»ï¿½ï¿½È¤");
                 int lastoption = arrname.Count;
-                int option = Select(pc, "ÏëÒªÊ²Ã´", "", arrname.ToArray());
+                int option = Select(pc, "ï¿½ï¿½ÒªÊ²Ã´", "", arrname.ToArray());
                 if (option == arrname.Count)
                     return;
-                string changenum = InputBox(pc, "Òª»»¼¸¸ö?", InputType.Bank);
+                string changenum = InputBox(pc, "Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?", InputType.Bank);
                 int num = 0;
                 if (!int.TryParse(changenum, out num))
                 {
-                    Say(pc, 20010020, 111, "»êµ­!ÎÒÕâÊÇÎÊÄãÒª»»¼¸¸ö!;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
+                    Say(pc, 20010020, 111, "ï¿½êµ­!ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
                     return;
                 }
                 KujiTradeInfo info = trade.tradelist[arrname[option]];
                 if (CountItem(pc, info.HeartID) < info.HeartNum * num)
                 {
-                    Say(pc, 20010020, 111, "»êµ­!ÄãÑ¾µÄÄÄÀ´ÄÇÃ´¶àÐÄ!?!;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
+                    Say(pc, 20010020, 111, "ï¿½êµ­!ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½!?!;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
                     return;
                 }
                 PlaySound(pc, 2040, false, 100, 50);
                 TakeItem(pc,info.HeartID,info.HeartNum);
                 GiveItem(pc, info.KujiBoxID, info.KujiBoxNum);
-                Say(pc, 20010020, 111, "$R°Ý°Ý~~~~~~~~~$R;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
+                Say(pc, 20010020, 111, "$Rï¿½Ý°ï¿½~~~~~~~~~$R;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
             }
             else
             {
-                Say(pc, 20010020, 111, "$RÈç¹ûÓÐÐËÈ¤¾ÍÀ´ÕÒÎÒ°É¡£$R;", "Ò£Ô¶µÄÂÌ¾ÞÈË");
+                Say(pc, 20010020, 111, "$Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò°É¡ï¿½$R;", "Ò£Ô¶ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½");
             }
         }
     }
@@ -65,7 +65,7 @@ namespace SagaScript.M80060050
     {
         private uint heartid;
         /// <summary>
-        /// ÐÄµÄID
+        /// ï¿½Äµï¿½ID
         /// </summary>
         public uint HeartID
         {
@@ -75,7 +75,7 @@ namespace SagaScript.M80060050
         private byte heartnum;
 
         /// <summary>
-        /// ÐÄµÄÊýÁ¿
+        /// ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public byte HeartNum
         {
@@ -85,7 +85,7 @@ namespace SagaScript.M80060050
 
         private uint kujiboxid;
         /// <summary>
-        /// kujiºÐ×ÓµÄID
+        /// kujiï¿½ï¿½ï¿½Óµï¿½ID
         /// </summary>
         public uint KujiBoxID
         {
@@ -95,7 +95,7 @@ namespace SagaScript.M80060050
 
         private byte kuijiboxnum;
         /// <summary>
-        /// kujiºÐ×ÓµÄÊýÁ¿
+        /// kujiï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public byte KujiBoxNum
         {
@@ -104,12 +104,12 @@ namespace SagaScript.M80060050
         }
 
         /// <summary>
-        /// ³õÊ¼»¯¶Ò»»¶ÔÏó
+        /// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="heartid">¶Ò»»ÎïµÄID</param>
-        /// <param name="heartnum">ËùÐè¶Ò»»ÎïÊýÁ¿</param>
-        /// <param name="kujiboxid">¶Ò»»kujiºÐ×ÓµÄID</param>
-        /// <param name="kujiboxnum">¶Ò»»kujiºÐ×ÓµÄÊýÁ¿</param>
+        /// <param name="heartid">ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ID</param>
+        /// <param name="heartnum">ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</param>
+        /// <param name="kujiboxid">ï¿½Ò»ï¿½kujiï¿½ï¿½ï¿½Óµï¿½ID</param>
+        /// <param name="kujiboxnum">ï¿½Ò»ï¿½kujiï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½</param>
         public KujiTradeInfo(uint heartid, byte heartnum, uint kujiboxid, byte kujiboxnum)
         {
             this.heartid = heartid;
@@ -125,7 +125,7 @@ namespace SagaScript.M80060050
         public Dictionary<string, KujiTradeInfo> tradelist = new Dictionary<string, KujiTradeInfo>();
         public KujiTrade()
         {
-            tradelist.Add("²Ý?", new KujiTradeInfo(123, 1, 321, 1));
+            tradelist.Add("ï¿½ï¿½?", new KujiTradeInfo(123, 1, 321, 1));
             tradelist.Add("123", new KujiTradeInfo(100, 1, 1005, 1));
             tradelist.Add("234", new KujiTradeInfo(100, 1, 1005, 1));
             tradelist.Add("345", new KujiTradeInfo(100, 1, 1005, 1));

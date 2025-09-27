@@ -20,7 +20,7 @@ namespace SagaMap
 
         public override void OnEvent(ActorPC pc)
         {
-            string input_g = InputBox(pc, "ÄÚÈÝ®¹", InputType.PetRename);
+            string input_g = InputBox(pc, "ï¿½ï¿½ï¿½Ý®ï¿½", InputType.PetRename);
             if (input_g != "")
             {
                 foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)

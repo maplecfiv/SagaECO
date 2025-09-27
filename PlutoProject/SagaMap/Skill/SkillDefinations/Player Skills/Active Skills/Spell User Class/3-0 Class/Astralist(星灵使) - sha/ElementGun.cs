@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaLib;
 using SagaLib.Tasks;

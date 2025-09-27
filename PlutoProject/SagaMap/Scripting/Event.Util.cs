@@ -1,4 +1,4 @@
-﻿using SagaDB.Item;
+using SagaDB.Item;
 using SagaMap.Manager;
 
 namespace SagaMap.Scripting

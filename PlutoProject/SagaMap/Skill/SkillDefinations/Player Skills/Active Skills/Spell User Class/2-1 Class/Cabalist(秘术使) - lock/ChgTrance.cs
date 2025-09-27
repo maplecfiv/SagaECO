@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaMap.Skill.Additions;

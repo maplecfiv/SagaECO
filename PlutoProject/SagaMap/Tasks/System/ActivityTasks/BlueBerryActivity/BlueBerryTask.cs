@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SagaLib.Tasks;
 using SagaMap.Manager;
 using SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity.Mob;

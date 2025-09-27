@@ -1,4 +1,4 @@
-﻿using SagaLib;
+using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Manager;
 

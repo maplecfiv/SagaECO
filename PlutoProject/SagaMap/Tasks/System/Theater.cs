@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SagaDB.Actor;
 using SagaDB.Item;
 using SagaDB.Theater;

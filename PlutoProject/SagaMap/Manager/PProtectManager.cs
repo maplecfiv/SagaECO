@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SagaDB.PProtect;
 using SagaLib;
 

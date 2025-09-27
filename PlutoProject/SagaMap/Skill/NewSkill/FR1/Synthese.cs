@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations.Global;
 
 namespace SagaMap.Skill.NewSkill.FR1

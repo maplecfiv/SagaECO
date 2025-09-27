@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Skill.SkillDefinations;

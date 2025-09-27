@@ -19,178 +19,178 @@ namespace SagaScript
             
             Init(85000001, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯1");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯1");
                 TakeItem(pc, 22000104, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000002, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯2");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯2");
                 TakeItem(pc, 22000105, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000003, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯3");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯3");
                 TakeItem(pc, 22000106, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000004, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯4");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯4");
                 TakeItem(pc, 22000107, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000005, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯5");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯5");
                 TakeItem(pc, 22000108, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000006, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯6");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯6");
                 TakeItem(pc, 22000109, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000007, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯7");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯7");
                 TakeItem(pc, 22000110, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000008, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯8");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯8");
                 TakeItem(pc, 22000111, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000009, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯9");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯9");
                 TakeItem(pc, 22000112, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
             Init(85000010, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯10");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯10");
                 TakeItem(pc, 22000113, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000045, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "ÖÜÄê¼ÍÄî¡îÌØ±ğÆª!");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½Æª!");
                 TakeItem(pc, 22000180, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000011, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯11");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯11");
                 TakeItem(pc, 22000114, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000012, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯12");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯12");
                 TakeItem(pc, 22000115, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000046, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "´º¡îÌØ±ğÆª!");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½Ø±ï¿½Æª!");
                 TakeItem(pc, 22000181, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000013, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯13");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯13");
                 TakeItem(pc, 22000116, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000047, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "³õÏÄ¡îÌØ±ğÆª!");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½Ø±ï¿½Æª!");
                 TakeItem(pc, 22000182, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000014, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯14");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯14");
                 TakeItem(pc, 22000117, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000015, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯15");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯15");
                 TakeItem(pc, 22000118, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000016, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯16");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯16");
                 TakeItem(pc, 22000119, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000048, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯DX");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯DX");
                 TakeItem(pc, 22000183, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });  
 	    Init(85000017, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯17");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯17");
                 TakeItem(pc, 22000122, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });          
 	    Init(85000049, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "ĞÂ´º¾«Ñ¡");
+                GiveRandomTreasure(pc, "ï¿½Â´ï¿½ï¿½ï¿½Ñ¡");
                 TakeItem(pc, 22000184, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 	    Init(85000018, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯18");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯18");
                 TakeItem(pc, 22000125, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             }); 
 	    Init(85000050, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯DXµÚ¶şµ¯");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯DXï¿½Ú¶ï¿½ï¿½ï¿½");
                 TakeItem(pc, 22000185, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });  
 	    Init(85000019, delegate(ActorPC pc)
             {
-                GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯19");
+                GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯19");
                 TakeItem(pc, 22000123, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 
 
@@ -200,39 +200,39 @@ namespace SagaScript
 
 
 
-        Init(85000051, delegate(ActorPC pc)//ÌØÊâ
+        Init(85000051, delegate(ActorPC pc)//ï¿½ï¿½ï¿½ï¿½
             {
-                GiveRandomTreasure(pc, "Å®ÍõºÍĞ¡»ï°éÃÇµÄ×÷ËÀ»î¶¯");
+                GiveRandomTreasure(pc, "Å®ï¿½ï¿½ï¿½ï¿½Ğ¡ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½î¶¯");
                 TakeItem(pc, 22010100, 1);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+                Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
             });
 
 
-        Init(85100050, delegate(ActorPC pc)//ÌØÊâ
+        Init(85100050, delegate(ActorPC pc)//ï¿½ï¿½ï¿½ï¿½
         {
-            GiveRandomTreasure(pc, "È«·şÍ¨ÓÃ×÷ËÀÌ××°");
+            GiveRandomTreasure(pc, "È«ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°");
             TakeItem(pc, 22110100, 1);
             PlaySound(pc, 2040, false, 100, 50);
-            Say(pc, 0, "³öÏÖÁËËæ»úµÄÀñÎï!", "¼¤ÉÍÀñÈ¯");
+            Say(pc, 0, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!", "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯");
         });
 
 
-	    Init(85002045, delegate(ActorPC pc)//´ò¿ªECOÖ®ĞÄ
+	    Init(85002045, delegate(ActorPC pc)//ï¿½ï¿½ECOÖ®ï¿½ï¿½
             {
-                //GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯10");
+                //GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯10");
                 TakeItem(pc, 22000103, 1);
 		GiveItem(pc, 16000300, 10);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "µÃµ½ÁË10¸öÊ±¿ÕÖ®Ô¿E!", "ECOÖ®ĞÄ");
+                Say(pc, 0, "ï¿½Ãµï¿½ï¿½ï¿½10ï¿½ï¿½Ê±ï¿½ï¿½Ö®Ô¿E!", "ECOÖ®ï¿½ï¿½");
             });
-	    Init(90000210, delegate(ActorPC pc)//´ò¿ª10¸ö×°
+	    Init(90000210, delegate(ActorPC pc)//ï¿½ï¿½10ï¿½ï¿½×°
             {
-                //GiveRandomTreasure(pc, "¼¤ÉÍÀñÈ¯10");
+                //GiveRandomTreasure(pc, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¯10");
                 TakeItem(pc, 16000301, 1);
 		GiveItem(pc, 16000300, 10);
                 PlaySound(pc, 2040, false, 100, 50);
-                Say(pc, 0, "µÃµ½ÁË10¸öÊ±¿ÕÖ®Ô¿E!", "ECOÖ®ĞÄ");
+                Say(pc, 0, "ï¿½Ãµï¿½ï¿½ï¿½10ï¿½ï¿½Ê±ï¿½ï¿½Ö®Ô¿E!", "ECOÖ®ï¿½ï¿½");
             });
         }
     }

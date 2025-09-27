@@ -1,4 +1,4 @@
-﻿using SagaDB.Actor;
+using SagaDB.Actor;
 using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;

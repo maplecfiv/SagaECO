@@ -1,4 +1,4 @@
-﻿using SagaMap.Network.Client;
+using SagaMap.Network.Client;
 using SagaMap.Scripting;
 using System;
 using System.Collections.Generic;

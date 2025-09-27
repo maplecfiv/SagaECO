@@ -1,4 +1,4 @@
-﻿using SagaMap.Scripting;
+using SagaMap.Scripting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
