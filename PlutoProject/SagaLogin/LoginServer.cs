@@ -17,7 +17,7 @@ namespace SagaLogin
 {
     public class LoginServer
     {
-        private static readonly ILogger<LoginServer> _logger = Logger.InitLogger<LoginServer>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<LoginServer>();
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -141,29 +141,29 @@ namespace SagaLogin
             Logger.defaultlogger = Log;
             Logger.CurrentLogger = Log;
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("======================================================================");
+            _logger.Debug("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.LogDebug("                     SagaECO Login Server                ");
-            _logger.LogDebug("         (C)2013-2017 The Pluto ECO Project Development Team              ");
+            _logger.Debug("                     SagaECO Login Server                ");
+            _logger.Debug("         (C)2013-2017 The Pluto ECO Project Development Team              ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("======================================================================");
+            _logger.Debug("======================================================================");
             //Console.ResetColor();
 
             //Console.ForegroundColor = ConsoleColor.White;
             Logger.ShowInfo("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaLogin");
+            _logger.Debug("SagaLogin");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaLib");
+            _logger.Debug("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
                               SagaLib.Properties.GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaDB");
+            _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
+            _logger.Debug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
                               SagaDB.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo("Starting Initialization...", null);
@@ -205,7 +205,7 @@ namespace SagaLogin
 
             Global.clientMananger = LoginClientManager.Instance;
 
-            _logger.LogDebug("Accepting clients.");
+            _logger.Debug("Accepting clients.");
 
             while (true)
             {

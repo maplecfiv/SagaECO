@@ -51,11 +51,17 @@ namespace SagaLib
             {
                 case FactoryType.CSV:
                     foreach (var i in files)
+                    {
+
                         count += InitCSV(i, encoding);
+                    }
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
+                    {
+
                         count += InitXML(i, encoding);
+                    }
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -74,10 +80,15 @@ namespace SagaLib
             if (isFolder)
             {
                 var pattern = "*.*";
-                if (FactoryType == FactoryType.CSV)
-                    pattern = "*.csv";
-                else if (FactoryType == FactoryType.XML)
-                    pattern = "*.xml";
+                switch (FactoryType)
+                {
+                    case FactoryType.CSV:
+                        pattern = "*.csv";
+                        break;
+                    case FactoryType.XML:
+                        pattern = "*.xml";
+                        break;
+                }
                 files = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, pattern);
             }
             else
@@ -90,11 +101,17 @@ namespace SagaLib
             {
                 case FactoryType.CSV:
                     foreach (var i in files)
+                    {
+
                         count += InitCSV(i, encoding);
+                    }
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
+                    {
+
                         count += InitXML(i, encoding);
+                    }
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -111,8 +128,14 @@ namespace SagaLib
         private XmlElement FindRoot(XmlDocument doc)
         {
             foreach (var i in doc.ChildNodes)
+            {
+
                 if (i.GetType() == typeof(XmlElement))
+                {
+
                     return (XmlElement)i;
+                }
+            }
             return null;
         }
 
@@ -123,11 +146,17 @@ namespace SagaLib
             foreach (var j in list)
             {
                 XmlElement i;
-                if (j.GetType() != typeof(XmlElement)) continue;
+                if (j.GetType() != typeof(XmlElement))
+                {
+                    continue;
+                }
                 i = (XmlElement)j;
                 ParseXML(ele, i, item);
                 if (i.ChildNodes.Count != 0)
+                {
+
                     ParseNode(i, item);
+                }
             }
         }
 
@@ -150,14 +179,23 @@ namespace SagaLib
                 {
                     var item = new T();
                     XmlElement i;
-                    if (j.GetType() != typeof(XmlElement)) continue;
+                    if (j.GetType() != typeof(XmlElement))
+                    {
+                        continue;
+                    }
                     i = (XmlElement)j;
                     ParseXML(root, i, item);
                     if (i.ChildNodes.Count != 0)
+                    {
+
                         ParseNode(i, item);
+                    }
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key)) items.Add(key, item);
+                    if (!items.ContainsKey(key))
+                    {
+                        items.Add(key, item);
+                    }
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
                     {
@@ -194,18 +232,37 @@ namespace SagaLib
                 {
                     var item = new T();
                     if (line.IndexOf('#') != -1)
+                    {
+
                         line = line.Substring(0, line.IndexOf('#'));
-                    if (line == "") continue;
+                    }
+
+                    if (line == "")
+                    {
+                        continue;
+                    }
                     paras = line.Split(',');
                     if (paras.Length < 2)
+                    {
+
                         continue;
+                    }
                     for (var i = 0; i < paras.Length; i++)
+                    {
+
                         if (paras[i] == "")
+                        {
+
                             paras[i] = "0";
+                        }
+                    }
                     ParseCSV(item, paras);
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key)) items.Add(key, item);
+                    if (!items.ContainsKey(key))
+                    {
+                        items.Add(key, item);
+                    }
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
                     {

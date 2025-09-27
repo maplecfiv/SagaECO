@@ -18,8 +18,8 @@ namespace SagaMap.PacketLogger
         public PacketLogger(MapClient client)
         {
             this.client = client;
-            client.netIO.OnReceivePacket += OnReceivePacket;
-            client.netIO.OnSendPacket += OnSendPacket;
+            client.NetIo.OnReceivePacket += OnReceivePacket;
+            client.NetIo.OnSendPacket += OnSendPacket;
             if (!Directory.Exists("Log/PacketLog"))
                 Directory.CreateDirectory("Log/PacketLog");
             var now = DateTime.Now;
@@ -32,8 +32,8 @@ namespace SagaMap.PacketLogger
 
         public void Dispose()
         {
-            client.netIO.OnReceivePacket -= OnReceivePacket;
-            client.netIO.OnSendPacket -= OnSendPacket;
+            client.NetIo.OnReceivePacket -= OnReceivePacket;
+            client.NetIo.OnSendPacket -= OnSendPacket;
             fs.Flush();
             fs.Close();
         }

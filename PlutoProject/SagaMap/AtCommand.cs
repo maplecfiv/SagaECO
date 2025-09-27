@@ -539,7 +539,7 @@ namespace SagaMap
                 var buf = Conversions.HexStr2Bytes(s.Replace(" ", ""));
                 var p = new Packet();
                 p.data = buf;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
             }
             catch (Exception ex)
             {
@@ -550,11 +550,11 @@ namespace SagaMap
         public void ProcessOpenWing(MapClient client, string args)
         {
             var p1 = new SSMG_TEST_EVOLVE_OPEN();
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
             var p2 = new SSMG_TEST_EVOLVE_OPEN2();
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
             var p3 = new SSMG_TEST_EVOLVE_OPEN3();
-            client.netIO.SendPacket(p3);
+            client.NetIo.SendPacket(p3);
         }
 
         public void ProcessChangeFFWeather(MapClient client, string args)
@@ -655,7 +655,7 @@ namespace SagaMap
             p.ID = 0x18E3;
             p.PutUInt(client.Character.ActorID, 2);
             p.PutUInt(client.Character.MapID, 6);
-            MapClient.FromActorPC(client.Character).netIO.SendPacket(p);
+            MapClient.FromActorPC(client.Character).NetIo.SendPacket(p);
 
 
             var map = MapManager.Instance.GetMap(client.Character.MapID);
@@ -701,7 +701,7 @@ namespace SagaMap
                 p.Loop = 0;
                 p.Volume = 100;
                 p.Balance = 50;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
             }
             catch (Exception ex)
             {
@@ -719,7 +719,7 @@ namespace SagaMap
                     var ID = ushort.Parse(args[0]);
                     var p = new SSMG_ANO_DIALOG_BOX();
                     p.DID = ID;
-                    client.netIO.SendPacket(p);
+                    client.NetIo.SendPacket(p);
                 }
             }
             catch (Exception ex)
@@ -1367,7 +1367,7 @@ namespace SagaMap
                         break;
                     case "skilldb":
                         ProcessSettingAnnounce(client, "[系统] 外部技能DB更新中...");
-                        ClientManager.noCheckDeadLock = true;
+                        ClientManager.NoCheckDeadLock = true;
                         try
                         {
                             SkillHandler.Instance.skillHandlers.Clear();
@@ -1378,7 +1378,7 @@ namespace SagaMap
                         {
                         }
 
-                        ClientManager.noCheckDeadLock = false;
+                        ClientManager.NoCheckDeadLock = false;
                         ProcessSettingAnnounce(client, "[系统] 外部技能DB更新完成");
                         break;
                     default:
@@ -1557,7 +1557,7 @@ namespace SagaMap
                         select c;
                     var tClient = chr.First();
                     tClient.Character.Account.Banned = true;
-                    tClient.netIO.Disconnect();
+                    tClient.NetIo.Disconnect();
                 }
                 catch (Exception)
                 {
@@ -1711,17 +1711,17 @@ namespace SagaMap
                     var X = client.Character.X;
                     var Y = client.Character.Y;
                     for (var x = X - number * 100; x <= X + number * 100; x += 100)
-                    for (var y = Y - number * 100; y <= Y + number * 100; y += 100)
-                        if (!(X == x && Y == y))
-                        {
-                            var m = client.map.SpawnMob(id,
-                                (short)x,
-                                (short)y,
-                                50,
-                                null);
-                            var mh = (MobEventHandler)m.e;
-                            mh.AI.Mode = new AIMode(4);
-                        }
+                        for (var y = Y - number * 100; y <= Y + number * 100; y += 100)
+                            if (!(X == x && Y == y))
+                            {
+                                var m = client.map.SpawnMob(id,
+                                    (short)x,
+                                    (short)y,
+                                    50,
+                                    null);
+                                var mh = (MobEventHandler)m.e;
+                                mh.AI.Mode = new AIMode(4);
+                            }
                 }
                 catch
                 {
@@ -1856,9 +1856,9 @@ namespace SagaMap
             try
             {
                 var value = from x in ItemFactory.Instance.Items
-                    where x.Value.name.Contains(args)
-                    orderby x.Key descending
-                    select new { ItemID = x.Key, ItemName = x.Value.name };
+                            where x.Value.name.Contains(args)
+                            orderby x.Key descending
+                            select new { ItemID = x.Key, ItemName = x.Value.name };
 
 
                 var coll = value.ToList();
@@ -2255,7 +2255,7 @@ namespace SagaMap
             else if (args == "clearlogout")
             {
                 client.Character.Inventory.Items[ContainerType.BODY].Clear();
-                client.netIO.Disconnect();
+                client.NetIo.Disconnect();
             }
             else if (args == "clearware")
             {
@@ -2329,7 +2329,7 @@ namespace SagaMap
                     p.X = 255;
                     p.Y = 255;
                     p.unknown = 1;
-                    client.netIO.SendPacket(p);
+                    client.NetIo.SendPacket(p);
                     break;
                 case "0":
 
@@ -2338,7 +2338,7 @@ namespace SagaMap
                     p.X = 255;
                     p.Y = 255;
                     p.unknown = 1;
-                    client.netIO.SendPacket(p);
+                    client.NetIo.SendPacket(p);
                     break;
             }
         }
@@ -2347,7 +2347,7 @@ namespace SagaMap
         {
             var p = new SSMG_AAA_VOICE();
             p.VoiceID = ushort.Parse(args);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         private void ProcessNPCVoice(MapClient client, string args)
@@ -2355,7 +2355,7 @@ namespace SagaMap
             var p = new SSMG_NPC_VOICE_PLAY();
             p.VoiceID = ushort.Parse(args);
             p.Loop = 0;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         private void ProcessMapObject(MapClient client, string args)
@@ -3021,7 +3021,7 @@ namespace SagaMap
                             client.Character.HairStyle = 20;
                             client.SendCharInfoUpdate();
                             break;
-                        //not working (3,4,5,7,8,9,)
+                            //not working (3,4,5,7,8,9,)
                     }
                 }
                 catch (Exception)
@@ -3295,8 +3295,8 @@ namespace SagaMap
             client.Shopswitch = 0;
             p2.button = 0;
             p1.Comment = client.Shoptitle;
-            client.netIO.SendPacket(p1);
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p1);
+            client.NetIo.SendPacket(p2);
         }
 
         private void ProcessBossTime(MapClient client, string args)
@@ -3481,7 +3481,7 @@ namespace SagaMap
                         var p = new SSMG_CHAT_WHOLE();
                         p.Sender = "[公頻]" + client.Character.Name;
                         p.Content = args;
-                        i.netIO.SendPacket(p);
+                        i.NetIo.SendPacket(p);
                     }
                 }
                 catch (Exception)
@@ -3540,7 +3540,7 @@ namespace SagaMap
                             var p = new SSMG_CHAT_WHOLE();
                             p.Sender = "Tweet";
                             p.Content = name + ":" + args;
-                            i.netIO.SendPacket(p);
+                            i.NetIo.SendPacket(p);
                         }
                     }
                     catch (Exception)
@@ -3867,7 +3867,7 @@ namespace SagaMap
                         where c.Character.Name == playername
                         select c;
                     client = chr.First();
-                    client.netIO.Disconnect();
+                    client.NetIo.Disconnect();
                 }
                 catch (Exception)
                 {
@@ -3952,7 +3952,7 @@ namespace SagaMap
             else
                 try
                 {
-                    foreach (var i in MapClientManager.Instance.OnlinePlayer) i.netIO.Disconnect();
+                    foreach (var i in MapClientManager.Instance.OnlinePlayer) i.NetIo.Disconnect();
                 }
                 catch (Exception)
                 {
@@ -4010,7 +4010,7 @@ namespace SagaMap
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
@@ -4021,7 +4021,7 @@ namespace SagaMap
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
@@ -4039,7 +4039,7 @@ namespace SagaMap
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
@@ -4053,25 +4053,25 @@ namespace SagaMap
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
             Logger.ShowInfo(str);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             args = @"1C 25";
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
             Logger.ShowInfo(str);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
 
             args =
@@ -4079,25 +4079,25 @@ namespace SagaMap
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
             Logger.ShowInfo(str);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             args = @"1C 27";
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             p = new Packet();
             p.data = buf;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
             Logger.ShowInfo(str);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         private void ProcessFace(MapClient client, string args)
@@ -4180,7 +4180,7 @@ namespace SagaMap
             p1.Page = 0;
             p1.MaxPaga = (uint)maxPage;
             p1.Entries = res;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
         }
 
         #endregion

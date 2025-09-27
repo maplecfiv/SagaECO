@@ -8,16 +8,16 @@ namespace SagaLib
     /// <typeparam name="T">一个枚举类型</typeparam>
     public class BitMask<T>
     {
-        private readonly BitMask ori;
+        private readonly BitMask _ori;
 
         public BitMask()
         {
-            ori = new BitMask();
+            _ori = new BitMask();
         }
 
         public BitMask(BitMask ori)
         {
-            this.ori = ori;
+            this._ori = ori;
         }
 
         /// <summary>
@@ -25,18 +25,18 @@ namespace SagaLib
         /// </summary>
         public int Value
         {
-            get => ori.Value;
-            set => ori.Value = value;
+            get => _ori.Value;
+            set => _ori.Value = value;
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(T Mask)
+        public bool Test(T mask)
         {
-            return ori.Test(Mask);
+            return _ori.Test(mask);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SagaLib
         /// <param name="val">真值</param>
         public void SetValue(T bitmask, bool val)
         {
-            ori.SetValue(bitmask, val);
+            _ori.SetValue(bitmask, val);
         }
 
         public static implicit operator BitMask<T>(BitMask ori)
@@ -61,11 +61,11 @@ namespace SagaLib
     [Serializable]
     public class BitMask
     {
-        private int value;
+        private int _value;
 
         public BitMask()
         {
-            value = 0;
+            _value = 0;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SagaLib
         /// <param name="value">值</param>
         public BitMask(int value)
         {
-            this.value = value;
+            this._value = value;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace SagaLib
         /// <param name="values">真值</param>
         public BitMask(bool[] values)
         {
-            value = 0;
+            _value = 0;
             for (byte i = 0; i < values.Length; i++)
             {
                 if (i >= 32)
@@ -94,28 +94,28 @@ namespace SagaLib
 
         public int Value
         {
-            get => value;
-            set => this.value = value;
+            get => _value;
+            set => this._value = value;
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(object Mask)
+        public bool Test(object mask)
         {
-            return Test((int)Mask);
+            return Test((int)mask);
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(int Mask)
+        public bool Test(int mask)
         {
-            return (value & Mask) != 0;
+            return (_value & mask) != 0;
         }
 
         /// <summary>
@@ -135,13 +135,12 @@ namespace SagaLib
         /// <param name="val">真值</param>
         public void SetValue(int bitmask, bool val)
         {
-            if (Test(bitmask) != val)
+            if (Test(bitmask) == val)
             {
-                if (val)
-                    value = value | bitmask;
-                else
-                    value = value ^ bitmask;
+                return;
             }
+
+            _value = (val) ? _value | bitmask : _value ^ bitmask;
         }
     }
 }

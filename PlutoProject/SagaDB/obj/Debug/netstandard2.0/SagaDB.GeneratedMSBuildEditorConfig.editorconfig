@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = SagaDB
+build_property.ProjectDir = /home/maple/projects/SagaECO/PlutoProject/SagaDB/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

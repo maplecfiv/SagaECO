@@ -1,327 +1,384 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProductVersion>9.0.21022</ProductVersion>
-        <SchemaVersion>2.0</SchemaVersion>
-        <ProjectGuid>{BC0E63AC-2A4A-45AE-A8A9-C680066BCAEC}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>SagaDB</RootNamespace>
-        <AssemblyName>SagaDB</AssemblyName>
-        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <FileUpgradeFlags>
-        </FileUpgradeFlags>
-        <OldToolsVersion>4.0</OldToolsVersion>
-        <UpgradeBackupLocation/>
-        <PublishUrl>publish\</PublishUrl>
-        <Install>true</Install>
-        <InstallFrom>Disk</InstallFrom>
-        <UpdateEnabled>false</UpdateEnabled>
-        <UpdateMode>Foreground</UpdateMode>
-        <UpdateInterval>7</UpdateInterval>
-        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-        <UpdatePeriodically>false</UpdatePeriodically>
-        <UpdateRequired>false</UpdateRequired>
-        <MapFileExtensions>true</MapFileExtensions>
-        <ApplicationRevision>0</ApplicationRevision>
-        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-        <IsWebBootstrapper>false</IsWebBootstrapper>
-        <UseApplicationTrust>false</UseApplicationTrust>
-        <BootstrapperEnabled>true</BootstrapperEnabled>
-        <TargetFrameworkProfile/>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>..\Bin\</OutputPath>
-        <DefineConstants>
-        </DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
-        <NoWarn>1591</NoWarn>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <UseVSHostingProcess>true</UseVSHostingProcess>
-        <Prefer32Bit>false</Prefer32Bit>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>none</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <UseVSHostingProcess>false</UseVSHostingProcess>
-        <Prefer32Bit>false</Prefer32Bit>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Web|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <OutputPath>bin\Web\</OutputPath>
-        <DefineConstants>TRACE;DEBUG;Web</DefineConstants>
-        <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
-        <NoWarn>1591</NoWarn>
-        <DebugType>full</DebugType>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <ErrorReport>prompt</ErrorReport>
-        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-        <UseVSHostingProcess>false</UseVSHostingProcess>
-        <Prefer32Bit>false</Prefer32Bit>
-    </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\Dependecies\ICSharpCode.SharpZipLib.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.DependencyInjection, Version=6.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.2\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.Logging, Version=6.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.Logging.6.0.1\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.4, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.4\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.Options, Version=6.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.Options.6.0.1\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-          <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.1\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.VisualBasic" />
-        <Reference Include="mscorlib" />
-        <Reference Include="MySql.Data, Version=5.1.2.2, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\Dependecies\MySql.Data.dll</HintPath>
-        </Reference>
-        <Reference Include="System"/>
-        <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-        </Reference>
-        <Reference Include="System.ComponentModel.DataAnnotations" />
-        <Reference Include="System.Core">
-            <RequiredTargetFramework>3.5</RequiredTargetFramework>
-        </Reference>
-        <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.2\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Numerics" />
-        <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-        </Reference>
-        <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-          <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Xml.Linq">
-            <RequiredTargetFramework>3.5</RequiredTargetFramework>
-        </Reference>
-        <Reference Include="System.Data.DataSetExtensions">
-            <RequiredTargetFramework>3.5</RequiredTargetFramework>
-        </Reference>
-        <Reference Include="System.Data"/>
-        <Reference Include="System.Xml"/>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="AccessAccountDB.cs"/>
-        <Compile Include="AccessActorDb.cs"/>
-        <Compile Include="AccessConnectivity.cs"/>
-        <Compile Include="Account.cs"/>
-        <Compile Include="AccountDB.cs"/>
-        <Compile Include="ActorDB.cs"/>
-        <Compile Include="Actor\ActorPartner.cs"/>
-        <Compile Include="Actor\Buff.cs"/>
-        <Compile Include="DefWar\DefWar.cs"/>
-        <Compile Include="DefWar\DefWarFactory.cs"/>
-        <Compile Include="DualJob\DualJobInfo.cs"/>
-        <Compile Include="DualJob\DualJobInfoFactory.cs"/>
-        <Compile Include="DualJob\DualJobSkill.cs"/>
-        <Compile Include="DualJob\DualJobSkillFactory.cs"/>
-        <Compile Include="ECOShop\ECOShopFactory.cs"/>
-        <Compile Include="ECOShop\GShopCategory.cs"/>
-        <Compile Include="ECOShop\NCShopCategory.cs"/>
-        <Compile Include="ECOShop\GShopFactory.cs"/>
-        <Compile Include="EnhanceTable\EnhanceTable.cs"/>
-        <Compile Include="EnhanceTable\EnhanceTableFactory.cs"/>
-        <Compile Include="FFGarden\FFGarden.cs"/>
-        <Compile Include="Item\Exchange.cs"/>
-        <Compile Include="Item\ItemExchangeList.cs"/>
-        <Compile Include="Item\ItemExchangeListFactory.cs"/>
-        <Compile Include="Experience\PCLevel.cs"/>
-        <Compile Include="Experience\PCExperienceFactory.cs"/>
-        <Compile Include="FictitiousActors\FictitiousActorsFactory.cs"/>
-        <Compile Include="Actor\Actor.cs"/>
-        <Compile Include="Actor\ActorEventHandler.cs"/>
-        <Compile Include="Actor\ActorMob.cs"/>
-        <Compile Include="Actor\ActorPC.cs"/>
-        <Compile Include="Actor\ActorItem.cs"/>
-        <Compile Include="Actor\Addition.cs"/>
-        <Compile Include="Actor\ActorPet.cs"/>
-        <Compile Include="Actor\ActorSkill.cs"/>
-        <Compile Include="Actor\ActorShadow.cs"/>
-        <Compile Include="Actor\ActorEvent.cs"/>
-        <Compile Include="Actor\ActorFurniture.cs"/>
-        <Compile Include="Actor\ActorGolem.cs"/>
-        <Compile Include="Actor\ActorFurnitureUnit.cs"/>
-        <Compile Include="Actor\Stamp.cs"/>
-        <Compile Include="Actor\VariableHolderA.cs"/>
-        <Compile Include="Actor\IStats.cs"/>
-        <Compile Include="Actor\Status.cs"/>
-        <Compile Include="Actor\Enums.cs"/>
-        <Compile Include="Actor\VariableHolder.cs"/>
-        <Compile Include="BBS\Post.cs"/>
-        <Compile Include="Config\SagaLoginConfig.cs"/>
-        <Compile Include="DEMIC\Chip.cs"/>
-        <Compile Include="DEMIC\ChipFactory.cs"/>
-        <Compile Include="DEMIC\ChipShopCategory.cs"/>
-        <Compile Include="DEMIC\DEMICPanel.cs"/>
-        <Compile Include="DEMIC\ChipShopFactory.cs"/>
-        <Compile Include="DEMIC\Model.cs"/>
-        <Compile Include="DEMIC\ModelFactory.cs"/>
-        <Compile Include="Fish\FishFactory.cs"/>
-        <Compile Include="Fish\Fish.cs"/>
-        <Compile Include="Group\Group.cs"/>
-        <Compile Include="Iris\AbilityVector.cs"/>
-        <Compile Include="Iris\EnumIris.cs"/>
-        <Compile Include="Iris\IrisDrawRate.cs"/>
-        <Compile Include="Iris\IrisDrawRateFactory.cs"/>
-        <Compile Include="Iris\IrisExchangeInfo.cs"/>
-        <Compile Include="Iris\IrisGacha.cs"/>
-        <Compile Include="Iris\IrisCard.cs"/>
-        <Compile Include="Iris\IrisCardFactory.cs"/>
-        <Compile Include="Iris\IrisAbilityFactory.cs"/>
-        <Compile Include="Iris\IrisGachaFactory.cs"/>
-        <Compile Include="Item\ItemAddition.cs"/>
-        <Compile Include="Item\ItemAdditionFactory.cs"/>
-        <Compile Include="Item\ItemBonus.cs"/>
-        <Compile Include="Item\Furniture.cs"/>
-        <Compile Include="Item\FurnitureFactory.cs"/>
-        <Compile Include="Item\ItemRelease.cs"/>
-        <Compile Include="Item\ItemReleaseFactory.cs"/>
-        <Compile Include="Item\PlayerTitleFactory.cs"/>
-        <Compile Include="Item\PlayerTitle.cs"/>
-        <Compile Include="Item\ExchangeFactory.cs"/>
-        <Compile Include="Item\FaceFactory.cs"/>
-        <Compile Include="Item\Another.cs"/>
-        <Compile Include="Item\AnotherFactory.cs"/>
-        <Compile Include="Item\KujiListFactory.cs"/>
-        <Compile Include="Item\Kuji.cs"/>
-        <Compile Include="Item\HairFactory.cs"/>
-        <Compile Include="Item\Hair.cs"/>
-        <Compile Include="LevelLimit\LevelLimit.cs"/>
-        <Compile Include="Map\MapNameFactory.cs"/>
-        <Compile Include="MasterEnchance\MasterEnchanceMaterial.cs"/>
-        <Compile Include="MasterEnchance\MasterEnhanceMaterialFactory.cs"/>
-        <Compile Include="Mob\DropGroupFactory.cs"/>
-        <Compile Include="Navi\Navi.cs"/>
-        <Compile Include="Navi\NaviFactory.cs"/>
-        <Compile Include="ODWar\ODWar.cs"/>
-        <Compile Include="ODWar\ODWarFactory.cs"/>
-        <Compile Include="ECOShop\NCShopFactory.cs"/>
-        <Compile Include="ECOShop\ShopCategory.cs"/>
-        <Compile Include="FGGarden\FGGarden.cs"/>
-        <Compile Include="Item\Enums.cs"/>
-        <Compile Include="Item\Inventory.cs"/>
-        <Compile Include="Item\Item.cs"/>
-        <Compile Include="Item\ItemFactory.cs"/>
-        <Compile Include="KnightWar\KnightWarFactory.cs"/>
-        <Compile Include="KnightWar\KnightWar.cs"/>
-        <Compile Include="Map\MapInfo.cs"/>
-        <Compile Include="Map\MapInfoFactory.cs"/>
-        <Compile Include="Map\MapObject.cs"/>
-        <Compile Include="Marionette\Marionette.cs"/>
-        <Compile Include="Marionette\MarionetteFactory.cs"/>
-        <Compile Include="Mob\Enums.cs"/>
-        <Compile Include="Mob\MobFactory.cs"/>
-        <Compile Include="Mob\Mob.cs"/>
-        <Compile Include="MySQLAccountDB.cs"/>
-        <Compile Include="MySQLActorDB.cs"/>
-        <Compile Include="Npc\Shop.cs"/>
-        <Compile Include="Npc\ShopFactory.cs"/>
-        <Compile Include="Npc\NPC.cs"/>
-        <Compile Include="Npc\NPCFactory.cs"/>
-        <Compile Include="Party\Party.cs"/>
-        <Compile Include="PProtect\PProtect.cs"/>
-        <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="Quests\Quest.cs"/>
-        <Compile Include="Quests\QuestType.cs"/>
-        <Compile Include="Quests\QuestFactory.cs"/>
-        <Compile Include="Ring\RingFameTable.cs"/>
-        <Compile Include="Ring\Ring.cs"/>
-        <Compile Include="Server\Server.cs"/>
-        <Compile Include="Skill\Skill.cs"/>
-        <Compile Include="Skill\SkillFactory.cs"/>
-        <Compile Include="Synthese\Synthese.cs"/>
-        <Compile Include="Synthese\SyntheseFactory.cs"/>
-        <Compile Include="Tamaire\TamaireExpRewardFactory.cs"/>
-        <Compile Include="Tamaire\TamaireLending.cs"/>
-        <Compile Include="Tamaire\TamaireRental.cs"/>
-        <Compile Include="Tamaire\TamaireStatusFactory.cs"/>
-        <Compile Include="Team\Team.cs"/>
-        <Compile Include="Theater\Movie.cs"/>
-        <Compile Include="Theater\TheaterFactory.cs"/>
-        <Compile Include="Title\TitleFactory.cs"/>
-        <Compile Include="Title\Title.cs"/>
-        <Compile Include="Treasure\TreasureFactory.cs"/>
-        <Compile Include="Treasure\TreasureList.cs"/>
-        <Compile Include="Partner\Enums.cs"/>
-        <Compile Include="Partner\Partner.cs"/>
-        <Compile Include="Partner\PartnerFactory.cs"/>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\SagaLib\SagaLib.csproj">
-            <Project>{DDDDCDA1-0D7C-48F3-A4D1-84219C43E195}</Project>
-            <Name>SagaLib</Name>
-        </ProjectReference>
-    </ItemGroup>
-    <ItemGroup>
-        <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-            <Install>false</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1</ProductName>
-            <Install>true</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-            <Visible>False</Visible>
-            <ProductName>Windows Installer 3.1</ProductName>
-            <Install>true</Install>
-        </BootstrapperPackage>
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="packages.config" />
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
-    <PropertyGroup>
-        <PreBuildEvent>
-        </PreBuildEvent>
-    </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>..\Bin\</OutputPath>
+    <DefineConstants></DefineConstants>
+    <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Web|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Web\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;Web</DefineConstants>
+    <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependecies\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=5.1.2.2, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependecies\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration" />
+    <Reference Update="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Update="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Actor\ActorPartner.cs" />
+    <Compile Include="Actor\Buff.cs" />
+    <Compile Include="DefWar\DefWar.cs" />
+    <Compile Include="DefWar\DefWarFactory.cs" />
+    <Compile Include="DualJob\DualJobInfo.cs" />
+    <Compile Include="DualJob\DualJobInfoFactory.cs" />
+    <Compile Include="DualJob\DualJobSkill.cs" />
+    <Compile Include="DualJob\DualJobSkillFactory.cs" />
+    <Compile Include="ECOShop\ECOShopFactory.cs" />
+    <Compile Include="ECOShop\GShopCategory.cs" />
+    <Compile Include="ECOShop\NCShopCategory.cs" />
+    <Compile Include="ECOShop\GShopFactory.cs" />
+    <Compile Include="EnhanceTable\EnhanceTable.cs" />
+    <Compile Include="EnhanceTable\EnhanceTableFactory.cs" />
+    <Compile Include="FFGarden\FFGarden.cs" />
+    <Compile Include="Item\Exchange.cs" />
+    <Compile Include="Item\ItemExchangeList.cs" />
+    <Compile Include="Item\ItemExchangeListFactory.cs" />
+    <Compile Include="Experience\PCLevel.cs" />
+    <Compile Include="Experience\PCExperienceFactory.cs" />
+    <Compile Include="FictitiousActors\FictitiousActorsFactory.cs" />
+    <Compile Include="Actor\Actor.cs" />
+    <Compile Include="Actor\ActorEventHandler.cs" />
+    <Compile Include="Actor\ActorMob.cs" />
+    <Compile Include="Actor\ActorPC.cs" />
+    <Compile Include="Actor\ActorItem.cs" />
+    <Compile Include="Actor\Addition.cs" />
+    <Compile Include="Actor\ActorPet.cs" />
+    <Compile Include="Actor\ActorSkill.cs" />
+    <Compile Include="Actor\ActorShadow.cs" />
+    <Compile Include="Actor\ActorEvent.cs" />
+    <Compile Include="Actor\ActorFurniture.cs" />
+    <Compile Include="Actor\ActorGolem.cs" />
+    <Compile Include="Actor\ActorFurnitureUnit.cs" />
+    <Compile Include="Actor\Stamp.cs" />
+    <Compile Include="Actor\VariableHolderA.cs" />
+    <Compile Include="Actor\IStats.cs" />
+    <Compile Include="Actor\Status.cs" />
+    <Compile Include="Actor\Enums.cs" />
+    <Compile Include="Actor\VariableHolder.cs" />
+    <Compile Include="BBS\Post.cs" />
+    <Compile Include="Config\SagaLoginConfig.cs" />
+    <Compile Include="DEMIC\Chip.cs" />
+    <Compile Include="DEMIC\ChipFactory.cs" />
+    <Compile Include="DEMIC\ChipShopCategory.cs" />
+    <Compile Include="DEMIC\DEMICPanel.cs" />
+    <Compile Include="DEMIC\ChipShopFactory.cs" />
+    <Compile Include="DEMIC\Model.cs" />
+    <Compile Include="DEMIC\ModelFactory.cs" />
+    <Compile Include="Fish\FishFactory.cs" />
+    <Compile Include="Fish\Fish.cs" />
+    <Compile Include="Group\Group.cs" />
+    <Compile Include="Iris\AbilityVector.cs" />
+    <Compile Include="Iris\EnumIris.cs" />
+    <Compile Include="Iris\IrisDrawRate.cs" />
+    <Compile Include="Iris\IrisDrawRateFactory.cs" />
+    <Compile Include="Iris\IrisExchangeInfo.cs" />
+    <Compile Include="Iris\IrisGacha.cs" />
+    <Compile Include="Iris\IrisCard.cs" />
+    <Compile Include="Iris\IrisCardFactory.cs" />
+    <Compile Include="Iris\IrisAbilityFactory.cs" />
+    <Compile Include="Iris\IrisGachaFactory.cs" />
+    <Compile Include="Item\ItemAddition.cs" />
+    <Compile Include="Item\ItemAdditionFactory.cs" />
+    <Compile Include="Item\ItemBonus.cs" />
+    <Compile Include="Item\Furniture.cs" />
+    <Compile Include="Item\FurnitureFactory.cs" />
+    <Compile Include="Item\ItemRelease.cs" />
+    <Compile Include="Item\ItemReleaseFactory.cs" />
+    <Compile Include="Item\PlayerTitleFactory.cs" />
+    <Compile Include="Item\PlayerTitle.cs" />
+    <Compile Include="Item\ExchangeFactory.cs" />
+    <Compile Include="Item\FaceFactory.cs" />
+    <Compile Include="Item\Another.cs" />
+    <Compile Include="Item\AnotherFactory.cs" />
+    <Compile Include="Item\KujiListFactory.cs" />
+    <Compile Include="Item\Kuji.cs" />
+    <Compile Include="Item\HairFactory.cs" />
+    <Compile Include="Item\Hair.cs" />
+    <Compile Include="LevelLimit\LevelLimit.cs" />
+    <Compile Include="Map\MapNameFactory.cs" />
+    <Compile Include="MasterEnchance\MasterEnchanceMaterial.cs" />
+    <Compile Include="MasterEnchance\MasterEnhanceMaterialFactory.cs" />
+    <Compile Include="Mob\DropGroupFactory.cs" />
+    <Compile Include="Navi\Navi.cs" />
+    <Compile Include="Navi\NaviFactory.cs" />
+    <Compile Include="ODWar\ODWar.cs" />
+    <Compile Include="ODWar\ODWarFactory.cs" />
+    <Compile Include="ECOShop\NCShopFactory.cs" />
+    <Compile Include="ECOShop\ShopCategory.cs" />
+    <Compile Include="FGGarden\FGGarden.cs" />
+    <Compile Include="Item\Enums.cs" />
+    <Compile Include="Item\Inventory.cs" />
+    <Compile Include="Item\Item.cs" />
+    <Compile Include="Item\ItemFactory.cs" />
+    <Compile Include="KnightWar\KnightWarFactory.cs" />
+    <Compile Include="KnightWar\KnightWar.cs" />
+    <Compile Include="Map\MapInfo.cs" />
+    <Compile Include="Map\MapInfoFactory.cs" />
+    <Compile Include="Map\MapObject.cs" />
+    <Compile Include="Marionette\Marionette.cs" />
+    <Compile Include="Marionette\MarionetteFactory.cs" />
+    <Compile Include="Mob\Enums.cs" />
+    <Compile Include="Mob\MobFactory.cs" />
+    <Compile Include="Mob\Mob.cs" />
+    <Compile Include="Npc\Shop.cs" />
+    <Compile Include="Npc\ShopFactory.cs" />
+    <Compile Include="Npc\NPC.cs" />
+    <Compile Include="Npc\NPCFactory.cs" />
+    <Compile Include="Party\Party.cs" />
+    <Compile Include="PProtect\PProtect.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quests\Quest.cs" />
+    <Compile Include="Quests\QuestType.cs" />
+    <Compile Include="Quests\QuestFactory.cs" />
+    <Compile Include="Ring\RingFameTable.cs" />
+    <Compile Include="Ring\Ring.cs" />
+    <Compile Include="Server\Server.cs" />
+    <Compile Include="Skill\Skill.cs" />
+    <Compile Include="Skill\SkillFactory.cs" />
+    <Compile Include="Synthese\Synthese.cs" />
+    <Compile Include="Synthese\SyntheseFactory.cs" />
+    <Compile Include="Tamaire\TamaireExpRewardFactory.cs" />
+    <Compile Include="Tamaire\TamaireLending.cs" />
+    <Compile Include="Tamaire\TamaireRental.cs" />
+    <Compile Include="Tamaire\TamaireStatusFactory.cs" />
+    <Compile Include="Team\Team.cs" />
+    <Compile Include="Theater\Movie.cs" />
+    <Compile Include="Theater\TheaterFactory.cs" />
+    <Compile Include="Title\TitleFactory.cs" />
+    <Compile Include="Title\Title.cs" />
+    <Compile Include="Treasure\TreasureFactory.cs" />
+    <Compile Include="Treasure\TreasureList.cs" />
+    <Compile Include="Partner\Enums.cs" />
+    <Compile Include="Partner\Partner.cs" />
+    <Compile Include="Partner\PartnerFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SagaLib\SagaLib.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1" />
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.0.0" />
+    <PackageReference Include="NLog" Version="5.5.1" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Actor/Actor.cs" />
+    <Compile Remove="Actor/ActorEvent.cs" />
+    <Compile Remove="Actor/ActorEventHandler.cs" />
+    <Compile Remove="Actor/ActorFurniture.cs" />
+    <Compile Remove="Actor/ActorFurnitureUnit.cs" />
+    <Compile Remove="Actor/ActorGolem.cs" />
+    <Compile Remove="Actor/ActorItem.cs" />
+    <Compile Remove="Actor/ActorMob.cs" />
+    <Compile Remove="Actor/ActorPartner.cs" />
+    <Compile Remove="Actor/ActorPC.cs" />
+    <Compile Remove="Actor/ActorPet.cs" />
+    <Compile Remove="Actor/ActorShadow.cs" />
+    <Compile Remove="Actor/ActorSkill.cs" />
+    <Compile Remove="Actor/Addition.cs" />
+    <Compile Remove="Actor/Buff.cs" />
+    <Compile Remove="Actor/Enums.cs" />
+    <Compile Remove="Actor/IStats.cs" />
+    <Compile Remove="Actor/Stamp.cs" />
+    <Compile Remove="Actor/Status.cs" />
+    <Compile Remove="Actor/VariableHolder.cs" />
+    <Compile Remove="Actor/VariableHolderA.cs" />
+    <Compile Remove="BBS/Post.cs" />
+    <Compile Remove="Config/SagaLoginConfig.cs" />
+    <Compile Remove="DefWar/DefWar.cs" />
+    <Compile Remove="DefWar/DefWarFactory.cs" />
+    <Compile Remove="DEMIC/Chip.cs" />
+    <Compile Remove="DEMIC/ChipFactory.cs" />
+    <Compile Remove="DEMIC/ChipShopCategory.cs" />
+    <Compile Remove="DEMIC/ChipShopFactory.cs" />
+    <Compile Remove="DEMIC/DEMICPanel.cs" />
+    <Compile Remove="DEMIC/Model.cs" />
+    <Compile Remove="DEMIC/ModelFactory.cs" />
+    <Compile Remove="DualJob/DualJobInfo.cs" />
+    <Compile Remove="DualJob/DualJobInfoFactory.cs" />
+    <Compile Remove="DualJob/DualJobSkill.cs" />
+    <Compile Remove="DualJob/DualJobSkillFactory.cs" />
+    <Compile Remove="ECOShop/ECOShopFactory.cs" />
+    <Compile Remove="ECOShop/GShopCategory.cs" />
+    <Compile Remove="ECOShop/GShopFactory.cs" />
+    <Compile Remove="ECOShop/NCShopCategory.cs" />
+    <Compile Remove="ECOShop/NCShopFactory.cs" />
+    <Compile Remove="ECOShop/ShopCategory.cs" />
+    <Compile Remove="EnhanceTable/EnhanceTable.cs" />
+    <Compile Remove="EnhanceTable/EnhanceTableFactory.cs" />
+    <Compile Remove="Experience/PCExperienceFactory.cs" />
+    <Compile Remove="Experience/PCLevel.cs" />
+    <Compile Remove="FFGarden/FFGarden.cs" />
+    <Compile Remove="FGarden/FGGarden.cs" />
+    <Compile Remove="FGGarden/FGGarden.cs" />
+    <Compile Remove="FictitiousActors/FictitiousActorsFactory.cs" />
+    <Compile Remove="Fish/Fish.cs" />
+    <Compile Remove="Fish/FishFactory.cs" />
+    <Compile Remove="Group/Group.cs" />
+    <Compile Remove="Iris/AbilityVector.cs" />
+    <Compile Remove="Iris/EnumIris.cs" />
+    <Compile Remove="Iris/IrisAbilityFactory.cs" />
+    <Compile Remove="Iris/IrisCard.cs" />
+    <Compile Remove="Iris/IrisCardFactory.cs" />
+    <Compile Remove="Iris/IrisDrawRate.cs" />
+    <Compile Remove="Iris/IrisDrawRateFactory.cs" />
+    <Compile Remove="Iris/IrisExchangeInfo.cs" />
+    <Compile Remove="Iris/IrisGacha.cs" />
+    <Compile Remove="Iris/IrisGachaFactory.cs" />
+    <Compile Remove="Item/Another.cs" />
+    <Compile Remove="Item/AnotherFactory.cs" />
+    <Compile Remove="Item/Enums.cs" />
+    <Compile Remove="Item/Exchange.cs" />
+    <Compile Remove="Item/ExchangeFactory.cs" />
+    <Compile Remove="Item/FaceFactory.cs" />
+    <Compile Remove="Item/Furniture.cs" />
+    <Compile Remove="Item/FurnitureFactory.cs" />
+    <Compile Remove="Item/Hair.cs" />
+    <Compile Remove="Item/HairFactory.cs" />
+    <Compile Remove="Item/Inventory.cs" />
+    <Compile Remove="Item/Item.cs" />
+    <Compile Remove="Item/ItemAddition.cs" />
+    <Compile Remove="Item/ItemAdditionFactory.cs" />
+    <Compile Remove="Item/ItemBonus.cs" />
+    <Compile Remove="Item/ItemExchangeList.cs" />
+    <Compile Remove="Item/ItemExchangeListFactory.cs" />
+    <Compile Remove="Item/ItemFactory.cs" />
+    <Compile Remove="Item/ItemRelease.cs" />
+    <Compile Remove="Item/ItemReleaseFactory.cs" />
+    <Compile Remove="Item/Kuji.cs" />
+    <Compile Remove="Item/KujiListFactory.cs" />
+    <Compile Remove="Item/PlayerTitle.cs" />
+    <Compile Remove="Item/PlayerTitleFactory.cs" />
+    <Compile Remove="KnightWar/KnightWar.cs" />
+    <Compile Remove="KnightWar/KnightWarFactory.cs" />
+    <Compile Remove="LevelLimit/FGandFFarden/FFGarden.cs" />
+    <Compile Remove="LevelLimit/FGandFFarden/FGGarden.cs" />
+    <Compile Remove="LevelLimit/LevelLimit.cs" />
+    <Compile Remove="Map/MapInfo.cs" />
+    <Compile Remove="Map/MapInfoFactory.cs" />
+    <Compile Remove="Map/MapNameFactory.cs" />
+    <Compile Remove="Map/MapObject.cs" />
+    <Compile Remove="Marionette/Marionette.cs" />
+    <Compile Remove="Marionette/MarionetteFactory.cs" />
+    <Compile Remove="MasterEnchance/MasterEnchanceMaterial.cs" />
+    <Compile Remove="MasterEnchance/MasterEnhanceMaterialFactory.cs" />
+    <Compile Remove="Mob/DropGroupFactory.cs" />
+    <Compile Remove="Mob/Enums.cs" />
+    <Compile Remove="Mob/Mob.cs" />
+    <Compile Remove="Mob/MobFactory.cs" />
+    <Compile Remove="Navi/Navi.cs" />
+    <Compile Remove="Navi/NaviFactory.cs" />
+    <Compile Remove="Npc/NPC.cs" />
+    <Compile Remove="Npc/NPCFactory.cs" />
+    <Compile Remove="Npc/Shop.cs" />
+    <Compile Remove="Npc/ShopFactory.cs" />
+    <Compile Remove="ODWar/ODWar.cs" />
+    <Compile Remove="ODWar/ODWarFactory.cs" />
+    <Compile Remove="Partner/Enums.cs" />
+    <Compile Remove="Partner/Partner.cs" />
+    <Compile Remove="Partner/PartnerFactory.cs" />
+    <Compile Remove="Party/Party.cs" />
+    <Compile Remove="PProtect/PProtect.cs" />
+    <Compile Remove="Properties/AssemblyInfo.cs" />
+    <Compile Remove="Quests/Quest.cs" />
+    <Compile Remove="Quests/QuestFactory.cs" />
+    <Compile Remove="Quests/QuestType.cs" />
+    <Compile Remove="Ring/Ring.cs" />
+    <Compile Remove="Ring/RingFameTable.cs" />
+    <Compile Remove="Server/Server.cs" />
+    <Compile Remove="Skill/Skill.cs" />
+    <Compile Remove="Skill/SkillFactory.cs" />
+    <Compile Remove="Synthese/Synthese.cs" />
+    <Compile Remove="Synthese/SyntheseFactory.cs" />
+    <Compile Remove="Tamaire/TamaireExpRewardFactory.cs" />
+    <Compile Remove="Tamaire/TamaireLending.cs" />
+    <Compile Remove="Tamaire/TamaireRental.cs" />
+    <Compile Remove="Tamaire/TamaireStatusFactory.cs" />
+    <Compile Remove="Team/Team.cs" />
+    <Compile Remove="Theater/Movie.cs" />
+    <Compile Remove="Theater/TheaterFactory.cs" />
+    <Compile Remove="Title/Title.cs" />
+    <Compile Remove="Title/TitleFactory.cs" />
+    <Compile Remove="Treasure/TreasureFactory.cs" />
+    <Compile Remove="Treasure/TreasureList.cs" />
+  </ItemGroup>
+  <PropertyGroup />
 </Project>

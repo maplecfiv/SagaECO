@@ -88,7 +88,7 @@ namespace SagaMap.Dungeon
 
         public Dungeon CreateDungeon(uint id, ActorPC creator, uint exitMap, byte exitX, byte exitY)
         {
-            recreate:
+        recreate:
             if (items.ContainsKey(id))
             {
                 count++;

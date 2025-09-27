@@ -76,11 +76,11 @@ namespace SagaMap.Tasks.System
                                                 var p3 = new SSMG_THEATER_INFO();
                                                 p3.MessageType = SSMG_THEATER_INFO.Type.MESSAGE;
                                                 p3.Message = LocalManager.Instance.Strings.THEATER_WELCOME;
-                                                MapClient.FromActorPC(pc).netIO.SendPacket(p3);
+                                                MapClient.FromActorPC(pc).NetIo.SendPacket(p3);
                                                 p3 = new SSMG_THEATER_INFO();
                                                 p3.MessageType = SSMG_THEATER_INFO.Type.MOVIE_ADDRESS;
                                                 p3.Message = nextMovie.URL;
-                                                MapClient.FromActorPC(pc).netIO.SendPacket(p3);
+                                                MapClient.FromActorPC(pc).NetIo.SendPacket(p3);
                                             }
                                         }
 
@@ -88,12 +88,12 @@ namespace SagaMap.Tasks.System
                                         p.MessageType = SSMG_THEATER_INFO.Type.MESSAGE;
                                         p.Message = string.Format(LocalManager.Instance.Strings.THEATER_COUNTDOWN,
                                             nextMovie.Name, (int)span.TotalMinutes);
-                                        MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                                        MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                                         if ((int)span.TotalMinutes == 1)
                                         {
                                             var p1 = new SSMG_THEATER_INFO();
                                             p1.MessageType = SSMG_THEATER_INFO.Type.STOP_BGM;
-                                            MapClient.FromActorPC(pc).netIO.SendPacket(p1);
+                                            MapClient.FromActorPC(pc).NetIo.SendPacket(p1);
                                         }
                                     }
                                 }
@@ -112,7 +112,7 @@ namespace SagaMap.Tasks.System
                                         var p = new SSMG_THEATER_INFO();
                                         p.MessageType = SSMG_THEATER_INFO.Type.PLAY;
                                         p.Message = "";
-                                        MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                                        MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                                     }
                                 }
 

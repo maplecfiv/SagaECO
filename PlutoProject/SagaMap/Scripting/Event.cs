@@ -68,7 +68,7 @@ namespace SagaMap.Scripting
 
             var p = new SSMG_PPROTECT_INITI();
 
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -437,12 +437,12 @@ namespace SagaMap.Scripting
 
             var p2 = new SSMG_GOLEM_SHOP_BUY_HEADER();
             p2.ActorID = ActorID;
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
 
             var p3 = new SSMG_GOLEM_SHOP_BUY_ITEM();
             p3.Items = golem.BuyShop;
             p3.BuyLimit = golem.BuyLimit;
-            client.netIO.SendPacket(p3);
+            client.NetIo.SendPacket(p3);
         }
 
         protected void OpenGolemSell(ActorPC pc, ActorGolem golem)
@@ -452,10 +452,10 @@ namespace SagaMap.Scripting
 
             var p1 = new SSMG_GOLEM_SHOP_OPEN_OK();
             p1.ActorID = ActorID;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
             var p2 = new SSMG_GOLEM_SHOP_HEADER();
             p2.ActorID = ActorID;
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
             foreach (var i in golem.SellShop.Keys)
             {
                 var item = ItemFactory.Instance.GetItem(golem.SellShop[i].ItemID);
@@ -467,11 +467,11 @@ namespace SagaMap.Scripting
                 p3.Price = golem.SellShop[i].Price;
                 p3.ShopCount = golem.SellShop[i].Count;
                 p3.Item = item;
-                client.netIO.SendPacket(p3);
+                client.NetIo.SendPacket(p3);
             }
 
             var p4 = new SSMG_GOLEM_SHOP_FOOTER();
-            client.netIO.SendPacket(p4);
+            client.NetIo.SendPacket(p4);
         }
 
         /// <summary>
@@ -538,7 +538,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_AAA_VOICE();
             p.VoiceID = VoiceID;
             var client = GetMapClient(pc);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace SagaMap.Scripting
             p.VoiceID = VoiceID;
             p.Loop = Convert.ToByte(loop);
             var client = GetMapClient(pc);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -566,7 +566,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_VOICE_STOP();
             p.VoiceID = VoiceID;
             var client = GetMapClient(pc);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -579,14 +579,14 @@ namespace SagaMap.Scripting
             var p = new SSMG_ANO_DIALOG_BOX();
             p.DID = ID;
             var client = GetMapClient(pc);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         protected void ChangeMessageBox(ActorPC pc)
         {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_MESSAGE_GALMODE();
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         protected void ChangeMessageBox(ActorPC pc, bool mode, UIType UItype, int x, int y)
@@ -598,7 +598,7 @@ namespace SagaMap.Scripting
             p.UIType = UItype;
             p.X = x;
             p.Y = y;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace SagaMap.Scripting
         {
             var client = GetMapClient(pc);
             var p = new SSMG_IRIS_GACHA_UI_OPEN();
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             client.irisGacha = true;
             var blocked = ClientManager.Blocked;
@@ -632,7 +632,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_DAILY_STAMP();
             p.StampCount = (byte)StampCountm;
             p.Type = 2;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         protected string ItemRelease(ActorPC pc, SagaDB.Item.Item item)
@@ -659,7 +659,7 @@ namespace SagaMap.Scripting
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOW_HAIR_PREVIEW();
             p.type = 2;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -689,12 +689,12 @@ namespace SagaMap.Scripting
             p.unknown1 = 0x02;
             p.unknown2 = 0x0C;
             p.unknown3 = 0x00;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             p = new SSMG_NPC_HIDE_PLAYERS();
             p.unknown1 = 0x02;
             p.unknown2 = 0x50;
             p.unknown3 = 0x01;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -714,12 +714,12 @@ namespace SagaMap.Scripting
             p.X = x;
             p.Y = y;
             p.Dir = dir;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var p1 = new SSMG_NPC_SHOWPICT_VIEW();
             p1.NPCID = NpcID;
             p1.PictID = PictID;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
         }
 
         /// <summary>
@@ -732,7 +732,7 @@ namespace SagaMap.Scripting
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_CANCEL();
             p.NPCID = NpcID;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -753,7 +753,7 @@ namespace SagaMap.Scripting
             p.Z = Z;
             p.Xdir = Xdir;
             p.Ydir = Ydir;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -770,7 +770,7 @@ namespace SagaMap.Scripting
             p.X = 0;
             p.Y = 0;
             p.unknown = 1;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             //Logger.ShowInfo("\n"+p.DumpData());
         }
@@ -930,7 +930,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_ACTIVITY_RECYCLE_WINDOW();
             p.Percent = (ushort)SInt["Recycle_Percent"];
             p.PCount = (uint)pc.CInt["PC_Recycle_P"];
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -941,11 +941,11 @@ namespace SagaMap.Scripting
         {
             var client = GetMapClient(pc);
             var p1 = new SSMG_TEST_EVOLVE_OPEN();
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
             var p2 = new SSMG_TEST_EVOLVE_OPEN2();
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
             var p3 = new SSMG_TEST_EVOLVE_OPEN3();
-            client.netIO.SendPacket(p3);
+            client.NetIo.SendPacket(p3);
         }
 
         /// <summary>
@@ -1076,7 +1076,7 @@ namespace SagaMap.Scripting
 
             var ds = new SSMG_PLAYER_SHOW_DAILYSTAMP();
             ds.Type = (byte)type;
-            client.netIO.SendPacket(ds);
+            client.NetIo.SendPacket(ds);
         }
 
         /// <summary>
@@ -1092,7 +1092,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_DAILY_STAMP();
             p.StampCount = (byte)client.Character.AInt["每日盖章"];
             p.Type = (byte)type;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -1171,7 +1171,7 @@ namespace SagaMap.Scripting
             p.SetSelect(title, confirm, options, canCancel);
             var client = GetMapClient(pc);
             client.npcSelectResult = -1;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -1180,7 +1180,7 @@ namespace SagaMap.Scripting
             if (blocked)
                 ClientManager.EnterCriticalArea();
             var p2 = new SSMG_NPC_SELECT_RESULT();
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
             return client.npcSelectResult;
         }
 
@@ -1238,7 +1238,7 @@ namespace SagaMap.Scripting
             }
 
             p.Type = type;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             client.npcShopClosed = false;
             client.currentShop = null;
@@ -1285,7 +1285,7 @@ namespace SagaMap.Scripting
             }
 
             p.Type = shop.ShopType;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             client.npcShopClosed = false;
             client.currentShop = shop;
@@ -1313,7 +1313,7 @@ namespace SagaMap.Scripting
             p.Goods = Goods;
             p.Gold = (uint)pc.Gold;
             p.Bank = pc.Account.Bank;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             client.npcShopClosed = false;
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -1337,7 +1337,7 @@ namespace SagaMap.Scripting
             //p.Rate = 0;
             p.ShopLimit = shop.BuyLimit;
             p.Bank = 0;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
 
             client.npcShopClosed = false;
@@ -1363,7 +1363,7 @@ namespace SagaMap.Scripting
             p.Rate = (uint)(10 + pc.Status.sell_rate);
             p.ShopLimit = BuyLimit;
             p.Bank = 0;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             client.npcShopClosed = false;
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -1774,7 +1774,7 @@ namespace SagaMap.Scripting
                 client.SendPlayerInfo();
                 var p2 = new SSMG_ITEM_DELETE();
                 p2.InventorySlot = slot;
-                client.netIO.SendPacket(p2);
+                client.NetIo.SendPacket(p2);
 
                 client.SendAttackType();
                 var p4 = new SSMG_ITEM_EQUIP();
@@ -1782,7 +1782,7 @@ namespace SagaMap.Scripting
                 p4.Target = ContainerType.NONE;
                 p4.Result = 1;
                 p4.Range = pc.Range;
-                client.netIO.SendPacket(p4);
+                client.NetIo.SendPacket(p4);
                 client.Character.Inventory.CalcPayloadVolume();
                 client.SendCapacity();
                 client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.ITEM_DELETED, item.BaseData.name,
@@ -2137,7 +2137,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_NAVIGATION();
             p.X = x;
             p.Y = y;
-            GetMapClient(pc).netIO.SendPacket(p);
+            GetMapClient(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -2147,7 +2147,7 @@ namespace SagaMap.Scripting
         protected void NavigateCancel(ActorPC pc)
         {
             var p = new SSMG_NPC_NAVIGATION_CANCEL();
-            GetMapClient(pc).netIO.SendPacket(p);
+            GetMapClient(pc).NetIo.SendPacket(p);
         }
 
         public void Synthese(ActorPC pc, ushort skillID, byte skillLv)
@@ -2169,7 +2169,7 @@ namespace SagaMap.Scripting
             p.Unknown1 = 1;
             p.Unknown2 = 0;
             var client = GetMapClient(pc);
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             //client.SendSkillDummy(skillID, skillLv);
             /*var item =
                 from c in SyntheseFactory.Instance.Items.Values
@@ -2285,7 +2285,7 @@ namespace SagaMap.Scripting
 
             var p2 = new SSMG_NPC_SYNTHESE_RESULT();
             p2.Result = 1;
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
         }
 
         private byte GetfoodlevelBouns(byte level)
@@ -2417,7 +2417,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_INPUTBOX();
             p.Title = title;
             p.Type = type;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -2599,7 +2599,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_FADE();
             p.FadeEffect = effect;
             p.FadeType = type;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -2643,7 +2643,7 @@ namespace SagaMap.Scripting
 
             p.PossibleSkills = pc.Skills2.Values.ToList();
 
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             client.npcJobSwitch = true;
             var blocked = ClientManager.Blocked;
@@ -2691,7 +2691,7 @@ namespace SagaMap.Scripting
 
             var p = new SSMG_COMMUNITY_BBS_OPEN();
             p.Gold = cost;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -2722,7 +2722,7 @@ namespace SagaMap.Scripting
         {
             var p = new SSMG_FG_CREATE_MATERIAL();
             p.Parts = parts;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -2748,7 +2748,7 @@ namespace SagaMap.Scripting
             p.ID = 0x18E3;
             p.PutUInt(pc.ActorID, 2);
             p.PutUInt(pc.MapID, 6);
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
             if (rope.Caster.FGarden.MapID == 0)
             {
@@ -2924,7 +2924,7 @@ namespace SagaMap.Scripting
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
                             p.MapID = owner.FGarden.MapID;
-                            MapClient.FromActorPC(pc2).netIO.SendPacket(p);
+                            MapClient.FromActorPC(pc2).NetIo.SendPacket(p);
                             list.Add(pc2);
                         }
                     }
@@ -2951,7 +2951,7 @@ namespace SagaMap.Scripting
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
                             p.MapID = owner.FGarden.MapID;
-                            MapClient.FromActorPC(pc2).netIO.SendPacket(p);
+                            MapClient.FromActorPC(pc2).NetIo.SendPacket(p);
                             list.Add(pc2);
                         }
                     }
@@ -2976,7 +2976,7 @@ namespace SagaMap.Scripting
         {
             var p = new SSMG_NPC_SHOW_UI();
             p.UIType = type;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -2990,7 +2990,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_CHAT_MOTION();
             p.ActorID = npcID;
             p.Motion = (MotionType)motion;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3012,7 +3012,7 @@ namespace SagaMap.Scripting
             p.EndMotion = endmotion;
             p.Z = zcoord;
             p.Dir = dir;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3031,7 +3031,7 @@ namespace SagaMap.Scripting
             if (loop)
                 p.Loop = 1;
             p.motionspeed = motionspeed;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed, byte unknown)
@@ -3043,7 +3043,7 @@ namespace SagaMap.Scripting
                 p.Loop = 1;
             p.motionspeed = motionspeed;
             p.PutByte(unknown, 13);
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3059,7 +3059,7 @@ namespace SagaMap.Scripting
             p.CurrentPoint = pc.CP;
             p.type = 1;
             p.Categories = NCShopFactory.Instance.Items;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             pc.UsingShopType = PlayerUsingShopType.NCShop;
             client.vshopClosed = false;
         }
@@ -3075,7 +3075,7 @@ namespace SagaMap.Scripting
             p.Categories = GShopFactory.Instance.Items;
             client.vshopClosed = false;
             pc.UsingShopType = PlayerUsingShopType.GShop;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3089,7 +3089,7 @@ namespace SagaMap.Scripting
             p.Categories = ECOShopFactory.Instance.Items;
             p.CurrentPoint = pc.VShopPoints;
             //p.Categories = GShopFactory.Instance.Items;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             client.vshopClosed = false;
         }
 
@@ -3104,7 +3104,7 @@ namespace SagaMap.Scripting
             var client = GetMapClient(pc);
             var p = new SSMG_GOLEM_SET_TYPE();
             p.GolemType = type;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3375,7 +3375,7 @@ namespace SagaMap.Scripting
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_CANCEL();
             p.NPCID = npcID;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             //if (!pc.NPCStates.ContainsKey(npcID))
             //    pc.NPCStates.Add(npcID, false);
             //else
@@ -3401,7 +3401,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = npcID;
             p.Dir = dir;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -3414,7 +3414,7 @@ namespace SagaMap.Scripting
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = npcID;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             //if (!pc.NPCStates.ContainsKey(npcID))
             //    pc.NPCStates.Add(npcID, true);
@@ -3459,7 +3459,7 @@ namespace SagaMap.Scripting
                     if (query.Count() > 0)
                     {
                         p.Count = query.Count();
-                        MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                        MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                         var j = 0;
                         foreach (var i in query.ToList())
                         {
@@ -3468,19 +3468,19 @@ namespace SagaMap.Scripting
                             p2.TicketItem = i.Ticket;
                             p2.Time = string.Format("{0:00}:{1:00}", i.StartTime.Hour, i.StartTime.Minute);
                             p2.Title = i.Name;
-                            MapClient.FromActorPC(pc).netIO.SendPacket(p2);
+                            MapClient.FromActorPC(pc).NetIo.SendPacket(p2);
                             j++;
                         }
                     }
                     else
                     {
-                        MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                        MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                     }
                 }
 
                 var p3 = new SSMG_THEATER_SCHEDULE_FOOTER();
                 p3.MapID = mapID;
-                MapClient.FromActorPC(pc).netIO.SendPacket(p3);
+                MapClient.FromActorPC(pc).NetIo.SendPacket(p3);
             }
         }
 
@@ -3524,7 +3524,7 @@ namespace SagaMap.Scripting
                     p.Page = 0;
                 p.Genre = genre;
                 var client = MapClient.FromActorPC(pc);
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
                 return true;
             }
             //else
@@ -4118,7 +4118,7 @@ namespace SagaMap.Scripting
                 p.Items = items;
                 //p.price = price;
                 var client = MapClient.FromActorPC(pc);
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
 
                 client.itemEnhance = true;
 
@@ -4161,7 +4161,7 @@ namespace SagaMap.Scripting
             var client = MapClient.FromActorPC(pc);
             var p1 = new SSMG_ITEM_EXCHANGE_WINDOW_OPEN();
             p1.SetWindowType = exchangetype;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
 
             client.itemexchange = true;
 
@@ -4190,7 +4190,7 @@ namespace SagaMap.Scripting
                 client.itemFusion = true;
                 client.itemFusionView = 0;
                 client.itemFusionEffect = 0;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
 
                 var blocked = ClientManager.Blocked;
                 if (blocked)
@@ -4250,7 +4250,7 @@ namespace SagaMap.Scripting
                     }
 
                     if (sel != 1)
-                        client.netIO.SendPacket(p2);
+                        client.NetIo.SendPacket(p2);
                 }
             } while (sel == 1 && client.itemFusionEffect != 0 && client.itemFusionView != 0);
         }
@@ -4294,7 +4294,7 @@ namespace SagaMap.Scripting
             var p1 = new SSMG_NPC_SHOWPICT_VIEW();
             p1.NPCID = npcID;
             p1.PictID = mobID;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
 
             //Packets.Server.SSMG_NPC_CHANGE_VIEW p = new SagaMap.Packets.Server.SSMG_NPC_CHANGE_VIEW();
             //p.NPCID = npcID;
@@ -4454,7 +4454,7 @@ namespace SagaMap.Scripting
 
                 var p = new SSMG_IRIS_ADD_SLOT_ITEM_LIST();
                 p.Items = items;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
 
                 var blocked = ClientManager.Blocked;
                 if (blocked)
@@ -4467,7 +4467,7 @@ namespace SagaMap.Scripting
             {
                 var p = new SSMG_IRIS_ADD_SLOT_RESULT();
                 p.Result = 0; // SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
-                MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                MapClient.FromActorPC(pc).NetIo.SendPacket(p);
             }
         }
 
@@ -4527,7 +4527,7 @@ namespace SagaMap.Scripting
 
                 var p = new SSMG_IRIS_CARD_ASSEMBLE_LIST();
                 p.Cards = cards;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
 
                 var blocked = ClientManager.Blocked;
                 if (blocked)
@@ -4540,7 +4540,7 @@ namespace SagaMap.Scripting
             {
                 var p = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                 p.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NO_ITEM;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
             }
         }
 
@@ -4666,7 +4666,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_SHOW_PIC();
             p.Path = path;
             p.Title = title;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -4678,7 +4678,7 @@ namespace SagaMap.Scripting
         {
             var p = new SSMG_FG_CHANGE_WEATHER();
             p.Weather = weather;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -4690,7 +4690,7 @@ namespace SagaMap.Scripting
         {
             var p = new SSMG_FG_CHANGE_SKY();
             p.Sky = sky;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -4838,7 +4838,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_NPC_PET_SELECT();
             p.Type = SSMG_NPC_PET_SELECT.SelType.Recover;
             p.Pets = it.ToList();
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -4877,7 +4877,7 @@ namespace SagaMap.Scripting
             p.CurrentEP = pc.EPUsed;
             p.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(pc) - pc.EPUsed);
             client.demCLBuy = true;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -4899,7 +4899,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_DEM_PARTS();
 
             client.demParts = true;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -4921,17 +4921,17 @@ namespace SagaMap.Scripting
             client.demic = true;
             var p = new SSMG_DEM_DEMIC_HEADER();
             p.CL = pc.CL;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             foreach (var i in pc.Inventory.DemicChips.Keys)
             {
                 var p2 = new SSMG_DEM_DEMIC_DATA();
                 p2.Page = i;
                 p2.Chips = pc.Inventory.GetChipList(i, false);
-                client.netIO.SendPacket(p2);
+                client.NetIo.SendPacket(p2);
             }
 
             var p3 = new SSMG_DEM_DEMIC_FOOTER();
-            client.netIO.SendPacket(p3);
+            client.NetIo.SendPacket(p3);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -4958,7 +4958,7 @@ namespace SagaMap.Scripting
             p1.Y = y;
             p1.Dir = (ushort)dir;
             p1.MoveType = type;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p1);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p1);
         }
 
         /// <summary>
@@ -4982,7 +4982,7 @@ namespace SagaMap.Scripting
             p.X = x;
             p.Y = y;
             p.Dir = dir;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
             var p2 = new SSMG_NPC_MOVE();
             p2.NPCID = npcID;
@@ -4994,12 +4994,12 @@ namespace SagaMap.Scripting
             p2.Motion = motion;
             p2.MotionSpeed = motionspeed;
             p2.Type = type;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p2);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p2);
 
             var p3 = new SSMG_NPC_SHOWPICT_VIEW();
             p3.NPCID = npcID;
             p3.PictID = pictID;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p3);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p3);
         }
 
         /// <summary>
@@ -5047,7 +5047,7 @@ namespace SagaMap.Scripting
             p1.ShowType = ShowType;
             p1.Motion = motion;
             p1.MotionSpeed = motionSpeed;
-            MapClient.FromActorPC(pc).netIO.SendPacket(p1);
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p1);
         }
 
         /// <summary>
@@ -5062,7 +5062,7 @@ namespace SagaMap.Scripting
 
             client.chipShop = true;
 
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -5097,7 +5097,7 @@ namespace SagaMap.Scripting
                         p1.EndY = y;
                         p1.EventID = eventID;
                         p1.EffectID = 9005;
-                        client.netIO.SendPacket(p1);
+                        client.NetIo.SendPacket(p1);
                     }
                 }
         }
@@ -5128,7 +5128,7 @@ namespace SagaMap.Scripting
                         p1.EndY = y;
                         p1.EventID = eventID;
                         p1.EffectID = effectID;
-                        client.netIO.SendPacket(p1);
+                        client.NetIo.SendPacket(p1);
                     }
                 }
         }

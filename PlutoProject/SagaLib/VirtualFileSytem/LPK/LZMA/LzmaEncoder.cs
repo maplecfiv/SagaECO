@@ -158,100 +158,100 @@ namespace SagaLib.VirtualFileSytem.LPK.LZMA
                 switch (propIDs[i])
                 {
                     case CoderPropID.NumFastBytes:
-                    {
-                        if (!(prop is int))
-                            throw new InvalidParamException();
-                        var numFastBytes = (int)prop;
-                        if (numFastBytes < 5 || numFastBytes > Base.kMatchMaxLen)
-                            throw new InvalidParamException();
-                        _numFastBytes = (uint)numFastBytes;
-                        break;
-                    }
-                    case CoderPropID.Algorithm:
-                    {
-                        /*
-                        if (!(prop is Int32))
-                            throw new InvalidParamException();
-                        Int32 maximize = (Int32)prop;
-                        _fastMode = (maximize == 0);
-                        _maxMode = (maximize >= 2);
-                        */
-                        break;
-                    }
-                    case CoderPropID.MatchFinder:
-                    {
-                        if (!(prop is string))
-                            throw new InvalidParamException();
-                        var matchFinderIndexPrev = _matchFinderType;
-                        var m = FindMatchFinder(((string)prop).ToUpper());
-                        if (m < 0)
-                            throw new InvalidParamException();
-                        _matchFinderType = (EMatchFinderType)m;
-                        if (_matchFinder != null && matchFinderIndexPrev != _matchFinderType)
                         {
-                            _dictionarySizePrev = 0xFFFFFFFF;
-                            _matchFinder = null;
+                            if (!(prop is int))
+                                throw new InvalidParamException();
+                            var numFastBytes = (int)prop;
+                            if (numFastBytes < 5 || numFastBytes > Base.kMatchMaxLen)
+                                throw new InvalidParamException();
+                            _numFastBytes = (uint)numFastBytes;
+                            break;
                         }
+                    case CoderPropID.Algorithm:
+                        {
+                            /*
+                            if (!(prop is Int32))
+                                throw new InvalidParamException();
+                            Int32 maximize = (Int32)prop;
+                            _fastMode = (maximize == 0);
+                            _maxMode = (maximize >= 2);
+                            */
+                            break;
+                        }
+                    case CoderPropID.MatchFinder:
+                        {
+                            if (!(prop is string))
+                                throw new InvalidParamException();
+                            var matchFinderIndexPrev = _matchFinderType;
+                            var m = FindMatchFinder(((string)prop).ToUpper());
+                            if (m < 0)
+                                throw new InvalidParamException();
+                            _matchFinderType = (EMatchFinderType)m;
+                            if (_matchFinder != null && matchFinderIndexPrev != _matchFinderType)
+                            {
+                                _dictionarySizePrev = 0xFFFFFFFF;
+                                _matchFinder = null;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case CoderPropID.DictionarySize:
-                    {
-                        const int kDicLogSizeMaxCompress = 30;
-                        if (!(prop is int))
-                            throw new InvalidParamException();
-                        ;
-                        var dictionarySize = (int)prop;
-                        if (dictionarySize < (uint)(1 << Base.kDicLogSizeMin) ||
-                            dictionarySize > (uint)(1 << kDicLogSizeMaxCompress))
-                            throw new InvalidParamException();
-                        _dictionarySize = (uint)dictionarySize;
-                        int dicLogSize;
-                        for (dicLogSize = 0; dicLogSize < (uint)kDicLogSizeMaxCompress; dicLogSize++)
-                            if (dictionarySize <= (uint)1 << dicLogSize)
-                                break;
-                        _distTableSize = (uint)dicLogSize * 2;
-                        break;
-                    }
+                        {
+                            const int kDicLogSizeMaxCompress = 30;
+                            if (!(prop is int))
+                                throw new InvalidParamException();
+                            ;
+                            var dictionarySize = (int)prop;
+                            if (dictionarySize < (uint)(1 << Base.kDicLogSizeMin) ||
+                                dictionarySize > (uint)(1 << kDicLogSizeMaxCompress))
+                                throw new InvalidParamException();
+                            _dictionarySize = (uint)dictionarySize;
+                            int dicLogSize;
+                            for (dicLogSize = 0; dicLogSize < (uint)kDicLogSizeMaxCompress; dicLogSize++)
+                                if (dictionarySize <= (uint)1 << dicLogSize)
+                                    break;
+                            _distTableSize = (uint)dicLogSize * 2;
+                            break;
+                        }
                     case CoderPropID.PosStateBits:
-                    {
-                        if (!(prop is int))
-                            throw new InvalidParamException();
-                        var v = (int)prop;
-                        if (v < 0 || v > (uint)Base.kNumPosStatesBitsEncodingMax)
-                            throw new InvalidParamException();
-                        _posStateBits = v;
-                        _posStateMask = ((uint)1 << _posStateBits) - 1;
-                        break;
-                    }
+                        {
+                            if (!(prop is int))
+                                throw new InvalidParamException();
+                            var v = (int)prop;
+                            if (v < 0 || v > (uint)Base.kNumPosStatesBitsEncodingMax)
+                                throw new InvalidParamException();
+                            _posStateBits = v;
+                            _posStateMask = ((uint)1 << _posStateBits) - 1;
+                            break;
+                        }
                     case CoderPropID.LitPosBits:
-                    {
-                        if (!(prop is int))
-                            throw new InvalidParamException();
-                        var v = (int)prop;
-                        if (v < 0 || v > Base.kNumLitPosStatesBitsEncodingMax)
-                            throw new InvalidParamException();
-                        _numLiteralPosStateBits = v;
-                        break;
-                    }
+                        {
+                            if (!(prop is int))
+                                throw new InvalidParamException();
+                            var v = (int)prop;
+                            if (v < 0 || v > Base.kNumLitPosStatesBitsEncodingMax)
+                                throw new InvalidParamException();
+                            _numLiteralPosStateBits = v;
+                            break;
+                        }
                     case CoderPropID.LitContextBits:
-                    {
-                        if (!(prop is int))
-                            throw new InvalidParamException();
-                        var v = (int)prop;
-                        if (v < 0 || v > Base.kNumLitContextBitsMax)
-                            throw new InvalidParamException();
-                        ;
-                        _numLiteralContextBits = v;
-                        break;
-                    }
+                        {
+                            if (!(prop is int))
+                                throw new InvalidParamException();
+                            var v = (int)prop;
+                            if (v < 0 || v > Base.kNumLitContextBitsMax)
+                                throw new InvalidParamException();
+                            ;
+                            _numLiteralContextBits = v;
+                            break;
+                        }
                     case CoderPropID.EndMarker:
-                    {
-                        if (!(prop is bool))
-                            throw new InvalidParamException();
-                        SetWriteEndMarkerMode((bool)prop);
-                        break;
-                    }
+                        {
+                            if (!(prop is bool))
+                                throw new InvalidParamException();
+                            SetWriteEndMarkerMode((bool)prop);
+                            break;
+                        }
                     default:
                         throw new InvalidParamException();
                 }
@@ -605,7 +605,7 @@ namespace SagaLib.VirtualFileSytem.LPK.LZMA
                 uint offs = 0;
                 while (len > _matchDistances[offs])
                     offs += 2;
-                for (;; len++)
+                for (; ; len++)
                 {
                     var distance = _matchDistances[offs + 1];
                     var curAndLenPrice = normalMatchPrice + GetPosLenPrice(distance, len, posState);
@@ -913,7 +913,7 @@ namespace SagaLib.VirtualFileSytem.LPK.LZMA
                     while (startLen > _matchDistances[offs])
                         offs += 2;
 
-                    for (var lenTest = startLen;; lenTest++)
+                    for (var lenTest = startLen; ; lenTest++)
                     {
                         var curBack = _matchDistances[offs + 1];
                         var curAndLenPrice = normalMatchPrice + GetPosLenPrice(curBack, lenTest, posState);

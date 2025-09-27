@@ -19,11 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.ROPE) ||
                 sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
             {
-                if (dActor.type == ActorType.MOB)
-                    if (SkillHandler.Instance.isBossMob((ActorMob)dActor))
-                        return -14;
-
-                return 0;
+                return (dActor.type == ActorType.MOB && SkillHandler.Instance.isBossMob((ActorMob)dActor)) ? -14 : 0;
             }
 
             return -5;

@@ -269,7 +269,7 @@ namespace SagaMap.Manager
                 p.CharID = pc;
                 p.Right = ring.Rights[ring.IndexOf(pc)].Value;
                 if (i.Online)
-                    MapClient.FromActorPC(i).netIO.SendPacket(p);
+                    MapClient.FromActorPC(i).NetIo.SendPacket(p);
             }
         }
     }

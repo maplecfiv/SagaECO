@@ -28,7 +28,7 @@ namespace SagaMap.Manager
 
         public void ReloadScript()
         {
-            ClientManager.noCheckDeadLock = true;
+            ClientManager.NoCheckDeadLock = true;
             try
             {
                 Events.Clear();
@@ -38,7 +38,7 @@ namespace SagaMap.Manager
             {
             }
 
-            ClientManager.noCheckDeadLock = false;
+            ClientManager.NoCheckDeadLock = false;
         }
 
         public void LoadScript(string path)

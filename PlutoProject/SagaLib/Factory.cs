@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using Microsoft.VisualBasic.FileIO;
 using SagaLib.VirtualFileSytem;
 
 namespace SagaLib
@@ -58,11 +57,17 @@ namespace SagaLib
             {
                 case FactoryType.CSV:
                     foreach (var i in files)
+                    {
+
                         count += InitCSV(i, encoding);
+                    }
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
+                    {
+
                         count += InitXML(i, encoding);
+                    }
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -82,10 +87,17 @@ namespace SagaLib
             if (isFolder)
             {
                 var pattern = "*.*";
-                if (FactoryType == FactoryType.CSV)
-                    pattern = "*.csv";
-                else if (FactoryType == FactoryType.XML)
-                    pattern = "*.xml";
+                switch (FactoryType)
+                {
+                    case FactoryType.CSV:
+
+                        pattern = "*.csv";
+                        break;
+                    case FactoryType.XML:
+
+                        pattern = "*.xml";
+                        break;
+                }
                 files = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, pattern);
             }
             else
@@ -98,11 +110,17 @@ namespace SagaLib
             {
                 case FactoryType.CSV:
                     foreach (var i in files)
+                    {
+
                         count += InitCSV(i, encoding);
+                    }
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
+                    {
+
                         count += InitXML(i, encoding);
+                    }
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -119,8 +137,15 @@ namespace SagaLib
         private XmlElement FindRoot(XmlDocument doc)
         {
             foreach (var i in doc.ChildNodes)
-                if (i.GetType() == typeof(XmlElement))
-                    return (XmlElement)i;
+            {
+
+                if (i.GetType() != typeof(XmlElement))
+                {
+                    continue;
+                }
+
+                return (XmlElement)i;
+            }
             return null;
         }
 
@@ -131,13 +156,19 @@ namespace SagaLib
             foreach (var j in list)
             {
                 XmlElement i;
-                if (j.GetType() != typeof(XmlElement)) continue;
+                if (j.GetType() != typeof(XmlElement))
+                {
+                    continue;
+                }
                 i = (XmlElement)j;
                 try
                 {
                     ParseXML(ele, i, item);
                     if (i.ChildNodes.Count != 0)
+                    {
+
                         ParseNode(i, item);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -162,19 +193,28 @@ namespace SagaLib
                 var time = DateTime.Now;
                 var label = loadingTab;
                 if (list.Count > 100)
+                {
+
                     Logger.ProgressBarShow(0, (uint)list.Count, label);
 
+                }
                 foreach (var j in list)
                 {
                     var item = new T();
                     XmlElement i;
-                    if (j.GetType() != typeof(XmlElement)) continue;
+                    if (j.GetType() != typeof(XmlElement))
+                    {
+                        continue;
+                    }
                     i = (XmlElement)j;
                     try
                     {
                         ParseXML(root, i, item);
                         if (i.ChildNodes.Count != 0)
+                        {
+
                             ParseNode(i, item);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -185,16 +225,25 @@ namespace SagaLib
 
                     var key = GetKey(item);
                     if (!items.ContainsKey(key))
+                    {
+
                         items.Add(key, item);
+                    }
                     else
+                    {
+
                         //Logger.ShowWarning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
                         items[key] = item;
+                    }
 #if !Web
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
                     {
                         time = DateTime.Now;
                         if (list.Count > 100)
+                        {
                             Logger.ProgressBarShow((uint)count, (uint)list.Count, label);
+
+                        }
                     }
 #endif
                     count++;

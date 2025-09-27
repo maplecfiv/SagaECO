@@ -148,10 +148,10 @@ namespace SagaMap.Network.Client
 
         public MapClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
         {
-            netIO = new NetIO(mSock, mCommandTable, this);
-            netIO.SetMode(NetIO.Mode.Server);
-            netIO.FirstLevelLength = 2;
-            if (netIO.sock.Connected) OnConnect();
+            NetIo = new NetIO(mSock, mCommandTable, this);
+            NetIo.SetMode(NetIO.Mode.Server);
+            NetIo.FirstLevelLength = 2;
+            if (NetIo.sock.Connected) OnConnect();
         }
 
         /// <summary>
@@ -178,8 +178,8 @@ namespace SagaMap.Network.Client
             {
                 var ip = "";
                 var name = "";
-                if (netIO != null)
-                    ip = netIO.sock.RemoteEndPoint.ToString();
+                if (NetIo != null)
+                    ip = NetIo.sock.RemoteEndPoint.ToString();
                 if (Character != null) name = Character.Name;
                 if (ip != "" || name != "") return string.Format("{0}({1})", name, ip);
 
@@ -537,8 +537,8 @@ namespace SagaMap.Network.Client
                 for (var i = 0; i < items.Length; i++)
                 {
                     var cat = from item in ECOShopFactory.Instance.Items.Values
-                        where item.Items.ContainsKey(items[i])
-                        select item;
+                              where item.Items.ContainsKey(items[i])
+                              select item;
 
                     if (cat.Count() > 0)
                     {
@@ -604,8 +604,8 @@ namespace SagaMap.Network.Client
             for (var i = 0; i < items.Length; i++)
             {
                 var cat = from item in NCShopFactory.Instance.Items.Values
-                    where item.Items.ContainsKey(items[i])
-                    select item;
+                          where item.Items.ContainsKey(items[i])
+                          select item;
 
                 if (cat.Count() > 0)
                 {
@@ -655,8 +655,8 @@ namespace SagaMap.Network.Client
             for (var i = 0; i < items.Length; i++)
             {
                 var cat = from item in GShopFactory.Instance.Items.Values
-                    where item.Items.ContainsKey(items[i])
-                    select item;
+                          where item.Items.ContainsKey(items[i])
+                          select item;
 
                 if (cat.Count() > 0)
                 {
@@ -699,7 +699,7 @@ namespace SagaMap.Network.Client
             var category = NCShopFactory.Instance.Items[p.Page + 1];
             var p1 = new SSMG_NCSHOP_INFO_HEADER();
             p1.Page = p.Page;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             currentVShopCategory = p.Page + 1;
             foreach (var i in category.Items.Keys)
             {
@@ -707,11 +707,11 @@ namespace SagaMap.Network.Client
                 p2.Point = category.Items[i].points;
                 p2.ItemID = i;
                 p2.Comment = category.Items[i].comment;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
 
             var p3 = new SSMG_NCSHOP_INFO_FOOTER();
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
         }
 
         public void OnNCShopClose(CSMG_NCSHOP_CLOSE p)
@@ -732,7 +732,7 @@ namespace SagaMap.Network.Client
                 var category = ECOShopFactory.Instance.Items[p.Page + 1];
                 var p1 = new SSMG_VSHOP_INFO_HEADER();
                 p1.Page = p.Page;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 currentVShopCategory = p.Page + 1;
                 foreach (var i in category.Items.Keys)
                 {
@@ -740,11 +740,11 @@ namespace SagaMap.Network.Client
                     p2.Point = category.Items[i].points;
                     p2.ItemID = i;
                     p2.Comment = category.Items[i].comment;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
 
                 var p3 = new SSMG_VSHOP_INFO_FOOTER();
-                netIO.SendPacket(p3);
+                NetIo.SendPacket(p3);
             }
         }
 
@@ -1303,10 +1303,10 @@ namespace SagaMap.Network.Client
             if (!Character.Online)
                 return;
             var p = new SSMG_NPC_EVENT_START();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
             var p2 = new SSMG_NPC_EVENT_START_RESULT();
             p2.NPCID = id;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void SendEventEnd()
@@ -1319,14 +1319,14 @@ namespace SagaMap.Network.Client
             ps1.data = buf;*/
             //this.netIO.SendPacket(ps1);
             var p = new SSMG_NPC_EVENT_END();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendCurrentEvent(uint eventid)
         {
             var p = new SSMG_NPC_CURRENT_EVENT();
             p.EventID = eventid;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCMessageStart()
@@ -1334,7 +1334,7 @@ namespace SagaMap.Network.Client
             if (!Character.Online)
                 return;
             var p = new SSMG_NPC_MESSAGE_START();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCMessageEnd()
@@ -1342,7 +1342,7 @@ namespace SagaMap.Network.Client
             if (!Character.Online)
                 return;
             var p = new SSMG_NPC_MESSAGE_END();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCMessage(uint npcID, string message, ushort motion, string title)
@@ -1381,13 +1381,13 @@ namespace SagaMap.Network.Client
                     {
                         p = new SSMG_NPC_MESSAGE();
                         p.SetMessage(npcID, 1, item, motion, title);
-                        netIO.SendPacket(p);
+                        NetIo.SendPacket(p);
                     }
                 }
                 else
                 {
                     p.SetMessage(npcID, 1, message, motion, title);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
             }
             catch (Exception ex)
@@ -1400,7 +1400,7 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_NPC_WAIT();
             p.Wait = wait;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCPlaySound(uint soundID, byte loop, uint volume, byte balance)
@@ -1416,7 +1416,7 @@ namespace SagaMap.Network.Client
             p.Loop = loop;
             p.Volume = volume;
             p.Balance = balance;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendChangeBGM(uint soundID, byte loop, uint volume, byte balance)
@@ -1426,7 +1426,7 @@ namespace SagaMap.Network.Client
             p.Loop = loop;
             p.Volume = volume;
             p.Balance = balance;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCShowEffect(uint actorID, byte x, byte y, ushort height, uint effectID, bool oneTime)
@@ -1438,7 +1438,7 @@ namespace SagaMap.Network.Client
             p.Y = y;
             p.height = height;
             p.OneTime = oneTime;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendNPCStates()
@@ -1475,7 +1475,7 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_NPC_STATES();
                 p.PutNPCStates(subpage);
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
             /*
             if (this.Character.NPCStates.ContainsKey(this.map.ID))
@@ -1713,7 +1713,7 @@ namespace SagaMap.Network.Client
             p2.AID = 1;
             p2.ActorID = furniture.ActorID;
             p2.RindID = Character.ActorID;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void OnFFFurnitureRemove(CSMG_FF_FURNITURE_REMOVE p)
@@ -1760,7 +1760,7 @@ namespace SagaMap.Network.Client
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             p = new Packet();
             p.data = buf;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnFFurnitureCastleSetup(CSMG_FF_CASTLE_SETUP p)
@@ -1897,7 +1897,7 @@ namespace SagaMap.Network.Client
             p.Factor = (short)((1f -
                                 TamaireRentalManager.Instance.CalcFactor(lender.TamaireLending.Baselv -
                                                                          Character.Level)) * 1000);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnTamaireRentalTerminateRequest(CSMG_TAMAIRE_RENTAL_TERMINATE_REQUEST p)
@@ -1909,13 +1909,13 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_TAMAIRE_RENTAL_TERMINATE();
             p.Reason = reason;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OpenTamaireListUI()
         {
             var p = new SSMG_TAMAIRE_LIST_UI();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnGolemWarehouse(CSMG_GOLEM_WAREHOUSE p)
@@ -1923,7 +1923,7 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_GOLEM_WAREHOUSE();
             p1.ActorID = Character.ActorID;
             p1.Title = Character.Golem.Title;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             foreach (var i in Character.Inventory.GetContainer(ContainerType.GOLEMWAREHOUSE))
             {
@@ -1931,11 +1931,11 @@ namespace SagaMap.Network.Client
                 p2.InventorySlot = i.Slot;
                 p2.Container = ContainerType.GOLEMWAREHOUSE;
                 p2.Item = i;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
 
             var p3 = new SSMG_GOLEM_WAREHOUSE_ITEM_FOOTER();
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
         }
 
         public void OnGolemWarehouseSet(CSMG_GOLEM_WAREHOUSE_SET p)
@@ -1966,7 +1966,7 @@ namespace SagaMap.Network.Client
                         string.Format("GolemWarehouse Count:{0}", item.Stack), false);
                     AddItem(newItem, false);
                     var p1 = new SSMG_GOLEM_WAREHOUSE_GET();
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
         }
@@ -2056,14 +2056,14 @@ namespace SagaMap.Network.Client
                     if (item == null)
                     {
                         p1.Result = -4;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
                     if (items[i] == 0)
                     {
                         p1.Result = -2;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
@@ -2079,7 +2079,7 @@ namespace SagaMap.Network.Client
                         if (Character.Gold < gold)
                         {
                             p1.Result = -7;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             return;
                         }
 
@@ -2125,7 +2125,7 @@ namespace SagaMap.Network.Client
                     else
                     {
                         p1.Result = -5;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
                 }
@@ -2151,10 +2151,10 @@ namespace SagaMap.Network.Client
                 {
                     var p1 = new SSMG_GOLEM_SHOP_OPEN_OK();
                     p1.ActorID = p.ActorID;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     var p2 = new SSMG_GOLEM_SHOP_HEADER();
                     p2.ActorID = p.ActorID;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     foreach (var i in golem.SellShop.Keys)
                     {
                         var item = golem.Owner.Inventory.GetItem(i);
@@ -2166,23 +2166,23 @@ namespace SagaMap.Network.Client
                         p3.Price = golem.SellShop[i].Price;
                         p3.ShopCount = golem.SellShop[i].Count;
                         p3.Item = item;
-                        netIO.SendPacket(p3);
+                        NetIo.SendPacket(p3);
                     }
 
                     var p4 = new SSMG_GOLEM_SHOP_FOOTER();
-                    netIO.SendPacket(p4);
+                    NetIo.SendPacket(p4);
                 }
 
                 if (golem.GolemType == GolemType.Buy)
                 {
                     var p2 = new SSMG_GOLEM_SHOP_BUY_HEADER();
                     p2.ActorID = p.ActorID;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
 
                     var p3 = new SSMG_GOLEM_SHOP_BUY_ITEM();
                     p3.Items = golem.BuyShop;
                     p3.BuyLimit = golem.BuyLimit;
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                 }
             }
         }
@@ -2190,7 +2190,7 @@ namespace SagaMap.Network.Client
         public void OnGolemShopSellClose(CSMG_GOLEM_SHOP_SELL_CLOSE p)
         {
             var p1 = new SSMG_GOLEM_SHOP_SELL_SET();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnGolemShopSellSetup(CSMG_GOLEM_SHOP_SELL_SETUP p)
@@ -2227,13 +2227,13 @@ namespace SagaMap.Network.Client
         {
             var p1 = new SSMG_GOLEM_SHOP_SELL_SETUP();
             p1.Comment = Character.Golem.Title;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnGolemShopBuyClose(CSMG_GOLEM_SHOP_BUY_CLOSE p)
         {
             var p1 = new SSMG_GOLEM_SHOP_BUY_SET();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnGolemShopBuySetup(CSMG_GOLEM_SHOP_BUY_SETUP p)
@@ -2273,7 +2273,7 @@ namespace SagaMap.Network.Client
             p1.BuyLimit = Character.Golem.BuyLimit;
             p1.Comment = Character.Golem.Title;
             Character.Golem.BuyShop.Clear();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public DateTime hpmpspStamp = DateTime.Now;
@@ -2437,7 +2437,7 @@ namespace SagaMap.Network.Client
             //Hide Daily Stamp Icon
             var ds = new SSMG_PLAYER_SHOW_DAILYSTAMP();
             ds.Type = 0;
-            netIO.SendPacket(ds);
+            NetIo.SendPacket(ds);
 
 
             var days = Character.AInt["每日盖章"];
@@ -2455,7 +2455,7 @@ namespace SagaMap.Network.Client
                 var p = new SSMG_NPC_DAILY_STAMP();
                 p.StampCount = (byte)Character.AInt["每日盖章"];
                 p.Type = 2;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
 
                 if (Character.AInt["每日盖章"] == 5)
                 {
@@ -2479,7 +2479,7 @@ namespace SagaMap.Network.Client
                 var p = new SSMG_NPC_DAILY_STAMP();
                 p.StampCount = (byte)Character.AInt["每日盖章"];
                 p.Type = 1;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -2501,7 +2501,7 @@ namespace SagaMap.Network.Client
                 var p2 = new SSMG_PLAYER_TITLE_REQ();
                 p2.tID = TitleFactory.Instance.Items[id].ID;
                 p2.PutPrerequisite(TitleFactory.Instance.Items[id].Prerequisites.Values.ToList());
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -2513,7 +2513,7 @@ namespace SagaMap.Network.Client
             var result = CheckMasterToPupilinInvitation(pupilin);
             var p1 = new SSMG_BOND_INVITE_MASTER_RESULT();
             p1.Result = result;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public int CheckMasterToPupilinInvitation(MapClient pupilin)
@@ -2537,7 +2537,7 @@ namespace SagaMap.Network.Client
             {
                 var p2 = new SSMG_BOND_INVITE_TO_PUPILIN();
                 p2.MasterID = Character.CharID;
-                pupilin.netIO.SendPacket(p2);
+                pupilin.NetIo.SendPacket(p2);
                 pupilinpartner = pupilin.Character.CharID;
                 pupilin.masterpartner = Character.CharID;
             }
@@ -2557,7 +2557,7 @@ namespace SagaMap.Network.Client
             var result = CheckPupilinToMasterInvitation(master);
             var p1 = new SSMG_BOND_INVITE_PUPILIN_RESULT();
             p1.Result = result;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public int CheckPupilinToMasterInvitation(MapClient master)
@@ -2580,7 +2580,7 @@ namespace SagaMap.Network.Client
             {
                 var p2 = new SSMG_BOND_INVITE_TO_MASTER();
                 p2.PupilinID = Character.CharID;
-                master.netIO.SendPacket(p2);
+                master.NetIo.SendPacket(p2);
                 masterpartner = master.Character.CharID;
                 master.pupilinpartner = Character.CharID;
             }
@@ -2598,7 +2598,7 @@ namespace SagaMap.Network.Client
             var result = CheckPupilinToMasterAnswer(p.Rejected, master);
             var p2 = new SSMG_BOND_INVITE_MASTER_RESULT();
             p2.Result = result;
-            master.netIO.SendPacket(p2);
+            master.NetIo.SendPacket(p2);
         }
 
         public int CheckPupilinToMasterAnswer(bool rejected, MapClient master)
@@ -2640,7 +2640,7 @@ namespace SagaMap.Network.Client
             var result = CheckMasterToPupilinAnswer(p.Rejected, pupilin);
             var p2 = new SSMG_BOND_INVITE_MASTER_RESULT();
             p2.Result = result;
-            pupilin.netIO.SendPacket(p2);
+            pupilin.NetIo.SendPacket(p2);
         }
 
         public int CheckMasterToPupilinAnswer(bool rejected, MapClient pupilin)
@@ -2696,9 +2696,9 @@ namespace SagaMap.Network.Client
             }
 
             var p1 = new SSMG_BOND_BREAK_RESULT();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             var p2 = new SSMG_BOND_BREAK_RESULT();
-            target.netIO.SendPacket(p2);
+            target.NetIo.SendPacket(p2);
         }
 
         public void OnPlayerCancleTitleNew(CSMG_PLAYER_TITLE_CANCLENEW p)
@@ -2777,7 +2777,7 @@ namespace SagaMap.Network.Client
             titles.Add((uint)Character.AInt["称号_谓语"]);
             titles.Add((uint)Character.AInt["称号_战斗"]);
 
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
             StatusFactory.Instance.CalcStatus(Character);
         }
 
@@ -2844,7 +2844,7 @@ namespace SagaMap.Network.Client
                 ntitles.Add(0);
             p.PutTitles(ntitles);
 
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SetTitle(int n, bool v)
@@ -2913,7 +2913,7 @@ namespace SagaMap.Network.Client
                 p.LongAvoid = pet.Status.avoid_ranged;
                 p.ASPD = pet.Status.aspd;
                 p.CSPD = pet.Status.cspd;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -2961,7 +2961,7 @@ namespace SagaMap.Network.Client
                     p.WeaponID = pet.equipments[EnumPartnerEquipSlot.WEAPON].ItemID;
                 if (pet.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME))
                     p.ArmorID = pet.equipments[EnumPartnerEquipSlot.COSTUME].ItemID;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -2974,7 +2974,7 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_ANO_EQUIP_RESULT();
                 p1.PaperID = Character.UsingPaperID;
                 SendPlayerInfo();
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.PAPER_CHANGE, null, Character, true);
             }
         }
@@ -2985,7 +2985,7 @@ namespace SagaMap.Network.Client
             StatusFactory.Instance.CalcStatus(Character);
             var p1 = new SSMG_ANO_TAKEOFF_RESULT();
             p1.PaperID = Character.UsingPaperID;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.PAPER_CHANGE, null, Character, true);
             SendPlayerInfo();
         }
@@ -3027,7 +3027,7 @@ namespace SagaMap.Network.Client
                 var p2 = new SSMG_ANO_PAPER_COMPOUND_RESULT();
                 p2.lv = lv;
                 p2.paperID = paperID;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             else
             {
@@ -3053,7 +3053,7 @@ namespace SagaMap.Network.Client
                     var p2 = new SSMG_ANO_PAPER_USE_RESULT();
                     p2.value = Character.AnotherPapers[paperID].value.Value;
                     p2.paperID = paperID;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     MapServer.charDB.SavePaper(Character);
                 }
             }
@@ -3169,7 +3169,7 @@ namespace SagaMap.Network.Client
                     List2.Add(this.Character.AnotherPapers[List1[i]].skills[4]);
                 }
                 p2.paperSkillsEXP_4 = List2;*/
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             catch (Exception ex)
             {
@@ -3185,14 +3185,14 @@ namespace SagaMap.Network.Client
             p1.SetHairColor = new List<ushort>(15);
             p1.SetUnknow = new List<uint>(15);
             p1.SetHairColorStorageSlot = new List<byte>(15);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRequireRebirthReward(CSMG_PLAYER_REQUIRE_REBIRTHREWARD p)
         {
             var p1 = new SSMG_PLAYER_OPEN_REBIRTHREWARD_WINDOW();
             p1.SetOpen = 0x0A;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnCharFormChange(CSMG_CHAR_FORM p)
@@ -3207,7 +3207,7 @@ namespace SagaMap.Network.Client
         {
             var p2 = new Packet(3);
             p2.ID = 0x1CF3;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void OnPlayerFaceChange(CSMG_ITEM_FACECHANGE p)
@@ -3233,7 +3233,7 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_ANO_BUTTON_APPEAR();
             p.Type = 1;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendRingFF()
@@ -3257,14 +3257,14 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_FF_OBTAIN_MODE();
             p.value = Character.Ring.FFarden.ObMode;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFHealthMode()
         {
             var p = new SSMG_FF_HEALTH_MODE();
             p.value = Character.Ring.FFarden.HealthMode;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFIsLock()
@@ -3274,28 +3274,28 @@ namespace SagaMap.Network.Client
                 p.value = 1;
             else
                 p.value = 0;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFName()
         {
             var p = new SSMG_FF_RINGSELF();
             p.name = Character.Ring.FFarden.Name;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFMaterialPoint()
         {
             var p = new SSMG_FF_MATERIAL_POINT();
             p.value = Character.Ring.FFarden.MaterialPoint;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFMaterialConsume()
         {
             var p = new SSMG_FF_MATERIAL_CONSUME();
             p.value = Character.Ring.FFarden.MaterialConsume;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendRingFFLevel()
@@ -3303,30 +3303,30 @@ namespace SagaMap.Network.Client
             var p = new SSMG_FF_LEVEL();
             p.level = Character.Ring.FFarden.Level;
             p.value = Character.Ring.FFarden.FFexp;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
             var p1 = new SSMG_FF_F_LEVEL();
             p1.level = Character.Ring.FFarden.FLevel;
             p1.value = Character.Ring.FFarden.FFFexp;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             var p2 = new SSMG_FF_SU_LEVEL();
             p2.level = Character.Ring.FFarden.SULevel;
             p2.value = Character.Ring.FFarden.FFSUexp;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
             var p3 = new SSMG_FF_BP_LEVEL();
             p3.level = Character.Ring.FFarden.BPLevel;
             p3.value = Character.Ring.FFarden.FFBPexp;
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
             var p4 = new SSMG_FF_DEM_LEVEL();
             p4.level = Character.Ring.FFarden.DEMLevel;
             p4.value = Character.Ring.FFarden.FFDEMexp;
-            netIO.SendPacket(p4);
+            NetIo.SendPacket(p4);
         }
 
         private void SendRingFFNextFeeTime()
         {
             var p = new SSMG_FF_NEXTFEE_DATE();
             p.UpdateTime = DateTime.Now;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
 
@@ -3366,7 +3366,7 @@ namespace SagaMap.Network.Client
             p.Target = ContainerType.NONE;
             p.Result = 1;
             p.Range = Character.Range;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendActorID()
@@ -3375,7 +3375,7 @@ namespace SagaMap.Network.Client
             p2.ActorID = Character.ActorID;
             p2.Speed = Character.Speed;
             //p2.Speed = 96;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void SendStamp()
@@ -3383,11 +3383,11 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_STAMP_INFO();
             p1.Page = 0;
             p1.Stamp = Character.Stamp;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             var p2 = new SSMG_STAMP_INFO();
             p2.Page = 1;
             p2.Stamp = Character.Stamp;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void SendActorMode()
@@ -3413,13 +3413,13 @@ namespace SagaMap.Network.Client
             {
                 var p4 = new SSMG_ACTOR_OPTION();
                 p4.Option = SSMG_ACTOR_OPTION.Options.NONE;
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
             }
             else
             {
                 var p4 = new SSMG_ACTOR_OPTION();
                 p4.RawOption = sum;
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
             }
         }
 
@@ -3432,7 +3432,7 @@ namespace SagaMap.Network.Client
                 SendAttackType();
                 var p1 = new SSMG_PLAYER_INFO();
                 p1.Player = Character;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
 
                 SendPlayerInfo();
             }
@@ -3469,7 +3469,7 @@ namespace SagaMap.Network.Client
             var p = new SSMG_PLAYER_STATS_BREAK();
             p.STATS = (byte)(StatsBreakType.Str | StatsBreakType.Agi | StatsBreakType.Vit | StatsBreakType.Int |
                              StatsBreakType.Dex | StatsBreakType.Mag);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendPlayerEXPoints(ActorPC actor)
@@ -3478,7 +3478,7 @@ namespace SagaMap.Network.Client
             p.EXStatPoint = actor.EXStatPoint;
             p.CanUseStatPoint = actor.StatsPoint;
             p.EXSkillPoint = actor.EXSkillPoint;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendMotionList()
@@ -3487,14 +3487,14 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_CHAT_EXPRESSION_UNLOCK();
                 p.unlock = 0xffffffff;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
                 var p2 = new SSMG_CHAT_EXEMOTION_UNLOCK();
                 p2.List1 = 0xffffffff;
                 p2.List2 = 0xffffffff;
                 p2.List3 = 0xffffffff;
                 p2.List4 = 0xffffffff;
                 p2.List5 = 0xffffffff;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -3582,7 +3582,7 @@ namespace SagaMap.Network.Client
                                           Character.Status.mag_mario + Character.Status.mag_skill +
                                           Character.Status.mag_iris);
                     p.MagBonus = StatusFactory.Instance.RequiredBonusPoint(Character.Mag);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
                 else
                 {
@@ -3617,7 +3617,7 @@ namespace SagaMap.Network.Client
                                           Character.Status.mag_skill + Character.Status.mag_iris);
                     p.MagBonus = StatusFactory.Instance.RequiredBonusPoint(Character.Mag);
 
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
             }
         }
@@ -3671,7 +3671,7 @@ namespace SagaMap.Network.Client
 
                 p.Speed = Character.Speed;
 
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3692,7 +3692,7 @@ namespace SagaMap.Network.Client
                 p.Volume = Character.Inventory.Volume[ContainerType.BODY];
                 p.MaxPayload = Character.Inventory.MaxPayload[ContainerType.BODY];
                 p.MaxVolume = Character.Inventory.MaxVolume[ContainerType.BODY];
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3742,7 +3742,7 @@ namespace SagaMap.Network.Client
                 }
 
                 //this.Character.Speed = Configuration.Instance.Speed;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3760,7 +3760,7 @@ namespace SagaMap.Network.Client
                 p.Y = Global.PosY16to8(Character.Y, map.Height);
                 p.Dir = (byte)(Character.Dir / 45);
                 p.Equiptments = owner.FGarden.FGardenEquipments;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3785,7 +3785,7 @@ namespace SagaMap.Network.Client
                 p.Dir = (byte)(Character.Dir / 45);
                 p.RingID = Character.Ring.ID;
                 p.RingHouseID = 30250000;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3801,7 +3801,7 @@ namespace SagaMap.Network.Client
                     {
                         var p = new SSMG_NPC_SHOW();
                         p.NPCID = map.DungeonMap.Gates[i].NPCID;
-                        netIO.SendPacket(p);
+                        NetIo.SendPacket(p);
                     }
 
                     if (map.DungeonMap.Gates[i].ConnectedMap != null)
@@ -3840,7 +3840,7 @@ namespace SagaMap.Network.Client
                                     break;
                             }
 
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
                         else
                         {
@@ -3851,7 +3851,7 @@ namespace SagaMap.Network.Client
                             p1.EndY = map.DungeonMap.Gates[i].Y;
                             p1.EventID = 12001505;
                             p1.EffectID = 9005;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
 
                         if (map.DungeonMap.Gates[i].NPCID != 0)
@@ -3859,7 +3859,7 @@ namespace SagaMap.Network.Client
                             var p = new SSMG_CHAT_MOTION();
                             p.ActorID = map.DungeonMap.Gates[i].NPCID;
                             p.Motion = (MotionType)621;
-                            netIO.SendPacket(p);
+                            NetIo.SendPacket(p);
                         }
                     }
                     else
@@ -3873,7 +3873,7 @@ namespace SagaMap.Network.Client
                             p1.EndY = map.DungeonMap.Gates[i].Y;
                             p1.EventID = 12001505;
                             p1.EffectID = 9003;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
                     }
                 }
@@ -3896,7 +3896,7 @@ namespace SagaMap.Network.Client
                         p1.StartY = 7;
                         p1.EndX = 6;
                         p1.EndY = 7;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                     }
             }
         }
@@ -3907,7 +3907,7 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_PLAYER_GOLD_UPDATE();
                 p.Gold = (ulong)Character.Gold;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3921,14 +3921,14 @@ namespace SagaMap.Network.Client
                 p.MaxMP = actor.MaxMP;
                 p.MaxSP = actor.MaxSP;
                 p.MaxEP = actor.MaxEP;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
                 var p10 = new SSMG_PLAYER_HPMPSP();
                 p10.ActorID = actor.ActorID;
                 p10.HP = actor.HP;
                 p10.MP = actor.MP;
                 p10.SP = actor.SP;
                 p10.EP = actor.EP;
-                netIO.SendPacket(p10);
+                NetIo.SendPacket(p10);
                 if (actor == Character)
                     if (Character.Party != null)
                         PartyManager.Instance.UpdateMemberHPMPSP(Character.Party, Character);
@@ -3949,7 +3949,7 @@ namespace SagaMap.Network.Client
                 p.X = Character.X;
                 p.Y = Character.Y;
                 p.MoveType = MoveType.WARP;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3972,7 +3972,7 @@ namespace SagaMap.Network.Client
                 p.Skill2XPoint = Character.SkillPoint2X;
                 p.Skill2TPoint = Character.SkillPoint2T;
                 p.Skill3Point = Character.SkillPoint3;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -3986,7 +3986,7 @@ namespace SagaMap.Network.Client
                     p.JointJob = Character.JobJoint;
                 if (Character.DualJobID != 0)
                     p.DualJob = Character.DualJobID;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -4004,7 +4004,7 @@ namespace SagaMap.Network.Client
                 var p11 = new SSMG_CHAT_PUBLIC();
                 p11.ActorID = 0;
                 p11.Message = text;
-                netIO.SendPacket(p11);
+                NetIo.SendPacket(p11);
             }
         }
 
@@ -4074,7 +4074,7 @@ namespace SagaMap.Network.Client
                 var p = new SSMG_ACTOR_SPEED();
                 p.ActorID = actor.ActorID;
                 p.Speed = speed;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -4164,7 +4164,7 @@ namespace SagaMap.Network.Client
                         p.JExp = (long)Character.JEXP;
                 }
 
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -4175,7 +4175,7 @@ namespace SagaMap.Network.Client
             p.JEXP = jexp;
             p.PEXP = pexp;
             p.Type = type;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendLvUP(Actor pc, byte type)
@@ -4187,7 +4187,7 @@ namespace SagaMap.Network.Client
                 p.Level = pc.Level;
                 p.LvType = type;
 
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -4392,7 +4392,7 @@ namespace SagaMap.Network.Client
                     Character.Elements[i] + Character.Status.elements_item[i] + Character.Status.elements_iris[i] +
                     Character.Status.elements_skill[i]);
             p1.DefenceElements = elements;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnPlayerElements()
@@ -4410,7 +4410,7 @@ namespace SagaMap.Network.Client
                     Character.Elements[i] + Character.Status.elements_item[i] + Character.Status.elements_iris[i] +
                     Character.Status.elements_skill[i]);
             p1.DefenceElements = elements;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRequestPCInfo(CSMG_ACTOR_REQUEST_PC_INFO p)
@@ -4428,7 +4428,7 @@ namespace SagaMap.Network.Client
 
             p1.Actor = pc;
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             if (pc.type == ActorType.PC)
             {
                 var actor = (ActorPC)pc;
@@ -4500,7 +4500,7 @@ namespace SagaMap.Network.Client
 
             StatusFactory.Instance.CalcStatus(Character);
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnStatsUp(CSMG_PLAYER_STATS_UP p)
@@ -4624,7 +4624,7 @@ namespace SagaMap.Network.Client
             var p = new SSMG_ACTOR_WRP_RANKING();
             p.ActorID = pc.ActorID;
             p.Ranking = pc.WRPRanking;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void RevivePC(ActorPC pc)
@@ -4784,7 +4784,7 @@ namespace SagaMap.Network.Client
                 var p11 = new SSMG_DEFWAR_SET();
                 p11.MapID = map.ID;
                 p11.Data = text;
-                netIO.SendPacket(p11);
+                NetIo.SendPacket(p11);
             }
         }
 
@@ -4800,7 +4800,7 @@ namespace SagaMap.Network.Client
                 p11.CP = cp;
 
                 p11.Unknown = u;
-                netIO.SendPacket(p11);
+                NetIo.SendPacket(p11);
             }
         }
 
@@ -4811,7 +4811,7 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_DEFWAR_STATE();
                 p1.MapID = map.ID;
                 p1.Rate = rate;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -4821,7 +4821,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_DEFWAR_STATES();
                 p1.List = list;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -4841,7 +4841,7 @@ namespace SagaMap.Network.Client
                 p1.CurrentEP = Character.EPUsed;
                 p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(Character) - Character.EPUsed);
                 p1.CL = Character.CL;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -4867,7 +4867,7 @@ namespace SagaMap.Network.Client
                 p1.CurrentEP = Character.EPUsed;
                 p1.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(Character) - Character.EPUsed);
                 p1.CL = Character.CL;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -4891,7 +4891,7 @@ namespace SagaMap.Network.Client
 
                 var p1 = new SSMG_DEM_FORM_CHANGE();
                 p1.Form = Character.Form;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -4923,7 +4923,7 @@ namespace SagaMap.Network.Client
                                 var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                                 p1.InventorySlot = item.Slot;
                                 p1.Target = ContainerType.BODY;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 var p4 = new SSMG_ITEM_EQUIP();
                                 p4.InventorySlot = 0xffffffff;
                                 p4.Target = ContainerType.NONE;
@@ -4936,7 +4936,7 @@ namespace SagaMap.Network.Client
                                 }
 
                                 p4.Range = Character.Range;
-                                netIO.SendPacket(p4);
+                                NetIo.SendPacket(p4);
                                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, Character,
                                     true);
 
@@ -4947,20 +4947,20 @@ namespace SagaMap.Network.Client
                             {
                                 p2 = new SSMG_ITEM_DELETE();
                                 p2.InventorySlot = slot;
-                                netIO.SendPacket(p2);
+                                NetIo.SendPacket(p2);
                                 if (slot != item.Slot)
                                 {
                                     item = Character.Inventory.GetItem(item.Slot);
                                     var p5 = new SSMG_ITEM_COUNT_UPDATE();
                                     p5.InventorySlot = item.Slot;
                                     p5.Stack = item.Stack;
-                                    netIO.SendPacket(p5);
+                                    NetIo.SendPacket(p5);
                                     item = Character.Inventory.LastItem;
                                     p3 = new SSMG_ITEM_ADD();
                                     p3.Container = ContainerType.BODY;
                                     p3.InventorySlot = item.Slot;
                                     p3.Item = item;
-                                    netIO.SendPacket(p3);
+                                    NetIo.SendPacket(p3);
                                 }
                                 else
                                 {
@@ -4968,7 +4968,7 @@ namespace SagaMap.Network.Client
                                     var p4 = new SSMG_ITEM_COUNT_UPDATE();
                                     p4.InventorySlot = item.Slot;
                                     p4.Stack = item.Stack;
-                                    netIO.SendPacket(p4);
+                                    NetIo.SendPacket(p4);
                                 }
                             }
                         }
@@ -4977,14 +4977,14 @@ namespace SagaMap.Network.Client
                             var p1 = new SSMG_ITEM_COUNT_UPDATE();
                             p1.InventorySlot = item.Slot;
                             p1.Stack = item.Stack;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             if (Character.Inventory.LastItem.Stack == 1)
                             {
                                 p3 = new SSMG_ITEM_ADD();
                                 p3.Container = ContainerType.BODY;
                                 p3.InventorySlot = Character.Inventory.LastItem.Slot;
                                 p3.Item = Character.Inventory.LastItem;
-                                netIO.SendPacket(p3);
+                                NetIo.SendPacket(p3);
                             }
                             else
                             {
@@ -4992,7 +4992,7 @@ namespace SagaMap.Network.Client
                                 var p4 = new SSMG_ITEM_COUNT_UPDATE();
                                 p4.InventorySlot = item.Slot;
                                 p4.Stack = item.Stack;
-                                netIO.SendPacket(p4);
+                                NetIo.SendPacket(p4);
                             }
                         }
                     }
@@ -5017,7 +5017,7 @@ namespace SagaMap.Network.Client
                     p4.Target = ContainerType.NONE;
                     p4.Result = result;
                     p4.Range = Character.Range;
-                    netIO.SendPacket(p4);
+                    NetIo.SendPacket(p4);
                     return;
                 }
 
@@ -5044,13 +5044,13 @@ namespace SagaMap.Network.Client
                                 var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                                 p1.InventorySlot = dummyItem.Slot;
                                 p1.Target = ContainerType.BODY;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 var p4 = new SSMG_ITEM_EQUIP();
                                 p4.InventorySlot = 0xffffffff;
                                 p4.Target = ContainerType.NONE;
                                 p4.Result = 1;
                                 p4.Range = Character.Range;
-                                netIO.SendPacket(p4);
+                                NetIo.SendPacket(p4);
 
                                 StatusFactory.Instance.CalcStatus(Character);
                                 SendPlayerInfo();
@@ -5074,14 +5074,14 @@ namespace SagaMap.Network.Client
                         p4.InventorySlot = item.Slot;
                         StatusFactory.Instance.CalcRange(Character);
                         p4.Range = Character.Range;
-                        netIO.SendPacket(p4);
+                        NetIo.SendPacket(p4);
                     }
                     else
                     {
                         var p5 = new SSMG_ITEM_COUNT_UPDATE();
                         p5.InventorySlot = item.Slot;
                         p5.Stack = item.Stack;
-                        netIO.SendPacket(p5);
+                        NetIo.SendPacket(p5);
                     }
                 }
 
@@ -5194,9 +5194,9 @@ namespace SagaMap.Network.Client
                         {
                             var valid = new List<byte[]>();
                             for (var j = 0; j < 9; j++)
-                            for (var k = 0; k < 9; k++)
-                                if (table[k, j])
-                                    valid.Add(new[] { (byte)k, (byte)j });
+                                for (var k = 0; k < 9; k++)
+                                    if (table[k, j])
+                                        valid.Add(new[] { (byte)k, (byte)j });
 
                             var coord = valid[Global.Random.Next(0, valid.Count - 1)];
                             var task = (byte)(coord[0] + coord[1] * 9);
@@ -5225,7 +5225,7 @@ namespace SagaMap.Network.Client
                     p1.Result = SSMG_DEM_DEMIC_INITIALIZED.Results.FAILED;
                 }
 
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -5236,25 +5236,25 @@ namespace SagaMap.Network.Client
                 var chips = p.Chips;
                 var page = p.Page;
                 for (var i = 0; i < 9; i++)
-                for (var j = 0; j < 9; j++)
-                {
-                    var chipID = chips[j, i];
-                    if (ChipFactory.Instance.ByChipID.ContainsKey(chipID))
+                    for (var j = 0; j < 9; j++)
                     {
-                        var chip = new Chip(ChipFactory.Instance.ByChipID[chipID]);
-                        if (CountItem(chip.ItemID) > 0)
+                        var chipID = chips[j, i];
+                        if (ChipFactory.Instance.ByChipID.ContainsKey(chipID))
                         {
-                            chip.X = (byte)j;
-                            chip.Y = (byte)i;
-                            if (Character.Inventory.InsertChip(page, chip)) DeleteItemID(chip.ItemID, 1, true);
+                            var chip = new Chip(ChipFactory.Instance.ByChipID[chipID]);
+                            if (CountItem(chip.ItemID) > 0)
+                            {
+                                chip.X = (byte)j;
+                                chip.Y = (byte)i;
+                                if (Character.Inventory.InsertChip(page, chip)) DeleteItemID(chip.ItemID, 1, true);
+                            }
                         }
                     }
-                }
 
                 var p1 = new SSMG_DEM_DEMIC_CONFIRM_RESULT();
                 p1.Page = page;
                 p1.Result = SSMG_DEM_DEMIC_CONFIRM_RESULT.Results.OK;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
 
                 StatusFactory.Instance.CalcStatus(Character);
                 SkillHandler.Instance.CastPassiveSkills(Character);
@@ -5322,7 +5322,7 @@ namespace SagaMap.Network.Client
                 foreach (var i in Character.Inventory.MaxPayload.Values) count += i;
                 p1.Payload = (ushort)count;
 
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
             {
                 var p1 = new SSMG_DEM_STATS_PRE_CALC();
@@ -5359,7 +5359,7 @@ namespace SagaMap.Network.Client
                 foreach (var i in Character.Inventory.MaxPayload.Values) count += i;
                 p1.Payload = (ushort)count;
 
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
 
             //resotre
@@ -5382,7 +5382,7 @@ namespace SagaMap.Network.Client
                     var category = ChipShopFactory.Instance.Items[p.Category];
                     var p1 = new SSMG_DEM_CHIP_SHOP_HEADER();
                     p1.CategoryID = p.Category;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
 
                     foreach (var i in category.Items.Values)
                     {
@@ -5391,11 +5391,11 @@ namespace SagaMap.Network.Client
                         p2.JEXP = (uint)i.JEXP;
                         p2.ItemID = i.ItemID;
                         p2.Description = i.Description;
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                     }
 
                     var p3 = new SSMG_DEM_CHIP_SHOP_FOOTER();
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                 }
         }
 
@@ -5414,8 +5414,8 @@ namespace SagaMap.Network.Client
                 for (var i = 0; i < items.Length; i++)
                 {
                     var cat = from item in ChipShopFactory.Instance.Items.Values
-                        where item.Items.ContainsKey(items[i])
-                        select item;
+                              where item.Items.ContainsKey(items[i])
+                              select item;
 
                     if (cat.Count() > 0)
                     {
@@ -5778,103 +5778,103 @@ namespace SagaMap.Network.Client
                     //if (ti.Onsummoned.Count > 0)
                     //    Speak(partner, getmessage(ti.Onsummoned));
                     packet.Parturn = (uint)TALK_EVENT.SUMMONED;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.BATTLE:
                     //if (ti.OnBattle.Count > 0)
                     //    Speak(partner, getmessage(ti.OnBattle));
                     packet.Parturn = (uint)TALK_EVENT.BATTLE;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERDEAD:
                     //if (ti.OnMasterDead.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterDead));
                     packet.Parturn = (uint)TALK_EVENT.MASTERDEAD;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.NORMAL:
                     //if (ti.OnNormal.Count > 0)
                     //    Speak(partner, getmessage(ti.OnNormal));
                     packet.Parturn = (uint)TALK_EVENT.NORMAL;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.JOINPARTY:
                     //if (ti.OnJoinParty.Count > 0)
                     //    Speak(partner, getmessage(ti.OnJoinParty));
                     packet.Parturn = (uint)TALK_EVENT.JOINPARTY;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.LEAVEPARTY:
                     //if (ti.OnLeaveParty.Count > 0)
                     //    Speak(partner, getmessage(ti.OnLeaveParty));
                     packet.Parturn = (uint)TALK_EVENT.LEAVEPARTY;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERFIGHTING:
                     //if (ti.OnMasterFighting.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterFighting));
                     packet.Parturn = (uint)TALK_EVENT.MASTERFIGHTING;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERLVUP:
                     //if (ti.OnMasterLevelUp.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterLevelUp));
                     packet.Parturn = (uint)TALK_EVENT.MASTERLVUP;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERQUIT:
                     //if (ti.OnMasterQuit.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterQuit));
                     packet.Parturn = (uint)TALK_EVENT.MASTERQUIT;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERSIT:
                     //if (ti.OnMasterSit.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterSit));
                     packet.Parturn = (uint)TALK_EVENT.MASTERSIT;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERRALEX:
                     //if (ti.OnMasterRelax.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterRelax));
                     packet.Parturn = (uint)TALK_EVENT.MASTERRALEX;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERBOW:
                     //if (ti.OnMasterBow.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterBow));
                     packet.Parturn = (uint)TALK_EVENT.MASTERBOW;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.MASTERLOGIN:
                     //if (ti.OnMasterLogin.Count > 0)
                     //    Speak(partner, getmessage(ti.OnMasterLogin));
                     packet.Parturn = (uint)TALK_EVENT.MASTERLOGIN;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.LVUP:
                     //if (ti.OnLevelUp.Count > 0)
                     //    Speak(partner, getmessage(ti.OnLevelUp));
                     packet.Parturn = (uint)TALK_EVENT.LVUP;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.EQUIP:
                     //if (ti.OnEquip.Count > 0)
                     //    Speak(partner, getmessage(ti.OnEquip));
                     packet.Parturn = (uint)TALK_EVENT.EQUIP;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.EAT:
                     //if (ti.OnEat.Count > 0)
                     //    Speak(partner, getmessage(ti.OnEat));
                     packet.Parturn = (uint)TALK_EVENT.EAT;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
                 case TALK_EVENT.EATREADY:
                     //if (ti.OnEatReady.Count > 0)
                     //    Speak(partner, getmessage(ti.OnEatReady));
                     packet.Parturn = (uint)TALK_EVENT.EATREADY;
-                    netIO.SendPacket(packet);
+                    NetIo.SendPacket(packet);
                     break;
             }
         }
@@ -5961,7 +5961,7 @@ namespace SagaMap.Network.Client
             p.EquipItemID = oriItem.ItemID;
             p.PartnerEquipSlot = eqslot;
             p.MoveType = 1;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             Partner.StatusFactory.Instance.CalcPartnerStatus(partner);
 
@@ -6056,7 +6056,7 @@ namespace SagaMap.Network.Client
 
             Partner.StatusFactory.Instance.CalcPartnerStatus(partner);
 
-            netIO.SendPacket(pp2);
+            NetIo.SendPacket(pp2);
         }
 
         /// <summary>
@@ -6151,7 +6151,7 @@ namespace SagaMap.Network.Client
             pp2.ShortAvoid = partner.Status.avoid_melee;
             pp2.ASPD = partner.Status.aspd;
 
-            netIO.SendPacket(pp2);
+            NetIo.SendPacket(pp2);
             MapServer.charDB.SavePartner(partner);
             SendPetBasicInfo();
             SendPetDetailInfo();
@@ -6188,7 +6188,7 @@ namespace SagaMap.Network.Client
                 p4.Target = ContainerType.NONE;
                 p4.Result = result;
                 p4.Range = Character.Range;
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
                 return;
             }
 
@@ -6224,7 +6224,7 @@ namespace SagaMap.Network.Client
                 pr.EquipItemID = item.ItemID;
                 pr.PartnerEquipSlot = item.PartnerEquipSlot[0];
                 pr.MoveType = 0;
-                netIO.SendPacket(pr);
+                NetIo.SendPacket(pr);
             }
 
             //renew stauts
@@ -6267,7 +6267,7 @@ namespace SagaMap.Network.Client
             pr.FoodSlot = foodslot;
             pr.MoveType = p.MoveType;
             pr.FoodItemID = p.ItemID;
-            netIO.SendPacket(pr);
+            NetIo.SendPacket(pr);
         }
 
         private float GetReliabilityRate(byte reliability)
@@ -6351,7 +6351,7 @@ namespace SagaMap.Network.Client
             else
                 pr.NextFeedTime = 0;
             pr.PartnerRank = Character.Partner.rank;
-            netIO.SendPacket(pr);
+            NetIo.SendPacket(pr);
             Partner.StatusFactory.Instance.CalcPartnerStatus(partner);
             SendPetBasicInfo();
             SendPetDetailInfo();
@@ -6467,7 +6467,7 @@ namespace SagaMap.Network.Client
                 pr.Cubes_Action = partner.equipcubes_action;
                 pr.Cubes_Activeskill = partner.equipcubes_activeskill;
                 pr.Cubes_Passiveskill = partner.equipcubes_passiveskill;
-                netIO.SendPacket(pr);
+                NetIo.SendPacket(pr);
                 SendSystemMessage("PARTNER AI系統尚未實裝。");
             }
             catch (Exception ex)
@@ -6493,7 +6493,7 @@ namespace SagaMap.Network.Client
             var pr = new SSMG_PARTNER_AI_SETUP_RESULT();
             pr.Success = 0;
             pr.PartnerInventorySlot = Character.Inventory.Equipments[EnumEquipSlot.PET].Slot;
-            netIO.SendPacket(pr);
+            NetIo.SendPacket(pr);
         }
 
         public void OnPartnerAIClose()
@@ -6517,7 +6517,7 @@ namespace SagaMap.Network.Client
             var pr = new SSMG_PARTNER_AI_MODE_SELECTION();
             pr.PartnerInventorySlot = Character.Inventory.Equipments[EnumEquipSlot.PET].Slot;
             pr.AIMode = partner.ai_mode;
-            netIO.SendPacket(pr);
+            NetIo.SendPacket(pr);
         }
 
         #endregion
@@ -6764,7 +6764,7 @@ namespace SagaMap.Network.Client
                 p1.Job = 0;
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendSkillList();
 
             SkillHandler.Instance.CastPassiveSkills(Character);
@@ -6939,7 +6939,7 @@ namespace SagaMap.Network.Client
                 }
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendSkillList();
 
             SkillHandler.Instance.CastPassiveSkills(Character);
@@ -7216,7 +7216,7 @@ namespace SagaMap.Network.Client
                 var p2 = new SSMG_SKILL_CAST_RESULT();
                 p2.ActorID = Character.ActorID;
                 p2.Result = 20;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -7901,7 +7901,7 @@ namespace SagaMap.Network.Client
                 foreach (var i in Character.Skills.Values) list.Add(i);
             }
             p.Skills(list, 0, Character.JobBasic, ifDominion, Character);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
             if (Character.Rebirth || Character.Job == Character.Job3)
             {
                 {
@@ -7921,7 +7921,7 @@ namespace SagaMap.Network.Client
                     }
 
                     p.Skills(list, 1, Character.Job2X, ifDominion, Character);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
                 {
                     list.Clear();
@@ -7939,7 +7939,7 @@ namespace SagaMap.Network.Client
                         foreach (var i in Character.Skills2_2.Values) list.Add(i);
                     }
                     p.Skills(list, 2, Character.Job2T, ifDominion, Character);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
                 {
                     list.Clear();
@@ -7958,7 +7958,7 @@ namespace SagaMap.Network.Client
                     }
 
                     p.Skills(list, 3, Character.Job3, ifDominion, Character);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
             }
             else
@@ -7981,7 +7981,7 @@ namespace SagaMap.Network.Client
                     }
 
                     p.Skills(list, 1, Character.Job2X, ifDominion, Character);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
 
                 if (Character.Job == Character.Job2T)
@@ -8001,7 +8001,7 @@ namespace SagaMap.Network.Client
                         foreach (var i in Character.Skills2.Values) list.Add(i);
                     }
                     p.Skills(list, 2, Character.Job2T, ifDominion, Character);
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
 
                 if (map.Info.Flag.Test(MapFlags.Dominion))
@@ -8010,20 +8010,20 @@ namespace SagaMap.Network.Client
                     {
                         var p2 = new SSMG_SKILL_RESERVE_LIST();
                         p2.Skills = Character.SkillsReserve.Values.ToList();
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                     }
                     else
                     {
                         var p2 = new SSMG_SKILL_RESERVE_LIST();
                         p2.Skills = new List<SagaDB.Skill.Skill>();
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                     }
                 }
                 else
                 {
                     var p2 = new SSMG_SKILL_RESERVE_LIST();
                     p2.Skills = Character.SkillsReserve.Values.ToList();
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
             }
 
@@ -8044,13 +8044,13 @@ namespace SagaMap.Network.Client
                 }
                 var p2 = new SSMG_SKILL_JOINT_LIST();
                 p2.Skills = list;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             else
             {
                 var p2 = new SSMG_SKILL_JOINT_LIST();
                 p2.Skills = new List<SagaDB.Skill.Skill>();
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -8096,7 +8096,7 @@ namespace SagaMap.Network.Client
                 p2.Speed = 410;
             else
                 p2.Speed = 0;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
             Character.TTime["远程蓄力"] = DateTime.Now;
 
             if (Character.Tasks.ContainsKey("RangeAttack"))
@@ -8210,7 +8210,7 @@ namespace SagaMap.Network.Client
                 var p2 = new SSMG_FISHBAIT_EQUIP_RESULT();
                 p2.InventoryID = 0;
                 p2.IsEquip = 1;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             else
             {
@@ -8222,7 +8222,7 @@ namespace SagaMap.Network.Client
                     var p2 = new SSMG_FISHBAIT_EQUIP_RESULT();
                     p2.InventoryID = p.InventorySlot;
                     p2.IsEquip = 0;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
             }
         }
@@ -8248,7 +8248,7 @@ namespace SagaMap.Network.Client
                 {
                     var p = new SSMG_MOSTERGUIDE_NEW_RECORD();
                     p.guideID = mob.guideID;
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
             }
         }
@@ -8285,7 +8285,7 @@ namespace SagaMap.Network.Client
 
             var p = new SSMG_MOSTERGUIDE_RECORDS();
             p.Records = masks;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void MarionetteActivate(uint marionetteID)
@@ -8428,7 +8428,7 @@ namespace SagaMap.Network.Client
                         case InventoryDeleteResult.ALL_DELETED:
                             var p1 = new SSMG_ITEM_DELETE();
                             p1.InventorySlot = item.Slot;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             newItem = item.Clone();
                             newItem.Stack = p.Count;
                             Logger.LogItemGet(Logger.EventType.ItemWareGet,
@@ -8443,7 +8443,7 @@ namespace SagaMap.Network.Client
                             var p2 = new SSMG_ITEM_COUNT_UPDATE();
                             p2.InventorySlot = item.Slot;
                             p2.Stack = item.Stack;
-                            netIO.SendPacket(p2);
+                            NetIo.SendPacket(p2);
                             newItem = item.Clone();
                             newItem.Stack = p.Count;
                             Logger.LogItemGet(Logger.EventType.ItemWareGet,
@@ -8463,7 +8463,7 @@ namespace SagaMap.Network.Client
 
             var p5 = new SSMG_ITEM_WARE_GET_RESULT();
             p5.Result = result;
-            netIO.SendPacket(p5);
+            NetIo.SendPacket(p5);
         }
 
         public void OnItemWarePut(CSMG_ITEM_WARE_PUT p)
@@ -8503,24 +8503,24 @@ namespace SagaMap.Network.Client
                             p1.Place = WarehousePlace.Current;
                             p1.InventorySlot = newItem.Slot;
                             p1.Item = newItem;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             break;
                         case InventoryAddResult.STACKED:
                             var p2 = new SSMG_ITEM_COUNT_UPDATE();
                             p2.InventorySlot = item.Slot;
                             p2.Stack = item.Stack;
-                            netIO.SendPacket(p2);
+                            NetIo.SendPacket(p2);
                             break;
                         case InventoryAddResult.MIXED:
                             var p3 = new SSMG_ITEM_COUNT_UPDATE();
                             p3.InventorySlot = item.Slot;
                             p3.Stack = item.Stack;
-                            netIO.SendPacket(p3);
+                            NetIo.SendPacket(p3);
                             var p4 = new SSMG_ITEM_WARE_ITEM();
                             p4.InventorySlot = Character.Inventory.LastItem.Slot;
                             p4.Item = Character.Inventory.LastItem;
                             p4.Place = WarehousePlace.Current;
-                            netIO.SendPacket(p4);
+                            NetIo.SendPacket(p4);
                             break;
                     }
 
@@ -8531,7 +8531,7 @@ namespace SagaMap.Network.Client
 
             var p5 = new SSMG_ITEM_WARE_PUT_RESULT();
             p5.Result = result;
-            netIO.SendPacket(p5);
+            NetIo.SendPacket(p5);
         }
 
         public void SendWareItems(WarehousePlace place)
@@ -8542,7 +8542,7 @@ namespace SagaMap.Network.Client
             p.CountAll = Configuration.Configuration.Instance.WarehouseLimit;
             p.CountMax = Configuration.Configuration.Instance.WarehouseLimit;
             //p.Gold = this.Character.Account.Bank;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             foreach (var i in Character.Inventory.WareHouse.Keys)
             {
@@ -8561,12 +8561,12 @@ namespace SagaMap.Network.Client
                         p1.Place = WarehousePlace.Current;
                     else
                         p1.Place = i;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
 
             var p2 = new SSMG_ITEM_WARE_FOOTER();
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void OnFGardenWareClose(CSMG_FG_WARE_CLOSE p)
@@ -8600,7 +8600,7 @@ namespace SagaMap.Network.Client
                         case InventoryDeleteResult.ALL_DELETED:
                             var p1 = new SSMG_ITEM_DELETE();
                             p1.InventorySlot = item.Slot;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             newItem = item.Clone();
                             newItem.Stack = p.Count;
                             Logger.LogItemGet(Logger.EventType.ItemWareGet,
@@ -8615,7 +8615,7 @@ namespace SagaMap.Network.Client
                             var p2 = new SSMG_ITEM_COUNT_UPDATE();
                             p2.InventorySlot = item.Slot;
                             p2.Stack = item.Stack;
-                            netIO.SendPacket(p2);
+                            NetIo.SendPacket(p2);
                             newItem = item.Clone();
                             newItem.Stack = p.Count;
                             Logger.LogItemGet(Logger.EventType.ItemWareGet,
@@ -8635,7 +8635,7 @@ namespace SagaMap.Network.Client
 
             var p5 = new SSMG_ITEM_WARE_GET_RESULT();
             p5.Result = result;
-            netIO.SendPacket(p5);
+            NetIo.SendPacket(p5);
         }
 
         public void OnFGardenWarePut(CSMG_FG_WARE_PUT p)
@@ -8674,23 +8674,23 @@ namespace SagaMap.Network.Client
                             var p1 = new SSMG_FG_WARE_ITEM();
                             p1.InventorySlot = newItem.Slot;
                             p1.Item = newItem;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             break;
                         case InventoryAddResult.STACKED:
                             var p2 = new SSMG_ITEM_COUNT_UPDATE();
                             p2.InventorySlot = item.Slot;
                             p2.Stack = item.Stack;
-                            netIO.SendPacket(p2);
+                            NetIo.SendPacket(p2);
                             break;
                         case InventoryAddResult.MIXED:
                             var p3 = new SSMG_ITEM_COUNT_UPDATE();
                             p3.InventorySlot = item.Slot;
                             p3.Stack = item.Stack;
-                            netIO.SendPacket(p3);
+                            NetIo.SendPacket(p3);
                             var p4 = new SSMG_FG_WARE_ITEM();
                             p4.InventorySlot = Character.Inventory.LastItem.Slot;
                             p4.Item = Character.Inventory.LastItem;
-                            netIO.SendPacket(p4);
+                            NetIo.SendPacket(p4);
                             break;
                     }
 
@@ -8701,7 +8701,7 @@ namespace SagaMap.Network.Client
 
             var p5 = new SSMG_ITEM_WARE_PUT_RESULT();
             p5.Result = result;
-            netIO.SendPacket(p5);
+            NetIo.SendPacket(p5);
         }
 
         public void SendFGardenWareItems()
@@ -8710,10 +8710,10 @@ namespace SagaMap.Network.Client
             var p0 = new SSMG_FG_WARE_SENDCOUNT();
             Character.Inventory.WareHouse[currentWarehouse] = new List<Item>(300);
             p0.CurrentCount = Character.Inventory.WareHouse[currentWarehouse].Capacity;
-            netIO.SendPacket(p0);
+            NetIo.SendPacket(p0);
 
             var p1 = new SSMG_FG_WARE_HEADER();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             foreach (var j in Character.Inventory.WareHouse[currentWarehouse])
             {
@@ -8727,11 +8727,11 @@ namespace SagaMap.Network.Client
                 //    p2.Place = WarehousePlace.Current;
                 //else
                 //    p2.Place = i;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
 
             var p3 = new SSMG_FG_WARE_FOOTER();
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
         }
 
         private ActorPC teamPartner;
@@ -8766,14 +8766,14 @@ namespace SagaMap.Network.Client
                     if (members[i].Online)
                     {
                         member = FromActorPC(members[i]);
-                        if (member != null) member.netIO.SendPacket(p1);
+                        if (member != null) member.NetIo.SendPacket(p1);
                     }
             }
             else
             {
                 var p1 = new SSMG_ABYSSTEAM_BREAK();
                 p1.Result = Result;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -8801,7 +8801,7 @@ namespace SagaMap.Network.Client
 
             var Result = unchecked((byte)CheckAbyssTeamLeaveRequest(team));
             var p1 = new SSMG_ABYSSTEAM_LEAVE();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckAbyssTeamLeaveRequest(Team team)
@@ -8831,12 +8831,12 @@ namespace SagaMap.Network.Client
                 p1.Name = Character.Name;
                 p1.Level = Character.Level;
                 p1.Job = Character.Job;
-                target.netIO.SendPacket(p1);
+                target.NetIo.SendPacket(p1);
             }
 
             var p2 = new SSMG_ABYSSTEAM_REGIST_APPLY();
             p2.Result = Result;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         private int CheckAbyssTeamRegistRequest(uint leaderID, string pass)
@@ -8873,7 +8873,7 @@ namespace SagaMap.Network.Client
             p1.Result = Result;
             if (Result == 1)
                 p1.TeamName = Character.Team.Name;
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
         }
 
         private int CheckAbyssTeamRegistApproval(bool approved)
@@ -8900,7 +8900,7 @@ namespace SagaMap.Network.Client
             var Result = unchecked((byte)CheckAbyssTeamSetCreate(p));
             var p1 = new SSMG_ABYSSTEAM_SET_CREATE();
             p1.Result = Result;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckAbyssTeamSetCreate(CSMG_ABYSSTEAM_SET_CREATE_REQUEST p)
@@ -8928,7 +8928,7 @@ namespace SagaMap.Network.Client
             p1.Result = Result;
             if (Result == 0)
                 p1.Floor = 100;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckAbyssTeamSetOpen()
@@ -8959,7 +8959,7 @@ namespace SagaMap.Network.Client
             if (item == null || item.ItemID == 10000000)
             {
                 var p2 = new SSMG_ITEM_EXCHANGE_WINDOW_RESET();
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
                 SendCapacity();
                 return;
             }
@@ -8967,7 +8967,7 @@ namespace SagaMap.Network.Client
             if (!ItemExchangeListFactory.Instance.ExchangeList.ContainsKey(item.ItemID))
             {
                 var p3 = new SSMG_ITEM_EXCHANGE_WINDOW_RESET();
-                netIO.SendPacket(p3);
+                NetIo.SendPacket(p3);
                 SendCapacity();
                 return;
             }
@@ -8979,7 +8979,7 @@ namespace SagaMap.Network.Client
             if (!canexchangelist.ItemsID.Contains(exchangetargetid) && canexchangelist.OriItemID != exchangetargetid)
             {
                 var p4 = new SSMG_ITEM_EXCHANGE_WINDOW_RESET();
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
                 SendCapacity();
                 return;
             }
@@ -8991,7 +8991,7 @@ namespace SagaMap.Network.Client
             //Logger.ShowInfo("Receive Item Exchange Request. Type:" + exchangetype + ", itemslot:" + inventoryid + ", targetid:" + exchangetargetid);
 
             var p1 = new SSMG_ITEM_EXCHANGE_WINDOW_RESET();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendCapacity();
         }
 
@@ -9030,7 +9030,7 @@ namespace SagaMap.Network.Client
                 }
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnChatRing(CSMG_CHAT_RING p)
@@ -9076,7 +9076,7 @@ namespace SagaMap.Network.Client
                     RingManager.Instance.RingDismiss(Character.Ring);
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRingInviteAnswer(CSMG_RING_INVITE_ANSWER p, bool accepted)
@@ -9088,7 +9088,7 @@ namespace SagaMap.Network.Client
                 p1.Result = (SSMG_RING_INVITE_ANSWER_RESULT.RESULTS)result;
                 if (result >= 0)
                     RingManager.Instance.AddMember(ringPartner.Ring, Character);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
 
             ringPartner = null;
@@ -9122,10 +9122,10 @@ namespace SagaMap.Network.Client
                 p2.CharID = Character.CharID;
                 p2.CharName = Character.Name;
                 p2.RingName = Character.Ring.Name;
-                client.netIO.SendPacket(p2);
+                client.NetIo.SendPacket(p2);
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckRingInvite(MapClient client)
@@ -9156,7 +9156,7 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_RING_MEMBER_INFO();
                 p.Member(i, Character.Ring);
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
                 SendRingMemberInfo(i);
             }
         }
@@ -9167,7 +9167,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_RING_NAME();
                 p1.Player = Character;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
 
             if (Character.Ring == null)
@@ -9178,8 +9178,8 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_RING_NAME();
                 p.Ring(Character.Ring, reason);
                 p1.Player = Character;
-                netIO.SendPacket(p);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p);
+                NetIo.SendPacket(p1);
                 SendRingMember();
             }
             else
@@ -9189,7 +9189,7 @@ namespace SagaMap.Network.Client
                 p.Fame = Character.Ring.Fame;
                 p.CurrentMember = (byte)Character.Ring.MemberCount;
                 p.MaxMember = (byte)Character.Ring.MaxMemberCount;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -9205,7 +9205,7 @@ namespace SagaMap.Network.Client
                     p.PartyIndex = i;
                     p.CharID = pc.CharID;
                     p.Online = pc.Online;
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                     var p2 = new SSMG_PARTY_MEMBER_DETAIL();
                     p2.PartyIndex = i;
                     p2.CharID = pc.CharID;
@@ -9213,7 +9213,7 @@ namespace SagaMap.Network.Client
                     p2.Job = pc.Job;
                     p2.Level = pc.Level;
                     p2.JobLevel = pc.CurrentJobLevel;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
         }
 
@@ -9227,7 +9227,7 @@ namespace SagaMap.Network.Client
                 p.PartyIndex = (uint)i;
                 p.CharID = pc.CharID;
                 p.Online = pc.Online;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -9236,7 +9236,7 @@ namespace SagaMap.Network.Client
             var p = new SSMG_CHAT_RING();
             p.Sender = name;
             p.Content = content;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendRingMeDelete(SSMG_RING_QUIT.Reasons reason)
@@ -9244,14 +9244,14 @@ namespace SagaMap.Network.Client
             var p = new SSMG_RING_QUIT();
             p.RingID = Character.Ring.ID;
             p.Reason = reason;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendRingMemberDelete(ActorPC pc)
         {
             var p = new SSMG_RING_MEMBER_INFO();
             p.Member(pc, null);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public bool irisAddSlot;
@@ -9481,7 +9481,7 @@ namespace SagaMap.Network.Client
 
                     var p2 = new SSMG_IRIS_GACHA_RESULT();
                     p2.ItemIDs = results;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
         }
 
@@ -9529,7 +9529,7 @@ namespace SagaMap.Network.Client
                                     AddItem(ItemFactory.Instance.GetItem(card.NextCard), true);
                                     var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                                     p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.OK;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
                                 }
                                 else
                                 {
@@ -9538,7 +9538,7 @@ namespace SagaMap.Network.Client
 
                                     var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                                     p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.FAILED;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
                                     irisCardAssemble = false;
                                 }
                             }
@@ -9546,7 +9546,7 @@ namespace SagaMap.Network.Client
                             {
                                 var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                                 p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NOT_ENOUGH_GOLD;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 irisCardAssemble = false;
                             }
                         }
@@ -9554,7 +9554,7 @@ namespace SagaMap.Network.Client
                         {
                             var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                             p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             irisCardAssemble = false;
                         }
                     }
@@ -9562,7 +9562,7 @@ namespace SagaMap.Network.Client
                     {
                         var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                         p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.SUCCESS_NOT_ENOUGH_ITEM;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         irisCardAssemble = false;
                     }
                 }
@@ -9571,7 +9571,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                 p1.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NO_ITEM;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 irisCardAssemble = false;
             }
         }
@@ -9589,7 +9589,7 @@ namespace SagaMap.Network.Client
                 item.Locked = true;
                 SendItemIdentify(item.Slot);
                 var p1 = new SSMG_IRIS_CARD_LOCK_RESULT();
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -9605,7 +9605,7 @@ namespace SagaMap.Network.Client
                 p1.Result = (byte)(CountItem(16003400u) > 0 ? 0x00 : 0x01);
                 if (CountItem(16003400u) > 0)
                     DeleteItem(GetItem(16003400u)[0].Slot, 1, true);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -9724,7 +9724,7 @@ namespace SagaMap.Network.Client
 
             var p = new SSMG_IRIS_ADD_SLOT_ITEM_LIST();
             p.Items = items;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnIrisCardRemove(CSMG_IRIS_CARD_REMOVE p)
@@ -9738,7 +9738,7 @@ namespace SagaMap.Network.Client
                     {
                         var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
                         p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.OK;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
 
                         var card = item.Cards[p.CardSlot];
                         AddItem(ItemFactory.Instance.GetItem(card.ID), true);
@@ -9750,21 +9750,21 @@ namespace SagaMap.Network.Client
                     {
                         var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
                         p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                     }
                 }
                 else
                 {
                     var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
                     p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
             else
             {
                 var p1 = new SSMG_IRIS_CARD_REMOVE_RESULT();
                 p1.Result = SSMG_IRIS_CARD_REMOVE_RESULT.Results.FAILED;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -9784,7 +9784,7 @@ namespace SagaMap.Network.Client
                                 DeleteItem(card.Slot, 1, true);
                                 var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
                                 p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.OK;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 var cardInfo = IrisCardFactory.Instance.Items[card.BaseData.id];
                                 item.Cards.Add(cardInfo);
                                 SendItemCardInfo(item);
@@ -9795,7 +9795,7 @@ namespace SagaMap.Network.Client
                             {
                                 var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
                                 p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.CANNOT_SET;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                             }
                         }
                 }
@@ -9803,7 +9803,7 @@ namespace SagaMap.Network.Client
                 {
                     var p1 = new SSMG_IRIS_CARD_INSERT_RESULT();
                     p1.Result = SSMG_IRIS_CARD_INSERT_RESULT.Results.SLOT_OVER;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
         }
@@ -9818,7 +9818,7 @@ namespace SagaMap.Network.Client
                     irisCardItem = item.Slot;
                     var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
                     p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.OK;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
 
                     SendItemCardAbility(item);
                 }
@@ -9826,14 +9826,14 @@ namespace SagaMap.Network.Client
                 {
                     var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
                     p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_SLOT;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
             else
             {
                 var p1 = new SSMG_IRIS_CARD_OPEN_RESULT();
                 p1.Result = SSMG_IRIS_CARD_OPEN_RESULT.Results.NO_ITEM;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -9924,7 +9924,7 @@ namespace SagaMap.Network.Client
                                 {
                                     var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                                     p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.OK;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
                                     SendEffect(5145);
                                     item.CurrentSlot++;
                                     SendItemInfo(item);
@@ -9938,7 +9938,7 @@ namespace SagaMap.Network.Client
                                     SendSystemMessage("装备打洞失败！使用了一本防爆书（打洞）。");
                                     var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                                     p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
 
                                     ItemAddSlot(Character);
                                     //this.irisAddSlot = false;
@@ -9948,7 +9948,7 @@ namespace SagaMap.Network.Client
                                     DeleteItem(item.Slot, 1, true);
                                     var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                                     p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
 
                                     irisAddSlot = false;
                                 }
@@ -9957,7 +9957,7 @@ namespace SagaMap.Network.Client
                             {
                                 var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                                 p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
 
                                 irisAddSlot = false;
                             }
@@ -9966,7 +9966,7 @@ namespace SagaMap.Network.Client
                         {
                             var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                             p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
 
                             irisAddSlot = false;
                         }
@@ -9975,7 +9975,7 @@ namespace SagaMap.Network.Client
                     {
                         var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                         p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_RIGHT_MATERIAL;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
 
                         irisAddSlot = false;
                     }
@@ -9984,7 +9984,7 @@ namespace SagaMap.Network.Client
                 {
                     var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                     p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
 
                     irisAddSlot = false;
                 }
@@ -10022,27 +10022,27 @@ namespace SagaMap.Network.Client
                             p1.Slot = 1;
                             p1.Material = material;
                             p1.Gold = gold;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
                         else
                         {
                             var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                             p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.Failed;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
                     }
                     else
                     {
                         var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                         p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NOT_ENOUGH_GOLD;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                     }
                 }
                 else
                 {
                     var p1 = new SSMG_IRIS_ADD_SLOT_RESULT();
                     p1.Result = SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     irisAddSlot = false;
                 }
             }
@@ -10052,7 +10052,7 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_ITEM_IRIS_CARD_INFO();
             p.Item = item;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendItemCardAbility(Item item)
@@ -10073,7 +10073,7 @@ namespace SagaMap.Network.Client
                 p.ElementsDefence = item.IrisElements(true);
             else
                 p.ElementsDefence = Item.ElementsZero();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             p = new SSMG_IRIS_CARD_ITEM_ABILITY();
             p.Type = SSMG_IRIS_CARD_ITEM_ABILITY.Types.Max;
@@ -10091,7 +10091,7 @@ namespace SagaMap.Network.Client
                 p.ElementsDefence = item.IrisElements(false);
             else
                 p.ElementsDefence = Item.ElementsZero();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             p = new SSMG_IRIS_CARD_ITEM_ABILITY();
             p.Type = SSMG_IRIS_CARD_ITEM_ABILITY.Types.Total;
@@ -10103,7 +10103,7 @@ namespace SagaMap.Network.Client
             p.AbilityValues = release.Values.ToList();
             p.ElementsAttack = Character.Status.attackelements_iris;
             p.ElementsDefence = Character.Status.elements_iris;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnNaviOpen(CSMG_NAVI_OPEN p)
@@ -10131,7 +10131,7 @@ namespace SagaMap.Network.Client
                 }
 
             var p2 = new SSMG_PONG();
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void OnSendVersion(CSMG_SEND_VERSION p)
@@ -10145,20 +10145,20 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_VERSION_ACK();
                 p1.SetResult(SSMG_VERSION_ACK.Result.OK);
                 p1.SetVersion(client_Version);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 //Official HK server will now request for Hackshield GUID check , we don't know its algorithms, so not implemented
                 var p2 = new SSMG_LOGIN_ALLOWED();
                 frontWord = (uint)Global.Random.Next();
                 backWord = (uint)Global.Random.Next();
                 p2.FrontWord = frontWord;
                 p2.BackWord = backWord;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             else
             {
                 var p2 = new SSMG_VERSION_ACK();
                 p2.SetResult(SSMG_VERSION_ACK.Result.VERSION_MISSMATCH);
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -10169,7 +10169,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -10177,7 +10177,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -10188,18 +10188,18 @@ namespace SagaMap.Network.Client
                 p1.Unknown1 = 0x100;
                 p1.TimeStamp = (uint)(DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
 
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 /*if(MapClientManager.Instance.OnlinePlayer.Count > 3)
                     System.Environment.Exit(System.Environment.ExitCode);*/
 
 
                 account = MapServer.accountDB.GetUser(p.UserName);
                 var check = from acc in MapClientManager.Instance.OnlinePlayer
-                    where acc.account.Name == account.Name
-                    select acc;
-                foreach (var i in check) i.netIO.Disconnect();
+                            where acc.account.Name == account.Name
+                            select acc;
+                foreach (var i in check) i.NetIo.Disconnect();
 
-                account.LastIP = netIO.sock.RemoteEndPoint.ToString().Split(':')[0];
+                account.LastIP = NetIo.sock.RemoteEndPoint.ToString().Split(':')[0];
                 account.MacAddress = p.MacAddress;
 
                 //这里检查同mac的已在线玩家, 如果大于或等于2个. 则断开当前请求的连接
@@ -10209,7 +10209,7 @@ namespace SagaMap.Network.Client
                 var onlinecount = Math.Max(insamemac, insameip);
                 if (onlinecount >= Configuration.Configuration.Instance.MaxCharacterInMapServer)
                 {
-                    netIO.Disconnect();
+                    NetIo.Disconnect();
                     return;
                 }
 
@@ -10270,7 +10270,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -10579,7 +10579,7 @@ namespace SagaMap.Network.Client
                     var p2 = new Packet();
                     p2.data = new byte[3];
                     p2.ID = 0x122a;
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
 
                 if (!Character.Tasks.ContainsKey("Recover")) //自然恢复
@@ -10647,7 +10647,7 @@ namespace SagaMap.Network.Client
                 p3.SoundID = (uint)Character.TInt["TempBGM"];
                 p3.Loop = 50;
                 p3.Volume = 100;
-                netIO.SendPacket(p3);
+                NetIo.SendPacket(p3);
                 Character.TInt["TempBGM"] = 0;
                 Character.TInt.Remove("TempBGM");
             }
@@ -10659,14 +10659,14 @@ namespace SagaMap.Network.Client
                 {
                     var p2 = new SSMG_GOLEM_SHOP_SELL_RESULT();
                     p2.SoldItems = golem.SoldItem;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
 
                 if (golem.GolemType == GolemType.Buy)
                 {
                     var p2 = new SSMG_GOLEM_SHOP_BUY_RESULT();
                     p2.BoughtItems = golem.BoughtItem;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
 
                 if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange)
@@ -10775,11 +10775,11 @@ namespace SagaMap.Network.Client
                     var p3 = new SSMG_THEATER_INFO();
                     p3.MessageType = SSMG_THEATER_INFO.Type.MESSAGE;
                     p3.Message = LocalManager.Instance.Strings.THEATER_WELCOME;
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                     p3 = new SSMG_THEATER_INFO();
                     p3.MessageType = SSMG_THEATER_INFO.Type.MOVIE_ADDRESS;
                     p3.Message = nextMovie.URL;
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                 }
             }
 
@@ -10849,7 +10849,7 @@ namespace SagaMap.Network.Client
                 }
 
             var p1 = new SSMG_LOGIN_FINISHED();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             state = SESSION_STATE.LOADED;
 
             if (Character.TInt["NextMapEvent"] > 0)
@@ -10879,7 +10879,7 @@ namespace SagaMap.Network.Client
             {
                 var p2 = new SSMG_DEFWAR_INFO();
                 p2.List = DefWarManager.Instance.GetDefWarList(map.ID);
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
             //SendGifts();
 
@@ -10920,7 +10920,7 @@ namespace SagaMap.Network.Client
             {
                 var ds = new SSMG_PLAYER_SHOW_DAILYSTAMP();
                 ds.Type = 1;
-                netIO.SendPacket(ds);
+                NetIo.SendPacket(ds);
             }
 
             //MapDefaultScript
@@ -10940,7 +10940,7 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_LOGOUT();
             p1.Result = (SSMG_LOGOUT.Results)p.Result;
             PartnerTalking(Character.Partner, TALK_EVENT.MASTERQUIT, 100, 5000);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnSSOLogout(CSMG_SSO_LOGOUT p)
@@ -10948,7 +10948,7 @@ namespace SagaMap.Network.Client
             //竟然不清状态。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
             //Packets.Server.SSMG_SSO_LOGOUT p1 = new Packets.Server.SSMG_SSO_LOGOUT();
             //this.netIO.SendPacket(p1);
-            netIO.Disconnect();
+            NetIo.Disconnect();
         }
 
         private ActorPC partyPartner;
@@ -10985,7 +10985,7 @@ namespace SagaMap.Network.Client
                     byte roll = 0;
                     if (pc.Party.Roll == 0) roll = 1;
                     p2.status = roll;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
         }
 
@@ -11015,7 +11015,7 @@ namespace SagaMap.Network.Client
                 p1.Result = -1; //指定プレイヤーが存在しません
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnPartyQuit(CSMG_PARTY_QUIT p)
@@ -11034,7 +11034,7 @@ namespace SagaMap.Network.Client
                     PartyManager.Instance.PartyDismiss(Character.Party);
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnPartyInviteAnswer(CSMG_PARTY_INVITE_ANSWER p)
@@ -11082,10 +11082,10 @@ namespace SagaMap.Network.Client
                 p2.CharID = Character.CharID;
                 p2.Name = Character.Name;
                 client.partyPartner = Character;
-                client.netIO.SendPacket(p2);
+                client.NetIo.SendPacket(p2);
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckPartyInvite(MapClient client)
@@ -11116,8 +11116,8 @@ namespace SagaMap.Network.Client
             p.Party(Character.Party, Character);
             var p1 = new SSMG_PARTY_NAME();
             p1.Party(Character.Party, Character);
-            netIO.SendPacket(p);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p);
+            NetIo.SendPacket(p1);
             SendPartyMember();
         }
 
@@ -11127,7 +11127,7 @@ namespace SagaMap.Network.Client
             p.PartyID = Character.Party.ID;
             p.PartyName = Character.Party.Name;
             p.Reason = reason;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendPartyMemberDelete(uint pc)
@@ -11136,7 +11136,7 @@ namespace SagaMap.Network.Client
             p.PartyIndex = -1;
             p.CharID = pc;
             p.CharName = "";
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendPartyMemberPosition(ActorPC pc)
@@ -11155,7 +11155,7 @@ namespace SagaMap.Network.Client
                     p1.MapID = mapid;
                     p1.X = Global.PosX16to8(pc.X, MapManager.Instance.GetMap(pc.MapID).Width);
                     p1.Y = Global.PosY16to8(pc.Y, MapManager.Instance.GetMap(pc.MapID).Height);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
         }
 
@@ -11174,7 +11174,7 @@ namespace SagaMap.Network.Client
                         p.X = map.DungeonMap.X;
                         p.Y = map.DungeonMap.Y;
                         p.Dir = map.DungeonMap.Dir;
-                        netIO.SendPacket(p);
+                        NetIo.SendPacket(p);
                     }
                 }
         }
@@ -11192,7 +11192,7 @@ namespace SagaMap.Network.Client
                     p2.Job = pc.Job;
                     p2.Level = pc.Level;
                     p2.JobLevel = pc.CurrentJobLevel;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
         }
 
@@ -11206,7 +11206,7 @@ namespace SagaMap.Network.Client
                 p.PartyIndex = i;
                 p.CharID = pc.CharID;
                 p.Online = pc.Online;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -11225,7 +11225,7 @@ namespace SagaMap.Network.Client
                 p3.MaxMP = pc.MaxMP;
                 p3.SP = pc.SP;
                 p3.MaxSP = pc.MaxSP;
-                netIO.SendPacket(p3);
+                NetIo.SendPacket(p3);
             }
         }
 
@@ -11241,14 +11241,14 @@ namespace SagaMap.Network.Client
                         p.PartyIndex = i;
                         p.CharID = pc.CharID;
                         p.Online = pc.Online;
-                        netIO.SendPacket(p);
+                        NetIo.SendPacket(p);
                         var p1 = new SSMG_PARTY_MEMBER_POSITION();
                         p1.PartyIndex = i;
                         p1.CharID = pc.CharID;
                         p1.MapID = pc.MapID;
                         p1.X = Global.PosX16to8(pc.X, MapManager.Instance.GetMap(pc.MapID).Width);
                         p1.Y = Global.PosY16to8(pc.Y, MapManager.Instance.GetMap(pc.MapID).Height);
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         var p2 = new SSMG_PARTY_MEMBER_DETAIL();
                         p2.PartyIndex = i;
                         p2.CharID = pc.CharID;
@@ -11256,7 +11256,7 @@ namespace SagaMap.Network.Client
                         p2.Job = pc.Job;
                         p2.Level = pc.Level;
                         p2.JobLevel = pc.CurrentJobLevel;
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                         var p3 = new SSMG_PARTY_MEMBER_HPMPSP();
                         p3.PartyIndex = i;
                         p3.CharID = pc.CharID;
@@ -11266,7 +11266,7 @@ namespace SagaMap.Network.Client
                         p3.MaxMP = pc.MaxMP;
                         p3.SP = pc.SP;
                         p3.MaxSP = pc.MaxSP;
-                        netIO.SendPacket(p3);
+                        NetIo.SendPacket(p3);
                     }
                     catch (Exception ex)
                     {
@@ -11285,7 +11285,7 @@ namespace SagaMap.Network.Client
                 p.CharID = Character.Party[i].CharID;
                 p.CharName = Character.Party[i].Name;
                 p.Leader = Character.Party.Leader == Character.Party[i];
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
 
             var party = Character.Party;
@@ -11317,8 +11317,8 @@ namespace SagaMap.Network.Client
             if (Type == 0)
             {
                 var gift = from G in Character.Gifts
-                    where GiftID == G.MailID
-                    select G;
+                           where GiftID == G.MailID
+                           select G;
                 if (gift == null)
                 {
                     SendSystemMessage("unexpected command");
@@ -11358,8 +11358,8 @@ namespace SagaMap.Network.Client
             else
             {
                 var gift = from G in Character.Gifts
-                    where GiftID == G.MailID
-                    select G;
+                           where GiftID == G.MailID
+                           select G;
                 if (gift == null)
                 {
                     SendSystemMessage("unexpected command");
@@ -11385,7 +11385,7 @@ namespace SagaMap.Network.Client
             var p3 = new SSMG_GIFT_TAKERECIPT();
             p3.type = Type;
             p3.MailID = GiftID;
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
         }
 
         public void OnChatParty(CSMG_CHAT_PARTY p)
@@ -11549,7 +11549,7 @@ namespace SagaMap.Network.Client
                 var p = new SSMG_CHAT_PUBLIC();
                 p.ActorID = 0xFFFFFFFF;
                 p.Message = content;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -11557,7 +11557,7 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_SYSTEM_MESSAGE();
             p.Message = message;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendChatParty(string sender, string content)
@@ -11565,7 +11565,7 @@ namespace SagaMap.Network.Client
             var p = new SSMG_CHAT_PARTY();
             p.Sender = sender;
             p.Content = content;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         /// <summary>
@@ -11588,10 +11588,10 @@ namespace SagaMap.Network.Client
 
             FromActorPC(pc).SendSystemMessage(Character.Name + "正在查看你的裝備列表");
             var p1 = new SSMG_PLAYER_EQUIP_START();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             var p2 = new SSMG_PLAYER_EQUIP_NAME();
             p2.ActorName = pc.Name;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
             foreach (var i in pc.Inventory.Equipments)
             {
                 var item = i.Value;
@@ -11601,11 +11601,11 @@ namespace SagaMap.Network.Client
                 p3.InventorySlot = item.Slot;
                 p3.Container = pc.Inventory.GetContainerType(item.Slot);
                 p3.Item = item;
-                netIO.SendPacket(p3);
+                NetIo.SendPacket(p3);
             }
 
             var p4 = new SSMG_PLAYER_EQUIP_END();
-            netIO.SendPacket(p4);
+            NetIo.SendPacket(p4);
         }
 
         public void OnPlayerFurnitureSit(CSMG_PLAYER_FURNITURE_SIT p)
@@ -11624,7 +11624,7 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_PLAYER_FURNITURE_SIT();
             p1.FurnitureID = p.FurnitureID;
             p1.unknown = p.unknown;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.FURNITURE_SIT, null, Character, true);
         }
@@ -11648,10 +11648,10 @@ namespace SagaMap.Network.Client
                 client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.SHOP_OPEN, Character.Name));
                 var p1 = new SSMG_PLAYER_SHOP_HEADER2();
                 p1.ActorID = p.ActorID;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 var p2 = new SSMG_PLAYER_SHOP_HEADER();
                 p2.ActorID = p.ActorID;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
                 foreach (var i in pc.Playershoplist.Keys)
                 {
                     var item = pc.Inventory.GetItem(i);
@@ -11663,11 +11663,11 @@ namespace SagaMap.Network.Client
                     p3.Price = pc.Playershoplist[i].Price;
                     p3.ShopCount = pc.Playershoplist[i].Count;
                     p3.Item = item;
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                 }
 
                 var p4 = new SSMG_PLAYER_SHOP_FOOTER();
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
             }
         }
 
@@ -11767,7 +11767,7 @@ namespace SagaMap.Network.Client
                 p1.button = 0;
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void SendShopGoodInfo(uint slotid, ushort count, ulong gold)
@@ -11776,7 +11776,7 @@ namespace SagaMap.Network.Client
             p.SlotID = slotid;
             p.Count = count;
             p.gold = gold;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnPlayerShopSellBuy(CSMG_PLAYER_SHOP_SELL_BUY p)
@@ -11811,21 +11811,21 @@ namespace SagaMap.Network.Client
                     if (item == null)
                     {
                         p1.Result = -4;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
                     if (item.ItemID == 950000006 || item.ItemID == 950000007)
                     {
                         p1.Result = -1;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
                     if (items[i] == 0)
                     {
                         p1.Result = -2;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
@@ -11842,14 +11842,14 @@ namespace SagaMap.Network.Client
                         if (Character.Gold < gold)
                         {
                             p1.Result = -7;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             return;
                         }
 
                         if (gold + pc.Gold >= 999999999999)
                         {
                             p1.Result = -9;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             return;
                         }
 
@@ -11883,12 +11883,12 @@ namespace SagaMap.Network.Client
                                 var p2 = new SSMG_ITEM_COUNT_UPDATE();
                                 p2.InventorySlot = item.Slot;
                                 p2.Stack = item.Stack;
-                                client.netIO.SendPacket(p2);
+                                client.NetIo.SendPacket(p2);
                                 break;
                             case InventoryDeleteResult.ALL_DELETED:
                                 var p3 = new SSMG_ITEM_DELETE();
                                 p3.InventorySlot = item.Slot;
-                                client.netIO.SendPacket(p3);
+                                client.NetIo.SendPacket(p3);
                                 break;
                         }
 
@@ -11937,7 +11937,7 @@ namespace SagaMap.Network.Client
                     else
                     {
                         p1.Result = -5;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
                 }
@@ -11976,7 +11976,7 @@ namespace SagaMap.Network.Client
             GAME_SMSG_STALL_VEN_CLOSE_ERR9,"露店商がいなくなりました"
             GAME_SMSG_STALL_VEN_CLOSE_ERR10,"露店商がイベントを始めました"
             */
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnPlayerShopChangeClose(CSMG_PLAYER_SETSHOP_OPEN p)
@@ -12004,8 +12004,8 @@ namespace SagaMap.Network.Client
             Shopswitch = 0;
             p2.button = 0;
             p1.Comment = Shoptitle;
-            netIO.SendPacket(p1);
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p1);
+            NetIo.SendPacket(p2);
         }
 
         #endregion
@@ -12027,7 +12027,7 @@ namespace SagaMap.Network.Client
             if (Character.Party.Leader == Character)
             {
                 var p2 = new SSMG_AAA_GROUP_DESTROY();
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -12104,7 +12104,7 @@ namespace SagaMap.Network.Client
             var pi = new SSMG_DUALJOB_SET_DUALJOB_INFO();
             pi.Result = true;
             pi.RetType = 0x00;
-            netIO.SendPacket(pi);
+            NetIo.SendPacket(pi);
         }
 
 
@@ -12124,7 +12124,7 @@ namespace SagaMap.Network.Client
                 else
                     levels[i] = 0;
             p2.JobLevel = levels;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void SendPlayerDualJobSkillList()
@@ -12133,7 +12133,7 @@ namespace SagaMap.Network.Client
             p1.Skills = Character.DualJobSkill;
             p1.SkillLevels = Character.DualJobSkill;
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnDualJobWindowClose()
@@ -12174,7 +12174,7 @@ namespace SagaMap.Network.Client
             else
                 p.CurrentSkillList = new List<SagaDB.Skill.Skill>();
 
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnPossessionRequest(CSMG_POSSESSION_REQUEST p)
@@ -12203,7 +12203,7 @@ namespace SagaMap.Network.Client
                 p1.FromID = Character.ActorID;
                 p1.ToID = 0xFFFFFFFF;
                 p1.Result = result;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -12261,7 +12261,7 @@ namespace SagaMap.Network.Client
 
                             var p2 = new SSMG_ITEM_DELETE();
                             p2.InventorySlot = item.Slot;
-                            ((PCEventHandler)pc.e).Client.netIO.SendPacket(p2);
+                            ((PCEventHandler)pc.e).Client.NetIo.SendPacket(p2);
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, pc, true);
                         }
 
@@ -12312,7 +12312,7 @@ namespace SagaMap.Network.Client
 
                         var p2 = new SSMG_ITEM_DELETE();
                         p2.InventorySlot = item3.Slot;
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, Character, true);
 
                         Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.POSSESSION, arg2, Character, true);
@@ -12413,7 +12413,7 @@ namespace SagaMap.Network.Client
                 p1.FromID = Character.ActorID;
                 p1.ToID = 0xFFFFFFFF;
                 p1.Result = result;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -12606,12 +12606,12 @@ namespace SagaMap.Network.Client
                 p1.comment = items[i].Comment;
                 p1.Index = (uint)i + 1;
                 p1.Item = items[i].Item;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
 
             var p2 = new SSMG_POSSESSION_CATALOG_END();
             p2.Page = p.Page;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void OnPossessionCatalogItemInfoRequest(CSMG_POSSESSION_CATALOG_ITEM_INFO_REQUEST p)
@@ -12627,7 +12627,7 @@ namespace SagaMap.Network.Client
                     p2.Level = item.Item.BaseData.possibleLv;
                     p2.X = Global.PosX16to8(item.X, map.Width);
                     p2.Y = Global.PosY16to8(item.Y, map.Height);
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
         }
 
@@ -12713,7 +12713,7 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_POSSESSION_PARTNER_RESULT();
                 p1.InventorySlot = p.InventorySlot;
                 p1.Pos = p.PossessionPosition;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, Character, true);
             }
         }
@@ -12721,7 +12721,7 @@ namespace SagaMap.Network.Client
         public void OnPartnerPossessionCancel(CSMG_POSSESSION_PARTNER_CANCEL p)
         {
             var p1 = new SSMG_POSSESSION_PARTNER_CANCEL();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             switch (p.PossessionPosition)
             {
                 case PossessionPosition.RIGHT_HAND:
@@ -12739,7 +12739,7 @@ namespace SagaMap.Network.Client
             }
 
             p1.Pos = p.PossessionPosition;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, Character, true);
         }
 
@@ -12748,7 +12748,7 @@ namespace SagaMap.Network.Client
         public void OnPProtectCreatedIniti(CSMG_PPROTECT_CREATED_INITI p)
         {
             var p1 = new SSMG_PPROTECT_CREATED_INITI();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         /// <summary>
@@ -12769,7 +12769,7 @@ namespace SagaMap.Network.Client
                 p1.Page = max;
             p1.List = pp;
             var ss = p1.DumpData();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         /// <summary>
@@ -12790,11 +12790,11 @@ namespace SagaMap.Network.Client
 
             var p1 = new SSMG_PPROTECT_CREATED_RESULT();
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             var p2 = new SSMG_PPROTECT_CHAT_INFO();
             p2.SetData(Character, 0, 0, 0, 0, 0, 0);
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
 
@@ -12815,7 +12815,7 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_PPROTECT_CREATED_REVISE_RESULT();
             p1.SetData(p.name, p.message, p.taskID, p.maxMember, 0, 0);
             //string ss = p1.DumpData();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             for (var i = 0; i < pp.Members.Count; i++)
             {
@@ -12824,7 +12824,7 @@ namespace SagaMap.Network.Client
                 {
                     p1 = new SSMG_PPROTECT_CREATED_REVISE_RESULT();
                     p1.SetData(p.name, p.message, p.taskID, p.maxMember, 0, 0);
-                    client.netIO.SendPacket(p1);
+                    client.NetIo.SendPacket(p1);
                 }
             }
         }
@@ -12844,7 +12844,7 @@ namespace SagaMap.Network.Client
             {
                 var p1 = new SSMG_PPROTECT_CREATED_ADD_RESULT_1();
                 p1.List = ppt.Members;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -12865,29 +12865,29 @@ namespace SagaMap.Network.Client
                         {
                             p2 = new SSMG_PPROTECT_CHAT_INFO();
                             p2.SetData(Character, (byte)ppt.Members.Count, 0, 0, 0, 0, 0); //
-                            client.netIO.SendPacket(p2);
+                            client.NetIo.SendPacket(p2);
 
                             var p3 = new SSMG_PPROTECT_CHAT_INFO();
                             p3.SetData(ppt.Members[i], (byte)i, 0, 0, 0, 0, 0);
-                            netIO.SendPacket(p3);
+                            NetIo.SendPacket(p3);
                         }
                     }
 
                     p2 = new SSMG_PPROTECT_CHAT_INFO();
                     p2.SetData(Character, (byte)ppt.Members.Count, 0, 0, 0, 0, 0); //
 
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     ppt.Members.Add(Character);
                     var p1 = new SSMG_PPROTECT_CREATED_ADD_RESULT();
                     p1.SetData(ppt.Name, password, 0, 1, 0);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     pp = ppt;
                 }
                 else
                 {
                     var p1 = new SSMG_PPROTECT_CREATED_ADD_RESULT();
                     p1.SetData("", "", 0xFB, 0, 0xFF);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     //密码错误
                 }
             }
@@ -12919,7 +12919,7 @@ namespace SagaMap.Network.Client
                                 p2 = new SSMG_PPROTECT_READY();
                                 p2.Index = (byte)pp.Members.IndexOf(Character);
                                 p2.Code = 1;
-                                client.netIO.SendPacket(p2);
+                                client.NetIo.SendPacket(p2);
                             }
                         }
                     }
@@ -12931,24 +12931,24 @@ namespace SagaMap.Network.Client
 
                     break;
                 case 0: //取消
-                {
-                    for (var i = 0; i < pp.Members.Count; i++)
                     {
-                        var client = MapClientManager.Instance.FindClient((ActorPC)pp.Members[i]);
-                        if (client != null && client.Character != Character)
+                        for (var i = 0; i < pp.Members.Count; i++)
                         {
-                            p2 = new SSMG_PPROTECT_READY();
-                            p2.Index = (byte)pp.Members.IndexOf(Character);
-                            p2.Code = 0;
-                            client.netIO.SendPacket(p2);
+                            var client = MapClientManager.Instance.FindClient((ActorPC)pp.Members[i]);
+                            if (client != null && client.Character != Character)
+                            {
+                                p2 = new SSMG_PPROTECT_READY();
+                                p2.Index = (byte)pp.Members.IndexOf(Character);
+                                p2.Code = 0;
+                                client.NetIo.SendPacket(p2);
+                            }
                         }
                     }
-                }
                     p1.Code = 0;
                     break;
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
 
@@ -12971,7 +12971,7 @@ namespace SagaMap.Network.Client
                     {
                         var p1 = new SSMG_PPROTECT_CREATED_OUT_RESULT();
                         p1.SetName(pp.Name);
-                        client.netIO.SendPacket(p1);
+                        client.NetIo.SendPacket(p1);
                     }
                 }
 
@@ -12988,13 +12988,13 @@ namespace SagaMap.Network.Client
                         var p1 = new SSMG_PPROTECT_CREATED_OUT();
                         //int iii = pp.Members.IndexOf(this.Character);
                         p1.Index = (byte)pp.Members.IndexOf(Character);
-                        client.netIO.SendPacket(p1);
+                        client.NetIo.SendPacket(p1);
                     }
                 }
 
                 var p2 = new SSMG_PPROTECT_CREATED_OUT_RESULT_1();
                 p2.SetName(pp.Name);
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
 
                 pp.Members.Remove(Character);
             }
@@ -13033,13 +13033,13 @@ namespace SagaMap.Network.Client
 
             //unknown
             var p1 = new SSMG_ITEM_CHANGE_ADD();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             //添加道具锁
             var p2 = new SSMG_ITEM_INFO();
             p2.Item = item;
             p2.InventorySlot = p.InventorySlot;
             p2.Container = Character.Inventory.GetContainerType(item.Slot);
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
 
 
             //添加pet道具
@@ -13238,8 +13238,8 @@ namespace SagaMap.Network.Client
             if (Character.Gold < 5000)
             {
                 p2.Result = -1;
-                netIO.SendPacket(p2);
-                netIO.SendPacket(packet);
+                NetIo.SendPacket(p2);
+                NetIo.SendPacket(packet);
                 itemMasterEnhance = false;
                 return;
             }
@@ -13251,13 +13251,13 @@ namespace SagaMap.Network.Client
 
             if (itemlist.Count > 0)
             {
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
             else
             {
                 p2.Result = -2;
-                netIO.SendPacket(p2);
-                netIO.SendPacket(packet);
+                NetIo.SendPacket(p2);
+                NetIo.SendPacket(packet);
                 itemMasterEnhance = false;
             }
         }
@@ -13273,7 +13273,7 @@ namespace SagaMap.Network.Client
 
             var p1 = new SSMG_ITEM_MASTERENHANCE_DETAIL();
             p1.Items = lst;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnItemMasterEnhanceConfirm(CSMG_ITEM_MASTERENHANCE_CONFIRM p)
@@ -13290,8 +13290,8 @@ namespace SagaMap.Network.Client
             {
                 p2.Result = -4;
 
-                netIO.SendPacket(p2);
-                netIO.SendPacket(packet);
+                NetIo.SendPacket(p2);
+                NetIo.SendPacket(packet);
                 itemMasterEnhance = false;
                 return;
             }
@@ -13302,8 +13302,8 @@ namespace SagaMap.Network.Client
             {
                 p2.Result = -3;
 
-                netIO.SendPacket(p2);
-                netIO.SendPacket(packet);
+                NetIo.SendPacket(p2);
+                NetIo.SendPacket(packet);
                 itemMasterEnhance = false;
                 return;
             }
@@ -13341,7 +13341,7 @@ namespace SagaMap.Network.Client
             SendItemInfo(item);
 
             p2.Result = 0;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
 
             SendMasterEnhanceAbleEquiList();
         }
@@ -13507,7 +13507,7 @@ namespace SagaMap.Network.Client
 
                 var p1 = new SSMG_ITEM_ENHANCE_DETAIL();
                 p1.Items = list;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -13621,8 +13621,8 @@ namespace SagaMap.Network.Client
             {
                 var list = Character.Inventory.Items[(ContainerType)i];
                 var query = from it in list
-                    where it.ItemID == ID
-                    select it;
+                            where it.ItemID == ID
+                            select it;
                 result.AddRange(query);
             }
 
@@ -13917,9 +13917,9 @@ namespace SagaMap.Network.Client
                                 p1.Result = 0x00;
                                 p1.OrignalRefine = item.Refine;
                                 p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 p1.Result = 0xfc;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 itemEnhance = false;
                                 return;
                             }
@@ -13934,9 +13934,9 @@ namespace SagaMap.Network.Client
                                 p1.Result = 0x00;
                                 p1.OrignalRefine = item.Refine;
                                 p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 p1.Result = 0xfc;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 itemEnhance = false;
                                 return;
                             }
@@ -13950,9 +13950,9 @@ namespace SagaMap.Network.Client
                             p1.Result = 0x00;
                             p1.OrignalRefine = item.Refine;
                             p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             p1.Result = 0xfc;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             itemEnhance = false;
                             return;
                         }
@@ -14277,7 +14277,7 @@ namespace SagaMap.Network.Client
                             p1.Result = 0;
                             p1.OrignalRefine = (ushort)(item.Refine + 1);
                             p1.ExpectedRefine = item.Refine;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             p1.Result = 0x00;
                         }
                     }
@@ -14286,7 +14286,7 @@ namespace SagaMap.Network.Client
                         p1.Result = 0x00;
                         p1.OrignalRefine = item.Refine;
                         p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         p1.Result = 0xff;
                     }
                 }
@@ -14295,7 +14295,7 @@ namespace SagaMap.Network.Client
                     p1.Result = 0x00;
                     p1.OrignalRefine = item.Refine;
                     p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     p1.Result = 0xfd;
                 }
             }
@@ -14304,7 +14304,7 @@ namespace SagaMap.Network.Client
                 p1.Result = 0x00;
                 p1.OrignalRefine = item.Refine;
                 p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 p1.Result = 0xfe;
             }
 
@@ -14318,7 +14318,7 @@ namespace SagaMap.Network.Client
                 || (item.BaseData.itemType == ItemType.ACCESORY_NECK &&
                     (CountItem(90000044) > 0 || CountItem(10087403) > 0) && item.Refine < 30 && Character.Gold >= 5000))
             {
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 var p2 = new CSMG_ITEM_ENHANCE_SELECT();
                 p2.InventorySlot = p.InventorySlot;
                 OnItemEnhanceSelect(p2);
@@ -14328,27 +14328,27 @@ namespace SagaMap.Network.Client
             p1.Result = 0x00;
             p1.OrignalRefine = item.Refine;
             p1.ExpectedRefine = (ushort)(item.Refine + 1);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             p1.Result = 0xfd;
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             if (failed)
             {
                 var res = from enhanctitem in Character.Inventory.GetContainer(ContainerType.BODY)
-                    where (enhanctitem.IsArmor && (CountItem(90000044) > 0 || CountItem(90000045) > 0 ||
-                                                   CountItem(90000046) > 0 || CountItem(90000043) > 0 ||
-                                                   CountItem(10087400) > 0 || CountItem(10087401) > 0 ||
-                                                   CountItem(10087402) > 0 || CountItem(10087403) > 0))
-                          || (enhanctitem.IsWeapon && (CountItem(90000044) > 0 || CountItem(90000045) > 0 ||
-                                                       CountItem(90000046) > 0 || CountItem(10087401) > 0)) ||
-                          CountItem(10087402) > 0 || CountItem(10087403) > 0
-                          || (enhanctitem.BaseData.itemType == ItemType.SHIELD && (CountItem(90000044) > 0 ||
-                              CountItem(90000045) > 0 || CountItem(10087401) > 0 || CountItem(10087403) > 0))
-                          || (enhanctitem.BaseData.itemType == ItemType.ACCESORY_NECK &&
-                              (CountItem(90000044) > 0 || CountItem(10087403) > 0) && item.Refine < 30 &&
-                              Character.Gold >= 5000)
-                    select enhanctitem;
+                          where (enhanctitem.IsArmor && (CountItem(90000044) > 0 || CountItem(90000045) > 0 ||
+                                                         CountItem(90000046) > 0 || CountItem(90000043) > 0 ||
+                                                         CountItem(10087400) > 0 || CountItem(10087401) > 0 ||
+                                                         CountItem(10087402) > 0 || CountItem(10087403) > 0))
+                                || (enhanctitem.IsWeapon && (CountItem(90000044) > 0 || CountItem(90000045) > 0 ||
+                                                             CountItem(90000046) > 0 || CountItem(10087401) > 0)) ||
+                                CountItem(10087402) > 0 || CountItem(10087403) > 0
+                                || (enhanctitem.BaseData.itemType == ItemType.SHIELD && (CountItem(90000044) > 0 ||
+                                    CountItem(90000045) > 0 || CountItem(10087401) > 0 || CountItem(10087403) > 0))
+                                || (enhanctitem.BaseData.itemType == ItemType.ACCESORY_NECK &&
+                                    (CountItem(90000044) > 0 || CountItem(10087403) > 0) && item.Refine < 30 &&
+                                    Character.Gold >= 5000)
+                          select enhanctitem;
                 var items = res.ToList();
 
                 foreach (var itemsitem in res.ToList())
@@ -14583,7 +14583,7 @@ namespace SagaMap.Network.Client
                 {
                     var p2 = new SSMG_ITEM_ENHANCE_LIST();
                     p2.Items = items;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
                 else
                 {
@@ -14592,9 +14592,9 @@ namespace SagaMap.Network.Client
                     p1.Result = 0x00;
                     p1.OrignalRefine = item.Refine;
                     p1.ExpectedRefine = (ushort)(item.Refine + 1);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     p1.Result = 0xfd;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
         }
@@ -14984,13 +14984,13 @@ namespace SagaMap.Network.Client
         {
             var RepairItems = new List<Item>();
             foreach (var i in Character.Inventory.Items)
-            foreach (var items in i.Value)
-                if (items.BaseData.repairItem == item.BaseData.id)
-                    RepairItems.Add(items);
+                foreach (var items in i.Value)
+                    if (items.BaseData.repairItem == item.BaseData.id)
+                        RepairItems.Add(items);
 
             var p = new SSMG_ITEM_EQUIP_REPAIR_LIST();
             p.Items = RepairItems;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnItemDrop(CSMG_ITEM_DROP p)
@@ -15036,28 +15036,28 @@ namespace SagaMap.Network.Client
             if (itemDroped.BaseData.events == 1)
             {
                 p1.ErrorID = -3;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
             if (trading)
             {
                 p1.ErrorID = -8;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
             if (itemDroped.BaseData.noTrade)
             {
                 p1.ErrorID = -16;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
             if (itemDroped.BaseData.itemType == ItemType.DEMIC_CHIP)
             {
                 p1.ErrorID = -18;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -15076,12 +15076,12 @@ namespace SagaMap.Network.Client
                     itemDroped.Stack = count;
                     p2.InventorySlot = p.InventorySlot;
                     p2.Stack = item.Stack;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     break;
                 case InventoryDeleteResult.ALL_DELETED:
                     var p3 = new SSMG_ITEM_DELETE();
                     p3.InventorySlot = p.InventorySlot;
-                    netIO.SendPacket(p3);
+                    NetIo.SendPacket(p3);
                     break;
             }
 
@@ -15150,7 +15150,7 @@ namespace SagaMap.Network.Client
                                     var p1 = new SSMG_ITEM_GET_ERROR();
                                     p1.ActorID = item.ActorID;
                                     p1.ErrorID = -10;
-                                    netIO.SendPacket(p1);
+                                    NetIo.SendPacket(p1);
                                     return;
                                 }
                         }
@@ -15161,7 +15161,7 @@ namespace SagaMap.Network.Client
                                 var p1 = new SSMG_ITEM_GET_ERROR();
                                 p1.ActorID = item.ActorID;
                                 p1.ErrorID = -10;
-                                netIO.SendPacket(p1);
+                                NetIo.SendPacket(p1);
                                 return;
                             }
                         }
@@ -15245,7 +15245,7 @@ namespace SagaMap.Network.Client
                         var p1 = new SSMG_ITEM_GET_ERROR();
                         p1.ActorID = item.ActorID;
                         p1.ErrorID = -5;
-                        netIO.SendPacket(p1);
+                        NetIo.SendPacket(p1);
                         return;
                     }
 
@@ -15254,7 +15254,7 @@ namespace SagaMap.Network.Client
                     var p1 = new SSMG_ITEM_GET_ERROR();
                     p1.ActorID = item.ActorID;
                     p1.ErrorID = -16;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     return;
                 }
 
@@ -15263,7 +15263,7 @@ namespace SagaMap.Network.Client
                     var p1 = new SSMG_ITEM_GET_ERROR();
                     p1.ActorID = item.ActorID;
                     p1.ErrorID = -4;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     return;
                 }
 
@@ -15275,7 +15275,7 @@ namespace SagaMap.Network.Client
                     p4.Target = ContainerType.NONE;
                     p4.Result = result;
                     p4.Range = Character.Range;
-                    netIO.SendPacket(p4);
+                    NetIo.SendPacket(p4);
                     return;
                 }
 
@@ -15580,7 +15580,7 @@ namespace SagaMap.Network.Client
                 p4.Target = ContainerType.NONE;
                 p4.Result = result;
                 p4.Range = Character.Range;
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
                 return;
             }
 
@@ -15871,14 +15871,14 @@ namespace SagaMap.Network.Client
                     p4.InventorySlot = item.Slot;
                     StatusFactory.Instance.CalcRange(Character);
                     p4.Range = Character.Range;
-                    netIO.SendPacket(p4);
+                    NetIo.SendPacket(p4);
                 }
                 else
                 {
                     var p5 = new SSMG_ITEM_COUNT_UPDATE();
                     p5.InventorySlot = item.Slot;
                     p5.Stack = item.Stack;
-                    netIO.SendPacket(p5);
+                    NetIo.SendPacket(p5);
                 }
 
                 if (item.BaseData.itemType == ItemType.ARROW || item.BaseData.itemType == ItemType.BULLET)
@@ -15887,7 +15887,7 @@ namespace SagaMap.Network.Client
                     var p5 = new SSMG_ITEM_COUNT_UPDATE();
                     p5.InventorySlot = Character.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Slot;
                     p5.Stack = Character.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].Stack;
-                    netIO.SendPacket(p5);
+                    NetIo.SendPacket(p5);
                 }
 
                 if (item.BaseData.itemType == ItemType.CARD || item.BaseData.itemType == ItemType.THROW)
@@ -15896,7 +15896,7 @@ namespace SagaMap.Network.Client
                     var p5 = new SSMG_ITEM_COUNT_UPDATE();
                     p5.InventorySlot = Character.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot;
                     p5.Stack = Character.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Stack;
-                    netIO.SendPacket(p5);
+                    NetIo.SendPacket(p5);
                 }
             }
 
@@ -16185,7 +16185,7 @@ namespace SagaMap.Network.Client
                 p1.InventorySlot = item.Slot;
                 p1.Result = -3;
                 p1.Target = (ContainerType)(-1);
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -16200,7 +16200,7 @@ namespace SagaMap.Network.Client
                     p1.InventorySlot = item.Slot;
                     p1.Result = -4;
                     p1.Target = (ContainerType)(-1);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     return;
                 }
 
@@ -16210,7 +16210,7 @@ namespace SagaMap.Network.Client
                     p1.InventorySlot = item.Slot;
                     p1.Result = -10;
                     p1.Target = (ContainerType)(-1);
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     return;
                 }
 
@@ -16355,24 +16355,24 @@ namespace SagaMap.Network.Client
                         {
                             p2 = new SSMG_ITEM_DELETE();
                             p2.InventorySlot = item.Slot;
-                            netIO.SendPacket(p2);
+                            NetIo.SendPacket(p2);
                             p3 = new SSMG_ITEM_ADD();
                             p3.Container = container;
                             p3.InventorySlot = item.Slot;
                             item.Stack = count;
                             p3.Item = item;
-                            netIO.SendPacket(p3);
+                            NetIo.SendPacket(p3);
                             var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                             p1.InventorySlot = item.Slot;
                             p1.Target = container;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                         }
                         else
                         {
                             var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                             p1.InventorySlot = item.Slot;
                             p1.Target = container;
-                            netIO.SendPacket(p1);
+                            NetIo.SendPacket(p1);
                             var p4 = new SSMG_ITEM_EQUIP();
                             p4.InventorySlot = 0xffffffff;
                             p4.Target = ContainerType.NONE;
@@ -16385,7 +16385,7 @@ namespace SagaMap.Network.Client
                             }
 
                             p4.Range = Character.Range;
-                            netIO.SendPacket(p4);
+                            NetIo.SendPacket(p4);
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_EQUIP, null, Character, true);
 
                             if (item.EquipSlot[0] == EnumEquipSlot.PET)
@@ -16404,20 +16404,20 @@ namespace SagaMap.Network.Client
                     {
                         p2 = new SSMG_ITEM_DELETE();
                         p2.InventorySlot = slot;
-                        netIO.SendPacket(p2);
+                        NetIo.SendPacket(p2);
                         if (slot != item.Slot)
                         {
                             item = Character.Inventory.GetItem(item.Slot);
                             var p5 = new SSMG_ITEM_COUNT_UPDATE();
                             p5.InventorySlot = item.Slot;
                             p5.Stack = item.Stack;
-                            netIO.SendPacket(p5);
+                            NetIo.SendPacket(p5);
                             item = Character.Inventory.LastItem;
                             p3 = new SSMG_ITEM_ADD();
                             p3.Container = container;
                             p3.InventorySlot = item.Slot;
                             p3.Item = item;
-                            netIO.SendPacket(p3);
+                            NetIo.SendPacket(p3);
                         }
                         else
                         {
@@ -16425,7 +16425,7 @@ namespace SagaMap.Network.Client
                             var p4 = new SSMG_ITEM_COUNT_UPDATE();
                             p4.InventorySlot = item.Slot;
                             p4.Stack = item.Stack;
-                            netIO.SendPacket(p4);
+                            NetIo.SendPacket(p4);
                         }
                     }
                 }
@@ -16434,14 +16434,14 @@ namespace SagaMap.Network.Client
                     var p1 = new SSMG_ITEM_COUNT_UPDATE();
                     p1.InventorySlot = item.Slot;
                     p1.Stack = item.Stack;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     if (Character.Inventory.LastItem.Stack == count)
                     {
                         p3 = new SSMG_ITEM_ADD();
                         p3.Container = container;
                         p3.InventorySlot = Character.Inventory.LastItem.Slot;
                         p3.Item = Character.Inventory.LastItem;
-                        netIO.SendPacket(p3);
+                        NetIo.SendPacket(p3);
                     }
                     else
                     {
@@ -16449,7 +16449,7 @@ namespace SagaMap.Network.Client
                         var p4 = new SSMG_ITEM_COUNT_UPDATE();
                         p4.InventorySlot = item.Slot;
                         p4.Stack = item.Stack;
-                        netIO.SendPacket(p4);
+                        NetIo.SendPacket(p4);
                     }
                 }
             }
@@ -16468,7 +16468,7 @@ namespace SagaMap.Network.Client
                 p4.Target = ContainerType.NONE;
                 p4.Result = -10;
                 p4.Range = Character.Range;
-                netIO.SendPacket(p4);
+                NetIo.SendPacket(p4);
                 return false;
             }
 
@@ -16585,28 +16585,28 @@ namespace SagaMap.Network.Client
                     p.Container = container;
                     p.Item = item;
                     p.InventorySlot = item.Slot;
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                     break;
                 case InventoryAddResult.STACKED:
-                {
-                    var p1 = new SSMG_ITEM_COUNT_UPDATE();
-                    p1.InventorySlot = item.Slot;
-                    p1.Stack = item.Stack;
-                    netIO.SendPacket(p1);
-                }
+                    {
+                        var p1 = new SSMG_ITEM_COUNT_UPDATE();
+                        p1.InventorySlot = item.Slot;
+                        p1.Stack = item.Stack;
+                        NetIo.SendPacket(p1);
+                    }
                     break;
                 case InventoryAddResult.MIXED:
-                {
-                    var p1 = new SSMG_ITEM_COUNT_UPDATE();
-                    p1.InventorySlot = item.Slot;
-                    p1.Stack = item.Stack;
-                    netIO.SendPacket(p1);
-                    var p2 = new SSMG_ITEM_ADD();
-                    p2.Container = container;
-                    p2.Item = Character.Inventory.LastItem;
-                    p2.InventorySlot = Character.Inventory.LastItem.Slot;
-                    netIO.SendPacket(p2);
-                }
+                    {
+                        var p1 = new SSMG_ITEM_COUNT_UPDATE();
+                        p1.InventorySlot = item.Slot;
+                        p1.Stack = item.Stack;
+                        NetIo.SendPacket(p1);
+                        var p2 = new SSMG_ITEM_ADD();
+                        p2.Container = container;
+                        p2.Item = Character.Inventory.LastItem;
+                        p2.InventorySlot = Character.Inventory.LastItem.Slot;
+                        NetIo.SendPacket(p2);
+                    }
                     break;
                 case InventoryAddResult.GOWARE:
                     SendSystemMessage("背包已满，物品『" + item.BaseData.name + "』存入了仓库");
@@ -16655,7 +16655,7 @@ namespace SagaMap.Network.Client
                     p.Item = j;
                     p.InventorySlot = j.Slot;
                     p.Container = container;
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
             }
         }
@@ -16669,7 +16669,7 @@ namespace SagaMap.Network.Client
             p.Item = item;
             p.InventorySlot = item.Slot;
             p.Container = Character.Inventory.GetContainerType(slot);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendItemInfo(Item item)
@@ -16681,14 +16681,14 @@ namespace SagaMap.Network.Client
             p.Item = item;
             p.InventorySlot = item.Slot;
             p.Container = Character.Inventory.GetContainerType(item.Slot);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             var packet = new Packet();
             packet.data = new byte[3];
             packet.ID = 0x0203;
             packet.offset = 2;
             packet.PutByte(02);
-            netIO.SendPacket(packet);
+            NetIo.SendPacket(packet);
         }
 
         public void SendItemIdentify(uint slot)
@@ -16700,14 +16700,14 @@ namespace SagaMap.Network.Client
             p.InventorySlot = item.Slot;
             p.Identify = item.Identified;
             p.Lock = item.Locked;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendEquip()
         {
             var p = new SSMG_ITEM_ACTOR_EQUIP_UPDATE();
             p.Player = Character;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void AddItem(Item item, bool sendMessage)
@@ -16834,12 +16834,12 @@ namespace SagaMap.Network.Client
                     item = Character.Inventory.GetItem(slot);
                     p1.InventorySlot = slot;
                     p1.Stack = item.Stack;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     break;
                 case InventoryDeleteResult.ALL_DELETED:
                     var p2 = new SSMG_ITEM_DELETE();
                     p2.InventorySlot = slot;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     if (item.IsEquipt)
                     {
                         SendAttackType();
@@ -16848,7 +16848,7 @@ namespace SagaMap.Network.Client
                         p4.Target = ContainerType.NONE;
                         p4.Result = 1;
                         p4.Range = Character.Range;
-                        netIO.SendPacket(p4);
+                        NetIo.SendPacket(p4);
                     }
 
                     break;
@@ -16883,12 +16883,12 @@ namespace SagaMap.Network.Client
                     item = Character.Inventory.GetItem(slot);
                     p1.InventorySlot = slot;
                     p1.Stack = item.Stack;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                     break;
                 case InventoryDeleteResult.ALL_DELETED:
                     var p2 = new SSMG_ITEM_DELETE();
                     p2.InventorySlot = slot;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     Character.Inventory.GetContainerType(slot);
                     if (equiped)
                     {
@@ -16898,7 +16898,7 @@ namespace SagaMap.Network.Client
                         p4.Target = ContainerType.NONE;
                         p4.Result = 1;
                         p4.Range = Character.Range;
-                        netIO.SendPacket(p4);
+                        NetIo.SendPacket(p4);
                         if (item.BaseData.itemType == ItemType.ARROW || item.BaseData.itemType == ItemType.BULLET)
                         {
                             var dummy = Character.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Clone();
@@ -17008,7 +17008,7 @@ namespace SagaMap.Network.Client
 
             var p1 = new SSMG_TRADE_REQUEST_RESULT();
             p1.Result = result;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         private int CheckTradeRequest(MapClient client)
@@ -17072,7 +17072,7 @@ namespace SagaMap.Network.Client
                     client.tradingTarget = null;
                     var p1 = new SSMG_TRADE_REQUEST_RESULT();
                     p1.Result = -6;
-                    client.netIO.SendPacket(p1);
+                    client.NetIo.SendPacket(p1);
                     break;
             }
         }
@@ -17142,7 +17142,7 @@ namespace SagaMap.Network.Client
             var gold = GetGoldForRecycle(tradeItems, tradeCounts);
             var p3 = new SSMG_TRADE_GOLD();
             p3.Gold = 0; // gold;
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
             tradingGold = gold; // gold;
         }
 
@@ -17174,7 +17174,7 @@ namespace SagaMap.Network.Client
             //if (Character.Account.GMLevel < 200)
             //    tradingGold = 0;
             var p1 = new SSMG_TRADE_ITEM_HEAD();
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
             for (var i = 0; i < tradeItems.Count; i++)
             {
                 var p2 = new SSMG_TRADE_ITEM_INFO();
@@ -17203,14 +17203,14 @@ namespace SagaMap.Network.Client
                 p2.Container = ContainerType.BODY;
                 Logger.ShowInfo("尝试交易道具:" + item.ItemID + "[" + item.Name + "] " + item.Stack + "个  , 道具栏ID: " +
                                 tradeItems[i]);
-                client.netIO.SendPacket(p2);
+                client.NetIo.SendPacket(p2);
             }
 
             var p3 = new SSMG_TRADE_GOLD();
             p3.Gold = tradingGold;
-            client.netIO.SendPacket(p3);
+            client.NetIo.SendPacket(p3);
             var p4 = new SSMG_TRADE_ITEM_FOOT();
-            client.netIO.SendPacket(p4);
+            client.NetIo.SendPacket(p4);
         }
 
         public void OnTradeConfirm(CSMG_TRADE_CONFIRM p)
@@ -17399,7 +17399,7 @@ namespace SagaMap.Network.Client
             if (type == 2 || type == 3)
             {
                 var p = new SSMG_TRADE_END();
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -17408,7 +17408,7 @@ namespace SagaMap.Network.Client
             var p = new SSMG_TRADE_STATUS();
             p.Confirm = canConfirm;
             p.Perform = canPerform;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendTradeStart()
@@ -17417,7 +17417,7 @@ namespace SagaMap.Network.Client
                 return;
             var p = new SSMG_TRADE_START();
             p.SetPara(tradingTarget.Name, 0);
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendTradeStartNPC(string name)
@@ -17426,7 +17426,7 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_TRADE_START();
                 p.SetPara(name, 1);
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
                 SendTradeStatus(true, false);
             }
         }
@@ -17435,7 +17435,7 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_TRADE_REQUEST();
             p.Name = pc.Name;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             tradingTarget = pc;
         }
@@ -17456,7 +17456,7 @@ namespace SagaMap.Network.Client
         {
             var p1 = new SSMG_COMMUNITY_BBS_PAGE_INFO();
             p1.Posts = MapServer.charDB.GetBBSPage(bbsID, bbsCurrentPage);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnBBSPost(CSMG_COMMUNITY_BBS_POST p)
@@ -17465,7 +17465,7 @@ namespace SagaMap.Network.Client
             var result = CheckBBSPost(p.Title, p.Content);
             if (result >= 0)
                 Character.Gold -= (int)bbsCost;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendBBSPage();
         }
 
@@ -17496,7 +17496,7 @@ namespace SagaMap.Network.Client
             p1.Page = page;
             p1.MaxPage = maxPage;
             p1.Entries = res;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRecruitRequestAns(CSMG_COMMUNITY_RECRUIT_REQUEST_ANS p)
@@ -17529,7 +17529,7 @@ namespace SagaMap.Network.Client
                     PartyManager.Instance.AddMember(Character.Party, partyPartner);
                 p1.Result = result;
                 p1.CharID = Character.CharID;
-                target.netIO.SendPacket(p1);
+                target.NetIo.SendPacket(p1);
             }
         }
 
@@ -17540,7 +17540,7 @@ namespace SagaMap.Network.Client
             var p1 = new SSMG_COMMUNITY_RECRUIT_JOIN_RES();
             p1.Result = result;
             p1.CharID = p.CharID;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             if (result >= 0)
             {
                 partyPartner = target.Character;
@@ -17548,7 +17548,7 @@ namespace SagaMap.Network.Client
                 var p2 = new SSMG_COMMUNITY_RECRUIT_REQUEST();
                 p2.CharID = Character.CharID;
                 p2.CharName = Character.Name;
-                target.netIO.SendPacket(p2);
+                target.NetIo.SendPacket(p2);
             }
         }
 
@@ -17585,14 +17585,14 @@ namespace SagaMap.Network.Client
             RecruitmentManager.Instance.CreateRecruiment(rec);
 
             var p1 = new SSMG_COMMUNITY_RECRUIT_CREATE();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRecruitDelete(CSMG_COMMUNITY_RECRUIT_DELETE p)
         {
             RecruitmentManager.Instance.DeleteRecruitment(Character);
             var p1 = new SSMG_COMMUNITY_RECRUIT_DELETE();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public uint questID;
@@ -17621,7 +17621,7 @@ namespace SagaMap.Network.Client
             var ids = new List<byte>();
             ids.Add(0);
             p.IDs = ids;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void OnDailyDungeonJoin(CSMG_DAILYDUNGEON_JOIN p)
@@ -17664,7 +17664,7 @@ namespace SagaMap.Network.Client
                 p2.SetDetail(quest.QuestType, quest.Name, map1, map2, map3, name1, name2, name3, quest.MapID1,
                     quest.MapID2, quest.MapID3, quest.ObjectID1, quest.ObjectID2, quest.ObjectID3, (uint)quest.Count1,
                     (uint)quest.Count2, (uint)quest.Count3, quest.TimeLimit, 0);
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
             }
         }
 
@@ -17714,7 +17714,7 @@ namespace SagaMap.Network.Client
                 (uint)quest.Detail.Count3, quest.Detail.TimeLimit, 0, quest.Detail.EXP, 0, quest.Detail.JEXP,
                 quest.Detail.Gold);
             var ss = p2.DumpData();
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
         }
 
         public void SendQuestPoints()
@@ -17756,7 +17756,7 @@ namespace SagaMap.Network.Client
             }
 
             p.QuestPoint = Character.QuestRemaining;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendQuestCount()
@@ -17767,7 +17767,7 @@ namespace SagaMap.Network.Client
                 p.Count1 = Character.Quest.CurrentCount1;
                 p.Count2 = Character.Quest.CurrentCount2;
                 p.Count3 = Character.Quest.CurrentCount3;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
                 if (Character.Quest.Status != QuestStatus.FAILED)
                     if (Character.Quest.CurrentCount1 == Character.Quest.Detail.Count1 &&
                         Character.Quest.CurrentCount2 == Character.Quest.Detail.Count2 &&
@@ -17798,7 +17798,7 @@ namespace SagaMap.Network.Client
                     }
                 }
 
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -17808,7 +17808,7 @@ namespace SagaMap.Network.Client
             {
                 var p = new SSMG_QUEST_STATUS_UPDATE();
                 p.Status = Character.Quest.Status;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -17816,19 +17816,19 @@ namespace SagaMap.Network.Client
         {
             var p = new SSMG_QUEST_LIST();
             p.Quests = quests;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendQuestWindow()
         {
             var p = new SSMG_QUEST_WINDOW();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendQuestDelete()
         {
             var p = new SSMG_QUEST_DELETE();
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void QuestMobKilled(ActorMob mob, bool party)
@@ -17924,7 +17924,7 @@ namespace SagaMap.Network.Client
                 ps.SetSelect("要做什麼？", "", f.Motion.Select(x => x.ToString()).ToArray(), false);
 
                 npcSelectResult = -1;
-                netIO.SendPacket(ps);
+                NetIo.SendPacket(ps);
 
                 var blocked = ClientManager.Blocked;
                 if (blocked)
@@ -17933,7 +17933,7 @@ namespace SagaMap.Network.Client
                 if (blocked)
                     ClientManager.EnterCriticalArea();
                 var ps2 = new SSMG_NPC_SELECT_RESULT();
-                netIO.SendPacket(ps2);
+                NetIo.SendPacket(ps2);
                 res = npcSelectResult;
 
                 SendSystemMessage("家具Select: " + res);
@@ -17984,7 +17984,7 @@ namespace SagaMap.Network.Client
                 p1.Y = actor.Y;
                 p1.Z = ((ActorFurniture)actor).Z;
                 p1.Dir = actor.Dir;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -18084,7 +18084,7 @@ namespace SagaMap.Network.Client
                     var p1 = new SSMG_FG_EQUIPT();
                     p1.ItemID = 0;
                     p1.Place = p.Place;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
 
                 if (p.Place == FGardenSlot.GARDEN_MODELHOUSE &&
@@ -18096,14 +18096,14 @@ namespace SagaMap.Network.Client
                     p1.StartY = 7;
                     p1.EndX = 6;
                     p1.EndY = 7;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
 
                 Character.FGarden.FGardenEquipments[p.Place] = item.ItemID;
                 var p2 = new SSMG_FG_EQUIPT();
                 p2.ItemID = item.ItemID;
                 p2.Place = p.Place;
-                netIO.SendPacket(p2);
+                NetIo.SendPacket(p2);
                 DeleteItem(p.InventorySlot, 1, false);
             }
             else
@@ -18115,7 +18115,7 @@ namespace SagaMap.Network.Client
                 var p1 = new SSMG_FG_EQUIPT();
                 p1.ItemID = 0;
                 p1.Place = p.Place;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 if (p.Place == FGardenSlot.GARDEN_MODELHOUSE)
                 {
                     var p2 = new SSMG_NPC_CANCEL_EVENT_AREA();
@@ -18123,7 +18123,7 @@ namespace SagaMap.Network.Client
                     p2.StartY = 7;
                     p2.EndX = 6;
                     p2.EndY = 7;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                 }
             }
         }

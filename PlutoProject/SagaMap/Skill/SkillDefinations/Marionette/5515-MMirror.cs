@@ -39,8 +39,8 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
         {
             var map = MapManager.Instance.GetMap(actor.MapID);
             var mobs = from ActorMob m in from Actor a in actor.Slave where a.type == ActorType.MOB select a
-                where m.MobID == 26160006
-                select m;
+                       where m.MobID == 26160006
+                       select m;
             foreach (var m in mobs)
             {
                 m.ClearTaskAddition();

@@ -12,7 +12,7 @@ namespace SagaDB.Skill
 {
     public class SkillFactory : Singleton<SkillFactory>
     {
-        private static readonly ILogger<SkillFactory> _logger = Logger.InitLogger<SkillFactory>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<SkillFactory>();
         public enum SkillPaga
         {
             p1,
@@ -37,7 +37,7 @@ namespace SagaDB.Skill
 
         public void ReloadSkillDB()
         {
-            ClientManager.noCheckDeadLock = true;
+            ClientManager.NoCheckDeadLock = true;
             try
             {
                 skills.Clear();
@@ -49,7 +49,7 @@ namespace SagaDB.Skill
             {
             }
 
-            ClientManager.noCheckDeadLock = false;
+            ClientManager.NoCheckDeadLock = false;
         }
 
         public Skill GetSkill(uint id, byte level)
@@ -345,7 +345,7 @@ namespace SagaDB.Skill
                     {
                         if (print)
                         {
-                            _logger.LogDebug("*");
+                            _logger.Debug("*");
                             print = false;
                         }
                     }
@@ -363,7 +363,7 @@ namespace SagaDB.Skill
                 }
             }
 
-            // _logger.LogDebug();
+            // _logger.Debug();
             //Console.ResetColor();
             Logger.ShowInfo(count + " skills loaded.");
             sw.Flush();

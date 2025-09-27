@@ -82,7 +82,7 @@ namespace SagaMap.Skill.Additions
                             client.AddItem(item, false);
                         }
 
-                        client.netIO.SendPacket(p);
+                        client.NetIo.SendPacket(p);
                     }
                     else
                     {

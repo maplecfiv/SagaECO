@@ -31,7 +31,7 @@ namespace SagaMap.Tasks.PC
                 ClientManager.EnterCriticalArea();
                 try
                 {
-                    pc.netIO.Disconnect();
+                    pc.NetIo.Disconnect();
                 }
                 catch (Exception ex)
                 {

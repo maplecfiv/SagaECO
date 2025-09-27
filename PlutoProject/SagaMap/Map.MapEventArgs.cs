@@ -141,25 +141,25 @@ namespace SagaMap
         {
             var count = affectedActors.Count;
             for (var i = 0; i < arg.affectedActors.Count; i++)
-            for (var j = 0; j < count; j++)
-            {
-                if (arg.affectedActors[i].ActorID == affectedActors[j].ActorID)
+                for (var j = 0; j < count; j++)
                 {
-                    hp[j] += arg.hp[i];
-                    mp[j] += arg.mp[i];
-                    sp[j] += arg.sp[i];
-                    break;
-                }
+                    if (arg.affectedActors[i].ActorID == affectedActors[j].ActorID)
+                    {
+                        hp[j] += arg.hp[i];
+                        mp[j] += arg.mp[i];
+                        sp[j] += arg.sp[i];
+                        break;
+                    }
 
-                if (j == count - 1)
-                {
-                    affectedActors.Add(arg.affectedActors[i]);
-                    flag.Add(arg.flag[i]);
-                    hp.Add(arg.hp[i]);
-                    mp.Add(arg.mp[i]);
-                    sp.Add(arg.sp[i]);
+                    if (j == count - 1)
+                    {
+                        affectedActors.Add(arg.affectedActors[i]);
+                        flag.Add(arg.flag[i]);
+                        hp.Add(arg.hp[i]);
+                        mp.Add(arg.mp[i]);
+                        sp.Add(arg.sp[i]);
+                    }
                 }
-            }
         }
 
         public void Remove(Actor actor)

@@ -40,38 +40,38 @@ namespace SagaLogin.Manager
 
             */
             Clients = new List<LoginClient>();
-            commandTable = new Dictionary<ushort, Packet>();
+            CommandTable = new Dictionary<ushort, Packet>();
 
-            commandTable.Add(0xDDDF, new TOOL_GIFTS());
+            CommandTable.Add(0xDDDF, new TOOL_GIFTS());
 
 
-            commandTable.Add(0x0001, new CSMG_SEND_VERSION());
-            commandTable.Add(0x000A, new CSMG_PING());
-            commandTable.Add(0x002A, new CSMG_CHAR_STATUS());
-            commandTable.Add(0x00A0, new CSMG_CHAR_CREATE());
-            commandTable.Add(0x00A5, new CSMG_CHAR_DELETE());
-            commandTable.Add(0x00A7, new CSMG_CHAR_SELECT());
-            commandTable.Add(0x001F, new CSMG_LOGIN());
-            commandTable.Add(0x0032, new CSMG_REQUEST_MAP_SERVER());
-            commandTable.Add(0x00C9, new CSMG_CHAT_WHISPER());
-            commandTable.Add(0x00D2, new CSMG_FRIEND_ADD());
-            commandTable.Add(0x00D4, new CSMG_FRIEND_ADD_REPLY());
-            commandTable.Add(0x00D7, new CSMG_FRIEND_DELETE());
-            commandTable.Add(0x00E1, new CSMG_FRIEND_DETAIL_UPDATE());
-            commandTable.Add(0x00E6, new CSMG_FRIEND_MAP_UPDATE());
-            commandTable.Add(0x0104, new CSMG_RING_EMBLEM_NEW());
-            commandTable.Add(0x0109, new CSMG_RING_EMBLEM());
+            CommandTable.Add(0x0001, new CSMG_SEND_VERSION());
+            CommandTable.Add(0x000A, new CSMG_PING());
+            CommandTable.Add(0x002A, new CSMG_CHAR_STATUS());
+            CommandTable.Add(0x00A0, new CSMG_CHAR_CREATE());
+            CommandTable.Add(0x00A5, new CSMG_CHAR_DELETE());
+            CommandTable.Add(0x00A7, new CSMG_CHAR_SELECT());
+            CommandTable.Add(0x001F, new CSMG_LOGIN());
+            CommandTable.Add(0x0032, new CSMG_REQUEST_MAP_SERVER());
+            CommandTable.Add(0x00C9, new CSMG_CHAT_WHISPER());
+            CommandTable.Add(0x00D2, new CSMG_FRIEND_ADD());
+            CommandTable.Add(0x00D4, new CSMG_FRIEND_ADD_REPLY());
+            CommandTable.Add(0x00D7, new CSMG_FRIEND_DELETE());
+            CommandTable.Add(0x00E1, new CSMG_FRIEND_DETAIL_UPDATE());
+            CommandTable.Add(0x00E6, new CSMG_FRIEND_MAP_UPDATE());
+            CommandTable.Add(0x0104, new CSMG_RING_EMBLEM_NEW());
+            CommandTable.Add(0x0109, new CSMG_RING_EMBLEM());
             //this.commandTable.Add(0x015F, new Packets.Client.CSMG_SEND_GUID());
-            commandTable.Add(0x0172, new CSMG_WRP_REQUEST());
+            CommandTable.Add(0x0172, new CSMG_WRP_REQUEST());
 
-            commandTable.Add(0xFFF0, new INTERN_LOGIN_REGISTER());
-            commandTable.Add(0xFFF1, new INTERN_LOGIN_REQUEST_CONFIG());
+            CommandTable.Add(0xFFF0, new INTERN_LOGIN_REGISTER());
+            CommandTable.Add(0xFFF1, new INTERN_LOGIN_REQUEST_CONFIG());
 
-            commandTable.Add(0x0151, new CSMG_NYASHIELD_VERSION());
+            CommandTable.Add(0x0151, new CSMG_NYASHIELD_VERSION());
 
-            commandTable.Add(0x0226, new CSMG_TAMAIRE_LIST_REQUEST());
+            CommandTable.Add(0x0226, new CSMG_TAMAIRE_LIST_REQUEST());
 
-            waitressQueue = new AutoResetEvent(true);
+            WaitressQueue = new AutoResetEvent(true);
             //deadlock check
             check = new Thread(checkCriticalArea);
             check.Name = string.Format("DeadLock checker({0})", check.ManagedThreadId);
@@ -92,12 +92,12 @@ namespace SagaLogin.Manager
         /// </summary>
         public override void NetworkLoop(int maxNewConnections)
         {
-            for (var i = 0; listener.Pending() && i < maxNewConnections; i++)
+            for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
-                var sock = listener.AcceptSocket();
+                var sock = Listener.AcceptSocket();
                 var ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
                 Logger.ShowInfo("New client from: " + sock.RemoteEndPoint, null);
-                var client = new LoginClient(sock, commandTable);
+                var client = new LoginClient(sock, CommandTable);
                 Clients.Add(client);
             }
         }

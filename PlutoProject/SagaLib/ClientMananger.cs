@@ -7,39 +7,41 @@ using System.Net.Sockets;
 using System.Threading;
 using ThreadState = System.Threading.ThreadState;
 using Microsoft.Extensions.Logging;
+using Microsoft.Diagnostics.Runtime;
+using System.Linq;
 
 namespace SagaLib
 {
     public class ClientManager
     {
-        private static readonly ILogger<ClientManager> _logger = Logger.InitLogger<ClientManager>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<ClientManager>();
         //public byte CheckUnLockSecond = 1;
-        public static bool noCheckDeadLock = false;
+        public static bool NoCheckDeadLock = false;
 
-        private static bool enteredcriarea;
-        private static readonly List<Thread> blockedThread = new List<Thread>();
+        private static bool _enteredcriarea;
+        public static readonly List<Thread> BlockedThread = new List<Thread>();
         private static readonly Dictionary<string, Thread> Threads = new Dictionary<string, Thread>();
-        private static Thread currentBlocker;
-        private static DateTime timestamp;
-        private static string blockdetail;
+        private static Thread _currentBlocker;
+        private static DateTime _timestamp;
+        private static string _blockdetail;
 
-//#if Debug
-        private static StackTrace Stacktrace;
-//#endif
+        //#if Debug
+        private static StackTrace _stacktrace;
+        //#endif
 
         /// <summary>
         ///     Command table contains the commands that need to be called when a
         ///     packet is received. Key will be the packet type
         /// </summary>
-        public Dictionary<ushort, Packet> commandTable;
+        public Dictionary<ushort, Packet> CommandTable;
 
-        public TcpListener listener;
+        public TcpListener Listener;
 
-        public Thread packetCoordinator;
+        public Thread PacketCoordinator;
 
-        public AutoResetEvent waitressQueue;
+        public AutoResetEvent WaitressQueue;
 
-        public static bool Blocked => blockedThread.Contains(Thread.CurrentThread);
+        public static bool Blocked => BlockedThread.Contains(Thread.CurrentThread);
 
         public static void AddThread(Thread thread)
         {
@@ -48,37 +50,48 @@ namespace SagaLib
 
         public static void AddThread(string name, Thread thread)
         {
-            if (!Threads.ContainsKey(name))
-                lock (Threads)
+            if (Threads.ContainsKey(name))
+            {
+                return;
+            }
+
+            lock (Threads)
+            {
+                try
                 {
-                    try
-                    {
-                        Threads.Add(name, thread);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.ShowError(ex);
-                        Logger.ShowDebug("Threads count:" + Threads.Count, null);
-                    }
+                    Threads.Add(name, thread);
                 }
+                catch (Exception ex)
+                {
+                    Logger.ShowError(ex);
+                    Logger.ShowDebug("Threads count:" + Threads.Count, null);
+                }
+            }
         }
 
         public static void RemoveThread(string name)
         {
-            if (Threads.ContainsKey(name))
-                lock (Threads)
-                {
-                    Threads.Remove(name);
-                }
+            if (!Threads.ContainsKey(name))
+            {
+                return;
+            }
+
+            lock (Threads)
+            {
+                Threads.Remove(name);
+            }
         }
 
         public static Thread GetThread(string name)
         {
             if (Threads.ContainsKey(name))
+            {
+
                 lock (Threads)
                 {
                     return Threads[name];
                 }
+            }
 
             return null;
         }
@@ -88,46 +101,52 @@ namespace SagaLib
         {
             while (true)
             {
-                if (enteredcriarea)
+                if (_enteredcriarea)
                 {
-                    var span = DateTime.Now - timestamp;
-                    if (span.TotalSeconds > 10 && !noCheckDeadLock && !Debugger.IsAttached)
+                    var span = DateTime.Now - _timestamp;
+                    if (span.TotalSeconds > 10 && !NoCheckDeadLock && !Debugger.IsAttached)
                     {
                         Logger.ShowError("Deadlock detected");
                         Logger.ShowError("Automatically unlocking....");
-                        Logger.ShowDebug(blockdetail, Logger.defaultlogger);
-//#if Debug
+                        Logger.ShowDebug(_blockdetail, Logger.defaultlogger);
+                        //#if Debug
                         Logger.ShowError("Call Stack Before Entered Critical Area:");
                         try
                         {
-                            Logger.ShowError("Thread name:" + getThreadName(currentBlocker));
-                            foreach (var i in Stacktrace.GetFrames())
+                            Logger.ShowError("Thread name:" + getThreadName(_currentBlocker));
+                            foreach (var i in _stacktrace.GetFrames())
+                            {
+
                                 Logger.ShowError("at " + i.GetMethod().ReflectedType.FullName + "." +
                                                  i.GetMethod().Name + " " + i.GetFileName() + ":" +
                                                  i.GetFileLineNumber());
+                            }
                         }
-                        catch
+                        catch (Exception e)
                         {
+                            _logger.Error(e);
                         }
 
-                        // _logger.LogDebug();
-//#endif
+                        // _logger.Debug();
+                        //#endif
                         StackTrace running;
                         try
                         {
-                            if (currentBlocker != null)
+                            if (_currentBlocker != null)
                             {
                                 Logger.ShowError("Call Stack of current blocking Thread:");
-                                Logger.ShowError("Thread name:" + getThreadName(currentBlocker));
-                                if (currentBlocker.ThreadState != ThreadState.Running)
-                                    Logger.ShowWarning("Unexpected thread state:" + currentBlocker.ThreadState);
-                                currentBlocker.Suspend();
-                                running = new StackTrace(currentBlocker, true);
-                                currentBlocker.Resume();
-                                foreach (var i in running.GetFrames())
-                                    Logger.ShowError("at " + i.GetMethod().ReflectedType.FullName + "." +
-                                                     i.GetMethod().Name + " " + i.GetFileName() + ":" +
-                                                     i.GetFileLineNumber());
+                                Logger.ShowError("Thread name:" + getThreadName(_currentBlocker));
+                                if (_currentBlocker.ThreadState != ThreadState.Running)
+                                {
+                                    Logger.ShowWarning("Unexpected thread state:" + _currentBlocker.ThreadState);
+                                }
+
+                                foreach (var i in GetThreadFrames(_currentBlocker.ManagedThreadId))
+                                {
+
+                                    Logger.ShowWarning("at " + i.Method.Type + "." + i.Method.Name +
+                                                       " " + i.ToString());
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -135,33 +154,35 @@ namespace SagaLib
                             Logger.ShowError(ex);
                         }
 
-                        // _logger.LogDebug();
+                        // _logger.Debug();
                         Logger.ShowError("Call Stack of all blocking Threads:");
-                        var list = blockedThread.ToArray();
+                        var list = BlockedThread.ToArray();
                         foreach (var j in list)
                         {
                             try
                             {
                                 Logger.ShowError("Thread name:" + getThreadName(j));
                                 if (j.ThreadState != ThreadState.Running)
+                                {
+
                                     Logger.ShowWarning("Unexpected thread state:" + j.ThreadState);
-                                j.Suspend();
-                                running = new StackTrace(j, true);
-                                j.Resume();
-                                foreach (var i in running.GetFrames())
-                                    Logger.ShowError("at " + i.GetMethod().ReflectedType.FullName + "." +
-                                                     i.GetMethod().Name + " " + i.GetFileName() + ":" +
-                                                     i.GetFileLineNumber());
+                                }
+                                foreach (var i in GetThreadFrames(j.ManagedThreadId))
+                                {
+
+                                    Logger.ShowWarning("at " + i.Method.Type + "." + i.Method.Name +
+                                                       " " + i.ToString());
+                                }
                             }
                             catch (Exception ex)
                             {
                                 Logger.ShowError(ex);
                             }
 
-                            // _logger.LogDebug();
+                            // _logger.Debug();
                         }
 
-                        // _logger.LogDebug();
+                        // _logger.Debug();
                         Logger.ShowError("Call Stack of all Threads:");
                         var keys = new string[Threads.Keys.Count];
                         Threads.Keys.CopyTo(keys, 0);
@@ -172,23 +193,26 @@ namespace SagaLib
                                 var j = GetThread(k);
                                 Logger.ShowError("Thread name:" + k);
                                 if (j.ThreadState != ThreadState.Running)
+                                {
+
                                     Logger.ShowWarning("Unexpected thread state:" + j.ThreadState);
-                                j.Suspend();
-                                running = new StackTrace(j, true);
-                                j.Resume();
-                                foreach (var i in running.GetFrames())
-                                    Logger.ShowError("at " + i.GetMethod().ReflectedType.FullName + "." +
-                                                     i.GetMethod().Name + " " + i.GetFileName() + ":" +
-                                                     i.GetFileLineNumber());
+                                }
+                                foreach (var i in GetThreadFrames(j.ManagedThreadId))
+                                {
+
+                                    Logger.ShowWarning("at " + i.Method.Type + "." + i.Method.Name +
+                                                       " " + i.ToString());
+                                }
                             }
-                            catch
+                            catch (Exception e)
                             {
+                                _logger.Error(e);
                             }
 
-                            // _logger.LogDebug();
+                            // _logger.Debug();
                         }
 
-                        LeaveCriticalArea(currentBlocker);
+                        LeaveCriticalArea(_currentBlocker);
                     }
                 }
 
@@ -199,32 +223,38 @@ namespace SagaLib
         private static string getThreadName(Thread thread)
         {
             foreach (var i in Threads.Keys)
+            {
+
                 if (thread == Threads[i])
+                {
+
                     return i;
+                }
+            }
             return "";
         }
 
         public static void PrintAllThreads()
         {
             Logger.ShowWarning("Call Stack of all blocking Threads:");
-            var list = blockedThread.ToArray();
+            var list = BlockedThread.ToArray();
             foreach (var j in list)
             {
                 try
                 {
                     Logger.ShowWarning("Thread name:" + getThreadName(j));
-                    j.Suspend();
-                    var running = new StackTrace(j, true);
-                    j.Resume();
-                    foreach (var i in running.GetFrames())
-                        Logger.ShowWarning("at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name +
-                                           " " + i.GetFileName() + ":" + i.GetFileLineNumber());
-                }
-                catch
-                {
-                }
+                    foreach (var i in GetThreadFrames(j.ManagedThreadId))
+                    {
 
-                // _logger.LogDebug();
+                        Logger.ShowWarning("at " + i.Method.Type + "." + i.Method.Name +
+                                           " " + i.ToString());
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e);
+                }
+                // _logger.Debug();
             }
 
             Logger.ShowWarning("Call Stack of all Threads:");
@@ -235,41 +265,44 @@ namespace SagaLib
                 try
                 {
                     var j = GetThread(k);
-                    j.Suspend();
-                    var running = new StackTrace(j, true);
-                    j.Resume();
+                    // j.Suspend();
+                    // j.Resume();
                     Logger.ShowWarning("Thread name:" + k);
-                    foreach (var i in running.GetFrames())
-                        Logger.ShowWarning("at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name +
-                                           " " + i.GetFileName() + ":" + i.GetFileLineNumber());
+                    foreach (var i in GetThreadFrames(j.ManagedThreadId))
+                    {
+
+                        Logger.ShowWarning("at " + i.Method.Type + "." + i.Method.Name +
+                                           " " + i.ToString());
+                    }
                 }
-                catch
+                catch (Exception e)
                 {
+                    _logger.Error(e);
                 }
 
-                // _logger.LogDebug();
+                // _logger.Debug();
             }
         }
 
         public static void EnterCriticalArea()
         {
-            if (blockedThread.Contains(Thread.CurrentThread))
+            if (BlockedThread.Contains(Thread.CurrentThread))
             {
                 //Logger.ShowDebug("Current thread is already blocked, skip blocking to avoid deadlock!", Logger.defaultlogger);
             }
             else
             {
                 //Global.clientMananger.AddWaitingWaitress();
-                Global.clientMananger.waitressQueue.WaitOne();
-                timestamp = DateTime.Now;
-                enteredcriarea = true;
-                blockedThread.Add(Thread.CurrentThread);
-                currentBlocker = Thread.CurrentThread;
-                blockdetail = "锁定线程名:" + Thread.CurrentThread.Name;
+                Global.clientMananger.WaitressQueue.WaitOne();
+                _timestamp = DateTime.Now;
+                _enteredcriarea = true;
+                BlockedThread.Add(Thread.CurrentThread);
+                _currentBlocker = Thread.CurrentThread;
+                _blockdetail = "锁定线程名:" + Thread.CurrentThread.Name;
                 //Global.clientMananger.waitressQueue.WaitOne();
-//#if Debug
-                Stacktrace = new StackTrace(1, true);
-//#endif
+                //#if Debug
+                _stacktrace = new StackTrace(1, true);
+                //#endif
             }
         }
 
@@ -280,46 +313,58 @@ namespace SagaLib
 
         public static void LeaveCriticalArea(Thread blocker)
         {
-            if (blockedThread.Contains(blocker) || blockedThread.Count != 0)
+            if (!BlockedThread.Contains(blocker) && BlockedThread.Count == 0)
             {
-                //Global.clientMananger.RemoveWaitingWaitress();
-                // Global.clientMananger.waitressHasFinished.Set();
-                var sec = (DateTime.Now - timestamp).Seconds;
-                if (sec >= 1)
-                    Logger.ShowDebug(
-                        string.Format("Thread({0}) used unnormal time till unlock({1} sec)", blocker.Name, sec),
-                        Logger.defaultlogger);
-                enteredcriarea = false;
-                if (blockedThread.Contains(blocker))
-                {
-                    try
-                    {
-                        blockedThread.Remove(blocker);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (blockedThread.Count > 0)
-                            blockedThread.RemoveAt(0);
-                        Logger.ShowError("a2333" + ex);
-                    }
-                }
-                else
-                {
-                    if (blockedThread.Count > 0)
-                        blockedThread.RemoveAt(0);
-                    else
-                        Logger.ShowError("线程不存在！！");
-                }
 
-                currentBlocker = null;
-                timestamp = DateTime.Now;
-                Global.clientMananger.waitressQueue.Set();
+                //Logger.ShowDebug("Current thread isn't blocked while trying unblock, skiping", Logger.defaultlogger);
+                Global.clientMananger.WaitressQueue.Set();
+                return;
+            }
+
+            //Global.clientMananger.RemoveWaitingWaitress();
+            // Global.clientMananger.waitressHasFinished.Set();
+            var sec = (DateTime.Now - _timestamp).Seconds;
+            if (sec >= 1)
+            {
+
+                Logger.ShowDebug(
+                    string.Format("Thread({0}) used unnormal time till unlock({1} sec)", blocker.Name, sec),
+                    Logger.defaultlogger);
+            }
+            _enteredcriarea = false;
+            if (BlockedThread.Contains(blocker))
+            {
+                try
+                {
+                    BlockedThread.Remove(blocker);
+                }
+                catch (Exception ex)
+                {
+                    if (BlockedThread.Count > 0)
+                    {
+
+                        BlockedThread.RemoveAt(0);
+                    }
+                    Logger.ShowError("a2333" + ex);
+                }
             }
             else
             {
-                //Logger.ShowDebug("Current thread isn't blocked while trying unblock, skiping", Logger.defaultlogger);
-                Global.clientMananger.waitressQueue.Set();
+                if (BlockedThread.Count > 0)
+                {
+
+                    BlockedThread.RemoveAt(0);
+                }
+                else
+                {
+
+                    Logger.ShowError("线程不存在！！");
+                }
             }
+
+            _currentBlocker = null;
+            _timestamp = DateTime.Now;
+            Global.clientMananger.WaitressQueue.Set();
         }
 
 
@@ -329,7 +374,7 @@ namespace SagaLib
 
         public void Stop()
         {
-            listener.Stop();
+            Listener.Stop();
         }
 
 
@@ -340,13 +385,14 @@ namespace SagaLib
         {
             /*IPAddress host = IPAddress.Parse(lcfg.Host);
             listener = new TcpListener(host, lcfg.Port);*/
-            listener = new TcpListener(port);
+            Listener = new TcpListener(port);
             try
             {
-                listener.Start();
+                Listener.Start();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Logger.ShowError(ex);
                 return false;
             }
 
@@ -369,6 +415,43 @@ namespace SagaLib
 
         public virtual void OnClientDisconnect(Client client)
         {
+        }
+
+        private static IEnumerable<ClrStackFrame> GetThreadFrames(int managedThreadId)
+        {
+
+            using (var target = DataTarget.CreateSnapshotAndAttach(Process.GetCurrentProcess().Id))
+            {
+                var runtime = target.ClrVersions.First().CreateRuntime();
+
+                var threadNameLookup = new Dictionary<int, string>();
+                foreach (var obj in runtime.Heap.EnumerateObjects())
+                {
+                    if (!(obj.Type is null) && obj.Type.Name == "System.Threading.Thread")
+                    {
+                        var threadId = obj.ReadField<int>("m_ManagedThreadId");
+                        if (threadId == managedThreadId)
+                        {
+                            var threadName = obj.ReadStringField("_Name");
+                            threadNameLookup[threadId] = threadName;
+                            break;
+                        }
+                    }
+                }
+
+                foreach (var thread in runtime.Threads)
+                {
+                    if (thread.ManagedThreadId != managedThreadId)
+                    {
+                        continue;
+                    }
+
+                    threadNameLookup.TryGetValue(thread.ManagedThreadId, out string threadName);
+                    return thread.EnumerateStackTrace();
+                }
+            }
+
+            return null;
         }
     }
 }

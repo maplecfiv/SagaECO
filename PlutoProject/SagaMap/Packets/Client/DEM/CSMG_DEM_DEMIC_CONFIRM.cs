@@ -19,8 +19,8 @@ namespace SagaMap.Packets.Client.DEM
                 var res = new short[9, 9];
                 offset = 4;
                 for (var i = 0; i < 9; i++)
-                for (var j = 0; j < 9; j++)
-                    res[j, i] = GetShort();
+                    for (var j = 0; j < 9; j++)
+                        res[j, i] = GetShort();
 
                 return res;
             }

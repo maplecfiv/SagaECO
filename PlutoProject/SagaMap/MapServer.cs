@@ -53,7 +53,7 @@ namespace SagaMap
 {
     public class MapServer
     {
-        private static readonly ILogger<MapServer> _logger = Logger.InitLogger<MapServer>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<MapServer>();
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -180,28 +180,28 @@ namespace SagaMap
             Logger.defaultlogger = Log;
             Logger.CurrentLogger = Log;
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("======================================================================");
+            _logger.Debug("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.LogDebug("                         SagaECO Map Server                ");
-            _logger.LogDebug("         (C)2013-2017 The Pluto ECO Project Development Team                ");
+            _logger.Debug("                         SagaECO Map Server                ");
+            _logger.Debug("         (C)2013-2017 The Pluto ECO Project Development Team                ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("======================================================================");
+            _logger.Debug("======================================================================");
             //Console.ResetColor();
             //Console.ForegroundColor = ConsoleColor.White;
             Logger.ShowInfo("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaMap");
+            _logger.Debug("SagaMap");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaLib");
+            _logger.Debug("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
                               SagaLib.Properties.GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("SagaDB");
+            _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
+            _logger.Debug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
                               SagaDB.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
@@ -209,26 +209,26 @@ namespace SagaMap
             Configuration.Configuration.Instance.Initialization("./Config/SagaMap.xml");
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("[Info]");
+            _logger.Debug("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("Current Packet Version:[");
+            _logger.Debug("Current Packet Version:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(Configuration.Configuration.Instance.Version.ToString());
+            _logger.Debug(Configuration.Configuration.Instance.Version.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("]");
+            _logger.Debug("]");
 
             LocalManager.Instance.CurrentLanguage =
                 (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages),
                     Configuration.Configuration.Instance.Language);
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("[Info]");
+            _logger.Debug("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("Current Language:[");
+            _logger.Debug("Current Language:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(LocalManager.Instance.ToString());
+            _logger.Debug(LocalManager.Instance.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("]");
+            _logger.Debug("]");
             //Console.ResetColor();
 
             //int item = (int)ContainerType.HEAD_ACCE2;
@@ -637,13 +637,13 @@ namespace SagaMap
                             {
                                 foreach (var i in MapClientManager.Instance.OnlinePlayer)
                                 {
-                                    sendTotal += i.netIO.UpStreamBand;
-                                    receiveTotal += i.netIO.DownStreamBand;
+                                    sendTotal += i.NetIo.UpStreamBand;
+                                    receiveTotal += i.NetIo.DownStreamBand;
                                     Logger.ShowWarning(string.Format(
                                         "Client:{0} Receive:{1:0.##}KB/s Send:{2:0.##}KB/s",
                                         i,
-                                        (float)i.netIO.DownStreamBand / 1024,
-                                        (float)i.netIO.UpStreamBand / 1024));
+                                        (float)i.NetIo.DownStreamBand / 1024,
+                                        (float)i.NetIo.UpStreamBand / 1024));
                                 }
                             }
                             catch
@@ -680,7 +680,7 @@ namespace SagaMap
                                         where c.Character.Name == args[1]
                                         select c;
                                     client = chr.First();
-                                    client.netIO.Disconnect();
+                                    client.NetIo.Disconnect();
                                 }
                                 catch (Exception)
                                 {
@@ -703,7 +703,7 @@ namespace SagaMap
                                 try
                                 {
                                     if (i.Character == null) continue;
-                                    i.netIO.Disconnect();
+                                    i.NetIo.Disconnect();
                                 }
                                 catch (Exception)
                                 {
@@ -757,7 +757,7 @@ namespace SagaMap
                                     if (chr.Count() > 0)
                                     {
                                         client = chr.First();
-                                        client.netIO.Disconnect();
+                                        client.NetIo.Disconnect();
                                     }
                                 }
                                 catch (Exception)
@@ -813,7 +813,7 @@ namespace SagaMap
                 try
                 {
                     if (i.Character == null) continue;
-                    i.netIO.Disconnect();
+                    i.NetIo.Disconnect();
                 }
                 catch (Exception)
                 {
@@ -857,7 +857,7 @@ namespace SagaMap
                 try
                 {
                     if (i.Character == null) continue;
-                    i.netIO.Disconnect();
+                    i.NetIo.Disconnect();
                 }
                 catch (Exception)
                 {

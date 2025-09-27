@@ -8,23 +8,16 @@ namespace SagaLib
 {
     public class Logger
     {
-        private static readonly ILogger<Logger> _logger = Logger.InitLogger<Logger>();
-        public static ILogger<T> InitLogger<T>()
+        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+        public static NLog.Logger InitLogger<T>()
         {
             {
-                    // instantiate and configure logging. Using serilog here, to log to console and a text-file.
-                    return LoggerFactory.Create(logging =>
-                    {
-                        logging.Configure(options =>
-                        {
-                            options.ActivityTrackingOptions =
-                                ActivityTrackingOptions.Tags | ActivityTrackingOptions.Baggage;
-                        });
-                    }).CreateLogger<T>();
-            
-                }
+                // instantiate and configure logging. Using serilog here, to log to console and a text-file.
+                return _logger;
+
+            }
         }
-        
+
         public enum EventType
         {
             ItemGolemGet = 1,
@@ -216,9 +209,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("[Info]");
+            _logger.Debug("[Info]");
             ////Console.ResetColor();
-            _logger.LogDebug(ex.Message + "\r\n" + ex.StackTrace);
+            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
             if (log != null) log.WriteLog(ex.Message);
         }
 
@@ -227,9 +220,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("[Info]");
+            _logger.Debug("[Info]");
             ////Console.ResetColor();
-            _logger.LogDebug(ex);
+            _logger.Debug(ex);
         }
 
         public static void ShowInfo(string ex, Logger log)
@@ -237,9 +230,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("[Info]");
+            _logger.Debug("[Info]");
             ////Console.ResetColor();
-            _logger.LogDebug(ex);
+            _logger.Debug(ex);
             if (log != null) log.WriteLog(ex);
         }
 
@@ -272,9 +265,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.LogDebug("[Debug]");
+            _logger.Debug("[Debug]");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(ex.Message + "\r\n" + ex.StackTrace);
+            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
             ////Console.ResetColor();
             if (log != null)
                 log.WriteLog("[Debug]" + ex.Message + "\r\n" + ex.StackTrace);
@@ -285,7 +278,7 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.LogDebug("[Debug]");
+            _logger.Debug("[Debug]");
             ////Console.ForegroundColor = ConsoleColor.White;
             var Stacktrace = new StackTrace(1, true);
             var txt = ex;
@@ -293,7 +286,7 @@ namespace SagaLib
                 txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name + " " +
                       i.GetFileName() + ":" + i.GetFileLineNumber();
             txt = FilterSQL(txt);
-            _logger.LogDebug(txt);
+            _logger.Debug(txt);
             ////Console.ResetColor();
             if (log != null) log.WriteLog("[Debug]" + txt);
         }
@@ -303,9 +296,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
-            _logger.LogDebug("[SQL]");
+            _logger.Debug("[SQL]");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
+            _logger.Debug(ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
             ////Console.ResetColor();
             if (log != null)
                 log.WriteLog("[SQL]" + ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
@@ -326,9 +319,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
-            _logger.LogDebug("[SQL]");
+            _logger.Debug("[SQL]");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(ex);
+            _logger.Debug(ex);
             ////Console.ResetColor();
             if (log != null)
                 log.WriteLog("[SQL]" + ex);
@@ -339,9 +332,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("[Warning]");
+            _logger.Debug("[Warning]");
             ////Console.ResetColor();
-            _logger.LogDebug(ex.Message + "\r\n" + ex.StackTrace);
+            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
             if (log != null) log.WriteLog("Warning:" + ex);
         }
 
@@ -350,9 +343,9 @@ namespace SagaLib
             if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
                 return;
             ////Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.LogDebug("[Warning]");
+            _logger.Debug("[Warning]");
             ////Console.ResetColor();
-            _logger.LogDebug(ex);
+            _logger.Debug(ex);
             if (log != null) log.WriteLog("Warning:" + ex);
         }
 
@@ -364,15 +357,15 @@ namespace SagaLib
                     return;
                 if (log == null) log = defaultlogger;
                 ////Console.ForegroundColor = ConsoleColor.Red;
-                _logger.LogDebug("[Error]");
+                _logger.Debug("[Error]");
                 ////Console.ForegroundColor = ConsoleColor.White;
-                _logger.LogDebug(ex.Message + "\r\n" + ex.StackTrace);
+                _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
                 ////Console.ResetColor();
                 log.WriteLog("[Error]" + ex.Message + "\r\n" + ex.StackTrace);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError(e.Message, e);
+                _logger.Error(e);
             }
         }
 
@@ -384,15 +377,15 @@ namespace SagaLib
                     return;
                 if (log == null) log = defaultlogger;
                 ////Console.ForegroundColor = ConsoleColor.Red;
-                _logger.LogDebug("[Error]");
+                _logger.Debug("[Error]");
                 ////Console.ForegroundColor = ConsoleColor.White;
-                _logger.LogDebug(ex);
+                _logger.Debug(ex);
                 ////Console.ResetColor();
                 log.WriteLog("[Error]" + ex);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                _logger.LogError(e.Message, e);
+                _logger.Error(e);
             }
         }
 
@@ -429,9 +422,9 @@ namespace SagaLib
         public static void ProgressBarShow(uint progressPos, uint progressTotal, string label)
         {
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("\r[Info]");
+            _logger.Debug("\r[Info]");
             ////Console.ResetColor();
-            _logger.LogDebug("{0} [", label);
+            _logger.Debug("{0} [", label);
             var sb = new StringBuilder();
             //sb.AppendFormat("\r{0} [", label);
             var barPos = progressPos * 40 / progressTotal + 1;
@@ -439,7 +432,7 @@ namespace SagaLib
             for (var p = barPos; p < 40; p++) sb.AppendFormat(" ");
             sb.AppendFormat("] {0}%\r", progressPos * 100 / progressTotal);
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.LogDebug(sb.ToString());
+            _logger.Debug(sb.ToString());
             ////Console.ResetColor();
         }
 
@@ -447,11 +440,11 @@ namespace SagaLib
         {
             //char[] buffer = new char[80];
             //label.CopyTo(0, buffer, 0, label.Length);
-            //_logger.LogDebug(buffer);
+            //_logger.Debug(buffer);
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.LogDebug("\r[Info]");
+            _logger.Debug("\r[Info]");
             ////Console.ResetColor();
-            _logger.LogDebug(
+            _logger.Debug(
                 "{0}                                                                                            \r",
                 label);
         }

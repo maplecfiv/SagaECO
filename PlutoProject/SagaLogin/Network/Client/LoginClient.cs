@@ -230,7 +230,7 @@ namespace SagaLogin.Network.Client
             var p = new SSMG_TOOL_RESULT();
             p.type = type;
             p.Text = text;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void AddGift(Gift gift)
@@ -247,7 +247,7 @@ namespace SagaLogin.Network.Client
             if (selectedChar == null) return;
             var p = new SSMG_MAIL();
             p.mail = mail;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendMails()
@@ -258,7 +258,7 @@ namespace SagaLogin.Network.Client
                 {
                     var p = new SSMG_MAIL();
                     p.mail = selectedChar.Mails[i];
-                    netIO.SendPacket(p);
+                    NetIo.SendPacket(p);
                 }
         }
 
@@ -267,7 +267,7 @@ namespace SagaLogin.Network.Client
             if (selectedChar == null) return;
             var p = new SSMG_GIFT();
             p.mails = gift;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendGifts()
@@ -278,7 +278,7 @@ namespace SagaLogin.Network.Client
             {
                 var p = new SSMG_GIFT();
                 p.mails = selectedChar.Gifts[i];
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -288,7 +288,7 @@ namespace SagaLogin.Network.Client
             int a;
             var data = GetLendings(p.JobType, false, false, p.minlevel, p.maxlevel, p.page, out a);
             p1.PutData(data, selectedChar.Level);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public List<TamaireLending> GetLendings(byte jobtype, bool isFriendOnly, bool isRingOnly, byte minlevel,
@@ -339,34 +339,34 @@ namespace SagaLogin.Network.Client
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var p3 = new Packet();
             p3.data = buf;
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
 
             var p1 = new SSMG_VERSION_ACK();
             p1.SetResult(SSMG_VERSION_ACK.Result.OK);
             p1.SetVersion(client_Version);
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             //Official HK server will now request for Hackshield GUID check , we don't know its algorithms, so not implemented
             var p2 = new SSMG_LOGIN_ALLOWED();
             frontWord = (uint)Global.Random.Next();
             backWord = (uint)Global.Random.Next();
             p2.FrontWord = frontWord;
             p2.BackWord = backWord;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
 
             var pn = new SSMG_REQUEST_NYA();
-            netIO.SendPacket(pn);
+            NetIo.SendPacket(pn);
         }
 
         public void OnSendGUID(CSMG_SEND_GUID p)
         {
             var p1 = new SSMG_LOGIN_ALLOWED();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnPing(CSMG_PING p)
         {
             var p1 = new SSMG_PONG();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnLogin(CSMG_LOGIN p)
@@ -376,7 +376,7 @@ namespace SagaLogin.Network.Client
             {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -386,10 +386,10 @@ namespace SagaLogin.Network.Client
 
                 if (LoginClientManager.Instance.FindClientAccount(p.UserName) != null && tmp.GMLevel == 0)
                 {
-                    LoginClientManager.Instance.FindClientAccount(p.UserName).netIO.Disconnect();
+                    LoginClientManager.Instance.FindClientAccount(p.UserName).NetIo.Disconnect();
                     var p2 = new SSMG_LOGIN_ACK();
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_ALREADY;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     return;
                 }
 
@@ -398,15 +398,15 @@ namespace SagaLogin.Network.Client
                 {
                     var p2 = new SSMG_LOGIN_ACK();
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
-                    netIO.SendPacket(p2);
+                    NetIo.SendPacket(p2);
                     return;
                 }
 
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.OK;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
 
-                account.LastIP = netIO.sock.RemoteEndPoint.ToString().Split(':')[0];
+                account.LastIP = NetIo.sock.RemoteEndPoint.ToString().Split(':')[0];
                 account.MacAddress = p.MacAddress;
 
 
@@ -452,7 +452,7 @@ namespace SagaLogin.Network.Client
             {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -504,7 +504,7 @@ namespace SagaLogin.Network.Client
                 if (!checkHairColor(p) || !checkHairStyle(p))
                 {
                     account.Banned = true;
-                    netIO.Disconnect();
+                    NetIo.Disconnect();
                     LoginServer.accountDB.WriteUser(account);
                     return;
                 }
@@ -591,7 +591,7 @@ namespace SagaLogin.Network.Client
                 }
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendCharData();
         }
 
@@ -614,7 +614,7 @@ namespace SagaLogin.Network.Client
                 p1.DeleteResult = SSMG_CHAR_DELETE_ACK.Result.WRONG_DELETE_PASSWORD;
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendCharData();
         }
 
@@ -629,7 +629,7 @@ namespace SagaLogin.Network.Client
             selectedChar = pc;
             selectedChar.Account = account;
             p1.MapID = pc.MapID;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnRequestMapServer(CSMG_REQUEST_MAP_SERVER p)
@@ -661,7 +661,7 @@ namespace SagaLogin.Network.Client
                 }
             }
 
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnCharStatus(CSMG_CHAR_STATUS p)
@@ -670,10 +670,10 @@ namespace SagaLogin.Network.Client
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var ps1 = new Packet();
             ps1.data = buf;
-            netIO.SendPacket(ps1);
+            NetIo.SendPacket(ps1);
 
             var p1 = new SSMG_CHAR_STATUS();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             SendFriendList();
             SendStatusToFriends();
 
@@ -681,7 +681,7 @@ namespace SagaLogin.Network.Client
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var ps = new Packet();
             ps.data = buf;
-            netIO.SendPacket(ps);
+            NetIo.SendPacket(ps);
 
             SendGifts();
             SendMails();
@@ -691,12 +691,12 @@ namespace SagaLogin.Network.Client
         {
             var p2 = new SSMG_CHAR_DATA();
             p2.Chars = account.Characters;
-            netIO.SendPacket(p2);
+            NetIo.SendPacket(p2);
             //Logger.ShowInfo(this.netIO.DumpData(p2));
 
             var p3 = new SSMG_CHAR_EQUIP();
             p3.Characters = account.Characters;
-            netIO.SendPacket(p3);
+            NetIo.SendPacket(p3);
         }
 
         public void OnNya(CSMG_NYASHIELD_VERSION p)
@@ -704,7 +704,7 @@ namespace SagaLogin.Network.Client
             if (p.ver != 1)
             {
                 var p1 = new SSMG_NYA_WRONG_VERSION();
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -713,7 +713,7 @@ namespace SagaLogin.Network.Client
             var p = new SSMG_CHAT_SYSTEM_MESSAGE();
             p.Type = (SSMG_CHAT_SYSTEM_MESSAGE.MessageType)type;
             p.Content = message;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         private void SendWelcomeMessages()
@@ -762,7 +762,7 @@ namespace SagaLogin.Network.Client
                 p.Result2 = 1;
             }
 
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public enum SESSION_STATE
@@ -783,18 +783,18 @@ namespace SagaLogin.Network.Client
 
         public LoginClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
         {
-            netIO = new NetIO(mSock, mCommandTable, this);
+            NetIo = new NetIO(mSock, mCommandTable, this);
             if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                netIO.FirstLevelLength = 2;
-            netIO.SetMode(NetIO.Mode.Server);
-            if (netIO.sock.Connected) OnConnect();
+                NetIo.FirstLevelLength = 2;
+            NetIo.SetMode(NetIO.Mode.Server);
+            if (NetIo.sock.Connected) OnConnect();
         }
 
         public override string ToString()
         {
             try
             {
-                if (netIO != null) return netIO.sock.RemoteEndPoint.ToString();
+                if (NetIo != null) return NetIo.sock.RemoteEndPoint.ToString();
                 return "LoginClient";
             }
             catch (Exception)
@@ -844,7 +844,7 @@ namespace SagaLogin.Network.Client
         {
             var p1 = new SSMG_WRP_LIST();
             p1.RankingList = LoginServer.charDB.GetWRPRanking();
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public uint currentMap;
@@ -861,13 +861,13 @@ namespace SagaLogin.Network.Client
             LoginServer.charDB.DeleteFriend(p.CharID, selectedChar.CharID);
             var p1 = new SSMG_FRIEND_DELETE();
             p1.CharID = p.CharID;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
             var client = LoginClientManager.Instance.FindClient(p.CharID);
             if (client != null)
             {
                 p1 = new SSMG_FRIEND_DELETE();
                 p1.CharID = selectedChar.CharID;
-                client.netIO.SendPacket(p1);
+                client.NetIo.SendPacket(p1);
             }
         }
 
@@ -883,20 +883,20 @@ namespace SagaLogin.Network.Client
                     var p1 = new SSMG_FRIEND_ADD();
                     p1.CharID = selectedChar.CharID;
                     p1.Name = selectedChar.Name;
-                    client.netIO.SendPacket(p1);
+                    client.NetIo.SendPacket(p1);
                 }
                 else
                 {
                     var p1 = new SSMG_FRIEND_ADD_FAILED();
                     p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.TARGET_REFUSED;
-                    netIO.SendPacket(p1);
+                    NetIo.SendPacket(p1);
                 }
             }
             else
             {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.CANNOT_FIND_TARGET;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -918,7 +918,7 @@ namespace SagaLogin.Network.Client
             {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.CANNOT_FIND_TARGET;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 return;
             }
 
@@ -926,12 +926,12 @@ namespace SagaLogin.Network.Client
             {
                 var p1 = new SSMG_FRIEND_ADD_OK();
                 p1.CharID = friendTarget.selectedChar.CharID;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
                 SendFriendAdd(friendTarget);
                 LoginServer.charDB.AddFriend(selectedChar, friendTarget.selectedChar.CharID);
                 p1 = new SSMG_FRIEND_ADD_OK();
                 p1.CharID = selectedChar.CharID;
-                friendTarget.netIO.SendPacket(p1);
+                friendTarget.NetIo.SendPacket(p1);
                 friendTarget.SendFriendAdd(this);
                 LoginServer.charDB.AddFriend(friendTarget.selectedChar, selectedChar.CharID);
             }
@@ -939,7 +939,7 @@ namespace SagaLogin.Network.Client
             {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.TARGET_REFUSED;
-                friendTarget.netIO.SendPacket(p1);
+                friendTarget.NetIo.SendPacket(p1);
             }
 
             friendTarget = null;
@@ -958,7 +958,7 @@ namespace SagaLogin.Network.Client
                 if (client != null)
                 {
                     p1.MapID = currentMap;
-                    client.netIO.SendPacket(p1);
+                    client.NetIo.SendPacket(p1);
                 }
             }
         }
@@ -980,7 +980,7 @@ namespace SagaLogin.Network.Client
                     p1.Job = job;
                     p1.Level = lv;
                     p1.JobLevel = joblv;
-                    client.netIO.SendPacket(p1);
+                    client.NetIo.SendPacket(p1);
                 }
             }
         }
@@ -992,7 +992,7 @@ namespace SagaLogin.Network.Client
             p.MapID = client.currentMap;
             p.Status = client.currentStatus;
             p.Comment = "";
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
         }
 
         public void SendFriendList()
@@ -1011,7 +1011,7 @@ namespace SagaLogin.Network.Client
                 }
 
                 p.Comment = "";
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
         }
 
@@ -1032,8 +1032,8 @@ namespace SagaLogin.Network.Client
                     p2.Job = selectedChar.Job;
                     p2.Level = selectedChar.Level;
                     p2.JobLevel = selectedChar.CurrentJobLevel;
-                    client.netIO.SendPacket(p1);
-                    client.netIO.SendPacket(p2);
+                    client.NetIo.SendPacket(p1);
+                    client.NetIo.SendPacket(p2);
                 }
             }
         }
@@ -1047,14 +1047,14 @@ namespace SagaLogin.Network.Client
                 var p1 = new SSMG_CHAT_WHISPER();
                 p1.Sender = selectedChar.Name;
                 p1.Content = p.Content;
-                client.netIO.SendPacket(p1);
+                client.NetIo.SendPacket(p1);
             }
             else
             {
                 var p1 = new SSMG_CHAT_WHISPER_FAILED();
                 p1.Receiver = p.Receiver;
                 p1.Result = 0xFFFFFFFF;
-                netIO.SendPacket(p1);
+                NetIo.SendPacket(p1);
             }
         }
 
@@ -1066,7 +1066,7 @@ namespace SagaLogin.Network.Client
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
             p1.AuthOK = server.Password == Configuration.Configuration.Instance.Password;
             p1.StartupSetting = Configuration.Configuration.Instance.StartupSetting;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
 
             Logger.ShowInfo(string.Format("Mapserver:{0}:{1} is requesting configuration...", server.IP, server.port));
         }

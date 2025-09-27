@@ -29,8 +29,8 @@ namespace SagaMap.Packets.Server.DEM
             {
                 offset = 4;
                 for (var i = 0; i < 9; i++)
-                for (var j = 0; j < 9; j++)
-                    PutShort(value[j, i]);
+                    for (var j = 0; j < 9; j++)
+                        PutShort(value[j, i]);
             }
         }
     }

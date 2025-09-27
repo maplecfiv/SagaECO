@@ -25,7 +25,7 @@ namespace SagaDB
 {
     public class MySQLActorDB : MySQLConnectivity, ActorDB
     {
-        private static readonly ILogger<MySQLActorDB> _logger = Logger.InitLogger<MySQLActorDB>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<MySQLActorDB>();
         private readonly string database;
         private readonly string dbpass;
         private readonly string dbuser;
@@ -65,7 +65,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else _logger.LogDebug("SQL Connection error");
+                else _logger.Debug("SQL Connection error");
             }
         }
 

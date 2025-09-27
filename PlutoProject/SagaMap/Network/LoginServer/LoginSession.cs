@@ -12,7 +12,7 @@ namespace SagaMap.Network.LoginServer
 {
     public class LoginSession : SagaLib.Client
     {
-        private static readonly ILogger<LoginSession> _logger = Logger.InitLogger<LoginSession>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<LoginSession>();
         public enum SESSION_STATE
         {
             CONNECTED,
@@ -76,13 +76,13 @@ namespace SagaMap.Network.LoginServer
             state = SESSION_STATE.CONNECTED;
             try
             {
-                netIO = new NetIO(sock, commandTable, this);
+                NetIo = new NetIO(sock, commandTable, this);
                 if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                    netIO.FirstLevelLength = 2;
-                netIO.SetMode(NetIO.Mode.Client);
+                    NetIo.FirstLevelLength = 2;
+                NetIo.SetMode(NetIO.Mode.Client);
                 var p = new Packet(8);
                 p.data[7] = 0x10;
-                netIO.SendPacket(p, true, true);
+                NetIo.SendPacket(p, true, true);
             }
             catch (Exception ex)
             {
@@ -104,7 +104,7 @@ namespace SagaMap.Network.LoginServer
                 for (var j = i * 200; j < (i + 1) * 200; j++)
                     list.Add(Configuration.Configuration.Instance.HostedMaps[j]);
                 p.HostedMaps = list;
-                netIO.SendPacket(p);
+                NetIo.SendPacket(p);
             }
 
             p = new INTERN_LOGIN_REGISTER();
@@ -113,11 +113,11 @@ namespace SagaMap.Network.LoginServer
             for (var i = count * 200; i < Configuration.Configuration.Instance.HostedMaps.Count; i++)
                 list.Add(Configuration.Configuration.Instance.HostedMaps[i]);
             p.HostedMaps = list;
-            netIO.SendPacket(p);
+            NetIo.SendPacket(p);
 
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG();
             p1.Version = Configuration.Configuration.Instance.Version;
-            netIO.SendPacket(p1);
+            NetIo.SendPacket(p1);
         }
 
         public void OnGetConfig(INTERN_LOGIN_REQUEST_CONFIG_ANSWER p)
@@ -129,15 +129,15 @@ namespace SagaMap.Network.LoginServer
                 foreach (var i in Configuration.Configuration.Instance.StartupSetting.Keys)
                 {
                     //Console.ForegroundColor = ConsoleColor.Green;
-                    _logger.LogDebug("[Info]");
+                    _logger.Debug("[Info]");
                     //Console.ForegroundColor = ConsoleColor.Yellow;
-                    _logger.LogDebug("Configuration for Race[");
+                    _logger.Debug("Configuration for Race[");
                     //Console.ForegroundColor = ConsoleColor.White;
-                    _logger.LogDebug(i.ToString());
+                    _logger.Debug(i.ToString());
                     //Console.ForegroundColor = ConsoleColor.Yellow;
-                    _logger.LogDebug("]");
+                    _logger.Debug("]");
                     //Console.ForegroundColor = ConsoleColor.White;
-                    _logger.LogDebug(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
+                    _logger.Debug(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
                     //Console.ResetColor();
                 }
 

@@ -33,25 +33,28 @@ namespace SagaLib
 
         public static void LeaveCriticalArea(Thread blocker)
         {
-            if (blockedThread.Contains(blocker) || blockedThread.Count != 0)
+            if (!blockedThread.Contains(blocker) && blockedThread.Count == 0)
             {
-                if (blockedThread.Contains(blocker))
-                {
-                    blockedThread.Remove(blocker);
-                }
-                else
-                {
-                    if (blockedThread.Count > 0)
-                        blockedThread.RemoveAt(0);
-                }
 
-                currentBlocker = null;
-                waitressQueue.Set();
+                Logger.ShowDebug("Current thread isn't blocked while trying unblock, skiping", Logger.defaultlogger);
+                return;
+            }
+
+            if (blockedThread.Contains(blocker))
+            {
+                blockedThread.Remove(blocker);
             }
             else
             {
-                Logger.ShowDebug("Current thread isn't blocked while trying unblock, skiping", Logger.defaultlogger);
+                if (blockedThread.Count > 0)
+                {
+
+                    blockedThread.RemoveAt(0);
+                }
             }
+
+            currentBlocker = null;
+            waitressQueue.Set();
         }
     }
 }

@@ -5,14 +5,14 @@ namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_EFFECT : Packet
     {
-//DWORD  item_id;          // アイテムID
-//ABYTE  unknown1;         // 
-//DWORD  from_chara_id;    // アイテム使用者のサーバキャラID？
-//ADWORD target_chara_id?; // 
-//AWORD  hp;               // HPダメージ(マイナスの場合回復)
-//AWORD  mp;               // MPダメージ(マイナスの場合回復)
-//AWORD  sp;               // SPダメージ(マイナスの場合回復)
-//ADWORD color_flag;       // 数字の色(MISS Avoid Criticalも？
+        //DWORD  item_id;          // アイテムID
+        //ABYTE  unknown1;         // 
+        //DWORD  from_chara_id;    // アイテム使用者のサーバキャラID？
+        //ADWORD target_chara_id?; // 
+        //AWORD  hp;               // HPダメージ(マイナスの場合回復)
+        //AWORD  mp;               // MPダメージ(マイナスの場合回復)
+        //AWORD  sp;               // SPダメージ(マイナスの場合回復)
+        //ADWORD color_flag;       // 数字の色(MISS Avoid Criticalも？
 
         private readonly byte combo;
 

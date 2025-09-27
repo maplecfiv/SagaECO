@@ -298,7 +298,7 @@ namespace SagaMap.ODWar
                         p1.EndY = 127;
                         p1.EventID = 0xF1000000;
                         p1.EffectID = 9005;
-                        MapClient.FromActorPC((ActorPC)i).netIO.SendPacket(p1);
+                        MapClient.FromActorPC((ActorPC)i).NetIo.SendPacket(p1);
                         p1 = new SSMG_NPC_SET_EVENT_AREA();
                         p1.StartX = 245;
                         p1.EndX = 245;
@@ -306,7 +306,7 @@ namespace SagaMap.ODWar
                         p1.EndY = 127;
                         p1.EventID = 0xF1000001;
                         p1.EffectID = 9005;
-                        MapClient.FromActorPC((ActorPC)i).netIO.SendPacket(p1);
+                        MapClient.FromActorPC((ActorPC)i).NetIo.SendPacket(p1);
                     }
 
             war.Score.Clear();
@@ -350,7 +350,7 @@ namespace SagaMap.ODWar
                 p.EXP = exp;
                 p.JEXP = exp;
                 p.CP = score;
-                MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                MapClient.FromActorPC(pc).NetIo.SendPacket(p);
             }
         }
     }

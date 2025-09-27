@@ -4,15 +4,15 @@ namespace SagaMap.Packets.Server.Item
 {
     public class SSMG_ITEM_USE : Packet
     {
-//DWORD item_id;        //アイテムID （0xFFFFFFFFの場合もある。
-//short result;         //0なら成功 それ以外なら失敗
-//DROWD from_chara_id;  //アイテム使用者のサーバキャラID？
-//DWORD cast;           //キャスト時間っぽい（ミリ秒単位
-//DWORD to_chara_id;    //アイテム対象者のサーバキャラID？
-//BYTE x?               // 0x00 or 0xFF？
-//BYTE y?               // （飛空挺呼び出した場合は値がちゃんと入っている
-//WORD skill_id;        //スキルID
-//BYTE skill_lv;        //スキルLv
+        //DWORD item_id;        //アイテムID （0xFFFFFFFFの場合もある。
+        //short result;         //0なら成功 それ以外なら失敗
+        //DROWD from_chara_id;  //アイテム使用者のサーバキャラID？
+        //DWORD cast;           //キャスト時間っぽい（ミリ秒単位
+        //DWORD to_chara_id;    //アイテム対象者のサーバキャラID？
+        //BYTE x?               // 0x00 or 0xFF？
+        //BYTE y?               // （飛空挺呼び出した場合は値がちゃんと入っている
+        //WORD skill_id;        //スキルID
+        //BYTE skill_lv;        //スキルLv
 
         public SSMG_ITEM_USE()
         {

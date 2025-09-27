@@ -82,7 +82,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 p.X = SagaLib.Global.PosX16to8(arrX, map.Width);
                 p.Y = SagaLib.Global.PosY16to8(arrY, map.Width);
                 p.Type = 0;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
 
                 client.SendSystemMessage("已進入搜索狀態。");
             }
@@ -99,7 +99,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
             client.SendSystemMessage("已解除搜索狀態。");
             var p = new SSMG_NPC_NAVIGATION_CANCEL();
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         #endregion

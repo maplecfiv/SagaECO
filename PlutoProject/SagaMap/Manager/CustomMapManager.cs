@@ -58,11 +58,11 @@ namespace SagaMap.Manager
             var weather = ScriptManager.Instance.VariableHolder.AInt["服務器FF天氣"];
             var p = new SSMG_FG_CHANGE_SKY();
             p.Sky = (byte)sky;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
 
             var p2 = new SSMG_FG_CHANGE_WEATHER();
             p2.Weather = (byte)weather;
-            client.netIO.SendPacket(p2);
+            client.NetIo.SendPacket(p2);
         }
 
         public void SerFFRoomEnter(MapClient client)
@@ -85,7 +85,7 @@ namespace SagaMap.Manager
             p.HouseX = 0xF6DC;
             p.HouseY = 0xFD34;
             p.HouseDir = 0xB6;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
         }
 
         public void SerFFFurnitureCastleSetup(MapClient client, CSMG_FF_CASTLE_SETUP p)

@@ -8,16 +8,16 @@ namespace SagaLib
     /// <typeparam name="T">一个枚举类型</typeparam>
     public class BitMask_Long<T>
     {
-        private readonly BitMask_Long ori;
+        private readonly BitMask_Long _ori;
 
         public BitMask_Long()
         {
-            ori = new BitMask_Long();
+            _ori = new BitMask_Long();
         }
 
         public BitMask_Long(BitMask_Long ori)
         {
-            this.ori = ori;
+            this._ori = ori;
         }
 
         /// <summary>
@@ -25,18 +25,18 @@ namespace SagaLib
         /// </summary>
         public ulong Value
         {
-            get => ori.Value;
-            set => ori.Value = value;
+            get => _ori.Value;
+            set => _ori.Value = value;
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(T Mask)
+        public bool Test(T mask)
         {
-            return ori.Test(Mask);
+            return _ori.Test(mask);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace SagaLib
         /// <param name="val">真值</param>
         public void SetValue(T bitmask, bool val)
         {
-            ori.SetValue(bitmask, val);
+            _ori.SetValue(bitmask, val);
         }
 
         public static implicit operator BitMask_Long<T>(BitMask_Long ori)
@@ -61,11 +61,11 @@ namespace SagaLib
     [Serializable]
     public class BitMask_Long
     {
-        private ulong value;
+        private ulong _value;
 
         public BitMask_Long()
         {
-            value = 0;
+            _value = 0;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SagaLib
         /// <param name="value">值</param>
         public BitMask_Long(ulong value)
         {
-            this.value = value;
+            this._value = value;
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace SagaLib
         /// <param name="values">真值</param>
         public BitMask_Long(bool[] values)
         {
-            value = 0;
+            _value = 0;
             for (byte i = 0; i < values.Length; i++)
             {
                 if (i >= 64)
@@ -94,28 +94,28 @@ namespace SagaLib
 
         public ulong Value
         {
-            get => value;
-            set => this.value = value;
+            get => _value;
+            set => this._value = value;
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(object Mask)
+        public bool Test(object mask)
         {
-            return Test((ulong)Mask);
+            return Test((ulong)mask);
         }
 
         /// <summary>
         ///     检测某个标识
         /// </summary>
-        /// <param name="Mask">标识</param>
+        /// <param name="mask">标识</param>
         /// <returns>值</returns>
-        public bool Test(ulong Mask)
+        public bool Test(ulong mask)
         {
-            return (value & Mask) != 0;
+            return (_value & mask) != 0;
         }
 
         /// <summary>
@@ -149,9 +149,9 @@ namespace SagaLib
             if (Test(bitmask) != val)
             {
                 if (val)
-                    value = value | bitmask;
+                    _value = _value | bitmask;
                 else
-                    value = value ^ bitmask;
+                    _value = _value ^ bitmask;
             }
         }
     }

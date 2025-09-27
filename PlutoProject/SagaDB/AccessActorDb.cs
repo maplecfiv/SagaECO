@@ -20,7 +20,7 @@ namespace SagaDB
 {
     public class AccessActorDb : AccessConnectivity, ActorDB
     {
-        private static readonly ILogger<AccessActorDb> _logger = Logger.InitLogger<AccessActorDb>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<AccessActorDb>();
         private readonly string Source;
         private Encoding encoder = Encoding.UTF8;
         private bool isconnected;
@@ -51,7 +51,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else _logger.LogDebug("SQL Connection error");
+                else _logger.Debug("SQL Connection error");
             }
         }
 

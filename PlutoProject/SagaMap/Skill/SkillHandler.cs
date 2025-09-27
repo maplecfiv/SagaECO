@@ -316,7 +316,7 @@ namespace SagaMap.Skill
                         case 2480: //神奇大师
                             if (spc.Level <= 60) a = true;
                             break;
-                        //bool depend on dActor
+                            //bool depend on dActor
                     }
                 }
             }
@@ -857,7 +857,7 @@ namespace SagaMap.Skill
                 if (act.type == ActorType.PC)
                 {
                     var pc = (ActorPC)act;
-                    MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                    MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                 }
         }
 
@@ -7534,7 +7534,7 @@ namespace SagaMap.Skill
                 p.Type = type;
                 p.Sender = Sender;
                 p.Content = Content;
-                MapClient.FromActorPC((ActorPC)sActor).netIO.SendPacket(p);
+                MapClient.FromActorPC((ActorPC)sActor).NetIo.SendPacket(p);
             }
         }
 
@@ -7700,7 +7700,7 @@ namespace SagaMap.Skill
                         SSMG_ITEM_DELETE p2;
                         p2 = new SSMG_ITEM_DELETE();
                         p2.InventorySlot = pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].Slot;
-                        client.netIO.SendPacket(p2);
+                        client.NetIo.SendPacket(p2);
                         var oriItem = pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND];
                         client.ItemMoveSub(oriItem, ContainerType.BODY, oriItem.Stack);
                         if (oriItem.BaseData.repairItem == 0)
@@ -7784,7 +7784,7 @@ namespace SagaMap.Skill
                         SSMG_ITEM_DELETE p2;
                         p2 = new SSMG_ITEM_DELETE();
                         p2.InventorySlot = pc.Inventory.Equipments[ArmorEnum].Slot;
-                        client.netIO.SendPacket(p2);
+                        client.NetIo.SendPacket(p2);
                         pc.Inventory.Equipments.Remove(ArmorEnum);
                         client.SendItems();
                         client.SendEquip();
@@ -8761,73 +8761,73 @@ namespace SagaMap.Skill
                     case ActorType.SKILL:
                         return false;
                     case ActorType.PC:
-                    {
-                        //Logger.ShowInfo("skillhandler");
-                        var target = (ActorPC)dActor;
-                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && target.Mode == PlayerMode.COLISEUM_MODE) ||
-                            (pc.Mode == PlayerMode.WRP && target.Mode == PlayerMode.WRP) ||
-                            (pc.Mode == PlayerMode.KNIGHT_WAR && target.Mode == PlayerMode.KNIGHT_WAR) ||
-                            ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
-                              pc.Mode == PlayerMode.KNIGHT_NORTH
-                              || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
-                              pc.Mode == PlayerMode.KNIGHT_WEST)
-                             && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                 target.Mode == PlayerMode.KNIGHT_NORTH
-                                 || target.Mode == PlayerMode.KNIGHT_ROCK || target.Mode == PlayerMode.KNIGHT_SOUTH ||
-                                 target.Mode == PlayerMode.KNIGHT_WEST)
-                            ))
                         {
-                            if ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                 pc.Mode == PlayerMode.KNIGHT_NORTH
-                                 || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
-                                 pc.Mode == PlayerMode.KNIGHT_WEST)
-                                && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                    target.Mode == PlayerMode.KNIGHT_NORTH
-                                    || target.Mode == PlayerMode.KNIGHT_ROCK ||
-                                    target.Mode == PlayerMode.KNIGHT_SOUTH || target.Mode == PlayerMode.KNIGHT_WEST)
-                               )
-                                //Logger.ShowInfo("skillhandler2");
-                                if (pc.Mode == target.Mode)
+                            //Logger.ShowInfo("skillhandler");
+                            var target = (ActorPC)dActor;
+                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && target.Mode == PlayerMode.COLISEUM_MODE) ||
+                                (pc.Mode == PlayerMode.WRP && target.Mode == PlayerMode.WRP) ||
+                                (pc.Mode == PlayerMode.KNIGHT_WAR && target.Mode == PlayerMode.KNIGHT_WAR) ||
+                                ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                  pc.Mode == PlayerMode.KNIGHT_NORTH
+                                  || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
+                                  pc.Mode == PlayerMode.KNIGHT_WEST)
+                                 && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                     target.Mode == PlayerMode.KNIGHT_NORTH
+                                     || target.Mode == PlayerMode.KNIGHT_ROCK || target.Mode == PlayerMode.KNIGHT_SOUTH ||
+                                     target.Mode == PlayerMode.KNIGHT_WEST)
+                                ))
+                            {
+                                if ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                     pc.Mode == PlayerMode.KNIGHT_NORTH
+                                     || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
+                                     pc.Mode == PlayerMode.KNIGHT_WEST)
+                                    && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                        target.Mode == PlayerMode.KNIGHT_NORTH
+                                        || target.Mode == PlayerMode.KNIGHT_ROCK ||
+                                        target.Mode == PlayerMode.KNIGHT_SOUTH || target.Mode == PlayerMode.KNIGHT_WEST)
+                                   )
+                                    //Logger.ShowInfo("skillhandler2");
+                                    if (pc.Mode == target.Mode)
+                                        return false;
+                                //Logger.ShowInfo("skillhandler3");
+                                if (pc.Party == target.Party && pc.Party != null)
                                     return false;
-                            //Logger.ShowInfo("skillhandler3");
-                            if (pc.Party == target.Party && pc.Party != null)
+                                if (target.PossessionTarget == 0)
+                                    return true;
                                 return false;
-                            if (target.PossessionTarget == 0)
-                                return true;
+                                //Logger.ShowInfo("skillhandler4");
+                            }
+
                             return false;
-                            //Logger.ShowInfo("skillhandler4");
                         }
-
-                        return false;
-                    }
                     case ActorType.PET:
-                    {
-                        var pet = (ActorPet)dActor;
-                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
-                            (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
-                            (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
                         {
-                            if (pc.Party == pet.Owner.Party)
-                                return false;
-                            return true;
-                        }
+                            var pet = (ActorPet)dActor;
+                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
+                                (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
+                                (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
+                            {
+                                if (pc.Party == pet.Owner.Party)
+                                    return false;
+                                return true;
+                            }
 
-                        return false;
-                    }
+                            return false;
+                        }
                     case ActorType.SHADOW:
-                    {
-                        var pet = (ActorShadow)dActor;
-                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
-                            (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
-                            (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
                         {
-                            if (pc.Party == pet.Owner.Party)
-                                return false;
-                            return true;
-                        }
+                            var pet = (ActorShadow)dActor;
+                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
+                                (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
+                                (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
+                            {
+                                if (pc.Party == pet.Owner.Party)
+                                    return false;
+                                return true;
+                            }
 
-                        return false;
-                    }
+                            return false;
+                        }
                 }
             }
             else if (sActor.type == ActorType.MOB)
@@ -12072,7 +12072,7 @@ namespace SagaMap.Skill
             p.OwnerActorID = pet.Owner.ActorID;
             p.Type = growType;
             p.Value = value;
-            MapClient.FromActorPC(pet.Owner).netIO.SendPacket(p);
+            MapClient.FromActorPC(pet.Owner).NetIo.SendPacket(p);
         }
 
         public void ProcessPetGrowth(Actor actor, PetGrowthReason reason)

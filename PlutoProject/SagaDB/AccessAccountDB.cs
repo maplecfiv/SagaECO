@@ -13,7 +13,7 @@ namespace SagaDB
 {
     public class AccessAccountDB : AccessConnectivity, AccountDB
     {
-        private static readonly ILogger<AccessAccountDB> _logger = Logger.InitLogger<AccessAccountDB>();
+        private static readonly NLog.Logger _logger = Logger.InitLogger<AccessAccountDB>();
         private readonly string Source;
         private Encoding encoder = Encoding.UTF8;
         private bool isconnected;
@@ -45,7 +45,7 @@ namespace SagaDB
             if (db != null)
             {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else _logger.LogDebug("SQL Connection error");
+                else _logger.Debug("SQL Connection error");
             }
         }
 
@@ -173,7 +173,7 @@ namespace SagaDB
 
             if (result.Count == 0) return null;
             account = new Account();
-            //   _logger.LogDebug(result[0]["account_id"].ToString());
+            //   _logger.Debug(result[0]["account_id"].ToString());
             account.AccountID = (int)result[0]["account_id"];
             account.Name = name;
             account.Password = (string)result[0]["password"];

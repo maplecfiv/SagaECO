@@ -124,8 +124,8 @@ namespace SagaMap.Process
             //Check if Char is online
             MapClient i;
             var chr = from c in MapClientManager.Instance.OnlinePlayer
-                where c.Character.Name == pc.Name
-                select c;
+                      where c.Character.Name == pc.Name
+                      select c;
 
             i = chr.First();
             AddItem(i, itemid, qty);
@@ -151,8 +151,8 @@ namespace SagaMap.Process
             //Check if Char is online
             MapClient i;
             var chr = from c in MapClientManager.Instance.OnlinePlayer
-                where c.Character.Name == pc.Name
-                select c;
+                      where c.Character.Name == pc.Name
+                      select c;
             if (chr.Count() == 0)
             {
                 try

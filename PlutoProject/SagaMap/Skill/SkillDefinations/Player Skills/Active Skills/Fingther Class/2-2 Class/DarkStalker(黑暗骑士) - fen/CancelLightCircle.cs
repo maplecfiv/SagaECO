@@ -47,11 +47,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     {
                         if (times == 0)
                             for (var x = (byte)(skill.x - 1); x < skill.x + 1; x++)
-                            for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
-                            {
-                                olight[x - skill.x + 1, y - skill.y + 1] = map.Info.holy[x, y];
-                                map.Info.holy[x, y] = 0;
-                            }
+                                for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
+                                {
+                                    olight[x - skill.x + 1, y - skill.y + 1] = map.Info.holy[x, y];
+                                    map.Info.holy[x, y] = 0;
+                                }
 
                         times++;
                         lifetime -= period;
@@ -59,8 +59,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     else
                     {
                         for (var x = (byte)(skill.x - 1); x < skill.x + 1; x++)
-                        for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
-                            map.Info.holy[x, y] = olight[x - skill.x + 1, y - skill.y + 1];
+                            for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
+                                map.Info.holy[x, y] = olight[x - skill.x + 1, y - skill.y + 1];
 
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）

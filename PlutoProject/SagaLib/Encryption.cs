@@ -41,7 +41,10 @@ namespace SagaLib
         public byte[] GetKeyExchangeBytes()
         {
             if (privateKey == Two)
+            {
+
                 return null;
+            }
             return Two.modPow(privateKey, Module).getBytes();
         }
 
@@ -65,8 +68,15 @@ namespace SagaLib
 
         public byte[] Encrypt(byte[] src, int offset)
         {
-            if (AESKey == null) return src;
-            if (offset == src.Length) return src;
+            if (AESKey == null)
+            {
+                return src;
+            }
+
+            if (offset == src.Length)
+            {
+                return src;
+            }
             var crypt = aes.CreateEncryptor(AESKey, new byte[16]);
             var len = src.Length - offset;
             var buf = new byte[src.Length];
@@ -77,8 +87,15 @@ namespace SagaLib
 
         public byte[] Decrypt(byte[] src, int offset)
         {
-            if (AESKey == null) return src;
-            if (offset == src.Length) return src;
+            if (AESKey == null)
+            {
+                return src;
+            }
+
+            if (offset == src.Length)
+            {
+                return src;
+            }
             var crypt = aes.CreateDecryptor(AESKey, new byte[16]);
             var len = src.Length - offset;
             var buf = new byte[src.Length];

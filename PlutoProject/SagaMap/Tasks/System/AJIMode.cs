@@ -73,7 +73,7 @@ namespace SagaMap.Tasks.System
             if (type == 0)
             {
                 foreach (var i in MapClientManager.Instance.OnlinePlayer)
-                    i.netIO.Disconnect();
+                    i.NetIo.Disconnect();
             }
             else if (type == 1 && !ClearAlready)
             {
