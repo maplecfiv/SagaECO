@@ -20,7 +20,7 @@ namespace SagaMap
 
         public override void OnEvent(ActorPC pc)
         {
-            string input_g = InputBox(pc, "���ݮ�", InputType.PetRename);
+            string input_g = InputBox(pc, "${msg.metaphone.msg.content}", InputType.PetRename);
             if (input_g != "")
             {
                 foreach (MapClient i in MapClientManager.Instance.OnlinePlayer)

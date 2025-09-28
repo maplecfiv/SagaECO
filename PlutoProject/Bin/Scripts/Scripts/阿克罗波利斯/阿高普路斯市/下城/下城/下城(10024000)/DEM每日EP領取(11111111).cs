@@ -17,57 +17,57 @@ namespace SagaScript
         {
             if (pc.Race == PC_RACE.DEM)
             {
-            if (pc.CStr["EPLQ"] == DateTime.Now.ToString("yyyy-MM-dd") && pc.CInt["EPMT"] == 0)
-            {
-                Say(pc, 131, "�����Ѿ���ȡ����$R;");
-            }
-            else
-            {
-                if (pc.CStr["EPLQ"] != DateTime.Now.ToString("yyyy-MM-dd"))
+                if (pc.CStr["EPLQ"] == DateTime.Now.ToString("yyyy-MM-dd") && pc.CInt["EPMT"] == 0)
                 {
-                    pc.CStr["EPLQ"] = DateTime.Now.ToString("yyyy-MM-dd");
-                    pc.CInt["EPMT"] = 10;
-                }
-                if (pc.EP == pc.MaxEP)
-                {
-                    Say(pc, 131, "������$P����Ҫ�ָ���$R;");
+                    Say(pc, 131, "今天已经领取过了$R;");
                 }
                 else
                 {
-                    try
+                    if (pc.CStr["EPLQ"] != DateTime.Now.ToString("yyyy-MM-dd"))
                     {
-                        string LP = InputBox(pc, string.Format("��ȡ����?(���ڿ�����ȡ{0}��)", pc.CInt["EPMT"].ToString()), InputType.ItemCode);
-                        if (LP == "")
-                            return;
-                        ushort temp = ushort.Parse(LP);
-                        if (temp < 0)
-                            Say(pc, 131, "�������Ŷ$R;");
-                        else if (temp > pc.CInt["EPMT"])
-                            Say(pc, 131, "ʣ���������Ŷ��$R;");
-                        else
+                        pc.CStr["EPLQ"] = DateTime.Now.ToString("yyyy-MM-dd");
+                        pc.CInt["EPMT"] = 10;
+                    }
+                    if (pc.EP == pc.MaxEP)
+                    {
+                        Say(pc, 131, "呃……$P不需要恢复呢$R;");
+                    }
+                    else
+                    {
+                        try
                         {
-                            if (pc.EP + temp > pc.MaxEP)
-                            {
-                                Say(pc, 131, "����������Ŷ��$R;");
-                            }
+                            string LP = InputBox(pc, string.Format("领取多少?(现在可以领取{0}点)", pc.CInt["EPMT"].ToString()), InputType.ItemCode);
+                            if (LP == "")
+                                return;
+                            ushort temp = ushort.Parse(LP);
+                            if (temp < 0)
+                                Say(pc, 131, "输入错误哦$R;");
+                            else if (temp > pc.CInt["EPMT"])
+                                Say(pc, 131, "剩余点数不够哦！$R;");
                             else
                             {
-                                Say(pc, 131, string.Format("��_�F{0}EP�I$R;", temp.ToString()));
-                                pc.EP += temp;
-                                pc.CInt["EPMT"] -= temp;
+                                if (pc.EP + temp > pc.MaxEP)
+                                {
+                                    Say(pc, 131, "超过上限了哦！$R;");
+                                }
+                                else
+                                {
+                                    Say(pc, 131, string.Format("確{0}EP$R;", temp.ToString()));
+                                    pc.EP += temp;
+                                    pc.CInt["EPMT"] -= temp;
+                                }
                             }
                         }
+                        catch
+                        {
+                            Say(pc, 131, "输入错误哦！$R;");
+                        }
                     }
-                    catch
-                    {
-                        Say(pc, 131, "�������Ŷ��$R;");
-                    }
-                }
                 }
             }
             else
             {
-                 Say(pc, 131, "ֻ��DEM�ſ�����ȡEPŶ$R;");
+                Say(pc, 131, "只有DEM才可以领取EP哦$R;");
             }
         }
     }

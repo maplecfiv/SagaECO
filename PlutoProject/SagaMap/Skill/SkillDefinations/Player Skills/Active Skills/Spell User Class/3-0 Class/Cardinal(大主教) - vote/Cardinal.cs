@@ -4,9 +4,6 @@ using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote
 {
-    /// <summary>
-    ///     Cardinal ���`�ǥ��ʥ�
-    /// </summary>
     internal class Cardinal : ISkill
     {
         private void StartEventHandler(Actor actor, DefaultBuff skill)

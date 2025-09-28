@@ -17,9 +17,9 @@ namespace SagaScript.M10023200
         {
             if (CountItem(pc, 10009551) >= 1)
             {
-                Say(pc, 0, 0, "���ŤӤ������󡻽o��$R;" +
-                            "���Ԇ᣿$R;", "");
-                if (Select(pc, "�o��", "", "�o", "���o") == 1)
+                Say(pc, 0, 0, "『古びたコイン』給我$R;" +
+                            "可以嗎？$R;", "");
+                if (Select(pc, "給我", "", "給", "不給") == 1)
                 {
                     TakeItem(pc, 10009551, 1);
                     GiveRandomTreasure(pc, "gudai1");
@@ -27,8 +27,8 @@ namespace SagaScript.M10023200
                 }
             }
 
-            Say(pc, 0, 0, "���ŤӤ�������������$R;" +
-            "...��$R;", "");
+            Say(pc, 0, 0, "『古びたコイン』欲しい$R;" +
+            "...？$R;", "");
 
         }
     }

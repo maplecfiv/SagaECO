@@ -4,7 +4,7 @@ using System.Text;
 
 using SagaDB.Actor;
 using SagaMap.Scripting;
-//?�?�地??上�?(10023000) NPC?�本信息:?��??�人(18000200) X:133 Y:147
+//所在地圖:上城(10023000) NPC基本信息:闇黑商人(18000200) X:133 Y:147
 namespace SagaScript.M10023000
 {
     public class S11001692 : Event
@@ -16,12 +16,12 @@ namespace SagaScript.M10023000
 
         public override void OnEvent(ActorPC pc)
         {
-                            switch (Select(pc, "������", "", "��", "����"))
-                            {
-                                case 1:
+            switch (Select(pc, "买东西吗？", "", "买", "不买"))
+            {
+                case 1:
                     OpenShopBuy(pc, 414);
                     break;
-                            }
+            }
         }
     }
 }

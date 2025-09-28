@@ -5,9 +5,6 @@ using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha
 {
-    /// <summary>
-    ///     ����֮��Լ����
-    /// </summary>
     public class YugenKeiyaku : ISkill
     {
         public SkillArg arg = new SkillArg();
@@ -29,7 +26,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            //��ʱ�Ҳ�����ȷ��ͼ��
             MapManager.Instance.GetMap(actor.MapID)
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }

@@ -29,7 +29,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //void UpdateEventHandler(Actor actor, DefaultBuff skill)
         //{
-        //    //SagaMap.Network.Client.MapClient.FromActorPC((ActorPC)actor).SendSystemMessage("��ǰ�ٶ�Ϊ" + actor.Speed);
+        //    //SagaMap.Network.Client.MapClient.FromActorPC((ActorPC)actor).SendSystemMessage("移动速度固定" + actor.Speed);
         //    if (actor.Speed != 310)
         //    {
         //        actor.Status.speed_skill = -100;

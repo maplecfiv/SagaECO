@@ -3552,11 +3552,6 @@ namespace SagaMap
                 }
         }
 
-        /// <summary>
-        ///     �������
-        /// </summary>
-        /// <param name="client"></param>
-        /// <param name="args"></param>
         private void ProcessCh(MapClient client, string args)
         {
         }

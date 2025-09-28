@@ -4,7 +4,7 @@ using System.Text;
 
 using SagaDB.Actor;
 using SagaMap.Scripting;
-//���ڵ�ͼ:�����������ϲ�ƽԭ(10022000) NPC������Ϣ:��Ů(11000095) X:177 Y:216
+//所在地图:阿克罗尼亚南部平原(10022000) NPC基本信息:少女(11000095) X:177 Y:216
 namespace SagaScript.M10031854
 {
     public class S11000095 : Event

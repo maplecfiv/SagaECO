@@ -34,7 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             int level = skill.skill.Level;
             var max_matk_add = 120 + 36 * level;
             var exercises = new[] { 0, 31, 58, 65, 72, 80 };
-            //pvpʱ Ч������
+
             var pc = actor as ActorPC;
             if (pc.Mode == PlayerMode.COLISEUM_MODE)
                 max_matk_add = exercises[level];
