@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaMap.ActorEventHandlers;
+﻿using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Event

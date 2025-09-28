@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaMap.Manager;
+﻿using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Fencer_骑士_

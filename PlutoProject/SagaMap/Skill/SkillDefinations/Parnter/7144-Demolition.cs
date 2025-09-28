@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Parnter
+﻿namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     デモリッション

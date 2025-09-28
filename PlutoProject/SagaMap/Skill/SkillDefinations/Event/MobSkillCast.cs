@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Event
+﻿namespace SagaMap.Skill.SkillDefinations.Event
 {
     public class MobSkillCast : ISkill
     {

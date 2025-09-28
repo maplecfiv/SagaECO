@@ -5,7 +5,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Client;
@@ -17,7 +16,7 @@ using SagaMap.Packets.Client.Chat;
 using SagaMap.Packets.Client.Community;
 using SagaMap.Packets.Client.DEM;
 using SagaMap.Packets.Client.DualJob;
-using SagaMap.Packets.Client.FFarden;
+using SagaMap.Packets.Client.FFGarden;
 using SagaMap.Packets.Client.FGarden;
 using SagaMap.Packets.Client.Fish;
 using SagaMap.Packets.Client.Golem;
@@ -465,8 +464,8 @@ namespace SagaMap.Manager
         public override Client GetClient(uint actorID)
         {
             var chr = from c in OnlinePlayer
-                where c.Character.ActorID == actorID
-                select c;
+                      where c.Character.ActorID == actorID
+                      select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;
@@ -475,8 +474,8 @@ namespace SagaMap.Manager
         public override Client GetClientForName(string actorName)
         {
             var chr = from c in OnlinePlayer
-                where c.Character.Name == actorName
-                select c;
+                      where c.Character.Name == actorName
+                      select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;
@@ -485,8 +484,8 @@ namespace SagaMap.Manager
         public MapClient FindClient(uint charID)
         {
             var chr = from c in OnlinePlayer
-                where c.Character.CharID == charID
-                select c;
+                      where c.Character.CharID == charID
+                      select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;

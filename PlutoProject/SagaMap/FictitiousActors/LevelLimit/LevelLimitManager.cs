@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SagaLib;
-using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaDB.LevelLimit;
 namespace SagaMap.LevelLimit
 {
     public class LevelLimitManager : Singleton<LevelLimitManager>

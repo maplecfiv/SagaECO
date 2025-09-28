@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaLib;
+﻿using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Parnter
 {

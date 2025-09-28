@@ -1,4 +1,3 @@
-using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_1_Class.Striker_猎人____arc

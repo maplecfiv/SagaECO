@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>

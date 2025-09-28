@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-using SagaDB.Map;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Actor

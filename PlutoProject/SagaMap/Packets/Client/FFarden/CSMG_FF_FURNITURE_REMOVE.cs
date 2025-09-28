@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client.FFarden
+namespace SagaMap.Packets.Client.FFGarden
 {
     public class CSMG_FF_FURNITURE_REMOVE : Packet
     {

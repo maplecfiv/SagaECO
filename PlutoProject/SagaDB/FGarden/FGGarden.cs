@@ -6,9 +6,9 @@ using System.Text;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaDB.FGarden
+namespace SagaDB.FlyingGarden
 {
-    public enum FGardenSlot
+    public enum FlyingGardenSlot
     {
         FLYING_BASE,
         FLYING_SAIL,
@@ -26,7 +26,7 @@ namespace SagaDB.FGarden
         ROOM,
     }
 
-    public class FGarden
+    public class FlyingGarden
     {
         ActorPC owner;
         ActorEvent ropeActor;
@@ -34,20 +34,20 @@ namespace SagaDB.FGarden
         uint roomMapID;
         uint id;
 
-        Dictionary<FGardenSlot, uint> equips = new Dictionary<FGardenSlot, uint>();
+        Dictionary<FlyingGardenSlot, uint> equips = new Dictionary<FlyingGardenSlot, uint>();
         Dictionary<FurniturePlace, List<Actor.ActorFurniture>> furnitures = new Dictionary<FurniturePlace, List<ActorFurniture>>();
 
-        public FGarden(ActorPC pc)
+        public FlyingGarden(ActorPC pc)
         {
             this.owner = pc;
-            equips.Add(FGardenSlot.FLYING_BASE, 0);
-            equips.Add(FGardenSlot.FLYING_SAIL, 0);
-            equips.Add(FGardenSlot.GARDEN_FLOOR, 0);
-            equips.Add(FGardenSlot.GARDEN_MODELHOUSE, 0);
-            equips.Add(FGardenSlot.HouseOutSideWall, 0);
-            equips.Add(FGardenSlot.HouseRoof, 0);
-            equips.Add(FGardenSlot.ROOM_FLOOR, 0);
-            equips.Add(FGardenSlot.ROOM_WALL, 0);
+            equips.Add(FlyingGardenSlot.FLYING_BASE, 0);
+            equips.Add(FlyingGardenSlot.FLYING_SAIL, 0);
+            equips.Add(FlyingGardenSlot.GARDEN_FLOOR, 0);
+            equips.Add(FlyingGardenSlot.GARDEN_MODELHOUSE, 0);
+            equips.Add(FlyingGardenSlot.HouseOutSideWall, 0);
+            equips.Add(FlyingGardenSlot.HouseRoof, 0);
+            equips.Add(FlyingGardenSlot.ROOM_FLOOR, 0);
+            equips.Add(FlyingGardenSlot.ROOM_WALL, 0);
             furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
             furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
         }
@@ -56,7 +56,7 @@ namespace SagaDB.FGarden
         /// 飞空庭的ID
         /// </summary>
         public uint ID { get { return this.id; } set { this.id = value; } }
-        
+
         /// <summary>
         /// 飞空庭的主人
         /// </summary>
@@ -80,11 +80,16 @@ namespace SagaDB.FGarden
         /// <summary>
         /// 飞空庭的装备
         /// </summary>
-        public Dictionary<FGardenSlot, uint> FGardenEquipments { get { return this.equips; } }
+        public Dictionary<FlyingGardenSlot, uint> FlyingGardenEquipments { get { return this.equips; } }
 
         /// <summary>
         /// 飞空庭的家具
         /// </summary>
         public Dictionary<FurniturePlace, List<Actor.ActorFurniture>> Furnitures { get { return this.furnitures; } }
+
+        /// <summary>
+        ///     飞空庭的燃料
+        /// </summary>
+        public uint Fuel { get; set; }
     }
 }

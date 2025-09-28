@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Monster
+﻿namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     螺旋風！、燃燒的路、凍結的路、私家路、死神

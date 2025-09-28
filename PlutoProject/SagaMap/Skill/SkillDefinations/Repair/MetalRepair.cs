@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Repair
+﻿namespace SagaMap.Skill.SkillDefinations.Repair
 {
     internal class MetalRepair : ISkill
     {

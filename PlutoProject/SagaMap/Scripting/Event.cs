@@ -2,22 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using SagaDB.Actor;
-using SagaDB.DefWar;
-using SagaDB.DEMIC;
-using SagaDB.ECOShop;
-using SagaDB.FGGarden;
-using SagaDB.Iris;
-using SagaDB.Item;
-using SagaDB.Map;
-using SagaDB.Npc;
-using SagaDB.Quests;
-using SagaDB.Skill;
-using SagaDB.Synthese;
-using SagaDB.Tamaire;
-using SagaDB.Theater;
-using SagaDB.Title;
-using SagaDB.Treasure;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Dungeon;
@@ -25,9 +9,7 @@ using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
 using SagaMap.ODWar;
-using SagaMap.Packets.Client;
 using SagaMap.Packets.Client.Item;
-using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.Activity;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Another;
@@ -953,19 +935,19 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="FFMaster">飞空城主人</param>
-        protected void EnterFFarden(ActorPC pc, ActorPC FFMaster)
+        protected void EnterFFGarden(ActorPC pc, ActorPC FFMaster)
         {
-            /*if (pc.FFarden == null)
+            /*if (pc.FFGarden == null)
             {
                 return;
             }
 
-            if (pc.FFarden.MapID == 0)
+            if (pc.FFGarden.MapID == 0)
             {
                 Map map = MapManager.Instance.GetMap(pc.MapID);
-                pc.FFarden.MapID = MapManager.Instance.CreateMapInstance(pc, 90001000, pc.MapID, Global.PosX16to8(pc.X, map.Width), Global.PosY16to8(pc.Y, map.Height));
-                map = MapManager.Instance.GetMap(pc.FFarden.MapID);
-                foreach (ActorFurniture i in pc.FFarden.Furnitures[SagaDB.FFarden.FurniturePlace.GARDEN])
+                pc.FFGarden.MapID = MapManager.Instance.CreateMapInstance(pc, 90001000, pc.MapID, Global.PosX16to8(pc.X, map.Width), Global.PosY16to8(pc.Y, map.Height));
+                map = MapManager.Instance.GetMap(pc.FFGarden.MapID);
+                foreach (ActorFurniture i in pc.FFGarden.Furnitures[SagaDB.FFGarden.FurniturePlace.GARDEN])
                 {
                     i.e = new ActorEventHandlers.NullEventHandler();
                     map.RegisterActor(i);
@@ -975,7 +957,7 @@ namespace SagaMap.Scripting
             pc.BattleStatus = 0;
             pc.Speed = 200;
             MapClient.FromActorPC(pc).SendChangeStatus();
-            Warp(pc, pc.FFarden.MapID, 6, 11);*/
+            Warp(pc, pc.FFGarden.MapID, 6, 11);*/
         }
 
         /// <summary>
@@ -986,7 +968,7 @@ namespace SagaMap.Scripting
         {
             int maxPage;
             int page = 1;
-            List<SagaDB.FFarden.FFarden> res = FFGardenManager.Instance.GetFFGarden(0, out maxPage);
+            List<SagaDB.FFGarden.FFGarden> res = FFGardenManager.Instance.GetFlyCastleGarden(0, out maxPage);
             Packets.Server.SSMG_FF_LIST p1 = new SagaMap.Packets.Server.SSMG_FF_LIST();
             p1.ActorID = pc.ActorID;
             p1.Page = 0;
@@ -1581,8 +1563,8 @@ namespace SagaMap.Scripting
             {
                 var list = pc.Inventory.Items[(ContainerType)i];
                 var query = from it in list
-                    where it.ItemID == ID
-                    select it;
+                            where it.ItemID == ID
+                            select it;
                 result.AddRange(query);
             }
 
@@ -2790,7 +2772,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         protected void EnterFGRoom(ActorPC pc)
         {
-            var owner = GetFGardenOwner(pc);
+            var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
             if (owner.FGarden.RoomMapID == 0)
@@ -2816,7 +2798,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         protected void ExitFGRoom(ActorPC pc)
         {
-            var owner = GetFGardenOwner(pc);
+            var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
             Warp(pc, owner.FGarden.MapID, 5, 8);
@@ -2829,10 +2811,10 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         protected void ExitFFRoom(ActorPC pc)
         {
-            var owner = GetFGardenOwner(pc);
+            var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
-            Warp(pc, pc.Ring.FFarden.MapID, 10, 10);
+            Warp(pc, pc.Ring.FFGarden.MapID, 10, 10);
         }
 
         /// <summary>
@@ -2840,7 +2822,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <returns></returns>
-        protected ActorPC GetFGardenOwner(ActorPC pc)
+        protected ActorPC GetFlyingGardenOwner(ActorPC pc)
         {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if ((map.IsMapInstance && map.ID / 10 * 10 == 70000000) ||
@@ -2907,7 +2889,7 @@ namespace SagaMap.Scripting
         /// <param name="y">Y坐标</param>
         public void FGTakeOff(ActorPC pc, uint mapID, byte x, byte y)
         {
-            var owner = GetFGardenOwner(pc);
+            var owner = GetFlyingGardenOwner(pc);
             if (owner != pc)
                 return;
             if (owner.FGarden.MapID != 0)
@@ -3272,8 +3254,8 @@ namespace SagaMap.Scripting
         public List<SagaDB.Item.Item.ItemData> GetItemTypeList(params ItemType[] types)
         {
             var lst = from KeyValuePair<uint, SagaDB.Item.Item.ItemData> i in ItemFactory.Instance.Items
-                where types.Contains(i.Value.itemType)
-                select i.Value;
+                      where types.Contains(i.Value.itemType)
+                      select i.Value;
             return lst.ToList();
         }
 
@@ -3285,8 +3267,8 @@ namespace SagaMap.Scripting
         public List<SagaDB.Item.Item> GetItemTypeList(ActorPC pc, params ItemType[] types)
         {
             var lst = from SagaDB.Item.Item i in pc.Inventory.Items[ContainerType.BODY]
-                where types.Contains(i.BaseData.itemType)
-                select i;
+                      where types.Contains(i.BaseData.itemType)
+                      select i;
             return lst.ToList();
         }
 
@@ -3607,8 +3589,8 @@ namespace SagaMap.Scripting
         {
             var hairstyles = new List<HairStyleList>();
             var res = from hair in HairFactory.Instance.Hairs
-                where CountItem(pc, hair.ItemID) > 0 && hair.ItemID == id
-                select hair;
+                      where CountItem(pc, hair.ItemID) > 0 && hair.ItemID == id
+                      select hair;
             var hairs = res.ToList();
             foreach (var i in hairs)
             {
@@ -3865,9 +3847,9 @@ namespace SagaMap.Scripting
         protected bool ItemEnhance(ActorPC pc, uint price)
         {
             var res = from item in pc.Inventory.GetContainer(ContainerType.BODY)
-                where (item.IsArmor || item.IsWeapon || item.BaseData.itemType == ItemType.SHIELD ||
-                       item.BaseData.itemType == ItemType.ACCESORY_NECK) && item.Refine < 30
-                select item;
+                      where (item.IsArmor || item.IsWeapon || item.BaseData.itemType == ItemType.SHIELD ||
+                             item.BaseData.itemType == ItemType.ACCESORY_NECK) && item.Refine < 30
+                      select item;
             var items = res.ToList();
 
             foreach (var itemsitem in res.ToList())

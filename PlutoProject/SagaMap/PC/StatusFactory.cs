@@ -1,12 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SagaDB.Actor;
-using SagaDB.DEMIC;
-using SagaDB.Iris;
-using SagaDB.Item;
-using SagaDB.Skill;
-using SagaDB.Title;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
@@ -1175,73 +1169,73 @@ namespace SagaMap.PC
             #region CalcChips
 
             foreach (var i in chips.Keys)
-            foreach (var j in chips[i].Chips)
-            {
-                byte x1 = 255, y1 = 255, x2 = 255, y2 = 255;
-                if (chips[i].EngageTask1 != 255)
+                foreach (var j in chips[i].Chips)
                 {
-                    x1 = (byte)(chips[i].EngageTask1 % 9);
-                    y1 = (byte)(chips[i].EngageTask1 / 9);
-                }
+                    byte x1 = 255, y1 = 255, x2 = 255, y2 = 255;
+                    if (chips[i].EngageTask1 != 255)
+                    {
+                        x1 = (byte)(chips[i].EngageTask1 % 9);
+                        y1 = (byte)(chips[i].EngageTask1 / 9);
+                    }
 
-                if (chips[i].EngageTask2 != 255)
-                {
-                    x2 = (byte)(chips[i].EngageTask2 % 9);
-                    y2 = (byte)(chips[i].EngageTask2 / 9);
-                }
+                    if (chips[i].EngageTask2 != 255)
+                    {
+                        x2 = (byte)(chips[i].EngageTask2 % 9);
+                        y2 = (byte)(chips[i].EngageTask2 / 9);
+                    }
 
-                var nearEngage = j.IsNear(x1, y1) || j.IsNear(x2, y2);
+                    var nearEngage = j.IsNear(x1, y1) || j.IsNear(x2, y2);
 
-                if (j.Data.type < 20)
-                {
-                    var rate = 1;
-                    if (nearEngage)
-                        rate = 2;
-                    pc.Status.m_str_chip += (short)(rate * j.Data.str);
-                    pc.Status.m_agi_chip += (short)(rate * j.Data.agi);
-                    pc.Status.m_vit_chip += (short)(rate * j.Data.vit);
-                    pc.Status.m_dex_chip += (short)(rate * j.Data.dex);
-                    pc.Status.m_int_chip += (short)(rate * j.Data.intel);
-                    pc.Status.m_mag_chip += (short)(rate * j.Data.mag);
-                }
-                else if (j.Data.type < 30)
-                {
-                    var level = 1;
-                    if (nearEngage)
-                        level = 2;
-                    if (skills.ContainsKey(j.Data.skill1))
-                        skills[j.Data.skill1] += level;
-                    else if (j.Data.skill1 != 0)
-                        skills.Add(j.Data.skill1, level);
+                    if (j.Data.type < 20)
+                    {
+                        var rate = 1;
+                        if (nearEngage)
+                            rate = 2;
+                        pc.Status.m_str_chip += (short)(rate * j.Data.str);
+                        pc.Status.m_agi_chip += (short)(rate * j.Data.agi);
+                        pc.Status.m_vit_chip += (short)(rate * j.Data.vit);
+                        pc.Status.m_dex_chip += (short)(rate * j.Data.dex);
+                        pc.Status.m_int_chip += (short)(rate * j.Data.intel);
+                        pc.Status.m_mag_chip += (short)(rate * j.Data.mag);
+                    }
+                    else if (j.Data.type < 30)
+                    {
+                        var level = 1;
+                        if (nearEngage)
+                            level = 2;
+                        if (skills.ContainsKey(j.Data.skill1))
+                            skills[j.Data.skill1] += level;
+                        else if (j.Data.skill1 != 0)
+                            skills.Add(j.Data.skill1, level);
 
-                    if (skills.ContainsKey(j.Data.skill2))
-                        skills[j.Data.skill2] += level;
-                    else if (j.Data.skill2 != 0)
-                        skills.Add(j.Data.skill2, level);
+                        if (skills.ContainsKey(j.Data.skill2))
+                            skills[j.Data.skill2] += level;
+                        else if (j.Data.skill2 != 0)
+                            skills.Add(j.Data.skill2, level);
 
-                    if (skills.ContainsKey(j.Data.skill3))
-                        skills[j.Data.skill3] += level;
-                    else if (j.Data.skill3 != 0)
-                        skills.Add(j.Data.skill3, level);
-                }
-                else
-                {
-                    Chip next = null;
-                    if (ChipFactory.Instance.ByChipID.ContainsKey(j.Data.engageTaskChip) && nearEngage)
-                        next = new Chip(ChipFactory.Instance.ByChipID[j.Data.engageTaskChip]);
+                        if (skills.ContainsKey(j.Data.skill3))
+                            skills[j.Data.skill3] += level;
+                        else if (j.Data.skill3 != 0)
+                            skills.Add(j.Data.skill3, level);
+                    }
                     else
-                        next = j;
-                    pc.Status.m_str_chip += next.Data.str;
-                    pc.Status.m_agi_chip += next.Data.agi;
-                    pc.Status.m_vit_chip += next.Data.vit;
-                    pc.Status.m_dex_chip += next.Data.dex;
-                    pc.Status.m_int_chip += next.Data.intel;
-                    pc.Status.m_mag_chip += next.Data.mag;
-                    pc.Status.hp_rate_item += next.Data.hp;
-                    pc.Status.sp_rate_item += next.Data.sp;
-                    pc.Status.mp_rate_item += next.Data.mp;
+                    {
+                        Chip next = null;
+                        if (ChipFactory.Instance.ByChipID.ContainsKey(j.Data.engageTaskChip) && nearEngage)
+                            next = new Chip(ChipFactory.Instance.ByChipID[j.Data.engageTaskChip]);
+                        else
+                            next = j;
+                        pc.Status.m_str_chip += next.Data.str;
+                        pc.Status.m_agi_chip += next.Data.agi;
+                        pc.Status.m_vit_chip += next.Data.vit;
+                        pc.Status.m_dex_chip += next.Data.dex;
+                        pc.Status.m_int_chip += next.Data.intel;
+                        pc.Status.m_mag_chip += next.Data.mag;
+                        pc.Status.hp_rate_item += next.Data.hp;
+                        pc.Status.sp_rate_item += next.Data.sp;
+                        pc.Status.mp_rate_item += next.Data.mp;
+                    }
                 }
-            }
 
             #endregion
 

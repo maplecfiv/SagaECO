@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using SagaDB.Actor;
-using SagaDB.Tamaire;
 using SagaLib;
 using SagaMap.Network.Client;
 
@@ -13,8 +11,8 @@ namespace SagaMap.Manager
         {
             var existinglendings =
                 (from lendings in MapServer.charDB.GetTamaireLendings()
-                    where lendings.Lender == lending.Lender
-                    select lendings).ToList();
+                 where lendings.Lender == lending.Lender
+                 select lendings).ToList();
             if (existinglendings.Count() == 0)
                 CreateLending(lending);
             else

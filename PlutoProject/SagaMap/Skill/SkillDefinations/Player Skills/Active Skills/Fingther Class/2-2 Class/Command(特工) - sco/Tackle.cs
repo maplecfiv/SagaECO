@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco
+﻿namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco
 {
     /// <summary>
     ///     沖天踢（タックル）

@@ -1,6 +1,4 @@
 using System;
-using SagaDB.Actor;
-using SagaDB.Item;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._2_2_Class.Command_特工____sco

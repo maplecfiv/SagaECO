@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SagaLib;
-using SagaDB.Actor;
 using SagaMap.Manager;
-using SagaDB.LevelLimit;
 namespace SagaMap.LevelLimit
 {
-    public class LevelLimitManager :Singleton<LevelLimitManager>
+    public class LevelLimitManager : Singleton<LevelLimitManager>
     {
         /// <summary>
         /// 载入等级上限信息
@@ -20,7 +15,7 @@ namespace SagaMap.LevelLimit
             LL.FirstLevelLimit = (uint)SagaMap.Configuration.Instance.FirstLevelLimit;
             if (LL.NowLevelLimit < LL.FirstLevelLimit)
                 LL.NowLevelLimit = LL.FirstLevelLimit;
-            if(DateTime.Now > LL.ReachTime)
+            if (DateTime.Now > LL.ReachTime)
                 Tasks.System.LevelLimit.Instance.Activate();
         }
 
@@ -32,30 +27,30 @@ namespace SagaMap.LevelLimit
             SagaDB.LevelLimit.LevelLimit LL = SagaDB.LevelLimit.LevelLimit.Instance;
             if (LL.FirstPlayer == 0)
             {
-                MapClientManager.Instance.Announce(string.Format("【公告】 " + pc.Name + " 成为第一位达成{0}级等级上限的玩家！",LL.NowLevelLimit));
-                MapClientManager.Instance.Announce(string.Format("【公告】下次等级上限开始解冻，下一次的等级上限为{0}，开放时间为{1}。",LL.NextLevelLimit,LL.NextTime));
+                MapClientManager.Instance.Announce(string.Format("【公告】 " + pc.Name + " 成为第一位达成{0}级等级上限的玩家！", LL.NowLevelLimit));
+                MapClientManager.Instance.Announce(string.Format("【公告】下次等级上限开始解冻，下一次的等级上限为{0}，开放时间为{1}。", LL.NextLevelLimit, LL.NextTime));
                 MapClientManager.Instance.Announce("【福利】圣塔的能量开始溢出！所有达到等级上限的玩家掉落率上升！");
                 LL.FirstPlayer = pc.CharID;
                 this.StartLevelLimitWait();
             }
             else if (LL.SecondPlayer == 0)
             {
-                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第二位达成{0}级等级上限的玩家！",LL.NowLevelLimit));
+                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第二位达成{0}级等级上限的玩家！", LL.NowLevelLimit));
                 LL.SecondPlayer = pc.CharID;
             }
             else if (LL.Thirdlayer == 0)
             {
-                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第三位达成{0}级等级上限的玩家！",LL.NowLevelLimit));
+                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第三位达成{0}级等级上限的玩家！", LL.NowLevelLimit));
                 LL.Thirdlayer = pc.CharID;
             }
             else if (LL.FourthPlayer == 0)
             {
-                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第四位达成{0}级等级上限的玩家！",LL.NowLevelLimit));
+                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第四位达成{0}级等级上限的玩家！", LL.NowLevelLimit));
                 LL.FourthPlayer = pc.CharID;
             }
             else if (LL.FifthPlayer == 0)
             {
-                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第五位达成{0}级等级上限的玩家！",LL.NowLevelLimit));
+                MapClientManager.Instance.Announce(string.Format("【公告】 恭喜 " + pc.Name + " 成为第五位达成{0}级等级上限的玩家！", LL.NowLevelLimit));
                 LL.FifthPlayer = pc.CharID;
             }
             else

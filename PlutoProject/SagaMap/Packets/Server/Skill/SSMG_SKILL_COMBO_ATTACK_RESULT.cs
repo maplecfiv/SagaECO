@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Skill

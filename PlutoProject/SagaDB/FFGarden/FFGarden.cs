@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 
-namespace SagaDB.FFGarden
+namespace SagaDB.FlyingCastle
 {
-    public enum FFardenSlot
+    public enum FlyingCastleSlot
     {
         FLYING_BASE,
         FLYING_SAIL,
@@ -24,7 +24,7 @@ namespace SagaDB.FFGarden
         HOUSE
     }
 
-    public class FFarden
+    public class FlyingCastle
     {
         /// <summary>
         ///     飞空城的名字
@@ -139,7 +139,7 @@ namespace SagaDB.FFGarden
         /// <summary>
         ///     飞空城的装备
         /// </summary>
-        public Dictionary<FFardenSlot, uint> FFardenEquipments { get; } = new Dictionary<FFardenSlot, uint>();
+        public Dictionary<FlyingCastleSlot, uint> FlyingCastleEquipments { get; } = new Dictionary<FlyingCastleSlot, uint>();
 
         /// <summary>
         ///     飞空城的家具

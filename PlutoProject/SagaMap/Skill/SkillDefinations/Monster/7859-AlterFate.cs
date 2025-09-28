@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaLib;
+﻿using SagaLib;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Monster

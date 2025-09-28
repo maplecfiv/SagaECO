@@ -1,5 +1,4 @@
 using System;
-using SagaDB.Synthese;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.NPC

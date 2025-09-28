@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using ThreadState = System.Threading.ThreadState;
-using Microsoft.Extensions.Logging;
 using Microsoft.Diagnostics.Runtime;
 using System.Linq;
 

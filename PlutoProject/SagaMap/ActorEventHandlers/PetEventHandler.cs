@@ -1,10 +1,7 @@
 using System;
-using SagaDB.Actor;
-using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
-using SagaMap.Packets.Client;
 using SagaMap.Packets.Client.Item;
 using SagaMap.Tasks.Mob;
 

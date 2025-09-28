@@ -1,4 +1,3 @@
-using SagaDB.FGGarden;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.FGarden

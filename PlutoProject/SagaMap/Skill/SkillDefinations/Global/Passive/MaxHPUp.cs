@@ -1,5 +1,4 @@
 using System;
-using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive

@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using Microsoft.Extensions.Logging;
 using SagaLib.VirtualFileSytem.LPK.LZMA.LZ;
 using SagaLib.VirtualFileSytem.LPK.LZMA.RangeCoder;
 

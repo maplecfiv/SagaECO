@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
-using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.NPC;
 
 namespace SagaMap.Dungeon

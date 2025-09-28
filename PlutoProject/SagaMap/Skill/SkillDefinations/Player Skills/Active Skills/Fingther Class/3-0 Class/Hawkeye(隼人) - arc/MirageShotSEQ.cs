@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {

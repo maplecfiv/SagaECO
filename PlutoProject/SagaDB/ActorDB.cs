@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FFGarden;
 using SagaDB.Tamaire;
 
 namespace SagaDB
@@ -128,25 +127,25 @@ namespace SagaDB
 
         List<ActorPC> GetWRPRanking();
 
-        List<FFarden> GetFFList();
+        List<FlyingCastle.FlyingCastle> GetFlyingCastles();
 
-        void SaveFF(Ring.Ring ring);
+        void SaveFlyCastle(Ring.Ring ring);
 
         void SaveSerFF(Server.Server ser);
 
         void GetSerFFurniture(Server.Server ser);
 
-        void SaveFFCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures);
+        void SaveFlyCastleCopy(Dictionary<FlyingCastle.FurniturePlace, List<ActorFurniture>> Furnitures);
 
         void CreateFF(ActorPC pc);
 
-        void GetFF(ActorPC pc);
+        void GetFlyCastle(ActorPC pc);
 
-        uint GetFFRindID(uint ffid);
+        uint GetFlyCastleRindID(uint ffid);
 
-        void GetFFurniture(Ring.Ring ring);
+        void GetFlyingCastleFurniture(Ring.Ring ring);
 
-        void GetFFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures);
+        void GetFlyingCastleFurnitureCopy(Dictionary<FlyingCastle.FurniturePlace, List<ActorFurniture>> Furnitures);
 
         void SavaLevelLimit();
 

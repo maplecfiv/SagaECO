@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SagaDB.ECOShop;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.VShop

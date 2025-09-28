@@ -1,4 +1,3 @@
-using SagaDB.Quests;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Quest

@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz
 {
     /// <summary>

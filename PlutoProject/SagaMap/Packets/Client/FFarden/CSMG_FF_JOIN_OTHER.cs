@@ -1,7 +1,7 @@
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Packets.Client.FFarden
+namespace SagaMap.Packets.Client.FFGarden
 {
     public class CSMG_FFGARDEN_JOIN_OTHER : Packet
     {
@@ -19,7 +19,7 @@ namespace SagaMap.Packets.Client.FFarden
 
         public override void Parse(SagaLib.Client client)
         {
-            ((MapClient)client).OnFFardenOtherJoin(this);
+            ((MapClient)client).OnFFGardenOtherJoin(this);
         }
     }
 }

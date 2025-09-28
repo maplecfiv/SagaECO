@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Monster
+﻿namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     退場！

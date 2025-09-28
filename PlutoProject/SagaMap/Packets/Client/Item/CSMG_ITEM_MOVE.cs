@@ -1,4 +1,3 @@
-using SagaDB.Item;
 using SagaLib;
 using SagaMap.Network.Client;
 

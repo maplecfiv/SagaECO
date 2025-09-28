@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 

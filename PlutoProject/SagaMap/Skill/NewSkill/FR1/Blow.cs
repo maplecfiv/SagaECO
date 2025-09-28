@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-using SagaDB.Item;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.FR1

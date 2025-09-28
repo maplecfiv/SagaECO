@@ -1,13 +1,11 @@
 using System;
-using SagaDB.Actor;
-using SagaDB.Mob;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Skill;
 
 namespace SagaMap.Mob.AICommands.SpecificAI
 {
-    public class　CCAttack : AICommand
+    public class CCAttack : AICommand
     {
         private readonly MobAI mob;
         public bool active;

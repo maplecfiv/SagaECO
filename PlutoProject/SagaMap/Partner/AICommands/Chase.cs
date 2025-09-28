@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SagaDB.Actor;
-using SagaDB.Partner;
 using SagaLib;
 
 namespace SagaMap.Partner.AICommands

@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaDB.Map;
-using SagaMap.ActorEventHandlers;
+﻿using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Scripting;

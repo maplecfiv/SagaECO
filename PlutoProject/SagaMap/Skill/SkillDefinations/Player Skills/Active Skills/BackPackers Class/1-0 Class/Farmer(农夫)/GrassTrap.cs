@@ -1,4 +1,3 @@
-using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations.Global.Active;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Farmer_农夫_

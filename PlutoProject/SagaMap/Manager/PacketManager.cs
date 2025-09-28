@@ -1,9 +1,7 @@
 using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using Microsoft.CSharp;
 using SagaLib;
 
 namespace SagaMap.Manager

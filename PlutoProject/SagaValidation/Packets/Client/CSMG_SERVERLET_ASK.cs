@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using SagaLib;
-using SagaValidation;
 using SagaValidation.Network.Client;
-
-
-using SagaDB.Actor;
 
 namespace SagaValidation.Packets.Client
 {

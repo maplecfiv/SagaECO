@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {

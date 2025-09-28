@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     木偶時的SP自然恢復

@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Gardener_庭园师_
+﻿namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Gardener_庭园师_
 {
     /// <summary>
     ///     家具分解

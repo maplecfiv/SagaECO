@@ -21,29 +21,29 @@ namespace SagaScript
 
             bool freeride = false;
 
-            ActorPC owner = GetFGardenOwner(pc);
+            ActorPC owner = GetFlyingGardenOwner(pc);
 
             BitMask<Knights> Knights_mask = pc.CMask["Knights"];
 
             if (pc == owner)
             {
-                if (pc.FGarden.FGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL] != 0)
+                if (pc.FGarden.FlyingGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL] != 0)
                 {
                     switch (Select(pc, "做什么呢？", "", "飞空庭起飞", "补充摩戈炭", "改造飞空庭", "从飞空庭下来", "设定出入限制", "打出招牌", "什么也不做"))
                     {
                         case 1:
 
-                            //Say(pc, 131, "引擎是：" + pc.FGarden.FGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL]);
+                            //Say(pc, 131, "引擎是：" + pc.FGarden.FlyingGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL]);
 
                             //return;
 
-                            if (pc.FGarden.FGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL] == 30060000)
+                            if (pc.FGarden.FlyingGardenEquipments[SagaDB.FGarden.FGardenSlot.FLYING_SAIL] == 30060000)
                             {
                                 freeride = true;
                             }
-                            
 
-                            if(pc.FGarden.Fuel < 10 && !freeride)
+
+                            if (pc.FGarden.Fuel < 10 && !freeride)
                             {
                                 PlaySound(pc, 2041, false, 100, 50);
                                 Say(pc, 0, 131, "摩根炭不足…$R;", " ");
@@ -53,7 +53,7 @@ namespace SagaScript
                             if (!Knights_mask.Test(Knights.已經加入騎士團))
                             {
 
-                                
+
                                 switch (Select(pc, "想去哪呢", "", "阿克罗波利斯", "东方海角", "军舰岛", "南方海角", "北方海角", "唐卡市", "什么也不做"))
                                 {
                                     case 1:
@@ -76,7 +76,7 @@ namespace SagaScript
                                         Say(pc, 0, 131, "向军舰岛出发!!$R;", " ");
                                         PlaySound(pc, 2438, false, 100, 50);
                                         FGTakeOff(pc, 10035000, 100, 206);
-                                        if(!freeride)pc.FGarden.Fuel -= 10;
+                                        if (!freeride) pc.FGarden.Fuel -= 10;
                                         break;
                                     case 4:
                                         PlaySound(pc, 2426, false, 100, 50);
@@ -99,20 +99,20 @@ namespace SagaScript
                                         FGTakeOff(pc, 10062000, 193, 43);
                                         if (!freeride) pc.FGarden.Fuel -= 10;
                                         break;
-                                        /*
-                                    case 7:
-                                        PlaySound(pc, 2426, false, 100, 50);
-                                        Say(pc, 0, 131, "...找个光之塔的偏僻处降落吧$R;", " ");
-                                        PlaySound(pc, 2438, false, 100, 50);
-                                        FGTakeOff(pc, 10070000, 76, 225);
-                                        break;
-                                    case 8:
-                                        PlaySound(pc, 2426, false, 100, 50);
-                                        Say(pc, 0, 131, "...找个通天塔的角落降落吧$R;", " ");
-                                        PlaySound(pc, 2438, false, 100, 50);
-                                        FGTakeOff(pc, 10058000, 154, 167);
-                                        break;
-                                        */
+                                    /*
+                                case 7:
+                                    PlaySound(pc, 2426, false, 100, 50);
+                                    Say(pc, 0, 131, "...找个光之塔的偏僻处降落吧$R;", " ");
+                                    PlaySound(pc, 2438, false, 100, 50);
+                                    FGTakeOff(pc, 10070000, 76, 225);
+                                    break;
+                                case 8:
+                                    PlaySound(pc, 2426, false, 100, 50);
+                                    Say(pc, 0, 131, "...找个通天塔的角落降落吧$R;", " ");
+                                    PlaySound(pc, 2438, false, 100, 50);
+                                    FGTakeOff(pc, 10058000, 154, 167);
+                                    break;
+                                    */
                                     case 7:
                                         break;
                                 }
@@ -214,20 +214,20 @@ namespace SagaScript
                                                 break;
                                         }
                                         break;
-                                        /*
-                                    case 8:
-                                        PlaySound(pc, 2426, false, 100, 50);
-                                        Say(pc, 0, 131, "...找个光之塔的偏僻处降落吧$R;", " ");
-                                        PlaySound(pc, 2438, false, 100, 50);
-                                        FGTakeOff(pc, 10070000, 76, 225);
-                                        break;
-                                    case 9:
-                                        PlaySound(pc, 2426, false, 100, 50);
-                                        Say(pc, 0, 131, "...找个通天塔的角落降落吧$R;", " ");
-                                        PlaySound(pc, 2438, false, 100, 50);
-                                        FGTakeOff(pc, 10058000, 154, 167);
-                                        break;
-                                        */
+                                    /*
+                                case 8:
+                                    PlaySound(pc, 2426, false, 100, 50);
+                                    Say(pc, 0, 131, "...找个光之塔的偏僻处降落吧$R;", " ");
+                                    PlaySound(pc, 2438, false, 100, 50);
+                                    FGTakeOff(pc, 10070000, 76, 225);
+                                    break;
+                                case 9:
+                                    PlaySound(pc, 2426, false, 100, 50);
+                                    Say(pc, 0, 131, "...找个通天塔的角落降落吧$R;", " ");
+                                    PlaySound(pc, 2438, false, 100, 50);
+                                    FGTakeOff(pc, 10058000, 154, 167);
+                                    break;
+                                    */
                                     case 8:
                                         break;
                                 }
@@ -238,17 +238,18 @@ namespace SagaScript
                             {
                                 case 1:
                                     ushort count = ushort.Parse(InputBox(pc, "要補充多少？", InputType.Bank));
-                                    if(CountItem(pc, 10016700) < count)
+                                    if (CountItem(pc, 10016700) < count)
                                     {
                                         PlaySound(pc, 2041, false, 100, 50);
                                         Say(pc, 0, 131, "身上摩根炭不足…$R;", " ");
                                         return;
-                                    }else
+                                    }
+                                    else
                                     {
                                         pc.FGarden.Fuel += (uint)count;
                                         TakeItem(pc, 10016700, count);
-                                        Say(pc, 0, 131,"已補充 " + count + " 個摩根炭");
-                                        
+                                        Say(pc, 0, 131, "已補充 " + count + " 個摩根炭");
+
                                     }
 
                                     break;
@@ -327,7 +328,7 @@ namespace SagaScript
                         break;
                 }
             }
-            
+
         }
     }
 }

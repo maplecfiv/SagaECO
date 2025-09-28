@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server.FFarden
+namespace SagaMap.Packets.Server.FFGarden
 {
     public class SSMG_FF_UNIT_APPEAR : Packet
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using SagaDB.Actor;
-using SagaDB.FFGarden;
+using SagaDB.FlyingCastle;
 
 namespace SagaDB.Server
 {
@@ -9,7 +9,7 @@ namespace SagaDB.Server
         /// <summary>
         ///     飞空城的装备
         /// </summary>
-        public Dictionary<FFardenSlot, uint> FFardenEquipments { get; } = new Dictionary<FFardenSlot, uint>();
+        public Dictionary<FlyingCastleSlot, uint> FFlyingGardenEquipments { get; } = new Dictionary<FlyingCastleSlot, uint>();
 
         /// <summary>
         ///     飞空城的家具

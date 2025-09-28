@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     亢奮一踢

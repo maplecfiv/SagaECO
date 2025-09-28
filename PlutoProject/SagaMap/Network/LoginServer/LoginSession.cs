@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using SagaLib;
 using SagaMap.Packets.Login;
 using Version = SagaLib.Version;

@@ -1,4 +1,3 @@
-using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -74,80 +73,80 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 {
                     case Elements.Dark:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.dark[x, y]);
-                                    map.Info.dark[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.dark[x, y]);
+                                        map.Info.dark[x, y] += 50;
+                                    }
 
                         break;
                     case Elements.Holy:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.holy[x, y]);
-                                    map.Info.holy[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.holy[x, y]);
+                                        map.Info.holy[x, y] += 50;
+                                    }
 
                         break;
                     case Elements.Fire:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.fire[x, y]);
-                                    map.Info.fire[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.fire[x, y]);
+                                        map.Info.fire[x, y] += 50;
+                                    }
 
                         break;
                     case Elements.Water:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.water[x, y]);
-                                    map.Info.water[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.water[x, y]);
+                                        map.Info.water[x, y] += 50;
+                                    }
 
                         break;
                     case Elements.Wind:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.wind[x, y]);
-                                    map.Info.wind[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.wind[x, y]);
+                                        map.Info.wind[x, y] += 50;
+                                    }
 
                         break;
                     case Elements.Earth:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                {
-                                    if (skill.Variable.ContainsKey(getVariableKey(x, y)))
-                                        skill.Variable.Remove(getVariableKey(x, y));
-                                    skill.Variable.Add(getVariableKey(x, y), map.Info.earth[x, y]);
-                                    map.Info.earth[x, y] += 50;
-                                }
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                    {
+                                        if (skill.Variable.ContainsKey(getVariableKey(x, y)))
+                                            skill.Variable.Remove(getVariableKey(x, y));
+                                        skill.Variable.Add(getVariableKey(x, y), map.Info.earth[x, y]);
+                                        map.Info.earth[x, y] += 50;
+                                    }
 
                         break;
                 }
@@ -159,50 +158,50 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 {
                     case Elements.Dark:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.dark[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.dark[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                     case Elements.Holy:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.holy[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.holy[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                     case Elements.Fire:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.fire[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.fire[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                     case Elements.Water:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.water[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.water[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                     case Elements.Wind:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.wind[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.wind[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                     case Elements.Earth:
                         for (var x = centerX - 1; x <= centerX + 1; x++)
-                        for (var y = centerY - 1; y <= centerY + 1; y++)
-                            if (x >= 0 && x <= 255)
-                                if (y >= 0 && y <= 255)
-                                    map.Info.earth[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
+                            for (var y = centerY - 1; y <= centerY + 1; y++)
+                                if (x >= 0 && x <= 255)
+                                    if (y >= 0 && y <= 255)
+                                        map.Info.earth[x, y] = (byte)skill.Variable[getVariableKey(x, y)];
 
                         break;
                 }

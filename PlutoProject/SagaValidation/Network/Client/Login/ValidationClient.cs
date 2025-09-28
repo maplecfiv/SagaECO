@@ -1,16 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 
 using SagaDB;
-using SagaDB.Item;
-using SagaDB.Actor;
 using SagaLib;
-using SagaValidation;
-using SagaValidation.Manager;
 
 namespace SagaValidation.Network.Client
 {

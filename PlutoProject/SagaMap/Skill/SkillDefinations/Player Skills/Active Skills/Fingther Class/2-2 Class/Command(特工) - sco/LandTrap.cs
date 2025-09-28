@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations.Global.Active;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco

@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaMap.Manager;
+﻿using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Marionette

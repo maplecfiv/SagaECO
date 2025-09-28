@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaMap.ActorEventHandlers;
+﻿using SagaMap.ActorEventHandlers;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
 {

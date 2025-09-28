@@ -1,4 +1,3 @@
-using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Striker_猎人____arc

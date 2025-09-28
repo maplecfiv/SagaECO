@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SagaDB.Iris;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.IrisCard

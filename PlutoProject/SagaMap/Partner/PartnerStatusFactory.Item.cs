@@ -1,6 +1,3 @@
-using SagaDB.Actor;
-using SagaDB.Item;
-using SagaDB.Partner;
 using SagaLib;
 
 namespace SagaMap.Partner

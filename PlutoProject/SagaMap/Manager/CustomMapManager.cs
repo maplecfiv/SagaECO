@@ -1,14 +1,8 @@
-using SagaDB.Actor;
-using SagaDB.FFGarden;
-using SagaDB.Item;
-using SagaDB.Server;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Client;
-using SagaMap.Packets.Client.FFarden;
-using SagaMap.Packets.Server;
-using SagaMap.Packets.Server.FFarden;
+using SagaMap.Packets.Client.FFGarden;
+using SagaMap.Packets.Server.FFGarden;
 using SagaMap.Packets.Server.FGarden;
 
 namespace SagaMap.Manager

@@ -4,35 +4,11 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using SagaDB;
-using SagaDB.Actor;
-using SagaDB.DefWar;
-using SagaDB.DEMIC;
-using SagaDB.DualJob;
-using SagaDB.ECOShop;
-using SagaDB.EnhanceTable;
-using SagaDB.FGGarden;
-using SagaDB.Iris;
-using SagaDB.Item;
-using SagaDB.Map;
-using SagaDB.Marionette;
-using SagaDB.MasterEnchance;
-using SagaDB.Mob;
-using SagaDB.Npc;
-using SagaDB.ODWar;
-using SagaDB.Partner;
-using SagaDB.PProtect;
-using SagaDB.Quests;
-using SagaDB.Ring;
-using SagaDB.Skill;
-using SagaDB.Team;
-using SagaDB.Theater;
-using SagaDB.Title;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Dungeon;
 using SagaMap.Manager;
 using SagaMap.Mob;
-using SagaMap.Packets.Client;
 using SagaMap.Packets.Client.AbyssTeam;
 using SagaMap.Packets.Client.Actor;
 using SagaMap.Packets.Client.Another;
@@ -41,7 +17,7 @@ using SagaMap.Packets.Client.Chat;
 using SagaMap.Packets.Client.Community;
 using SagaMap.Packets.Client.DEM;
 using SagaMap.Packets.Client.DualJob;
-using SagaMap.Packets.Client.FFarden;
+using SagaMap.Packets.Client.FFGarden;
 using SagaMap.Packets.Client.FGarden;
 using SagaMap.Packets.Client.Fish;
 using SagaMap.Packets.Client.Golem;
@@ -62,7 +38,6 @@ using SagaMap.Packets.Client.Skill;
 using SagaMap.Packets.Client.Tamaire;
 using SagaMap.Packets.Client.Trade;
 using SagaMap.Packets.Client.VShop;
-using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.AbyssTeam;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Another;
@@ -73,7 +48,7 @@ using SagaMap.Packets.Server.Community;
 using SagaMap.Packets.Server.DefWar;
 using SagaMap.Packets.Server.DEM;
 using SagaMap.Packets.Server.DualJob;
-using SagaMap.Packets.Server.FFarden;
+using SagaMap.Packets.Server.FFGarden;
 using SagaMap.Packets.Server.FGarden;
 using SagaMap.Packets.Server.Fish;
 using SagaMap.Packets.Server.Golem;
@@ -1499,7 +1474,7 @@ namespace SagaMap.Network.Client
             */
         }
 
-        public void OnFFardenFurnitureUse(CSMG_FF_FURNITURE_USE p)
+        public void OnFFGardenFurnitureUse(CSMG_FF_FURNITURE_USE p)
         {
             var map = MapManager.Instance.GetMap(Character.MapID);
             var actor = map.GetActor(p.ActorID);
@@ -1535,53 +1510,53 @@ namespace SagaMap.Network.Client
            }*/
         }
 
-        public void OnFFardenOtherJoin(CSMG_FFGARDEN_JOIN_OTHER p)
+        public void OnFFGardenOtherJoin(CSMG_FFGARDEN_JOIN_OTHER p)
         {
-            var ringID = MapServer.charDB.GetFFRindID(p.ff_id);
+            var ringID = MapServer.charDB.GetFlyCastleRindID(p.ff_id);
             var ring = RingManager.Instance.GetRing(ringID);
-            if (ring == null || ring.FFarden == null)
+            if (ring == null || ring.FFGarden == null)
             {
                 SendSystemMessage("错误，当前工会没有飞空城！");
                 return;
             }
 
-            OnFFardenJoin(ringID);
+            OnFFGardenJoin(ringID);
         }
 
-        public void OnFFardenJoin(CSMG_FFGARDEN_JOIN p)
+        public void OnFFGardenJoin(CSMG_FFGARDEN_JOIN p)
         {
-            if (Character.Ring == null || Character.Ring.FFarden == null)
+            if (Character.Ring == null || Character.Ring.FFGarden == null)
             {
                 SendSystemMessage("错误，当前工会没有飞空城！");
                 return;
             }
 
-            OnFFardenJoin(Character.Ring.ID);
+            OnFFGardenJoin(Character.Ring.ID);
         }
 
-        public void OnFFardenJoin(uint ringid)
+        public void OnFFGardenJoin(uint ringid)
         {
             var ring = RingManager.Instance.GetRing(ringid);
-            if (ring == null || ring.FFarden == null)
+            if (ring == null || ring.FFGarden == null)
             {
                 SendSystemMessage("错误，当前工会没有飞空城！");
                 return;
             }
 
-            MapServer.charDB.GetFFurniture(ring);
-            if (ring.FFarden.MapID == 0)
+            MapServer.charDB.GetFlyingCastleFurniture(ring);
+            if (ring.FFGarden.MapID == 0)
             {
                 var map = MapManager.Instance.GetMap(Character.MapID);
-                ring.FFarden.MapID = MapManager.Instance.CreateMapInstance(ring, 90001000, Character.MapID,
+                ring.FFGarden.MapID = MapManager.Instance.CreateMapInstance(ring, 90001000, Character.MapID,
                     Global.PosX16to8(Character.X, map.Width), Global.PosY16to8(Character.Y, map.Height), false);
-                map = MapManager.Instance.GetMap(ring.FFarden.MapID);
-                var ffmap = MapManager.Instance.GetMap(ring.FFarden.MapID);
+                map = MapManager.Instance.GetMap(ring.FFGarden.MapID);
+                var ffmap = MapManager.Instance.GetMap(ring.FFGarden.MapID);
                 var aa = new List<uint>();
                 foreach (var y in ffmap.Actors)
                     if (y.Value.type == ActorType.FURNITURE)
                         aa.Add(y.Key);
                 foreach (var i in aa) ffmap.DeleteActor(ffmap.Actors[i]);
-                foreach (var i in ring.FFarden.Furnitures[FurniturePlace.GARDEN])
+                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.GARDEN])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1589,7 +1564,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFarden.Furnitures[FurniturePlace.FARM])
+                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FARM])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1597,7 +1572,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFarden.Furnitures[FurniturePlace.FISHERY])
+                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FISHERY])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1605,7 +1580,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFarden.Furnitures[FurniturePlace.HOUSE])
+                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.HOUSE])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1623,7 +1598,7 @@ namespace SagaMap.Network.Client
                 var newMap = MapManager.Instance.GetMap(Character.MapID);
                 if (Character.Marionette != null)
                     MarionetteDeactivate();
-                Map.SendActorToMap(Character, ring.FFarden.MapID, 20, 20, true);
+                Map.SendActorToMap(Character, ring.FFGarden.MapID, 20, 20, true);
             }
 
             /*Packet p = new Packet();
@@ -1647,13 +1622,13 @@ namespace SagaMap.Network.Client
                 CustomMapManager.Instance.SerFFofFurnitureSetup(this, p);
             }
 
-            if (Character.Ring == null || Character.Ring.FFarden == null)
+            if (Character.Ring == null || Character.Ring.FFGarden == null)
                 return;
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
-            if (Character.MapID != ring.FFarden.MapID && Character.MapID != ring.FFarden.RoomMapID)
+            if (Character.MapID != ring.FFGarden.MapID && Character.MapID != ring.FFGarden.RoomMapID)
                 return;
-            if (ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count <
+            if (ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count <
                 Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
@@ -1678,15 +1653,15 @@ namespace SagaMap.Network.Client
                 actor.invisble = false;
                 map.OnActorVisibilityChange(actor);
 
-                if (Character.MapID == Character.Ring.FFarden.MapID)
-                    ring.FFarden.Furnitures[FurniturePlace.GARDEN].Add(actor);
+                if (Character.MapID == Character.Ring.FFGarden.MapID)
+                    ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Add(actor);
                 else
-                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Add(actor);
+                    ring.FFGarden.Furnitures[FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
-                    ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    ring.FFarden.Furnitures[FurniturePlace.ROOM].Count,
+                    ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                    ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count,
                     Configuration.Configuration.Instance.MaxFurnitureCount));
-                MapServer.charDB.SaveFF(ring);
+                MapServer.charDB.SaveFlyCastle(ring);
             }
             else
             {
@@ -1724,9 +1699,9 @@ namespace SagaMap.Network.Client
                 return;
             }
 
-            if (Character.Ring.FFarden == null)
+            if (Character.Ring.FFGarden == null)
                 return;
-            if (Character.MapID != Character.Ring.FFarden.MapID && Character.MapID != Character.Ring.FFarden.RoomMapID)
+            if (Character.MapID != Character.Ring.FFGarden.MapID && Character.MapID != Character.Ring.FFGarden.RoomMapID)
                 return;
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
             Map map = null;
@@ -1738,18 +1713,18 @@ namespace SagaMap.Network.Client
                 return;
             var furniture = (ActorFurniture)actor;
 
-            if (Character.MapID == Character.Ring.FFarden.MapID)
-                ring.FFarden.Furnitures[FurniturePlace.GARDEN].Remove(furniture);
+            if (Character.MapID == Character.Ring.FFGarden.MapID)
+                ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Remove(furniture);
             else
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Remove(furniture);
+                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Remove(furniture);
             map.DeleteActor(actor);
             var item = ItemFactory.Instance.GetItem(furniture.ItemID);
             item.PictID = furniture.PictID;
-            MapServer.charDB.SaveFF(ring);
+            MapServer.charDB.SaveFlyCastle(ring);
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
-                ring.FFarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFarden.Furnitures[FurniturePlace.ROOM].Count,
+                ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
+                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count,
                 Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
@@ -1771,12 +1746,12 @@ namespace SagaMap.Network.Client
                 return;
             }
 
-            if (Character.Ring == null || Character.Ring.FFarden == null)
+            if (Character.Ring == null || Character.Ring.FFGarden == null)
                 return;
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
-            if (Character.MapID != ring.FFarden.MapID && Character.MapID != ring.FFarden.RoomMapID)
+            if (Character.MapID != ring.FFGarden.MapID && Character.MapID != ring.FFGarden.RoomMapID)
                 return;
-            if (ring.FFarden.Furnitures[FurniturePlace.HOUSE].Count > 0)
+            if (ring.FFGarden.Furnitures[FurniturePlace.HOUSE].Count > 0)
             {
                 SendSystemMessage("无法重复设置");
                 return;
@@ -1799,9 +1774,9 @@ namespace SagaMap.Network.Client
             map.RegisterActor(actor);
             actor.invisble = false;
             map.OnActorVisibilityChange(actor);
-            if (Character.MapID == Character.Ring.FFarden.MapID)
-                ring.FFarden.Furnitures[FurniturePlace.HOUSE].Add(actor);
-            MapServer.charDB.SaveFF(ring);
+            if (Character.MapID == Character.Ring.FFGarden.MapID)
+                ring.FFGarden.Furnitures[FurniturePlace.HOUSE].Add(actor);
+            MapServer.charDB.SaveFlyCastle(ring);
         }
 
         public void OnFFFurnitureRoomEnter(CSMG_FF_FURNITURE_ROOM_ENTER p)
@@ -1818,13 +1793,13 @@ namespace SagaMap.Network.Client
 
                 if (ring == null)
                     return;
-                if (ring.FFarden.RoomMapID == 0)
+                if (ring.FFGarden.RoomMapID == 0)
                 {
-                    ring.FFarden.RoomMapID =
-                        MapManager.Instance.CreateMapInstance(ring, 91000000, ring.FFarden.MapID, 6, 7, false);
+                    ring.FFGarden.RoomMapID =
+                        MapManager.Instance.CreateMapInstance(ring, 91000000, ring.FFGarden.MapID, 6, 7, false);
                     //spawn furnitures
-                    var map = MapManager.Instance.GetMap(ring.FFarden.RoomMapID);
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.ROOM])
+                    var map = MapManager.Instance.GetMap(ring.FFGarden.RoomMapID);
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.ROOM])
                     {
                         i.e = new NullEventHandler();
                         map.RegisterActor(i);
@@ -1832,16 +1807,16 @@ namespace SagaMap.Network.Client
                     }
                 }
 
-                Map.SendActorToMap(Character, ring.FFarden.RoomMapID, 20, 36, true);
+                Map.SendActorToMap(Character, ring.FFGarden.RoomMapID, 20, 36, true);
             }
         }
 
         public void OnFFurnitureUnitSetup(CSMG_FF_UNIT_SETUP p)
         {
-            if (Character.Ring == null || Character.Ring.FFarden == null)
+            if (Character.Ring == null || Character.Ring.FFGarden == null)
                 return;
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
-            if (Character.MapID != ring.FFarden.MapID && Character.MapID != ring.FFarden.RoomMapID)
+            if (Character.MapID != ring.FFGarden.MapID && Character.MapID != ring.FFGarden.RoomMapID)
                 return;
             var item = Character.Inventory.GetItem(p.InventorySlot);
             var actor = new ActorFurnitureUnit();
@@ -1864,15 +1839,15 @@ namespace SagaMap.Network.Client
             map.RegisterActor(actor);
             actor.invisble = false;
             map.OnActorVisibilityChange(actor);
-            if (Character.MapID == Character.Ring.FFarden.MapID)
+            if (Character.MapID == Character.Ring.FFGarden.MapID)
             {
                 if (item.ItemID == 30300000)
-                    ring.FFarden.Furnitures[FurniturePlace.FISHERY].Add(actor);
+                    ring.FFGarden.Furnitures[FurniturePlace.FISHERY].Add(actor);
                 else if (item.ItemID == 30260000)
-                    ring.FFarden.Furnitures[FurniturePlace.FARM].Add(actor);
+                    ring.FFGarden.Furnitures[FurniturePlace.FARM].Add(actor);
             }
 
-            MapServer.charDB.SaveFF(ring);
+            MapServer.charDB.SaveFlyCastle(ring);
         }
 
         public void OnTamaireRentalRequest(CSMG_TAMAIRE_RENTAL_REQUEST p)
@@ -3238,9 +3213,9 @@ namespace SagaMap.Network.Client
 
         public void SendRingFF()
         {
-            MapServer.charDB.GetFF(Character);
+            MapServer.charDB.GetFlyCastle(Character);
             if (Character.Ring != null)
-                if (Character.Ring.FFarden != null)
+                if (Character.Ring.FFGarden != null)
                 {
                     SendRingFFObtainMode();
                     SendRingFFHealthMode();
@@ -3256,21 +3231,21 @@ namespace SagaMap.Network.Client
         private void SendRingFFObtainMode()
         {
             var p = new SSMG_FF_OBTAIN_MODE();
-            p.value = Character.Ring.FFarden.ObMode;
+            p.value = Character.Ring.FFGarden.ObMode;
             NetIo.SendPacket(p);
         }
 
         private void SendRingFFHealthMode()
         {
             var p = new SSMG_FF_HEALTH_MODE();
-            p.value = Character.Ring.FFarden.HealthMode;
+            p.value = Character.Ring.FFGarden.HealthMode;
             NetIo.SendPacket(p);
         }
 
         private void SendRingFFIsLock()
         {
             var p = new SSMG_FF_ISLOCK();
-            if (Character.Ring.FFarden.IsLock)
+            if (Character.Ring.FFGarden.IsLock)
                 p.value = 1;
             else
                 p.value = 0;
@@ -3280,45 +3255,45 @@ namespace SagaMap.Network.Client
         private void SendRingFFName()
         {
             var p = new SSMG_FF_RINGSELF();
-            p.name = Character.Ring.FFarden.Name;
+            p.name = Character.Ring.FFGarden.Name;
             NetIo.SendPacket(p);
         }
 
         private void SendRingFFMaterialPoint()
         {
             var p = new SSMG_FF_MATERIAL_POINT();
-            p.value = Character.Ring.FFarden.MaterialPoint;
+            p.value = Character.Ring.FFGarden.MaterialPoint;
             NetIo.SendPacket(p);
         }
 
         private void SendRingFFMaterialConsume()
         {
             var p = new SSMG_FF_MATERIAL_CONSUME();
-            p.value = Character.Ring.FFarden.MaterialConsume;
+            p.value = Character.Ring.FFGarden.MaterialConsume;
             NetIo.SendPacket(p);
         }
 
         private void SendRingFFLevel()
         {
             var p = new SSMG_FF_LEVEL();
-            p.level = Character.Ring.FFarden.Level;
-            p.value = Character.Ring.FFarden.FFexp;
+            p.level = Character.Ring.FFGarden.Level;
+            p.value = Character.Ring.FFGarden.FFexp;
             NetIo.SendPacket(p);
             var p1 = new SSMG_FF_F_LEVEL();
-            p1.level = Character.Ring.FFarden.FLevel;
-            p1.value = Character.Ring.FFarden.FFFexp;
+            p1.level = Character.Ring.FFGarden.FLevel;
+            p1.value = Character.Ring.FFGarden.FFFexp;
             NetIo.SendPacket(p1);
             var p2 = new SSMG_FF_SU_LEVEL();
-            p2.level = Character.Ring.FFarden.SULevel;
-            p2.value = Character.Ring.FFarden.FFSUexp;
+            p2.level = Character.Ring.FFGarden.SULevel;
+            p2.value = Character.Ring.FFGarden.FFSUexp;
             NetIo.SendPacket(p2);
             var p3 = new SSMG_FF_BP_LEVEL();
-            p3.level = Character.Ring.FFarden.BPLevel;
-            p3.value = Character.Ring.FFarden.FFBPexp;
+            p3.level = Character.Ring.FFGarden.BPLevel;
+            p3.value = Character.Ring.FFGarden.FFBPexp;
             NetIo.SendPacket(p3);
             var p4 = new SSMG_FF_DEM_LEVEL();
-            p4.level = Character.Ring.FFarden.DEMLevel;
-            p4.value = Character.Ring.FFarden.FFDEMexp;
+            p4.level = Character.Ring.FFGarden.DEMLevel;
+            p4.value = Character.Ring.FFGarden.FFDEMexp;
             NetIo.SendPacket(p4);
         }
 
@@ -3759,7 +3734,7 @@ namespace SagaMap.Network.Client
                 p.X = Global.PosX16to8(Character.X, map.Width);
                 p.Y = Global.PosY16to8(Character.Y, map.Height);
                 p.Dir = (byte)(Character.Dir / 45);
-                p.Equiptments = owner.FGarden.FGardenEquipments;
+                p.Equiptments = owner.FGarden.FlyingGardenEquipments;
                 NetIo.SendPacket(p);
             }
         }
@@ -3888,7 +3863,7 @@ namespace SagaMap.Network.Client
                 if (!fgMap.IsMapInstance)
                     return;
                 if (map.ID / 10 == 7000000)
-                    if (map.Creator.FGarden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] != 0)
+                    if (map.Creator.FGarden.FlyingGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] != 0)
                     {
                         var p1 = new SSMG_NPC_SET_EVENT_AREA();
                         p1.EventID = 10000315;
@@ -18077,9 +18052,9 @@ namespace SagaMap.Network.Client
                 var item = Character.Inventory.GetItem(p.InventorySlot);
                 if (item == null)
                     return;
-                if (Character.FGarden.FGardenEquipments[p.Place] != 0)
+                if (Character.FGarden.FlyingGardenEquipments[p.Place] != 0)
                 {
-                    var itemID = Character.FGarden.FGardenEquipments[p.Place];
+                    var itemID = Character.FGarden.FlyingGardenEquipments[p.Place];
                     AddItem(ItemFactory.Instance.GetItem(itemID, true), false);
                     var p1 = new SSMG_FG_EQUIPT();
                     p1.ItemID = 0;
@@ -18088,7 +18063,7 @@ namespace SagaMap.Network.Client
                 }
 
                 if (p.Place == FGardenSlot.GARDEN_MODELHOUSE &&
-                    Character.FGarden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] == 0)
+                    Character.FGarden.FlyingGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] == 0)
                 {
                     var p1 = new SSMG_NPC_SET_EVENT_AREA();
                     p1.EventID = 10000315;
@@ -18099,7 +18074,7 @@ namespace SagaMap.Network.Client
                     NetIo.SendPacket(p1);
                 }
 
-                Character.FGarden.FGardenEquipments[p.Place] = item.ItemID;
+                Character.FGarden.FlyingGardenEquipments[p.Place] = item.ItemID;
                 var p2 = new SSMG_FG_EQUIPT();
                 p2.ItemID = item.ItemID;
                 p2.Place = p.Place;
@@ -18108,10 +18083,10 @@ namespace SagaMap.Network.Client
             }
             else
             {
-                var itemID = Character.FGarden.FGardenEquipments[p.Place];
+                var itemID = Character.FGarden.FlyingGardenEquipments[p.Place];
                 if (itemID != 0)
                     AddItem(ItemFactory.Instance.GetItem(itemID, true), false);
-                Character.FGarden.FGardenEquipments[p.Place] = 0;
+                Character.FGarden.FlyingGardenEquipments[p.Place] = 0;
                 var p1 = new SSMG_FG_EQUIPT();
                 p1.ItemID = 0;
                 p1.Place = p.Place;

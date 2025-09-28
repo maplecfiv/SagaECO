@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SagaDB.Actor;
-using SagaDB.Skill;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Partner.AICommands;
@@ -1120,42 +1118,42 @@ namespace SagaMap.Partner
         {
             var res = node;
             for (var i = node.x - 1; i <= node.x + 1; i++)
-            for (var j = node.y - 1; j <= node.y + 1; j++)
-            {
-                if (j == -1 || i == -1)
-                    continue;
-                if (j == node.y && i == node.x)
-                    continue;
-                if (i >= map.Info.width || j >= map.Info.height)
-                    continue;
-                if (map.Info.walkable[i, j] == 2)
+                for (var j = node.y - 1; j <= node.y + 1; j++)
                 {
-                    if (!openedNode.ContainsKey(i * 1000 + j))
+                    if (j == -1 || i == -1)
+                        continue;
+                    if (j == node.y && i == node.x)
+                        continue;
+                    if (i >= map.Info.width || j >= map.Info.height)
+                        continue;
+                    if (map.Info.walkable[i, j] == 2)
                     {
-                        var node2 = new MapNode();
-                        node2.x = (byte)i;
-                        node2.y = (byte)j;
-                        node2.Previous = node;
-                        if (i == node.x || j == node.y)
-                            node2.G = node.G + 10;
+                        if (!openedNode.ContainsKey(i * 1000 + j))
+                        {
+                            var node2 = new MapNode();
+                            node2.x = (byte)i;
+                            node2.y = (byte)j;
+                            node2.Previous = node;
+                            if (i == node.x || j == node.y)
+                                node2.G = node.G + 10;
+                            else
+                                node2.G = node.G + 14;
+                            node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
+                            node2.F = node2.G + node2.H;
+                            openedNode.Add(i * 1000 + j, node2);
+                        }
                         else
-                            node2.G = node.G + 14;
-                        node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
-                        node2.F = node2.G + node2.H;
-                        openedNode.Add(i * 1000 + j, node2);
-                    }
-                    else
-                    {
-                        var tmp = openedNode[i * 1000 + j];
-                        int G;
-                        if (i == node.x || j == node.y)
-                            G = 10;
-                        else
-                            G = 14;
-                        if (node.G + G > tmp.G) res = tmp;
+                        {
+                            var tmp = openedNode[i * 1000 + j];
+                            int G;
+                            if (i == node.x || j == node.y)
+                                G = 10;
+                            else
+                                G = 14;
+                            if (node.G + G > tmp.G) res = tmp;
+                        }
                     }
                 }
-            }
 
             return res;
         }

@@ -263,6 +263,19 @@
           "lib/netstandard2.0/System.Data.DataSetExtensions.dll": {}
         }
       },
+      "System.Data.OleDb/9.0.9": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/System.Data.OleDb.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Data.OleDb.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "System.Diagnostics.DiagnosticSource/6.0.2": {
         "type": "package",
         "dependencies": {
@@ -981,6 +994,38 @@
         "version.txt"
       ]
     },
+    "System.Data.OleDb/9.0.9": {
+      "sha512": "YTxzDFKAEEWgyl2S5qWi+JfcD+/MtvckXIxivKmrw6FdWT/w7CwuzgAiHHYqVV5jdLeIKYoiInCRIFTsHKCJTA==",
+      "type": "package",
+      "path": "system.data.oledb/9.0.9",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Data.OleDb.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Data.OleDb.targets",
+        "lib/net462/System.Data.OleDb.dll",
+        "lib/net462/System.Data.OleDb.xml",
+        "lib/net8.0/System.Data.OleDb.dll",
+        "lib/net8.0/System.Data.OleDb.xml",
+        "lib/net9.0/System.Data.OleDb.dll",
+        "lib/net9.0/System.Data.OleDb.xml",
+        "lib/netstandard2.0/System.Data.OleDb.dll",
+        "lib/netstandard2.0/System.Data.OleDb.xml",
+        "runtimes/win/lib/net8.0/System.Data.OleDb.dll",
+        "runtimes/win/lib/net8.0/System.Data.OleDb.xml",
+        "runtimes/win/lib/net9.0/System.Data.OleDb.dll",
+        "runtimes/win/lib/net9.0/System.Data.OleDb.xml",
+        "system.data.oledb.9.0.9.nupkg.sha512",
+        "system.data.oledb.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Diagnostics.DiagnosticSource/6.0.2": {
       "sha512": "6tQaIexFycaotdGn23lf3XJ/eI1GOjQKIvQDRFN9N4pwoNsKnHuXccQ3lnQO6GX8KAb1ic+6ZofJmPdbUVwZag==",
       "type": "package",
@@ -1160,6 +1205,7 @@
       "System.Buffers >= 4.5.1",
       "System.ComponentModel.Annotations >= 5.0.0",
       "System.Data.DataSetExtensions >= 4.5.0",
+      "System.Data.OleDb >= 9.0.9",
       "System.Diagnostics.DiagnosticSource >= 6.0.2",
       "System.Memory >= 4.5.4",
       "System.Numerics.Vectors >= 4.5.0",
@@ -1266,6 +1312,10 @@
           "System.Data.DataSetExtensions": {
             "target": "Package",
             "version": "[4.5.0, )"
+          },
+          "System.Data.OleDb": {
+            "target": "Package",
+            "version": "[9.0.9, )"
           },
           "System.Diagnostics.DiagnosticSource": {
             "target": "Package",

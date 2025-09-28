@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SagaDB.Actor;
-using SagaDB.FFGarden;
 using SagaLib;
 
 namespace SagaDB.Ring
@@ -45,7 +44,7 @@ namespace SagaDB.Ring
         /// <summary>
         ///     军团的飞空城
         /// </summary>
-        public FFarden FFarden { get; set; }
+        public FlyingCastle.FlyingCastle FFGarden { get; set; }
 
         /// <summary>
         ///     取得指定军团成员

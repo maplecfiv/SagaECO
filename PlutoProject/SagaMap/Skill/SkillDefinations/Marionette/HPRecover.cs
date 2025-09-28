@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     木偶時的HP自然恢復

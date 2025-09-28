@@ -1,5 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaMap.Manager;
+﻿using SagaMap.Manager;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Active

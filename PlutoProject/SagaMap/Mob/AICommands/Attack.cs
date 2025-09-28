@@ -1,6 +1,4 @@
 using System;
-using SagaDB.Actor;
-using SagaDB.Mob;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Skill;

@@ -5,21 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using SagaDB.Actor;
-using SagaDB.ECOShop;
-using SagaDB.FFGarden;
-using SagaDB.FGGarden;
-using SagaDB.Iris;
-using SagaDB.Item;
-using SagaDB.Map;
-using SagaDB.Mob;
-using SagaDB.Npc;
-using SagaDB.Partner;
-using SagaDB.Quests;
-using SagaDB.Skill;
-using SagaDB.Synthese;
-using SagaDB.Theater;
-using SagaDB.Treasure;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaLib.VirtualFileSytem;
@@ -28,13 +13,11 @@ using SagaMap.FictitiousActors;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
-using SagaMap.ODWar;
-using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Another;
 using SagaMap.Packets.Server.AnotherAncientArk;
 using SagaMap.Packets.Server.Chat;
-using SagaMap.Packets.Server.FFarden;
+using SagaMap.Packets.Server.FFGarden;
 using SagaMap.Packets.Server.NPC;
 using SagaMap.Partner;
 using SagaMap.Scripting;
@@ -4118,16 +4101,16 @@ namespace SagaMap
             /*-------------------服務器專有--------------------
             MapClient s = MapClient.FromActorPC(ScriptManager.Instance.VariableHolder);
             SagaDB.Ring.Ring ring = RingManager.Instance.CreateRing(ScriptManager.Instance.VariableHolder, "番茄會");
-            if (s.Character.Ring.FFarden == null)
+            if (s.Character.Ring.FFGarden == null)
             {
-                s.Character.Ring.FFarden = new SagaDB.FFarden.FFarden();
-                s.Character.Ring.FFarden.Name = args;
-                s.Character.Ring.FFarden.RingID = s.Character.Ring.ID;
-                s.Character.Ring.FFarden.ObMode = 3;
-                s.Character.Ring.FFarden.Content = "飛空城";
-                SagaDB.FFarden.FFarden r = new SagaDB.FFarden.FFarden();
-                s.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFarden.FurniturePlace.GARDEN, new List<ActorFurniture>());
-                s.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFarden.FurniturePlace.ROOM, new List<ActorFurniture>());
+                s.Character.Ring.FFGarden = new SagaDB.FFGarden.FFGarden();
+                s.Character.Ring.FFGarden.Name = args;
+                s.Character.Ring.FFGarden.RingID = s.Character.Ring.ID;
+                s.Character.Ring.FFGarden.ObMode = 3;
+                s.Character.Ring.FFGarden.Content = "飛空城";
+                SagaDB.FFGarden.FFGarden r = new SagaDB.FFGarden.FFGarden();
+                s.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.GARDEN, new List<ActorFurniture>());
+                s.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.ROOM, new List<ActorFurniture>());
                 MapServer.charDB.CreateFF(s.Character);
             }
             /*-------------------服務器專有--------------------*/
@@ -4145,17 +4128,17 @@ namespace SagaMap
             }
             else
             {
-                if (client.Character.Ring.FFarden == null)
+                if (client.Character.Ring.FFGarden == null)
                 {
-                    client.Character.Ring.FFarden = new FFarden();
-                    client.Character.Ring.FFarden.Name = args;
-                    client.Character.Ring.FFarden.RingID = client.Character.Ring.ID;
-                    client.Character.Ring.FFarden.ObMode = 3;
-                    client.Character.Ring.FFarden.Content = "测试内容";
-                    var r = new FFarden();
-                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.GARDEN,
+                    client.Character.Ring.FFGarden = new FFGarden();
+                    client.Character.Ring.FFGarden.Name = args;
+                    client.Character.Ring.FFGarden.RingID = client.Character.Ring.ID;
+                    client.Character.Ring.FFGarden.ObMode = 3;
+                    client.Character.Ring.FFGarden.Content = "测试内容";
+                    var r = new FFGarden();
+                    client.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.GARDEN,
                         new List<ActorFurniture>());
-                    client.Character.Ring.FFarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.ROOM,
+                    client.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.ROOM,
                         new List<ActorFurniture>());
                 }
 
@@ -4169,7 +4152,7 @@ namespace SagaMap
             //CustomMapManager.Instance.EnterMap(client.Character);
             int maxPage;
             var page = 1;
-            var res = FFardenManager.Instance.GetFFList(0, out maxPage);
+            var res = FFGardenManager.Instance.GetFlyingCastles(0, out maxPage);
             var p1 = new SSMG_FF_LIST();
             p1.ActorID = client.Character.ActorID;
             p1.Page = 0;

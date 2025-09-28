@@ -1,6 +1,6 @@
 using SagaLib;
 
-namespace SagaMap.Packets.Server.FFarden
+namespace SagaMap.Packets.Server.FFGarden
 {
     public class SSMG_FF_OBTAIN_MODE : Packet //表示当前飞空城的取得状态
     {

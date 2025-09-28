@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FFGarden;
 using SagaDB.Item;
 using SagaDB.Map;
 using SagaDB.Quests;
@@ -807,15 +805,15 @@ namespace SagaDB
         {
         }
 
-        public List<FFarden> GetFFList()
+        public List<FlyingCastle.FlyingCastle> GetFlyingCastles()
         {
             var sqlstr = "SELECT * FROM `ff`;";
-            var list = new List<FFarden>();
+            var list = new List<FlyingCastle.FlyingCastle>();
 
             return list;
         }
 
-        public void SaveFF(Ring.Ring ring)
+        public void SaveFlyCastle(Ring.Ring ring)
         {
         }
 
@@ -827,7 +825,7 @@ namespace SagaDB
         {
         }
 
-        public void SaveFFCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        public void SaveFlyCastleCopy(Dictionary<FlyingCastle.FurniturePlace, List<ActorFurniture>> Furnitures)
         {
         }
 
@@ -835,20 +833,20 @@ namespace SagaDB
         {
         }
 
-        public void GetFF(ActorPC pc)
+        public void GetFlyCastle(ActorPC pc)
         {
         }
 
-        public uint GetFFRindID(uint ffid)
+        public uint GetFlyCastleRindID(uint ffid)
         {
             return 0;
         }
 
-        public void GetFFurniture(Ring.Ring ring)
+        public void GetFlyingCastleFurniture(Ring.Ring ring)
         {
         }
 
-        public void GetFFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        public void GetFlyingCastleFurnitureCopy(Dictionary<FlyingCastle.FurniturePlace, List<ActorFurniture>> Furnitures)
         {
         }
 

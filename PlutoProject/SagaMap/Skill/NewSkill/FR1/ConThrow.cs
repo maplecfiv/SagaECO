@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.FR1

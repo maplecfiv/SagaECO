@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using SagaDB.Actor;
-using SagaDB.Item;
 using SagaLib;
 using SagaMap.Network.Client;
 using Version = SagaLib.Version;

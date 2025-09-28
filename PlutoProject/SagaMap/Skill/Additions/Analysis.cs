@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-
 namespace SagaMap.Skill.Additions
 {
     public class Analysis : DefaultBuff

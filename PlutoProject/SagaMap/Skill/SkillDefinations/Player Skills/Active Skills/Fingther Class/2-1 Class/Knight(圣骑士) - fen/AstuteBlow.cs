@@ -1,4 +1,3 @@
-using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen

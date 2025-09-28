@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 

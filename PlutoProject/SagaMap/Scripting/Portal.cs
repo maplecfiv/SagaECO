@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-
 namespace SagaMap.Scripting
 {
     public abstract class Portal : Event

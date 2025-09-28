@@ -1,25 +1,16 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Microsoft.CSharp;
-using SagaDB.Actor;
-using SagaDB.Item;
-using SagaDB.Map;
-using SagaDB.Mob;
-using SagaDB.Skill;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
-using SagaMap.Packets.Client;
 using SagaMap.Packets.Client.Item;
 using SagaMap.Packets.Client.Possession;
-using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Chat;
 using SagaMap.Packets.Server.Item;
@@ -143,7 +134,6 @@ using SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Cla
 using SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._3_0_Class.SoulTaker_噬魂者____lock;
 using SagaMap.Skill.SkillDefinations.Repair;
 using SagaMap.Skill.SkillDefinations.SunFlowerAdditions;
-using SagaMap.Skill.SkillDefinations.Weapon;
 using SagaMap.Skill.SkillDefinations.Weapon.Passive;
 using AreaHeal =
     SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.AreaHeal;

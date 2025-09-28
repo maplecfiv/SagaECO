@@ -1,6 +1,4 @@
-﻿using SagaDB.Actor;
-
-namespace SagaMap.Skill.SkillDefinations
+﻿namespace SagaMap.Skill.SkillDefinations
 {
     /// <summary>
     ///     技能定义接口

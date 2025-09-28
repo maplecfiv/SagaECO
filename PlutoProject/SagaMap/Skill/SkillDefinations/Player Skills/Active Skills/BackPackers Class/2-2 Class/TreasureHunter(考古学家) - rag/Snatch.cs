@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.

@@ -1,9 +1,7 @@
 using System;
-using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
-using SagaMap.Packets.Client;
 using SagaMap.Packets.Client.Skill;
 
 namespace SagaMap.Tasks.Skill
@@ -41,18 +39,18 @@ namespace SagaMap.Tasks.Skill
                     switch (caster.type)
                     {
                         case ActorType.PC:
-                        {
-                            var eh = (PCEventHandler)caster.e;
-                            eh.Client.SkillDelay = DateTime.Now;
-                            var p1 = new CSMG_SKILL_CAST();
-                            p1.ActorID = arg.dActor;
-                            p1.SkillID = (ushort)info.skillID;
-                            p1.SkillLv = info.level;
-                            p1.X = arg.x;
-                            p1.Y = arg.y;
-                            p1.Random = (short)Global.Random.Next();
-                            eh.Client.OnSkillCast(p1, false, true);
-                        }
+                            {
+                                var eh = (PCEventHandler)caster.e;
+                                eh.Client.SkillDelay = DateTime.Now;
+                                var p1 = new CSMG_SKILL_CAST();
+                                p1.ActorID = arg.dActor;
+                                p1.SkillID = (ushort)info.skillID;
+                                p1.SkillLv = info.level;
+                                p1.X = arg.x;
+                                p1.Y = arg.y;
+                                p1.Random = (short)Global.Random.Next();
+                                eh.Client.OnSkillCast(p1, false, true);
+                            }
                             break;
                         case ActorType.MOB:
                             var eh2 = (MobEventHandler)caster.e;

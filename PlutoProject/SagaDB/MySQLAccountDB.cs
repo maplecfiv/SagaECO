@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
 using SagaLib;
@@ -13,7 +12,7 @@ namespace SagaDB
     public class MySQLAccountDB : MySQLConnectivity, AccountDB
     {
         private static readonly NLog.Logger _logger = Logger.InitLogger<MySQLAccountDB>();
-        
+
         private readonly string database;
         private readonly string dbpass;
         private readonly string dbuser;

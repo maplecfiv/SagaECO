@@ -1,7 +1,4 @@
-﻿using SagaDB.Actor;
-using SagaDB.Item;
-
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
+﻿namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
 {
     /// <summary>
     ///     雷霆突擊

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaMap.Packets.Server.FFarden
+namespace SagaMap.Packets.Server.FFGarden
 {
     public class SSMG_FF_LIST : Packet
     {
@@ -27,7 +27,7 @@ namespace SagaMap.Packets.Server.FFarden
             set => PutUInt(value, 10);
         }
 
-        public List<SagaDB.FFGarden.FFarden> Entries
+        public List<SagaDB.FFGarden.FFGarden> Entries
         {
             set
             {

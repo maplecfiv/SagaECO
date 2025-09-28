@@ -1,5 +1,3 @@
-using SagaDB.Actor;
-
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Novice.Joker_小丑_
 {
     /// <summary>

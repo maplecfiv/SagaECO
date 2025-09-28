@@ -8,8 +8,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FFGarden;
-using SagaDB.FGGarden;
+using SagaDB.FlyingCastle;
 using SagaDB.Item;
 using SagaDB.Map;
 using SagaDB.Mob;
@@ -18,8 +17,6 @@ using SagaDB.Quests;
 using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
-using FurniturePlace = SagaDB.FFGarden.FurniturePlace;
-using Microsoft.Extensions.Logging;
 
 namespace SagaDB
 {
@@ -647,7 +644,7 @@ namespace SagaDB
 
                 SavePaper(aChar);
                 SaveFGarden(aChar);
-                //SaveFF(aChar.Ring);
+                //SaveFlyCastle(aChar.Ring);
                 //SaveNavi(aChar);
                 if (itemInfo)
                     SaveItem(aChar);
@@ -919,10 +916,10 @@ namespace SagaDB
                     GetSkill(pc);
                     GetJobLV(pc);
                     GetNPCStates(pc);
-                    GetFGarden(pc);
+                    GetFlyingGarden(pc);
                     GetVar(pc);
                     //GetNavi(pc);
-                    //GetFF(pc);
+                    //GetFlyCastle(pc);
                 }
 
                 GetPaper(pc);
@@ -1099,10 +1096,10 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
             sqlstr = "TRUNCATE TABLE `sList`;";
             foreach (var item in fakepc.Adict)
-            foreach (var i in item.Value.Keys)
-                sqlstr += string.Format(
-                    "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');", item.Key,
-                    i, item.Value[i]);
+                foreach (var i in item.Value.Keys)
+                    sqlstr += string.Format(
+                        "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');", item.Key,
+                        i, item.Value[i]);
 
             SQLExecuteNonQuery(sqlstr);
         }
@@ -1876,7 +1873,7 @@ namespace SagaDB
             return SQLExecuteNonQuery(sqlstr);
         }
 
-        public uint GetFFRindID(uint ffid)
+        public uint GetFlyCastleRindID(uint ffid)
         {
             var sqlstr = string.Format("SELECT `ring_id` FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", ffid);
             var result = SQLExecuteQuery(sqlstr);
@@ -1885,39 +1882,39 @@ namespace SagaDB
             return 0;
         }
 
-        public void GetFF(ActorPC pc)
+        public void GetFlyCastle(ActorPC pc)
         {
             if (pc.Ring != null)
             {
                 var sqlstr = string.Format("SELECT * FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", pc.Ring.FF_ID);
                 var result = SQLExecuteQuery(sqlstr);
                 if (result.Count > 0)
-                    if (pc.Ring.FFarden == null)
+                    if (pc.Ring.FFGarden == null)
                     {
-                        pc.Ring.FFarden = new FFarden();
-                        pc.Ring.FFarden.ID = (uint)result[0]["ff_id"];
-                        pc.Ring.FFarden.Name = (string)result[0]["name"];
-                        pc.Ring.FFarden.RingID = (uint)result[0]["ring_id"];
-                        pc.Ring.FFarden.ObMode = 3;
-                        pc.Ring.FFarden.Content = (string)result[0]["content"];
-                        pc.Ring.FFarden.Level = (uint)result[0]["level"];
+                        pc.Ring.FFGarden = new FlyingCastle.FlyingCastle();
+                        pc.Ring.FFGarden.ID = (uint)result[0]["ff_id"];
+                        pc.Ring.FFGarden.Name = (string)result[0]["name"];
+                        pc.Ring.FFGarden.RingID = (uint)result[0]["ring_id"];
+                        pc.Ring.FFGarden.ObMode = 3;
+                        pc.Ring.FFGarden.Content = (string)result[0]["content"];
+                        pc.Ring.FFGarden.Level = (uint)result[0]["level"];
                     }
             }
         }
 
-        public void GetFFurniture(Ring.Ring ring)
+        public void GetFlyingCastleFurniture(Ring.Ring ring)
         {
-            if (ring.FFarden == null)
+            if (ring.FFGarden == null)
                 return;
-            if (!ring.FFarden.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
-                !ring.FFarden.Furnitures.ContainsKey(FurniturePlace.ROOM))
+            if (!ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
+                !ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.ROOM))
             {
-                ring.FFarden.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
-                ring.FFarden.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
-                ring.FFarden.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
-                ring.FFarden.Furnitures.Add(FurniturePlace.FISHERY, new List<ActorFurniture>());
-                ring.FFarden.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
-                var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FFarden.ID);
+                ring.FFGarden.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
+                ring.FFGarden.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
+                ring.FFGarden.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
+                ring.FFGarden.Furnitures.Add(FurniturePlace.FISHERY, new List<ActorFurniture>());
+                ring.FFGarden.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
+                var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FFGarden.ID);
                 var result = SQLExecuteQuery(sqlstr);
                 foreach (DataRow i in result)
                 {
@@ -1934,12 +1931,12 @@ namespace SagaDB
                     actor.Motion = (ushort)i["motion"];
                     actor.Name = (string)i["name"];
                     actor.invisble = false;
-                    ring.FFarden.Furnitures[place].Add(actor);
+                    ring.FFGarden.Furnitures[place].Add(actor);
                 }
             }
         }
 
-        public void GetFFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        public void GetFlyingCastleFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
         {
             Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
@@ -1967,15 +1964,15 @@ namespace SagaDB
             }
         }
 
-        public List<FFarden> GetFFList()
+        public List<FlyingCastle.FlyingCastle> GetFlyingCastles()
         {
             var sqlstr = "SELECT * FROM `ff`;";
-            var list = new List<FFarden>();
+            var list = new List<FlyingCastle.FlyingCastle>();
             var result = SQLExecuteQuery(sqlstr);
 
             foreach (DataRow i in result)
             {
-                var ff = new FFarden();
+                var ff = new FlyingCastle.FlyingCastle();
                 ff.Name = (string)i["name"];
                 ff.Content = (string)i["content"];
                 ff.ID = (uint)i["ff_id"];
@@ -1987,7 +1984,7 @@ namespace SagaDB
             return list;
         }
 
-        public void SaveFFCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        public void SaveFlyCastleCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
         {
             //uint account = GetAccountID(pc);
             string sqlstr;
@@ -2048,60 +2045,60 @@ namespace SagaDB
                 }
         }
 
-        public void SaveFF(Ring.Ring ring)
+        public void SaveFlyCastle(Ring.Ring ring)
         {
             if (ring != null)
             {
-                if (ring.FFarden == null) return;
+                if (ring.FFGarden == null) return;
                 //uint account = GetAccountID(pc);
                 string sqlstr;
-                if (ring.FFarden.ID > 0)
+                if (ring.FFGarden.ID > 0)
                 {
                     sqlstr = string.Format(
                         "UPDATE `ff` SET `level`='{0}',`content`='{1}',`name`='{2}' WHERE `ff_id`='{3}';",
-                        ring.FFarden.Level, ring.FFarden.Content, ring.Name, ring.FFarden.ID);
+                        ring.FFGarden.Level, ring.FFGarden.Content, ring.Name, ring.FFGarden.ID);
                     SQLExecuteNonQuery(sqlstr);
                 }
 
-                sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FFarden.ID);
-                if (ring.FFarden.Furnitures.ContainsKey(FurniturePlace.GARDEN))
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.GARDEN])
+                sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FFGarden.ID);
+                if (ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.GARDEN))
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.GARDEN])
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FFarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FFGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
                             i.Name);
 
-                if (ring.FFarden.Furnitures.ContainsKey(FurniturePlace.ROOM))
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.ROOM])
+                if (ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.ROOM))
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.ROOM])
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FFarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FFGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
                             i.Name);
 
-                if (ring.FFarden.Furnitures.ContainsKey(FurniturePlace.FARM))
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.FARM])
+                if (ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.FARM))
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FARM])
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FFarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FFGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
                             i.Name);
 
-                if (ring.FFarden.Furnitures.ContainsKey(FurniturePlace.FISHERY))
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.FISHERY])
+                if (ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.FISHERY))
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FISHERY])
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FFarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FFGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
                             i.Name);
 
-                if (ring.FFarden.Furnitures.ContainsKey(FurniturePlace.HOUSE))
-                    foreach (var i in ring.FFarden.Furnitures[FurniturePlace.HOUSE])
+                if (ring.FFGarden.Furnitures.ContainsKey(FurniturePlace.HOUSE))
+                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.HOUSE])
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FFarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FFGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
                             i.Name);
 
                 SQLExecuteNonQuery(sqlstr);
@@ -2115,15 +2112,15 @@ namespace SagaDB
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                                         "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
                     99999, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
-            foreach (var i in ser.Furnitures[FurniturePlace.ROOM])
+            foreach (var i in ser.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM])
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                                         "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
                     99999, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
-            foreach (var i in ser.Furnitures[FurniturePlace.HOUSE])
+            foreach (var i in ser.Furnitures[SagaDB.FlyingCastle.FurniturePlace.HOUSE])
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                                         "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
                     99999, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
-            /*foreach (ActorFurniture i in ser.FurnituresofFG[SagaDB.FFarden.FurniturePlace.GARDEN])
+            /*foreach (ActorFurniture i in ser.FurnituresofFG[SagaDB.FFGarden.FurniturePlace.GARDEN])
             {
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                    "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','5','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
@@ -2187,15 +2184,15 @@ namespace SagaDB
 
         public void CreateFF(ActorPC pc)
         {
-            if (pc.Ring.FFarden == null) return;
+            if (pc.Ring.FFGarden == null) return;
             var account = GetAccountID(pc);
             string sqlstr;
             sqlstr = string.Format(
                 "INSERT INTO `ff`(`ring_id` ,`name`,`content`,`level`) VALUES ('{0}','{1}','{2}','{3}');", pc.Ring.ID,
-                pc.Ring.FFarden.Name, pc.Ring.FFarden.Content, pc.Ring.FFarden.Level);
+                pc.Ring.FFGarden.Name, pc.Ring.FFGarden.Content, pc.Ring.FFGarden.Level);
             uint id = 0;
             SQLExecuteScalar(sqlstr, out id);
-            pc.Ring.FFarden.ID = id;
+            pc.Ring.FFGarden.ID = id;
             pc.Ring.FF_ID = id;
             sqlstr = string.Format("UPDATE `ring` SET `ff_id`='{0}' WHERE `ring_id`='{1}' LIMIT 1;\r\n",
                 pc.Ring.FF_ID, pc.Ring.ID);
@@ -2868,23 +2865,23 @@ namespace SagaDB
             }
         }
 
-        private void GetFGarden(ActorPC pc)
+        private void GetFlyingGarden(ActorPC pc)
         {
             var account = GetAccountID(pc);
             var sqlstr = string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;", account);
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0)
             {
-                var garden = new FGarden(pc);
+                var garden = new FlyingGarden.FlyingGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
-                garden.FGardenEquipments[FGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
-                garden.FGardenEquipments[FGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
-                garden.FGardenEquipments[FGardenSlot.GARDEN_FLOOR] = (uint)result[0]["part3"];
-                garden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0]["part4"];
-                garden.FGardenEquipments[FGardenSlot.HouseOutSideWall] = (uint)result[0]["part5"];
-                garden.FGardenEquipments[FGardenSlot.HouseRoof] = (uint)result[0]["part6"];
-                garden.FGardenEquipments[FGardenSlot.ROOM_FLOOR] = (uint)result[0]["part7"];
-                garden.FGardenEquipments[FGardenSlot.ROOM_WALL] = (uint)result[0]["part8"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR] = (uint)result[0]["part3"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0]["part4"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall] = (uint)result[0]["part5"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof] = (uint)result[0]["part6"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR] = (uint)result[0]["part7"];
+                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL] = (uint)result[0]["part8"];
                 garden.Fuel = (uint)result[0]["fuel"];
                 pc.FGarden = garden;
             }
@@ -2895,7 +2892,7 @@ namespace SagaDB
             result = SQLExecuteQuery(sqlstr);
             foreach (DataRow i in result)
             {
-                var place = (FGGarden.FurniturePlace)(byte)i["place"];
+                var place = (FlyingGarden.FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
                 actor.PictID = (uint)i["pict_id"];
@@ -2939,14 +2936,14 @@ namespace SagaDB
                 sqlstr = string.Format(
                     "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
                     "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
-                    pc.FGarden.FGardenEquipments[FGardenSlot.FLYING_BASE],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.FLYING_SAIL],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.GARDEN_FLOOR],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.HouseOutSideWall],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.HouseRoof],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.ROOM_FLOOR],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.ROOM_WALL],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL],
                     pc.FGarden.ID,
                     pc.FGarden.Fuel);
                 SQLExecuteNonQuery(sqlstr);
@@ -2956,14 +2953,14 @@ namespace SagaDB
                 sqlstr = string.Format("INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
                                        "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
                     account,
-                    pc.FGarden.FGardenEquipments[FGardenSlot.FLYING_BASE],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.FLYING_SAIL],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.GARDEN_FLOOR],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.HouseOutSideWall],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.HouseRoof],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.ROOM_FLOOR],
-                    pc.FGarden.FGardenEquipments[FGardenSlot.ROOM_WALL],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR],
+                    pc.FGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL],
                     pc.FGarden.Fuel);
                 uint id = 0;
                 SQLExecuteScalar(sqlstr, out id);
@@ -2971,12 +2968,12 @@ namespace SagaDB
             }
 
             sqlstr = string.Format("DELETE FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';", pc.FGarden.ID);
-            foreach (var i in pc.FGarden.Furnitures[FGGarden.FurniturePlace.GARDEN])
+            foreach (var i in pc.FGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
                     pc.FGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
-            foreach (var i in pc.FGarden.Furnitures[FGGarden.FurniturePlace.ROOM])
+            foreach (var i in pc.FGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
@@ -3044,7 +3041,6 @@ namespace SagaDB
             //    GetDualJobInfo(pc);
             //}
         }
-
         public void SaveDualJobInfo(ActorPC pc, bool allinfo)
         {
             var dic = pc.PlayerDualJobList;
@@ -3097,6 +3093,7 @@ namespace SagaDB
             SQLExecuteNonQuery(delskillstr);
         }
 
-        #endregion
     }
+
+    #endregion
 }

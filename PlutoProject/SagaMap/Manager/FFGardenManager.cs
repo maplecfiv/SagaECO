@@ -1,20 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
-using SagaDB.FFGarden;
 using SagaLib;
 
 namespace SagaMap.Manager
 {
-    public class FFardenManager : Singleton<FFardenManager>
+    public class FFGardenManager : Singleton<FFGardenManager>
     {
-        private List<FFarden> items = new List<FFarden>();
+        private List<FFGarden> items = new List<FFGarden>();
 
-        public List<FFarden> GetFFList(int page, out int maxPage)
+        public List<FFGarden> GetFlyingCastles(int page, out int maxPage)
         {
             var res =
-                from r in MapServer.charDB.GetFFList()
+                from r in MapServer.charDB.GetFlyingCastles()
                 select r;
-            var list = MapServer.charDB.GetFFList();
+            var list = MapServer.charDB.GetFlyingCastles();
             if (list.Count % 15 == 0)
                 maxPage = list.Count / 15;
             else
