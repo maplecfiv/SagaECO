@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote

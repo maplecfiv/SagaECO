@@ -1,0 +1,4 @@
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.GeneratedMSBuildEditorConfig.editorconfig
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.sourcelink.json

@@ -1,4 +1,5 @@
 using System;
+using SagaLib.Tasks;
 namespace SagaMap.Tasks.System
 {
     public class LevelLimit : MultiRunTask

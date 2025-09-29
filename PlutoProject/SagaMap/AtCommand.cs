@@ -5,6 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using SagaDB.Actor;
+using SagaDB.Skill;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaLib.VirtualFileSytem;
@@ -27,7 +29,7 @@ using SagaMap.Tasks.PC;
 using SagaMap.Tasks.System;
 using AIFlag = SagaMap.Mob.AIFlag;
 using AIMode = SagaMap.Mob.AIMode;
-using FurniturePlace = SagaDB.FGGarden.FurniturePlace;
+using FurniturePlace = SagaDB.FlyingGarden.FurniturePlace;
 using Item = SagaDB.Item.Item;
 using StatusFactory = SagaMap.PC.StatusFactory;
 

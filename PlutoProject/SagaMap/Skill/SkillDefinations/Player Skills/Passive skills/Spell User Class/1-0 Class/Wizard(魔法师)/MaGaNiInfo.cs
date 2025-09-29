@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._1_0_Class.Wizard_魔法师_

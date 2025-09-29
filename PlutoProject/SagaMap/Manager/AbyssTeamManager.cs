@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Team;
 using SagaLib;
 
 namespace SagaMap.Manager

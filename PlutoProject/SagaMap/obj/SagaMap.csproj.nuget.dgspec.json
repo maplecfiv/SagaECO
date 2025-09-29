@@ -502,6 +502,10 @@
               "target": "Package",
               "version": "[4.5.1, )"
             },
+            "System.CodeDom": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
             "System.Collections": {
               "target": "Package",
               "version": "[4.0.10, )"

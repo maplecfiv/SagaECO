@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._1_0_Class.Scout_盗贼_

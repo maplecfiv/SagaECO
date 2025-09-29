@@ -5,6 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Client;

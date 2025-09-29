@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Skill;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob.AICommands;

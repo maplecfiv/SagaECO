@@ -1,6 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SagaDB.Actor;
+using SagaDB.DEMIC;
+using SagaDB.Iris;
+using SagaDB.Item;
+using SagaDB.Skill;
+using SagaDB.Title;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;

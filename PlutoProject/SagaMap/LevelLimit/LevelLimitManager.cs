@@ -1,4 +1,5 @@
 using System;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 namespace SagaMap.LevelLimit
@@ -110,10 +111,10 @@ namespace SagaMap.LevelLimit
             SagaDB.LevelLimit.LevelLimit LL = SagaDB.LevelLimit.LevelLimit.Instance;
             if (LL.IsLock == 1)
             {
-                Packets.Server.SSMG_ACTIVITY_RECYCLE_MODE p = new Packets.Server.SSMG_ACTIVITY_RECYCLE_MODE();
+                Packets.Server.Activity.SSMG_ACTIVITY_RECYCLE_MODE p = new Packets.Server.Activity.SSMG_ACTIVITY_RECYCLE_MODE();
                 p.EndTime = LL.NextTime;
                 p.Result = 1;
-                client.netIO.SendPacket(p);
+                client.NetIo.SendPacket(p);
                 this.SavaLevelLimitInfo();
             }
         }

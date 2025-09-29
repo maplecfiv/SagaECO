@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using SagaDB.Actor;
+using SagaDB.Map;
+using SagaDB.Party;
 using SagaLib;
 using SagaMap.Dungeon;
 using SagaMap.Network.Client;

@@ -4,6 +4,29 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using SagaDB;
+using SagaDB.Actor;
+using SagaDB.DefWar;
+using SagaDB.DEMIC;
+using SagaDB.DualJob;
+using SagaDB.ECOShop;
+using SagaDB.EnhanceTable;
+using SagaDB.FlyingGarden;
+using SagaDB.Iris;
+using SagaDB.Item;
+using SagaDB.Map;
+using SagaDB.Marionette;
+using SagaDB.MasterEnchance;
+using SagaDB.Mob;
+using SagaDB.Npc;
+using SagaDB.ODWar;
+using SagaDB.Partner;
+using SagaDB.PProtect;
+using SagaDB.Quests;
+using SagaDB.Ring;
+using SagaDB.Skill;
+using SagaDB.Team;
+using SagaDB.Theater;
+using SagaDB.Title;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Dungeon;
@@ -38,6 +61,7 @@ using SagaMap.Packets.Client.Skill;
 using SagaMap.Packets.Client.Tamaire;
 using SagaMap.Packets.Client.Trade;
 using SagaMap.Packets.Client.VShop;
+using SagaMap.Packets.Server;
 using SagaMap.Packets.Server.AbyssTeam;
 using SagaMap.Packets.Server.Actor;
 using SagaMap.Packets.Server.Another;
@@ -81,7 +105,7 @@ using SagaMap.Tasks.PC;
 using SagaMap.Tasks.Skill;
 using SagaMap.Tasks.System;
 using AIMode = SagaMap.Mob.AIMode;
-using FurniturePlace = SagaDB.FFGarden.FurniturePlace;
+// using FurniturePlace = SagaDB.FFGarden.FurniturePlace;s
 using Item = SagaDB.Item.Item;
 using Marionette = SagaMap.Tasks.PC.Marionette;
 using SkillCast = SagaMap.Tasks.PC.SkillCast;
@@ -1556,7 +1580,7 @@ namespace SagaMap.Network.Client
                     if (y.Value.type == ActorType.FURNITURE)
                         aa.Add(y.Key);
                 foreach (var i in aa) ffmap.DeleteActor(ffmap.Actors[i]);
-                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.GARDEN])
+                foreach (var i in ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1564,7 +1588,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FARM])
+                foreach (var i in ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.FARM])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1572,7 +1596,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.FISHERY])
+                foreach (var i in ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.FISHERY])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1580,7 +1604,7 @@ namespace SagaMap.Network.Client
                     ;
                 }
 
-                foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.HOUSE])
+                foreach (var i in ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.HOUSE])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -1627,8 +1651,8 @@ namespace SagaMap.Network.Client
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
             if (Character.MapID != ring.FFGarden.MapID && Character.MapID != ring.FFGarden.RoomMapID)
                 return;
-            if (ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count <
+            if (ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN].Count +
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM].Count <
                 Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
@@ -1654,12 +1678,12 @@ namespace SagaMap.Network.Client
                 map.OnActorVisibilityChange(actor);
 
                 if (Character.MapID == Character.Ring.FFGarden.MapID)
-                    ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Add(actor);
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN].Add(actor);
                 else
-                    ring.FFGarden.Furnitures[FurniturePlace.ROOM].Add(actor);
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
-                    ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                    ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count,
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN].Count +
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM].Count,
                     Configuration.Configuration.Instance.MaxFurnitureCount));
                 MapServer.charDB.SaveFlyCastle(ring);
             }
@@ -1714,17 +1738,17 @@ namespace SagaMap.Network.Client
             var furniture = (ActorFurniture)actor;
 
             if (Character.MapID == Character.Ring.FFGarden.MapID)
-                ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Remove(furniture);
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN].Remove(furniture);
             else
-                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Remove(furniture);
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM].Remove(furniture);
             map.DeleteActor(actor);
             var item = ItemFactory.Instance.GetItem(furniture.ItemID);
             item.PictID = furniture.PictID;
             MapServer.charDB.SaveFlyCastle(ring);
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
-                ring.FFGarden.Furnitures[FurniturePlace.GARDEN].Count +
-                ring.FFGarden.Furnitures[FurniturePlace.ROOM].Count,
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.GARDEN].Count +
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM].Count,
                 Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
@@ -1751,7 +1775,7 @@ namespace SagaMap.Network.Client
             var ring = RingManager.Instance.GetRing(Character.Ring.ID);
             if (Character.MapID != ring.FFGarden.MapID && Character.MapID != ring.FFGarden.RoomMapID)
                 return;
-            if (ring.FFGarden.Furnitures[FurniturePlace.HOUSE].Count > 0)
+            if (ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.HOUSE].Count > 0)
             {
                 SendSystemMessage("无法重复设置");
                 return;
@@ -1775,7 +1799,7 @@ namespace SagaMap.Network.Client
             actor.invisble = false;
             map.OnActorVisibilityChange(actor);
             if (Character.MapID == Character.Ring.FFGarden.MapID)
-                ring.FFGarden.Furnitures[FurniturePlace.HOUSE].Add(actor);
+                ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.HOUSE].Add(actor);
             MapServer.charDB.SaveFlyCastle(ring);
         }
 
@@ -1799,7 +1823,7 @@ namespace SagaMap.Network.Client
                         MapManager.Instance.CreateMapInstance(ring, 91000000, ring.FFGarden.MapID, 6, 7, false);
                     //spawn furnitures
                     var map = MapManager.Instance.GetMap(ring.FFGarden.RoomMapID);
-                    foreach (var i in ring.FFGarden.Furnitures[FurniturePlace.ROOM])
+                    foreach (var i in ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.ROOM])
                     {
                         i.e = new NullEventHandler();
                         map.RegisterActor(i);
@@ -1842,9 +1866,9 @@ namespace SagaMap.Network.Client
             if (Character.MapID == Character.Ring.FFGarden.MapID)
             {
                 if (item.ItemID == 30300000)
-                    ring.FFGarden.Furnitures[FurniturePlace.FISHERY].Add(actor);
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.FISHERY].Add(actor);
                 else if (item.ItemID == 30260000)
-                    ring.FFGarden.Furnitures[FurniturePlace.FARM].Add(actor);
+                    ring.FFGarden.Furnitures[SagaDB.FlyingCastle.FurniturePlace.FARM].Add(actor);
             }
 
             MapServer.charDB.SaveFlyCastle(ring);
@@ -3863,7 +3887,7 @@ namespace SagaMap.Network.Client
                 if (!fgMap.IsMapInstance)
                     return;
                 if (map.ID / 10 == 7000000)
-                    if (map.Creator.FGarden.FlyingGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] != 0)
+                    if (map.Creator.FGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE] != 0)
                     {
                         var p1 = new SSMG_NPC_SET_EVENT_AREA();
                         p1.EventID = 10000315;
@@ -17984,13 +18008,13 @@ namespace SagaMap.Network.Client
             var item = ItemFactory.Instance.GetItem(furniture.ItemID);
             item.PictID = furniture.PictID;
             if (Character.MapID == Character.FGarden.MapID)
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Remove(furniture);
+                Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.GARDEN].Remove(furniture);
             else
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Remove(furniture);
+                Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.ROOM].Remove(furniture);
             AddItem(item, false);
             SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_REMOVE, furniture.Name,
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count,
+                Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.GARDEN].Count +
+                Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.ROOM].Count,
                 Configuration.Configuration.Instance.MaxFurnitureCount));
         }
 
@@ -18000,8 +18024,8 @@ namespace SagaMap.Network.Client
                 return;
             if (Character.MapID != Character.FGarden.MapID && Character.MapID != Character.FGarden.RoomMapID)
                 return;
-            if (Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count <
+            if (Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.GARDEN].Count +
+                Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.ROOM].Count <
                 Configuration.Configuration.Instance.MaxFurnitureCount)
             {
                 var item = Character.Inventory.GetItem(p.InventorySlot);
@@ -18027,12 +18051,12 @@ namespace SagaMap.Network.Client
                 map.OnActorVisibilityChange(actor);
 
                 if (Character.MapID == Character.FGarden.MapID)
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Add(actor);
+                    Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.GARDEN].Add(actor);
                 else
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Add(actor);
+                    Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.ROOM].Add(actor);
                 SendSystemMessage(string.Format(LocalManager.Instance.Strings.FG_FUTNITURE_SETUP, actor.Name,
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.GARDEN].Count +
-                    Character.FGarden.Furnitures[SagaDB.FGGarden.FurniturePlace.ROOM].Count,
+                    Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.GARDEN].Count +
+                    Character.FGarden.Furnitures[SagaDB.FlyingGarden.FurniturePlace.ROOM].Count,
                     Configuration.Configuration.Instance.MaxFurnitureCount));
             }
             else
@@ -18062,8 +18086,8 @@ namespace SagaMap.Network.Client
                     NetIo.SendPacket(p1);
                 }
 
-                if (p.Place == FGardenSlot.GARDEN_MODELHOUSE &&
-                    Character.FGarden.FlyingGardenEquipments[FGardenSlot.GARDEN_MODELHOUSE] == 0)
+                if (p.Place == SagaDB.FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE &&
+                    Character.FGarden.FlyingGardenEquipments[SagaDB.FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE] == 0)
                 {
                     var p1 = new SSMG_NPC_SET_EVENT_AREA();
                     p1.EventID = 10000315;
@@ -18091,7 +18115,7 @@ namespace SagaMap.Network.Client
                 p1.ItemID = 0;
                 p1.Place = p.Place;
                 NetIo.SendPacket(p1);
-                if (p.Place == FGardenSlot.GARDEN_MODELHOUSE)
+                if (p.Place == FlyingGardenSlot.GARDEN_MODELHOUSE)
                 {
                     var p2 = new SSMG_NPC_CANCEL_EVENT_AREA();
                     p2.StartX = 6;
