@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 using SagaMap.ActorEventHandlers;

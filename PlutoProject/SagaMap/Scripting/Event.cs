@@ -902,7 +902,7 @@ namespace SagaMap.Scripting
             Packets.Server.SSMG_NAVI_PROGRESS_UP p = new Packets.Server.SSMG_NAVI_PROGRESS_UP();
             p.pc = pc;
             p.NaviID = NaviID;
-            GetMapClient(pc).netIO.SendPacket(p);
+            GetMapClient(pc).NetIo.SendPacket(p);
         }
         /// <summary>
         /// 完成导航的某个标记
@@ -916,7 +916,7 @@ namespace SagaMap.Scripting
             Packets.Server.SSMG_NAVI_PROGRESS_UP p = new Packets.Server.SSMG_NAVI_PROGRESS_UP();
             p.pc = pc;
             p.NaviID = NaviID;
-            GetMapClient(pc).netIO.SendPacket(p);
+            GetMapClient(pc).NetIo.SendPacket(p);
         }*/
         /// <summary>
         ///     给玩家打开recycle活动界面(可用,但不知道用在哪)
@@ -991,7 +991,7 @@ namespace SagaMap.Scripting
             p1.MaxPaga = (uint)maxPage;
             p1.Entries = res;
             MapClient client = GetMapClient(pc);
-            client.netIO.SendPacket(p1);
+            client.NetIo.SendPacket(p1);
         }*/
         /// <summary>
         ///     传送玩家到指定地图
@@ -2177,12 +2177,12 @@ namespace SagaMap.Scripting
             MapClient client = GetMapClient(pc);
             Packets.Server.SSMG_NPC_SYNTHESE_HEADER p = new SagaMap.Packets.Server.SSMG_NPC_SYNTHESE_HEADER();
             p.Count = (byte)res.Count;
-            client.netIO.SendPacket(p);
+            client.NetIo.SendPacket(p);
             foreach (SyntheseInfo i in res)
             {
                 Packets.Server.SSMG_NPC_SYNTHESE_INFO p1 = new SagaMap.Packets.Server.SSMG_NPC_SYNTHESE_INFO();
                 p1.Synthese = i;
-                client.netIO.SendPacket(p1);
+                client.NetIo.SendPacket(p1);
             }
             */
             client.syntheseItem = new Dictionary<uint, uint>();
@@ -3381,7 +3381,7 @@ namespace SagaMap.Scripting
 
             //Packets.Server.SSMG_NPC_HIDE p = new SagaMap.Packets.Server.SSMG_NPC_HIDE();
             //p.NPCID = npcID;
-            //MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            //MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
             //MapServer.charDB.SaveNPCState(pc, npcID);
             //MapServer.charDB.SaveChar(pc, false);
@@ -3421,7 +3421,7 @@ namespace SagaMap.Scripting
 
             //Packets.Server.SSMG_NPC_SHOW p = new SagaMap.Packets.Server.SSMG_NPC_SHOW();
             //p.NPCID = npcID;
-            //MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            //MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
             //MapServer.charDB.SaveNPCState(pc, npcID);
             //MapServer.charDB.SaveChar(pc, false);
@@ -4297,7 +4297,7 @@ namespace SagaMap.Scripting
             //Packets.Server.SSMG_NPC_CHANGE_VIEW p = new SagaMap.Packets.Server.SSMG_NPC_CHANGE_VIEW();
             //p.NPCID = npcID;
             //p.MobID = mobID;
-            //MapClient.FromActorPC(pc).netIO.SendPacket(p);
+            //MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
         /// <summary>

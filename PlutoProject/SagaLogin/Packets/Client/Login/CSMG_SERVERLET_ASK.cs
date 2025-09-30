@@ -20,10 +20,5 @@ namespace SagaLogin.Packets.Client
         {
             return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_SERVERLET_ASK();
         }
-
-        public override void Parse(SagaLib.Client client)
-        {
-            ((LoginClient)(client)).OnServerLstSend(this);
-        }
     }
 }

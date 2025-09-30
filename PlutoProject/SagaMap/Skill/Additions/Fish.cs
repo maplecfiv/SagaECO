@@ -1,4 +1,5 @@
 using SagaDB.Actor;
+using SagaDB.Fish;
 using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Network.Client;

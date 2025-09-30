@@ -5,6 +5,8 @@ using SagaDB.Actor;
 using SagaDB.DefWar;
 using SagaDB.Item;
 using SagaDB.Map;
+using SagaDB.Mob;
+using SagaDB.Ring;
 using SagaDB.Treasure;
 using SagaLib;
 using SagaMap.ActorEventHandlers;

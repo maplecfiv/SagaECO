@@ -32,6 +32,7 @@ namespace SagaLogin.Packets.Map
             set
             {
                 var ms = new MemoryStream();
+#pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 bf.Serialize(ms, value);
                 ms.Flush();

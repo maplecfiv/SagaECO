@@ -16,7 +16,7 @@ namespace SagaMap.Packets.Client.Partner
 
         public override void Parse(SagaLib.Client client)
         {
-            //((MapClient)(client)).netIO.Disconnect();
+            //((MapClient)(client)).NetIo.Disconnect();
         }
     }
 }

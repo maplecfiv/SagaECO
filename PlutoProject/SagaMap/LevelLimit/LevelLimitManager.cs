@@ -13,7 +13,7 @@ namespace SagaMap.LevelLimit
         {
             SagaDB.LevelLimit.LevelLimit LL = SagaDB.LevelLimit.LevelLimit.Instance;
             MapServer.charDB.GetLevelLimit();
-            LL.FirstLevelLimit = (uint)SagaMap.Configuration.Instance.FirstLevelLimit;
+            LL.FirstLevelLimit = (uint)SagaMap.Configuration.Configuration.Instance.FirstLevelLimit;
             if (LL.NowLevelLimit < LL.FirstLevelLimit)
                 LL.NowLevelLimit = LL.FirstLevelLimit;
             if (DateTime.Now > LL.ReachTime)

@@ -14,13 +14,13 @@ namespace SagaValidation.Manager
         ValidationClientManager()
         {
             this.clients = new List<ValidationClient>();
-            this.commandTable = new Dictionary<ushort, Packet>();
-            this.commandTable.Add(0x0001, new Packets.Client.CSMG_SEND_VERSION());
-            this.commandTable.Add(0x001F, new Packets.Client.CSMG_LOGIN());
-            this.commandTable.Add(0x0031, new Packets.Client.CSMG_SERVERLET_ASK());
-            this.commandTable.Add(0x002F, new Packets.Client.CSMG_UNKNOWN_LIST());
-            this.commandTable.Add(0x000A, new Packets.Client.CSMG_PING());
-            this.waitressQueue = new AutoResetEvent(true);
+            this.CommandTable = new Dictionary<ushort, Packet>();
+            this.CommandTable.Add(0x0001, new Packets.Client.CSMG_SEND_VERSION());
+            this.CommandTable.Add(0x001F, new Packets.Client.CSMG_LOGIN());
+            this.CommandTable.Add(0x0031, new Packets.Client.CSMG_SERVERLET_ASK());
+            this.CommandTable.Add(0x002F, new Packets.Client.CSMG_UNKNOWN_LIST());
+            this.CommandTable.Add(0x000A, new Packets.Client.CSMG_PING());
+            this.WaitressQueue = new AutoResetEvent(true);
         }
         public static ValidationClientManager Instance
         {
@@ -44,13 +44,13 @@ namespace SagaValidation.Manager
         /// </summary>
         public override void NetworkLoop(int maxNewConnections)
         {
-            for (int i = 0; listener.Pending() && i < maxNewConnections; i++)
+            for (int i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
-                Socket sock = listener.AcceptSocket();
+                Socket sock = Listener.AcceptSocket();
                 string ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
                 Logger.ShowInfo("New client from: " + sock.RemoteEndPoint.ToString(), null);
 
-                ValidationClient client = new ValidationClient(sock, this.commandTable);
+                ValidationClient client = new ValidationClient(sock, this.CommandTable);
                 clients.Add(client);
             }
         }

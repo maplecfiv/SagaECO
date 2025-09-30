@@ -1,0 +1,16 @@
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.GeneratedMSBuildEditorConfig.editorconfig
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.sourcelink.json
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.dll.config
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.deps.json
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.runtimeconfig.json
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.dll
+/home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.pdb
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.csproj.Up2Date
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/refint/SagaLogin.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.pdb
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/SagaLogin.genruntimeconfig.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/Debug/net8.0/ref/SagaLogin.dll

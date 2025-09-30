@@ -1536,7 +1536,7 @@ namespace SagaMap.Manager
                 pr.PartnerRank = partner.rank;
                 pr.PerkPoint = partner.perkpoint;
                 ActorEventHandlers.PCEventHandler eh = (ActorEventHandlers.PCEventHandler)partner.Owner.e;
-                eh.Client.netIO.SendPacket(pr);
+                eh.Client.NetIo.SendPacket(pr);
             }*/
             var maxlv = getPartnerMaxLv(partner);
             partner.exp += foodrankexp;

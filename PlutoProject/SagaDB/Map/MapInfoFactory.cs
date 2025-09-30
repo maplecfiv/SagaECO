@@ -22,6 +22,7 @@ namespace SagaDB.Map
         public void LoadMapObjects(string path)
         {
             var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
+#pragma warning disable SYSLIB0011
             var bf = new BinaryFormatter();
             MapObjects = (Dictionary<string, List<MapObject>>)bf.Deserialize(fs);
         }

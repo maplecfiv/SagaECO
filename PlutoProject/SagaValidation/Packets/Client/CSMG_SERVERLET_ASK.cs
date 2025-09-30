@@ -13,10 +13,5 @@ namespace SagaValidation.Packets.Client
         {
             return (SagaLib.Packet)new SagaValidation.Packets.Client.CSMG_SERVERLET_ASK();
         }
-
-        public override void Parse(SagaLib.Client client)
-        {
-            ((ValidationClient)(client)).OnServerLstSend(this);
-        }
     }
 }

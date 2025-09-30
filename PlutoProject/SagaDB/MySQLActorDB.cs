@@ -2605,6 +2605,7 @@ namespace SagaDB
             try
             {
                 var account = GetAccountID(pc);
+#pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 MySqlCommand cmd;
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
@@ -2741,6 +2742,7 @@ namespace SagaDB
                             var ms2 = new MemoryStream();
                             BZip2.Decompress(ms, ms2);
                             ms = new MemoryStream(ms2.ToArray());
+#pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();
                             inv = (Inventory)bf.Deserialize(ms);
 
@@ -2787,6 +2789,7 @@ namespace SagaDB
                             var ms2 = new MemoryStream();
                             BZip2.Decompress(ms, ms2);
                             ms = new MemoryStream(ms2.ToArray());
+#pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();
                             inv = (Dictionary<WarehousePlace, List<Item.Item>>)bf.Deserialize(ms);
                             if (inv != null)

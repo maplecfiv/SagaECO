@@ -8,7 +8,33 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using SagaDB;
+using SagaDB.Actor;
+using SagaDB.DEMIC;
+using SagaDB.DualJob;
+using SagaDB.ECOShop;
+using SagaDB.EnhanceTable;
+using SagaDB.Experience;
+using SagaDB.FictitiousActors;
+using SagaDB.Fish;
+using SagaDB.Iris;
+using SagaDB.Item;
+using SagaDB.Map;
+using SagaDB.Marionette;
+using SagaDB.MasterEnchance;
+using SagaDB.Mob;
+using SagaDB.Npc;
+using SagaDB.ODWar;
+using SagaDB.Partner;
+using SagaDB.Quests;
+using SagaDB.Ring;
+using SagaDB.Skill;
+using SagaDB.Synthese;
+using SagaDB.Tamaire;
+using SagaDB.Theater;
+using SagaDB.Title;
+using SagaDB.Treasure;
 using SagaLib;
+using SagaLib.Properties;
 using SagaLib.Tasks;
 using SagaLib.VirtualFileSytem;
 using SagaMap.Dungeon;
@@ -18,7 +44,7 @@ using SagaMap.Mob;
 using SagaMap.Network.Client;
 using SagaMap.Network.LoginServer;
 using SagaMap.Partner;
-using SagaMap.Properties;
+using SagaLib.Properties;
 using SagaMap.Skill;
 using SagaMap.Tasks.System;
 using AIThread = SagaMap.Mob.AIThread;
@@ -175,8 +201,8 @@ namespace SagaMap
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
-                              SagaDB.Properties.GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
 

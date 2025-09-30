@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill;
 using SagaMap.Skill.Additions;

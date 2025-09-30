@@ -1,4 +1,5 @@
 using System;
+using SagaDB.BBS;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Chat

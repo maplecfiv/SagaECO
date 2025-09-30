@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using SagaDB.Actor;
+using SagaDB.Config;
 using SagaLib;
 using SagaMap.Network.LoginServer;
 
@@ -24,6 +26,7 @@ namespace SagaMap.Packets.Login
                 buf = GetBytes((ushort)len, 7);
                 var ms = new MemoryStream(buf);
                 Dictionary<PC_RACE, StartupSetting> list;
+#pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 list = (Dictionary<PC_RACE, StartupSetting>)bf.Deserialize(ms);
                 return list;

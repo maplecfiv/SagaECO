@@ -1,7 +1,10 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using Microsoft.CSharp;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Scripting;

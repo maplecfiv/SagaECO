@@ -38,6 +38,7 @@ namespace SagaLib.VirtualFileSytem.LPK
             if (stream.Length != 0)
             {
                 var sr = new BinaryReader(stream);
+#pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 var magic = sr.ReadInt32();
                 //检查幻数
@@ -117,6 +118,7 @@ namespace SagaLib.VirtualFileSytem.LPK
         {
             get
             {
+#pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 var ms = new MemoryStream();
                 bf.Serialize(ms, hashTable);

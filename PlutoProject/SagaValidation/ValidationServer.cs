@@ -2,6 +2,7 @@ using System;
 using SagaLib;
 using SagaDB;
 using SagaValidation.Manager;
+using SagaLib.Properties;
 
 namespace SagaValidation
 {
@@ -64,11 +65,11 @@ namespace SagaValidation
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaLib");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaLib.GlobalInfo.Version + "(" + SagaLib.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("SagaDB");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(":SVN Rev." + SagaDB.GlobalInfo.Version + "(" + SagaDB.GlobalInfo.ModifyDate + ")");
+            Console.WriteLine(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo("Starting Initialization...", null);
 

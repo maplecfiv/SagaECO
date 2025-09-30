@@ -1123,7 +1123,7 @@ namespace SagaMap.ActorEventHandlers
 
             Client.NetIo.SendPacket(p);
             //p1.Actor = pc;
-            //this.Client.netIO.SendPacket(p1);
+            //this.Client.NetIo.SendPacket(p1);
         }
 
         public void OnShowEffect(Actor aActor, MapEventArgs args)

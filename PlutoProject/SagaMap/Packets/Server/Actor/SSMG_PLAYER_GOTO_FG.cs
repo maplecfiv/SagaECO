@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.FlyingGarden;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Actor
@@ -36,11 +37,11 @@ namespace SagaMap.Packets.Server.Actor
             set => PutByte(value, 8);
         }
 
-        public Dictionary<FGardenSlot, uint> Equiptments
+        public Dictionary<FlyingGardenSlot, uint> Equiptments
         {
             set
             {
-                for (var i = 0; i < 8; i++) PutUInt(value[(FGardenSlot)i], (ushort)(10 + i * 4));
+                for (var i = 0; i < 8; i++) PutUInt(value[(FlyingGardenSlot)i], (ushort)(10 + i * 4));
             }
         }
     }

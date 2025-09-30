@@ -6,8 +6,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using SagaDB;
+using SagaDB.Item;
 using SagaLib;
+using SagaLib.Properties;
 using SagaLib.VirtualFileSytem;
+using SagaLogin.Manager;
 
 namespace SagaLogin
 {
@@ -159,8 +162,8 @@ namespace SagaLogin
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + SagaDB.Properties.GlobalInfo.Version + "(" +
-                              SagaDB.Properties.GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
+                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo("Starting Initialization...", null);
 

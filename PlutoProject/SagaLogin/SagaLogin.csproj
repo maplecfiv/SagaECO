@@ -48,66 +48,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\Configuration.cs" />
-    <Compile Include="Manager\MapServerManager.cs" />
-    <Compile Include="Network\Client\LoginClient.FriendList.cs" />
-    <Compile Include="Network\Client\LoginClient.cs" />
-    <Compile Include="Packets\Client\Chat\CSMG_CHAT_WHISPER.cs" />
-    <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_DELETE.cs" />
-    <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_ADD_REPLY.cs" />
-    <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_ADD.cs" />
-    <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_DETAIL_UPDATE.cs" />
-    <Compile Include="Packets\Client\FriendList\CSMG_FRIEND_MAP_UPDATE.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_CHAR_STATUS.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_REQUEST_MAP_SERVER.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_CHAR_SELECT.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_CHAR_DELETE.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_CHAR_CREATE.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_PING.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_LOGIN.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_SEND_GUID.cs" />
-    <Compile Include="Packets\Client\Login\CSMG_SEND_VERSION.cs" />
-    <Compile Include="Packets\Client\NyaShield\CSMG_NYASHIELD_VERSION.cs" />
-    <Compile Include="Packets\Client\Ring\CSMG_RING_EMBLEM.cs" />
-    <Compile Include="Packets\Client\Ring\CSMG_RING_EMBLEM_NEW.cs" />
-    <Compile Include="Packets\Client\Tamaire\CSMG_TAMAIRE_LIST_REQUEST.cs" />
-    <Compile Include="Packets\Client\Tool\TOOL_GIFTS.cs" />
-    <Compile Include="Packets\Client\WRP\CSMG_WRP_REQUEST.cs" />
-    <Compile Include="Packets\Map\INTERN_LOGIN_REQUEST_CONFIG_ANSWER.cs" />
-    <Compile Include="Packets\Map\INTERN_LOGIN_REQUEST_CONFIG.cs" />
-    <Compile Include="Packets\Map\INTERN_LOGIN_REGISTER.cs" />
-    <Compile Include="Packets\Server\Chat\SSMG_CHAT_SYSTEM_MESSAGE.cs" />
-    <Compile Include="Packets\Server\Chat\SSMG_CHAT_WHISPER_FAILED.cs" />
-    <Compile Include="Packets\Server\Chat\SSMG_CHAT_WHISPER.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_DELETE_FAILED.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_ADD_FAILED.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_ADD_OK.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_ADD.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_DETAIL_UPDATE.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_STATUS_UPDATE.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_MAP_UPDATE.cs" />
-    <Compile Include="Packets\Server\FriendList\SSMG_FRIEND_CHAR_INFO.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_STATUS.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_LOGIN_ALLOWED.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_SEND_TO_MAP_SERVER.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_SELECT_ACK.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_DELETE_ACK.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_CREATE_ACK.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_EQUIP.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_CHAR_DATA.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_PONG.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_LOGIN_ACK.cs" />
-    <Compile Include="Packets\Server\Login\SSMG_VERSION_ACK.cs" />
-    <Compile Include="Packets\Server\Mail\SSMG_GIFT.cs" />
-    <Compile Include="Packets\Server\Mail\SSMG_MAIL.cs" />
-    <Compile Include="Packets\Server\NyaShield\SSMG_REQUEST_NYA.cs" />
-    <Compile Include="Packets\Server\NyaShield\SSMG_NYA_WRONG_VERSION.cs" />
-    <Compile Include="Packets\Server\Ring\SSMG_RING_EMBLEM.cs" />
-    <Compile Include="Packets\Server\Tamaire\SSMG_TAMAIRE_LIST.cs" />
-    <Compile Include="Packets\Server\Tool\SSMG_TOOL_RESULT.cs" />
-    <Compile Include="Packets\Server\WRP\SSMG_WRP_LIST.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Manager\LoginClientManager.cs" />
+    <Folder Include="Configuration\*" />
+    <Folder Include="Manager\*" />
+    <Folder Include="Network\*" />
+    <Folder Include="Packets\*" />
+    <Folder Include="Properties\*" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon1.ico" />
@@ -142,7 +87,8 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1" />
@@ -156,72 +102,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Configuration/Configuration.cs" />
-    <Compile Remove="Manager/LoginClientManager.cs" />
-    <Compile Remove="Manager/MapServerManager.cs" />
-    <Compile Remove="Network/Client/LoginClient.cs" />
-    <Compile Remove="Network/Client/LoginClient.FriendList.cs" />
-    <Compile Remove="Packets/Client/Chat/CSMG_CHAT_WHISPER.cs" />
-    <Compile Remove="Packets/Client/FriendList/CSMG_FRIEND_ADD.cs" />
-    <Compile Remove="Packets/Client/FriendList/CSMG_FRIEND_ADD_REPLY.cs" />
-    <Compile Remove="Packets/Client/FriendList/CSMG_FRIEND_DELETE.cs" />
-    <Compile Remove="Packets/Client/FriendList/CSMG_FRIEND_DETAIL_UPDATE.cs" />
-    <Compile Remove="Packets/Client/FriendList/CSMG_FRIEND_MAP_UPDATE.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_CHAR_CREATE.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_CHAR_DELETE.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_CHAR_SELECT.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_CHAR_STATUS.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_LOGIN.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_PING.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_REQUEST_MAP_SERVER.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_SEND_GUID.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_SEND_VERSION.cs" />
-    <Compile Remove="Packets/Client/Login/CSMG_SERVERLET_ASK.cs" />
-    <Compile Remove="Packets/Client/NyaShield/CSMG_NYASHIELD_VERSION.cs" />
-    <Compile Remove="Packets/Client/Ring/CSMG_RING_EMBLEM.cs" />
-    <Compile Remove="Packets/Client/Ring/CSMG_RING_EMBLEM_NEW.cs" />
-    <Compile Remove="Packets/Client/Tamaire/CSMG_TAMAIRE_LIST_REQUEST.cs" />
-    <Compile Remove="Packets/Client/Tool/TOOL_GIFTS.cs" />
-    <Compile Remove="Packets/Client/WRP/CSMG_WRP_REQUEST.cs" />
-    <Compile Remove="Packets/Map/INTERN_LOGIN_REGISTER.cs" />
-    <Compile Remove="Packets/Map/INTERN_LOGIN_REQUEST_CONFIG.cs" />
-    <Compile Remove="Packets/Map/INTERN_LOGIN_REQUEST_CONFIG_ANSWER.cs" />
-    <Compile Remove="Packets/Server/Chat/SSMG_CHAT_SYSTEM_MESSAGE.cs" />
-    <Compile Remove="Packets/Server/Chat/SSMG_CHAT_WHISPER.cs" />
-    <Compile Remove="Packets/Server/Chat/SSMG_CHAT_WHISPER_FAILED.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_ADD.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_ADD_FAILED.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_ADD_OK.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_CHAR_INFO.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_DELETE_FAILED.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_DETAIL_UPDATE.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_MAP_UPDATE.cs" />
-    <Compile Remove="Packets/Server/FriendList/SSMG_FRIEND_STATUS_UPDATE.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_CREATE_ACK.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_DATA.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_DELETE_ACK.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_EQUIP.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_SELECT_ACK.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_CHAR_STATUS.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_LOGIN_ACK.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_LOGIN_ALLOWED.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_PONG.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_SEND_TO_MAP_SERVER.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_SERVER_LST_END.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_SERVER_LST_SEND.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_SERVER_LST_START.cs" />
-    <Compile Remove="Packets/Server/Login/SSMG_VERSION_ACK.cs" />
-    <Compile Remove="Packets/Server/Mail/SSMG_GIFT.cs" />
-    <Compile Remove="Packets/Server/Mail/SSMG_MAIL.cs" />
-    <Compile Remove="Packets/Server/NyaShield/SSMG_NYA_WRONG_VERSION.cs" />
-    <Compile Remove="Packets/Server/NyaShield/SSMG_REQUEST_NYA.cs" />
-    <Compile Remove="Packets/Server/Ring/SSMG_RING_EMBLEM.cs" />
-    <Compile Remove="Packets/Server/Tamaire/SSMG_TAMAIRE_LIST.cs" />
-    <Compile Remove="Packets/Server/Tool/SSMG_TOOL_RESULT.cs" />
-    <Compile Remove="Packets/Server/WRP/SSMG_WRP_LIST.cs" />
-    <Compile Remove="Properties/AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup />
 </Project>

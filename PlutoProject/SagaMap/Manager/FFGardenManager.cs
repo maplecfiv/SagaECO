@@ -1,14 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
+using SagaDB.FlyingCastle;
 using SagaLib;
 
 namespace SagaMap.Manager
 {
     public class FFGardenManager : Singleton<FFGardenManager>
     {
-        private List<FFGarden> items = new List<FFGarden>();
+        private List<FlyingCastle> items = new List<FlyingCastle>();
 
-        public List<FFGarden> GetFlyingCastles(int page, out int maxPage)
+        public List<FlyingCastle> GetFlyingCastles(int page, out int maxPage)
         {
             var res =
                 from r in MapServer.charDB.GetFlyingCastles()
