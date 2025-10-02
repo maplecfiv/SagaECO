@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class MobHolyfeather : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -53,6 +54,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

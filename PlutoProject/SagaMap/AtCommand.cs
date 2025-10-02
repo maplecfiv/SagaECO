@@ -6,7 +6,19 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using SagaDB.Actor;
+using SagaDB.ECOShop;
+using SagaDB.FlyingGarden;
+using SagaDB.Iris;
+using SagaDB.Item;
+using SagaDB.Map;
+using SagaDB.Mob;
+using SagaDB.Npc;
+using SagaDB.Partner;
+using SagaDB.Quests;
 using SagaDB.Skill;
+using SagaDB.Synthese;
+using SagaDB.Theater;
+using SagaDB.Treasure;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaLib.VirtualFileSytem;
@@ -47,15 +59,15 @@ namespace SagaMap
         {
             commandTable = new Dictionary<string, CommandInfo>();
 
-            #region "Prefixes"
+            //#region "Prefixes"
 
             var OpenCommandPrefix = "/";
             var GMCommandPrefix = "!";
             var RemoteCommandPrefix = "~";
 
-            #endregion
+            //#endregion
 
-            #region "Public Commands"
+            //#region "Public Commands"
 
             commandTable.Add(GMCommandPrefix + "buff", new CommandInfo(ProcessBuffTest, 100));
 
@@ -80,9 +92,9 @@ namespace SagaMap
             commandTable.Add(OpenCommandPrefix + "bosstime", new CommandInfo(ProcessBossTime, 0));
             commandTable.Add(OpenCommandPrefix + "queryfame", new CommandInfo(ProcessQueryFame, 0));
 
-            #endregion
+            //#endregion
 
-            #region "GM Commands"
+            //#region "GM Commands"
 
             // gm commands
             //this.commandTable.Add(GMCommandPrefix + "wlevel", new CommandInfo(new ProcessCommandFunc(this.ProcessWlevel), 2));
@@ -204,17 +216,17 @@ namespace SagaMap
             commandTable.Add(GMCommandPrefix + "rwarp", new CommandInfo(ProcessRWarp, 60));
             commandTable.Add(GMCommandPrefix + "ep", new CommandInfo(ProcessEP, 60));
 
-            #endregion
+            //#endregion
 
-            #region 黑白照Addition
+            //#region 黑白照Addition
 
             commandTable.Add(GMCommandPrefix + "item2", new CommandInfo(ProcessItem2, 100));
             commandTable.Add(GMCommandPrefix + "itemclear", new CommandInfo(ProcessItemClear, 100));
             commandTable.Add(GMCommandPrefix + "irissearch", new CommandInfo(ProcessIrisSearch, 100));
 
-            #endregion
+            //#endregion
 
-            #region KK測試用
+            //#region KK測試用
 
             commandTable.Add(GMCommandPrefix + "mapobj", new CommandInfo(ProcessMapObject, 100));
             commandTable.Add(GMCommandPrefix + "ssmode", new CommandInfo(ProcessSSMode, 100));
@@ -224,9 +236,9 @@ namespace SagaMap
             commandTable.Add(GMCommandPrefix + "pmotion", new CommandInfo(ProcessPartnerMotion, 100));
             commandTable.Add(GMCommandPrefix + "cleards", new CommandInfo(ProcessClearDS, 100));
 
-            #endregion
+            //#endregion
 
-            #region "Remote Commands"
+            //#region "Remote Commands"
 
             // remote commands
             //this.commandTable.Add( RemoteCommandPrefix + "jump", new CommandInfo( new ProcessCommandFunc( this.ProcessRJump ), 60 ) );
@@ -236,10 +248,10 @@ namespace SagaMap
             //this.commandTable.Add(RemoteCommandPrefix + "die", new CommandInfo(new ProcessCommandFunc(this.ProcessRDie), 60));
             //this.commandTable.Add(RemoteCommandPrefix + "heal", new CommandInfo(new ProcessCommandFunc(this.ProcessRHeal), 60));
 
-            #endregion
+            //#endregion
 
 
-            #region "Aliases"
+            //#region "Aliases"
 
             // Aliases
             //this.commandTable.Add(GMCommandPrefix + "kill", new CommandInfo(new ProcessCommandFunc(this.ProcessDie), 60));
@@ -247,7 +259,7 @@ namespace SagaMap
             //this.commandTable.Add(GMCommandPrefix + "b", new CommandInfo(new ProcessCommandFunc(this.ProcessBroadcast), 60));
             //this.commandTable.Add(GMCommandPrefix + "gm", new CommandInfo(new ProcessCommandFunc(this.ProcessGMChat), 60));
 
-            #endregion
+            //#endregion
         }
 
         public void ProcessRing(MapClient client, string args)
@@ -644,13 +656,13 @@ namespace SagaMap
 
 
             var map = MapManager.Instance.GetMap(client.Character.MapID);
-            client.Character.FGarden.MapID = MapManager.Instance.CreateMapInstance(client.Character, 70000000,
+            client.Character.FlyingGarden.MapID = MapManager.Instance.CreateMapInstance(client.Character, 70000000,
                 client.Character.MapID, Global.PosX16to8(client.Character.X, map.Width),
                 Global.PosY16to8(client.Character.Y, map.Height));
             var pc = client.Character;
             //spawn furnitures
-            map = MapManager.Instance.GetMap(pc.FGarden.MapID);
-            foreach (var i in pc.FGarden.Furnitures[FurniturePlace.GARDEN])
+            map = MapManager.Instance.GetMap(pc.FlyingGarden.MapID);
+            foreach (var i in pc.FlyingGarden.Furnitures[FurniturePlace.GARDEN])
             {
                 i.e = new NullEventHandler();
                 map.RegisterActor(i);
@@ -660,7 +672,7 @@ namespace SagaMap
             pc.BattleStatus = 0;
             pc.Speed = 200;
             client.SendChangeStatus();
-            var newMap = MapManager.Instance.GetMap(pc.FGarden.MapID);
+            var newMap = MapManager.Instance.GetMap(pc.FlyingGarden.MapID);
             client.Map.SendActorToMap(client.Character, newMap, Global.PosX8to16(6, newMap.Width),
                 Global.PosY8to16(11, newMap.Height));
         }
@@ -939,9 +951,9 @@ namespace SagaMap
             }
         }
 
-        #region "Command Processing"
+        //#region "Command Processing"
 
-        #region "Public Commands"
+        //#region "Public Commands"
 
         private void ProcessHome(MapClient client, string args)
         {
@@ -1087,9 +1099,9 @@ namespace SagaMap
         {
         }
 
-        #endregion
+        //#endregion
 
-        #region "GM Commands"
+        //#region "GM Commands"
 
         public void ProcessCommandList(MapClient client, string args)
         {
@@ -2662,8 +2674,8 @@ namespace SagaMap
         private void ProcessFG(MapClient client, string args)
         {
             SkillHandler.Instance.ShowVessel(client.Character, -100);
-            if (client.Character.FGarden == null)
-                client.Character.FGarden = new FGarden(client.Character);
+            if (client.Character.FlyingGarden == null)
+                client.Character.FlyingGarden = new FlyingGarden(client.Character);
             var item = ItemFactory.Instance.GetItem(10022700);
             item.Stack = 1;
             item.Identified = true;
@@ -3760,9 +3772,9 @@ namespace SagaMap
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region "Admin commands"
+        //#region "Admin commands"
 
         private void ProcessMonsterInfo(MapClient client, string args)
         {
@@ -3976,9 +3988,9 @@ namespace SagaMap
         {
         }
 
-        #endregion
+        //#endregion
 
-        #region "Dev commands"
+        //#region "Dev commands"
 
         private void ProcessRaw(MapClient client, string args)
         {
@@ -4097,8 +4109,8 @@ namespace SagaMap
 
         private void ProcessCreateFF(MapClient client, string args)
         {
-            if (client.Character.FGarden == null) //如果當前帳號還沒創建過飛空庭
-                client.Character.FGarden = new FGarden(client.Character); //創建新的飛空庭
+            if (client.Character.FlyingGarden == null) //如果當前帳號還沒創建過飛空庭
+                client.Character.FlyingGarden = new FlyingGarden(client.Character); //創建新的飛空庭
             if (client.Character.Ring == null) RingManager.Instance.CreateRing(client.Character, args);
             /*-------------------服務器專有--------------------
             MapClient s = MapClient.FromActorPC(ScriptManager.Instance.VariableHolder);
@@ -4130,17 +4142,17 @@ namespace SagaMap
             }
             else
             {
-                if (client.Character.Ring.FFGarden == null)
+                if (client.Character.Ring.FlyingCastle == null)
                 {
-                    client.Character.Ring.FFGarden = new FFGarden();
-                    client.Character.Ring.FFGarden.Name = args;
-                    client.Character.Ring.FFGarden.RingID = client.Character.Ring.ID;
-                    client.Character.Ring.FFGarden.ObMode = 3;
-                    client.Character.Ring.FFGarden.Content = "测试内容";
-                    var r = new FFGarden();
-                    client.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.GARDEN,
+                    client.Character.Ring.FlyingCastle = new SagaDB.FlyingCastle.FlyingCastle();
+                    client.Character.Ring.FlyingCastle.Name = args;
+                    client.Character.Ring.FlyingCastle.RingID = client.Character.Ring.ID;
+                    client.Character.Ring.FlyingCastle.ObMode = 3;
+                    client.Character.Ring.FlyingCastle.Content = "测试内容";
+                    var r = new SagaDB.FlyingCastle.FlyingCastle();
+                    client.Character.Ring.FlyingCastle.Furnitures.Add(SagaDB.FlyingCastle.FurniturePlace.GARDEN,
                         new List<ActorFurniture>());
-                    client.Character.Ring.FFGarden.Furnitures.Add(SagaDB.FFGarden.FurniturePlace.ROOM,
+                    client.Character.Ring.FlyingCastle.Furnitures.Add(SagaDB.FlyingCastle.FurniturePlace.ROOM,
                         new List<ActorFurniture>());
                 }
 
@@ -4163,8 +4175,8 @@ namespace SagaMap
             client.NetIo.SendPacket(p1);
         }
 
-        #endregion
+        //#endregion
 
-        #endregion
+        //#endregion
     }
 }

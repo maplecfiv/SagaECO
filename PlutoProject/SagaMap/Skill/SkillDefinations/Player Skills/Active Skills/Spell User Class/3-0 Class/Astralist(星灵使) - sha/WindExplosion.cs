@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 {
     internal class WindExplosion : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -171,6 +172,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Wind, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

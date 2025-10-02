@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
@@ -11,7 +12,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
     /// </summary>
     public class BlastArrow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -54,6 +55,6 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             SkillHandler.Instance.PhysicalAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

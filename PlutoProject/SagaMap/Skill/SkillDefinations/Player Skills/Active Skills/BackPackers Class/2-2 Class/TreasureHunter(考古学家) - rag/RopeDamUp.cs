@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class RopeDamUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -92,6 +92,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             actor.Status.hit_melee_skill -= (short)skill.Variable["RopeDamUp_hit_melee_add"];
         }
 
-        #endregion
+        //#endregion
     }
 }

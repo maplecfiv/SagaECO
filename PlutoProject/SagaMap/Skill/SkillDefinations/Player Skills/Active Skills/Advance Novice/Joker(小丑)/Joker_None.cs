@@ -1,3 +1,5 @@
+using System;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
     /// </summary>
     public class JokerNone : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -18,6 +20,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
+            if (sActor == null) throw new ArgumentNullException(nameof(sActor));
             var life = 60000 * level;
             var skill = new DefaultBuff(args.skill, sActor, "Joker1", life);
             skill.OnAdditionStart += StartEventHandler;
@@ -136,6 +139,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

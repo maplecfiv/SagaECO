@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class Assumptio : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -60,6 +60,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

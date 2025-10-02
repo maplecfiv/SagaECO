@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen
@@ -22,7 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         {
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -57,6 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             actor.Status.autoReviveRate -= (short)(10 * theLevel);
         }
 
-        #endregion
+        //#endregion
     }
 }

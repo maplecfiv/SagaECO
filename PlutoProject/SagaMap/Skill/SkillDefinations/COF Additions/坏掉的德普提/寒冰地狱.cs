@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.坏掉的德普提
 {
     internal class IceInfernal : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -48,6 +49,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.坏掉的德普提
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Water, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

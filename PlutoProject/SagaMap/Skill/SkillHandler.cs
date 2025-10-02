@@ -723,7 +723,7 @@ namespace SagaMap.Skill
             return 0;
         }
 
-        #region Enums
+        //#region Enums
 
         public enum DefaultAdditions
         {
@@ -740,9 +740,9 @@ namespace SagaMap.Skill
             CannotMove = 15
         }
 
-        #endregion
+        //#endregion
 
-        #region Enums
+        //#region Enums
 
         public enum 异常状态
         {
@@ -759,7 +759,7 @@ namespace SagaMap.Skill
             灼伤 = 9
         }
 
-        #endregion
+        //#endregion
 
         /// <summary>
         ///     是否在範圍內
@@ -883,7 +883,7 @@ namespace SagaMap.Skill
         //放置Skill定義中所需的共通Function
         //Place the common functions which will used by SkillDefinations
 
-        #region Utility
+        //#region Utility
 
         /// <summary>
         ///     取得被憑依的角色
@@ -1559,7 +1559,7 @@ namespace SagaMap.Skill
             return eh.Client;
         }
 
-        #endregion
+        //#endregion
 
         //横排防御等级
         //竖列变化等级
@@ -1664,7 +1664,7 @@ namespace SagaMap.Skill
             byte dx, dy, sx, sy;
             var res = 1f;
 
-            #region Calc Attacker and Defincer Coordinate
+            //#region Calc Attacker and Defincer Coordinate
 
             // Attacker and Defincer Must be in the same map
             map = MapManager.Instance.GetMap(dActor.MapID);
@@ -1677,9 +1677,9 @@ namespace SagaMap.Skill
             dx = Global.PosX16to8(dActor.X, map.Width);
             dy = Global.PosY16to8(dActor.Y, map.Height);
 
-            #endregion
+            //#endregion
 
-            #region Calc Attack and Defince Element
+            //#region Calc Attack and Defince Element
 
             var attackElement = Elements.Neutral;
             var defineElement = Elements.Neutral;
@@ -1848,9 +1848,9 @@ namespace SagaMap.Skill
                 skillelement != Elements.Dark) //AS站桩技能,JOB10
                 atkValue += (sActor.Status.Additions["Astralist"] as DefaultBuff).Variable["Astralist"];
 
-            #endregion
+            //#endregion
 
-            #region CalcElementFactor
+            //#region CalcElementFactor
 
             if (sActor.Status.Additions.ContainsKey("DecreaseWeapon")) //FO武器属性取消
             {
@@ -1914,7 +1914,7 @@ namespace SagaMap.Skill
             if (dActor.Status.SubElement.ContainsKey((byte)attackElement))
                 res *= 1.0f - dActor.Status.SubElement[(byte)attackElement] / 100.0f;
 
-            #endregion
+            //#endregion
 
             return res;
         }
@@ -3753,7 +3753,7 @@ namespace SagaMap.Skill
 
         //        }
 
-        //        #region 注释内容
+        //        //#region 注释内容
         //        //投掷武器
         //        /*if (sActor.type == ActorType.PC)
         //        {
@@ -3831,7 +3831,7 @@ namespace SagaMap.Skill
         //        //判断命中结果
         //        //short dis = Map.Distance(sActor, i);
         //        //这个补全技能补正后去掉
-        //        #endregion
+        //        //#endregion
         //        if (arg.argType == SkillArg.ArgType.Active)
         //            shitbonus = 50;
         //        AttackResult res = CalcAttackResult(sActor, i, sActor.Range > 3);
@@ -3841,7 +3841,7 @@ namespace SagaMap.Skill
         //            res = AttackResult.Hit;
         //            ismiss = true;
         //        }
-        //        #region 注释卡片判定
+        //        //#region 注释卡片判定
         //        /*
         //    if (sActor.type == ActorType.MOB && dActor.type == ActorType.PC)
         //    {
@@ -3875,7 +3875,7 @@ namespace SagaMap.Skill
         //            }
         //        }
         //    }*/
-        //        #endregion
+        //        //#endregion
         //        Actor target = i;
         //        //if (i.type == ActorType.PC)
         //        //{
@@ -9006,7 +9006,7 @@ namespace SagaMap.Skill
                 dAvoid = dActor.Status.avoid_melee;
             }
 
-            #region 计算是否自己自己丢失目标
+            //#region 计算是否自己自己丢失目标
 
             // 弃用, 来源于不知名的wiki
             //int leveldiff = Math.Abs(sActor.Level - dActor.Level);
@@ -9147,7 +9147,7 @@ namespace SagaMap.Skill
                     hit_res = (int)(hit_res * (pc.Status.undead_avoid_up_iris / 100.0f));
             }
 
-            #endregion
+            //#endregion
 
             if (hit_res > hit) return AttackResult.Miss;
 
@@ -9647,7 +9647,7 @@ namespace SagaMap.Skill
         //放置Skill定義中所需的方向相關之Function
         //Place the direction functions which will used by SkillDefinations
 
-        #region Direction
+        //#region Direction
 
         /// <summary>
         ///     人物的方向
@@ -10046,7 +10046,7 @@ namespace SagaMap.Skill
             return true;
         }
 
-        #endregion
+        //#endregion
 
         public Dictionary<uint, MobISkill> MobskillHandlers = new Dictionary<uint, MobISkill>();
 
@@ -10174,49 +10174,49 @@ namespace SagaMap.Skill
             skillHandlers.Add(9125, new DeathFiger());
             //skillHandlers.Add(2115, new SagaMap.Skill.SkillDefinations.Event.PressionKiller(true));
 
-            #region 巨大咕咕鸡
+            //#region 巨大咕咕鸡
 
             MobskillHandlers.Add(20000, new BlackHole());
             MobskillHandlers.Add(20001, new GuguPoison());
 
-            #endregion
+            //#endregion
 
-            #region 熊爹
+            //#region 熊爹
 
             MobskillHandlers.Add(20005, new IceHole()); //废弃
             MobskillHandlers.Add(20006, new Rowofcloudpalm()); //废弃
             MobskillHandlers.Add(20007, new Fengshenlegs()); //废弃
             MobskillHandlers.Add(20009, new Attack());
 
-            #endregion
+            //#endregion
 
-            #region 领主骑士
+            //#region 领主骑士
 
             MobskillHandlers.Add(20010, new KnightAttack());
             MobskillHandlers.Add(20011, new IceHeart());
             MobskillHandlers.Add(20012, new Iceroad());
             MobskillHandlers.Add(20013, new IceDef());
 
-            #endregion
+            //#endregion
 
-            #region 天骸鸢
+            //#region 天骸鸢
 
             MobskillHandlers.Add(20015, new FireInfernal());
 
-            #endregion
+            //#endregion
 
             skillHandlers.Add(20002, new EnergyOneForWeapon());
             skillHandlers.Add(20004, new IaiForWeapon());
             skillHandlers.Add(402, new MaxHealMpForWeapon());
             skillHandlers.Add(20014, new Snipe());
 
-            #region c-1 new skill
+            //#region c-1 new skill
 
             skillHandlers.Add(8900, new ShadowBlast());
 
-            #endregion
+            //#endregion
 
-            #region Royaldealer
+            //#region Royaldealer
 
             skillHandlers.Add(989, new DealerSkill()); //18.05.13 lv 3  
             skillHandlers.Add(3361, new CAPACommunion()); //12月2日实装,lv6
@@ -10232,11 +10232,11 @@ namespace SagaMap.Skill
             skillHandlers.Add(1114, new LuckyGoddess()); //18.08.04 lv 40
             skillHandlers.Add(2558, new FalseMoney()); //18.05.13 lv 47
             skillHandlers.Add(2559, new TimeIsMoney()); //16.06.08 lv50
-            //no 35 40 45
+                                                        //no 35 40 45
 
-            #endregion
+            //#endregion
 
-            #region Joker
+            //#region Joker
 
             skillHandlers.Add(2519, new JokerStyle()); //9月9日实装
             skillHandlers.Add(2523, new IkspiariArmusing()); //9月9日实装
@@ -10251,9 +10251,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2562, new JokerTwoHead()); //9月9日实装,未完成
             skillHandlers.Add(2566, new Joker()); //9月9日实装,未完成
 
-            #endregion
+            //#endregion
 
-            #region Stryder
+            //#region Stryder
 
             skillHandlers.Add(2482, new Xusihaxambi()); //2018年1月8日实装，lv3
             skillHandlers.Add(3352, new SPCommunion()); //12月2日实装，lv6
@@ -10267,11 +10267,11 @@ namespace SagaMap.Skill
             skillHandlers.Add(992, new TreasureMaster()); //2018/4/5实装,job45
             skillHandlers.Add(2551, new PillageAct()); //2018/4/5实装,job47
             skillHandlers.Add(2552, new ArtFullTrap()); //2018/5/14,job50
-            //缺少35、40
+                                                        //缺少35、40
 
-            #endregion
+            //#endregion
 
-            #region Maestro
+            //#region Maestro
 
             skillHandlers.Add(2480, new WeaponStrengthen()); //12月1日实装，lv3（未完成，需要封包）
             skillHandlers.Add(3353, new ATKCommunion()); //12月1日实装，lv6
@@ -10286,9 +10286,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2549, new LimitExceed()); //7月1日实装，lv47
             skillHandlers.Add(2550, new WasteThrowing()); //2018.1.17实装,lv50
 
-            #endregion
+            //#endregion
 
-            #region Guardian
+            //#region Guardian
 
             skillHandlers.Add(983, new SpearMaster()); //11月24日实装，LV3习得
             skillHandlers.Add(3355, new def_addCommunion());
@@ -10304,9 +10304,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2536, new FortressCircleSEQ()); //后续技能,同上
             skillHandlers.Add(2537, new LightOfTheDarkness()); //16.02.02, lv50
 
-            #endregion
+            //#endregion
 
-            #region Eraser
+            //#region Eraser
 
             skillHandlers.Add(984, new EraserMaster()); //11月24日实装，lv3习得
             skillHandlers.Add(3358, new AVOIDCommunion());
@@ -10321,9 +10321,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2542, new VenomBlastSeq()); //2018年实装，lv47习得
             skillHandlers.Add(2543, new Instant()); //16.05.11实装,lv50
 
-            #endregion
+            //#endregion
 
-            #region Hawkeye
+            //#region Hawkeye
 
             skillHandlers.Add(3357, new HITCommunion());
             skillHandlers.Add(985, new HawkeyeMaster()); //11月24日实装，lv3习得
@@ -10341,9 +10341,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2539, new MirageShot()); //6月26日实装，lv50习得
             skillHandlers.Add(2540, new MirageShotSEQ()); //6月26日实装，lv50习得
 
-            #endregion
+            //#endregion
 
-            #region ForceMaster
+            //#region ForceMaster
 
             skillHandlers.Add(986, new PlusElement()); //11月25日实装
             skillHandlers.Add(3359, new CSPDCommunion());
@@ -10360,9 +10360,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3428, new DeathTractionGlare()); //2016-01-30实装,lv50
             skillHandlers.Add(3429, new DeathTractionGlareSEQ());
 
-            #endregion
+            //#endregion
 
-            #region Astralist
+            //#region Astralist
 
             skillHandlers.Add(3372, new DelayOut()); //11月26日实装,lv3
             skillHandlers.Add(3351, new MPCommunion());
@@ -10378,9 +10378,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3416, new WindExplosion()); //11月29日实装 lv45
             skillHandlers.Add(3432, new ElementStar()); //确定是JOB50技能，6.11修正
 
-            #endregion
+            //#endregion
 
-            #region Cardinal
+            //#region Cardinal
 
             skillHandlers.Add(3373, new Frustrate()); //11月30日实装,lv3
             skillHandlers.Add(3356, new MDEFCommunion()); // lv6
@@ -10395,9 +10395,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3436, new Salvation()); // 16.01.08实装,lv47
             skillHandlers.Add(3434, new Gospel()); // 16.01.08实装,lv50
 
-            #endregion
+            //#endregion
 
-            #region SoulTaker
+            //#region SoulTaker
 
             skillHandlers.Add(3374, new MegaDarkBlaze());
             skillHandlers.Add(3354, new MATKCommunion());
@@ -10412,12 +10412,12 @@ namespace SagaMap.Skill
             skillHandlers.Add(2526, new fuenriru()); //11月30实装,lv45
             skillHandlers.Add(3431, new Dammnation()); //16.01.08实装,lv50
 
-            #endregion
+            //#endregion
 
             skillHandlers.Add(1606, new Ryuugankakusen());
             skillHandlers.Add(1607, new DragonEyesOfGod());
 
-            #region Harvest
+            //#region Harvest
 
             skillHandlers.Add(2481, new EquipCompose()); //12月2日实装，lv3（未完成，需要封包）
             skillHandlers.Add(3360,
@@ -10435,9 +10435,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2547, new MistletoeShooting()); //2018.1.18实装,Lv47
             skillHandlers.Add(2548, new MistletoeShootingSEQ()); //2018.1.18实装,Lv47
             skillHandlers.Add(2546, new PlantField()); //2018.1.18实装,Lv50
-            //缺少40、45
+                                                       //缺少40、45
 
-            #endregion
+            //#endregion
 
 
             skillHandlers.Add(101, new MaxMPUp());
@@ -10469,13 +10469,13 @@ namespace SagaMap.Skill
             skillHandlers.Add(2070, new SpeedUpSkill());
             skillHandlers.Add(2078, new MetalRepair());
 
-            #region System
+            //#region System
 
             skillHandlers.Add(3250, new FGRope());
 
-            #endregion
+            //#endregion
 
-            #region Mob
+            //#region Mob
 
             skillHandlers.Add(7843, new ElementShield(Elements.Fire, true));
             skillHandlers.Add(7169, new StarLove());
@@ -10794,9 +10794,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(8444, new DeathSickle(true)); //死鎌乱舞 By Kk
             skillHandlers.Add(8476, new Bounce(true)); //セルフミラー Bt Kk
 
-            #endregion
+            //#endregion
 
-            #region Marionette
+            //#region Marionette
 
             skillHandlers.Add(5008, new HPRecovery());
             skillHandlers.Add(5009, new SPRecovery());
@@ -10813,9 +10813,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(5523, new MDarkCrosscircleSeq());
             skillHandlers.Add(5524, new MCharge3()); //该技能不属于木偶师
 
-            #endregion
+            //#endregion
 
-            #region Event
+            //#region Event
 
             skillHandlers.Add(1500, new WeaCreUp());
             skillHandlers.Add(1501, new HitUpRateDown());
@@ -10914,9 +10914,9 @@ namespace SagaMap.Skill
 
             skillHandlers.Add(10500, new HerosProtection());
 
-            #endregion
+            //#endregion
 
-            #region Swordman
+            //#region Swordman
 
             skillHandlers.Add(2005, new SwordCancel());
             skillHandlers.Add(2100, new Parry());
@@ -10932,9 +10932,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2201, new Iai2());
             skillHandlers.Add(2202, new Iai3());
 
-            #endregion
+            //#endregion
 
-            #region BladeMaster
+            //#region BladeMaster
 
             skillHandlers.Add(2134, new aEarthAngry());
             skillHandlers.Add(2231, new aWoodHack());
@@ -10952,9 +10952,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2379, new DoubleCutDown());
             skillHandlers.Add(2380, new DoubleCutDownSeq());
 
-            #endregion
+            //#endregion
 
-            #region BountyHunter
+            //#region BountyHunter
 
             skillHandlers.Add(2272, new ArmSlash());
             skillHandlers.Add(2271, new BodySlash());
@@ -10978,9 +10978,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2179, new EdgedSlash());
             skillHandlers.Add(2270, new ComboIai());
 
-            #endregion
+            //#endregion
 
-            #region Gladiator
+            //#region Gladiator
 
             skillHandlers.Add(982, new SwordMaster());
             skillHandlers.Add(3350, new HPCommunion());
@@ -10996,9 +10996,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(1117, new KenSei()); //16.05.03增加,LV47
             skillHandlers.Add(2534, new ZillionBlade()); //16.05.03增加,LV50
 
-            #endregion
+            //#endregion
 
-            #region Scout
+            //#region Scout
 
             skillHandlers.Add(2001,
                 new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Scout_盗贼_.CriUp());
@@ -11012,9 +11012,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2127, new ConThrow());
             skillHandlers.Add(908, new ThrowRangeUp());
 
-            #endregion
+            //#endregion
 
-            #region Assassin
+            //#region Assassin
 
             skillHandlers.Add(2045, new PoisonReate());
             skillHandlers.Add(2046, new PosionReate2());
@@ -11029,9 +11029,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(920, new PoisonRateUp());
             skillHandlers.Add(2251, new EventSumNinJa());
 
-            #endregion
+            //#endregion
 
-            #region Command
+            //#region Command
 
             skillHandlers.Add(127, new HandGunDamUp());
             skillHandlers.Add(2137, new Tackle());
@@ -11057,9 +11057,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2408, new SumCommand());
             //skillHandlers.Add(401, new SkillDefinations.Command.HumHitUp());
 
-            #endregion
+            //#endregion
 
-            #region Wizard
+            //#region Wizard
 
             skillHandlers.Add(3001, new EnergyOne());
             skillHandlers.Add(3002, new EnergyGroove());
@@ -11089,9 +11089,9 @@ namespace SagaMap.Skill
             //Wrong SkillID !! KK 2018/4/9
             skillHandlers.Add(401, new EnergyExcess());
 
-            #endregion
+            //#endregion
 
-            #region Sorcerer
+            //#region Sorcerer
 
             skillHandlers.Add(3126, new LivingSword());
             skillHandlers.Add(3300, new DevineBarrier());
@@ -11114,9 +11114,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3094, new HexaGram());
             skillHandlers.Add(2252, new OverWork());
 
-            #endregion
+            //#endregion
 
-            #region Vates
+            //#region Vates
 
             //skillHandlers.Add(3111, new SkillDefinations.Vates.HolyBlessing());
             skillHandlers.Add(3111, new ElementBless(Elements.Holy));
@@ -11151,9 +11151,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3153, new StatusRegi("Frosen"));
             skillHandlers.Add(3078, new TurnUndead());
 
-            #endregion
+            //#endregion
 
-            #region Shaman
+            //#region Shaman
 
             skillHandlers.Add(3006, new FireBolt());
             //skillHandlers.Add(3007, new SkillDefinations.Shaman.FireShield());
@@ -11186,9 +11186,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3000, new SenseElement());
             skillHandlers.Add(3162, new PrayerToTheElf());
 
-            #endregion
+            //#endregion
 
-            #region Elementaler
+            //#region Elementaler
 
             skillHandlers.Add(3016, new FireGroove());
             skillHandlers.Add(3028, new WindGroove());
@@ -11216,9 +11216,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(937, new ElementLimitUp(Elements.Water)); //水靈守護
             skillHandlers.Add(938, new ElementLimitUp(Elements.Wind)); //神風守護
 
-            #endregion
+            //#endregion
 
-            #region Enchanter
+            //#region Enchanter
 
             skillHandlers.Add(3318, new GravityFall());
             skillHandlers.Add(3319, new ElementalWrath());
@@ -11243,16 +11243,16 @@ namespace SagaMap.Skill
             skillHandlers.Add(3109, new ElementBless(Elements.Water)); //寒氣祝福
             skillHandlers.Add(3108, new ElementBless(Elements.Wind)); //神風祝福
 
-            #endregion
+            //#endregion
 
-            #region Acher
+            //#region Acher
 
             skillHandlers.Add(2050, new BowCancel());
             skillHandlers.Add(2128, new ConArrow());
 
-            #endregion
+            //#endregion
 
-            #region Warlock
+            //#region Warlock
 
             skillHandlers.Add(3083, new BlackWidow());
             skillHandlers.Add(3085,
@@ -11273,9 +11273,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(941, new ElementLimitUp(Elements.Dark)); //黑暗守護
             skillHandlers.Add(8456, new SuckBlood());
 
-            #endregion
+            //#endregion
 
-            #region Cabalist
+            //#region Cabalist
 
             skillHandlers.Add(2229, new GrimReaper());
             skillHandlers.Add(2230, new SoulSteal());
@@ -11297,18 +11297,18 @@ namespace SagaMap.Skill
             skillHandlers.Add(3346, new Sacrifice());
             skillHandlers.Add(10000, new EffDarkChopMark());
 
-            #endregion
+            //#endregion
 
-            #region Fencer
+            //#region Fencer
 
             skillHandlers.Add(2007, new SpearCancel());
             skillHandlers.Add(2003, new MobDefUpSelf());
             skillHandlers.Add(106, new GuardUp());
             skillHandlers.Add(2064, new AstuteStab());
 
-            #endregion
+            //#endregion
 
-            #region Knight
+            //#region Knight
 
             skillHandlers.Add(2123,
                 new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen.
@@ -11330,9 +11330,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2382, new DirlineRandSeq2());
             skillHandlers.Add(2061, new Revive());
 
-            #endregion
+            //#endregion
 
-            #region Tatarabe
+            //#region Tatarabe
 
             skillHandlers.Add(2009, new Synthese());
             skillHandlers.Add(2051, new Synthese());
@@ -11345,9 +11345,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2177, new StoneThrow());
             skillHandlers.Add(2135, new ThrowDirt());
 
-            #endregion
+            //#endregion
 
-            #region Blacksmith
+            //#region Blacksmith
 
             skillHandlers.Add(2010, new Synthese());
             skillHandlers.Add(2017, new Synthese());
@@ -11375,9 +11375,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(410, new StoHitUp());
             skillHandlers.Add(411, new StoAvoUp());
 
-            #endregion
+            //#endregion
 
-            #region Machinery
+            //#region Machinery
 
             skillHandlers.Add(2039, new Synthese());
             skillHandlers.Add(809, new MachineInfo());
@@ -11408,9 +11408,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(507, new MciHitUp());
             skillHandlers.Add(508, new MciAvoUp());
 
-            #endregion
+            //#endregion
 
-            #region Farmasist
+            //#region Farmasist
 
             skillHandlers.Add(2020, new Synthese());
             skillHandlers.Add(2034, new Synthese());
@@ -11426,9 +11426,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2170, new PitTrap());
             skillHandlers.Add(2196, new HealingTree());
 
-            #endregion
+            //#endregion
 
-            #region Alchemist
+            //#region Alchemist
 
             skillHandlers.Add(2022, new Synthese());
             skillHandlers.Add(2118,
@@ -11458,9 +11458,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2211, new TreeAnalysis());
             skillHandlers.Add(4028, new Super_A_T_PJoint()); //强力援手,但技能内容空白
 
-            #endregion
+            //#endregion
 
-            #region Marionest
+            //#region Marionest
 
             skillHandlers.Add(2038, new Synthese());
             skillHandlers.Add(133, new MarioDamUp());
@@ -11487,9 +11487,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3340, new SumMario(26070003, 3341));
             skillHandlers.Add(3341, new SumMarioCont(Elements.Earth));
 
-            #endregion
+            //#endregion
 
-            #region Ranger
+            //#region Ranger
 
             skillHandlers.Add(2088, new Synthese());
             skillHandlers.Add(713, new Bivouac());
@@ -11507,9 +11507,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(416, new WanHitUp());
             skillHandlers.Add(417, new WanAvoUp());
 
-            #endregion
+            //#endregion
 
-            #region Druid
+            //#region Druid
 
             skillHandlers.Add(3146,
                 new SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Druid_神官____vote.
@@ -11540,9 +11540,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(511, new UndAvoUp());
             skillHandlers.Add(3345, new AllHealing());
 
-            #endregion
+            //#endregion
 
-            #region Bard
+            //#region Bard
 
             skillHandlers.Add(2310, new Samba());
             skillHandlers.Add(3323, new DeadMarch());
@@ -11563,9 +11563,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3322, new AttractMarch());
             skillHandlers.Add(3320, new LoudSong());
 
-            #endregion
+            //#endregion
 
-            #region Sage
+            //#region Sage
 
             skillHandlers.Add(2030, new Synthese());
             skillHandlers.Add(2031, new Synthese());
@@ -11586,16 +11586,16 @@ namespace SagaMap.Skill
             skillHandlers.Add(3293, new MagHitUpCircle());
             skillHandlers.Add(3314, new SumDop());
 
-            #endregion
+            //#endregion
 
-            #region Necromancer
+            //#region Necromancer
 
             skillHandlers.Add(3331, new Dejion());
             skillHandlers.Add(2316, new SoulBurn());
             skillHandlers.Add(2317, new SpiritBurn());
             skillHandlers.Add(3288, new DarkLight());
             skillHandlers.Add(3330, new EvilSoul());
-            skillHandlers.Add(3332, new ChaosGait());
+            skillHandlers.Add(3332, new ChaosGate());
             skillHandlers.Add(2318, new AbsorbHpWeapon());
             skillHandlers.Add(2320, new SummobLemures());
             skillHandlers.Add(961, new LemuresHpUp());
@@ -11616,9 +11616,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3328, new SumDeath5());
             skillHandlers.Add(3329, new SumDeath6());
 
-            #endregion
+            //#endregion
 
-            #region Soul
+            //#region Soul
 
             skillHandlers.Add(4450, new Soul()); //SKILL_P_T_SWORDMAN,光戰士之魂
             skillHandlers.Add(4451, new Soul()); //SKILL_P_T_KINGHT,聖騎士之魂
@@ -11634,9 +11634,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(4465, new Soul()); //SKILL_P_T_TRADER,拜金使之魂
             skillHandlers.Add(4466, new Soul()); //SKILL_P_T_JOKER,道化師之魂
 
-            #endregion
+            //#endregion
 
-            #region DarkStalker
+            //#region DarkStalker
 
             skillHandlers.Add(2357, new DarkMist());
             skillHandlers.Add(2356, new LifeSteal());
@@ -11661,9 +11661,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(501, new EleHitUp());
             skillHandlers.Add(502, new EleAvoUp());
 
-            #endregion
+            //#endregion
 
-            #region Striker
+            //#region Striker
 
             skillHandlers.Add(2149, new ElementArrow(Elements.Fire));
             skillHandlers.Add(2150, new ElementArrow(Elements.Water));
@@ -11690,9 +11690,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(6310, new PetCastSkill(6311, "ANIMAL"));
             skillHandlers.Add(6311, new PetDogDefUp());
 
-            #endregion
+            //#endregion
 
-            #region Gunner
+            //#region Gunner
 
             skillHandlers.Add(2285, new FastDraw());
             skillHandlers.Add(2286, new PluralityShot());
@@ -11714,9 +11714,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2420, new PrecisionFire());
             skillHandlers.Add(2421, new CanisterShot());
 
-            #endregion
+            //#endregion
 
-            #region Explorer
+            //#region Explorer
 
             skillHandlers.Add(2222, new CaveHiding());
             skillHandlers.Add(2392, new Blinding());
@@ -11743,9 +11743,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(3347, new AbsorbSpWeapon());
             skillHandlers.Add(2478, new FascinationBox()); //JOB50
 
-            #endregion
+            //#endregion
 
-            #region TreasureHunter
+            //#region TreasureHunter
 
             skillHandlers.Add(2336, new BackRush());
             skillHandlers.Add(2337, new Catch());
@@ -11766,9 +11766,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(960, new GoodLucky()); //2018/4/5实装
             skillHandlers.Add(2339, new SearchTreasure()); //2018/4/9實裝
 
-            #endregion
+            //#endregion
 
-            #region Merchant
+            //#region Merchant
 
             skillHandlers.Add(702, new Packing());
             skillHandlers.Add(703, new BuyRateDown());
@@ -11777,9 +11777,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2180, new SunSofbley());
             skillHandlers.Add(2186, new Magrow());
 
-            #endregion
+            //#endregion
 
-            #region Trader
+            //#region Trader
 
             skillHandlers.Add(2394, new BugRand());
             skillHandlers.Add(705, new Trust());
@@ -11806,9 +11806,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(6411, new PetMeditation());
             skillHandlers.Add(6450, new HumHealRateUp());
 
-            #endregion
+            //#endregion
 
-            #region Gambler
+            //#region Gambler
 
             skillHandlers.Add(3286, new RandHeal());
             skillHandlers.Add(3287, new RouletteHeal());
@@ -11832,16 +11832,16 @@ namespace SagaMap.Skill
             skillHandlers.Add(2440, new FlowerCardSEQ());
             skillHandlers.Add(2441, new FlowerCardSEQ2());
 
-            #endregion
+            //#endregion
 
-            #region Pet
+            //#region Pet
 
             skillHandlers.Add(6424, new Revive(2));
             skillHandlers.Add(6425, new Revive(5));
 
-            #endregion
+            //#endregion
 
-            #region Breeder
+            //#region Breeder
 
             skillHandlers.Add(1000, new GrowUp());
             skillHandlers.Add(1001, new Biology());
@@ -11854,9 +11854,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2446, new HealFire());
             skillHandlers.Add(2447, new Encouragement());
 
-            #endregion
+            //#endregion
 
-            #region Gardener
+            //#region Gardener
 
             skillHandlers.Add(2453, new IAmTree());
             skillHandlers.Add(2449, new GardenerSkill());
@@ -11870,16 +11870,16 @@ namespace SagaMap.Skill
             skillHandlers.Add(2451, new HeavenlyControl());
             skillHandlers.Add(2454, new Gathering());
 
-            #endregion
+            //#endregion
 
-            #region 新Boss
+            //#region 新Boss
 
             skillHandlers.Add(22000, new B1());
             skillHandlers.Add(22008, new WaterBall());
 
-            #endregion
+            //#endregion
 
-            #region 旅者
+            //#region 旅者
 
             skillHandlers.Add(23000, new NewSkill.Traveler.ChainLightning());
             skillHandlers.Add(23001, new HartHeal());
@@ -11889,16 +11889,16 @@ namespace SagaMap.Skill
             skillHandlers.Add(23005, new NewSkill.Traveler.EarthQuake());
             skillHandlers.Add(23006, new EarthQuake_Effect());
 
-            #endregion
+            //#endregion
 
-            #region 武器技能
+            //#region 武器技能
 
             skillHandlers.Add(24000, new WA_Neutral());
             skillHandlers.Add(1508, new MinCriRateUp());
 
-            #endregion
+            //#endregion
 
-            #region FL1
+            //#region FL1
 
             skillHandlers.Add(100, new MaxHPUp());
             skillHandlers.Add(107, new SwordMastery());
@@ -11910,9 +11910,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2138, new LightningSpear());
             skillHandlers.Add(2121, new ChargeStrike());
 
-            #endregion
+            //#endregion
 
-            #region FL2-1
+            //#region FL2-1
 
             skillHandlers.Add(2354, new NewSkill.FL2_1.Gravity());
             skillHandlers.Add(2124, new Sinkuha());
@@ -11922,9 +11922,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(25010, new FireSlash());
             skillHandlers.Add(25011, new ArmorBreaker());
 
-            #endregion
+            //#endregion
 
-            #region FL2-2
+            //#region FL2-2
 
             skillHandlers.Add(2228, new HolyBlade());
             skillHandlers.Add(2276, new DarkVacuum());
@@ -11937,9 +11937,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(25021, new ShieldDefence());
             skillHandlers.Add(25022, new ShieldBash());
 
-            #endregion
+            //#endregion
 
-            #region FR1
+            //#region FR1
 
             skillHandlers.Add(2042, new Hiding());
             skillHandlers.Add(102, new MaxSPUp());
@@ -11955,9 +11955,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2129, new ChargeArrow());
             skillHandlers.Add(2148, new PluralityArrow());
 
-            #endregion
+            //#endregion
 
-            #region FR2-1
+            //#region FR2-1
 
             skillHandlers.Add(2113,
                 new SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_.StunBlow());
@@ -11971,9 +11971,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2140, new PosionNeedle());
             skillHandlers.Add(26010, new ThrowThrowThrow());
 
-            #endregion
+            //#endregion
 
-            #region FR2-2
+            //#region FR2-2
 
             skillHandlers.Add(951, new ShotStance());
             skillHandlers.Add(2049, new LHitUp());
@@ -11986,9 +11986,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(2206, new DistanceArrow());
             skillHandlers.Add(26020, new SlowArrow());
 
-            #endregion
+            //#endregion
 
-            #region 自定义技能
+            //#region 自定义技能
 
             skillHandlers.Add(4901, new ModeChange());
             skillHandlers.Add(25000, new PassiveStr());
@@ -12007,9 +12007,9 @@ namespace SagaMap.Skill
             skillHandlers.Add(27059, new SkillDefinations.SunFlowerAdditions.TurnUndead());
             skillHandlers.Add(27060, new EquipChange());
 
-            #endregion
+            //#endregion
 
-            #region Partner
+            //#region Partner
 
             skillHandlers.Add(15482, new TrialsInHeavenAndHell()); //路西法专用技能
             skillHandlers.Add(15330, new Thousand()); //伊邪那美专用技能
@@ -12048,7 +12048,7 @@ namespace SagaMap.Skill
             skillHandlers.Add(15459, new YouCanPraiseMore()); //炸脖龙专用技能
             skillHandlers.Add(15518, new ThePowerOfLoveMayle()); //守护神之心专用技能
 
-            #endregion
+            //#endregion
         }
 
         private void SendPetGrowth(Actor actor, SSMG_ACTOR_PET_GROW.GrowType growType, uint value)

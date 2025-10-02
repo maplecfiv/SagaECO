@@ -5,7 +5,7 @@
     /// </summary>
     public class BanishBlow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -50,6 +50,6 @@
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

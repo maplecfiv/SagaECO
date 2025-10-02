@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 {
     internal class ShockWave : Groove, ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -41,7 +41,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //创建技能效果处理对象
         }
 
-        #endregion
+        //#endregion
     }
 
     internal class ActivatorA : MultiRunTask

@@ -6,8 +6,8 @@ namespace SagaMap.Tasks.System
     {
         public LevelLimit()
         {
-            this.period = 60000;
-            this.dueTime = 0;
+            period = 60000;
+            dueTime = 0;
         }
         static LevelLimit instance;
 

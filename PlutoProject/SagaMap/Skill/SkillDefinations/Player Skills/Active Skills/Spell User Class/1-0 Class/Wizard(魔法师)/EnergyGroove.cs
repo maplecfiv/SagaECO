@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.SkillDefinations.Global.Active;
 
@@ -5,7 +6,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 {
     public class EnergyGroove : Groove, ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -17,6 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             ProcSub(sActor, dActor, args, level, Elements.Neutral);
         }
 
-        #endregion
+        //#endregion
     }
 }

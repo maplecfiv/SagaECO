@@ -44,7 +44,7 @@ namespace SagaDB.Ring
         /// <summary>
         ///     军团的飞空城
         /// </summary>
-        public FlyingCastle.FlyingCastle FFGarden { get; set; }
+        public FlyingCastle.FlyingCastle FlyingCastle { get; set; }
 
         /// <summary>
         ///     取得指定军团成员

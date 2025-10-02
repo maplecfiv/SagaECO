@@ -129,7 +129,7 @@ namespace SagaDB
         }
 
 
-        #region AccountDB Members
+        //#region AccountDB Members
 
         private void SavePaper(ActorPC aChar)
         {
@@ -290,6 +290,6 @@ namespace SagaDB
             return (int)result[0]["account_id"];
         }
 
-        #endregion
+        //#endregion
     }
 }

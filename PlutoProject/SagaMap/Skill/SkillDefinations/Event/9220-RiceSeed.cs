@@ -1,4 +1,5 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Event
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class RiceSeed : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -26,6 +27,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             args.flag[0] = AttackFlag.HP_HEAL | AttackFlag.MP_HEAL | AttackFlag.SP_HEAL;
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class Oratio : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -63,6 +63,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

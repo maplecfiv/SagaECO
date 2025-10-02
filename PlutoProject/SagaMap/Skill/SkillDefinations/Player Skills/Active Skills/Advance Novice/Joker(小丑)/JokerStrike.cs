@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Novice.Joker_小丑_
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
     /// </summary>
     public class JokerStrike : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -28,6 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
             SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

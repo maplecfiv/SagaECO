@@ -190,7 +190,7 @@ namespace SagaDB.FictitiousActors
 
                         switch (type)
                         {
-                            #region PC
+                            //#region PC
 
                             case "PC":
                                 actor.type = ActorType.PC;
@@ -302,9 +302,9 @@ namespace SagaDB.FictitiousActors
 
                                 break;
 
-                            #endregion
+                            //#endregion
 
-                            #region FURNITURE
+                            //#region FURNITURE
 
                             case "FI":
                                 actor.type = ActorType.FURNITURE;
@@ -345,9 +345,9 @@ namespace SagaDB.FictitiousActors
 
                                 break;
 
-                            #endregion
+                            //#endregion
 
-                            #region GOLEM
+                            //#region GOLEM
 
                             case "GOLEM":
                                 actor.type = ActorType.GOLEM;
@@ -384,7 +384,7 @@ namespace SagaDB.FictitiousActors
 
                                 break;
 
-                            #endregion
+                                //#endregion
                         }
                     }
 

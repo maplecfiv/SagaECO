@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -10,7 +11,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     public class AllShot : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -84,13 +85,13 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             }
         }
 
-        #endregion
+        //#endregion
 
         /// <summary>
         ///     一斉掃射いっきますよ～♪
         /// </summary>
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -121,6 +122,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

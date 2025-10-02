@@ -566,7 +566,7 @@ namespace SagaMap.PC
             if (!item.Locked)
                 return;
 
-            #region Iris Card Ability Calculation
+            //#region Iris Card Ability Calculation
 
             var IrisCardAbilityValues = item.VectorValues(false, false);
             foreach (var i in IrisCardAbilityValues.Keys)
@@ -575,7 +575,7 @@ namespace SagaMap.PC
                 else
                     pc.IrisAbilityValues[i] += IrisCardAbilityValues[i];
 
-            #endregion
+            //#endregion
 
             var elements = item.IrisElements(false);
             if (item.IsArmor || item.IsWeapon)
@@ -596,7 +596,7 @@ namespace SagaMap.PC
         /// <param name="pc"></param>
         private void ApplyIrisRes(ActorPC pc)
         {
-            #region Iris Card Ability Level Calculation
+            //#region Iris Card Ability Level Calculation
 
             var lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //old/original settings
             //int[] lvs = new int[10] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; new settings
@@ -609,9 +609,9 @@ namespace SagaMap.PC
                 pc.IrisAbilityLevels.Add(i, lv);
             }
 
-            #endregion
+            //#endregion
 
-            #region ReleaseAbility for UI
+            //#region ReleaseAbility for UI
 
             var releaseabilities = UIStatusModRAs(pc, pc.IrisAbilityLevels);
 
@@ -1052,7 +1052,7 @@ namespace SagaMap.PC
                 }
             }
 
-            #endregion
+            //#endregion
         }
 
         /// <summary>
@@ -1172,7 +1172,7 @@ namespace SagaMap.PC
                 chips = pc.Inventory.DemicChips;
             var skills = new Dictionary<uint, int>();
 
-            #region CalcChips
+            //#region CalcChips
 
             foreach (var i in chips.Keys)
                 foreach (var j in chips[i].Chips)
@@ -1243,7 +1243,7 @@ namespace SagaMap.PC
                     }
                 }
 
-            #endregion
+            //#endregion
 
             foreach (var i in skills.Keys)
             {
@@ -1375,7 +1375,7 @@ namespace SagaMap.PC
                                       pc.Status.mag_mario + pc.Status.mag_skill + pc.Status.mag_iris);
             if (pc.Status.Additions.ContainsKey("ModeChange"))
             {
-                #region 物魔互换模块(基础属性和buff装备分离部分)
+                //#region 物魔互换模块(基础属性和buff装备分离部分)
 
                 pcstr = checkPositive(pc.Str + pc.Status.mag_item + pc.Status.mag_chip + pc.Status.str_rev +
                                       pc.Status.mag_mario + pc.Status.mag_skill + pc.Status.mag_iris);
@@ -1390,7 +1390,7 @@ namespace SagaMap.PC
                 pcmag = checkPositive(pc.Mag + pc.Status.str_item + pc.Status.str_chip + pc.Status.mag_rev +
                                       pc.Status.str_mario + pc.Status.str_skill + pc.Status.str_iris);
 
-                #endregion
+                //#endregion
             }
 
             if (pc.Pet != null && pc.Pet.Ride)
@@ -1421,7 +1421,7 @@ namespace SagaMap.PC
             {
                 if (pc.Status.Additions.ContainsKey("ModeChange"))
                 {
-                    #region 物魔互换模块(攻击力计算部分)
+                    //#region 物魔互换模块(攻击力计算部分)
 
                     //攻击力计算
                     var minmatk = (ushort)Math.Floor(pcstr + Math.Pow(Math.Floor((double)(pcstr / 9)), 2));
@@ -1496,7 +1496,7 @@ namespace SagaMap.PC
                         pc.Status.max_matk_skill + pc.Status.max_matk_iris + pc.Status.weapon_add_iris +
                         weapon_matk_add);
 
-                    #endregion
+                    //#endregion
                 }
                 else
                 {
@@ -1578,7 +1578,7 @@ namespace SagaMap.PC
                         weapon_matk_add);
                 }
 
-                #region 最小攻击力大于最大攻击力的修正部分
+                //#region 最小攻击力大于最大攻击力的修正部分
 
                 if (pc.Status.min_atk1 > pc.Status.max_atk1)
                     pc.Status.min_atk1 = pc.Status.max_atk1;
@@ -1589,7 +1589,7 @@ namespace SagaMap.PC
                 if (pc.Status.min_matk > pc.Status.max_matk)
                     pc.Status.min_matk = pc.Status.max_matk;
 
-                #endregion
+                //#endregion
 
                 //命中计算
                 var hit_melee = (ushort)(pcdex + (short)Math.Floor(pcdex / 10.0f) * 11 + pc.Level + 3);

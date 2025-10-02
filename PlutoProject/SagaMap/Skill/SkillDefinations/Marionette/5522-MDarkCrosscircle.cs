@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     惡夢
     /// </summary>
     public class MDarkCrosscircle : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -18,6 +20,6 @@
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(NextSkillID, 1, 0));
         }
 
-        #endregion
+        //#endregion
     }
 }

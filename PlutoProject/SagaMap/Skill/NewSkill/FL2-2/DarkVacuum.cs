@@ -9,7 +9,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
     /// </summary>
     public class DarkVacuum : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -30,6 +30,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
             args.AddSameActor(args2);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,3 +1,4 @@
+using SagaDB.Partner;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Partner

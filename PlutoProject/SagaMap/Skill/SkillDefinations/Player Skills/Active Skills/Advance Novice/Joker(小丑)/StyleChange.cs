@@ -1,3 +1,5 @@
+using System;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,12 +10,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
     /// </summary>
     public class StyleChange : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         private Actor me;
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
+            if (dActor == null) throw new ArgumentNullException(nameof(dActor));
             return 0;
         }
 
@@ -153,6 +156,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

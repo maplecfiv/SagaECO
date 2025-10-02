@@ -7,13 +7,13 @@ namespace SagaValidation.Packets.Client
     {
         public CSMG_UNKNOWN_LIST()
         {
-            this.size = 6;
-            this.offset = 2;
+            size = 6;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaValidation.Packets.Client.CSMG_UNKNOWN_LIST();
+            return (Packet)new CSMG_UNKNOWN_LIST();
         }
 
         public override void Parse(SagaLib.Client client)

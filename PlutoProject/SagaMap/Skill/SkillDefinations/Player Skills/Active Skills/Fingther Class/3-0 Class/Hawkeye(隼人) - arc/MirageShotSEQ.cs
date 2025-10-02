@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {
     internal class MirageShotSEQ : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -44,6 +45,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

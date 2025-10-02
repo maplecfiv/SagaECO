@@ -1,4 +1,5 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Parnter
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class YouLikeMe : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -21,6 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Dark, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

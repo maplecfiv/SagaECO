@@ -5,7 +5,7 @@
     /// </summary>
     public class SetBomb : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         private readonly uint itemID = 10022307;
 
@@ -31,6 +31,6 @@
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2378, level, 3000));
         }
 
-        #endregion
+        //#endregion
     }
 }

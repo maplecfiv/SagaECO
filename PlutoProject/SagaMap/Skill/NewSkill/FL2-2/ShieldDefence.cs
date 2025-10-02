@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 using SagaMap.Skill.SkillDefinations;
 
@@ -5,7 +6,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class ShieldDefence : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -65,6 +66,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
             //Manager.MapManager.Instance.GetMap(actor.MapID).SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

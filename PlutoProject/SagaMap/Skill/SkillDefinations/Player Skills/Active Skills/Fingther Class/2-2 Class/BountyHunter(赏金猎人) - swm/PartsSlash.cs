@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     {
         private static readonly uint[] skills = { 2274, 2272, 2271, 2273 };
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -42,9 +42,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        #endregion
+        //#endregion
 
-        //#region Timer
+        ////#region Timer
         //private class Activator : MultiRunTask
         //{
         //    Actor sActor;
@@ -94,6 +94,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        ClientManager.LeaveCriticalArea();
         //    }
         //}
-        //#endregion
+        ////#endregion
     }
 }

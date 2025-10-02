@@ -1,11 +1,12 @@
 using System;
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     public class MaxHPUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -52,6 +53,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             actor.Status.hp_skill -= (short)value;
         }
 
-        #endregion
+        //#endregion
     }
 }

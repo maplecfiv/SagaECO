@@ -160,7 +160,7 @@ namespace SagaMap.Manager
             }
         }
 
-        #region Private fields
+        //#region Private fields
 
         // private Dictionary<uint, PCLevel> PCEXPChart = new Dictionary<uint, PCLevel>();
         /// <summary>
@@ -198,9 +198,9 @@ namespace SagaMap.Manager
         // Fields of local use only, declared here for memory optimization
         private uint currentMax;
 
-        #endregion
+        //#endregion
 
-        #region Public fields
+        //#region Public fields
 
         public uint MaxCLevel = 110;
         public readonly uint MaxJLevel = 50;
@@ -209,9 +209,9 @@ namespace SagaMap.Manager
         public readonly byte MaxDualJobLevel = 110;
         public readonly uint LastTimeLevelLimit = 100;
 
-        #endregion
+        //#endregion
 
-        #region Enums/Structs
+        //#region Enums/Structs
 
         /*
          public struct Level
@@ -228,9 +228,9 @@ namespace SagaMap.Manager
          }
          */
 
-        #endregion
+        //#endregion
 
-        #region EXP table loading methods
+        //#region EXP table loading methods
 
         /*
         public void LoadTable(string path)
@@ -296,9 +296,9 @@ namespace SagaMap.Manager
         }
         */
 
-        #endregion
+        //#endregion
 
-        #region Public methods
+        //#region Public methods
 
         private ulong checkExpGap(uint ori, uint add, byte maxLv, LevelType type)
         {
@@ -1572,9 +1572,9 @@ namespace SagaMap.Manager
             MapServer.charDB.SavePartner(partner);
         }
 
-        #endregion
+        //#endregion
 
-        #region Private methods
+        //#region Private methods
 
         /// <summary>
         ///     Send level up packet to client and update database
@@ -1778,6 +1778,6 @@ namespace SagaMap.Manager
             return delta;
         }
 
-        #endregion
+        //#endregion
     }
 }

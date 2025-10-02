@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.丢弃
 {
     internal class IceHole : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -52,6 +53,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.丢弃
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

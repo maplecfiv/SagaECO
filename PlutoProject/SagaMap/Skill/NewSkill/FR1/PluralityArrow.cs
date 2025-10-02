@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Network.Client;
 using SagaMap.Skill.SkillDefinations;
 
@@ -9,7 +11,7 @@ namespace SagaMap.Skill.NewSkill.FR1
     /// </summary>
     public class PluralityArrow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         private int numdownmin = 0;
         private int numdownmax = 0;
@@ -69,6 +71,6 @@ namespace SagaMap.Skill.NewSkill.FR1
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

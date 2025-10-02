@@ -36,7 +36,7 @@ namespace SagaMap.ActorEventHandlers
             Client = client;
         }
 
-        #region ActorEventHandler Members
+        //#region ActorEventHandler Members
 
         public void OnActorSkillCancel(Actor sActor)
         {
@@ -1346,6 +1346,6 @@ namespace SagaMap.ActorEventHandlers
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -15,7 +16,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
     /// </summary>
     public class ArrowGroove : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -84,7 +85,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             timer.Activate();
         }
 
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -216,8 +217,8 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             }
         }
 
-        #endregion
+        //#endregion
 
-        #endregion
+        //#endregion
     }
 }

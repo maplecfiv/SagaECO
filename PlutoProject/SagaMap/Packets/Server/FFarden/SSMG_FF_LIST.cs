@@ -27,7 +27,7 @@ namespace SagaMap.Packets.Server.FFGarden
             set => PutUInt(value, 10);
         }
 
-        public List<SagaDB.FFGarden.FFGarden> Entries
+        public List<SagaDB.FlyingCastle.FlyingCastle> Entries
         {
             set
             {

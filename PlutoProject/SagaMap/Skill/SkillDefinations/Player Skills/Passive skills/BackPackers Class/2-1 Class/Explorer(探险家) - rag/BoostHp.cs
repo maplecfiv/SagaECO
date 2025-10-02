@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_1_Class.Explorer_探险家____rag
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
     /// </summary>
     public class BoostHp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -37,6 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
                 skill.Variable.Remove("BoostHp");
         }
 
-        #endregion
+        //#endregion
     }
 }

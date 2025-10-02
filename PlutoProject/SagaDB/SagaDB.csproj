@@ -1,152 +1,152 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <OutputType>Library</OutputType>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\Bin\</OutputPath>
-    <DefineConstants></DefineConstants>
-    <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Web|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Web\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;Web</DefineConstants>
-    <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
-    <NoWarn>1591</NoWarn>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference
-      Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependecies\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference
-      Include="MySql.Data, Version=5.1.2.2, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Dependecies\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Update="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.IO.Compression" />
-    <Reference Update="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Actor\*" />
-    <Folder Include="DefWar\*" />
-    <Folder Include="DualJob\*" />
-    <Folder Include="ECOShop\*" />
-    <Folder Include="EnhanceTable\*" />
-    <Folder Include="FFGarden\*" />
-    <Folder Include="Item\*" />
-    <Folder Include="Experience\*" />
-    <Folder Include="FictitiousActors\*" />
-    <Folder Include="Actor\*" />
-    <Folder Include="BBS\*" />
-    <Folder Include="Config\*" />
-    <Folder Include="DEMIC\*" />
-    <Folder Include="Fish\*" />
-    <Folder Include="Group\*" />
-    <Folder Include="Iris\*" />
-    <Folder Include="LevelLimit\*" />
-    <Folder Include="Map\*" />
-    <Folder Include="MasterEnchance\*" />
-    <Folder Include="Mob\*" />
-    <Folder Include="Navi\*" />
-    <Folder Include="ODWar\*" />
-    <Folder Include="ECOShop*" />
-    <Folder Include="FGGarden\*" />
-    <Folder Include="KnightWar\*" />
-    <Folder Include="Marionette\*" />
-    <Folder Include="Npc\*" />
-    <Folder Include="Party\*" />
-    <Folder Include="PProtect\*" />
-    <Folder Include="Properties\*" />
-    <Folder Include="Quests\*" />
-    <Folder Include="Ring\*" />
-    <Folder Include="Server\*" />
-    <Folder Include="Skill\*" />
-    <Folder Include="Synthese\*" />
-    <Folder Include="Tamaire\*" />
-    <Folder Include="Team\*" />
-    <Folder Include="Theater\*" />
-    <Folder Include="Title\*" />
-    <Folder Include="Treasure\*" />
-    <Folder Include="Partner\*" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SagaLib\SagaLib.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    <PackageReference Include="System.Data.OleDb" Version="9.0.9" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
-      Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1" />
-    <PackageReference Include="Microsoft.VisualBasic" Version="10.0.0" />
-    <PackageReference Include="NLog" Version="5.5.1" />
-    <PackageReference Include="System.Buffers" Version="4.5.1" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2" />
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-  </ItemGroup>
-  <PropertyGroup />
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <PublishUrl>publish\</PublishUrl>
+        <Install>true</Install>
+        <InstallFrom>Disk</InstallFrom>
+        <UpdateEnabled>false</UpdateEnabled>
+        <UpdateMode>Foreground</UpdateMode>
+        <UpdateInterval>7</UpdateInterval>
+        <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+        <UpdatePeriodically>false</UpdatePeriodically>
+        <UpdateRequired>false</UpdateRequired>
+        <MapFileExtensions>true</MapFileExtensions>
+        <ApplicationRevision>0</ApplicationRevision>
+        <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+        <IsWebBootstrapper>false</IsWebBootstrapper>
+        <UseApplicationTrust>false</UseApplicationTrust>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <OutputPath>..\Bin\</OutputPath>
+        <DefineConstants></DefineConstants>
+        <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
+        <NoWarn>1591</NoWarn>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <UseVSHostingProcess>true</UseVSHostingProcess>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>none</DebugType>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <UseVSHostingProcess>false</UseVSHostingProcess>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Web|AnyCPU' ">
+        <DebugSymbols>true</DebugSymbols>
+        <OutputPath>bin\Web\</OutputPath>
+        <DefineConstants>TRACE;DEBUG;Web</DefineConstants>
+        <DocumentationFile>bin\Debug\SagaDB.XML</DocumentationFile>
+        <NoWarn>1591</NoWarn>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <UseVSHostingProcess>false</UseVSHostingProcess>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference
+                Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\Dependecies\ICSharpCode.SharpZipLib.dll</HintPath>
+        </Reference>
+        <Reference
+                Include="MySql.Data, Version=5.1.2.2, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+            <SpecificVersion>False</SpecificVersion>
+            <HintPath>..\Dependecies\MySql.Data.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Configuration"/>
+        <Reference Update="System.Core">
+            <RequiredTargetFramework>3.5</RequiredTargetFramework>
+        </Reference>
+        <Reference Include="System.IO.Compression"/>
+        <Reference Update="System.Xml.Linq">
+            <RequiredTargetFramework>3.5</RequiredTargetFramework>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Actor\*"/>
+        <Folder Include="DefWar\*"/>
+        <Folder Include="DualJob\*"/>
+        <Folder Include="ECOShop\*"/>
+        <Folder Include="EnhanceTable\*"/>
+        <Folder Include="FFGarden\*"/>
+        <Folder Include="Item\*"/>
+        <Folder Include="Experience\*"/>
+        <Folder Include="FictitiousActors\*"/>
+        <Folder Include="Actor\*"/>
+        <Folder Include="BBS\*"/>
+        <Folder Include="Config\*"/>
+        <Folder Include="DEMIC\*"/>
+        <Folder Include="Fish\*"/>
+        <Folder Include="Group\*"/>
+        <Folder Include="Iris\*"/>
+        <Folder Include="LevelLimit\*"/>
+        <Folder Include="Map\*"/>
+        <Folder Include="MasterEnchance\*"/>
+        <Folder Include="Mob\*"/>
+        <Folder Include="Navi\*"/>
+        <Folder Include="ODWar\*"/>
+        <Folder Include="ECOShop*"/>
+        <Folder Include="FGGarden\*"/>
+        <Folder Include="KnightWar\*"/>
+        <Folder Include="Marionette\*"/>
+        <Folder Include="Npc\*"/>
+        <Folder Include="Party\*"/>
+        <Folder Include="PProtect\*"/>
+        <Folder Include="Properties\*"/>
+        <Folder Include="Quests\*"/>
+        <Folder Include="Ring\*"/>
+        <Folder Include="Server\*"/>
+        <Folder Include="Skill\*"/>
+        <Folder Include="Synthese\*"/>
+        <Folder Include="Tamaire\*"/>
+        <Folder Include="Team\*"/>
+        <Folder Include="Theater\*"/>
+        <Folder Include="Title\*"/>
+        <Folder Include="Treasure\*"/>
+        <Folder Include="Partner\*"/>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SagaLib\SagaLib.csproj"/>
+    </ItemGroup>
+    <ItemGroup>
+        <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+            <Visible>False</Visible>
+            <ProductName>Windows Installer 3.1</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0"/>
+        <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
+        <PackageReference Include="System.Data.OleDb" Version="9.0.9"/>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+                          Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1"/>
+        <PackageReference Include="Microsoft.VisualBasic" Version="10.0.0"/>
+        <PackageReference Include="NLog" Version="5.5.1"/>
+        <PackageReference Include="System.Buffers" Version="4.5.1"/>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2"/>
+        <PackageReference Include="System.Memory" Version="4.5.4"/>
+        <PackageReference Include="System.Numerics.Vectors" Version="4.5.0"/>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0"/>
+        <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
+    </ItemGroup>
+    <PropertyGroup/>
 </Project>

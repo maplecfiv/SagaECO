@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._1_0_Class.Tatarabe_矿工_
@@ -7,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
     /// </summary>
     public class RockInfo : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -26,6 +28,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }

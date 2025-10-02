@@ -6,9 +6,9 @@ namespace SagaValidation.Packets.Server
     {
         public SSMG_UNKNOWN_RETURN()
         {
-            this.data = new byte[6];
-            this.offset = 2;
-            this.ID = 0x0030;
+            data = new byte[6];
+            offset = 2;
+            ID = 0x0030;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
@@ -25,7 +26,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
             NextSkill.Add(SkillID2, rate2);
         }
 
-        #region ISkill
+        //#region ISkill
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -54,6 +55,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
             sActor.Slave.Add(m);
         }
 
-        #endregion
+        //#endregion
     }
 }

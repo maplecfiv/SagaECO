@@ -1012,7 +1012,7 @@
                 玩家的模式
             </summary>
         </member>
-        <member name="P:SagaDB.Actor.ActorPC.FGarden">
+        <member name="P:SagaDB.Actor.ActorPC.FlyingGarden">
             <summary>
                 玩家的飞空庭
             </summary>
@@ -5810,7 +5810,7 @@
                 军团飞空城的ID
             </summary>
         </member>
-        <member name="P:SagaDB.Ring.Ring.FFGarden">
+        <member name="P:SagaDB.Ring.Ring.FlyingCastle">
             <summary>
                 军团的飞空城
             </summary>

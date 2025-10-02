@@ -1,10 +1,11 @@
+using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.Item
 {
     public class WA_Neutral : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -20,6 +21,6 @@ namespace SagaMap.Skill.NewSkill.Item
             //SkillHandler.Instance.WeaponMagicAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

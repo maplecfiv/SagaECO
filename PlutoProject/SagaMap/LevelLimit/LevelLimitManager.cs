@@ -32,7 +32,7 @@ namespace SagaMap.LevelLimit
                 MapClientManager.Instance.Announce(string.Format("【公告】下次等级上限开始解冻，下一次的等级上限为{0}，开放时间为{1}。", LL.NextLevelLimit, LL.NextTime));
                 MapClientManager.Instance.Announce("【福利】圣塔的能量开始溢出！所有达到等级上限的玩家掉落率上升！");
                 LL.FirstPlayer = pc.CharID;
-                this.StartLevelLimitWait();
+                StartLevelLimitWait();
             }
             else if (LL.SecondPlayer == 0)
             {
@@ -60,8 +60,8 @@ namespace SagaMap.LevelLimit
             }
             if (LL.IsLock == 0)
                 LL.IsLock = 1;
-            this.SendReachInfo(SagaMap.Network.Client.MapClient.FromActorPC(pc));
-            this.SavaLevelLimitInfo();
+            SendReachInfo(Network.Client.MapClient.FromActorPC(pc));
+            SavaLevelLimitInfo();
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SagaMap.LevelLimit
             LL.NextTime = DateTime.Now.AddDays(LL.SetNextUpDays);
             LL.IsLock = 1;
             Tasks.System.LevelLimit.Instance.Activate();
-            this.SavaLevelLimitInfo();
+            SavaLevelLimitInfo();
         }
         /// <summary>
         /// 等待结束后，等级上限提升
@@ -99,7 +99,7 @@ namespace SagaMap.LevelLimit
                 MapClientManager.Instance.Announce(string.Format("【福利】圣塔开始积累新的能量，满级玩家的掉落率恢复原状，{0}级以前的玩家将获得额外的经验奖励。", LL.LastTimeLevelLimit));
             }
             Tasks.System.LevelLimit.Instance.Deactivate();
-            this.SavaLevelLimitInfo();
+            SavaLevelLimitInfo();
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace SagaMap.LevelLimit
                 p.EndTime = LL.NextTime;
                 p.Result = 1;
                 client.NetIo.SendPacket(p);
-                this.SavaLevelLimitInfo();
+                SavaLevelLimitInfo();
             }
         }
 

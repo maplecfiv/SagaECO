@@ -36,16 +36,16 @@ namespace SagaValidation.Packets.Server
         }
         public SSMG_LOGIN_ACK()
         {
-            this.data = new byte[19];
-            this.offset = 14;
-            this.ID = 0x20;
+            data = new byte[19];
+            offset = 14;
+            ID = 0x20;
         }
 
         public Result LoginResult
         {
             set
             {
-                this.PutUInt((uint)value, 2);
+                PutUInt((uint)value, 2);
             }
         }
 
@@ -53,7 +53,7 @@ namespace SagaValidation.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 6);
+                PutUInt(value, 6);
             }
         }
 
@@ -64,7 +64,7 @@ namespace SagaValidation.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 10);
+                PutUInt(value, 10);
             }
         }
 
@@ -76,7 +76,7 @@ namespace SagaValidation.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 14);
+                PutUInt(value, 14);
             }
         }
 

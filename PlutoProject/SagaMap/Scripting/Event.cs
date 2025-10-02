@@ -2740,7 +2740,7 @@ namespace SagaMap.Scripting
         /// <param name="rope">绳子的Actor</param>
         protected void EnterFGarden(ActorPC pc, ActorEvent rope)
         {
-            if (rope.Caster.FGarden == null) return;
+            if (rope.Caster.FlyingGarden == null) return;
 
             var p = new Packet(10); //unknown packet
             p.ID = 0x18E3;
@@ -2748,15 +2748,15 @@ namespace SagaMap.Scripting
             p.PutUInt(pc.MapID, 6);
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
-            if (rope.Caster.FGarden.MapID == 0)
+            if (rope.Caster.FlyingGarden.MapID == 0)
             {
                 var map = MapManager.Instance.GetMap(pc.MapID);
-                rope.Caster.FGarden.MapID = MapManager.Instance.CreateMapInstance(rope.Caster, 70000000, pc.MapID,
+                rope.Caster.FlyingGarden.MapID = MapManager.Instance.CreateMapInstance(rope.Caster, 70000000, pc.MapID,
                     Global.PosX16to8(pc.X, map.Width), Global.PosY16to8(pc.Y, map.Height));
 
                 //spawn furnitures
-                map = MapManager.Instance.GetMap(rope.Caster.FGarden.MapID);
-                foreach (var i in rope.Caster.FGarden.Furnitures[FurniturePlace.GARDEN])
+                map = MapManager.Instance.GetMap(rope.Caster.FlyingGarden.MapID);
+                foreach (var i in rope.Caster.FlyingGarden.Furnitures[FurniturePlace.GARDEN])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -2767,7 +2767,7 @@ namespace SagaMap.Scripting
             pc.BattleStatus = 0;
             pc.Speed = 200;
             MapClient.FromActorPC(pc).SendChangeStatus();
-            Warp(pc, rope.Caster.FGarden.MapID, 6, 11);
+            Warp(pc, rope.Caster.FlyingGarden.MapID, 6, 11);
         }
 
         /// <summary>
@@ -2791,13 +2791,13 @@ namespace SagaMap.Scripting
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
-            if (owner.FGarden.RoomMapID == 0)
+            if (owner.FlyingGarden.RoomMapID == 0)
             {
-                owner.FGarden.RoomMapID =
-                    MapManager.Instance.CreateMapInstance(owner, 75000000, owner.FGarden.MapID, 6, 7);
+                owner.FlyingGarden.RoomMapID =
+                    MapManager.Instance.CreateMapInstance(owner, 75000000, owner.FlyingGarden.MapID, 6, 7);
                 //spawn furnitures
-                var map = MapManager.Instance.GetMap(owner.FGarden.RoomMapID);
-                foreach (var i in owner.FGarden.Furnitures[FurniturePlace.ROOM])
+                var map = MapManager.Instance.GetMap(owner.FlyingGarden.RoomMapID);
+                foreach (var i in owner.FlyingGarden.Furnitures[FurniturePlace.ROOM])
                 {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
@@ -2805,7 +2805,7 @@ namespace SagaMap.Scripting
                 }
             }
 
-            Warp(pc, owner.FGarden.RoomMapID, 5, 11);
+            Warp(pc, owner.FlyingGarden.RoomMapID, 5, 11);
         }
 
         /// <summary>
@@ -2817,7 +2817,7 @@ namespace SagaMap.Scripting
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
-            Warp(pc, owner.FGarden.MapID, 5, 8);
+            Warp(pc, owner.FlyingGarden.MapID, 5, 8);
         }
 
 
@@ -2830,7 +2830,7 @@ namespace SagaMap.Scripting
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
-            Warp(pc, pc.Ring.FFGarden.MapID, 10, 10);
+            Warp(pc, pc.Ring.FlyingCastle.MapID, 10, 10);
         }
 
         /// <summary>
@@ -2853,9 +2853,9 @@ namespace SagaMap.Scripting
         /// <returns>如果没有飞空庭或者没有召唤过飞空庭，则返回null</returns>
         protected ActorEvent GetRopeActor(ActorPC pc)
         {
-            if (pc.FGarden != null)
-                if (pc.FGarden.RopeActor != null)
-                    return pc.FGarden.RopeActor;
+            if (pc.FlyingGarden != null)
+                if (pc.FlyingGarden.RopeActor != null)
+                    return pc.FlyingGarden.RopeActor;
 
             return null;
         }
@@ -2866,32 +2866,32 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         protected void ReturnRope(ActorPC pc)
         {
-            if (pc.FGarden != null)
+            if (pc.FlyingGarden != null)
             {
-                if (pc.FGarden.RopeActor != null)
+                if (pc.FlyingGarden.RopeActor != null)
                 {
-                    var map = MapManager.Instance.GetMap(pc.FGarden.RopeActor.MapID);
-                    map.DeleteActor(pc.FGarden.RopeActor);
-                    if (ScriptManager.Instance.Events.ContainsKey(pc.FGarden.RopeActor.EventID))
-                        ScriptManager.Instance.Events.Remove(pc.FGarden.RopeActor.EventID);
-                    pc.FGarden.RopeActor = null;
+                    var map = MapManager.Instance.GetMap(pc.FlyingGarden.RopeActor.MapID);
+                    map.DeleteActor(pc.FlyingGarden.RopeActor);
+                    if (ScriptManager.Instance.Events.ContainsKey(pc.FlyingGarden.RopeActor.EventID))
+                        ScriptManager.Instance.Events.Remove(pc.FlyingGarden.RopeActor.EventID);
+                    pc.FlyingGarden.RopeActor = null;
                 }
 
-                if (pc.FGarden.RoomMapID != 0)
+                if (pc.FlyingGarden.RoomMapID != 0)
                 {
-                    var roomMap = MapManager.Instance.GetMap(pc.FGarden.RoomMapID);
-                    var gardenMap = MapManager.Instance.GetMap(pc.FGarden.MapID);
+                    var roomMap = MapManager.Instance.GetMap(pc.FlyingGarden.RoomMapID);
+                    var gardenMap = MapManager.Instance.GetMap(pc.FlyingGarden.MapID);
                     roomMap.ClientExitMap = gardenMap.ClientExitMap;
                     roomMap.ClientExitX = gardenMap.ClientExitX;
                     roomMap.ClientExitY = gardenMap.ClientExitY;
                     MapManager.Instance.DeleteMapInstance(roomMap.ID);
-                    pc.FGarden.RoomMapID = 0;
+                    pc.FlyingGarden.RoomMapID = 0;
                 }
 
-                if (pc.FGarden.MapID != 0)
+                if (pc.FlyingGarden.MapID != 0)
                 {
-                    MapManager.Instance.DeleteMapInstance(pc.FGarden.MapID);
-                    pc.FGarden.MapID = 0;
+                    MapManager.Instance.DeleteMapInstance(pc.FlyingGarden.MapID);
+                    pc.FlyingGarden.MapID = 0;
                 }
             }
         }
@@ -2908,10 +2908,10 @@ namespace SagaMap.Scripting
             var owner = GetFlyingGardenOwner(pc);
             if (owner != pc)
                 return;
-            if (owner.FGarden.MapID != 0)
+            if (owner.FlyingGarden.MapID != 0)
             {
                 //spawn furnitures
-                var map = MapManager.Instance.GetMap(owner.FGarden.MapID);
+                var map = MapManager.Instance.GetMap(owner.FlyingGarden.MapID);
                 var list = new List<Actor>();
                 foreach (var i in map.Actors.Values)
                     if (i.type == ActorType.PC)
@@ -2921,7 +2921,7 @@ namespace SagaMap.Scripting
                         {
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
-                            p.MapID = owner.FGarden.MapID;
+                            p.MapID = owner.FlyingGarden.MapID;
                             MapClient.FromActorPC(pc2).NetIo.SendPacket(p);
                             list.Add(pc2);
                         }
@@ -2935,10 +2935,10 @@ namespace SagaMap.Scripting
                 }
             }
 
-            if (owner.FGarden.RoomMapID != 0)
+            if (owner.FlyingGarden.RoomMapID != 0)
             {
                 //spawn furnitures
-                var map = MapManager.Instance.GetMap(owner.FGarden.RoomMapID);
+                var map = MapManager.Instance.GetMap(owner.FlyingGarden.RoomMapID);
                 var list = new List<Actor>();
                 foreach (var i in map.Actors.Values)
                     if (i.type == ActorType.PC)
@@ -2948,7 +2948,7 @@ namespace SagaMap.Scripting
                         {
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
-                            p.MapID = owner.FGarden.MapID;
+                            p.MapID = owner.FlyingGarden.MapID;
                             MapClient.FromActorPC(pc2).NetIo.SendPacket(p);
                             list.Add(pc2);
                         }

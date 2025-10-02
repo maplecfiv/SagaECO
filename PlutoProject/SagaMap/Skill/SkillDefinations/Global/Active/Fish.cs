@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Active
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
     /// </summary>
     public class Fish : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -39,6 +40,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             SkillHandler.ApplyAddition(sActor, skill1);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -23,7 +23,7 @@ namespace SagaDB.Actor
             return Name;
         }
 
-        #region Internal Methods
+        //#region Internal Methods
 
         public override void CallBack()
         {
@@ -38,10 +38,10 @@ namespace SagaDB.Actor
             }
         }
 
-        #endregion
+        //#endregion
 
 
-        #region Fields
+        //#region Fields
 
         /// <summary>
         /// Task instance for this addition
@@ -57,9 +57,9 @@ namespace SagaDB.Actor
 
         public bool enabled = true;
 
-        #endregion
+        //#endregion
 
-        #region Properties
+        //#region Properties
 
         /// <summary>
         ///     是否启用
@@ -113,9 +113,9 @@ namespace SagaDB.Actor
         /// </summary>
         public virtual bool IfActivate => true;
 
-        #endregion
+        //#endregion
 
-        #region Virtual methodes
+        //#region Virtual methodes
 
         /// <summary>
         ///     Total Life time for this Addition
@@ -162,9 +162,9 @@ namespace SagaDB.Actor
         {
         }
 
-        #endregion
+        //#endregion
 
-        #region Protected Methods
+        //#region Protected Methods
 
         /// <summary>
         ///     Initialize the timer
@@ -190,6 +190,6 @@ namespace SagaDB.Actor
                 Deactivate();
         }
 
-        #endregion
+        //#endregion
     }
 }

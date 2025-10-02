@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.BladeMaster_剑圣____swm
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class PetMeditatioon : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -18,6 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.FixAttack(sActor, dActor, args, sActor.WeaponElement, -HP_ADD);
         }
 
-        #endregion
+        //#endregion
     }
 }

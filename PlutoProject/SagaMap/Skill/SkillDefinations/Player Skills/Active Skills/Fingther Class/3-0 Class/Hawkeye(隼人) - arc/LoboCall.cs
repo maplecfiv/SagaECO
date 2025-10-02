@@ -1,11 +1,12 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Network.Client;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {
     public class LoboCall : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -28,6 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             Lobo.Status.max_atk3 = 650;
         }
 
-        #endregion
+        //#endregion
     }
 }

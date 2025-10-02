@@ -18,7 +18,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             this.MobUse = MobUse;
         }
 
-        #region Init
+        //#region Init
 
         public CanisterShot()
         {
@@ -32,7 +32,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 3));
@@ -139,12 +139,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-1, 2, 3));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(0, 3, 3));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -184,6 +184,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

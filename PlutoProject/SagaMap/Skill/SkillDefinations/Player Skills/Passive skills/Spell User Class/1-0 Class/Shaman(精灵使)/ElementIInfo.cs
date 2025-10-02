@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User_Class._1_0_Class.Shaman_精灵使_
@@ -7,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User
     /// </summary>
     public class ElementIInfo : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -23,6 +25,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }

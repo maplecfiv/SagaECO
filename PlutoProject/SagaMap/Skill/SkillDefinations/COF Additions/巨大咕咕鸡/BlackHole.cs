@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.巨大咕咕鸡
 {
     internal class BlackHole : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -47,6 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.巨大咕咕鸡
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

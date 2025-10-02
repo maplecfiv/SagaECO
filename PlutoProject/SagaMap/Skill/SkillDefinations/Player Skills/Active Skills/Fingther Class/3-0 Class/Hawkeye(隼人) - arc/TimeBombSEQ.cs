@@ -1,4 +1,5 @@
 using System;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -12,7 +13,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class TimeBombSEQ : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -85,10 +86,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
 
-            #endregion
+            //#endregion
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         private Actor RealdActor;
 
@@ -126,6 +127,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

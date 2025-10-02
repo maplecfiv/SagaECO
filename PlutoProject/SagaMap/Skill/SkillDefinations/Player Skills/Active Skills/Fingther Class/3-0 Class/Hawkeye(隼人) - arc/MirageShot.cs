@@ -1,4 +1,6 @@
-﻿using SagaMap.ActorEventHandlers;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Network.Client;
@@ -8,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 {
     internal class MirageShot : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -177,6 +179,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

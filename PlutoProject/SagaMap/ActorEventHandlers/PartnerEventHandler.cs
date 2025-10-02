@@ -31,7 +31,7 @@ namespace SagaMap.ActorEventHandlers
         public event PartnerCallback SkillUsing;
         public event PartnerCallback Updating;
 
-        #region ActorEventHandler Members
+        //#region ActorEventHandler Members
 
         public void OnActorSkillCancel(Actor sActor)
         {
@@ -430,6 +430,6 @@ namespace SagaMap.ActorEventHandlers
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

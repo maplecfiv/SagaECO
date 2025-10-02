@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
@@ -128,7 +129,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 SkillHandler.Instance.PhysicalAttack(sActor, affected, args, Elements.Dark, factor);
         }
 
-        #region Init
+        //#region Init
 
         //public LightOfTheDarkness()
         //{
@@ -138,7 +139,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        range.Add((SkillHandler.ActorDirection)i, new List<int>());
         //    }
         //    //塞入內容
-        //    #region RangePos
+        //    //#region RangePos
         //    //North
         //    range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 6));
         //    range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 2, 6));
@@ -267,9 +268,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //    range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 3, 6));
         //    range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-1, 2, 6));
         //    range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 6));
-        //    #endregion
+        //    //#endregion
         //}
 
-        #endregion
+        //#endregion
     }
 }

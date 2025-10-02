@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class KyrieEleison : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -47,6 +47,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

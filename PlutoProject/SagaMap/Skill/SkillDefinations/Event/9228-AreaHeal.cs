@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class AreaHeal : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -32,6 +33,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
                 factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

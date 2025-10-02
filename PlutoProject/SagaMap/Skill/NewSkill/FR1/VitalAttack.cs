@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 using SagaMap.Skill.SkillDefinations;
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.NewSkill.FR1
     /// </summary>
     public class VitalAttack : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -43,6 +44,6 @@ namespace SagaMap.Skill.NewSkill.FR1
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

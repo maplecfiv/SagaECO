@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Global
@@ -22,7 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
             Count = count;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -64,6 +65,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

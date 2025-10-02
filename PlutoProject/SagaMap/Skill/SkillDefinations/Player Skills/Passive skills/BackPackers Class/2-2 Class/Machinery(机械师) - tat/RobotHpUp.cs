@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
     /// </summary>
     public class RobotHpUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -39,6 +39,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
             actor.MaxHP -= (uint)(1.07f + 0.03f * skill.skill.Level);
         }
 
-        #endregion
+        //#endregion
     }
 }

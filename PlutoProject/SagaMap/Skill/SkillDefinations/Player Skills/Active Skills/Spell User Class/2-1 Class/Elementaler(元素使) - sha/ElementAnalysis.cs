@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
@@ -8,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class ElementAnalysis : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -37,6 +39,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }

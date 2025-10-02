@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.FR1
 {
     public class Brandish : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -43,6 +45,6 @@ namespace SagaMap.Skill.NewSkill.FR1
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

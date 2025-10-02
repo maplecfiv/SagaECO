@@ -18,7 +18,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             element = e;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -63,6 +63,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             sActor.Slave.RemoveAt(0);
         }
 
-        #endregion
+        //#endregion
     }
 }

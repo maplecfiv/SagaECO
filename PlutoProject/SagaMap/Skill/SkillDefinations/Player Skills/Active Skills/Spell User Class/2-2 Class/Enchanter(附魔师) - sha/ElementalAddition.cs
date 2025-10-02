@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Enchanter_附魔师____sha
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class ElementalAddition : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -16,6 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

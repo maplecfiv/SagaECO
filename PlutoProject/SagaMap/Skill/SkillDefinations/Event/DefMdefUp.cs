@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Event
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class DefMdefUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -49,6 +50,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             actor.Status.mdef_add_skill -= (short)skill.Variable["DefMdefUp_mdef_add"];
         }
 
-        #endregion
+        //#endregion
     }
 }

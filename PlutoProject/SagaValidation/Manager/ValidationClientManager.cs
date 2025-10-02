@@ -13,14 +13,14 @@ namespace SagaValidation.Manager
         public Thread check;
         ValidationClientManager()
         {
-            this.clients = new List<ValidationClient>();
-            this.CommandTable = new Dictionary<ushort, Packet>();
-            this.CommandTable.Add(0x0001, new Packets.Client.CSMG_SEND_VERSION());
-            this.CommandTable.Add(0x001F, new Packets.Client.CSMG_LOGIN());
-            this.CommandTable.Add(0x0031, new Packets.Client.CSMG_SERVERLET_ASK());
-            this.CommandTable.Add(0x002F, new Packets.Client.CSMG_UNKNOWN_LIST());
-            this.CommandTable.Add(0x000A, new Packets.Client.CSMG_PING());
-            this.WaitressQueue = new AutoResetEvent(true);
+            clients = new List<ValidationClient>();
+            CommandTable = new Dictionary<ushort, Packet>();
+            CommandTable.Add(0x0001, new Packets.Client.CSMG_SEND_VERSION());
+            CommandTable.Add(0x001F, new Packets.Client.CSMG_LOGIN());
+            CommandTable.Add(0x0031, new Packets.Client.CSMG_SERVERLET_ASK());
+            CommandTable.Add(0x002F, new Packets.Client.CSMG_UNKNOWN_LIST());
+            CommandTable.Add(0x000A, new Packets.Client.CSMG_PING());
+            WaitressQueue = new AutoResetEvent(true);
         }
         public static ValidationClientManager Instance
         {
@@ -50,7 +50,7 @@ namespace SagaValidation.Manager
                 string ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
                 Logger.ShowInfo("New client from: " + sock.RemoteEndPoint.ToString(), null);
 
-                ValidationClient client = new ValidationClient(sock, this.CommandTable);
+                ValidationClient client = new ValidationClient(sock, CommandTable);
                 clients.Add(client);
             }
         }

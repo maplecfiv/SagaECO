@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class ConvolutionMob : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -38,6 +39,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

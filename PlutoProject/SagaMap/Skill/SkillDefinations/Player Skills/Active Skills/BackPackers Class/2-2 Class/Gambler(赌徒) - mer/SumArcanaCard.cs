@@ -5,7 +5,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class SumArcanaCard : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -20,6 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     NextSkillIDs[SagaLib.Global.Random.Next(0, NextSkillIDs.Length - 1)], level, 0));
         }
 
-        #endregion
+        //#endregion
     }
 }

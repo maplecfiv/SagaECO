@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -16,7 +18,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             element = e;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -150,6 +152,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

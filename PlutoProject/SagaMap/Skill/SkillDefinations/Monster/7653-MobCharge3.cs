@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     烏拉拉~砰！
     /// </summary>
     public class MobCharge3 : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -17,6 +19,6 @@
             SkillHandler.Instance.PushBack(sActor, dActor, 6);
         }
 
-        #endregion
+        //#endregion
     }
 }

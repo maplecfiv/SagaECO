@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._1_0_Class.Farmer_农夫_
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class Cultivation : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -17,6 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             //需確認有哪些可以招換
         }
 
-        #endregion
+        //#endregion
     }
 }

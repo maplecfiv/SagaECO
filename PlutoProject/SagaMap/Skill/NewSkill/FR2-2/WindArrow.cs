@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.FR2_2
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
     /// </summary>
     public class WindArrow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -22,6 +23,6 @@ namespace SagaMap.Skill.NewSkill.FR2_2
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,10 +1,11 @@
-﻿using SagaMap.Skill.Additions;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.技能模版
 {
     public class 被动 : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -35,6 +36,6 @@ namespace SagaMap.Skill.SkillDefinations.技能模版
             //    ((ActorPC)actor).MaxHealMpForWeapon = 0;
         }
 
-        #endregion
+        //#endregion
     }
 }

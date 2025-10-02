@@ -16,7 +16,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             this.NextSkillID = NextSkillID;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -34,6 +34,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(NextSkillID, level, 500));
         }
 
-        #endregion
+        //#endregion
     }
 }

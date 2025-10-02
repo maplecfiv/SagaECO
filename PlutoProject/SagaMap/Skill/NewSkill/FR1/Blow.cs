@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.SkillDefinations;
 
 namespace SagaMap.Skill.NewSkill.FR1
@@ -7,7 +9,7 @@ namespace SagaMap.Skill.NewSkill.FR1
     /// </summary>
     public class Blow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -44,6 +46,6 @@ namespace SagaMap.Skill.NewSkill.FR1
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

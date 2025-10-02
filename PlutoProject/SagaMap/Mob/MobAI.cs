@@ -469,7 +469,7 @@ namespace SagaMap.Mob
                 if (Mob.Tasks.ContainsKey("SkillCast"))
                     return;
 
-                #region 根据条件抽选技能列表
+                //#region 根据条件抽选技能列表
 
                 if (NeedNewSkillList)
                 {
@@ -499,9 +499,9 @@ namespace SagaMap.Mob
                     Sequence = 1;
                 }
 
-                #endregion
+                //#endregion
 
-                #region 按照顺序释放技能
+                //#region 按照顺序释放技能
 
                 foreach (var item in Now_SkillList.AnAI_SkillList)
                 {
@@ -551,7 +551,7 @@ namespace SagaMap.Mob
                     }
                 }
 
-                #endregion
+                //#endregion
             }
             catch (Exception ex)
             {

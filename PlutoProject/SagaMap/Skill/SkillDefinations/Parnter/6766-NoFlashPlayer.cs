@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class NoFlashPlayer : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -86,6 +87,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -186,7 +186,7 @@ namespace SagaDB
         void GetMosterGuide(ActorPC pc);
 
 
-        #region 副职相关
+        //#region 副职相关
 
         void GetDualJobInfo(ActorPC pc);
 
@@ -196,6 +196,6 @@ namespace SagaDB
 
         void SaveDualJobSkill(ActorPC pc);
 
-        #endregion
+        //#endregion
     }
 }

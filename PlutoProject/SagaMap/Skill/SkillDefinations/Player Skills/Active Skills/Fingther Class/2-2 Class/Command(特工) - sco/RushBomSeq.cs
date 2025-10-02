@@ -5,7 +5,7 @@
     /// </summary>
     public class RushBomSeq : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -19,6 +19,6 @@
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

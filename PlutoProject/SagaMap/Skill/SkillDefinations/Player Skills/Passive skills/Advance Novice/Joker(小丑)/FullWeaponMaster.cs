@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Advance_No
     /// </summary>
     public class FullWeaponMaster : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -123,6 +124,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Advance_No
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

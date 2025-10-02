@@ -37,7 +37,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     //public class SordAssailSEQ : ISkill
     //{
-    //    #region ISkill Members
+    //    //#region ISkill Members
     //    public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
     //    {
     //        return 0;
@@ -61,6 +61,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     //        }
 
     //    }
-    //    #endregion
+    //    //#endregion
     //}
 }

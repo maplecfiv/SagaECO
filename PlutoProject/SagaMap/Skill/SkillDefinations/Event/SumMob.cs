@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Event
@@ -14,9 +15,10 @@ namespace SagaMap.Skill.SkillDefinations.Event
             this.MobID = MobID;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
+        
         {
             return 0;
         }
@@ -30,6 +32,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             sActor.Slave.Add(mob);
         }
 
-        #endregion
+        //#endregion
     }
 }

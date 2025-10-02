@@ -11,7 +11,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class HighHeal : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -53,6 +53,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
             //SkillHandler.Instance.FixAttack(sActor, ActorlowHP, args, SagaLib.Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class EagleEye : ISkill
     {
-        #region ISkill 成員
+        //#region ISkill 成員
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -68,6 +69,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

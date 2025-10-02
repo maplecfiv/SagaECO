@@ -55,7 +55,7 @@ namespace SagaMap.Partner
                 if (Partner.Tasks.ContainsKey("SkillCast"))
                     return;
 
-                #region 根据条件抽选技能列表
+                //#region 根据条件抽选技能列表
 
                 if (NeedNewSkillList)
                 {
@@ -86,9 +86,9 @@ namespace SagaMap.Partner
                     Sequence = 1;
                 }
 
-                #endregion
+                //#endregion
 
-                #region 按照顺序释放技能
+                //#region 按照顺序释放技能
 
                 foreach (var item in Now_SkillList.AnAI_SkillList)
                 {
@@ -138,7 +138,7 @@ namespace SagaMap.Partner
                     }
                 }
 
-                #endregion
+                //#endregion
             }
             catch (Exception ex)
             {

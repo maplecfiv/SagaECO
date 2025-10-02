@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Skill.Additions;
@@ -10,7 +12,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
     /// </summary>
     public class LHitUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -73,6 +75,6 @@ namespace SagaMap.Skill.NewSkill.FR2_2
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Event
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Event
 {
     public class MobSkillCast : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -13,6 +15,6 @@
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

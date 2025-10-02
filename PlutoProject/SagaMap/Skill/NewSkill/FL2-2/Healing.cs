@@ -6,7 +6,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class Healing : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -20,6 +20,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
             SkillHandler.Instance.FixAttack(sActor, dActor, args, Elements.Holy, -HP_ADD);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -6,7 +6,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 {
     public class FireBlast : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -44,6 +44,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Fire, factor / affected.Count);
         }
 
-        #endregion
+        //#endregion
     }
 }

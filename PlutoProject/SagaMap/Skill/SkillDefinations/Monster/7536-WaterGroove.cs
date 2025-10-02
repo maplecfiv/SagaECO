@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -73,7 +74,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             timer.Activate();
         }
 
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -208,6 +209,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

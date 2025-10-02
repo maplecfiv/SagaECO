@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -14,7 +15,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class AquaWave : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -34,7 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             //計算起始座標 1 與 2
 
-            #region Calc Start and End Pos
+            //#region Calc Start and End Pos
 
             var dir = SkillHandler.Instance.GetDirection(sActor);
             switch (dir)
@@ -105,7 +106,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     break;
             }
 
-            #endregion
+            //#endregion
 
             //建立海嘯
             for (var i = 0; i < 3; i++)
@@ -164,7 +165,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -283,8 +284,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        #endregion
+        //#endregion
     }
 
-    #endregion
+    //#endregion
 }

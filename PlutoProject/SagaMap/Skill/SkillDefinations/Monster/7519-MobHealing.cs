@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class MobHealing : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -37,6 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             //SkillHandler.Instance.(sActor, ActorlowHP, args, SagaLib.Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

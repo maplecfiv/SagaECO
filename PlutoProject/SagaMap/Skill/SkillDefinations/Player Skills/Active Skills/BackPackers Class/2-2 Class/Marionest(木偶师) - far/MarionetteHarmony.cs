@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class MarionetteHarmony : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         private Elements ele = Elements.Neutral;
 
@@ -204,6 +204,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             actor.Status.sp_skill -= (short)skill.Variable["MarionetteSp"];
         }
 
-        #endregion
+        //#endregion
     }
 }

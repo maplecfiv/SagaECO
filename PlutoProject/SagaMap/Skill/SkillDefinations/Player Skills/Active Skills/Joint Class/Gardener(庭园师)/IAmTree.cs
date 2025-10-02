@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
     {
         private readonly uint TreeMobID = 30040003; //小樹
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -35,6 +35,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
             SkillHandler.Instance.TranceMob(actor, 0);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
     /// </summary>
     public class RobotAtkUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -115,6 +116,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
             actor.Status.min_matk_skill -= (short)skill.Variable["RobotAtkUp_min_matk"];
         }
 
-        #endregion
+        //#endregion
     }
 }

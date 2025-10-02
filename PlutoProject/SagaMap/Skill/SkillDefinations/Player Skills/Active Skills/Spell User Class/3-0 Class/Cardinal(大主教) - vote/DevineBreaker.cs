@@ -1,10 +1,11 @@
+using SagaDB.Actor;
 using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote
 {
     internal class DevineBreaker : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -21,6 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

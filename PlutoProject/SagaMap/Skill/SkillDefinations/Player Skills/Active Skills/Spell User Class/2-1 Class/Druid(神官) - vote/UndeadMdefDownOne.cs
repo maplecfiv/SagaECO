@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class UndeadMdefDownOne : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -82,6 +83,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //actor.Status.mdef_add_skill -= (short)skill.Variable["UndeadMdefDownOne_mdef_add"];
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -7,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class PetMeditation : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -19,6 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             SkillHandler.Instance.FixAttack(sActor, dActor, args, Elements.Holy, -25);
         }
 
-        #endregion
+        //#endregion
     }
 }

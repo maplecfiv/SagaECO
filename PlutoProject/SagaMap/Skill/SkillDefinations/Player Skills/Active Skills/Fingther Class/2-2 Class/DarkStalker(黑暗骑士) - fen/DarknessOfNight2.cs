@@ -11,7 +11,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public Dictionary<SkillHandler.ActorDirection, List<int>> range =
             new Dictionary<SkillHandler.ActorDirection, List<int>>();
 
-        #region Init
+        //#region Init
 
         public DarknessOfNight2()
         {
@@ -19,7 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 4));
@@ -126,12 +126,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-3, 4, 4));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-4, 4, 4));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -167,6 +167,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

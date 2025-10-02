@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
 {
     public class SpearMaster : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -126,6 +128,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

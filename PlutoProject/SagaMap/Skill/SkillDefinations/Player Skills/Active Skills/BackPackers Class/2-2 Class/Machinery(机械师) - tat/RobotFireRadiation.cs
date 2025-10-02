@@ -12,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         public Dictionary<SkillHandler.ActorDirection, List<int>> range =
             new Dictionary<SkillHandler.ActorDirection, List<int>>();
 
-        #region Init
+        //#region Init
 
         public RobotFireRadiation()
         {
@@ -20,7 +20,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 2));
@@ -83,12 +83,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 1, 2));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 0, 2));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -124,6 +124,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, Elements.Fire, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

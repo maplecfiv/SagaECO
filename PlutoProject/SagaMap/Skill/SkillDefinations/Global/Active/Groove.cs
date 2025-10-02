@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -14,7 +15,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
     /// </summary>
     public abstract class Groove
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         protected void ProcSub(Actor sActor, Actor dActor, SkillArg args, byte level, Elements element)
         {
@@ -73,9 +74,9 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
 
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -211,6 +212,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

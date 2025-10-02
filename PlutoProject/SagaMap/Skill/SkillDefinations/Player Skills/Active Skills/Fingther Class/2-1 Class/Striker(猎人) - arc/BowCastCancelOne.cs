@@ -1,10 +1,11 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Striker_猎人____arc
 {
     public class BowCastCancelOne : ISkill
     {
-        #region BowCastCancelOneBuff
+        //#region BowCastCancelOneBuff
 
         public class BowCastCancelOneBuff : DefaultBuff
         {
@@ -29,9 +30,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -46,6 +47,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }

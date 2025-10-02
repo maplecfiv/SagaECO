@@ -7,12 +7,12 @@ namespace SagaMap.Packets.Client
     {
         public CSMG_NO_NYASHIELD()
         {
-            this.offset = 2;
+            offset = 2;
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaMap.Packets.Client.CSMG_NO_NYASHIELD();
+            return (Packet)new CSMG_NO_NYASHIELD();
         }
 
         public override void Parse(SagaLib.Client client)

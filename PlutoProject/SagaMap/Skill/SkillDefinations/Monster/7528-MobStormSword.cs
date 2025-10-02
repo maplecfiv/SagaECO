@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
@@ -18,7 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         //    this.MobUse = MobUse;
         //}
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -44,6 +45,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

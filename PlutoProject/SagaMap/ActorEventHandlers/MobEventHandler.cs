@@ -35,7 +35,7 @@ namespace SagaMap.ActorEventHandlers
         public event MobCallback Updating;
         public event MobCallback FirstTimeDefending;
 
-        #region ActorEventHandler Members
+        //#region ActorEventHandler Members
 
         public void OnActorSkillCancel(Actor sActor)
         {
@@ -801,6 +801,6 @@ namespace SagaMap.ActorEventHandlers
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

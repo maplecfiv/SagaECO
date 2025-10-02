@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global
@@ -11,7 +13,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
         private readonly string name;
         private readonly List<MobType> SomeKind;
 
-        #region Constructers
+        //#region Constructers
 
         public SomeKindDamUp(string PassiveSkillName, List<MobType> kind)
         {
@@ -26,9 +28,9 @@ namespace SagaMap.Skill.SkillDefinations.Global
             foreach (var t in types) SomeKind.Add(t);
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -52,6 +54,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

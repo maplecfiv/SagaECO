@@ -1,4 +1,6 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     各種精靈的憤怒
@@ -14,7 +16,7 @@
             Count = count;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -27,6 +29,6 @@
                 args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(NextSkillID, level, 0));
         }
 
-        #endregion
+        //#endregion
     }
 }

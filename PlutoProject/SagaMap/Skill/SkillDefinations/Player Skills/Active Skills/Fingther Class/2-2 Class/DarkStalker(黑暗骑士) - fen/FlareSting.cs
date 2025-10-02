@@ -5,7 +5,7 @@
     /// </summary>
     public class FlareSting : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -29,6 +29,6 @@
                     args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2404, level, 3000));
         }
 
-        #endregion
+        //#endregion
     }
 }

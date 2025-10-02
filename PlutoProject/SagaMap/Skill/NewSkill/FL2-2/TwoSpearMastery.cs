@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions;
 using SagaMap.Skill.SkillDefinations;
 
@@ -6,7 +8,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
     //ツーハンドスピアマスタリ
     public class TwoSpearMastery : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -68,6 +70,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,7 @@
-﻿using SagaMap.ActorEventHandlers;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
+using SagaDB.Map;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Scripting;
 
@@ -9,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
     /// </summary>
     public class Camp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -67,6 +70,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             map.OnActorVisibilityChange(actor);
         }
 
-        #endregion
+        //#endregion
     }
 }

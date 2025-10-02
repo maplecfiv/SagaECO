@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Advance_Novice.Joker_小丑_
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Advance_No
     /// </summary>
     public class FullerMaster : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -35,6 +36,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Advance_No
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

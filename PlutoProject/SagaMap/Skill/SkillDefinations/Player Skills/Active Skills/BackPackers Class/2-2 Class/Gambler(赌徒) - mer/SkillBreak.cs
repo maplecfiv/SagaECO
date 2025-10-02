@@ -5,7 +5,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class SkillBreak : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -17,6 +17,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, 1f);
         }
 
-        #endregion
+        //#endregion
     }
 }

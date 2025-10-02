@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen
@@ -11,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public Dictionary<SkillHandler.ActorDirection, List<int>> range =
             new Dictionary<SkillHandler.ActorDirection, List<int>>();
 
-        #region Init
+        //#region Init
 
         public DirlineRandSeq2()
         {
@@ -19,7 +20,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(0, 1, 4));
@@ -118,10 +119,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-1, 3, 4));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 3, 4));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
         public List<Actor> GetAffectedActors(Actor sActor)
         {
@@ -150,7 +151,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             return realAffected;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -165,6 +166,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

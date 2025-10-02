@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Parnter
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     エミッション
     /// </summary>
     internal class Emission : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -22,6 +24,6 @@
                 SkillHandler.Instance.MagicAttack(sActor, dActor, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

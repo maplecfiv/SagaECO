@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -6,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 {
     internal class WindHighWave : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -29,6 +30,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Wind, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

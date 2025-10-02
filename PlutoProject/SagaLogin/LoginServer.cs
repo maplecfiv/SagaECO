@@ -157,13 +157,13 @@ namespace SagaLogin
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
-                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
+                              GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + SagaLib.Properties.GlobalInfo.Version + "(" +
-                              SagaLib.Properties.GlobalInfo.ModifyDate + ")");
+            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
+                              GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo("Starting Initialization...", null);
 

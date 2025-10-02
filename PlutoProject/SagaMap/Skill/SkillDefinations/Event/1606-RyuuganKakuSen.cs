@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class Ryuugankakusen : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -45,6 +46,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

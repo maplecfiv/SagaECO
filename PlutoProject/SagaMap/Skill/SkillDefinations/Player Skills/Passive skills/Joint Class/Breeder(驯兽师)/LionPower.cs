@@ -5,7 +5,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Joint_Clas
 {
     public class LionPower : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -40,6 +40,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Joint_Clas
             actor.Status.hit_melee_skill -= (short)skill.Variable["Encouragement_MaxHP"];
         }
 
-        #endregion
+        //#endregion
     }
 }

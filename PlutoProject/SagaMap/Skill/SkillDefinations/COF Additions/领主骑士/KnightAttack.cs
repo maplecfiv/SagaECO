@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -21,7 +22,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             actor.Status.def_add_skill += (short)skill.Variable["KnightAttackDownDef"];
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -61,6 +62,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, Elements.Neutral, 1f);
         }
 
-        #endregion
+        //#endregion
     }
 }

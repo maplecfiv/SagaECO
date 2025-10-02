@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -9,7 +11,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class FortressCircle : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public List<int> range = new List<int>();
         //public FortressCircle()
@@ -109,9 +111,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             //timer.Activate();
         }
 
-        #endregion
+        //#endregion
 
-        #region Timer
+        //#region Timer
 
         //private class Activator : MultiRunTask
         //{
@@ -370,6 +372,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //    }
         //}
 
-        #endregion
+        //#endregion
     }
 }

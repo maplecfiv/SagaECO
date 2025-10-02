@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.技能模版
@@ -19,7 +20,7 @@ namespace SagaMap.Skill.SkillDefinations.技能模版
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -35,7 +36,7 @@ namespace SagaMap.Skill.SkillDefinations.技能模版
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }
 //if (i.Status.Additions.ContainsKey("イレイザー")

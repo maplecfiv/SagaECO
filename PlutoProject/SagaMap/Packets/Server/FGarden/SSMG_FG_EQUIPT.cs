@@ -1,3 +1,4 @@
+using SagaDB.FlyingGarden;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.FGarden
@@ -16,7 +17,7 @@ namespace SagaMap.Packets.Server.FGarden
             set => PutUInt(value, 2);
         }
 
-        public FGardenSlot Place
+        public FlyingGardenSlot Place
         {
             set => PutUInt((uint)value, 6);
         }

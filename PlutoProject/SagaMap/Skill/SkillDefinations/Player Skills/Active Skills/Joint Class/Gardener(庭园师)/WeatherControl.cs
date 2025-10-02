@@ -5,7 +5,7 @@
     /// </summary>
     public class WeatherControl : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -25,6 +25,6 @@
              */
         }
 
-        #endregion
+        //#endregion
     }
 }

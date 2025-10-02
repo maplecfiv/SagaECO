@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     亢奮一踢
     /// </summary>
     public class MCharge3 : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -17,6 +19,6 @@
             SkillHandler.Instance.PushBack(sActor, dActor, 6);
         }
 
-        #endregion
+        //#endregion
     }
 }

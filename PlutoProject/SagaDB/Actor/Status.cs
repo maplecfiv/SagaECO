@@ -887,7 +887,7 @@ namespace SagaDB.Actor
             PhysiceReduceRate = 0;
         }
 
-        #region Skill Related Status
+        //#region Skill Related Status
 
         /// <summary>
         ///     对Zen有效的技能ID
@@ -1013,10 +1013,10 @@ namespace SagaDB.Actor
         /// </summary>
         public byte ElementDamegeDown_rate;
 
-        #endregion
+        //#endregion
 
 
-        #region Possession Related Status
+        //#region Possession Related Status
 
         /// <summary>
         ///     寄主承担凭依者凭依伤害的几率
@@ -1042,6 +1042,6 @@ namespace SagaDB.Actor
         public short hp_possession, sp_possession, mp_possession;
         public short def_possession, def_add_possession, mdef_possession, mdef_add_possession;
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Parnter
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Parnter
 {
     /// <summary>
     ///     黄泉還り
     /// </summary>
     public class Yukimori : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -24,6 +26,6 @@
             SkillHandler.Instance.ShowVessel(sActor, -dmg);
         }
 
-        #endregion
+        //#endregion
     }
 }

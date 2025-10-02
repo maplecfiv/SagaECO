@@ -235,7 +235,7 @@ namespace SagaDB.Actor
         {
             //似乎是移动速度判定
 
-            #region 试图的解锁，失败
+            //#region 试图的解锁，失败
 
             //get
             //{
@@ -277,7 +277,7 @@ namespace SagaDB.Actor
             //    if (e != null) e.PropertyUpdate(UpdateEvent.SPEED, 0);
             //}表现非常不正常的减速效果，待议先留着
 
-            #endregion
+            //#endregion
 
             get
             {

@@ -7,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class PetAtkupSelf : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -60,6 +60,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             actor.Status.max_atk3_skill -= (short)skill.Variable["PetAtkupSelf_max_atk3"];
         }
 
-        #endregion
+        //#endregion
     }
 }

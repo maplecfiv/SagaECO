@@ -1,4 +1,5 @@
 using System;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -56,7 +57,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
         {
         }
 
-        #region Timer
+        //#region Timer
 
         public class Activator : MultiRunTask
         {
@@ -138,9 +139,9 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -201,6 +202,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 {
     internal class Roar : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -35,6 +36,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Neutral, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

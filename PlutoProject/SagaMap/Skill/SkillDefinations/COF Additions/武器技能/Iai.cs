@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class IaiForWeapon : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -34,6 +35,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

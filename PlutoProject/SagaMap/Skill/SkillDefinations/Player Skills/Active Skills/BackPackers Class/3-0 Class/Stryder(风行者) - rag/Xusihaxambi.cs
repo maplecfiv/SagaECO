@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 {
     public class Xusihaxambi : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -62,9 +62,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
 
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -144,9 +144,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     }
 }
 
-#endregion
+//#endregion
 
-//#region ISkill Members
+////#region ISkill Members
 
 //public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
 //{
@@ -182,9 +182,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 //    timer.Activate();
 //}
 
-//#endregion
+////#endregion
 
-//#region Timer
+////#region Timer
 
 //private class Activator : MultiRunTask
 //{
@@ -253,4 +253,4 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 //        //测试去除技能同步锁ClientManager.LeaveCriticalArea();
 //    }
 //}
-//#endregion
+////#endregion

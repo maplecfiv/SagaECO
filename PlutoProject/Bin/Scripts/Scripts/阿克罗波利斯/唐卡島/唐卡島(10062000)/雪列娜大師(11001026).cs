@@ -18,7 +18,7 @@ namespace SagaScript.M10062000
         public override void OnEvent(ActorPC pc)
         {
             BitMask<FGarden> fgarden = pc.AMask["FGarden"];
-            
+
             /*if (a//ME.IS_CAPA_PAYL_OVER = 1
             && !_2b31)
             {
@@ -58,89 +58,89 @@ namespace SagaScript.M10062000
                 }
             }
         }
-        
+
         void 飛空艇改造(ActorPC pc)
         {
-           
-           BitMask<FGarden> fgarden = pc.AMask["FGarden"];
-           if (fgarden.Test(FGarden.给予飞空翅膀))
-           {
-               switch (Select(pc, "新的飞行帆制作？", "", "不制作", "制作！"))
-               {
-                   case 1:
-                       break;
-                   case 2:
-                       Say(pc, 131, "OK！$R;" +
-                           "根据心情来更换飞行帆$R;" +
-                           "是件非常棒的事！$R;" +
-                           "$R那么、马上开始$R;" +
-                           "著手制作吧！$R;" +
-                           "$P价格、制作要9999万G！$R;");
-                       Select(pc, "怎么办？", "", "盯", "无视", "冷目相看");
-                       Say(pc, 131, "啊！$R;" +
-                           "果然第二次就吓不倒你了啊。$R;" +
-                           "$R刚才的是从材料收集到$R;" +
-                           "装配全部都在这边做的价格。$R;" +
-                           "$R客人你自己搜集材料$R;" +
-                           "来做的话只需要5000G。$R;");
-                       switch (Select(pc, "怎么办？", "", "考虑一下", "5000G"))
-                       {
-                           case 1:
-                               break;
-                           case 2:
-                               if (pc.Gold > 4999)
-                               {
-                                   fgarden.SetValue(FGarden.委托飞空庭甲板, false);
-                                   fgarden.SetValue(FGarden.委托汽笛, false);
-                                   fgarden.SetValue(FGarden.委托涡轮引擎, false);
-                                   fgarden.SetValue(FGarden.委托飞行用帆, false);
-                                   fgarden.SetValue(FGarden.完全委托飞行用帆, false);
-                                   fgarden.SetValue(FGarden.委托飞行用大帆, false);
-                                   fgarden.SetValue(FGarden.完全委托飞行用大帆, false);
-                                   fgarden.SetValue(FGarden.飞空庭改造完成, false);
-                                   fgarden.SetValue(FGarden.给予飞空翅膀, false);
-                                   pc.Gold -= 5000;
-                                   Say(pc, 131, "那么开始受理了！$R;" +
-                                       "负责人就是我雪列娜。$R;" +
-                                       "$R有任何问题的话$R;" +
-                                       "就到我这里来报告吧$R;" +
-                                       "$P那么赶紧开始收集$R;" +
-                                       "飞行帆所需要的材料。$R;" +
-                                       "$R需要收集的道具有……$R;" +
-                                       "$P　飞空庭甲板　1个$R;" +
-                                       "　涡轮引擎　1个$R;" +
-                                       "　汽笛　1个$R;" +
-                                       "　飞行用帆　2个$R;" +
-                                       "　飞行用大帆　2个$R;" +
-                                       "$P道具预存在大工厂。$R;" +
-                                       "$R需要的道具全部收集齐全后$R;" +
-                                       "就立即进入飞行帆装配作业！$R;");
-                                   return;
-                               }
-                               Say(pc, 131, "金钱好像不够哦……。$R;");
-                               break;
-                       }
-                       break;
-               }
-               return;
-           }
 
-           if (fgarden.Test(FGarden.飞空庭改造完成))
-           {
-               完成(pc);
-               return;
-           }
+            BitMask<FGarden> fgarden = pc.AMask["FGarden"];
+            if (fgarden.Test(FGarden.给予飞空翅膀))
+            {
+                switch (Select(pc, "新的飞行帆制作？", "", "不制作", "制作！"))
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        Say(pc, 131, "OK！$R;" +
+                            "根据心情来更换飞行帆$R;" +
+                            "是件非常棒的事！$R;" +
+                            "$R那么、马上开始$R;" +
+                            "著手制作吧！$R;" +
+                            "$P价格、制作要9999万G！$R;");
+                        Select(pc, "怎么办？", "", "盯", "无视", "冷目相看");
+                        Say(pc, 131, "啊！$R;" +
+                            "果然第二次就吓不倒你了啊。$R;" +
+                            "$R刚才的是从材料收集到$R;" +
+                            "装配全部都在这边做的价格。$R;" +
+                            "$R客人你自己搜集材料$R;" +
+                            "来做的话只需要5000G。$R;");
+                        switch (Select(pc, "怎么办？", "", "考虑一下", "5000G"))
+                        {
+                            case 1:
+                                break;
+                            case 2:
+                                if (pc.Gold > 4999)
+                                {
+                                    fgarden.SetValue(FGarden.委托飞空庭甲板, false);
+                                    fgarden.SetValue(FGarden.委托汽笛, false);
+                                    fgarden.SetValue(FGarden.委托涡轮引擎, false);
+                                    fgarden.SetValue(FGarden.委托飞行用帆, false);
+                                    fgarden.SetValue(FGarden.完全委托飞行用帆, false);
+                                    fgarden.SetValue(FGarden.委托飞行用大帆, false);
+                                    fgarden.SetValue(FGarden.完全委托飞行用大帆, false);
+                                    fgarden.SetValue(FGarden.飞空庭改造完成, false);
+                                    fgarden.SetValue(FGarden.给予飞空翅膀, false);
+                                    pc.Gold -= 5000;
+                                    Say(pc, 131, "那么开始受理了！$R;" +
+                                        "负责人就是我雪列娜。$R;" +
+                                        "$R有任何问题的话$R;" +
+                                        "就到我这里来报告吧$R;" +
+                                        "$P那么赶紧开始收集$R;" +
+                                        "飞行帆所需要的材料。$R;" +
+                                        "$R需要收集的道具有……$R;" +
+                                        "$P　飞空庭甲板　1个$R;" +
+                                        "　涡轮引擎　1个$R;" +
+                                        "　汽笛　1个$R;" +
+                                        "　飞行用帆　2个$R;" +
+                                        "　飞行用大帆　2个$R;" +
+                                        "$P道具预存在大工厂。$R;" +
+                                        "$R需要的道具全部收集齐全后$R;" +
+                                        "就立即进入飞行帆装配作业！$R;");
+                                    return;
+                                }
+                                Say(pc, 131, "金钱好像不够哦……。$R;");
+                                break;
+                        }
+                        break;
+                }
+                return;
+            }
+
+            if (fgarden.Test(FGarden.飞空庭改造完成))
+            {
+                完成(pc);
+                return;
+            }
 
             if (fgarden.Test(FGarden.开始收集改造部件))
             {
                 if (CountItem(pc, 10049500) >= 1)//30060000
                 {
-                    Say(pc, 131, "这是……$R;"+
-                                 "推进器?$R;"+
-                                 "……天哪$R;"+
-                                 "是这个东西的话,稍作加工就可以做出$R;"+
-                                 "奇迹一般的飞空帆$R;"+
-                                 "甚至连摩戈炭都不需要!$R;"+
+                    Say(pc, 131, "这是……$R;" +
+                                 "推进器?$R;" +
+                                 "……天哪$R;" +
+                                 "是这个东西的话,稍作加工就可以做出$R;" +
+                                 "奇迹一般的飞空帆$R;" +
+                                 "甚至连摩戈炭都不需要!$R;" +
                                  "如何!要试试吗?");
                     switch (Select(pc, "怎么办呢？", "", "不要", "怎么有拒绝的理由!"))
                     {
@@ -157,7 +157,7 @@ namespace SagaScript.M10062000
                             Wait(pc, 2000);
                             Fade(pc, FadeType.In, FadeEffect.Black);
                             TakeItem(pc, 10049500, 1);
-                            GiveItem(pc, 30060000,1);
+                            GiveItem(pc, 30060000, 1);
                             Say(pc, 131, "好$R;" +
                                  "完成了!$R;" +
                                  "赶紧拿去试试吧?");
@@ -219,7 +219,7 @@ namespace SagaScript.M10062000
                     }
                 }
 
-                #region 飞空庭改造零件
+                //#region 飞空庭改造零件
                 switch (Select(pc, "怎么办呢？", "", "交付『飞空庭甲板』", "交付『涡轮引擎』", "交付『汽笛』", "交付『飞行用帆』", "交付『飞行用大帆』", "确认部件收集情況。", "放弃"))
                 {
                     case 1:
@@ -364,10 +364,10 @@ namespace SagaScript.M10062000
                     case 7:
                         return;
                 }
-#endregion
+                //#endregion
 
-                if (!fgarden.Test(FGarden.飞空庭改造完成) && 
-                    fgarden.Test(FGarden.接受改造飞空庭订单) && 
+                if (!fgarden.Test(FGarden.飞空庭改造完成) &&
+                    fgarden.Test(FGarden.接受改造飞空庭订单) &&
                     fgarden.Test(FGarden.铁板收集完毕) &&
                     fgarden.Test(FGarden.委托飞空庭甲板) &&
                     fgarden.Test(FGarden.委托汽笛) &&
@@ -383,7 +383,7 @@ namespace SagaScript.M10062000
                 return;
             }
 
-            #region 听完飞行规则
+            //#region 听完飞行规则
             if (fgarden.Test(FGarden.听完飞空庭飞行规则))
             {
                 fgarden.SetValue(FGarden.开始收集改造部件, true);
@@ -405,7 +405,7 @@ namespace SagaScript.M10062000
                     "$R需要的道具收集完后，$R就开始组装飞行用帆吧。$R;");
                 return;
             }
-            #endregion
+            //#endregion
 
             if (fgarden.Test(FGarden.铁板收集完毕))
             {
@@ -457,7 +457,7 @@ namespace SagaScript.M10062000
                 return;
             }
 
-            #region 接受订单
+            //#region 接受订单
 
             Say(pc, 131, "改造飞空庭？$R;" +
                 "$R真是好久没有接到过的订单呀$R;" +
@@ -522,7 +522,7 @@ namespace SagaScript.M10062000
                         break;
                 }
             } while (SEL == 2);
-            #endregion
+            //#endregion
         }
 
         void 完成(ActorPC pc)
@@ -648,7 +648,7 @@ namespace SagaScript.M10062000
 
                             if (fgarden.Test(FGarden.委托飞空庭甲板))
                             {
-                                if (!CheckInventory(pc,10029100,1))
+                                if (!CheckInventory(pc, 10029100, 1))
                                 {
                                     Say(pc, 131, "给您道具，$R;" +
                                         "先减少行李再过来吧。$R;");
@@ -661,7 +661,7 @@ namespace SagaScript.M10062000
                             }
                             if (fgarden.Test(FGarden.委托涡轮引擎))
                             {
-                                if (!CheckInventory(pc,10027750,1))
+                                if (!CheckInventory(pc, 10027750, 1))
                                 {
                                     Say(pc, 131, "给您道具，$R;" +
                                         "先减少行李再过来吧。$R;");
@@ -673,7 +673,7 @@ namespace SagaScript.M10062000
                             }
                             if (fgarden.Test(FGarden.委托汽笛))
                             {
-                                if (!CheckInventory(pc,10018600,1))
+                                if (!CheckInventory(pc, 10018600, 1))
                                 {
                                     Say(pc, 131, "给您道具，$R;" +
                                         "先减少行李再过来吧。$R;");
@@ -685,7 +685,7 @@ namespace SagaScript.M10062000
                             }
                             if (fgarden.Test(FGarden.委托飞行用帆))
                             {
-                                if (!CheckInventory(pc,10028700,1))
+                                if (!CheckInventory(pc, 10028700, 1))
                                 {
                                     Say(pc, 131, "给您道具，$R;" +
                                         "先减少行李再过来吧。$R;");

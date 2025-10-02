@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Global
 {
     /// <summary>
@@ -19,7 +21,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
             MobType = PetType;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -37,6 +39,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

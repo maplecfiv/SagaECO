@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class HpRecoveryMax : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -30,6 +31,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

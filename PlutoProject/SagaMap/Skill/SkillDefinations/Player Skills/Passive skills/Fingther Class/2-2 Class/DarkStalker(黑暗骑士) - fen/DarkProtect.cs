@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
     /// </summary>
     public class DarkProtect : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -95,6 +95,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
             actor.Status.mdef_add_skill -= (short)skill.Variable["DarkProtect_mdef_add"];
         }
 
-        #endregion
+        //#endregion
     }
 }

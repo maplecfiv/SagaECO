@@ -7,22 +7,22 @@ namespace SagaMap.Packets.Server
     {
         public SSMG_FG_ACTOR_APPEAR_OLD(byte type)
         {
-            this.data = new byte[29];
-            this.offset = 2;
+            data = new byte[29];
+            offset = 2;
             if (type == 1)
-                this.ID = 0x1BEF;
+                ID = 0x1BEF;
             else if (type == 3)
-                this.ID = 0x2058;
+                ID = 0x2058;
             else
-                this.ID = 0x1C03;
-            this.PutByte(0, 14);
+                ID = 0x1C03;
+            PutByte(0, 14);
         }
 
         public uint ActorID
         {
             set
             {
-                this.PutUInt(value, 2);
+                PutUInt(value, 2);
             }
         }
 
@@ -30,7 +30,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 6);
+                PutUInt(value, 6);
             }
         }
 
@@ -38,7 +38,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 10);
+                PutUInt(value, 10);
             }
         }
 
@@ -46,7 +46,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutShort(value, 15);
+                PutShort(value, 15);
             }
         }
 
@@ -54,7 +54,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutShort(value, 17);
+                PutShort(value, 17);
             }
         }
 
@@ -62,7 +62,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutShort(value, 19);
+                PutShort(value, 19);
             }
         }
 
@@ -70,21 +70,21 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutShort(value, 21);
+                PutShort(value, 21);
             }
         }
         public short Yaxis
         {
             set
             {
-                this.PutShort(value, 23);
+                PutShort(value, 23);
             }
         }
         public short Zaxis
         {
             set
             {
-                this.PutShort(value, 25);
+                PutShort(value, 25);
             }
         }
 
@@ -92,7 +92,7 @@ namespace SagaMap.Packets.Server
         {
             set
             {
-                this.PutUShort(value, 27);
+                PutUShort(value, 27);
             }
         }
 
@@ -102,10 +102,10 @@ namespace SagaMap.Packets.Server
             {
                 byte[] name = Global.Unicode.GetBytes(value + "\0");
                 byte[] buf = new byte[30 + name.Length];
-                this.data.CopyTo(buf, 0);
-                this.data = buf;
-                this.PutByte((byte)name.Length, 29);
-                this.PutBytes(name, 30);
+                data.CopyTo(buf, 0);
+                data = buf;
+                PutByte((byte)name.Length, 29);
+                PutBytes(name, 30);
             }
         }
     }

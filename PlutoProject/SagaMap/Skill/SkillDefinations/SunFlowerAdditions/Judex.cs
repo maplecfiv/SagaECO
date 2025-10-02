@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class Judex : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -40,6 +40,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

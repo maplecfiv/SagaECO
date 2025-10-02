@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.SkillDefinations;
 
@@ -5,7 +6,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
 {
     public class IceStab : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -31,6 +32,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
             args.AddSameActor(args2);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class MobNoHeal : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -42,6 +43,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

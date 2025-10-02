@@ -1,4 +1,7 @@
 using System;
+using SagaDB.Actor;
+using SagaDB.Item;
+using SagaDB.Theater;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Manager;

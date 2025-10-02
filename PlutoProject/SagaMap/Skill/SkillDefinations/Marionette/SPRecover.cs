@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     木偶時的SP自然恢復
     /// </summary>
     public class SPRecovery : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -32,6 +34,6 @@
         //    actor.Status.sp_recover_skill -= 15;
         //}
 
-        #endregion
+        //#endregion
     }
 }

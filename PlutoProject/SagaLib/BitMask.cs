@@ -17,7 +17,7 @@ namespace SagaLib
 
         public BitMask(BitMask ori)
         {
-            this._ori = ori;
+            _ori = ori;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SagaLib
         /// <param name="value">值</param>
         public BitMask(int value)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SagaLib
         public int Value
         {
             get => _value;
-            set => this._value = value;
+            set => _value = value;
         }
 
         /// <summary>

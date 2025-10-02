@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.天骸鸢
 {
     internal class FireInfernal : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -43,6 +44,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.天骸鸢
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Fire, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -18,7 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         }
 
 
-        #region Init
+        //#region Init
 
         public void init()
         {
@@ -26,7 +27,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 2));
@@ -89,12 +90,12 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 1, 2));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-2, 0, 2));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -135,6 +136,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

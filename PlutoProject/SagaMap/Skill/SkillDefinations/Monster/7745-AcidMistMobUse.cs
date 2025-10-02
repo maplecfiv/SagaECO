@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -12,7 +13,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class AcidMistMobUse : MobISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -79,9 +80,9 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -124,6 +125,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

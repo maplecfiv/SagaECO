@@ -17,7 +17,7 @@ namespace SagaMap.ActorEventHandlers
         {
         }
 
-        #region ActorEventHandler Members
+        //#region ActorEventHandler Members
 
         public void OnActorSkillCancel(Actor sActor)
         {
@@ -221,6 +221,6 @@ namespace SagaMap.ActorEventHandlers
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

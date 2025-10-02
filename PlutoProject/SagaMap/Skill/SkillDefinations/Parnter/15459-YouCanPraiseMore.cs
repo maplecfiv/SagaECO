@@ -1,4 +1,5 @@
 ﻿using System;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class YouCanPraiseMore : ISkill
     {
-        #region ISkill 成員
+        //#region ISkill 成員
 
         private int KillingMarkCounter;
 
@@ -47,6 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

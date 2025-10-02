@@ -16,36 +16,36 @@ namespace SagaValidation
         bool serverclose = false;
 
         SagaLib.Version version;
-        public string DBHost { get { return this.dbhost; } set { this.dbhost = value; } }
-        public string DBUser { get { return this.dbuser; } set { this.dbuser = value; } }
-        public string DBPass { get { return this.dbpass; } set { this.dbpass = value; } }
-        public string DBName { get { return this.dbname; } set { this.dbname = value; } }
-        public string Password { get { return this.password; } set { this.password = value; } }
-        public int DBPort { get { return this.dbport; } set { this.dbport = value; } }
-        public int Port { get { return this.port; } set { this.port = value; } }
-        public int DBType { get { return this.dbType; } set { this.dbType = value; } }
+        public string DBHost { get { return dbhost; } set { dbhost = value; } }
+        public string DBUser { get { return dbuser; } set { dbuser = value; } }
+        public string DBPass { get { return dbpass; } set { dbpass = value; } }
+        public string DBName { get { return dbname; } set { dbname = value; } }
+        public string Password { get { return password; } set { password = value; } }
+        public int DBPort { get { return dbport; } set { dbport = value; } }
+        public int Port { get { return port; } set { port = value; } }
+        public int DBType { get { return dbType; } set { dbType = value; } }
 
-        public string ServerName { get { return this.servername; } set { this.servername = value; } }
-        public string ServerIP { get { return this.serverip; } set { this.serverip = value; } }
-        public SagaLib.Version Version { get { return this.version; } set { this.version = value; } }
-        public string ClientGameVersion { get { return this.clientgameversion; } set { this.clientgameversion = value; } }
-        public bool ServerClose { get { return this.serverclose; } set { this.serverclose = value; } }
+        public string ServerName { get { return servername; } set { servername = value; } }
+        public string ServerIP { get { return serverip; } set { serverip = value; } }
+        public SagaLib.Version Version { get { return version; } set { version = value; } }
+        public string ClientGameVersion { get { return clientgameversion; } set { clientgameversion = value; } }
+        public bool ServerClose { get { return serverclose; } set { serverclose = value; } }
 
         public string DBEncoding
         {
             get
             {
-                if (this.encoding == null)
+                if (encoding == null)
                 {
                     Logger.ShowDebug("DB Encoding not set, set to default value: GBK", Logger.CurrentLogger);
-                    this.encoding = "GBK";
+                    encoding = "GBK";
                 }
-                return this.encoding;
+                return encoding;
             }
-            set { this.encoding = value; }
+            set { encoding = value; }
         }
 
-        public int LogLevel { get { return this.loglevel; } set { this.loglevel = value; } }
+        public int LogLevel { get { return loglevel; } set { loglevel = value; } }
 
 
         public void Initialization(string path)
@@ -68,62 +68,62 @@ namespace SagaValidation
                     switch (i.Name.ToLower())
                     {
                         case "dbtype":
-                            this.dbType = int.Parse(i.InnerText);
+                            dbType = int.Parse(i.InnerText);
                             break;
                         case "port":
-                            this.port = int.Parse(i.InnerText);
+                            port = int.Parse(i.InnerText);
                             break;
                         case "dbhost":
-                            this.dbhost = i.InnerText;
+                            dbhost = i.InnerText;
                             break;
                         case "dbport":
-                            this.dbport = int.Parse(i.InnerText);
+                            dbport = int.Parse(i.InnerText);
                             break;
                         case "dbuser":
-                            this.dbuser = i.InnerText;
+                            dbuser = i.InnerText;
                             break;
                         case "dbpass":
-                            this.dbpass = i.InnerText;
+                            dbpass = i.InnerText;
                             break;
                         case "dbname":
-                            this.dbname = i.InnerText;
+                            dbname = i.InnerText;
                             break;
                         case "dbencoding":
-                            this.encoding = i.InnerText;
+                            encoding = i.InnerText;
                             break;
                         case "password":
-                            this.password = i.InnerText;
+                            password = i.InnerText;
                             break;
                         case "loglevel":
-                            this.loglevel = int.Parse(i.InnerText);
+                            loglevel = int.Parse(i.InnerText);
                             break;
                         case "version":
                             try
                             {
-                                this.version = (SagaLib.Version)Enum.Parse(typeof(SagaLib.Version), i.InnerText);
+                                version = (SagaLib.Version)Enum.Parse(typeof(SagaLib.Version), i.InnerText);
                                 getVersion = true;
                             }
                             catch
                             {
-                                Logger.ShowWarning(string.Format("Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, this.version));
+                                Logger.ShowWarning(string.Format("Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, version));
                             }
                             break;
                         case "clientgameversion":
-                            this.clientgameversion = i.InnerText;
-                            if (this.clientgameversion == "All" || this.clientgameversion == "")
+                            clientgameversion = i.InnerText;
+                            if (clientgameversion == "All" || clientgameversion == "")
                             {
-                                this.clientgameversion = "All";
+                                clientgameversion = "All";
                                 nullClientGameVersion = true;
                             }
                             break;
                         case "servername":
-                            this.servername = i.InnerText;
+                            servername = i.InnerText;
                             break;
                         case "serverip":
-                            this.serverip = i.InnerText;
+                            serverip = i.InnerText;
                             break;
                         case "serverclose":
-                            this.serverclose = bool.Parse(i.InnerText);
+                            serverclose = bool.Parse(i.InnerText);
                             break;
                     }
                 }

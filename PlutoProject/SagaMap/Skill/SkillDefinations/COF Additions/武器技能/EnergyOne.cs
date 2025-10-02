@@ -1,4 +1,6 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
+using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 
@@ -6,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class EnergyOneForWeapon : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -46,6 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

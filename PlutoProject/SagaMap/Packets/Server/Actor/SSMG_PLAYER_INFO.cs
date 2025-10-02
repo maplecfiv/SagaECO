@@ -78,7 +78,7 @@ namespace SagaMap.Packets.Server.Actor
         {
             set
             {
-                #region Saga6
+                //#region Saga6
 
                 if (Configuration.Configuration.Instance.Version == Version.Saga6)
                 {
@@ -261,9 +261,9 @@ namespace SagaMap.Packets.Server.Actor
             */
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga9/Saga9_2
+                //#region Saga9/Saga9_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
                     Configuration.Configuration.Instance.Version < Version.Saga14_2)
@@ -467,9 +467,9 @@ namespace SagaMap.Packets.Server.Actor
             byte  guest //ゲストIDかどうか (07/11/22より)*/
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga14_2
+                //#region Saga14_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
                     Configuration.Configuration.Instance.Version < Version.Saga17)
@@ -640,9 +640,9 @@ namespace SagaMap.Packets.Server.Actor
                     }
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga17
+                //#region Saga17
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
@@ -927,7 +927,7 @@ namespace SagaMap.Packets.Server.Actor
                     }
                 }
 
-                #endregion
+                //#endregion
             }
         }
     }

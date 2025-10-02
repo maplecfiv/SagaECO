@@ -4,7 +4,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 {
     public class DarkMist : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -52,6 +52,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             actor.Status.avoid_melee_skill -= (short)skill.Variable["DarkMist_avo_melee_down"];
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         private readonly uint SKETCHBOOK = 10020757; //畫板
         private readonly uint SKETCHBOOK_Finish = 10020758; //畫板（畫作完成）
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -33,6 +33,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.Instance.AttractMob(sActor, dActor, 1);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -5,7 +5,7 @@
     /// </summary>
     public class SwordAssail : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -36,6 +36,6 @@
             //SkillHandler.Instance.PhysicalAttack(sActor, dest, args, sActor.WeaponElement, factor[level]);
         }
 
-        #endregion
+        //#endregion
     }
 }

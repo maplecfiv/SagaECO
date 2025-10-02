@@ -13,9 +13,9 @@ namespace SagaLogin.Packets.Server
     {
         public SSMG_SERVER_LST_END()
         {
-            this.data = new byte[2];
-            this.offset = 2;
-            this.ID = 0x34;
+            data = new byte[2];
+            offset = 2;
+            ID = 0x34;
         }
 
     }

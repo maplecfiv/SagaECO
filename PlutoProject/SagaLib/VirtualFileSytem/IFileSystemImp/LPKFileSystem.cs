@@ -10,7 +10,7 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp
     {
         private LpkFile lpk;
 
-        #region IFileSystem Members
+        //#region IFileSystem Members
 
         public bool Init(string path)
         {
@@ -68,6 +68,6 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp
             lpk.Close();
         }
 
-        #endregion
+        //#endregion
     }
 }

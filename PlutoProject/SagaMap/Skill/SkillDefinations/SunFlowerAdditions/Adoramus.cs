@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
     /// </summary>
     public class Adoramus : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -22,6 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
                 SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

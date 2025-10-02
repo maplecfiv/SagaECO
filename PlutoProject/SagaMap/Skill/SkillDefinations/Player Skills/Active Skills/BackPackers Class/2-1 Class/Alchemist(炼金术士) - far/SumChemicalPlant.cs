@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_1_Class.Alchemist_炼金术士____far
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class SumChemicalPlant : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -35,9 +36,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             args.autoCast.Add(aci);
         }
 
-        #endregion
+        //#endregion
 
-        //#region Timer
+        ////#region Timer
         //private class Activator : MultiRunTask
         //{
         //    Actor sActor;
@@ -73,6 +74,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         //        ClientManager.LeaveCriticalArea();
         //    }
         //}
-        //#endregion
+        ////#endregion
     }
 }

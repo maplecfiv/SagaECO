@@ -12,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class ThrowChemical : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -114,9 +114,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -195,6 +195,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

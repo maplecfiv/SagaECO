@@ -5,7 +5,7 @@
     /// </summary>
     public class Tackle : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -42,6 +42,6 @@
             SkillHandler.Instance.PushBack(sActor, dActor, 1 + level);
         }
 
-        #endregion
+        //#endregion
     }
 }

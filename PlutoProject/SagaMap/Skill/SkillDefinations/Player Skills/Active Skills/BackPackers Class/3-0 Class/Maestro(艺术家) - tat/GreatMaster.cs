@@ -4,7 +4,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 {
     public class GreatMaster : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -58,6 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             //actor.Status.min_matk_skill -= (short)(actor.Status.min_matk * 1f + 0.05f * skill.skill.Level);
         }
 
-        #endregion
+        //#endregion
     }
 }

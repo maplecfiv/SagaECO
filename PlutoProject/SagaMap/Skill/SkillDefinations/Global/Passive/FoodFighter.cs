@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
     /// </summary>
     public class FoodFighter : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -37,6 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
                 skill.Variable.Remove("FoodFighter");
         }
 
-        #endregion
+        //#endregion
     }
 }

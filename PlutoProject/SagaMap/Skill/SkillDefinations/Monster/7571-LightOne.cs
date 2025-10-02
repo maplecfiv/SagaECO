@@ -1,10 +1,11 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
     public class LightOne : ISkill
     {
-        #region
+        //#region
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -17,6 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Holy, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

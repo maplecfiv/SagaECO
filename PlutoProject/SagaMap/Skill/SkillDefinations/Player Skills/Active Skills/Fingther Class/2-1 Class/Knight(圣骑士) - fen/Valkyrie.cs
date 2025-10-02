@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     ///     神聖的一擊（ヴァルキリー）
     /// </summary>
 
-    #region ISkill Members
+    //#region ISkill Members
 
     public class Valkyrie : ISkill
     {
@@ -30,4 +31,4 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     }
 }
 
-#endregion
+//#endregion

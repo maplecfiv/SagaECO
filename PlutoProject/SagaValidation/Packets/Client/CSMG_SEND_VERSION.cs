@@ -7,19 +7,19 @@ namespace SagaValidation.Packets.Client
     {
         public CSMG_SEND_VERSION()
         {
-            this.size = 10;
-            this.offset = 2;
+            size = 10;
+            offset = 2;
         }
 
         public string GetVersion()
         {
-            byte[] buf = this.GetBytes(6, 4);
+            byte[] buf = GetBytes(6, 4);
             return Conversions.bytes2HexString(buf);
         }
 
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaValidation.Packets.Client.CSMG_SEND_VERSION();
+            return (Packet)new CSMG_SEND_VERSION();
         }
 
         public override void Parse(SagaLib.Client client)

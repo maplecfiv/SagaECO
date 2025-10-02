@@ -1,4 +1,5 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Event
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class ConflictKick : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -19,6 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Neutral, 2f);
         }
 
-        #endregion
+        //#endregion
     }
 }

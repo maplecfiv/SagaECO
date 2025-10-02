@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.NewSkill.NewBoss
 {
     internal class B1 : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -168,6 +169,6 @@ namespace SagaMap.Skill.NewSkill.NewBoss
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, sActor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

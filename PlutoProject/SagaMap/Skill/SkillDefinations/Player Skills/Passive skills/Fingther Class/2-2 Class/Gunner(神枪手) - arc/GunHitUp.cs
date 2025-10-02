@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
     /// </summary>
     public class GunHitUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -52,6 +52,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
             actor.Status.hit_ranged_skill -= (short)skill.Variable["GunHitUp_hit_ranged"];
         }
 
-        #endregion
+        //#endregion
     }
 }

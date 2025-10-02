@@ -1,10 +1,11 @@
-﻿using SagaMap.Skill.Additions;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
 {
     public class IceDef : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -19,6 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             SkillHandler.ApplyAddition(sActor, skill);
         }
 
-        #endregion
+        //#endregion
     }
 }

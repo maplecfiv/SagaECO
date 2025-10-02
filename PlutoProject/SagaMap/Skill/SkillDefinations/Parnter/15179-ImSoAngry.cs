@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Parnter
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class ImSoAngry : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -94,6 +95,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using SagaMap.Skill.Additions;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Weapon.Passive
 {

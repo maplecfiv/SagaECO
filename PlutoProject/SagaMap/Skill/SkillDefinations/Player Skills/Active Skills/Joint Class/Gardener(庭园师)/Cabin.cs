@@ -7,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
     /// </summary>
     public class Cabin : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -31,6 +31,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

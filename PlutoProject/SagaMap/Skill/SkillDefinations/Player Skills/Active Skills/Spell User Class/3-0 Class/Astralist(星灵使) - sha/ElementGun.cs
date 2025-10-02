@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Skill;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -7,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 {
     internal class ElementGun : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -32,7 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             timer.Activate(); //Call ActivatorA.CallBack 500ms later.
         }
 
-        #endregion
+        //#endregion
     }
 
     internal class ActivatorA : MultiRunTask

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -6,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.丢弃
 {
     internal class Rowofcloudpalm : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -37,6 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.丢弃
             SkillHandler.Instance.PhysicalAttack(sActor, NormalActors, args, Elements.Neutral, 1f);
         }
 
-        #endregion
+        //#endregion
     }
 }

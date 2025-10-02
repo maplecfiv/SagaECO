@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     這個傢伙！
     /// </summary>
     public class MobTalkSnmnpapa : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -16,6 +18,6 @@
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

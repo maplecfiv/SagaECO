@@ -14,11 +14,11 @@ namespace SagaLogin.Packets.Client
     {
         public CSMG_SERVERLET_ASK()
         {
-            this.offset = 2;
+            offset = 2;
         }
-        public override SagaLib.Packet New()
+        public override Packet New()
         {
-            return (SagaLib.Packet)new SagaLogin.Packets.Client.CSMG_SERVERLET_ASK();
+            return (Packet)new CSMG_SERVERLET_ASK();
         }
     }
 }

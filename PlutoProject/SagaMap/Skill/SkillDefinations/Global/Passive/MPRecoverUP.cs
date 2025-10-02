@@ -1,10 +1,11 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     public class MPRecoverUP : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -35,6 +36,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             actor.Status.mp_recover_skill -= (short)value;
         }
 
-        #endregion
+        //#endregion
     }
 }

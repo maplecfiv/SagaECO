@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class Accept : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -30,6 +31,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             SkillHandler.Instance.MagicAttack(sActor, realAffected, args, Elements.Dark, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

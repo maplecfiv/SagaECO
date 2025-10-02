@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Quests;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Quest

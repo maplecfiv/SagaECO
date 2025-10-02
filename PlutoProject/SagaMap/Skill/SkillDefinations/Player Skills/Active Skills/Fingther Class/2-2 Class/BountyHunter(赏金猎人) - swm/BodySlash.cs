@@ -7,13 +7,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class BodySlash : Slash, ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             SkillProc(sActor, dActor, args, level, PossessionPosition.CHEST);
         }
 
-        #endregion
+        //#endregion
     }
 }

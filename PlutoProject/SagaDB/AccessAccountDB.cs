@@ -78,7 +78,7 @@ namespace SagaDB
 
         public bool isConnected()
         {
-            #region 暂时清除
+            //#region 暂时清除
 
             //if (this.isconnected)
             //{
@@ -114,7 +114,7 @@ namespace SagaDB
             //}
             //return this.isconnected;
 
-            #endregion
+            //#endregion
 
             if (db.State == ConnectionState.Open)
             {
@@ -127,7 +127,7 @@ namespace SagaDB
         }
 
 
-        #region AccountDB Members 接口成员
+        //#region AccountDB Members 接口成员
 
         public List<Account> GetAllAccount()
         {
@@ -223,6 +223,6 @@ namespace SagaDB
             return (int)result[0]["account_id"];
         }
 
-        #endregion
+        //#endregion
     }
 }

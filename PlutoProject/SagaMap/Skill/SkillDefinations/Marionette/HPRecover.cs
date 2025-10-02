@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Marionette
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Marionette
 {
     /// <summary>
     ///     木偶時的HP自然恢復
     /// </summary>
     public class HPRecovery : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -32,6 +34,6 @@
         //    actor.Status.hp_recover_skill -= 15;
         //}
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
@@ -6,7 +7,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
 {
     internal class HartHeal : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -31,6 +32,6 @@ namespace SagaMap.Skill.NewSkill.Traveler
             SkillHandler.Instance.MagicAttack(sActor, affected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

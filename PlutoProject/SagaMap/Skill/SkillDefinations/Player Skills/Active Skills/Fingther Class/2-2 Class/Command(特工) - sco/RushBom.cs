@@ -5,7 +5,7 @@
     /// </summary>
     public class RushBom : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -21,6 +21,6 @@
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(RushBomSeq2, level, 3300));
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,6 @@
-﻿using SagaMap.ActorEventHandlers;
+﻿using SagaDB.Actor;
+using SagaDB.Map;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Scripting;
@@ -7,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.FGarden
 {
     public class FGRope : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -19,9 +21,9 @@ namespace SagaMap.Skill.SkillDefinations.FGarden
             if (sActor.type == ActorType.PC)
             {
                 var pc = (ActorPC)sActor;
-                if (pc.FGarden != null)
+                if (pc.FlyingGarden != null)
                 {
-                    if (pc.FGarden.RopeActor == null)
+                    if (pc.FlyingGarden.RopeActor == null)
                     {
                         var map = MapManager.Instance.GetMap(pc.MapID);
                         if (map.Info.Flag.Test(MapFlags.FGarden))
@@ -31,13 +33,13 @@ namespace SagaMap.Skill.SkillDefinations.FGarden
                     }
                     else
                     {
-                        if (!ScriptManager.Instance.Events.ContainsKey(pc.FGarden.RopeActor.EventID))
+                        if (!ScriptManager.Instance.Events.ContainsKey(pc.FlyingGarden.RopeActor.EventID))
                         {
                             var map = MapManager.Instance.GetMap(pc.MapID);
                             if (map.Info.Flag.Test(MapFlags.FGarden))
                             {
-                                map = MapManager.Instance.GetMap(pc.FGarden.RopeActor.MapID);
-                                map.DeleteActor(pc.FGarden.RopeActor);
+                                map = MapManager.Instance.GetMap(pc.FlyingGarden.RopeActor.MapID);
+                                map.DeleteActor(pc.FlyingGarden.RopeActor);
                                 createNewRope(args, pc);
                             }
                             else
@@ -69,7 +71,7 @@ namespace SagaMap.Skill.SkillDefinations.FGarden
             actor.Y = SagaLib.Global.PosY8to16(args.y, map.Height);
             var eventID = ScriptManager.Instance.GetFreeIDSince(0xF0000100, 1000);
             actor.EventID = eventID;
-            pc.FGarden.RopeActor = actor;
+            pc.FlyingGarden.RopeActor = actor;
             if (ScriptManager.Instance.Events.ContainsKey(0xF0000100))
             {
                 var pattern = (EventActor)ScriptManager.Instance.Events[0xF0000100];
@@ -87,6 +89,6 @@ namespace SagaMap.Skill.SkillDefinations.FGarden
             map.OnActorVisibilityChange(actor);
         }
 
-        #endregion
+        //#endregion
     }
 }

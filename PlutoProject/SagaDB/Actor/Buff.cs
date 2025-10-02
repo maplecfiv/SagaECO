@@ -26,7 +26,7 @@ namespace SagaDB.Actor
             Buffs[11].Value = 0;
         }
 
-        #region Buffs
+        //#region Buffs
 
         public bool state190
         {
@@ -320,9 +320,9 @@ namespace SagaDB.Actor
             }
         }*/
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     三转HP吸收
@@ -543,9 +543,9 @@ namespace SagaDB.Actor
             set => Buffs[7].SetValue(0x40000000, value);
         }
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         public bool 三转机器人攻速上升
         {
@@ -746,9 +746,9 @@ namespace SagaDB.Actor
             set => Buffs[8].SetValue(0x40000000, value);
         }
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     Zombie
@@ -1037,9 +1037,9 @@ namespace SagaDB.Actor
             }
         }*/
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     最大HP減少
@@ -1312,9 +1312,9 @@ namespace SagaDB.Actor
             set => Buffs[4].SetValue(0x40000000, value);
         }
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     武器の無属性上昇
@@ -1568,9 +1568,9 @@ namespace SagaDB.Actor
             set => Buffs[2].SetValue(0x08000000, value);
         }
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     最大HP上昇
@@ -1851,9 +1851,9 @@ namespace SagaDB.Actor
             set => Buffs[3].SetValue(0x40000000, value);
         }
 
-        #endregion
+        //#endregion
 
-        #region Buffs
+        //#region Buffs
 
         /// <summary>
         ///     狂战士
@@ -2134,7 +2134,7 @@ namespace SagaDB.Actor
             set => Buffs[1].SetValue(0x40000000, value);
         }
 
-        #endregion
+        //#endregion
 
         public bool 魂之手
         {
@@ -2178,7 +2178,7 @@ namespace SagaDB.Actor
             set => Buffs[9].SetValue(0x40, value);
         }
 
-        #region Buffs
+        //#region Buffs
 
         public bool Poison
         {
@@ -2312,6 +2312,6 @@ namespace SagaDB.Actor
             set => Buffs[0].SetValue(0x200000, value);
         }
 
-        #endregion
+        //#endregion
     }
 }

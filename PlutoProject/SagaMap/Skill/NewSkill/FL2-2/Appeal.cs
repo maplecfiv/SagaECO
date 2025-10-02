@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
     /// </summary>
     public class Appeal : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -25,6 +26,6 @@ namespace SagaMap.Skill.NewSkill.FL2_2
                     SkillHandler.Instance.AttractMob(sActor, act, damage);
         }
 
-        #endregion
+        //#endregion
     }
 }

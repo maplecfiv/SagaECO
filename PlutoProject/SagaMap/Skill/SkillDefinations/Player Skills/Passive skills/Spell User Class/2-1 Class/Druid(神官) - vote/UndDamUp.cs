@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User
     /// </summary>
     public class UndDamUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -43,6 +43,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Spell_User
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

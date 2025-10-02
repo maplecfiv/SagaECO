@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 
 namespace SagaMap.Skill.SkillDefinations.Parnter
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class ContinuousShooting : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -24,6 +25,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

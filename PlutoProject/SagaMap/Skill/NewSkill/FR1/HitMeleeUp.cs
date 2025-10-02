@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 using SagaMap.Skill.SkillDefinations;
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.NewSkill.FR1
     /// </summary>
     public class HitMeleeUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -52,6 +53,6 @@ namespace SagaMap.Skill.NewSkill.FR1
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

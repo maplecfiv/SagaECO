@@ -7,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class MarioDamUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -147,6 +147,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             actor.Status.mdef_add_skill -= (short)skill.Variable["MarioDamUp_mdef_add"];
         }
 
-        #endregion
+        //#endregion
     }
 }

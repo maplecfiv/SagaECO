@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Novice.Joker_小丑_
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
     /// </summary>
     public class IkspiariArmusing : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -46,6 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

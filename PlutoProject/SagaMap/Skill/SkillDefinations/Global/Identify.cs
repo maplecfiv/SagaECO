@@ -1,4 +1,6 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Global
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Global
 {
     public class Identify : SkillEvent
     {

@@ -10,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
     {
         private readonly short[] HP_Recovery = { 0, 5, 6, 8, 10, 12 };
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -41,6 +41,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
             actor.Status.hp_recover_skill -= HP_Recovery[skill.skill.Level];
         }
 
-        #endregion
+        //#endregion
     }
 }

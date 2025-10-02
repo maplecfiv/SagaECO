@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_Class._3_0_Class.Guardian_守护者____fen
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
     /// </summary>
     public class HatredUp : ISkill
     {
-        #region ISkill 成員
+        //#region ISkill 成員
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -36,6 +37,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
             actor.Status.HatredUp_rate = 0;
         }
 
-        #endregion
+        //#endregion
     }
 }

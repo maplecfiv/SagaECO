@@ -1,3 +1,5 @@
+using System;
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive
@@ -7,10 +9,11 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
     /// </summary>
     public class AtkUpByPt : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
+            if (sActor == null) throw new ArgumentNullException(nameof(sActor));
             return 0;
         }
 
@@ -93,6 +96,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             actor.Status.min_atk3_skill -= (short)skill.Variable["AtkUpByPt_min_atk3"];
         }
 
-        #endregion
+        //#endregion
     }
 }

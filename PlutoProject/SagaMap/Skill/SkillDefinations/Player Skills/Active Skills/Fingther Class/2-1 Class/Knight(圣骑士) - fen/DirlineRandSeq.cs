@@ -1,3 +1,6 @@
+using SagaDB.Actor;
+using SagaDB.Item;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Knight_圣骑士____fen
 {
     /// <summary>
@@ -5,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class DirlineRandSeq : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -22,6 +25,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(DirlineRandSeq2_SkillID, level, 1120));
         }
 
-        #endregion
+        //#endregion
     }
 }

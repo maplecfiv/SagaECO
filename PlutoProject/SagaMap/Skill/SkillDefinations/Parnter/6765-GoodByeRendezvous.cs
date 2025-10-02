@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
@@ -10,7 +11,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
     /// </summary>
     public class GoodByeRendezvous : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -67,6 +68,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

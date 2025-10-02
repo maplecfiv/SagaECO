@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
@@ -6,7 +7,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
 {
     public class Silva : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -53,6 +54,6 @@ namespace SagaMap.Skill.NewSkill.Traveler
             //map.DeleteActor(actor);
         }
 
-        #endregion
+        //#endregion
     }
 }

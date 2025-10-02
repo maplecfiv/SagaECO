@@ -4,7 +4,7 @@ namespace SagaMap.Skill.SkillDefinations.Repair
 {
     internal class MetalRepair : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -15,6 +15,6 @@ namespace SagaMap.Skill.SkillDefinations.Repair
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

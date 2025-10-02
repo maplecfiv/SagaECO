@@ -1,4 +1,5 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Event
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class Dango : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -40,6 +41,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

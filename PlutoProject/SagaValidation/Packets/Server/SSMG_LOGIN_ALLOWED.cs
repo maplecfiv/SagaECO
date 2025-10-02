@@ -6,16 +6,16 @@ namespace SagaValidation.Packets.Server
     {
         public SSMG_LOGIN_ALLOWED()
         {
-            this.data = new byte[10];
-            this.offset = 14;
-            this.ID = 0x001E;
+            data = new byte[10];
+            offset = 14;
+            ID = 0x001E;
         }
 
         public uint FrontWord
         {
             set
             {
-                this.PutUInt(value, 2);
+                PutUInt(value, 2);
             }
         }
 
@@ -23,7 +23,7 @@ namespace SagaValidation.Packets.Server
         {
             set
             {
-                this.PutUInt(value, 6);
+                PutUInt(value, 6);
             }
         }
 

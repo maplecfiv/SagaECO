@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
     /// </summary>
     public class PluralityShot : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         private readonly int[] numdownmin = { 0, 2, 2, 3, 3, 4 };
         private readonly int[] numdownmax = { 0, 2, 3, 4, 5, 6 };
@@ -126,6 +126,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             SkillHandler.Instance.PhysicalAttack(sActor, target, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

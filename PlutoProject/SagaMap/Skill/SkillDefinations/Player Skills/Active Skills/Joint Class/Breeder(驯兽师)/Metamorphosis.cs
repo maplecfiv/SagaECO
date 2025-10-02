@@ -1,4 +1,5 @@
-﻿using SagaMap.Network.Client;
+﻿using SagaDB.Actor;
+using SagaMap.Network.Client;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Breeder_驯兽师_
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
     /// </summary>
     public class Metamorphosis : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -33,6 +34,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
             client.SendCharInfoUpdate();
         }
 
-        #endregion
+        //#endregion
     }
 }

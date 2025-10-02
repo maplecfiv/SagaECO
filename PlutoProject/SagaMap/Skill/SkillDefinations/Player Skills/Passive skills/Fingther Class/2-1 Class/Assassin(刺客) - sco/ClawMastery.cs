@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
     /// </summary>
     public class ClawMastery : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -80,6 +80,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
             actor.Status.hit_melee_skill -= (short)skill.Variable["ClawMastery_hit_melee"];
         }
 
-        #endregion
+        //#endregion
     }
 }

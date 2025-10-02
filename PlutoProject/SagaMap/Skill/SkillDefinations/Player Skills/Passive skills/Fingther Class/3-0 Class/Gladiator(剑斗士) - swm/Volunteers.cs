@@ -8,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
     /// </summary>
     public class Volunteers : ISkill
     {
-        #region ISkill 成員
+        //#region ISkill 成員
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -35,6 +35,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

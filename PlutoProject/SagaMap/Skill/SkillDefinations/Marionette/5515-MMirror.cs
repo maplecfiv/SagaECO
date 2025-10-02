@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -9,7 +10,7 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
     /// </summary>
     public class MMirror : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -47,6 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

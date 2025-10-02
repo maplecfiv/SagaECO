@@ -6,7 +6,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     //ウエポンエンハンス
     internal class WeaponAtkUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -98,7 +98,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
 
         //public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         //{
@@ -113,7 +113,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         //    skill.OnAdditionEnd += this.EndEventHandler;
         //    SkillHandler.ApplyAddition(dActor, skill);
         //}
-        //#endregion
+        ////#endregion
         //void StartEventHandler(Actor actor, DefaultBuff skill)
         //{
         //    ushort up = (ushort)(5 + 10 * skill.skill.Level);

@@ -5,7 +5,7 @@
     /// </summary>
     public class DarknessOfNight : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -18,6 +18,6 @@
                 args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2407, level, 560 * i));
         }
 
-        #endregion
+        //#endregion
     }
 }

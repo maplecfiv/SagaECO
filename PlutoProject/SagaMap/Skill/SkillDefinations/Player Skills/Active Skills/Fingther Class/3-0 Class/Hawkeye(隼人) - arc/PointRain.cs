@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -10,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 {
     public class PointRain : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -83,9 +85,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -187,6 +189,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

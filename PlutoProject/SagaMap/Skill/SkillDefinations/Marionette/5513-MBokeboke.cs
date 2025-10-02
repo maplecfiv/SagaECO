@@ -1,4 +1,5 @@
-﻿using SagaMap.Skill.Additions;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Marionette
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
     /// </summary>
     public class MBokeboke : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -112,6 +113,6 @@ namespace SagaMap.Skill.SkillDefinations.Marionette
             actor.Status.vit_skill -= (short)skill.Variable["MBokeboke_vit"];
         }
 
-        #endregion
+        //#endregion
     }
 }

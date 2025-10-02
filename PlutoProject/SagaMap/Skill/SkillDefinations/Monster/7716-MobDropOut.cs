@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     退場！
     /// </summary>
     public class MobDropOut : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -17,6 +19,6 @@
             SkillHandler.Instance.PushBack(sActor, dActor, 1);
         }
 
-        #endregion
+        //#endregion
     }
 }

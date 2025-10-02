@@ -12,7 +12,7 @@ namespace SagaDB.Actor
 {
     [Serializable]
 
-    #region 商人商店部分..
+    //#region 商人商店部分..
 
     public class PlayerShopItem
     {
@@ -46,9 +46,9 @@ namespace SagaDB.Actor
         }
     }
 
-    #endregion
+    //#endregion
 
-    #region 幻化外观部分..
+    //#region 幻化外观部分..
 
     public class Appearance
     {
@@ -97,7 +97,7 @@ namespace SagaDB.Actor
         }
     }
 
-    #endregion
+    //#endregion
 
     /// <summary>
     ///     副职基本信息
@@ -1639,7 +1639,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     玩家的飞空庭
         /// </summary>
-        public FlyingGarden.FlyingGarden FGarden { get; set; }
+        public FlyingGarden.FlyingGarden FlyingGarden { get; set; }
 
         /// <summary>
         ///     帐篷Actor
@@ -1832,7 +1832,7 @@ namespace SagaDB.Actor
         /// </summary>
         //public Navi.Navi Navi { get { return this.navi; } set { this.navi = value; } }
 
-        #region 商人商店部分..
+        //#region 商人商店部分..
 
         private readonly Dictionary<uint, PlayerShopItem> playershoplist = new Dictionary<uint, PlayerShopItem>();
 
@@ -1841,6 +1841,6 @@ namespace SagaDB.Actor
         /// </summary>
         public Dictionary<uint, PlayerShopItem> Playershoplist => playershoplist;
 
-        #endregion
+        //#endregion
     }
 }

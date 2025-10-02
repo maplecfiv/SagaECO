@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.MasterEnchance;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Item

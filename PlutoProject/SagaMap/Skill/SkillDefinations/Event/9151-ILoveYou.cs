@@ -1,4 +1,5 @@
-﻿using SagaMap.ActorEventHandlers;
+﻿using SagaDB.Actor;
+using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Event
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class ILoveYou : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -28,6 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             mh.AI.CastSkill(SkillID[id], 1, sActor);
         }
 
-        #endregion
+        //#endregion
     }
 }

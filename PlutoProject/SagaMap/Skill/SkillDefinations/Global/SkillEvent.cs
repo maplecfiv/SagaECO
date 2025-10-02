@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Network.Client;
 
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
 {
     public class SkillEvent : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public class Parameter
         {
@@ -57,6 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
         {
         }
 
-        #endregion
+        //#endregion
     }
 }

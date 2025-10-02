@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -19,7 +21,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             this.MobUse = MobUse;
         }
 
-        #region Init
+        //#region Init
 
         public HellFire()
         {
@@ -33,7 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
 
-            #region RangePos
+            //#region RangePos
 
             //North
             range[SkillHandler.ActorDirection.North].Add(SkillHandler.Instance.CalcPosHashCode(1, 1, 3));
@@ -140,12 +142,12 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(-1, 2, 3));
             range[SkillHandler.ActorDirection.NorthWest].Add(SkillHandler.Instance.CalcPosHashCode(0, 3, 3));
 
-            #endregion
+            //#endregion
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -186,6 +188,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, Elements.Fire, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -6,9 +6,9 @@ namespace SagaValidation.Packets.Server
     {
         public SSMG_SERVER_LST_SEND()
         {
-            this.data = new byte[4];
-            this.offset = 2;
-            this.ID = 0x33;
+            data = new byte[4];
+            offset = 2;
+            ID = 0x33;
         }
         public byte size;
         public string SevName
@@ -17,10 +17,10 @@ namespace SagaValidation.Packets.Server
             {
                 byte[] buf = Global.Unicode.GetBytes(value + "\0");
                 byte[] buff = new byte[buf.Length + 4];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, 2);
-                this.PutBytes(buf, 3);
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte((byte)buf.Length, 2);
+                PutBytes(buf, 3);
                 size = (byte)(buf.Length + 3);
             }
         }
@@ -29,11 +29,11 @@ namespace SagaValidation.Packets.Server
             set
             {
                 byte[] buf = Global.Unicode.GetBytes(value + "\0");
-                byte[] buff = new byte[buf.Length + this.data.Length];
-                this.data.CopyTo(buff, 0);
-                this.data = buff;
-                this.PutByte((byte)buf.Length, (ushort)(size));
-                this.PutBytes(buf, (ushort)(1 + size));
+                byte[] buff = new byte[buf.Length + data.Length];
+                data.CopyTo(buff, 0);
+                data = buff;
+                PutByte((byte)buf.Length, (ushort)(size));
+                PutBytes(buf, (ushort)(1 + size));
             }
         }
     }

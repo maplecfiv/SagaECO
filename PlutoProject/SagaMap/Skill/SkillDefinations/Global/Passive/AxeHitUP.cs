@@ -1,10 +1,12 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     public class AxeHitUP : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -65,6 +67,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

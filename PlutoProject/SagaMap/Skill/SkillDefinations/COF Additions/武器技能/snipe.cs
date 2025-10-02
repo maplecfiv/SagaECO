@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class Snipe : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -93,6 +94,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
                 false, 0, false, 100, 0);
         }
 
-        #endregion
+        //#endregion
     }
 }

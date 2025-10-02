@@ -87,7 +87,7 @@ namespace SagaDB
 
         public bool isConnected()
         {
-            #region 暂时清除
+            //#region 暂时清除
 
             //if (this.isconnected)
             //{
@@ -123,7 +123,7 @@ namespace SagaDB
             //}
             //return this.isconnected;
 
-            #endregion
+            //#endregion
 
             if (db.State == ConnectionState.Open)
             {
@@ -1005,7 +1005,7 @@ namespace SagaDB
             return new List<Post>();
         }
 
-        #region ActorDB Members
+        //#region ActorDB Members
 
         public void GetVShop(ActorPC pc)
         {
@@ -1191,6 +1191,6 @@ namespace SagaDB
             throw new NotImplementedException();
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -20,7 +20,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
         //    this.MobUse = MobUse;
         //}
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -44,6 +44,6 @@ namespace SagaMap.Skill.NewSkill.FL2_1
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

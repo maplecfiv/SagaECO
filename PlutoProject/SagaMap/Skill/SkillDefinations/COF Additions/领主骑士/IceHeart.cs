@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
 {
     public class IceHeart : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -57,6 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             SkillHandler.Instance.MagicAttack(sActor, ec, args, Elements.Neutral, 3f);
         }
 
-        #endregion
+        //#endregion
     }
 }

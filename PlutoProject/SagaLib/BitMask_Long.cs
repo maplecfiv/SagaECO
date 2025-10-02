@@ -17,7 +17,7 @@ namespace SagaLib
 
         public BitMask_Long(BitMask_Long ori)
         {
-            this._ori = ori;
+            _ori = ori;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace SagaLib
         /// <param name="value">值</param>
         public BitMask_Long(ulong value)
         {
-            this._value = value;
+            _value = value;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace SagaLib
         public ulong Value
         {
             get => _value;
-            set => this._value = value;
+            set => _value = value;
         }
 
         /// <summary>

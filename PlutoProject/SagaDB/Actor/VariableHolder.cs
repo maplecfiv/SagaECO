@@ -19,25 +19,25 @@ namespace SagaDB.Actor
             this.nullValue = nullValue;
         }
 
-        #region IEnumerable<KeyValuePair<K,T>> Members
+        //#region IEnumerable<KeyValuePair<K,T>> Members
 
         public IEnumerator<KeyValuePair<K, T>> GetEnumerator()
         {
             return content.GetEnumerator();
         }
 
-        #endregion
+        //#endregion
 
-        #region IEnumerable Members
+        //#region IEnumerable Members
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return content.GetEnumerator();
         }
 
-        #endregion
+        //#endregion
 
-        #region IDictionary<K,T> Members
+        //#region IDictionary<K,T> Members
 
         public void Add(K key, T value)
         {
@@ -82,9 +82,9 @@ namespace SagaDB.Actor
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ICollection<KeyValuePair<K,T>> Members
+        //#region ICollection<KeyValuePair<K,T>> Members
 
         public void Add(KeyValuePair<K, T> item)
         {
@@ -115,6 +115,6 @@ namespace SagaDB.Actor
             throw new NotImplementedException();
         }
 
-        #endregion
+        //#endregion
     }
 }

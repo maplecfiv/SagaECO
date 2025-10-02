@@ -1,10 +1,11 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
 {
     public class TimeBomb : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -23,6 +24,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(2515, level, 1000));
         }
 
-        #endregion
+        //#endregion
     }
 }

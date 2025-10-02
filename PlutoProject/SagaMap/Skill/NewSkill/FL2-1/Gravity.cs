@@ -29,7 +29,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
             range.Add(SkillHandler.Instance.CalcPosHashCode(0, -2, 2));
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -61,6 +61,6 @@ namespace SagaMap.Skill.NewSkill.FL2_1
             args.AddSameActor(args2);
         }
 
-        #endregion
+        //#endregion
     }
 }

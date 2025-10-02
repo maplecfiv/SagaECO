@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.BBS;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.Community

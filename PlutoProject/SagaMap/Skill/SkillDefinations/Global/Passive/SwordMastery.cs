@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -5,7 +7,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
 {
     public class SwordMastery : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -121,6 +123,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 
 namespace SagaMap.Skill.SkillDefinations.Global
 {
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
     /// </summary>
     public class EventMoveSkill : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -34,6 +35,6 @@ namespace SagaMap.Skill.SkillDefinations.Global
                 }
         }
 
-        #endregion
+        //#endregion
     }
 }

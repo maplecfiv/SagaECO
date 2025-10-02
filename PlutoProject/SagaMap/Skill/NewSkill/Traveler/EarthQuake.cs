@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Skill;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -10,7 +12,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
 {
     public class EarthQuake : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -91,9 +93,9 @@ namespace SagaMap.Skill.NewSkill.Traveler
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -128,6 +130,6 @@ namespace SagaMap.Skill.NewSkill.Traveler
             */
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
@@ -27,7 +28,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
             range.Add(SkillHandler.Instance.CalcPosHashCode(0, -2, 2));
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -69,6 +70,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, Elements.Neutral, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

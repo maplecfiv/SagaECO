@@ -1,10 +1,11 @@
-﻿using SagaMap.Skill.Additions;
+﻿using SagaDB.Actor;
+using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
 {
     public class EmergencyAvoid : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -25,6 +26,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.武器技能
             SkillHandler.ApplyAddition(sActor, EmergencyAvoid);
         }
 
-        #endregion
+        //#endregion
     }
 }

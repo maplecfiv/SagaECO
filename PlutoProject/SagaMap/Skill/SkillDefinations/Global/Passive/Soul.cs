@@ -1,3 +1,5 @@
+using System;
+using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Skill.Additions;
 
@@ -8,10 +10,11 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
     /// </summary>
     public class Soul : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
+            if (pc == null) throw new ArgumentNullException(nameof(pc));
             return 0;
         }
 
@@ -260,6 +263,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             actor.Status.min_atk3_possession = (short)min_atk_bs_add;
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
     /// </summary>
     public class MobAtkupSelf : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -59,6 +60,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             actor.Status.max_atk3_skill -= (short)skill.Variable["MobAtkupSelf_max_atk3"];
         }
 
-        #endregion
+        //#endregion
     }
 }

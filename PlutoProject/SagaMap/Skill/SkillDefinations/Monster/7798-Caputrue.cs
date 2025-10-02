@@ -1,11 +1,13 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     捕縛
     /// </summary>
     public class Caputrue : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -21,6 +23,6 @@
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

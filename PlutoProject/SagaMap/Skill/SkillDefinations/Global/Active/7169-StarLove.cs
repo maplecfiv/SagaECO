@@ -1,4 +1,5 @@
 using System;
+using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
@@ -11,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
     /// </summary>
     public class StarLove : ISkill
     {
-        #region Timer
+        //#region Timer
 
         private class Activator : MultiRunTask
         {
@@ -80,10 +81,10 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 //ClientManager.LeaveCriticalArea();
             }
 
-            #endregion
+            //#endregion
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -115,6 +116,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

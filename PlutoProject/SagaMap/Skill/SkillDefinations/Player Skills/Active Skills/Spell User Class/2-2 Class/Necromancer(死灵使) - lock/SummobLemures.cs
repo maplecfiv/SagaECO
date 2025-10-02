@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
@@ -8,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class SummobLemures : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -45,7 +46,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 mob = map.SpawnMob(MobID[skill.skill.Level], x, y, 2500, actor);
                 var HP = MobHP[skill.skill.Level];
 
-                #region PassiveSkill Detection
+                //#region PassiveSkill Detection
 
                 if (actor.type == ActorType.PC)
                 {
@@ -113,7 +114,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     }
                 }
 
-                #endregion
+                //#endregion
 
                 mob.MaxHP = HP;
                 mob.HP = mob.MaxHP;
@@ -129,6 +130,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

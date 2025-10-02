@@ -1,10 +1,11 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
     public class IceArrow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -17,6 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.MagicAttack(sActor, dActor, args, Elements.Water, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

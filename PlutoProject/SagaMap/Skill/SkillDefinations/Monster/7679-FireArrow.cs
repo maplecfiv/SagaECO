@@ -1,10 +1,11 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Monster
 {
     public class FireArrow : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -18,6 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, Elements.Fire, factor);
         }
 
-        #endregion
+        //#endregion
     }
 }

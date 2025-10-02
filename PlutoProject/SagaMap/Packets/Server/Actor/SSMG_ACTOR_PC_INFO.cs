@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 using SagaLib;
 using SagaMap.Network.Client;
 using Version = SagaLib.Version;
@@ -36,7 +38,7 @@ namespace SagaMap.Packets.Server.Actor
         {
             set
             {
-                #region Old
+                //#region Old
 
                 if (Configuration.Configuration.Instance.Version < Version.Saga17)
                 {
@@ -183,9 +185,9 @@ namespace SagaMap.Packets.Server.Actor
                     PutUShort(0, (ushort)(offset + 110));
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga17
+                //#region Saga17
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
@@ -376,7 +378,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(0xFF, offset + 140); //师徒图标
                 }
 
-                #endregion
+                //#endregion
             }
         }
 
@@ -472,7 +474,7 @@ namespace SagaMap.Packets.Server.Actor
         {
             set
             {
-                #region Saga14
+                //#region Saga14
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
                     Configuration.Configuration.Instance.Version < Version.Saga14_2)
@@ -793,9 +795,9 @@ namespace SagaMap.Packets.Server.Actor
                     */
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga14_2
+                //#region Saga14_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
                     Configuration.Configuration.Instance.Version < Version.Saga17)
@@ -1089,9 +1091,9 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(0xFF, (ushort)(offset + 129));
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga17
+                //#region Saga17
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
@@ -1521,7 +1523,7 @@ namespace SagaMap.Packets.Server.Actor
                     //PutUInt((uint)value.AInt["称号_战斗"], offset + 176);
                 }
 
-                #endregion
+                //#endregion
             }
         }
 
@@ -1530,7 +1532,7 @@ namespace SagaMap.Packets.Server.Actor
         {
             set
             {
-                #region Saga14
+                //#region Saga14
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
                     Configuration.Configuration.Instance.Version < Version.Saga14_2)
@@ -1629,9 +1631,9 @@ namespace SagaMap.Packets.Server.Actor
                     */
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga14_2
+                //#region Saga14_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
                     Configuration.Configuration.Instance.Version < Version.Saga17)
@@ -1738,9 +1740,9 @@ namespace SagaMap.Packets.Server.Actor
                     */
                 }
 
-                #endregion
+                //#endregion
 
-                #region Saga17
+                //#region Saga17
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
@@ -1844,7 +1846,7 @@ namespace SagaMap.Packets.Server.Actor
                     data = buff;
                 }
 
-                #endregion
+                //#endregion
             }
         }
 
@@ -1852,7 +1854,7 @@ namespace SagaMap.Packets.Server.Actor
         {
             set
             {
-                #region Saga17
+                //#region Saga17
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 {
@@ -1927,7 +1929,7 @@ namespace SagaMap.Packets.Server.Actor
                     data = buff;
                 }
 
-                #endregion
+                //#endregion
             }
         }
 

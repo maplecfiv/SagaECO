@@ -1,4 +1,6 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Monster
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Monster
 {
     /// <summary>
     ///     螺旋風！、燃燒的路、凍結的路、私家路、死神
@@ -12,7 +14,7 @@
             NextSkillID = Next_SkillID;
         }
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -53,6 +55,6 @@
             args.autoCast.Add(SkillHandler.Instance.CreateAutoCastInfo(NextSkillID, 1, 0, posX[2], posY[2]));
         }
 
-        #endregion
+        //#endregion
     }
 }

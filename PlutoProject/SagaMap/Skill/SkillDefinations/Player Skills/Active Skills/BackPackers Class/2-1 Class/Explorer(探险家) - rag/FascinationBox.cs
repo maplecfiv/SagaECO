@@ -12,7 +12,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
     /// </summary>
     public class FascinationBox : ISkill
     {
-        #region Timer
+        //#region Timer
 
         public class Activator : MultiRunTask
         {
@@ -121,9 +121,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             }
         }
 
-        #endregion
+        //#endregion
 
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -149,6 +149,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             timer.Activate();
         }
 
-        #endregion
+        //#endregion
     }
 }

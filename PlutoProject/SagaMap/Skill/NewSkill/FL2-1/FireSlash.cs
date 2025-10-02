@@ -6,7 +6,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
 {
     public class FireSlash : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -32,6 +32,6 @@ namespace SagaMap.Skill.NewSkill.FL2_1
             args.AddSameActor(args2);
         }
 
-        #endregion
+        //#endregion
     }
 }

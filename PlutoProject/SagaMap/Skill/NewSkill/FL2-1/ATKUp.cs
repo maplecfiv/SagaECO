@@ -10,7 +10,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
     /// </summary>
     public class ATKUp : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -58,6 +58,6 @@ namespace SagaMap.Skill.NewSkill.FL2_1
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        #endregion
+        //#endregion
     }
 }

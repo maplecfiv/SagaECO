@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SagaDB.Npc;
 using SagaLib;
 
 namespace SagaMap.Packets.Server.NPC

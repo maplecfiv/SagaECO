@@ -9,7 +9,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
     /// </summary>
     public class StoneWall : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
@@ -18,7 +18,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            #region OldMethod
+            //#region OldMethod
 
             //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
             //List<ActorSkill> actorSkill = new List<ActorSkill>();
@@ -127,7 +127,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             ////Activator timer = new Activator(sActor, args, level, flag, actorSkill);
             ////timer.Activate();
 
-            #endregion
+            //#endregion
 
             var r = SagaLib.Global.Random.Next(0, 99);
             var skill = new StoneWallBuff(args, sActor, 60000, r);
@@ -194,6 +194,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        #endregion
+        //#endregion
     }
 }

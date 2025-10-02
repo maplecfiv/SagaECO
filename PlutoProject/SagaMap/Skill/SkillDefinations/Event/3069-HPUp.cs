@@ -1,3 +1,4 @@
+using SagaDB.Actor;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Event
@@ -7,7 +8,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
     /// </summary>
     public class HPUP : ISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
@@ -38,6 +39,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             actor.Status.hp_skill -= atkadd;
         }
 
-        #endregion
+        //#endregion
     }
 }

@@ -1,8 +1,10 @@
-﻿namespace SagaMap.Skill.SkillDefinations.COF_Additions.熊爹
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.熊爹
 {
     public class Attack2 : MobISkill
     {
-        #region ISkill Members
+        //#region ISkill Members
 
         public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
@@ -31,6 +33,6 @@
             timer.Activate();*/
         }
 
-        #endregion
+        //#endregion
     }
 }
