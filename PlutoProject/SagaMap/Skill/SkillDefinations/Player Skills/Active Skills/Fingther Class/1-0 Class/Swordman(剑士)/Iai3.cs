@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using SagaDB.Actor;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
 {

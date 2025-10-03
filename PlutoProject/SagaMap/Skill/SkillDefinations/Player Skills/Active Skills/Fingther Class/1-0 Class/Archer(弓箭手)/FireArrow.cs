@@ -1,4 +1,6 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaDB.Item;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Archer_弓箭手_
 {

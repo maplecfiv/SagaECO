@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+using SagaDB.Mob;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Packets.Server.NPC;

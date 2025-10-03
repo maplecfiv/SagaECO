@@ -1,3 +1,6 @@
+using SagaDB.Actor;
+using SagaDB.Item;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Gambler_赌徒____mer
 {
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using SagaDB.Actor;
 using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Eraser_肃清者____sco

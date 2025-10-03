@@ -1,4 +1,5 @@
-﻿using SagaMap.Manager;
+﻿using SagaDB.Actor;
+using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.BountyHunter_赏金猎人____swm

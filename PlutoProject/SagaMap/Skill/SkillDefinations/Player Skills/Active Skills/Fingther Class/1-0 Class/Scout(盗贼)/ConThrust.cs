@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SagaDB.Actor;
+using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Scout_盗贼_
 {

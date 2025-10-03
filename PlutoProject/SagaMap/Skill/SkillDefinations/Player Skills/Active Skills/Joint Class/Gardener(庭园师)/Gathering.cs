@@ -1,4 +1,6 @@
-﻿namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Gardener_庭园师_
+﻿using SagaDB.Actor;
+
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class.Gardener_庭园师_
 {
     /// <summary>
     ///     ギャザリング

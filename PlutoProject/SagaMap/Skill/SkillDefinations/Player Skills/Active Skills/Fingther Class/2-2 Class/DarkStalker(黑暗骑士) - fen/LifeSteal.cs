@@ -1,4 +1,5 @@
-﻿using SagaLib;
+﻿using SagaDB.Actor;
+using SagaLib;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen
 {

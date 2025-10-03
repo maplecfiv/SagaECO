@@ -1,3 +1,5 @@
+using SagaDB.Actor;
+
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Machinery_机械师____tat
 {
     /// <summary>
