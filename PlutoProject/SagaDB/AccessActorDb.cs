@@ -789,11 +789,9 @@ namespace SagaDB
         {
         }
 
-        public byte[] GetRingEmblem(uint ring_id, DateTime date, out bool needUpdate, out DateTime newTime)
+        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date)
         {
-            needUpdate = false;
-            newTime = DateTime.Now;
-            return null;
+            return new GetRingEmblemResult(null, false, DateTime.Now);
         }
 
         public ActorPC LoadServerVar()

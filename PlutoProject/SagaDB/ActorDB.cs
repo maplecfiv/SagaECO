@@ -6,6 +6,21 @@ using SagaDB.Tamaire;
 
 namespace SagaDB
 {
+
+    public class GetRingEmblemResult
+    {
+        public byte[] Data { get; }
+        public bool NeedUpdate { get; }
+
+        public DateTime NewTime { get; }
+
+        public GetRingEmblemResult(byte[] data, bool needUpdate, DateTime newTime)
+        {
+            this.Data = data;
+            this.NeedUpdate = needUpdate;
+            this.NewTime = newTime;
+        }
+    }
     public interface ActorDB
     {
         void AJIClear();
@@ -83,7 +98,7 @@ namespace SagaDB
 
         void RingEmblemUpdate(Ring.Ring ring, byte[] buf);
 
-        byte[] GetRingEmblem(uint ring_id, DateTime date, out bool needUpdate, out DateTime newTime);
+        GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date);
 
         List<Post> GetBBS(uint bbsID);
 

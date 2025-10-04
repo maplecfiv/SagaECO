@@ -8,7 +8,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
 using SagaDB.BBS;
-using SagaDB.FlyingCastle;
+using SagaDB.FlyingGarden;
 using SagaDB.Item;
 using SagaDB.Map;
 using SagaDB.Mob;
@@ -17,12 +17,14 @@ using SagaDB.Quests;
 using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
+using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
+using Logger = NLog.Logger;
 
 namespace SagaDB
 {
     public class MySQLActorDB : MySQLConnectivity, ActorDB
     {
-        private static readonly NLog.Logger _logger = Logger.InitLogger<MySQLActorDB>();
+        private static readonly Logger _logger = SagaLib.Logger.InitLogger<MySQLActorDB>();
         private readonly string database;
         private readonly string dbpass;
         private readonly string dbuser;
@@ -52,11 +54,11 @@ namespace SagaDB
             }
             catch (MySqlException ex)
             {
-                Logger.ShowSQL(ex, null);
+                SagaLib.Logger.ShowSQL(ex, null);
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
+                SagaLib.Logger.ShowError(ex, null);
             }
 
             if (db != null)
@@ -102,7 +104,7 @@ namespace SagaDB
                 if (newtime.TotalMinutes > 5)
                 {
                     MySqlConnection tmp;
-                    Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
+                    SagaLib.Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
                     /* we actually disconnect from the mysql server, because if we keep the connection too long
                      * and the user resource of this mysql connection is full, mysql will begin to ignore our
                      * queries -_-
@@ -148,7 +150,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -185,7 +187,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
 
                 aChar.CharID = charID;
@@ -199,7 +201,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
 
                 if (aChar.Inventory.WareHouse != null)
@@ -212,7 +214,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        SagaLib.Logger.ShowError(ex);
                     }
 
                     if (Convert.ToInt32(result[0][0]) == 0)
@@ -227,7 +229,7 @@ namespace SagaDB
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            SagaLib.Logger.ShowError(ex);
                         }
                     }
                 }
@@ -269,7 +271,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
 
                 ap.ActorPartnerID = apid;
@@ -307,7 +309,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
         }
@@ -341,7 +343,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
         }
@@ -383,7 +385,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
         }
@@ -425,7 +427,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
         }
@@ -637,7 +639,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
 
                 SaveVar(aChar);
@@ -727,7 +729,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -759,7 +761,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -778,7 +780,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                     return null;
                 }
 
@@ -863,10 +865,10 @@ namespace SagaDB
                 //pc.MDefPoint = (uint)result["mdefpoint"];
                 lock (this)
                 {
-                    var old = Logger.SQLLogLevel.Value;
-                    Logger.SQLLogLevel.Value = 0;
+                    var old = SagaLib.Logger.SQLLogLevel.Value;
+                    SagaLib.Logger.SQLLogLevel.Value = 0;
                     pc.Gold = (long)result["gold"];
-                    Logger.SQLLogLevel.Value = old;
+                    SagaLib.Logger.SQLLogLevel.Value = old;
                 }
 
                 pc.CP = (uint)result["cp"];
@@ -935,7 +937,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
 
             return pc;
@@ -1066,7 +1068,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -1096,10 +1098,10 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
             sqlstr = "TRUNCATE TABLE `sList`;";
             foreach (var item in fakepc.Adict)
-                foreach (var i in item.Value.Keys)
-                    sqlstr += string.Format(
-                        "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');", item.Key,
-                        i, item.Value[i]);
+            foreach (var i in item.Value.Keys)
+                sqlstr += string.Format(
+                    "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');", item.Key,
+                    i, item.Value[i]);
 
             SQLExecuteNonQuery(sqlstr);
         }
@@ -1193,7 +1195,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
 
             ms = new MemoryStream();
@@ -1239,7 +1241,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -1258,7 +1260,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                     return;
                 }
 
@@ -1354,7 +1356,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -1389,7 +1391,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
 
             if (Convert.ToInt32(result[0][0]) > 0) return true;
@@ -1425,7 +1427,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
                 return new uint[0];
             }
 
@@ -1678,7 +1680,7 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public byte[] GetRingEmblem(uint ring_id, DateTime date, out bool needUpdate, out DateTime newTime)
+        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date)
         {
             var sqlstr = string.Format("SELECT `emblem`,`emblem_date` FROM `ring` WHERE `ring_id`='{0}' LIMIT 1",
                 ring_id);
@@ -1687,28 +1689,15 @@ namespace SagaDB
             if (result.Count != 0)
             {
                 if (result[0]["emblem"].GetType() == typeof(DBNull))
-                {
-                    needUpdate = false;
-                    newTime = DateTime.Now;
-                    return null;
-                }
+                    return new GetRingEmblemResult(null, false, DateTime.Now);
 
-                newTime = (DateTime)result[0]["emblem_date"];
-                if (date < newTime)
-                {
-                    needUpdate = true;
-                    var buf = (byte[])result[0]["emblem"];
-                    return buf;
-                }
+                var newTime = (DateTime)result[0]["emblem_date"];
+                if (date < newTime) return new GetRingEmblemResult((byte[])result[0]["emblem"], true, newTime);
 
-                needUpdate = false;
-                return new byte[0];
+                return new GetRingEmblemResult(new byte[0], false, newTime);
             }
 
-            needUpdate = false;
-            newTime = DateTime.Now;
-
-            return null;
+            return new GetRingEmblemResult(null, false, DateTime.Now);
         }
 
         public List<Post> GetBBS(uint bbsID)
@@ -1781,7 +1770,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
                 return false;
             }
         }
@@ -1795,7 +1784,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
                 return false;
             }
         }
@@ -2041,7 +2030,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
         }
 
@@ -2066,7 +2055,8 @@ namespace SagaDB
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
                             i.Name);
 
                 if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
@@ -2074,7 +2064,8 @@ namespace SagaDB
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
                             i.Name);
 
                 if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FARM))
@@ -2082,7 +2073,8 @@ namespace SagaDB
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
                             i.Name);
 
                 if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FISHERY))
@@ -2090,7 +2082,8 @@ namespace SagaDB
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
                             i.Name);
 
                 if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.HOUSE))
@@ -2098,7 +2091,8 @@ namespace SagaDB
                         sqlstr += string.Format(
                             "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                             "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
                             i.Name);
 
                 SQLExecuteNonQuery(sqlstr);
@@ -2237,7 +2231,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2461,11 +2455,11 @@ namespace SagaDB
             }
             catch (MySqlException ex)
             {
-                Logger.ShowSQL(ex, null);
+                SagaLib.Logger.ShowSQL(ex, null);
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
 
             return (uint)result[0]["charID"];
@@ -2490,7 +2484,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2524,12 +2518,12 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2618,7 +2612,7 @@ namespace SagaDB
                     cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = itemdata;
 
                     if (pc.Account != null)
-                        Logger.ShowInfo(
+                        SagaLib.Logger.ShowInfo(
                             "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" + itemdata.Length);
                     try
                     {
@@ -2626,7 +2620,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        SagaLib.Logger.ShowError(ex);
                     }
                 }
 
@@ -2645,13 +2639,13 @@ namespace SagaDB
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            SagaLib.Logger.ShowError(ex);
                         }
                     }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2684,7 +2678,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2699,7 +2693,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
                 return;
             }
 
@@ -2725,7 +2719,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                     return;
                 }
 
@@ -2735,7 +2729,7 @@ namespace SagaDB
                     try
                     {
                         var buf = (byte[])result[0]["data"];
-                        Logger.ShowInfo("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
+                        SagaLib.Logger.ShowInfo("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                         var ms = new MemoryStream(buf);
                         if (buf[0] == 0x42 && buf[1] == 0x5A)
                         {
@@ -2761,7 +2755,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        SagaLib.Logger.ShowError(ex);
                     }
                 }
 
@@ -2772,7 +2766,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    SagaLib.Logger.ShowError(ex);
                     return;
                 }
 
@@ -2811,7 +2805,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        SagaLib.Logger.ShowError(ex);
                     }
                 }
 
@@ -2838,7 +2832,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2877,14 +2871,14 @@ namespace SagaDB
             {
                 var garden = new FlyingGarden.FlyingGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR] = (uint)result[0]["part3"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0]["part4"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall] = (uint)result[0]["part5"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof] = (uint)result[0]["part6"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR] = (uint)result[0]["part7"];
-                garden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL] = (uint)result[0]["part8"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR] = (uint)result[0]["part3"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0]["part4"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall] = (uint)result[0]["part5"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof] = (uint)result[0]["part6"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR] = (uint)result[0]["part7"];
+                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL] = (uint)result[0]["part8"];
                 garden.Fuel = (uint)result[0]["fuel"];
                 pc.FlyingGarden = garden;
             }
@@ -2939,14 +2933,14 @@ namespace SagaDB
                 sqlstr = string.Format(
                     "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
                     "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
                     pc.FlyingGarden.ID,
                     pc.FlyingGarden.Fuel);
                 SQLExecuteNonQuery(sqlstr);
@@ -2956,14 +2950,14 @@ namespace SagaDB
                 sqlstr = string.Format("INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
                                        "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
                     account,
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_BASE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.FLYING_SAIL],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseOutSideWall],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.HouseRoof],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGarden.FlyingGardenSlot.ROOM_WALL],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
+                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
                     pc.FlyingGarden.Fuel);
                 uint id = 0;
                 SQLExecuteScalar(sqlstr, out id);
@@ -3044,6 +3038,7 @@ namespace SagaDB
             //    GetDualJobInfo(pc);
             //}
         }
+
         public void SaveDualJobInfo(ActorPC pc, bool allinfo)
         {
             var dic = pc.PlayerDualJobList;
@@ -3095,7 +3090,6 @@ namespace SagaDB
                     $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
             SQLExecuteNonQuery(delskillstr);
         }
-
     }
 
     //#endregion

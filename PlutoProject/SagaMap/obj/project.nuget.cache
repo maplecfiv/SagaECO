@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "tGjjfv2966w=",
+  "dgSpecHash": "zicuqg4W44Q=",
   "success": true,
   "projectFilePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
   "expectedPackageFiles": [
@@ -46,8 +46,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Collections 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Collections",
       "targetGraphs": [
         "net8.0"
@@ -56,8 +58,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Diagnostics.Debug 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Diagnostics.Debug",
       "targetGraphs": [
         "net8.0"
@@ -66,8 +70,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Globalization 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Globalization",
       "targetGraphs": [
         "net8.0"
@@ -76,8 +82,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.IO 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.IO",
       "targetGraphs": [
         "net8.0"
@@ -86,8 +94,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Resources.ResourceManager 4.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Resources.ResourceManager",
       "targetGraphs": [
         "net8.0"
@@ -96,8 +106,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Runtime 4.0.20' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Runtime",
       "targetGraphs": [
         "net8.0"
@@ -106,8 +118,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Runtime.Extensions 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Runtime.Extensions",
       "targetGraphs": [
         "net8.0"
@@ -116,8 +130,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Text.Encoding 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Text.Encoding",
       "targetGraphs": [
         "net8.0"
@@ -126,8 +142,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Threading 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Threading",
       "targetGraphs": [
         "net8.0"
@@ -136,8 +154,10 @@
     {
       "code": "NU1701",
       "level": "Warning",
-      "warningLevel": 1,
       "message": "Package 'System.Xml.ReaderWriter 4.0.10' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net8.0'. This package may not be fully compatible with your project.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaMap/SagaMap.csproj",
       "libraryId": "System.Xml.ReaderWriter",
       "targetGraphs": [
         "net8.0"

@@ -137,7 +137,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "/home/maple/.dotnet/sdk/8.0.414/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/maple/.version-fox/temp/1759507200-2284/dotnet/sdk/8.0.414/RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -266,7 +266,7 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "/home/maple/.dotnet/sdk/8.0.414/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/maple/.version-fox/temp/1759507200-2284/dotnet/sdk/8.0.414/RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -405,7 +405,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/maple/.dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/maple/.version-fox/temp/1759507200-2284/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
@@ -595,7 +595,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/maple/.dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/maple/.version-fox/temp/1759507200-2284/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
