@@ -88,8 +88,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 var map = MapManager.Instance.GetMap(sActor.MapID);
                 if (map.CheckActorSkillInRange(dActor.X, dActor.Y, 200)) return -17;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
 
             return 0;

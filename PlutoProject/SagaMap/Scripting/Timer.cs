@@ -13,7 +13,7 @@ namespace SagaMap.Scripting
         public Timer(string name, int period, int due)
         {
             Name = name;
-            this.Period = period;
+            Period = period;
             DueTime = due;
         }
 

@@ -28,8 +28,9 @@ namespace SagaMap.Tasks.Mob
 
                 Deactivate();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                SagaLib.Logger.ShowError(exception, null);
             }
         }
     }

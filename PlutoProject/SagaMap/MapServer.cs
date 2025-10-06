@@ -90,9 +90,9 @@ namespace SagaMap
                     default:
                         return false;
                 }
-            }
-            catch (Exception)
+            }catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return false;
             }
         }
@@ -662,9 +662,9 @@ namespace SagaMap
                                 try
                                 {
                                     foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
-                                }
-                                catch (Exception)
+                                }catch (Exception exception)
                                 {
+                                    Logger.ShowError(exception, null);
                                 }
                             }
 
@@ -680,9 +680,9 @@ namespace SagaMap
                                         select c;
                                     client = chr.First();
                                     client.NetIo.Disconnect();
-                                }
-                                catch (Exception)
+                                }catch (Exception exception)
                                 {
+                                    Logger.ShowError(exception, null);
                                 }
 
                             break;
@@ -703,9 +703,9 @@ namespace SagaMap
                                 {
                                     if (i.Character == null) continue;
                                     i.NetIo.Disconnect();
-                                }
-                                catch (Exception)
+                                }catch (Exception exception)
                                 {
+                                    Logger.ShowError(exception, null);
                                 }
 
                             Logger.ShowInfo("Saving golem's data.....", null);
@@ -758,9 +758,9 @@ namespace SagaMap
                                         client = chr.First();
                                         client.NetIo.Disconnect();
                                     }
-                                }
-                                catch (Exception)
+                                }catch (Exception exception)
                                 {
+                                    Logger.ShowError(exception, null);
                                 }
 
                             break;
@@ -813,9 +813,9 @@ namespace SagaMap
                 {
                     if (i.Character == null) continue;
                     i.NetIo.Disconnect();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
 
@@ -857,9 +857,9 @@ namespace SagaMap
                 {
                     if (i.Character == null) continue;
                     i.NetIo.Disconnect();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
             Logger.ShowError("Trying to clear golem actor");

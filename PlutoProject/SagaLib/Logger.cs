@@ -198,8 +198,9 @@ namespace SagaLib
                 sw.WriteLine(final);
                 sw.Close();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                ShowError(exception, null);
             }
         }
 

@@ -35,8 +35,9 @@ namespace SagaMap.Tasks.Partner
                 mc.SendPetDetailInfo();
                 SagaMap.PC.StatusFactory.Instance.CalcStatus(mc.Character);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 Deactivate();
             }
 

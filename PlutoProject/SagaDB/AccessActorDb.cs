@@ -70,9 +70,9 @@ namespace SagaDB
                 try
                 {
                     db.Open();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
                 if (db != null)

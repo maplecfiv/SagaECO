@@ -26,8 +26,9 @@ namespace SagaMap.Tasks.Item
                 MapManager.Instance.GetMap(npc.MapID).DeleteActor(npc);
                 Deactivate();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
 
             ClientManager.LeaveCriticalArea();

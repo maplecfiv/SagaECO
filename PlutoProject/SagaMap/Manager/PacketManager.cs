@@ -96,8 +96,9 @@ namespace SagaMap.Manager
                         {
                             newPacket = (Packet)Activator.CreateInstance(npcType);
                         }
-                        catch (Exception)
+                        catch (Exception exception)
                         {
+                            Logger.ShowError(exception, null);
                             continue;
                         }
 

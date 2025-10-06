@@ -68,7 +68,7 @@ namespace SagaMap.Skill.Additions
             sactor = sActor;
             AttachedActor = dActor;
             lifeTime = lifetime;
-            this.Period = period;
+            Period = period;
             this.damage = damage;
             args = arg;
             this.donotsendinfo = donotsendinfo;

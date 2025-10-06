@@ -1719,8 +1719,9 @@ namespace SagaMap.Scripting
             {
                 return pc.Inventory.Items[container].Count();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return 0;
             }
         }
@@ -1785,8 +1786,9 @@ namespace SagaMap.Scripting
                     1));
                 return true;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return false;
             }
         }
@@ -3125,8 +3127,9 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 
@@ -3152,8 +3155,9 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 
@@ -3179,8 +3183,9 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 
@@ -3206,8 +3211,9 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 
@@ -3233,8 +3239,9 @@ namespace SagaMap.Scripting
                 client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
                                          MapClientManager.Instance.OnlinePlayer.Count);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 

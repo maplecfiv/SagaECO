@@ -23,8 +23,9 @@ namespace SagaMap.Tasks.Partner
             {
                 //Manager.ExperienceManager.Instance.ApplyPartnerReliabilityEXP(partner, 60);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 Deactivate();
             }
 

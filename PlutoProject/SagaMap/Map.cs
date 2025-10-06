@@ -445,8 +445,9 @@ namespace SagaMap
             {
                 return Actors[id];
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return null;
             }
         }
@@ -457,8 +458,9 @@ namespace SagaMap
             {
                 return pcByName[name];
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return null;
             }
         }
@@ -472,8 +474,9 @@ namespace SagaMap
                           select c;
                 return Enumerable.First<ActorPC>(chr);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return null;
             }
         }

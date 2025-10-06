@@ -37,8 +37,9 @@ namespace SagaMap.Tasks.Partner
                 if (partner.Status.Additions.ContainsKey("NotAtFreeTime"))
                     count = 0;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 Deactivate();
             }
 

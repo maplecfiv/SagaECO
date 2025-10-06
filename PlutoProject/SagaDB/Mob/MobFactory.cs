@@ -420,8 +420,9 @@ namespace SagaDB.Mob
                                 //    mob.dropItemsSpecial.Add(newDrop);
                             }
                         }
-                        catch (Exception)
+                        catch (Exception exception)
                         {
+                            Logger.ShowError(exception, null);
                         }
 
                     //}
@@ -498,8 +499,9 @@ namespace SagaDB.Mob
                     {
                         mob.mobType = (MobType)Enum.Parse(typeof(MobType), paras[3]);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         while (paras[3].Substring(paras[3].Length - 1) != "_")
                             paras[3] = paras[3].Substring(0, paras[3].Length - 1);
                         paras[3] = paras[3].Substring(0, paras[3].Length - 1);
@@ -631,8 +633,9 @@ namespace SagaDB.Mob
                     {
                         mob.mobType = (MobType)Enum.Parse(typeof(MobType), paras[6]);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -779,8 +782,9 @@ namespace SagaDB.Mob
                                     newDrop.Rate = 100;
                                 mob.dropItems.Add(newDrop);
                             }
-                            catch (Exception)
+                            catch (Exception exception)
                             {
+                                Logger.ShowError(exception, null);
                             }
 
                     if (paras[106] != "0")

@@ -36,8 +36,9 @@ namespace SagaMap.Process
             {
                 foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
             }
         }
 

@@ -25,8 +25,9 @@ namespace SagaMap.Tasks.Mob
                 if (actor != null) SkillHandler.Instance.ActorSpeak(actor, message);
                 Deactivate();
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                SagaLib.Logger.ShowError(exception, null);
             }
         }
     }

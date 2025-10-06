@@ -16,9 +16,9 @@ namespace SagaDB
 
         public GetRingEmblemResult(byte[] data, bool needUpdate, DateTime newTime)
         {
-            this.Data = data;
-            this.NeedUpdate = needUpdate;
-            this.NewTime = newTime;
+            Data = data;
+            NeedUpdate = needUpdate;
+            NewTime = newTime;
         }
     }
     public interface ActorDB

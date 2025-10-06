@@ -82,8 +82,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
             {
-                this._actor = actor;
-                this._caster = caster;
+                _actor = actor;
+                _caster = caster;
                 _skill = args.Clone();
                 _map = MapManager.Instance.GetMap(actor.MapID);
                 Period = 500;
@@ -176,7 +176,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             private void TimerEventHandler(Actor actor, DefaultBuff skill)
             {
-                int ranges = Map.Distance(this._actor, actor);
+                int ranges = Map.Distance(_actor, actor);
                 if (ranges > 200) skill.AdditionEnd();
             }
         }

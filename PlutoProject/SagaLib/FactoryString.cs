@@ -270,9 +270,9 @@ namespace SagaLib
                     }
 
                     count++;
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     Logger.ShowError("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines +
                                      "\r\n       Content:" + line);
                 }

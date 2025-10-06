@@ -52,8 +52,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     mob.ClearTaskAddition();
                     map.DeleteActor(mob);
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
         }
 

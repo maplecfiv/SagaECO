@@ -81,9 +81,9 @@ namespace SagaDB
                 try
                 {
                     db.Open();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    SagaLib.Logger.ShowError(exception, null);
                 }
 
                 if (db != null)
@@ -118,9 +118,9 @@ namespace SagaDB
                     try
                     {
                         tmp.Open();
-                    }
-                    catch (Exception)
+                    }catch (Exception exception)
                     {
+                        SagaLib.Logger.ShowError(exception, null);
                         tmp = new MySqlConnection(string.Format(
                             "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
                             dbuser, dbpass));

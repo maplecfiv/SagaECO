@@ -37,8 +37,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
                 foreach (var AdditionName in WillBeRemove) actorPC.Status.Additions.Remove(AdditionName);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                SagaLib.Logger.ShowError(exception, null);
             }
         }
 

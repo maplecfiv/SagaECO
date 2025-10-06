@@ -37,9 +37,9 @@ namespace SagaValidation
                     default:
                         return false;
                 }
-            }
-            catch (Exception)
+            }catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return false;
             }
         }

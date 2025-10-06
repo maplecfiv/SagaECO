@@ -184,8 +184,9 @@ namespace SagaMap.Network.Client
 
                 return "MapClient";
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 return "MapClient";
             }
         }

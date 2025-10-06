@@ -116,8 +116,9 @@ namespace SagaDB.Partner
                         var type = string.Join<string>("_", typeinfo);
                         partner.partnertype = (PartnerType)Enum.Parse(typeof(PartnerType), type);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -394,8 +395,9 @@ namespace SagaDB.Partner
                         var type = string.Join<string>("_", typeinfo);
                         partner.partnertype = (PartnerType)Enum.Parse(typeof(PartnerType), type);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);

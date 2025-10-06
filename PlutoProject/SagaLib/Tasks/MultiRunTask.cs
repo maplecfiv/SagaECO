@@ -35,8 +35,8 @@ namespace SagaLib.Tasks
         {
             if (period <= 0)
                 Logger.ShowWarning("period <= 0");
-            this.DueTime = dueTime;
-            this.Period = period;
+            DueTime = dueTime;
+            Period = period;
             Name = name;
         }
 

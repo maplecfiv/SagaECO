@@ -796,8 +796,9 @@ public class LoginClient : SagaLib.Client
             if (NetIo != null) return NetIo.sock.RemoteEndPoint.ToString();
             return "LoginClient";
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            Logger.ShowError(exception, null);
             return "LoginClient";
         }
     }

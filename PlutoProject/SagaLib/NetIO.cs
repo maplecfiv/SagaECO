@@ -121,8 +121,9 @@ namespace SagaLib
                     {
                         Disconnect();
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                     }
 
                     Logger.ShowWarning("Invalid packet head from:" + sock.RemoteEndPoint, null);
@@ -152,8 +153,9 @@ namespace SagaLib
 
                         stream.BeginRead(data, 0, 8, callbackKeyExchange, data);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -173,8 +175,9 @@ namespace SagaLib
                         keyAlreadyReceived = size;
                         stream.BeginRead(data, 0, size, callbackKeyExchange, data);
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -200,9 +203,9 @@ namespace SagaLib
                 try
                 {
                     stream.EndRead(ar);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -220,9 +223,9 @@ namespace SagaLib
                     try
                     {
                         stream.BeginRead(raw, keyAlreadyReceived, left, callbackKeyExchange, raw);
-                    }
-                    catch (Exception)
+                    }catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         //Logger.ShowError(ex);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
@@ -258,9 +261,9 @@ namespace SagaLib
 
                         keyAlreadyReceived = size;
                         stream.BeginRead(data, 0, size, callbackKeyExchange, data);
-                    }
-                    catch (Exception)
+                    }catch (Exception exception)
                     {
+                        Logger.ShowError(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -288,9 +291,9 @@ namespace SagaLib
                     Crypt.MakeAESKey(Encoding.ASCII.GetString(keyBuf));
                     StartPacketParsing();
                 }
-            }
-            catch (Exception)
+            }catch (Exception exception)
             {
+                Logger.ShowError(exception, null);
                 Disconnect();
                 //Logger.ShowError(ex);
             }
@@ -319,25 +322,25 @@ namespace SagaLib
                 try
                 {
                     Logger.ShowInfo(sock.RemoteEndPoint + " disconnected", null);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
                 try
                 {
                     stream.Close();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
                 try
                 {
                     sock.Close();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
             }
             catch (Exception e)
@@ -347,17 +350,18 @@ namespace SagaLib
                 {
                     stream.Close();
                 }
-                catch (Exception)
+                catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
 
                 //try { sock.Disconnect(true); }
                 try
                 {
                     sock.Close();
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                 }
                 //Logger.ShowInfo(sock.RemoteEndPoint.ToString() + " disconnected", null);
             }
@@ -393,9 +397,9 @@ namespace SagaLib
                 try
                 {
                     stream.EndRead(ar);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -447,9 +451,9 @@ namespace SagaLib
                 try
                 {
                     stream.BeginRead(data, 4, (int)size, callbackData, data);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -481,9 +485,9 @@ namespace SagaLib
                 try
                 {
                     stream.EndRead(ar);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -587,9 +591,9 @@ namespace SagaLib
                 try
                 {
                     stream.BeginRead(buffer, 0, 4, callbackSize, null);
-                }
-                catch (Exception)
+                }catch (Exception exception)
                 {
+                    Logger.ShowError(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();

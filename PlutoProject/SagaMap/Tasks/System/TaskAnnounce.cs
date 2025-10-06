@@ -12,7 +12,7 @@ namespace SagaMap.Tasks.System
         public TaskAnnounce(string taskname, string announce, int period)
         {
             aname = taskname;
-            this.Period = period;
+            Period = period;
             DueTime = 0;
             this.announce = announce;
         }
@@ -20,7 +20,7 @@ namespace SagaMap.Tasks.System
         public TaskAnnounce(string taskname, string announce, int duetime, int period)
         {
             aname = taskname;
-            this.Period = period;
+            Period = period;
             DueTime = duetime;
             this.announce = announce;
         }
@@ -35,8 +35,9 @@ namespace SagaMap.Tasks.System
                     else*/
                     i.SendAnnounce(announce);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                SagaLib.Logger.ShowError(exception, null);
             }
         }
     }
