@@ -53,7 +53,7 @@ namespace SagaMap
         private readonly Dictionary<string, CommandInfo> commandTable;
 
 
-        public Dictionary<string, MultiRunTask> tasklist = new Dictionary<string, MultiRunTask>();
+        public Dictionary<string, MultiRunTask> Tasklist { get; set; } = new Dictionary<string, MultiRunTask>();
 
         public AtCommand()
         {
@@ -583,13 +583,13 @@ namespace SagaMap
             try
             {
                 var taskname = arg[0];
-                if (!tasklist.ContainsKey(taskname))
+                if (!Tasklist.ContainsKey(taskname))
                 {
                     var announce = arg[1];
                     var period = int.Parse(arg[2]) * 1000;
                     var ta = new TaskAnnounce(taskname, announce, period);
                     ta.Activate();
-                    tasklist.Add(taskname, ta);
+                    Tasklist.Add(taskname, ta);
                     client.SendSystemMessage(taskname + "添加成功");
                 }
                 else
@@ -608,11 +608,11 @@ namespace SagaMap
             try
             {
                 var taskname = args;
-                if (tasklist.ContainsKey(taskname))
+                if (Tasklist.ContainsKey(taskname))
                 {
-                    var task = tasklist[taskname];
+                    var task = Tasklist[taskname];
                     task.Deactivate();
-                    tasklist.Remove(taskname);
+                    Tasklist.Remove(taskname);
                     client.SendSystemMessage(taskname + "已移除");
                 }
                 else
