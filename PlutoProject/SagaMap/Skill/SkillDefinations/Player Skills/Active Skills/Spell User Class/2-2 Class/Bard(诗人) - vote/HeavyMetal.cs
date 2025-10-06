@@ -86,10 +86,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 500;
-                dueTime = 0;
+                Period = 500;
+                DueTime = 0;
                 lifeTime = 30000 + 30000 * level;
-                countMax = lifeTime / period;
+                countMax = lifeTime / Period;
             }
 
             public override void CallBack()
@@ -111,7 +111,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                                 if (!act.Status.Additions.ContainsKey("HeavyMetal"))
                                 {
                                     var skill2 = new DefaultBuff(skill.skill, act, "HeavyMetal",
-                                        lifeTime - count * period, 200);
+                                        lifeTime - count * Period, 200);
                                     skill2.OnAdditionStart += StartEventHandler;
                                     skill2.OnAdditionEnd += EndEventHandler;
                                     skill2.OnUpdate += TimerEventHandler;

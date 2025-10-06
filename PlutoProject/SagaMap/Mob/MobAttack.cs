@@ -15,9 +15,9 @@ namespace SagaMap.Mob
 
         public MobAttack(MobAI mob, Actor dActor)
         {
-            dueTime = 0;
+            DueTime = 0;
             this.mob = mob;
-            period = calcDelay(mob.Mob);
+            Period = calcDelay(mob.Mob);
             this.dActor = dActor;
         }
 
@@ -125,7 +125,7 @@ namespace SagaMap.Mob
                 var arg = new SkillArg();
                 SkillHandler.Instance.Attack(mob.Mob, dActor, arg);
                 mob.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, arg, mob.Mob, true);
-                period = calcDelay(mob.Mob);
+                Period = calcDelay(mob.Mob);
             }
             catch (Exception ex)
             {

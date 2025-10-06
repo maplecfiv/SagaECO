@@ -82,8 +82,8 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 this.lifetime = lifetime;
                 this.level = level;
                 map = MapManager.Instance.GetMap(sActor.MapID);
@@ -103,7 +103,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                     if (lifetime > 0)
                     {
                         if (OnTimer != null) OnTimer.Invoke(this);
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

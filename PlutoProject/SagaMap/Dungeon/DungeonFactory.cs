@@ -89,10 +89,10 @@ namespace SagaMap.Dungeon
         public Dungeon CreateDungeon(uint id, ActorPC creator, uint exitMap, byte exitX, byte exitY)
         {
         recreate:
-            if (items.ContainsKey(id))
+            if (Items.ContainsKey(id))
             {
                 count++;
-                var dungeon = items[id].Clone();
+                var dungeon = Items[id].Clone();
                 dungeon.Creator = creator;
                 dungeon.DungeonID = (uint)count;
                 List<DungeonMap> rooms;

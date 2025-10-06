@@ -19,8 +19,8 @@ namespace SagaMap.Tasks.System
 
         public 南牢列车()
         {
-            period = 2000;
-            dueTime = 0;
+            Period = 2000;
+            DueTime = 0;
         }
 
         public static 南牢列车 Instance
@@ -100,7 +100,7 @@ namespace SagaMap.Tasks.System
 
             public Activator(ActorSkill skill, Map map, byte x2, byte y2)
             {
-                period = 45;
+                Period = 45;
                 this.skill = skill;
                 this.map = map;
                 x = x2;

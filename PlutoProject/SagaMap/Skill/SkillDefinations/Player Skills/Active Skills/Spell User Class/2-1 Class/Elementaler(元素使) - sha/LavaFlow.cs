@@ -308,8 +308,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
 
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = lifetime / countMax;
-                dueTime = 0;
+                Period = lifetime / countMax;
+                DueTime = 0;
             }
 
             public override void CallBack()

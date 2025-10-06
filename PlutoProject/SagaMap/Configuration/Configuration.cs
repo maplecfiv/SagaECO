@@ -368,11 +368,11 @@ namespace SagaMap.Configuration
                     paras = line.Split(',');
 
                     var DueTime = int.Parse(paras[0]);
-                    var Period = int.Parse(paras[1]);
+                    var period = int.Parse(paras[1]);
                     var Text = paras[2];
 
                     count++;
-                    var ta = new TaskAnnounce("公告" + count, Text, DueTime, Period);
+                    var ta = new TaskAnnounce("公告" + count, Text, DueTime, period);
                     ta.Activate();
                 }
                 catch (Exception ex)

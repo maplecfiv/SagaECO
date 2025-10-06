@@ -59,8 +59,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         public ActivatorA(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level)
         {
-            dueTime = 100;
-            period = 1000;
+            DueTime = 100;
+            Period = 1000;
             AimActor = dActor;
             Arg = args;
             SkillBody = actor;
@@ -72,27 +72,27 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 case 1:
                     factor = 0.25f;
                     countMax = 4;
-                    period = 1000;
+                    Period = 1000;
                     break;
                 case 2:
                     factor = 0.5f;
                     countMax = 6;
-                    period = 800;
+                    Period = 800;
                     break;
                 case 3:
                     factor = 0.75f;
                     countMax = 10;
-                    period = 700;
+                    Period = 700;
                     break;
                 case 4:
                     factor = 1.0f;
                     countMax = 12;
-                    period = 400;
+                    Period = 400;
                     break;
                 case 5:
                     factor = 1.25f;
                     countMax = 16;
-                    period = 100;
+                    Period = 100;
                     break;
             }
         }
@@ -183,8 +183,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 0;
-                dueTime = 800;
+                Period = 0;
+                DueTime = 800;
             }
 
             public override void CallBack()

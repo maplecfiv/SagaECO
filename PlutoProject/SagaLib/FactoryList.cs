@@ -12,12 +12,11 @@ namespace SagaLib
         protected string databaseName = "";
         private Encoding encoding;
         private bool isFolder;
-        protected Dictionary<uint, List<T>> items = new Dictionary<uint, List<T>>();
         protected string loadedTab = "";
         protected string loadingTab = "";
         private string path;
 
-        public Dictionary<uint, List<T>> Items => items;
+        public Dictionary<uint, List<T>> Items { get; set; } = new Dictionary<uint, List<T>>();
 
         public FactoryType FactoryType { get; set; }
 
@@ -39,7 +38,7 @@ namespace SagaLib
 
         public void Reload()
         {
-            items.Clear();
+            Items.Clear();
             Init(path, encoding, isFolder);
         }
 
@@ -197,8 +196,8 @@ namespace SagaLib
                     }
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key)) items.Add(key, new List<T>());
-                    items[key].Add(item);
+                    if (!Items.ContainsKey(key)) Items.Add(key, new List<T>());
+                    Items[key].Add(item);
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
                     {
@@ -267,8 +266,8 @@ namespace SagaLib
                     ParseCSV(item, paras);
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key)) items.Add(key, new List<T>());
-                    items[key].Add(item);
+                    if (!Items.ContainsKey(key)) Items.Add(key, new List<T>());
+                    Items[key].Add(item);
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
                     {

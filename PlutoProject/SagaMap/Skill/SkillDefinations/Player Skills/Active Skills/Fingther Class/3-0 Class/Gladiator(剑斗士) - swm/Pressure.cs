@@ -33,8 +33,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 1000;
-                dueTime = 1000;
+                Period = 1000;
+                DueTime = 1000;
                 int[] Counts = { 0, 30, 30, 30, 40, 45 };
                 countMax = Counts[level];
                 dActor = theDActor;

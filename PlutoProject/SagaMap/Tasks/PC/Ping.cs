@@ -12,7 +12,7 @@ namespace SagaMap.Tasks.PC
 
         public Ping(MapClient pc)
         {
-            period = 10000;
+            Period = 10000;
             this.pc = pc;
         }
 

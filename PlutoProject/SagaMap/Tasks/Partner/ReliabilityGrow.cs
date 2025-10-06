@@ -11,8 +11,8 @@ namespace SagaMap.Tasks.Partner
 
         public ReliabilityGrow(ActorPartner partner)
         {
-            dueTime = 60 * 1000;
-            period = 60 * 1000;
+            DueTime = 60 * 1000;
+            Period = 60 * 1000;
             this.partner = partner;
         }
 

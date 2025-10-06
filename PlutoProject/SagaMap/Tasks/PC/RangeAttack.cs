@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.PC
 
         public RangeAttack(MapClient client)
         {
-            dueTime = 500;
-            period = 500;
+            DueTime = 500;
+            Period = 500;
             this.client = client;
             count = 0;
             client.Character.TInt["RangeAttackMark"] = 0;

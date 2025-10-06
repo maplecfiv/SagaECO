@@ -18,12 +18,11 @@ namespace SagaLib
         protected string databaseName = "";
         private Encoding encoding;
         private bool isFolder;
-        protected Dictionary<uint, T> items = new Dictionary<uint, T>();
         protected string loadedTab = "";
         protected string loadingTab = "";
         private string path;
 
-        public Dictionary<uint, T> Items => items;
+        public Dictionary<uint, T> Items { get; set; } = new Dictionary<uint, T>();
 
         public FactoryType FactoryType { get; set; }
 
@@ -45,7 +44,7 @@ namespace SagaLib
 
         public void Reload()
         {
-            items.Clear();
+            Items.Clear();
             Init(path, encoding, isFolder);
         }
 
@@ -224,16 +223,16 @@ namespace SagaLib
                     }
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key))
+                    if (!Items.ContainsKey(key))
                     {
 
-                        items.Add(key, item);
+                        Items.Add(key, item);
                     }
                     else
                     {
 
                         //Logger.ShowWarning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
-                        items[key] = item;
+                        Items[key] = item;
                     }
 #if !Web
                     if ((DateTime.Now - time).TotalMilliseconds > 10)

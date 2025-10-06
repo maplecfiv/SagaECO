@@ -73,7 +73,7 @@ namespace SagaMap.Mob.AICommands
                         ((OtherAddition)mob.Mob.Status.Additions["石像击杀怪物CD"]).endTime =
                             DateTime.Now + new TimeSpan(0, 0, 0, 0, lefttime);
                         var skills = new OtherAddition(null, mob.Mob, "石像坐下休息", lefttime);
-                        skills.dueTime = 2000;
+                        skills.DueTime = 2000;
                         skills.OnAdditionStart += (s, e) =>
                         {
                             ((ActorGolem)mob.Mob).Motion = 135;

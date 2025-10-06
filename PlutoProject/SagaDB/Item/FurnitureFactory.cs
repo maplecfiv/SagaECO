@@ -26,9 +26,9 @@ namespace SagaDB.Item
 
         public Furniture GetFurniture(uint id)
         {
-            if (items.ContainsKey(id))
+            if (Items.ContainsKey(id))
             {
-                var f = items[id];
+                var f = Items[id];
                 return f;
             }
 

@@ -32,8 +32,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 1000;
-                period = periods[level];
+                DueTime = 1000;
+                Period = periods[level];
                 lifetime = 20000;
                 rate = 40 - 5 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
@@ -47,7 +47,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 {
                     if (lifetime > 0)
                     {
-                        lifetime -= period;
+                        lifetime -= Period;
                         var affected = map.GetActorsArea(actor, 150, false);
                         foreach (var act in affected)
                             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))

@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.Mob
 
         public Respawn(ActorMob mob, int delay)
         {
-            dueTime = delay;
-            period = delay;
+            DueTime = delay;
+            Period = delay;
             this.mob = mob;
         }
 

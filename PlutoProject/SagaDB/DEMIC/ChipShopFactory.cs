@@ -20,7 +20,7 @@ namespace SagaDB.DEMIC
 
         public List<ChipShopCategory> GetCategoryFromLv(byte lv)
         {
-            var r = from category in items.Values
+            var r = from category in Items.Values
                 where category.PossibleLv <= lv
                 select category;
             return r.ToList();

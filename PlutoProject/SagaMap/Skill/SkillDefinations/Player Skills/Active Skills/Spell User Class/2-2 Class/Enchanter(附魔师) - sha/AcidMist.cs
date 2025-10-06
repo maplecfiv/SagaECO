@@ -33,9 +33,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 1.5f + 0.1f * level;
-                dueTime = 0;
+                DueTime = 0;
                 times = 30 - 5 * level;
-                period = 500;
+                Period = 500;
                 lifetime = 35000 - 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -63,7 +63,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         //广播技能效果
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

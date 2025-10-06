@@ -55,8 +55,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 //}
 
 
-                dueTime = 0;
-                period = lifetime / times;
+                DueTime = 0;
+                Period = lifetime / times;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
@@ -87,7 +87,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
                         //else
                         //    continue;
-                        lifetime -= period;
+                        lifetime -= Period;
 
                         //SkillHandler.Instance.MagicAttack(caster, affected, skill, SkillHandler.DefType.DefIgnoreRight, Elements.Neutral, HP_Lost, 0, true);
                         //SkillHandler.Instance.PhysicalAttack(sActor, affected, skill, SkillHandler.DefType.Def, Elements.Neutral, 0, factor, true);

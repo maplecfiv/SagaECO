@@ -38,8 +38,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args;
-                dueTime = 0;
-                period = 1;
+                DueTime = 0;
+                Period = 1;
                 this.lifetime = lifetime;
                 this.level = level;
                 factor = _factor;
@@ -59,7 +59,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     if (lifetime > 0)
                     {
                         if (OnTimer != null) OnTimer.Invoke(this);
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else if (actor.HP <= 0)
                     {

@@ -36,8 +36,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 skilllevel = level;
                 map = MapManager.Instance.GetMap(actor.MapID);
                 factor = 3.5f + 0.7f * level;
-                //this.period = periods[level];
-                dueTime = 1000;
+                //this.Period = periods[level];
+                DueTime = 1000;
             }
 
             public override void CallBack()

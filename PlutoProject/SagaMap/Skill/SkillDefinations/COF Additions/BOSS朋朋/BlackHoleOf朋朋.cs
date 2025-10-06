@@ -66,8 +66,8 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 1000;
-                dueTime = 0;
+                Period = 1000;
+                DueTime = 0;
                 x = args.x;
                 y = args.y;
             }

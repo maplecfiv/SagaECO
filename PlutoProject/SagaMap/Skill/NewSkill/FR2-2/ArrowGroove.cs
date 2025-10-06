@@ -105,8 +105,8 @@ namespace SagaMap.Skill.NewSkill.FR2_2
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 200;
-                dueTime = 200;
+                Period = 200;
+                DueTime = 200;
                 this.path = path;
                 factor = CalcFactor(args.skill.Level);
                 this.element = element;

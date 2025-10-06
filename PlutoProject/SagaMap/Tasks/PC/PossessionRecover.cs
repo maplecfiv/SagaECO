@@ -11,8 +11,8 @@ namespace SagaMap.Tasks.PC
 
         public PossessionRecover(MapClient client)
         {
-            dueTime = 10000;
-            period = 10000;
+            DueTime = 10000;
+            Period = 10000;
             this.client = client;
         }
 

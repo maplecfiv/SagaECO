@@ -30,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 1000;
-                period = 5000;
+                DueTime = 1000;
+                Period = 5000;
                 lifetime = 60000;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -44,7 +44,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 {
                     if (lifetime > 0)
                     {
-                        lifetime -= period;
+                        lifetime -= Period;
                         var HP_Recovery = (uint)skill.skill.Level * 10;
                         var affected = map.GetActorsArea(actor, 200, false);
                         var realAffected = new List<Actor>();

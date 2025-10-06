@@ -11,7 +11,7 @@ namespace SagaMap.Tasks.PC
 
         public TimeOnline(ActorPC pc)
         {
-            period = 1000;
+            Period = 1000;
             this.pc = pc;
         }
 

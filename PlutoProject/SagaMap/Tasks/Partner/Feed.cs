@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.Partner
 
         public Feed(MapClient mc, ActorPartner partner, uint nextfeedtime)
         {
-            dueTime = (int)(nextfeedtime * 1000);
-            period = 5000;
+            DueTime = (int)(nextfeedtime * 1000);
+            Period = 5000;
             this.partner = partner;
             this.mc = mc;
         }

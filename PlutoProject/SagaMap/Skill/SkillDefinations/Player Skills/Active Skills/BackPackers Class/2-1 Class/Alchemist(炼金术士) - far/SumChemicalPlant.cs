@@ -52,8 +52,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         //        this.mob = mob;
         //        skill = _args.Clone();
         //        factor = 0.5f + 1.5f * level;
-        //        this.dueTime = 2500;
-        //        this.period = 0;
+        //        this.DueTime = 2500;
+        //        this.Period = 0;
 
         //    }
         //    public override void CallBack()

@@ -40,8 +40,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 var periods = new[] { 0, 1000, 1000, 500, 1000, 800, 100 };
                 lifetime = 60000 * level;
                 factor = factors[level] + caster.Status.Cardinal_Rank;
-                period = periods[level];
-                dueTime = 0;
+                Period = periods[level];
+                DueTime = 0;
             }
 
             public override void CallBack()

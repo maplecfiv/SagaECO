@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Partner
 
         public TalkAtFreeTime(MapClient client)
         {
-            dueTime = 50000;
-            period = 50000;
+            DueTime = 50000;
+            Period = 50000;
             this.client = client;
             count = 0;
         }

@@ -32,9 +32,9 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 1.5f + 0.1f * level;
-                dueTime = 0;
+                DueTime = 0;
                 times = 30 - 5 * level;
-                period = 500;
+                Period = 500;
                 lifetime = 35000 - 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -69,7 +69,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                         map.DeleteActor(actor);
                     }
 
-                    lifetime -= period;
+                    lifetime -= Period;
                 }
                 catch (Exception ex)
                 {

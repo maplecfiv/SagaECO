@@ -15,9 +15,9 @@ namespace SagaMap.Partner
         public PartnerAttack(PartnerAI partnerai, Actor dActor)
         {
             Name = "搭档普攻线程";
-            dueTime = 0;
+            DueTime = 0;
             this.partnerai = partnerai;
-            period = calcDelay(partnerai.Partner);
+            Period = calcDelay(partnerai.Partner);
             this.dActor = dActor;
         }
 
@@ -100,8 +100,8 @@ namespace SagaMap.Partner
                 var arg = new SkillArg();
                 SkillHandler.Instance.Attack(partnerai.Partner, dActor, arg);
                 partnerai.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, arg, partnerai.Partner, true);
-                period = calcDelay(partnerai.Partner);
-                partner.TTime["攻击僵直"] = DateTime.Now + new TimeSpan(0, 0, 0, 0, period - 500);
+                Period = calcDelay(partnerai.Partner);
+                partner.TTime["攻击僵直"] = DateTime.Now + new TimeSpan(0, 0, 0, 0, Period - 500);
             }
             catch (Exception ex)
             {

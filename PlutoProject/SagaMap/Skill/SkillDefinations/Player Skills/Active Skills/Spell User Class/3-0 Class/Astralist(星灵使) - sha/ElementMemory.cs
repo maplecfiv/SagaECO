@@ -51,8 +51,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         public ActivatorB(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level)
         {
-            dueTime = 100;
-            period = 200;
+            DueTime = 100;
+            Period = 200;
             AimActor = dActor;
             Arg = args;
             SkillBody = actor;

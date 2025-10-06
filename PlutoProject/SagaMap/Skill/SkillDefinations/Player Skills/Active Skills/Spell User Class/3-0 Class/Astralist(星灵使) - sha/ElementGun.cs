@@ -51,8 +51,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         public ActivatorA(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level)
         {
-            dueTime = 500;
-            period = 1000;
+            DueTime = 500;
+            Period = 1000;
             AimActor = dActor;
             Arg = args;
             SkillBody = actor;
@@ -65,25 +65,25 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 case 1:
                     factor = 3.0f;
                     countMax = 4;
-                    period = 1000;
+                    Period = 1000;
                     break;
                 case 2:
                     factor = 3.8f;
                     countMax = 4;
-                    period = 800;
+                    Period = 800;
                     break;
                 case 3:
                     factor = 4.35f;
                     countMax = 4;
-                    period = 700;
+                    Period = 700;
                     break;
                 case 4:
                     factor = 4.56f;
-                    period = 500;
+                    Period = 500;
                     break;
                 case 5:
                     factor = 5.23f;
-                    period = 300;
+                    Period = 300;
                     break;
             }
         }

@@ -30,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 1000;
-                period = 1000;
+                DueTime = 1000;
+                Period = 1000;
                 lifetime = 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
                 mob = map.SpawnMob(30480000, actor.X, actor.Y, 2500, sActor);
@@ -47,7 +47,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     skill.affectedActors.Clear();
                     if (lifetime > 0)
                     {
-                        lifetime -= period;
+                        lifetime -= Period;
                         var affected = map.GetActorsArea(actor, 200, false);
                         foreach (var act in affected)
                             if (act.type == ActorType.PC || act.type == ActorType.PET || act.type == ActorType.SHADOW)

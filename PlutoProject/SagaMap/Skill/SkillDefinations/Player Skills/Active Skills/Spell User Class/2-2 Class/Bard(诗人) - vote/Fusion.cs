@@ -86,10 +86,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 500;
-                dueTime = 0;
+                Period = 500;
+                DueTime = 0;
                 lifeTime = (30 + level * 30) * 1000;
-                countMax = lifeTime / period;
+                countMax = lifeTime / Period;
             }
 
             public override void CallBack()
@@ -110,7 +110,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             if (!SkillHandler.Instance.CheckValidAttackTarget(caster, act))
                                 if (!act.Status.Additions.ContainsKey("Fusion"))
                                 {
-                                    var skill2 = new DefaultBuff(skill.skill, act, "Fusion", lifeTime - count * period,
+                                    var skill2 = new DefaultBuff(skill.skill, act, "Fusion", lifeTime - count * Period,
                                         200);
                                     skill2.OnAdditionStart += StartEventHandler;
                                     skill2.OnAdditionEnd += EndEventHandler;

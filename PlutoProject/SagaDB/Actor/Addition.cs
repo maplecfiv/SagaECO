@@ -87,7 +87,7 @@ namespace SagaDB.Actor
         {
             get
             {
-                if (this != null) return period;
+                if (this != null) return Period;
 
                 return -1;
             }
@@ -173,8 +173,8 @@ namespace SagaDB.Actor
         /// <param name="duetime">Due Time</param>
         protected void InitTimer(int interval, int duetime)
         {
-            dueTime = duetime;
-            period = interval; //= new MultiRunTask(duetime, interval);
+            DueTime = duetime;
+            Period = interval; //= new MultiRunTask(duetime, interval);
             Name = Name;
         }
 

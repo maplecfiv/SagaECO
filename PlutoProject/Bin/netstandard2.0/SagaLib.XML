@@ -762,7 +762,7 @@
                 Explicit static constructor to tell C# compiler not to mark type as beforefieldinit
             </summary>
         </member>
-        <member name="F:SagaLib.Tasks.MultiRunTask.dueTime">
+        <member name="F:SagaLib.Tasks.MultiRunTask.executing">
             <summary>
                 启动延迟(ms)
             </summary>
@@ -772,7 +772,7 @@
                 下次执行时间
             </summary>
         </member>
-        <member name="F:SagaLib.Tasks.MultiRunTask.period">
+        <member name="F:SagaLib.Tasks.MultiRunTask.TaskBeginTime">
             <summary>
                 运行周期(ms)
             </summary>

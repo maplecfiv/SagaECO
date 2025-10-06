@@ -97,7 +97,7 @@ namespace SagaDB.Item
 
         public void ReleaseItem(Item item)
         {
-            var ability = items[item.ItemID];
+            var ability = Items[item.ItemID];
 
             if (!ability.HP.MaxValue.Equals(ability.HP.MaxValue).Equals(0))
                 item.HP += (short)Global.Random.Next(ability.HP.MinValue, ability.HP.MaxValue);

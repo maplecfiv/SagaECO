@@ -7,7 +7,6 @@ namespace SagaLib.Tasks
         /// <summary>
         ///     启动延迟(ms)
         /// </summary>
-        public int dueTime;
 
         internal bool executing;
 
@@ -19,7 +18,6 @@ namespace SagaLib.Tasks
         /// <summary>
         ///     运行周期(ms)
         /// </summary>
-        public int period;
 
         internal DateTime TaskBeginTime;
 
@@ -37,8 +35,8 @@ namespace SagaLib.Tasks
         {
             if (period <= 0)
                 Logger.ShowWarning("period <= 0");
-            this.dueTime = dueTime;
-            this.period = period;
+            this.DueTime = dueTime;
+            this.Period = period;
             Name = name;
         }
 
@@ -62,8 +60,8 @@ namespace SagaLib.Tasks
         /// </summary>
         public int DueTime
         {
-            get => dueTime;
-            set => dueTime = value;
+            get;
+            set;
         }
 
         /// <summary>
@@ -71,8 +69,8 @@ namespace SagaLib.Tasks
         /// </summary>
         public int Period
         {
-            get => period;
-            set => period = value;
+            get;
+            set;
         }
 
 
@@ -95,7 +93,7 @@ namespace SagaLib.Tasks
         /// </summary>
         public void Activate()
         {
-            NextUpdateTime = DateTime.Now.AddMilliseconds(dueTime);
+            NextUpdateTime = DateTime.Now.AddMilliseconds(DueTime);
             TaskManager.Instance.RegisterTask(this);
             Activated = true;
             OnActivate();

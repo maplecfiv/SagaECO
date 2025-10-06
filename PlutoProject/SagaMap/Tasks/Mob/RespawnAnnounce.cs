@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Mob
 
         public RespawnAnnounce(ActorMob mob, int delay)
         {
-            dueTime = delay;
-            period = delay;
+            DueTime = delay;
+            Period = delay;
             this.mob = mob;
         }
 

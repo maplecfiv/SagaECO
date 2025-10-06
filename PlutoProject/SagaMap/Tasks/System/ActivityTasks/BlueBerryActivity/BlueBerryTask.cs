@@ -11,8 +11,8 @@ namespace SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity
 
         public BlueBerryActivity()
         {
-            period = 60000;
-            dueTime = 0;
+            Period = 60000;
+            DueTime = 0;
         }
 
         public static BlueBerryActivity Instance

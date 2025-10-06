@@ -9,7 +9,7 @@ namespace SagaMap.Tasks.System
     {
         public AutoSaveServerSvar()
         {
-            period = 120000;
+            Period = 120000;
         }
 
         public override void CallBack()

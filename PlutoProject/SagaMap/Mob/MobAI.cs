@@ -50,20 +50,20 @@ namespace SagaMap.Mob
         public short MoveRange, X_Ori, Y_Ori, X_Spawn, Y_Spawn;
         public DateTime NextUpdateTime = DateTime.Now;
         private Dictionary<int, MapNode> openedNode = new Dictionary<int, MapNode>();
-        public int period;
+        public int Period { get; set; }
         public int SpawnDelay;
         public short X_pb, Y_pb;
 
         public MobAI(Actor mob, bool idle)
         {
-            period = 1000; //process 1 command every second            
+            Period = 1000; //process 1 command every second            
             Mob = mob;
             map = MapManager.Instance.GetMap(mob.MapID);
         }
 
         public MobAI(Actor mob)
         {
-            period = 1000; //process 1 command every second            
+            Period = 1000; //process 1 command every second            
             Mob = mob;
             map = MapManager.Instance.GetMap(mob.MapID);
             commands.Add("Attack", new Attack(this));
@@ -93,10 +93,10 @@ namespace SagaMap.Mob
                 if (Mob.Speed == 0)
                     return;
                 if (value == Activity.BUSY)
-                    period = 100000 / Mob.Speed;
+                    Period = 100000 / Mob.Speed;
                 else if (value == Activity.LAZY)
-                    period = 200000 / Mob.Speed;
-                else if (value == Activity.IDLE) period = 1000;
+                    Period = 200000 / Mob.Speed;
+                else if (value == Activity.IDLE) Period = 1000;
             }
         }
 

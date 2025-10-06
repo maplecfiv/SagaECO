@@ -19,8 +19,8 @@ namespace SagaMap.Tasks.Golem
 
         public GolemTask(ActorGolem golem)
         {
-            dueTime = 60000;
-            period = 60000;
+            DueTime = 60000;
+            Period = 60000;
             this.golem = golem;
 
             var map = MapManager.Instance.GetMap(golem.MapID);

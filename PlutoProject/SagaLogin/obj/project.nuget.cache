@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Zc15zQfqTM4=",
+  "dgSpecHash": "OjI9NRCq5pM=",
   "success": true,
   "projectFilePath": "/home/maple/projects/SagaECO/PlutoProject/SagaLogin/SagaLogin.csproj",
   "expectedPackageFiles": [
@@ -30,5 +30,15 @@
     "/home/maple/.nuget/packages/system.threading.tasks.extensions/4.5.4/system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "/home/maple/.nuget/packages/system.valuetuple/4.5.0/system.valuetuple.4.5.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "projectPath": "/home/maple/projects/SagaECO/PlutoProject/SagaLogin/SagaLogin.csproj",
+      "warningLevel": 1,
+      "filePath": "/home/maple/projects/SagaECO/PlutoProject/SagaLogin/SagaLogin.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

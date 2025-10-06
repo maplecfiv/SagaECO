@@ -32,8 +32,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor = _dActor;
                 skill = _args.Clone();
                 rate = 10 + 10 * level;
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 times = 15;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }

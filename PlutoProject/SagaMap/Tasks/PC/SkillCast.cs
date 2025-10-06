@@ -14,13 +14,13 @@ namespace SagaMap.Tasks.PC
         {
             if (skill.argType == SkillArg.ArgType.Cast)
             {
-                dueTime = (int)skill.delay;
-                period = (int)skill.delay;
+                DueTime = (int)skill.delay;
+                Period = (int)skill.delay;
             }
             else if (skill.argType == SkillArg.ArgType.Item_Cast)
             {
-                dueTime = (int)skill.item.BaseData.cast;
-                period = (int)skill.item.BaseData.cast;
+                DueTime = (int)skill.item.BaseData.cast;
+                Period = (int)skill.item.BaseData.cast;
             }
 
             this.client = client;

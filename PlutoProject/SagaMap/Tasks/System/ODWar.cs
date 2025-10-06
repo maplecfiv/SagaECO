@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.System
 
         public ODWar()
         {
-            period = 60000;
-            dueTime = 0;
+            Period = 60000;
+            DueTime = 0;
         }
 
         public static ODWar Instance

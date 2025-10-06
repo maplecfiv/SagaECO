@@ -11,8 +11,8 @@ namespace SagaMap.Tasks.PC
 
         public Marionette(MapClient client, int duration)
         {
-            dueTime = duration * 1000;
-            period = duration * 1000;
+            DueTime = duration * 1000;
+            Period = duration * 1000;
             this.client = client;
         }
 

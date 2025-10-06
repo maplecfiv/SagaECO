@@ -32,8 +32,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.actorSkill = actorSkill;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actorSkill[0].MapID);
-                period = 100;
-                dueTime = 0;
+                Period = 100;
+                DueTime = 0;
                 this.flag = flag;
 
 

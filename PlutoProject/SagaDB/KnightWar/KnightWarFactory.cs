@@ -24,7 +24,7 @@ namespace SagaDB.KnightWar
             var time = new DateTime(1970, 1, 1, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
 
             var query =
-                from movie in items.Values
+                from movie in Items.Values
                 where movie.StartTime > time
                 orderby movie.StartTime
                 select movie;
@@ -32,7 +32,7 @@ namespace SagaDB.KnightWar
                 return query.First();
             {
                 query =
-                    from movie in items.Values
+                    from movie in Items.Values
                     orderby movie.StartTime
                     select movie;
                 if (query.Count() != 0)
@@ -49,7 +49,7 @@ namespace SagaDB.KnightWar
         {
             var time = new DateTime(1970, 1, 1, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             var query =
-                from movie in items.Values
+                from movie in Items.Values
                 where movie.StartTime < time && movie.StartTime + new TimeSpan(0, movie.Duration, 0) > time
                 orderby movie.StartTime
                 select movie;

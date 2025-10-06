@@ -37,7 +37,7 @@ namespace SagaMap.Skill.Additions
             this.skill = skill;
             AttachedActor = actor;
             lifeTime = lifetime;
-            this.period = period;
+            this.Period = period;
         }
 
         public int this[string name]

@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Mob
 
         public TimingSpeak(Actor actor, int delay, string message)
         {
-            dueTime = delay;
-            period = delay;
+            DueTime = delay;
+            Period = delay;
             this.actor = actor;
             this.message = message;
         }

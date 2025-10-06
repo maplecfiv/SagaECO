@@ -36,8 +36,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 float[] factors = { 0, 1.0f, 4.5f, 2.0f, 2.5f, 3.0f };
                 factor = factors[level];
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = lifetime / countMax;
-                dueTime = 0;
+                Period = lifetime / countMax;
+                DueTime = 0;
             }
 
             public override void CallBack()

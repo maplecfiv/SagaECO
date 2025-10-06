@@ -27,8 +27,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 5000 * level;
-                period = 1000;
+                DueTime = 5000 * level;
+                Period = 1000;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 

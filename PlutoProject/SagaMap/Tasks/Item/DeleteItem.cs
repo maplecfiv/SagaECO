@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Item
 
         public DeleteItem(ActorItem item)
         {
-            dueTime = 60000;
-            period = 60000;
+            DueTime = 60000;
+            Period = 60000;
             npc = item;
         }
 

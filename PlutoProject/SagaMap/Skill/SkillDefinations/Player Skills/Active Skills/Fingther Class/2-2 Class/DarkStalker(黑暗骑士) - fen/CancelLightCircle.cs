@@ -31,8 +31,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 lifetime = 25000 + 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -54,7 +54,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                                 }
 
                         times++;
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

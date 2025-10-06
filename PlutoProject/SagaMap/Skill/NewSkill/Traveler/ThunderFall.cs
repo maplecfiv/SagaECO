@@ -31,8 +31,8 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 skill = args.Clone();
                 skill.skill = SkillFactory.Instance.GetSkill(23003, 1);
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 200;
-                dueTime = 0;
+                Period = 200;
+                DueTime = 0;
                 path = GetStraightPath(Global.PosX16to8(caster.X, map.Width),
                     Global.PosY16to8(caster.Y, map.Height), args.x, args.y);
                 var Me = (ActorPC)caster;

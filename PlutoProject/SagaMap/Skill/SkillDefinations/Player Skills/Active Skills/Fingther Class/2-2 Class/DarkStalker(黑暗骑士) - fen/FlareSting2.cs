@@ -29,8 +29,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 skill = _args.Clone();
                 float[] factors = { 0f, 5.0f, 5.5f, 6.0f, 6.5f, 7.0f };
                 factor = factors[level];
-                dueTime = 1000;
-                period = 1000;
+                DueTime = 1000;
+                Period = 1000;
                 lifetime = 1000;
                 map = MapManager.Instance.GetMap(sActor.MapID);
                 SkillHandler.Instance.MagicAttack(sActor, dActor, skill, Elements.Dark, factor);
@@ -60,7 +60,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         }
 
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, dActor, false);
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

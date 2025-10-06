@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.PC
 
         public SpRecover(MapClient client)
         {
-            dueTime = 3000;
-            period = 3000;
+            DueTime = 3000;
+            Period = 3000;
             this.client = client;
         }
 

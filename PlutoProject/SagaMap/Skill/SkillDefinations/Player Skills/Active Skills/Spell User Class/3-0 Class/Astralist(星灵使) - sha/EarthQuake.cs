@@ -31,8 +31,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 400;
-                dueTime = 0;
+                Period = 400;
+                DueTime = 0;
 
                 factor = 0.95f + level * 0.05f;
                 int[] LvCount = { 0, 5, 5, 6, 6, 7 };

@@ -30,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 0;
-                period = 3000;
+                DueTime = 0;
+                Period = 3000;
                 lifetime = 60000;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -60,7 +60,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Joint_Class
                         //广播技能效果
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
 
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

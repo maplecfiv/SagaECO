@@ -44,9 +44,9 @@ namespace SagaDB.Treasure
 
         public TreasureItem GetRandomItem(string groupName)
         {
-            if (items.ContainsKey(groupName))
+            if (Items.ContainsKey(groupName))
             {
-                var list = items[groupName];
+                var list = Items[groupName];
                 var ran = Global.Random.Next(0, list.TotalRate);
                 var determinator = 0;
                 foreach (var i in list.Items)

@@ -35,7 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                dueTime = 0;
+                DueTime = 0;
                 countMax = new[] { 0, 6, 8, 10, 12, 16 }[level];
                 factor = 0.3f + 0.1f * level;
                 thisargs = args;
@@ -56,7 +56,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 else if (Enhance == 30) factor += 1.8f;
                 //预留强化位结束
                 lifetime = 800 * level; //攻击总时间不明,暂设定为2000*等级毫秒,5级为10秒
-                period = lifetime / countMax;
+                Period = lifetime / countMax;
             }
 
             public override void CallBack()

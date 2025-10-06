@@ -77,7 +77,7 @@ namespace SagaMap.Mob
                                 Logger.ShowError(ex);
                             }
 
-                            i.NextUpdateTime = DateTime.Now + new TimeSpan(0, 0, 0, 0, i.period);
+                            i.NextUpdateTime = DateTime.Now + new TimeSpan(0, 0, 0, 0, i.Period);
                             //ClientManager.LeaveCriticalArea();
                         }
                     }

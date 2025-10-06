@@ -10,8 +10,8 @@ namespace SagaMap.Tasks.PC
 
         public QuestTime(MapClient client)
         {
-            dueTime = 60000;
-            period = 60000;
+            DueTime = 60000;
+            Period = 60000;
             this.client = client;
         }
 

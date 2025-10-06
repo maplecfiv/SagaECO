@@ -10,8 +10,8 @@ namespace SagaMap.Tasks.System
 
         public AutoRunSystemScript(uint EventID)
         {
-            period = 5000;
-            dueTime = 10000;
+            Period = 5000;
+            DueTime = 10000;
             ID = EventID;
         }
 

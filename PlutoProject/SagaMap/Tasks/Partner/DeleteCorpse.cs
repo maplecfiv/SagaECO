@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Partner
 
         public DeleteCorpse(ActorPartner partner)
         {
-            dueTime = 5000;
-            period = 5000;
+            DueTime = 5000;
+            Period = 5000;
             npc = partner;
         }
 

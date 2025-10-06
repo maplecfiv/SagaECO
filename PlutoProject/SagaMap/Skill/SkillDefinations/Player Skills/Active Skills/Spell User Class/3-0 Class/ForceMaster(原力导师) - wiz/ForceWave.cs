@@ -29,8 +29,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 500;
-                dueTime = 0;
+                Period = 500;
+                DueTime = 0;
                 int[] Counts = { 0, 4, 7, 8, 10, 15 };
                 countMax = Counts[level];
                 factor = 1.54f + 0.16f * level;

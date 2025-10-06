@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.Mob
         {
             if (skill.argType == SkillArg.ArgType.Cast)
             {
-                dueTime = (int)skill.delay;
-                period = (int)skill.delay;
+                DueTime = (int)skill.delay;
+                Period = (int)skill.delay;
             }
 
             client = ai;

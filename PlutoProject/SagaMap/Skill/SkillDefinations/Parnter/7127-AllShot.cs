@@ -30,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 350;
-                dueTime = 0;
+                Period = 350;
+                DueTime = 0;
                 countMax = 8;
                 factor = 4.5f;
                 dActor = theDActor;

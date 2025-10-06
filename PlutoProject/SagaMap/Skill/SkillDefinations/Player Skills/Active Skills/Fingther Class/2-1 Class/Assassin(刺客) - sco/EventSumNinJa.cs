@@ -24,8 +24,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             public Activator(Actor castor, ActorShadow actor, int lifetime)
             {
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = lifetime;
-                dueTime = lifetime;
+                Period = lifetime;
+                DueTime = lifetime;
                 this.actor = actor;
                 this.castor = castor;
             }

@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.Skill
 
         public AutoCast(Actor pc, SkillArg arg)
         {
-            period = 600000;
-            dueTime = 0;
+            Period = 600000;
+            DueTime = 0;
             caster = pc;
             this.arg = arg;
         }
@@ -60,7 +60,7 @@ namespace SagaMap.Tasks.Skill
                             break;
                     }
 
-                    dueTime = info.delay;
+                    DueTime = info.delay;
                 }
                 else
                 {

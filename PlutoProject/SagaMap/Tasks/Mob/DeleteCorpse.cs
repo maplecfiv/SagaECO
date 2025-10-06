@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.Mob
 
         public DeleteCorpse(ActorMob mob)
         {
-            dueTime = 5000;
-            period = 5000;
+            DueTime = 5000;
+            Period = 5000;
             npc = mob;
         }
 

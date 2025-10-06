@@ -63,8 +63,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     factor += caster.MaxHP * 0.01f * maxlv;
                 }
 
-                period = periods[level];
-                dueTime = 0;
+                Period = periods[level];
+                DueTime = 0;
             }
 
             public override void CallBack()

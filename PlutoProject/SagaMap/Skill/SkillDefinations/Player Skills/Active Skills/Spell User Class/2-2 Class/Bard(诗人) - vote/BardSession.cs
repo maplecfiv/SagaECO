@@ -33,8 +33,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
-                dueTime = 0;
-                period = 2000;
+                DueTime = 0;
+                Period = 2000;
                 rate1 = 2 + 4 * level;
                 rate2 = 6 + 4 * level;
                 times = level + 3;

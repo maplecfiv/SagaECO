@@ -56,8 +56,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 float[] factors = { 0, lv1, lv2, lv3, lv4, lv5 };
                 factor = factors[level];
                 countMax = new[] { 0, 2, 3, 3, 5, 5 }[level];
-                period = periods;
-                dueTime = 0;
+                Period = periods;
+                DueTime = 0;
             }
 
             public override void CallBack()

@@ -61,8 +61,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     factor += 5.0f + 0.3f * Math.Max(Reservelv, tmp);
                 }
 
-                //this.period = periods[level];
-                dueTime = 1000;
+                //this.Period = periods[level];
+                DueTime = 1000;
             }
 
             public override void CallBack()

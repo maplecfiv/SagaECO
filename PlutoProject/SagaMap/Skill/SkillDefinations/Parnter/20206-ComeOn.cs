@@ -38,8 +38,8 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
 
 
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = lifetime / countMax;
-                dueTime = 0;
+                Period = lifetime / countMax;
+                DueTime = 0;
             }
 
             public override void CallBack()

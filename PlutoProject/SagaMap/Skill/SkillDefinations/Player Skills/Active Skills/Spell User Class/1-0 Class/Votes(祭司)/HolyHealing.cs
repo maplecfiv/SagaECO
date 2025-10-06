@@ -70,8 +70,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 2000;
-                dueTime = 1500;
+                Period = 2000;
+                DueTime = 1500;
                 factor += 0.1f * level;
             }
 

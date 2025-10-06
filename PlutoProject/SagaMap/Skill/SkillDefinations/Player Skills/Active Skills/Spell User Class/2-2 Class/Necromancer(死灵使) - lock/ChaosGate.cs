@@ -36,9 +36,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 int[] _times = { 0, 6, 7, 8, 9, 10 };
                 times = _times[level];
                 nowTimes = 0;
-                dueTime = 0;
+                DueTime = 0;
                 var time = new[] { 0, 4000, 4500, 5000, 5500, 5500 }[level];
-                period = time / times;
+                Period = time / times;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 

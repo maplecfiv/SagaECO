@@ -60,8 +60,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        dActor = _dActor;
         //        this.times = times;
         //        skill = _args.Clone();
-        //        this.dueTime = 0;
-        //        this.period = 1000;
+        //        this.DueTime = 0;
+        //        this.Period = 1000;
         //        times = 3;
         //        map = Manager.MapManager.Instance.GetMap(sActor.MapID);
         //    }
@@ -71,7 +71,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        ClientManager.EnterCriticalArea();
         //        try
         //        {
-        //            this.period = 700;
+        //            this.Period = 700;
         //            ActorPC sActorPC = (ActorPC)sActor;
         //            if (times > 0)
         //            {

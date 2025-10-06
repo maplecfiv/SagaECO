@@ -25,17 +25,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 case 1:
                     factor = 1.7f;
                     countMax = 4;
-                    //this.period = 1000;
+                    //this.Period = 1000;
                     break;
                 case 2:
                     factor = 2.15f;
                     countMax = 6;
-                    //this.period = 800;
+                    //this.Period = 800;
                     break;
                 case 3:
                     factor = 2.5f;
                     countMax = 10;
-                    //this.period = 700;
+                    //this.Period = 700;
                     break;
             }
 

@@ -12,8 +12,8 @@ namespace SagaMap.Tasks.PC
 
         public Regeneration(MapClient client)
         {
-            dueTime = 5000;
-            period = 5000;
+            DueTime = 5000;
+            Period = 5000;
             this.client = client;
         }
 

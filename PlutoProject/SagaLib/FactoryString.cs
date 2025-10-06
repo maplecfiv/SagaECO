@@ -12,12 +12,11 @@ namespace SagaLib
         protected string databaseName = "";
         private Encoding encoding;
         private bool isFolder;
-        protected Dictionary<string, T> items = new Dictionary<string, T>();
         protected string loadedTab = "";
         protected string loadingTab = "";
         private string path;
 
-        public Dictionary<string, T> Items => items;
+        public Dictionary<string, T> Items { get; set; }= new Dictionary<string, T>();
 
         public FactoryType FactoryType { get; set; }
 
@@ -39,7 +38,7 @@ namespace SagaLib
 
         public void Reload()
         {
-            items.Clear();
+            Items.Clear();
             Init(path, encoding, isFolder);
         }
 
@@ -192,9 +191,9 @@ namespace SagaLib
                     }
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key))
+                    if (!Items.ContainsKey(key))
                     {
-                        items.Add(key, item);
+                        Items.Add(key, item);
                     }
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)
@@ -259,9 +258,9 @@ namespace SagaLib
                     ParseCSV(item, paras);
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key))
+                    if (!Items.ContainsKey(key))
                     {
-                        items.Add(key, item);
+                        Items.Add(key, item);
                     }
 
                     if ((DateTime.Now - time).TotalMilliseconds > 10)

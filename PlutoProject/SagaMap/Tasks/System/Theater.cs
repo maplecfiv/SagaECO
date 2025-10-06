@@ -16,8 +16,8 @@ namespace SagaMap.Tasks.System
 
         public Theater()
         {
-            period = 60000;
-            dueTime = 0;
+            Period = 60000;
+            DueTime = 0;
         }
 
         public static Theater Instance

@@ -35,8 +35,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 250;
-                dueTime = 0;
+                Period = 250;
+                DueTime = 0;
                 factor = 1.0f + 0.5f * level;
 
                 switch (level)

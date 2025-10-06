@@ -17,8 +17,8 @@ namespace SagaMap.Tasks.PC
         {
             if (reduce > 9)
                 reduce = 9;
-            dueTime = 10000 - reduce * 1000;
-            period = 10000 - reduce * 1000;
+            DueTime = 10000 - reduce * 1000;
+            Period = 10000 - reduce * 1000;
             this.client = client;
             this.target = target;
             pos = position;

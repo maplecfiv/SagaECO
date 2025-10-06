@@ -137,8 +137,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        //百分比治疗不该受到任何提升
         //        //factor = factors[level] + caster.Status.Cardinal_Rank;
         //        factor = factors[level] * this.caster.MaxHP;
-        //        this.period = periods[level];
-        //        this.dueTime = 0;
+        //        this.Period = periods[level];
+        //        this.DueTime = 0;
 
         //    }
 

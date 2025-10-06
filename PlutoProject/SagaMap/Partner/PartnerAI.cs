@@ -810,20 +810,20 @@ namespace SagaMap.Partner
         public short MoveRange, X_Ori, Y_Ori, X_Spawn, Y_Spawn;
         public DateTime NextUpdateTime = DateTime.Now;
         private Dictionary<int, MapNode> openedNode = new Dictionary<int, MapNode>();
-        public int period;
+        public int Period { set; get; }
         public int SpawnDelay;
         public short X_pb, Y_pb;
 
         public PartnerAI(ActorPartner partner, bool idle)
         {
-            period = 1000; //process 1 command every second            
+            Period = 1000; //process 1 command every second            
             Partner = partner;
             map = MapManager.Instance.GetMap(partner.MapID);
         }
 
         public PartnerAI(ActorPartner partner)
         {
-            period = 1000; //process 1 command every second            
+            Period = 1000; //process 1 command every second            
             Partner = partner;
             map = MapManager.Instance.GetMap(Partner.MapID);
             //this.commands.Add("Attack", new AICommands.Attack(this));
@@ -845,10 +845,10 @@ namespace SagaMap.Partner
                 if (Partner.Speed == 0)
                     return;
                 if (value == Activity.BUSY)
-                    period = 100000 / Partner.Speed;
+                    Period = 100000 / Partner.Speed;
                 else if (value == Activity.LAZY)
-                    period = 200000 / Partner.Speed;
-                else if (value == Activity.IDLE) period = 1000;
+                    Period = 200000 / Partner.Speed;
+                else if (value == Activity.IDLE) Period = 1000;
             }
         }
 

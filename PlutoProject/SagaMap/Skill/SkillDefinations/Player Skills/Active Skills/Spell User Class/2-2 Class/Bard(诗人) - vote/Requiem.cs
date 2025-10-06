@@ -33,8 +33,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 skill = _args.Clone();
                 //factor = 0.1f * level;
                 factor = 0.37f + 0.43f * level;
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 lifetime = 5000;
                 int[] c = { 0, 75, 40, 33, 28, 25 };
                 counts = c[level];
@@ -73,7 +73,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             }
 
                         SkillHandler.Instance.MagicAttack(sActor, realAffected, skill, Elements.Holy, factor);
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

@@ -13,8 +13,8 @@ namespace SagaMap.Tasks.Mob
 
         public MobRecover(ActorMob mob)
         {
-            dueTime = 1000;
-            period = 1000;
+            DueTime = 1000;
+            Period = 1000;
             this.mob = mob;
         }
 

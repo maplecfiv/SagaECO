@@ -14,8 +14,8 @@ namespace SagaMap.Tasks.System
 
         public AJImode()
         {
-            period = 6000;
-            dueTime = 0;
+            Period = 6000;
+            DueTime = 0;
         }
 
         public static AJImode Instance

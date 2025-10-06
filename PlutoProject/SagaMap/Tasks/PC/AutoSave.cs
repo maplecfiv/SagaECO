@@ -11,7 +11,7 @@ namespace SagaMap.Tasks.PC
 
         public AutoSave(ActorPC pc)
         {
-            period = 300000;
+            Period = 300000;
             this.pc = pc;
         }
 

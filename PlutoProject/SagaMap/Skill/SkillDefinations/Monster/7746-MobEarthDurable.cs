@@ -30,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 1.9f;
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 lifetime = 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -52,7 +52,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
                         SkillHandler.Instance.PhysicalAttack(sActor, realAffected, skill, Elements.Neutral, factor);
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {

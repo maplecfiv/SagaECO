@@ -12,16 +12,16 @@ namespace SagaMap.Tasks.System
         public TaskAnnounce(string taskname, string announce, int period)
         {
             aname = taskname;
-            this.period = period;
-            dueTime = 0;
+            this.Period = period;
+            DueTime = 0;
             this.announce = announce;
         }
 
         public TaskAnnounce(string taskname, string announce, int duetime, int period)
         {
             aname = taskname;
-            this.period = period;
-            dueTime = duetime;
+            this.Period = period;
+            DueTime = duetime;
             this.announce = announce;
         }
 

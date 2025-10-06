@@ -31,7 +31,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 this.actor = actor;
                 this.caster = caster;
                 this.dActor = dActor;
-                dueTime = 650;
+                DueTime = 650;
                 skill = args.Clone();
                 skilllevel = level;
                 map = MapManager.Instance.GetMap(actor.MapID);
@@ -39,7 +39,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 //factor = factors[level] + caster.Status.Cardinal_Rank;
                 var pc = caster as ActorPC;
 
-                period = 500;
+                Period = 500;
             }
 
             public override void CallBack()

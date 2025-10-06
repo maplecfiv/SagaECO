@@ -16,8 +16,8 @@ namespace SagaMap.Tasks.Dungeon
 
         public Dungeon(SagaMap.Dungeon.Dungeon dungeon, int lifeTime)
         {
-            period = 1000;
-            dueTime = 1000;
+            Period = 1000;
+            DueTime = 1000;
             this.dungeon = dungeon;
             this.lifeTime = lifeTime;
         }

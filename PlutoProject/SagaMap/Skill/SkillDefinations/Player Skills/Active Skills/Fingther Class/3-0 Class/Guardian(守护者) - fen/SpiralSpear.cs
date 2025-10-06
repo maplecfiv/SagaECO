@@ -34,11 +34,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                dueTime = 0;
+                DueTime = 0;
                 countMax = new[] { 0, 4, 4, 5, 7, 12 }[level];
                 factor = 1.3f + 0.2f * level;
                 lifetime = 2500;
-                period = lifetime / countMax;
+                Period = lifetime / countMax;
                 range = new short[] { 150, 150, 150, 250, 150, 250 }[level];
             }
 

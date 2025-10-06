@@ -33,8 +33,8 @@ namespace SagaMap.Skill.NewSkill.NewBoss
                 skill = args.Clone();
                 skill.skill = SkillFactory.Instance.GetSkill(22009, 1);
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 400;
-                dueTime = 0;
+                Period = 400;
+                DueTime = 0;
                 var Me = (ActorPC)caster;
             }
 

@@ -167,9 +167,9 @@ namespace SagaDB.Item
 
         public Item GetItem(uint id, bool identified)
         {
-            if (items.ContainsKey(id))
+            if (Items.ContainsKey(id))
             {
-                var item = new Item(items[id]);
+                var item = new Item(Items[id]);
                 item.Stack = 1;
                 item.Durability = item.BaseData.durability;
                 item.Identified = identified;
@@ -178,7 +178,7 @@ namespace SagaDB.Item
             else
             {
                 Logger.ShowWarning("Item:" + id + " not found! Creating dummy Item.");
-                var item = new Item(items[10000000]);
+                var item = new Item(Items[10000000]);
                 item.Stack = 1;
                 item.Durability = item.BaseData.durability;
                 item.Identified = identified;

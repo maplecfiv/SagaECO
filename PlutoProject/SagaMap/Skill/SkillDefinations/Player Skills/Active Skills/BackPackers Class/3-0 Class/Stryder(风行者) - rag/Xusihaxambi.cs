@@ -85,8 +85,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 100;
-                dueTime = 0;
+                Period = 100;
+                DueTime = 0;
                 countMax = 8;
                 factor = 1.75f + 0.25f * level;
                 dActor = theDActor;
@@ -204,8 +204,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 //        this.caster = caster;
 //        this.skill = args.Clone();
 //        map = Manager.MapManager.Instance.GetMap(actor.MapID);
-//        this.period = 500;
-//        this.dueTime = 0;
+//        this.Period = 500;
+//        this.DueTime = 0;
 
 //        ActorPC Me = (ActorPC)caster;
 

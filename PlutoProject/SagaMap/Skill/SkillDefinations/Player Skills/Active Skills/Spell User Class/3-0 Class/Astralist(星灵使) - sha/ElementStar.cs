@@ -33,8 +33,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = (int)(4000.0f / 13.0f);
-                dueTime = 0;
+                Period = (int)(4000.0f / 13.0f);
+                DueTime = 0;
                 //int[] Counts = { 0, 3, 3, 4, 4, 5 };
                 countMax = 13;
 

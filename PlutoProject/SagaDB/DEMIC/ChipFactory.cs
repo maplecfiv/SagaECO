@@ -19,9 +19,9 @@ namespace SagaDB.DEMIC
 
         public Chip GetChip(uint itemID)
         {
-            if (items.ContainsKey(itemID))
+            if (Items.ContainsKey(itemID))
             {
-                var chip = new Chip(items[itemID]);
+                var chip = new Chip(Items[itemID]);
                 return chip;
             }
 

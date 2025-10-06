@@ -34,9 +34,9 @@ namespace SagaDB.DefWar
 
         public DefWar GetItem(uint id)
         {
-            if (items.ContainsKey(id))
+            if (Items.ContainsKey(id))
             {
-                var item = new DefWar(items[id]);
+                var item = new DefWar(Items[id]);
 
                 return item;
             }

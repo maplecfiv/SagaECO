@@ -8912,7 +8912,7 @@ namespace SagaMap.Skill
             {
                 this.caster = caster;
                 this.message = message;
-                dueTime = duetime;
+                DueTime = duetime;
             }
 
             public override void CallBack()

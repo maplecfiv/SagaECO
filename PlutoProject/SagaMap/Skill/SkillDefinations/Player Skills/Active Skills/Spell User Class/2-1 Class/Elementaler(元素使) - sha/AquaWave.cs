@@ -185,8 +185,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.caster = caster;
                 skill = args.Clone();
                 map = MapManager.Instance.GetMap(actor.MapID);
-                period = 200;
-                dueTime = 200;
+                Period = 200;
+                DueTime = 200;
                 this.path = path;
                 factor = CalcFactor(skill.skill.Level);
                 element = Elements.Water;

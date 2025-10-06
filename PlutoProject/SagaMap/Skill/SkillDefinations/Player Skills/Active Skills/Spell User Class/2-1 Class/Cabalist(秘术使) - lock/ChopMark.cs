@@ -29,8 +29,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor = _dActor;
                 skill = _args.Clone();
                 factor = 0.1f * level;
-                dueTime = 0;
-                period = 1000;
+                DueTime = 0;
+                Period = 1000;
                 lifetime = 5000 * level;
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
@@ -43,7 +43,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 {
                     if (lifetime > 0)
                     {
-                        lifetime -= period;
+                        lifetime -= Period;
                     }
                     else
                     {
