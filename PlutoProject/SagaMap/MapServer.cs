@@ -509,7 +509,6 @@ namespace SagaMap
             //Tasks.System.南牢列车.Instance.Activate();
 
 
-            var now = DateTime.Now;
             foreach (var i in ODWarFactory.Instance.Items.Values)
             {
                 //ODWarManager.Instance.StartODWar(i.MapID);

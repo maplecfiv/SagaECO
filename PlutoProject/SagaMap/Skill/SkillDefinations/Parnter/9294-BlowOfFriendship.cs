@@ -19,7 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             var affected = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 200, null);
             var recoveraffected = new List<Actor>();
-            var damageaffected = new List<Actor>();
             foreach (var act in affected)
                 if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

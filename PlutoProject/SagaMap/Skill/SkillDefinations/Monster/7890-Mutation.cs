@@ -15,7 +15,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var mob = sActor as ActorMob;
             //Manager.MapClientManager.EnterCriticalArea();
             foreach (var item in sActor.AttackElements.Keys)
                 sActor.Status.elements_skill[item] = 0;

@@ -484,7 +484,6 @@ namespace SagaMap.Scripting
             if (client.CheckTitle((int)ID)) return;
             if (TitleFactory.Instance.Items.ContainsKey(ID))
             {
-                var t = TitleFactory.Instance.Items[ID];
                 var name = "称号" + ID + "完成度";
                 pc.AInt[name] += (int)value;
                 /*
@@ -521,7 +520,6 @@ namespace SagaMap.Scripting
             var client = MapClient.FromActorPC(pc);
             if (TitleFactory.Instance.Items.ContainsKey(ID) && client.CheckTitle((int)ID))
             {
-                var t = TitleFactory.Instance.Items[ID];
                 client.SetTitle((int)ID, false);
             }
         }
@@ -1766,7 +1764,7 @@ namespace SagaMap.Scripting
             {
                 var item = pc.Inventory.Equipments[eqSlot];
                 var slot = item.Slot;
-                var result = pc.Inventory.DeleteItem(slot, 1);
+                pc.Inventory.DeleteItem(slot, 1);
                 client.SendEquip();
                 StatusFactory.Instance.CalcStatus(pc);
                 client.SendPlayerInfo();
@@ -2707,7 +2705,7 @@ namespace SagaMap.Scripting
         /// <returns>创建成功返回true,如果名字已存在返回false</returns>
         protected bool CreateRing(ActorPC pc, string name)
         {
-            var client = MapClient.FromActorPC(pc);
+            MapClient.FromActorPC(pc);
             var ring = RingManager.Instance.CreateRing(pc, name);
             return ring != null;
         }
@@ -4870,7 +4868,6 @@ namespace SagaMap.Scripting
             if (pc.Race != PC_RACE.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
-            var dominion = pc.InDominionWorld;
             var p = new SSMG_DEM_COST_LIMIT();
             p.CurrentEP = pc.EPUsed;
             p.EPRequired = (short)(ExperienceManager.Instance.GetEPRequired(pc) - pc.EPUsed);
@@ -5138,7 +5135,7 @@ namespace SagaMap.Scripting
         /// <param name="pictID">宠物外观ID,值为0的时候还原</param>
         protected void PetShowReplace(ActorPC pc, uint pictID)
         {
-            var client = MapClient.FromActorPC(pc);
+            MapClient.FromActorPC(pc);
             if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
             {
                 pc.Inventory.Equipments[EnumEquipSlot.PET].PictID = pictID;
@@ -5267,7 +5264,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         protected void CreateTamaireLending(ActorPC pc, string comment)
         {
-            var client = GetMapClient(pc);
+            GetMapClient(pc);
             var lending = new TamaireLending();
             lending.Lender = pc.CharID;
             lending.PostDue = DateTime.Now + TimeSpan.FromDays(7);
@@ -5635,7 +5632,7 @@ namespace SagaMap.Scripting
         private Quest SendQuestList(ActorPC pc, uint groupID)
         {
             byte lv = 1;
-            var map = MapManager.Instance.GetMap(pc.MapID);
+            MapManager.Instance.GetMap(pc.MapID);
             lv = pc.Level;
             var quests =
                 from q in QuestFactory.Instance.Items.Values

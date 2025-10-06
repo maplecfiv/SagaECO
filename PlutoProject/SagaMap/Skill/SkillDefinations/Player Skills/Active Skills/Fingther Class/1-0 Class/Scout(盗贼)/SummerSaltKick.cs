@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         {
             float factor = 0;
             factor = 0.75f + 0.25f * level;
-            var actorPC = (ActorPC)sActor;
             if (level == 6)
             {
                 factor = 3f;

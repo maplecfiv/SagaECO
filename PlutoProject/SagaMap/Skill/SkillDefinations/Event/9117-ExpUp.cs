@@ -21,7 +21,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
             var lifetime = 300000;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 100, true);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (act.type == ActorType.PC)
                 {

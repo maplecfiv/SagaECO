@@ -17,7 +17,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         {
             PCEventHandler _e;
             MapClient myClinet;
-            var myActor = (ActorPC)sActor;
             _e = (PCEventHandler)sActor.e;
             myClinet = _e.Client;
             myClinet.SendSkillDummy();

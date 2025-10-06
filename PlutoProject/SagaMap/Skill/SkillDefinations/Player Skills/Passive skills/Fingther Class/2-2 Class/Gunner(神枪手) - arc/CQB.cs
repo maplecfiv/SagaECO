@@ -17,7 +17,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var lifetime = 6000 + 2000 * level;
             var skill = new DefaultPassiveSkill(args.skill, dActor, "CQB", true);
             skill.OnAdditionStart += StartEventHandler;
             skill.OnAdditionEnd += EndEventHandler;

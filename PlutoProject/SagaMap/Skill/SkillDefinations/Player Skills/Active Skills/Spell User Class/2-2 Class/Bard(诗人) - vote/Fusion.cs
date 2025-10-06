@@ -72,24 +72,24 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         private class Activator : MultiRunTask
         {
-            private readonly ActorSkill actor;
-            private readonly Actor caster;
-            private readonly int countMax = 3;
-            private readonly int lifeTime;
-            private readonly Map map;
-            private readonly SkillArg skill;
-            private int count;
+            private readonly ActorSkill _actor;
+            private readonly Actor _caster;
+            private readonly int _countMax = 3;
+            private readonly int _lifeTime;
+            private readonly Map _map;
+            private readonly SkillArg _skill;
+            private int _count;
 
             public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
             {
-                this.actor = actor;
-                this.caster = caster;
-                skill = args.Clone();
-                map = MapManager.Instance.GetMap(actor.MapID);
+                this._actor = actor;
+                this._caster = caster;
+                _skill = args.Clone();
+                _map = MapManager.Instance.GetMap(actor.MapID);
                 Period = 500;
                 DueTime = 0;
-                lifeTime = (30 + level * 30) * 1000;
-                countMax = lifeTime / Period;
+                _lifeTime = (30 + level * 30) * 1000;
+                _countMax = _lifeTime / Period;
             }
 
             public override void CallBack()
@@ -98,19 +98,18 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
                 try
                 {
-                    if (count < countMax)
+                    if (_count < _countMax)
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
-                        var actors = map.GetActorsArea(actor, 200, false);
-                        var affected = new List<Actor>();
+                        var actors = _map.GetActorsArea(_actor, 200, false);
                         //取得有效Actor
 
-                        skill.affectedActors.Clear();
+                        _skill.affectedActors.Clear();
                         foreach (var act in actors)
-                            if (!SkillHandler.Instance.CheckValidAttackTarget(caster, act))
+                            if (!SkillHandler.Instance.CheckValidAttackTarget(_caster, act))
                                 if (!act.Status.Additions.ContainsKey("Fusion"))
                                 {
-                                    var skill2 = new DefaultBuff(skill.skill, act, "Fusion", lifeTime - count * Period,
+                                    var skill2 = new DefaultBuff(_skill.skill, act, "Fusion", _lifeTime - _count * Period,
                                         200);
                                     skill2.OnAdditionStart += StartEventHandler;
                                     skill2.OnAdditionEnd += EndEventHandler;
@@ -119,14 +118,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                                 }
 
                         //广播技能效果
-                        map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
-                        count++;
+                        _map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, _skill, _actor, false);
+                        _count++;
                     }
                     else
                     {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
-                        map.DeleteActor(actor);
+                        _map.DeleteActor(_actor);
                     }
                 }
                 catch (Exception ex)
@@ -140,25 +139,25 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private void StartEventHandler(Actor actor, DefaultBuff skill)
             {
                 int level = skill.skill.Level;
-                short[] STR = { 3, 4, 5, 6, 7 };
-                short[] VIT = { 3, 4, 5, 6, 7 };
-                short[] AGI = { 5, 6, 7, 8, 9 };
+                short[] str = { 3, 4, 5, 6, 7 };
+                short[] vit = { 3, 4, 5, 6, 7 };
+                short[] agi = { 5, 6, 7, 8, 9 };
 
                 //STR
                 if (skill.Variable.ContainsKey("Fusion_STR"))
                     skill.Variable.Remove("Fusion_STR");
-                skill.Variable.Add("Fusion_STR", STR[level - 1]);
-                actor.Status.str_skill += STR[level - 1];
+                skill.Variable.Add("Fusion_STR", str[level - 1]);
+                actor.Status.str_skill += str[level - 1];
                 //VIT
                 if (skill.Variable.ContainsKey("Fusion_VIT"))
                     skill.Variable.Remove("Fusion_VIT");
-                skill.Variable.Add("Fusion_VIT", VIT[level - 1]);
-                actor.Status.vit_skill += VIT[level - 1];
+                skill.Variable.Add("Fusion_VIT", vit[level - 1]);
+                actor.Status.vit_skill += vit[level - 1];
                 //AGI
                 if (skill.Variable.ContainsKey("Fusion_AGI"))
                     skill.Variable.Remove("Fusion_AGI");
-                skill.Variable.Add("Fusion_AGI", AGI[level - 1]);
-                actor.Status.agi_skill += AGI[level - 1];
+                skill.Variable.Add("Fusion_AGI", agi[level - 1]);
+                actor.Status.agi_skill += agi[level - 1];
                 MapManager.Instance.GetMap(actor.MapID)
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHANGE_STATUS, null, actor, true);
             }
@@ -177,7 +176,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             private void TimerEventHandler(Actor actor, DefaultBuff skill)
             {
-                int ranges = Map.Distance(this.actor, actor);
+                int ranges = Map.Distance(this._actor, actor);
                 if (ranges > 200) skill.AdditionEnd();
             }
         }

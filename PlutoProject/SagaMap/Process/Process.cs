@@ -118,7 +118,7 @@ namespace SagaMap.Process
             //Get Char Info
             var pc = charDB.GetChar(charid);
 
-            var lists = pc.Inventory.GetContainer(ContainerType.BODY);
+            pc.Inventory.GetContainer(ContainerType.BODY);
 
 
             //Check if Char is online

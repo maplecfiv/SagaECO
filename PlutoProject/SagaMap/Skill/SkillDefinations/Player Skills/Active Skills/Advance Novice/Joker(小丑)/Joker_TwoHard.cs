@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
             var factor = new[] { 0, 8.5f, 10.5f, 12.5f, 14.5f, 16.5f }[level];
 
             var actors = MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 200, true);
-            var affected = new List<Actor>();
             int elements;
             if (sActor.WeaponElement != Elements.Neutral)
                 elements = sActor.Status.attackElements_item[sActor.WeaponElement]
@@ -28,7 +27,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Advance_Nov
                            + sActor.Status.attackelements_iris[sActor.WeaponElement];
             else
                 elements = 0;
-            var rete = new[] { 0, 0.01f, 0.03f, 0.05f, 0.07f, 0.1f }[level];
             foreach (var item in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, item))
                 {

@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
         {
             ushort[] Values = { 0, 3, 6, 9, 12, 15 }; //%
             var active = false;
-            var value = Values[level];
             if (sActor.type == ActorType.PC)
                 if (((ActorPC)sActor).Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
                     if (((ActorPC)sActor).Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType ==

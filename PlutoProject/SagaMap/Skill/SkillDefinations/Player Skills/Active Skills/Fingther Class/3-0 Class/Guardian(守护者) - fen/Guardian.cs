@@ -16,7 +16,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var lifetime = (30 + level * 30) * 1000;
-            var DEFUP = 50 + 5 * level;
             var skill = new DefaultBuff(args.skill, sActor, "Guardian", lifetime, 1000);
             skill.OnAdditionStart += StartEvent;
             skill.OnAdditionEnd += EndEvent;

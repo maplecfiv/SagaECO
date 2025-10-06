@@ -161,7 +161,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var factor = 1.65f + 0.2f * level;
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
             var realAffected = GetAffectedActors(sActor);
             SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
         }

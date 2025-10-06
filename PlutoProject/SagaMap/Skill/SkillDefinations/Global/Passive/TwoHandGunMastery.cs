@@ -21,7 +21,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Passive
             var active = false;
             if (sActor.type == ActorType.PC)
             {
-                var pc = (ActorPC)sActor;
                 if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.DUALGUN, ItemType.SPEAR)) active = true;
                 var skill = new DefaultPassiveSkill(args.skill, sActor, "TwoHandGunMastery", active);
                 skill.OnAdditionStart += StartEventHandler;

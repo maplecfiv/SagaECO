@@ -29,7 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     realAffected.Add(act);
 
-            var Dmgnumber = new List<float>();
             var AttackAffect = 0;
             //ClientManager.EnterCriticalArea();
             foreach (var i in realAffected)

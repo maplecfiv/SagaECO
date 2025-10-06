@@ -48,13 +48,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var factor = 1.2f + 0.1f * level;
             var rate = 20 + 10 * level;
             args.argType = SkillArg.ArgType.Attack;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 100, null);
-            var affected = new List<Actor>();
             foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                     if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.鈍足, rate))

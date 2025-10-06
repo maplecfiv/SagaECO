@@ -22,7 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             var rate = 50; //也许设置概率改为50%更合适?
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 200, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     if (act.type == ActorType.PC)

@@ -29,7 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             actor.e = new NullEventHandler();
             var affected1 = map.GetActorsArea(actor, 300, false);
             var affected2 = map.GetActorsArea(sActor, 300, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected1)
                 if (act.Buff.Transparent)
                     SetVisible(act, map);

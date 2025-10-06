@@ -21,7 +21,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
         {
             var factor = 4.0f;
 
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
 
             var actors = MapManager.Instance.GetMap(sActor.MapID).GetActorsArea(dActor, 200, true);
             var affected = new List<Actor>();

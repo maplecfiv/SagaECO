@@ -54,7 +54,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 250, true);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

@@ -38,7 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             var rate = 20 + level * 6;
             var rate2 = (4 + level * 2) * 1000;
-            var pos = new short[2];
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actor = new ActorSkill(args.skill, sActor);
             //设定技能体位置
@@ -49,7 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             actor.e = new NullEventHandler();
             var affected = map.GetActorsArea(actor, 250, false);
             var realAffected = new List<Actor>();
-            var onlydamage = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

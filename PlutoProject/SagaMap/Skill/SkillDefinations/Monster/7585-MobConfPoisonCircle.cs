@@ -23,7 +23,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             var lifetime = 3000;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 100, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

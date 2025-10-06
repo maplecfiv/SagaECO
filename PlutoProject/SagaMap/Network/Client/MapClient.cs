@@ -866,7 +866,6 @@ namespace SagaMap.Network.Client
                         price = price * item.Stack;
                         if (gold >= price)
                         {
-                            var stack = item.Stack;
                             gold -= price;
                             Logger.LogItemGet(Logger.EventType.ItemNPCGet,
                                 Character.Name + "(" + Character.CharID + ")",
@@ -921,7 +920,6 @@ namespace SagaMap.Network.Client
                             price = price * item.Stack;
                             if (gold >= price)
                             {
-                                var stack = item.Stack;
                                 gold -= price;
                                 Logger.LogItemGet(Logger.EventType.ItemNPCGet,
                                     Character.Name + "(" + Character.CharID + ")",
@@ -1619,7 +1617,7 @@ namespace SagaMap.Network.Client
 
             if (Configuration.Configuration.Instance.HostedMaps.Contains(Character.MapID))
             {
-                var newMap = MapManager.Instance.GetMap(Character.MapID);
+                MapManager.Instance.GetMap(Character.MapID);
                 if (Character.Marionette != null)
                     MarionetteDeactivate();
                 Map.SendActorToMap(Character, ring.FlyingCastle.MapID, 20, 20, true);
@@ -1700,7 +1698,6 @@ namespace SagaMap.Network.Client
 
         public void OnFFFurnitureReset(CSMG_FF_FURNITURE_RESET p)
         {
-            var actorID = p.ActorID;
             var map = MapManager.Instance.GetMap(Character.MapID);
             var actor = map.GetActor(p.ActorID);
             if (actor == null)
@@ -2289,7 +2286,6 @@ namespace SagaMap.Network.Client
             if (CheckTitle((int)ID)) return;
             if (TitleFactory.Instance.Items.ContainsKey(ID))
             {
-                var t = TitleFactory.Instance.Items[ID];
                 //應該逐項條件檢查 先放著
                 /*
                 string name = "称号" + ID.ToString() + "完成度";
@@ -2439,7 +2435,6 @@ namespace SagaMap.Network.Client
             NetIo.SendPacket(ds);
 
 
-            var days = Character.AInt["每日盖章"];
             var thisDay = DateTime.Today;
 
             if (Character.AStr["DailyStamp_DAY"] != thisDay.ToString("d"))
@@ -3776,7 +3771,6 @@ namespace SagaMap.Network.Client
 
                 if (!fgMap.IsMapInstance)
                     Logger.ShowDebug(string.Format("MapID:{0} isn't a valid flying garden!"), Logger.defaultlogger);
-                var owner = fgMap.Creator;
                 var p = new SSMG_FF_ENTER();
                 p.MapID = Character.MapID;
                 p.X = Global.PosX16to8(Character.X, map.Width);
@@ -5760,14 +5754,12 @@ namespace SagaMap.Network.Client
                 }
                 else
                 {
-                    var cd = partner.Status.Additions["NotAtFreeTime"];
-                    var span = new TimeSpan(0, 0, 0, 0, 50000);
                 }
             }
 
             var id = partner.BaseData.id;
             var item = Character.Inventory.Equipments[EnumEquipSlot.PET];
-            var ti = PartnerFactory.Instance.GetPartnerTalks(id);
+            PartnerFactory.Instance.GetPartnerTalks(id);
             //if (ti == null) return;
             var packet = new SSMG_PARTNER_SEND_TALK();
             packet.PartnerID = item.ItemID;
@@ -5981,7 +5973,6 @@ namespace SagaMap.Network.Client
             if (Character.Buff.Dead || Character.Buff.Confused || Character.Buff.Frosen || Character.Buff.Paralysis ||
                 Character.Buff.Sleep || Character.Buff.Stone || Character.Buff.Stun)
                 return -3;
-            var lv = Character.Partner.Level;
             //if (lv < item.BaseData.possibleLv)
             //  return -15;
             if ((item.BaseData.itemType == ItemType.RIDE_PET || item.BaseData.itemType == ItemType.RIDE_PARTNER) &&
@@ -7226,13 +7217,11 @@ namespace SagaMap.Network.Client
 
         private bool checkSkill(uint skillID, byte skillLV)
         {
-            var p = new SSMG_SKILL_LIST();
             Dictionary<uint, byte> skills;
             Dictionary<uint, byte> skills2X;
             Dictionary<uint, byte> skills2T;
             Dictionary<uint, byte> skills3;
             Dictionary<uint, byte> skillsHeat;
-            var list = new List<SagaDB.Skill.Skill>();
             skills = SkillFactory.Instance.CheckSkillList(Character, SkillFactory.SkillPaga.p1);
             skills2X = SkillFactory.Instance.CheckSkillList(Character, SkillFactory.SkillPaga.p21);
             skills2T = SkillFactory.Instance.CheckSkillList(Character, SkillFactory.SkillPaga.p22);
@@ -8798,7 +8787,7 @@ namespace SagaMap.Network.Client
             if (team != null)
                 teamName = team.Name;
 
-            var Result = unchecked((byte)CheckAbyssTeamLeaveRequest(team));
+            _ = unchecked((byte)CheckAbyssTeamLeaveRequest(team));
             var p1 = new SSMG_ABYSSTEAM_LEAVE();
             NetIo.SendPacket(p1);
         }
@@ -8950,7 +8939,6 @@ namespace SagaMap.Network.Client
 
         public void OnItemExchangeConfirm(CSMG_ITEM_EXCHANGE_CONFIRM p)
         {
-            var exchangetype = p.ExchangeType;
             var inventoryid = p.InventorySlot;
             var exchangetargetid = p.ExchangeTargetID;
 
@@ -9111,7 +9099,7 @@ namespace SagaMap.Network.Client
         {
             var client = MapClientManager.Instance.FindClient(p.CharID);
             var p1 = new SSMG_RING_INVITE_RESULT();
-            var index = Character.Ring.IndexOf(Character);
+            Character.Ring.IndexOf(Character);
             var result = CheckRingInvite(client);
             p1.Result = result;
             if (result == 0)
@@ -12767,7 +12755,7 @@ namespace SagaMap.Network.Client
             else
                 p1.Page = max;
             p1.List = pp;
-            var ss = p1.DumpData();
+            p1.DumpData();
             NetIo.SendPacket(p1);
         }
 
@@ -13263,7 +13251,7 @@ namespace SagaMap.Network.Client
 
         public void OnItemMasterEnhanceSelect(CSMG_ITEM_MASTERENHANCE_SELECT p)
         {
-            var item = Character.Inventory.GetItem(p.InventorySlot);
+            Character.Inventory.GetItem(p.InventorySlot);
             var lst = new List<MasterEnhanceMaterial>();
 
             foreach (var itemkey in MasterEnhanceMaterialFactory.Instance.Items.Keys)
@@ -17712,7 +17700,7 @@ namespace SagaMap.Network.Client
                 quest.Detail.ObjectID2, quest.Detail.ObjectID3, (uint)quest.Detail.Count1, (uint)quest.Detail.Count2,
                 (uint)quest.Detail.Count3, quest.Detail.TimeLimit, 0, quest.Detail.EXP, 0, quest.Detail.JEXP,
                 quest.Detail.Gold);
-            var ss = p2.DumpData();
+            p2.DumpData();
             NetIo.SendPacket(p2);
         }
 

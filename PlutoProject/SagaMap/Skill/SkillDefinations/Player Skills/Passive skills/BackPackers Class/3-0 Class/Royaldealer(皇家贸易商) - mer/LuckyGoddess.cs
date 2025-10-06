@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.BackPacker
         {
             if (sActor.type == ActorType.PC)
             {
-                var pc = (ActorPC)sActor;
                 var skill = new DefaultPassiveSkill(args.skill, dActor, "LuckyGoddess", true);
                 skill.OnAdditionStart += StartEventHandler;
                 skill.OnAdditionEnd += EndEventHandler;

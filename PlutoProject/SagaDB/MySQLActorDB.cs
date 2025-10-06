@@ -736,9 +736,8 @@ namespace SagaDB
         public void DeleteChar(ActorPC aChar)
         {
             string sqlstr;
-            var account_id =
-                (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + aChar.CharID + "' LIMIT 1")
-                    [0]["account_id"];
+            _ = (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + aChar.CharID + "' LIMIT 1")
+                [0]["account_id"];
             sqlstr = "DELETE FROM `char` WHERE char_id='" + aChar.CharID + "';";
             sqlstr += "DELETE FROM `inventory` WHERE char_id='" + aChar.CharID + "';";
             sqlstr += "DELETE FROM `skill` WHERE char_id='" + aChar.CharID + "';";
@@ -772,7 +771,7 @@ namespace SagaDB
             ActorPC pc = null;
             try
             {
-                var account = GetAccountID(charID);
+                GetAccountID(charID);
                 sqlstr = "SELECT * FROM `char` WHERE `char_id`='" + charID + "' LIMIT 1";
                 try
                 {
@@ -1533,7 +1532,6 @@ namespace SagaDB
             if (result.Count != 0)
             {
                 party.ID = id;
-                var leader = (uint)result[0]["leader"];
                 party.Name = (string)result[0]["name"];
                 if (party.Leader == null)
                     return null;
@@ -2179,7 +2177,7 @@ namespace SagaDB
         public void CreateFF(ActorPC pc)
         {
             if (pc.Ring.FlyingCastle == null) return;
-            var account = GetAccountID(pc);
+            GetAccountID(pc);
             string sqlstr;
             sqlstr = string.Format(
                 "INSERT INTO `ff`(`ring_id` ,`name`,`content`,`level`) VALUES ('{0}','{1}','{2}','{3}');", pc.Ring.ID,
@@ -2600,7 +2598,6 @@ namespace SagaDB
             {
                 var account = GetAccountID(pc);
 #pragma warning disable SYSLIB0011
-                var bf = new BinaryFormatter();
                 MySqlCommand cmd;
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
                     pc.Inventory.Items[ContainerType.BODY].Count < 1000)

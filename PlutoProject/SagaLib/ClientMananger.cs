@@ -445,7 +445,7 @@ namespace SagaLib
                         continue;
                     }
 
-                    threadNameLookup.TryGetValue(thread.ManagedThreadId, out string threadName);
+                    threadNameLookup.TryGetValue(thread.ManagedThreadId, out _);
                     return thread.EnumerateStackTrace();
                 }
             }

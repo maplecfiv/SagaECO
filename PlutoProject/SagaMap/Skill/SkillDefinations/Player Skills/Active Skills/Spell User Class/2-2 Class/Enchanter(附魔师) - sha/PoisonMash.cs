@@ -62,7 +62,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(actor, 300, false);
-                        var affected = new List<Actor>();
                         var realAffected = new List<Actor>();
                         //取得有效Actor（即怪物）
                         var d = (uint)(sActor.MaxHP * factor);

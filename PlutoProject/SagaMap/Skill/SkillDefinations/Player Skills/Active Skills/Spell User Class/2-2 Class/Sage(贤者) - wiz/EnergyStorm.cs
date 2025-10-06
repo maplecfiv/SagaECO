@@ -34,7 +34,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             if (MobUse) level = 5;
             var factor = new[] { 0, 4.2f, 4.5f, 4.8f, 5.1f, 5.6f }[level];
 
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 200, null);

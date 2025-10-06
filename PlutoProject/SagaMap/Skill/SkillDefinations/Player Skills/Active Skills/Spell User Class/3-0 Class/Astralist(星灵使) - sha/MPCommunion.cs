@@ -16,7 +16,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var lifetime = 600000;
-            var realAffected = new List<Actor>();
             var sPC = (ActorPC)sActor;
             foreach (var act in sPC.Party.Members.Values)
                 if (act.Online)

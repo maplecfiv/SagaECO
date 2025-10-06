@@ -898,7 +898,7 @@ namespace SagaMap.Manager
 
         public void ApplyTamaireExp(uint cexp, uint jexp, ActorPC targetPC)
         {
-            var client = MapClientManager.Instance.FindClient(targetPC.CharID);
+            MapClientManager.Instance.FindClient(targetPC.CharID);
             var eh = (PCEventHandler)targetPC.e;
             if (!targetPC.Rebirth)
             {
@@ -1401,7 +1401,7 @@ namespace SagaMap.Manager
         {
             var shouldWrp = 0;
             int srcLv = 1, dstLv = 1;
-            var map = MapManager.Instance.GetMap(dst.MapID);
+            MapManager.Instance.GetMap(dst.MapID);
             srcLv = src.Level;
             dstLv = src.Level;
             if (dstLv > srcLv)

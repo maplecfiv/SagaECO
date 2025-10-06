@@ -265,7 +265,7 @@ namespace SagaMap
         public void ProcessRing(MapClient client, string args)
         {
             if (args != "") ;
-            var ring = RingManager.Instance.CreateRing(client.Character, args);
+            RingManager.Instance.CreateRing(client.Character, args);
         }
 
         public void ProcessClearBuff(MapClient client, string args)
@@ -761,7 +761,6 @@ namespace SagaMap
                     var mapid = uint.Parse(args[0]);
                     var x = byte.Parse(args[1]);
                     var y = byte.Parse(args[2]);
-                    var eventid = uint.Parse(args[3]);
                     var pictid = uint.Parse(args[4]);
                     var name = args[5];
                     var shoptype = byte.Parse(args[6]);
@@ -1068,7 +1067,6 @@ namespace SagaMap
             if (blocked)
                 ClientManager.EnterCriticalArea();
             client.Character.CInt["垃圾箱记录"] = 0;
-            var items = client.npcTradeItem;
             client.npcTradeItem = null;
         }
 
@@ -2841,8 +2839,6 @@ namespace SagaMap
             else
                 try
                 {
-                    var style = uint.Parse(args);
-
                     if (client.Character.HairStyle == 90 || client.Character.HairStyle == 91 ||
                         client.Character.HairStyle == 92)
                         client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_HAIRCOLOR_ERROR); //
@@ -2951,8 +2947,6 @@ namespace SagaMap
             else
                 try
                 {
-                    var style = uint.Parse(args);
-
                     switch (args)
                     {
                         case "1":
@@ -3508,7 +3502,7 @@ namespace SagaMap
             else
                 try
                 {
-                    var enc = Encoding.GetEncoding("UTF-8");
+                    Encoding.GetEncoding("UTF-8");
                     var user = Convert.ToBase64String(Encoding.UTF8.GetBytes(TweetID + ":" + TweetPass));
                     var bytes = Encoding.UTF8.GetBytes("status=" + name + ":" + args);
 
@@ -4149,7 +4143,6 @@ namespace SagaMap
                     client.Character.Ring.FlyingCastle.RingID = client.Character.Ring.ID;
                     client.Character.Ring.FlyingCastle.ObMode = 3;
                     client.Character.Ring.FlyingCastle.Content = "测试内容";
-                    var r = new SagaDB.FlyingCastle.FlyingCastle();
                     client.Character.Ring.FlyingCastle.Furnitures.Add(SagaDB.FlyingCastle.FurniturePlace.GARDEN,
                         new List<ActorFurniture>());
                     client.Character.Ring.FlyingCastle.Furnitures.Add(SagaDB.FlyingCastle.FurniturePlace.ROOM,

@@ -13,7 +13,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var realAffected = new List<Actor>();
             var sPC = (ActorPC)sActor;
             var cureRate = new[] { 0, 40, 60, 60, 60, 60, 100 };
             foreach (var act in sPC.Party.Members.Values)

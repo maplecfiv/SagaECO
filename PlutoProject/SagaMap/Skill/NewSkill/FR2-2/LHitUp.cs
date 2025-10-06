@@ -45,7 +45,7 @@ namespace SagaMap.Skill.NewSkill.FR2_2
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
             Actor realdActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
             var life = 0;
             life = 180000;

@@ -70,7 +70,6 @@ namespace SagaMap.Skill.Additions
             }
 
 
-            var value = skill.Variable["SpeedDown2"];
             actor.Speed = 600;
             if (actor.type == ActorType.MOB)
             {

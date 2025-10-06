@@ -28,7 +28,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             {
                 var skill = new Poison(args.skill, i, lifetime);
                 SkillHandler.ApplyAddition(i, skill);
-                var skill1 = new Stun(args.skill, i, lifetime);
                 SkillHandler.ApplyAddition(i, skill);
             }
         }

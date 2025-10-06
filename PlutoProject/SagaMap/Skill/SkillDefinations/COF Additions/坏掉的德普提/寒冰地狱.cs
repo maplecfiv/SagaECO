@@ -33,7 +33,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.坏掉的德普提
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var factor = 5f;
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 300, null);

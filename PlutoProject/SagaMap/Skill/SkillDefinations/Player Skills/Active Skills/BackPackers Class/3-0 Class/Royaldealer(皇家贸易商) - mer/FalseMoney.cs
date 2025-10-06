@@ -22,7 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         {
             var factor = 1.0f + 0.1f * level;
             var lifetime = 7000;
-            var pc = sActor as ActorPC;
 
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 300, false);

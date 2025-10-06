@@ -135,7 +135,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             short[] range = { 0, 100, 200, 100, 200, 100 };
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(dActor, range[level], true);
-            var affected = new List<Actor>();
             foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
                 {

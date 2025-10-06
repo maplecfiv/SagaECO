@@ -445,7 +445,6 @@ namespace SagaMap.Manager
             for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
                 var sock = Listener.AcceptSocket();
-                var ip = sock.RemoteEndPoint.ToString().Substring(0, sock.RemoteEndPoint.ToString().IndexOf(':'));
                 Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
                 var client = new MapClient(sock, CommandTable);
                 Clients.Add(client);

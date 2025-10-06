@@ -22,7 +22,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var times = SagaLib.Global.Random.Next(0, 3);
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
             int[] delay = { 0, 1000, 700 };
             var sActorPC = (ActorPC)sActor;
             for (var i = 0; i < times; i++)

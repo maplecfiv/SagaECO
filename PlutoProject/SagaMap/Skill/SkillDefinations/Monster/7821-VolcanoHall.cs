@@ -21,7 +21,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 300, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     //float factor = (float)(act.MaxHP * 0.3f);

@@ -27,7 +27,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var lifetime = 2000 + 2000 * level;
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
             var skill = new DelayTrapBuff(args, sActor, lifetime);
             SkillHandler.ApplyAddition(sActor, skill);
         }

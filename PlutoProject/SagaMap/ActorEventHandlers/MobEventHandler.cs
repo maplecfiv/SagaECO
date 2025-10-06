@@ -397,7 +397,7 @@ namespace SagaMap.ActorEventHandlers
                     ActorPC owner = null;
                     if (mob.type == ActorType.MOB)
                     {
-                        var actors = MapManager.Instance.GetMap(mob.MapID).GetActorsArea(mob, 12700, false)
+                        MapManager.Instance.GetMap(mob.MapID).GetActorsArea(mob, 12700, false)
                             .Where(x => x.type == ActorType.PC && (x as ActorPC).Online).ToList();
                         var eh = (MobEventHandler)mob.e;
                         if (eh.AI.firstAttacker != null && eh.AI.firstAttacker.type == ActorType.PC)

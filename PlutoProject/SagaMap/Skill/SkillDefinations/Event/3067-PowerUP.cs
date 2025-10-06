@@ -19,7 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Event
         {
             if (sActor.type == ActorType.PC)
             {
-                var pc = (ActorPC)sActor;
                 var skill = new DefaultBuff(args.skill, dActor, "PowerUP", 60000);
                 skill.OnAdditionStart += StartEventHandler;
                 skill.OnAdditionEnd += EndEventHandler;

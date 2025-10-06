@@ -24,7 +24,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var rate = 10 * level;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 100, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, "Terror", rate))
@@ -41,7 +40,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //目標逃亡時撞到牆壁為止
             if (actor.type == ActorType.MOB)
             {
-                var mh = (MobEventHandler)actor.e;
             }
         }
 

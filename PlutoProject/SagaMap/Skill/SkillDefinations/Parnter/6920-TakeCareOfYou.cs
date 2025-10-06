@@ -23,7 +23,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             factor = -5.3f;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 500, false);
-            var realAffected = new List<Actor>();
             var ActorlowHP = sActor;
             foreach (var act in affected)
                 if (act.type == ActorType.PARTNER || act.type == ActorType.PC || act.type == ActorType.PET)

@@ -47,7 +47,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     if (count < times)
                     {
                         var affected = map.GetActorsArea(actor, 150, false);
-                        var realAffected = new List<Actor>();
                         foreach (var act in affected)
                             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                                 if (SkillHandler.Instance.CanAdditionApply(sActor, act,

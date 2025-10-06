@@ -618,7 +618,6 @@ namespace SagaMap.PC
             foreach (var i in releaseabilities.Keys)
             {
                 var value = releaseabilities[i];
-                var Status = pc.Status;
                 switch (i)
                 {
                     case ReleaseAbility.EXP_HUMAN:
@@ -2126,7 +2125,7 @@ namespace SagaMap.PC
         {
             short possession = 0;
             byte lv = 0;
-            var map = MapManager.Instance.GetMap(pc.MapID);
+            MapManager.Instance.GetMap(pc.MapID);
             lv = pc.Level;
             if (pc.Pet != null)
                 if (pc.Pet.Ride)
@@ -2158,7 +2157,7 @@ namespace SagaMap.PC
         {
             short possession = 0;
             byte lv = 0;
-            var map = MapManager.Instance.GetMap(pc.MapID);
+            MapManager.Instance.GetMap(pc.MapID);
             lv = pc.Level;
             if (pc.Pet != null)
                 if (pc.Pet.Ride)
@@ -2662,7 +2661,7 @@ namespace SagaMap.PC
                 byte joblv2x = 0;
                 byte joblv2t = 0;
                 byte joblv3 = 0;
-                var map = MapManager.Instance.GetMap(pc.MapID);
+                MapManager.Instance.GetMap(pc.MapID);
                 joblv1 = pc.JobLevel1;
                 joblv2x = pc.JobLevel2X;
                 joblv2t = pc.JobLevel2T;

@@ -16,7 +16,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var lifetime = 600000;
-            var realAffected = new List<Actor>();
             var sPC = (ActorPC)sActor;
             foreach (var act in sPC.Party.Members.Values)
                 if (act.Online)
@@ -31,7 +30,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int level = skill.skill.Level;
             var sp_add = 400 + 120 * skill.skill.Level;
             if (skill.Variable.ContainsKey("SPCommunion"))
                 skill.Variable.Remove("SPCommunion");

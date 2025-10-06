@@ -22,7 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             var lifetime = 1000 * level;
             var skills = new Stiff(args.skill, sActor, lifetime);
             SkillHandler.ApplyAddition(sActor, skills);
-            var skilld = new Stiff(args.skill, dActor, lifetime);
             SkillHandler.ApplyAddition(dActor, skills);
         }
 

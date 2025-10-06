@@ -28,7 +28,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     realAffected.Add(act);
 
-            var Damage = (int)sActor.HP;
             realAffected.Add(sActor);
             SkillHandler.Instance.MagicAttack(sActor, realAffected, args, Elements.Neutral, 15.0f);
             //SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);

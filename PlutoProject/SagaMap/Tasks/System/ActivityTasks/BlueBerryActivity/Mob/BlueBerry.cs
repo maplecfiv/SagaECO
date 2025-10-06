@@ -64,7 +64,6 @@ namespace SagaMap.Tasks.System.ActivityTasks.BlueBerryActivity.Mob
             ai.Distance = 3; //遠程進程切換距離，與敵人3格距離切換
             ai.ShortCD = 3; //進程技能表最短釋放間隔，3秒一次
             ai.LongCD = 3; //遠程技能表最短釋放間隔，3秒一次
-            var skillinfo = new AIMode.SkilInfo();
 
 
             return ai;

@@ -138,7 +138,7 @@ namespace SagaMap.Skill.Additions
             {
                 if (actor.HP > 0 && !actor.Buff.Dead)
                 {
-                    var map = MapManager.Instance.GetMap(actor.MapID);
+                    MapManager.Instance.GetMap(actor.MapID);
                     var amount = (int)(actor.MaxHP / 100) * 5;
                     if (amount < 1)
                         amount = 1;

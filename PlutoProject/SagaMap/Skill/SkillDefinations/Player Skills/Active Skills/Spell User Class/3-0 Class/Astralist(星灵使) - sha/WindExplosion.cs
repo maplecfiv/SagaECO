@@ -161,7 +161,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             //    }
             //}
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 350, null);

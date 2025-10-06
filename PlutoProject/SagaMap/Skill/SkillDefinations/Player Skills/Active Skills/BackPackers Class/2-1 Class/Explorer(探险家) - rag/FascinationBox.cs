@@ -96,7 +96,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg2, actor, true);
 
                         var affected = map.GetActorsArea(actor, 200, false);
-                        var realAffected = new List<Actor>();
                         foreach (var act in affected)
                             if (SkillHandler.Instance.CheckValidAttackTarget(actor, act))
                             {

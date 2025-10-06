@@ -76,7 +76,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(actor, 200, false);
-                        var affected = new List<Actor>();
                         var args = this.skill;
                         //取得有效Actor（即怪物）
 
@@ -139,7 +138,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 //actor.Speed = 0;
                 //SkillArg args =  this.skill;
                 var lifetimes = new[] { 0, 5, 5, 8, 8, 13, 100 };
-                var lifetime = 1000 * lifetimes[skill.skill.Level];
 
                 int[] times = { 0, 5, 5, 6, 6, 7 };
                 skill["MobKyrie"] = times[skill.skill.Level];
@@ -163,7 +161,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     skill.Variable.Remove("MAGICDEF");
                 skill.Variable.Add("MAGICDEF", (int)magicdef);
                 actor.Status.MagicRuduceRate += (short)magicdef;
-                var skill2 = new Stone(skill.skill, actor, 14000);
                 actor.Buff.Stone = true;
                 MapManager.Instance.GetMap(actor.MapID)
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
@@ -204,7 +201,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
-            var map = MapManager.Instance.GetMap(pc.MapID);
+            MapManager.Instance.GetMap(pc.MapID);
             if (CheckPossible(pc))
                 return 0;
             return -5;

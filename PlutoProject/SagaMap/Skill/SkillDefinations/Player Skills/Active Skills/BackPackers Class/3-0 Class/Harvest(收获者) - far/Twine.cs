@@ -28,7 +28,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //获取设置中心9*9范围的怪物
             var actors = map.GetActorsArea(sActor, 400, true);
-            var affected = new List<Actor>();
             args.affectedActors.Clear();
             foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
@@ -76,7 +75,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     MapClient.FromActorPC(pc).SendSystemMessage("初始化");
                 }
 
-                int level = skill.skill.Level;
                 var min_atk1_down = (int)(actor.Status.min_atk1 * 0.5f);
                 var min_atk2_down = (int)(actor.Status.min_atk2 * 0.5f);
                 var min_atk3_down = (int)(actor.Status.min_atk3 * 0.5f);

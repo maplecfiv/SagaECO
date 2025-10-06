@@ -48,7 +48,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         try
                         {
                             var actors = map.GetActorsArea(actor, 300, false);
-                            var affected = new List<Actor>();
                             //取得有效Actor（即怪物）
                             var rate = 5 + 5 * level;
 

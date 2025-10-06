@@ -54,7 +54,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
         {
             var lifetime = 5000;
             var map = MapManager.Instance.GetMap(sActor.MapID);
-            var xy = map.GetRandomPosAroundActor(sActor);
+            map.GetRandomPosAroundActor(sActor);
             var mob = map.SpawnMob(MobID, SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 100, sActor);
             var skill = new SumMobCastSkillBuff(args.skill, dActor, mob, lifetime);

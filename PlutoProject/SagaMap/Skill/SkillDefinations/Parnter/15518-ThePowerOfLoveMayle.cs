@@ -24,7 +24,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
             {
                 lifetime = 12000;
                 var affected = map.GetActorsArea(sActor, 500, false);
-                var ActorlowHP = sActor;
                 foreach (var act in affected)
                     if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     {

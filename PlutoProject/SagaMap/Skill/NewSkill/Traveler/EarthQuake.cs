@@ -39,7 +39,6 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 skill.dActor = 0xffffffff;
                 Period = 350;
                 DueTime = 0;
-                var Me = (ActorPC)caster;
             }
 
 

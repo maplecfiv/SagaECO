@@ -33,7 +33,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 int[] Times = { 0, 50, 30, 25, 22, 20 };
                 lifetime = 35000 - 5000 * level;
                 times = Times[level];
-                var pc = caster as ActorPC;
                 var PMlv = 0;
                 //if (pc.Skills3.ContainsKey(994) || pc.DualJobSkill.Exists(x => x.ID == 994))
                 //{

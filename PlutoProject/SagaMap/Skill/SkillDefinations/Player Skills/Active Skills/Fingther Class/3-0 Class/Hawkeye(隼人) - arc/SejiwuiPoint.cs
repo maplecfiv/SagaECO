@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             var lifetime = 30000 * level;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 400, true);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (act.type == ActorType.PC)
                 {

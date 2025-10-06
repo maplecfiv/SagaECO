@@ -35,7 +35,6 @@ namespace SagaMap.Skill.NewSkill.NewBoss
                 map = MapManager.Instance.GetMap(actor.MapID);
                 Period = 400;
                 DueTime = 0;
-                var Me = (ActorPC)caster;
             }
 
 

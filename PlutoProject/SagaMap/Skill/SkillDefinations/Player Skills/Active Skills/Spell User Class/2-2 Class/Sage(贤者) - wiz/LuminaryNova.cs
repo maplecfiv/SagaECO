@@ -22,7 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var factor = 3.2f + 1.0f * level;
-            var rate = 20 + 10 * level;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),
                 SagaLib.Global.PosY8to16(args.y, map.Height), 300, null);

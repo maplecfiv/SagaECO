@@ -30,7 +30,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         {
             if (MobUse) level = 5;
             var factor = 1.0f + 3.0f * level;
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(sActor, 300, false);
             var affected = new List<Actor>();

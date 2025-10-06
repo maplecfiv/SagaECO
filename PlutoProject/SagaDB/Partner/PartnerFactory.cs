@@ -174,7 +174,6 @@ namespace SagaDB.Partner
             var label = "Loading partner Rank database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
 #endif
-            var time = DateTime.Now;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -237,7 +236,6 @@ namespace SagaDB.Partner
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading Talks database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
-            var time = DateTime.Now;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -306,7 +304,6 @@ namespace SagaDB.Partner
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading PartnerPict database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
-            var time = DateTime.Now;
             string[] paras;
             while (!sr.EndOfStream)
             {
@@ -333,7 +330,6 @@ namespace SagaDB.Partner
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading Talks database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
-            var time = DateTime.Now;
             string[] paras;
             while (!sr.EndOfStream)
             {

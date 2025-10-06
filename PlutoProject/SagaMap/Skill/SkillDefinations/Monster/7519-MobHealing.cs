@@ -26,7 +26,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 factor = -1.43f;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 500, false); //实测7*7范围内怪物互补情况太差,更改为11*11
-            var realAffected = new List<Actor>();
             var ActorlowHP = sActor;
             foreach (var act in affected)
                 if (act.type == ActorType.MOB)

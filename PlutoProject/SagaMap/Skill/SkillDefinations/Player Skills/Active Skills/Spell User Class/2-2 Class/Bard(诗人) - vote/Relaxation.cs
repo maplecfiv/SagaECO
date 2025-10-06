@@ -25,7 +25,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var lifetime = 30000 + 30000 * level;
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 200, true);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (act.type == ActorType.PC || act.type == ActorType.PET)
                 {

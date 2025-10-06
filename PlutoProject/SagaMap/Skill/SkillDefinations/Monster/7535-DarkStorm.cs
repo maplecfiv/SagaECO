@@ -18,7 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         {
             var factor = 1.15f;
 
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
 
             var actors = map.GetActorsArea(SagaLib.Global.PosX8to16(args.x, map.Width),

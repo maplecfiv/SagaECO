@@ -31,8 +31,6 @@ namespace SagaMap.Skill.SkillDefinations.技能模版
                 map = MapManager.Instance.GetMap(actor.MapID);
                 Period = 500;
                 DueTime = 0;
-
-                var Me = (ActorPC)caster;
             }
 
 

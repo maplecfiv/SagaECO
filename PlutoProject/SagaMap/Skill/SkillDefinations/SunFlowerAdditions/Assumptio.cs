@@ -20,8 +20,7 @@ namespace SagaMap.Skill.SkillDefinations.SunFlowerAdditions
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var map = MapManager.Instance.GetMap(sActor.MapID);
-            var affected = map.GetActorsArea(sActor, 500, false); //实测7*7范围内怪物互补情况太差,更改为11*11
-            var realAffected = new List<Actor>();
+            map.GetActorsArea(sActor, 500, false);
             var ActorlowHP = sActor;
             //realAffected.Add(sActor);
             //foreach (Actor act in affected)

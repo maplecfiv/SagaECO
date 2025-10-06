@@ -17,7 +17,6 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.巨大咕咕鸡
         {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(sActor, 500, false, true);
-            var realAffected = new List<Actor>();
             foreach (var act in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

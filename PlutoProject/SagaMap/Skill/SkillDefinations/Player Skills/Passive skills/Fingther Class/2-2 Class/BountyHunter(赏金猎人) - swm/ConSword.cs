@@ -21,7 +21,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Passive_skills.Fingther_C
             var active = false;
             if (sActor.type == ActorType.PC)
             {
-                var pc = (ActorPC)sActor;
                 if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.SWORD, ItemType.SHORT_SWORD,
                         ItemType.RAPIER)) active = true;
                 var skill = new DefaultPassiveSkill(args.skill, sActor, "ConSword", active);

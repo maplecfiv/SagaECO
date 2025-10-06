@@ -44,7 +44,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         {
             float factor = 0;
             factor = 0.8f + 0.1f * level;
-            var target = new List<Actor>();
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(dActor, 200, true);
             var affacted = new List<Actor>();

@@ -54,7 +54,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 if (skill.Variable.ContainsKey("Save_Y"))
                     skill.Variable.Remove("Save_Y");
                 skill.Variable.Add("Save_Y", actor.Y);
-                int level = skill.skill.Level;
                 var min_matk_add = (int)(actor.Status.min_matk_bs * 1.5f);
                 var max_matk_add = (int)(actor.Status.max_matk_bs * 1.5f);
                 if (skill.Variable.ContainsKey("ForceMaster_min_matk"))

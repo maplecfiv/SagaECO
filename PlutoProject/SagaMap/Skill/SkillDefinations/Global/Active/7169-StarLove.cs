@@ -37,7 +37,6 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 map = MapManager.Instance.GetMap(actor.MapID);
                 lifetime = 500; //持续时间
                 //factor = factors[level] + caster.Status.Cardinal_Rank;
-                var pc = caster as ActorPC;
 
                 Period = 500;
             }
@@ -50,7 +49,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 {
                     if (count < countMax)
                     {
-                        var map = MapManager.Instance.GetMap(caster.MapID);
+                        MapManager.Instance.GetMap(caster.MapID);
                         var actors = MapManager.Instance.GetMap(caster.MapID).GetActorsArea(dActor, 200, true);
                         foreach (var i in actors)
                             if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))

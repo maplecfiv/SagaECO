@@ -58,7 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
 
             int[] lifetime = { 0, 60000, 80000, 100000, 125000, 150000 };
-            var skill2 = new DefaultBuff(skill.skill, actor, "RobotAtkDown", lifetime[skill.skill.Level]);
             skill.OnAdditionStart += StartEventHandler2;
             skill.OnAdditionEnd += EndEventHandler2;
             SkillHandler.ApplyAddition(actor, skill);

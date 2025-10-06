@@ -30,7 +30,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //设定技能体的事件处理器，由于技能体不需要得到消息广播，因此创建个空处理器
             actor.e = new NullEventHandler();
             var affected = map.GetActorsArea(actor, 150, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                 {

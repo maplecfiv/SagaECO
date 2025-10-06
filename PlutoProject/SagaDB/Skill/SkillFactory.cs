@@ -376,7 +376,6 @@ namespace SagaDB.Skill
             skdbpath = path;
             Logger.ShowInfo("Now Loading Skill Data...");
             var header = new List<sspHeader>();
-            var encoder = encoding;
             var line = "";
             var count = 0;
             try

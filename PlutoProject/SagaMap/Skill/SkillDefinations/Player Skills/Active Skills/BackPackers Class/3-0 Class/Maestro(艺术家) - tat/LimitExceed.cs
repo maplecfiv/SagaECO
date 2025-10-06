@@ -175,7 +175,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             if (pet != null && SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT"))
             {
                 int[] lifetime = { 0, 50000, 70000, 80000, 100000, 100000 };
-                var skill2 = new DefaultBuff(skill.skill, actor, "LimitExceedDown", lifetime[skill.skill.Level]);
                 skill.OnAdditionStart += StartEventHandler2;
                 skill.OnAdditionEnd += EndEventHandler2;
                 skill.OnCheckValid += ValidCheck;

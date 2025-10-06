@@ -699,7 +699,6 @@ namespace SagaDB.Item
                         return InventoryDeleteResult.STACK_UPDATED;
                     }
 
-                    var rest = count - item.Stack;
                     list.Remove(item);
                     return InventoryDeleteResult.ALL_DELETED;
                 }
@@ -763,7 +762,6 @@ namespace SagaDB.Item
                         return InventoryDeleteResult.STACK_UPDATED;
                     }
 
-                    var rest = count - item.Stack;
                     list.Remove(item);
                     return InventoryDeleteResult.ALL_DELETED;
                 case ContainerType.BACK:

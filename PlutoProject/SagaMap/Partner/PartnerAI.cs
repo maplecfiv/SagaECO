@@ -1018,7 +1018,6 @@ namespace SagaMap.Partner
         public List<MapNode> FindPath(byte x, byte y, byte x2, byte y2)
         {
             var src = new MapNode();
-            var now = DateTime.Now;
             var count = 0;
             src.x = x;
             src.y = y;

@@ -79,9 +79,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //actor.Status.mdef_skill = LMDef;
 
 
-            var def_add = 5 * level;
-            var mdef_add = 5 * level;
-
             if (oldSacrifice != null)
                 if (oldSacrifice.Variable["Sacrifice_Max_ATK1"] > max_atk1_add)
                 {

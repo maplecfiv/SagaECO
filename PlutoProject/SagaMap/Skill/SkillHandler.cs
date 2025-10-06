@@ -377,7 +377,6 @@ namespace SagaMap.Skill
         /// <returns></returns>
         public int CheckBuffForDamage(Actor sActor, Actor dActor, int damage)
         {
-            var d = damage;
             if (dActor.Status.Additions.ContainsKey("Invincible")) //绝对壁垒
                 damage = 0;
             //技能以及状态判定
@@ -464,7 +463,6 @@ namespace SagaMap.Skill
                         pc.Inventory.Equipments[EnumEquipSlot.LEFT_HAND].BaseData.itemType == ItemType.SHIELD)
                     {
                         var SutanOdds = dActor.Status.Blocking_LV * 5;
-                        var SutanTime = 1000 + dActor.Status.Blocking_LV * 500;
                         var ParryOdds = new[] { 0, 15, 25, 35, 65, 75 }[dActor.Status.Blocking_LV];
                         float ParryResult = 4 + 6 * dActor.Status.Blocking_LV;
                         var args = new SagaDB.Skill.Skill();
@@ -2906,7 +2904,6 @@ namespace SagaMap.Skill
                                     ItemType.SHIELD)
                                 {
                                     var SutanOdds = target.Status.Blocking_LV * 5;
-                                    var SutanTime = 1000 + i.Status.Blocking_LV * 500;
                                     var ParryOdds = new[] { 0, 15, 25, 35, 65, 75 }[target.Status.Blocking_LV];
                                     float ParryResult = 4 + 6 * target.Status.Blocking_LV;
                                     var args = new SagaDB.Skill.Skill();
@@ -3375,7 +3372,6 @@ namespace SagaMap.Skill
                                 {
                                     var newArg = new SkillArg();
                                     Instance.Attack(target, sActor, newArg, 1.0f);
-                                    var skill = new Poison(newArg.skill, sActor, 7000);
                                     MapManager.Instance.GetMap(target.MapID)
                                         .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.ATTACK, newArg, target,
                                             true);
@@ -3555,7 +3551,6 @@ namespace SagaMap.Skill
                     dActor.Count == 1)
                 {
                     var thispc = (ActorPC)sActor;
-                    var level = thispc.CInt["EnchantWeaponLevel"];
                     switch (thispc.CInt["EnchantWeaponLevel"])
                     {
                         case 1:
@@ -5782,8 +5777,6 @@ namespace SagaMap.Skill
             {
                 var level = dActor.Status.Pressure_lv;
                 float[] hprank = { 0.2f, 0.2f, 0.25f, 0.25f, 0.3f };
-                float[] rank = { 0, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f };
-                float[] rank2 = { 0, 0.1f, 0.1f, 0.15f, 0.15f, 0.2f };
                 var factor = 3f + 0.3f * level;
                 var pc = (ActorPC)dActor;
                 //不管是主职还是副职,确定技能存在
@@ -8429,7 +8422,6 @@ namespace SagaMap.Skill
         /// <returns>可被攻击的对象</returns>
         public List<Actor> GetActorsAreaWhoCanBeAttackedTargets(Actor caster, Actor actor, short range)
         {
-            var actors = new List<Actor>();
             var map = MapManager.Instance.GetMap(caster.MapID);
             return GetVaildAttackTarget(caster, map.GetActorsArea(actor, range, false));
         }
@@ -10025,7 +10017,7 @@ namespace SagaMap.Skill
         /// <returns>是否正常(無溢位發生)</returns>
         public bool GetRelatedPos(Actor sActor, int XDiff, int YDiff, byte sx, byte sy, out byte nx, out byte ny)
         {
-            var map = MapManager.Instance.GetMap(sActor.MapID);
+            MapManager.Instance.GetMap(sActor.MapID);
             //取得舊座標
             var ox = sx;
             var oy = sy;

@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //更改作用范围,为3*3而不是之前的5*5
             var actors = map.GetActorsArea(sActor, 100, true);
-            var affected = new List<Actor>();
             foreach (var i in actors)
                 if (i.type == ActorType.PC)
                 {
@@ -33,7 +32,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int level = skill.skill.Level;
             var add = 7 + skill.skill.Level;
             if (skill.Variable.ContainsKey("FlurryThunderbolt_DEX"))
                 skill.Variable.Remove("FlurryThunderbolt_DEX");

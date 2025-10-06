@@ -442,7 +442,6 @@ namespace SagaMap.ActorEventHandlers
                     Client.NetIo.SendPacket(p4);
                     if (Client.Character == skill.Caster)
                     {
-                        var tem = skill.Name;
                         //if(tem!="NOT_SHOW_DISAPPEAR")
                         //this.Client.SendSystemMessage(string.Format(Manager.LocalManager.Instance.Strings.SKILL_ACTOR_DELETE, skill.Skill.Name));
                     }

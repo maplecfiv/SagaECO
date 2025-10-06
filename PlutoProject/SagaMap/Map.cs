@@ -172,7 +172,6 @@ namespace SagaMap
                             Item itemDroped = null;
                             if (i.type == ActorType.PC)
                             {
-                                var pcs = (ActorPC)i;
                                 /*if (IPs.Contains(pcs.Account.LastIP))
                                     continue;
                                 else
@@ -1873,7 +1872,7 @@ namespace SagaMap
                 f = GetLengthD(actor.X, actor.Y, x2, y2);
                 g = GetLengthD(actor.X, actor.Y, x3, y3);
                 h = GetLengthD(actor.X, actor.Y, x4, y4);
-                var dd = TriangleArea(a, e, f) + TriangleArea(b, f, g) + TriangleArea(c, g, h) + TriangleArea(d, h, e);
+                _ = TriangleArea(a, e, f) + TriangleArea(b, f, g) + TriangleArea(c, g, h) + TriangleArea(d, h, e);
                 if (TriangleArea(a, e, f) + TriangleArea(b, f, g) + TriangleArea(c, g, h) + TriangleArea(d, h, e)
                     <= area + 1)
                     actors.Add(actor);

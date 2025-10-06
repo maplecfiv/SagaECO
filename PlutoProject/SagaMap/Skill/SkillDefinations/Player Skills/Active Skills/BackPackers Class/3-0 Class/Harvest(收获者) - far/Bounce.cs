@@ -40,7 +40,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int level = skill.skill.Level;
             actor.Buff.三转荆棘刺 = true;
             MapManager.Instance.GetMap(actor.MapID)
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);

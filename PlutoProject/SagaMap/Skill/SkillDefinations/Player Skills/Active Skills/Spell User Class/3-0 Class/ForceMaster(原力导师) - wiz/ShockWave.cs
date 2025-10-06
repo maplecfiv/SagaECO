@@ -66,7 +66,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillBody = actor;
             this.sActor = sActor;
             map = MapManager.Instance.GetMap(AimActor.MapID);
-            var Me = (ActorPC)sActor; //Get the total skill level of skill with fire element.
             switch (level)
             {
                 case 1:
@@ -158,7 +157,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
 
                 count++;
-                var affected = map.GetActorsArea(AimActor, 50, false);
+                map.GetActorsArea(AimActor, 50, false);
             }
             else
             {
@@ -192,7 +191,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问ClientManager.EnterCriticalArea();
                 try
                 {
-                    var actors = map.GetActorsArea(actor, 50, false);
+                    map.GetActorsArea(actor, 50, false);
                     if (count < countMax)
                     {
                         //广播技能效果

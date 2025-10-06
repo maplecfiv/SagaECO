@@ -58,7 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillBody = actor;
             this.sActor = sActor;
             map = MapManager.Instance.GetMap(AimActor.MapID);
-            var Me = (ActorPC)sActor; //Get the total skill level of skill with fire element.
 
             switch (level)
             {

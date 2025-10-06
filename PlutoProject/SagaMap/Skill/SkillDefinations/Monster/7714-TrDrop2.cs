@@ -22,7 +22,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //List<Actor> affected = map.GetActorsArea(sActor, 150, false);
             var affected = map.GetActorsArea(sActor, 750, false);
-            var realAffected = new List<Actor>();
             foreach (var act in affected)
                 if (act.type == ActorType.PC)
                     SkillHandler.Instance.PossessionCancel((ActorPC)act, PossessionPosition.NONE);

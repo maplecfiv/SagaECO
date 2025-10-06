@@ -26,7 +26,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         private void StartEventHandler(Actor actor, DefaultPassiveSkill skill)
         {
-            var sPC = (ActorPC)actor;
             //sPC.NextMarionetteTime;
         }
 

@@ -68,7 +68,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.熊爹
                 {
                     actors = map.GetActorsArea(act, 300, true, true);
 
-                    var xy = map.GetRandomPosAroundActor2(sActor);
+                    map.GetRandomPosAroundActor2(sActor);
                     if (sActor.Slave.Count < 3)
                         sActor.Slave.Add(map.SpawnMob(82000001, act.X, act.Y, 2500, sActor));
                     else if (sActor.Slave[0].Buff.Dead)

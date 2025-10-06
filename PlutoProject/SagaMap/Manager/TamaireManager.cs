@@ -60,7 +60,7 @@ namespace SagaMap.Manager
                 return;
             if (renter.TamaireRental.CurrentLender == 0)
                 return;
-            var currentlender = MapServer.charDB.GetChar(renter.TamaireRental.CurrentLender);
+            MapServer.charDB.GetChar(renter.TamaireRental.CurrentLender);
             if (DateTime.Now > renter.TamaireRental.RentDue) TerminateRental(renter, 0);
         }
 

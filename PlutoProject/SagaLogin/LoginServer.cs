@@ -127,7 +127,6 @@ namespace SagaLogin
 
         private static void Main(string[] args)
         {
-            var fullPath = Environment.CurrentDirectory + "\\SagaLogin.exe";
             // var WINDOW_HANDLER = FindWindow(null, fullPath);
             // var CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
             // var SC_CLOSE = 0xF060;

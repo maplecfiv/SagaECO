@@ -30,7 +30,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     realAffected.Add(act);
                     if (act.type == ActorType.MOB)
                     {
-                        var mob = (ActorMob)act;
                         //预留偷窃逻辑位置,等级越低成功率越高
                     }
                 }

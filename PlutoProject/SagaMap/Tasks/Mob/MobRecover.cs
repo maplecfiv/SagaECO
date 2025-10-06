@@ -33,7 +33,7 @@ namespace SagaMap.Tasks.Mob
                     count = 0;
                 }
 
-                var map = MapManager.Instance.GetMap(mob.MapID);
+                MapManager.Instance.GetMap(mob.MapID);
                 //map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, mob, false);
                 ClientManager.LeaveCriticalArea();
                 if (mob.HP == mob.MaxHP)

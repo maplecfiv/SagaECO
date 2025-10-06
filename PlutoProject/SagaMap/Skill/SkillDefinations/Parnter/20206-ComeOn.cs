@@ -34,7 +34,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
                 skill = args.Clone();
                 countMax = 5;
                 var lifetime = 5000;
-                var Me = (ActorPartner)caster;
 
 
                 map = MapManager.Instance.GetMap(actor.MapID);

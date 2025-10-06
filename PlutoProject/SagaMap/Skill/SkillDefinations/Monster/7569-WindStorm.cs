@@ -20,7 +20,6 @@ namespace SagaMap.Skill.SkillDefinations.Monster
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             var factor = 1.8f;
-            var actorS = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //Logger.ShowDebug(string.Format("劫雷滅世=>({0},{1})",args.x, args.y), Logger.defaultlogger);
             //Logger.ShowDebug(string.Format("劫雷滅世=>({0},{1})", SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height)), Logger.defaultlogger);

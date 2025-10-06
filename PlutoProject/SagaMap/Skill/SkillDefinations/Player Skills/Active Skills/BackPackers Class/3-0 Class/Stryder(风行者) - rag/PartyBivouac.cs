@@ -18,7 +18,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
         {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(sActor, 300, true);
-            var affected = new List<Actor>();
             foreach (var i in actors)
             {
                 var skill = new HPRecovery(args.skill, sActor, 300000, 5000);

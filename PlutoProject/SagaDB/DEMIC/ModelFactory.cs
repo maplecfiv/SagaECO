@@ -19,7 +19,6 @@ namespace SagaDB.DEMIC
             var label = "Loading Chip model database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
 #endif
-            var time = DateTime.Now;
             var modelBegin = false;
             uint currentID = 0;
             var y = 0;

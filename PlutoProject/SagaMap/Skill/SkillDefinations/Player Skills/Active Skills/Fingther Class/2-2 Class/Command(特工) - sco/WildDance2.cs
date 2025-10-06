@@ -23,7 +23,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         {
             var factor = 0.4f * level;
             //uint MartialArtDamUp_SkillID = 125;
-            var actorPC = (ActorPC)sActor;
             var pc = sActor as ActorPC;
             if (pc.Skills2_2.ContainsKey(125) || pc.DualJobSkill.Exists(x => x.ID == 125))
             {

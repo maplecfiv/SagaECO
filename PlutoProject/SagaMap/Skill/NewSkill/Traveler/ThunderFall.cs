@@ -35,7 +35,6 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 DueTime = 0;
                 path = GetStraightPath(Global.PosX16to8(caster.X, map.Width),
                     Global.PosY16to8(caster.Y, map.Height), args.x, args.y);
-                var Me = (ActorPC)caster;
             }
 
             public List<Point> GetStraightPath(byte fromx, byte fromy, byte tox, byte toy)

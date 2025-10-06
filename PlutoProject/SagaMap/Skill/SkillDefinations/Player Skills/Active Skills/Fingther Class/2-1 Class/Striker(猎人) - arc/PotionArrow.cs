@@ -58,7 +58,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
 
             //int[] combo = { 0, 2, 4, 6 };
-            var target = new List<Actor>();
             for (var i = 0; i < combo; i++)
             {
                 var arg2 = new SkillArg();

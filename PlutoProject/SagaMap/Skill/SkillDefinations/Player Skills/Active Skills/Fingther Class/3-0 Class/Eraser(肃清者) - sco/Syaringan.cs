@@ -16,7 +16,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
-            var pc = (ActorPC)sActor;
             int[] lifetime = { 0, 180000, 80000, 60000, 30000, 15000 };
             var skill = new DefaultBuff(args.skill, dActor, "見切り", lifetime[level]);
             skill.OnAdditionStart += StartEventHandler;

@@ -30,8 +30,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
             int level = skill.skill.Level;
-            float atk = -0.05f - level * 0.02f,
-                avo = 0,
+            float avo = 0,
                 def = 0,
                 spd = 0.08f + level * 0.04f,
                 delaycancel = new[] { 0, 0.18f, 0.31f, 0.625f }[level];
@@ -52,7 +51,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     break;
             }
 
-            var aspd_add = (int)(actor.Status.aspd * spd);
             var cspd_add = (int)(actor.Status.cspd * spd);
             var avo_add = (int)(actor.Status.avoid_ranged * avo);
 

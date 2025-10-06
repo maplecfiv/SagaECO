@@ -74,7 +74,6 @@ public class LoginClient : SagaLib.Client
         if (account.GMLevel < 250) return;
         var Type = p.type;
         var Title = p.Title;
-        var Sender = p.Sender;
         var Content = p.Content;
         var AcccountIDs = p.CharIDs;
         var GiftIDs = p.GiftIDs;
@@ -1102,7 +1101,6 @@ public class LoginClient : SagaLib.Client
             }
             else
             {
-                var oldserver = MapServerManager.Instance.MapServers[i];
                 //Logger.ShowWarning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
             }
 

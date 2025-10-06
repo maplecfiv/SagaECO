@@ -136,7 +136,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 {
                     if (dActor.type == ActorType.PC)
                     {
-                        var list = new List<Actor>();
                         var pc = (ActorPC)dActor;
                         foreach (var i_p in pc.PossesionedActors)
                         {

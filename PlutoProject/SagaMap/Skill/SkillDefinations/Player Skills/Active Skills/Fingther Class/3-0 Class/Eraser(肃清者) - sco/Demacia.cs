@@ -34,7 +34,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     affected.Add(i);
                 if (SkillHandler.Instance.CanAdditionApply(sActor, i, SkillHandler.DefaultAdditions.Confuse, 10))
                 {
-                    var skill2 = new Stiff(args.skill, i, 2500);
                     SkillHandler.ApplyAddition(i, skill);
                 }
             }

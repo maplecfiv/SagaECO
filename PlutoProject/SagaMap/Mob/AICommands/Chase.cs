@@ -211,8 +211,8 @@ namespace SagaMap.Mob.AICommands
                 }
                 else if (path.Count == 1 && index == 0)
                 {
-                    var xs = Global.PosX16to8(mob.Mob.X, mob.map.Width);
-                    var ys = Global.PosY16to8(mob.Mob.Y, mob.map.Height);
+                    Global.PosX16to8(mob.Mob.X, mob.map.Width);
+                    Global.PosY16to8(mob.Mob.Y, mob.map.Height);
                     node = path[index];
                     var dst = new short[2]
                         { Global.PosX8to16(node.x, mob.map.Width), Global.PosY8to16(node.y, mob.map.Height) };

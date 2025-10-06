@@ -21,7 +21,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         {
             var factor = 2.25f + 0.75f * level;
             var actors = MapManager.Instance.GetMap(dActor.MapID).GetActorsArea(dActor, 100, true);
-            var affected = new List<Actor>();
             //取得有效Actor（即怪物）
             var dmgheal = 0;
             foreach (var i in actors)

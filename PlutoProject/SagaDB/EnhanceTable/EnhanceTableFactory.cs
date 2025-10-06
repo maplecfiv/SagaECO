@@ -18,8 +18,6 @@ namespace SagaDB.EnhanceTable
         {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
-            var time = DateTime.Now;
-
             string[] paras;
             while (!sr.EndOfStream)
             {

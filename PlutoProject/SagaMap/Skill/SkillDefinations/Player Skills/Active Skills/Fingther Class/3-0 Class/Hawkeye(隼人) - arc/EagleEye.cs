@@ -19,7 +19,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
         {
             if (sActor.Status.Additions.ContainsKey("ホークアイ")) sActor.Status.Additions["ホークアイ"].AdditionEnd();
-            var pc = (ActorPC)sActor;
             var lifetimes = new[] { 0, 60000, 90000, 120000, 150000, 180000 };
             var lifetime = lifetimes[args.skill.Level];
             var skill = new DefaultBuff(args.skill, sActor, "ホークアイ", lifetime, 1000);

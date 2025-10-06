@@ -38,7 +38,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         private void StartEventHandler(Actor actor, DefaultBuff skill)
         {
-            int level = skill.skill.Level;
             actor.Status.combo_rate_skill += 50;
             actor.Buff.三转枪连弹 = true;
             MapManager.Instance.GetMap(actor.MapID)
@@ -47,7 +46,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         private void EndEventHandler(Actor actor, DefaultBuff skill)
         {
-            int level = skill.skill.Level;
             actor.Status.combo_rate_skill -= 50;
             actor.Buff.三转枪连弹 = false;
             MapManager.Instance.GetMap(actor.MapID)

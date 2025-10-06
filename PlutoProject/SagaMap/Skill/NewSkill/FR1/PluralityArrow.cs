@@ -20,7 +20,6 @@ namespace SagaMap.Skill.NewSkill.FR1
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             var numdownmin = new[] { 0, 3, 4, 4, 5, 5 };
-            var numdownmax = new[] { 0, 2, 2, 3, 3, 4 };
             if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
             {
                 if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.BOW)

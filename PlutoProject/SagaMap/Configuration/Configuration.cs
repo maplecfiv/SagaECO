@@ -810,7 +810,7 @@ namespace SagaMap.Configuration
             var magic = br.ReadInt32();
             if (magic == 0x12345678)
             {
-                var version = br.ReadInt32();
+                br.ReadInt32();
                 var len = br.ReadByte();
                 Host = Global.Unicode.GetString(br.ReadBytes(len));
                 Port = br.ReadInt32();

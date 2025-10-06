@@ -29,7 +29,6 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             int level = skill.skill.Level;
             int[] MaxAtk = { 0, 2, 4, 6, 8, 10 };
             int[] MinAtk = { 0, 5, 8, 12, 17, 23 };
-            int[] MaxMAtk = { 0, 1, 2, 3, 4, 5 };
             int[] MinMAtk = { 0, 1, 2, 3, 4, 5 };
             //最大攻擊
             var max_atk1_add = MaxAtk[level];
