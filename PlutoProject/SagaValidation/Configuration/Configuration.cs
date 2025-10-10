@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Xml;
 
 using SagaLib;
@@ -37,8 +38,9 @@ namespace SagaValidation
             {
                 if (encoding == null)
                 {
-                    Logger.ShowDebug("DB Encoding not set, set to default value: GBK", Logger.CurrentLogger);
-                    encoding = "GBK";
+                    encoding = Encoding.UTF8.EncodingName;
+                    Logger.ShowDebug("DB Encoding not set, set to default value: "+encoding, Logger.CurrentLogger);
+                    
                 }
                 return encoding;
             }

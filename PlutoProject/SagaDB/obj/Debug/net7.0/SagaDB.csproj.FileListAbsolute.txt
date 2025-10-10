@@ -1,0 +1,13 @@
+/home/maple/projects/SagaECO/PlutoProject/Bin/net7.0/SagaDB.deps.json
+/home/maple/projects/SagaECO/PlutoProject/Bin/net7.0/SagaDB.dll
+/home/maple/projects/SagaECO/PlutoProject/Bin/net7.0/SagaDB.pdb
+/home/maple/projects/SagaECO/PlutoProject/Bin/net7.0/SagaDB.XML
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.GeneratedMSBuildEditorConfig.editorconfig
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.sourcelink.json
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.csproj.Up2Date
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/refint/SagaDB.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/SagaDB.pdb
+/home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/Debug/net7.0/ref/SagaDB.dll

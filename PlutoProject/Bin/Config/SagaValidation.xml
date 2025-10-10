@@ -45,6 +45,6 @@
   -->  
   <DBType>0</DBType>
   
-  <dbEncoding>gbk</dbEncoding>
+  <dbEncoding>utf8</dbEncoding>
 
 </SagaValidation>

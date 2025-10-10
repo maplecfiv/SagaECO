@@ -1,7 +1,3 @@
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.AssemblyReference.cache
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.GeneratedMSBuildEditorConfig.editorconfig
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.CoreCompileInputs.cache
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.sourcelink.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.deps.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin.runtimeconfig.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaLogin
@@ -12,6 +8,10 @@
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaMap.dll
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaMap.pdb
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaMap.XML
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.GeneratedMSBuildEditorConfig.editorconfig
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.sourcelink.json
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.csproj.Up2Date
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/SagaMap.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/Debug/net8.0/refint/SagaMap.dll

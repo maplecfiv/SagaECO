@@ -116,13 +116,13 @@ namespace SagaLogin
             }
         }
 
-        [DllImport("User32.dll ", EntryPoint = "FindWindow")]
+        // [DllImport("User32.dll ", EntryPoint = "FindWindow")]
         private static extern int FindWindow(string lpClassName, string lpWindowName);
 
-        [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
+        // [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
         private static extern IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
 
-        [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
+        // [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
         private static extern int RemoveMenu(IntPtr hMenu, int nPos, int flags);
 
         private static void Main(string[] args)
@@ -179,7 +179,7 @@ namespace SagaLogin
             ItemFactory.Instance.Init(
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
                     SearchOption.TopDirectoryOnly),
-                Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                Encoding.UTF8);
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
 

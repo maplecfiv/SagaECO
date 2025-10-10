@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Xml;
 using SagaDB.Actor;
 using SagaDB.Config;
@@ -57,8 +58,9 @@ namespace SagaLogin.Configuration
             {
                 if (encoding == null)
                 {
-                    Logger.ShowDebug("DB Encoding not set, set to default value: GBK", Logger.CurrentLogger);
-                    encoding = "GBK";
+                    encoding = Encoding.UTF8.EncodingName;
+                    Logger.ShowDebug("DB Encoding not set, set to default value: "+encoding, Logger.CurrentLogger);
+                    
                 }
 
                 return encoding;

@@ -352,7 +352,7 @@ namespace SagaMap.Configuration
         public void InitAnnounce(string path)
         {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path),
-                Encoding.GetEncoding(Instance.DBEncoding));
+                Encoding.UTF8);
 
             string[] paras;
             byte count = 0;

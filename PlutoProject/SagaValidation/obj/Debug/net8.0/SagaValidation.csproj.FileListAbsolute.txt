@@ -1,13 +1,13 @@
-/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.csproj.AssemblyReference.cache
-/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.GeneratedMSBuildEditorConfig.editorconfig
-/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.csproj.CoreCompileInputs.cache
-/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.sourcelink.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation.dll.config
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation.deps.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation.runtimeconfig.json
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation.dll
 /home/maple/projects/SagaECO/PlutoProject/Bin/net8.0/SagaValidation.pdb
+/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.csproj.AssemblyReference.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.GeneratedMSBuildEditorConfig.editorconfig
+/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.csproj.CoreCompileInputs.cache
+/home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.sourcelink.json
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaVali.77A5012D.Up2Date
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/SagaValidation.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/Debug/net8.0/refint/SagaValidation.dll

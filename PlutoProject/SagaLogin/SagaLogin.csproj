@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
+        <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <OutputType>Exe</OutputType>
         <ApplicationIcon>icon1.ico</ApplicationIcon>
         <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -93,11 +94,10 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1"/>
-        <PackageReference Include="Microsoft.VisualBasic" Version="10.0.0"/>
         <PackageReference Include="NLog" Version="5.5.1"/>
         <PackageReference Include="System.Buffers" Version="4.5.1"/>
         <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2"/>
-        <PackageReference Include="System.Memory" Version="4.5.4"/>
+        <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0"/>
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0"/>
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>

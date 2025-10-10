@@ -2,6 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CSharp;
 using SagaLib;
@@ -15,32 +16,40 @@ namespace SagaMap.Manager
 
         public void LoadPacketFiles(string path)
         {
-            Logger.ShowInfo("Loading uncompiled PacketFiles");
-            var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
-            var provider = new CSharpCodeProvider(dic);
-            Directory.SetCurrentDirectory(Directory.GetParent(path).FullName);
-            path = Directory.GetCurrentDirectory();
-            var i = path.LastIndexOf("\\");
-            path = path.Substring(0, i);
-            path = path + "\\SagaMap\\Packets\\Server";
+            var theList = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.Namespace == "SagaMap.Packets.Server")
+                .ToList();
+            
+            // Logger.ShowInfo("Loading uncompiled PacketFiles");
+            // var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
+            // var provider = new CSharpCodeProvider(dic);
+            // Directory.SetCurrentDirectory(Directory.GetParent(path).FullName);
+            // path = Directory.GetCurrentDirectory();
+            // var i = path.LastIndexOf("\\");
+            // path = path.Substring(0, i);
+            // path = path + "\\SagaMap\\Packets\\Server";
 
             var Packetcount = 0;
             this.path = path;
             try
             {
-                var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
-                Assembly newAssembly;
-                int tmp;
-                if (files.Length > 0)
+                foreach (var newAssembly in theList)
                 {
-                    newAssembly = CompilePacket(files, provider);
-                    if (newAssembly != null)
-                    {
-                        tmp = LoadAssembly(newAssembly);
-                        Logger.ShowInfo(string.Format("Containing {0} Events", tmp));
-                        Packetcount += tmp;
-                    }
+                    LoadAssembly(newAssembly.Assembly);
                 }
+                // var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
+                // Assembly newAssembly;
+                // int tmp;
+                // if (files.Length > 0)
+                // {
+                //     newAssembly = CompilePacket(files, provider);
+                //     if (newAssembly != null)
+                //     {
+                //         tmp = LoadAssembly(newAssembly);
+                //         Logger.ShowInfo(string.Format("Containing {0} Events", tmp));
+                //         Packetcount += tmp;
+                //     }
+                // }
             }
             catch (Exception ex)
             {

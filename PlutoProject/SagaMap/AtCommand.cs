@@ -1247,7 +1247,7 @@ namespace SagaMap
                         ProcessSettingAnnounce(client, "[系统] 商店DB更新中…");
                         ShopFactory.Instance.Reload();
                         ShopFactory.Instance.Init("DB/ShopDB.xml",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         GC.Collect();
                         ProcessSettingAnnounce(client, "[系统] 商店DB更新完毕");
                         break;
@@ -1255,20 +1255,20 @@ namespace SagaMap
                         ProcessSettingAnnounce(client, "[系统] 怪物DB更新中…");
                         MobFactory.Instance.Mobs.Clear();
                         MobFactory.Instance.Init("./DB/monster.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         MobAIFactory.Instance.Items.Clear();
                         MobAIFactory.Instance.Init("DB/MobAI.xml",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
 
                         PartnerAIFactory.Instance.Items.Clear();
                         PartnerAIFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
                                 SearchOption.AllDirectories),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         MobAIFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
                                 SearchOption.AllDirectories),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 怪物DB更新完毕");
                         break;
                     case "quests":
@@ -1277,7 +1277,7 @@ namespace SagaMap
                         QuestFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Quests/", "QuestDB_*",
                                 SearchOption.TopDirectoryOnly),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 任务DB更新完毕");
                         break;
                     case "treasure":
@@ -1286,7 +1286,7 @@ namespace SagaMap
                         TreasureFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure/", "*.*",
                                 SearchOption.AllDirectories),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 宝箱DB更新完毕");
                         break;
                     case "spawns":
@@ -1310,15 +1310,15 @@ namespace SagaMap
                         ItemAdditionFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv",
                                 SearchOption.TopDirectoryOnly),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ItemFactory.Instance.Reload();
                         ItemFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
                                 SearchOption.TopDirectoryOnly),
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         PartnerFactory.Instance.ClearPartnerEquips();
                         PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_Equip.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         //SagaDB.Marionette.MarionetteFactory.Instance.Reload();
                         //SagaDB.Marionette.MarionetteFactory.Instance.Init("DB/marionette.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
                         //添加活动木偶资料读取
@@ -1333,28 +1333,28 @@ namespace SagaMap
                         IrisGachaFactory.Instance.IrisGacha.Clear();
                         IrisDrawRateFactory.Instance.DrawRate.Clear();
                         IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         IrisCardFactory.Instance.Init("DB/iris_card.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         IrisDrawRateFactory.Instance.Init("DB/irisdrawrate.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] IRIS DB更新完毕");
                         break;
                     case "kuji":
                         KujiListFactory.Instance.KujiList.Clear();
                         KujiListFactory.Instance.NewKujilist.Clear();
                         KujiListFactory.Instance.InitXML("DB/KujiList.xml",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         break;
                     case "exchange":
                         ProcessSettingAnnounce(client, "[系统] 染色系统DB更新中…");
                         ExchangeFactory.Instance.ExchangeItems.Clear();
                         ExchangeFactory.Instance.Init("DB/exchange.csv",
-                            Encoding.GetEncoding(Configuration.Configuration.Instance.DBEncoding));
+                            Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 染色系统DB更新完毕");
                         break;
                     case "skillssp":
@@ -3533,7 +3533,6 @@ namespace SagaMap
             else
                 try
                 {
-                    Encoding.GetEncoding("UTF-8");
                     var user = Convert.ToBase64String(Encoding.UTF8.GetBytes(TweetID + ":" + TweetPass));
                     var bytes = Encoding.UTF8.GetBytes("status=" + name + ":" + args);
 
