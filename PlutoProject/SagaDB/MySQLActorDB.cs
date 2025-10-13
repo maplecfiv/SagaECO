@@ -160,8 +160,7 @@ namespace SagaDB
             uint charID = 0;
             if (aChar != null && isConnected())
             {
-                var name = aChar.Name;
-                CheckSQLString(ref name);
+                var name = CheckSQLString( aChar.Name);
                 //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
                 sqlstr = string.Format(
                     "INSERT INTO `char`(`account_id`,`name`,`race`,`gender`,`hairStyle`,`hairColor`,`wig`," +
@@ -255,8 +254,7 @@ namespace SagaDB
             string sqlstr;
             if (ap != null && isConnected())
             {
-                var name = ap.BaseData.name;
-                CheckSQLString(ref name);
+                var name = CheckSQLString(ap.BaseData.name);
                 sqlstr = string.Format(
                     "INSERT INTO `partner`(`pid`,`name`,`lv`,`tlv`,`rb`,`rank`,`perkspoints`,`perk0`,`perk1`,`perk2`," +
                     " `perk3`,`perk4`,`perk5`,`aimode`,`basicai1`,`basicai2`,`hp`,`maxhp`,`mp`,`maxmp`,`sp`,`maxsp`)" +
@@ -1544,8 +1542,7 @@ namespace SagaDB
         public void NewParty(Party.Party party)
         {
             uint index = 0;
-            var name = party.Name;
-            CheckSQLString(ref name);
+            var name =  CheckSQLString(party.Name);
             var sqlstr = $"INSERT INTO `party`(`name`,`leader`) VALUES ('{name}','{party.Leader.CharID}');";
             SQLExecuteScalar(sqlstr, out index);
 
@@ -1558,8 +1555,7 @@ namespace SagaDB
         public void SaveParty(Party.Party party)
         {
             var leader = party.Leader.CharID;
-            var name = party.Name;
-            CheckSQLString(ref name);
+            var name = CheckSQLString(party.Name);
 
             var sqlstr =
                 $"UPDATE `party` SET `name`='{name}',`leader`='{leader}'  WHERE `party_id`='{party.ID}' LIMIT 1;";
@@ -1630,8 +1626,7 @@ namespace SagaDB
         public void NewRing(Ring.Ring ring)
         {
             uint index = 0;
-            var name = ring.Name;
-            CheckSQLString(ref name);
+            var name = CheckSQLString(ring.Name);
             var sqlstr = string.Format("SELECT `name` FROM `ring` WHERE `name`='{0}' LIMIT 1", ring.Name);
             if (SQLExecuteQuery(sqlstr).Count > 0)
             {
@@ -1851,8 +1846,8 @@ namespace SagaDB
 
         public bool BBSNewPost(ActorPC poster, uint bbsID, string title, string content)
         {
-            CheckSQLString(ref title);
-            CheckSQLString(ref content);
+            title = CheckSQLString(title);
+            content = CheckSQLString(content);
             var sqlstr = string.Format(
                 "INSERT INTO `bbs`(`bbsid`,`postdate`,`charid`,`name`,`title`,`content`) VALUES " +
                 "('{0}','{1}','{2}','{3}','{4}','{5}');", bbsID, ToSQLDateTime(DateTime.Now.ToUniversalTime()),
@@ -2322,8 +2317,7 @@ namespace SagaDB
         public void CreateTamaireLending(TamaireLending tamaireLending)
         {
             uint index = 0;
-            var comment = tamaireLending.Comment;
-            CheckSQLString(ref comment);
+            var comment = CheckSQLString(tamaireLending.Comment);
             var sqlstr = string.Format(
                 "INSERT INTO `tamairelending`(`char_id`,`jobtype`,`baselv`,`postdue`,`comment`,`renter1`,`renter2`,`renter3`,`renter4`) VALUES " +
                 "('{0}','{1}','{2}','{3}','{4}','0','0','0','0');", tamaireLending.Lender, tamaireLending.JobType,
@@ -2334,8 +2328,7 @@ namespace SagaDB
         public void SaveTamaireLending(TamaireLending tamaireLending)
         {
             uint renter1, renter2, renter3, renter4;
-            var comment = tamaireLending.Comment;
-            CheckSQLString(ref comment);
+            var comment = CheckSQLString(tamaireLending.Comment);
 
             if (tamaireLending.Renters.Count > 0)
                 renter1 = tamaireLending.Renters[0];

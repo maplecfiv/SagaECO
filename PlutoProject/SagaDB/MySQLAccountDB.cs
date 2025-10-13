@@ -138,29 +138,24 @@ namespace SagaDB
 
         public void WriteUser(Account user)
         {
-            string sqlstr;
-            if (user != null && isConnected())
+            if (user == null || !isConnected())
             {
-                byte banned;
-                if (user.Banned)
-                    banned = 1;
-                else
-                    banned = 0;
-                sqlstr = string.Format(
+                return;
+            }
+
+            try
+            {
+                SQLExecuteNonQuery(string.Format(
                     "UPDATE `login` SET `username`='{0}',`password`='{1}',`deletepass`='{2}',`bank`='{4}',`banned`='{5}',`lastip`='{6}',`questresettime`='{7}',`lastlogintime`='{8}'," +
                     "`macaddress` = '{9}',`playernames` = '{10}'" +
                     " WHERE account_id='{3}' LIMIT 1",
-                    user.Name, user.Password, user.DeletePassword, user.AccountID, user.Bank, banned, user.LastIP,
+                    user.Name, user.Password, user.DeletePassword, user.AccountID, user.Bank, user.Banned ? (byte)1 :(byte) 0, user.LastIP,
                     user.questNextTime.ToString("yyyy-MM-dd HH:mm:ss.fff"),
-                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), user.MacAddress, user.PlayerNames);
-                try
-                {
-                    SQLExecuteNonQuery(sqlstr);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ShowError(ex);
-                }
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"), user.MacAddress, user.PlayerNames));
+            }
+            catch (Exception ex)
+            {
+                Logger.ShowError(ex);
             }
         }
 
@@ -197,8 +192,9 @@ namespace SagaDB
                 {
                     account.LastIP = (string)result[i]["lastip"];
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.ShowError(ex);
                 }
 
                 accounts.Add(account);
@@ -209,14 +205,11 @@ namespace SagaDB
 
         public Account GetUser(string name)
         {
-            string sqlstr;
             DataRowCollection result = null;
-            Account account;
-            CheckSQLString(ref name);
-            sqlstr = "SELECT * FROM `login` WHERE `username`='" + name + "' LIMIT 1";
+            name = CheckSQLString( name);
             try
             {
-                result = SQLExecuteQuery(sqlstr);
+                result = SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + name + "' LIMIT 1");
             }
             catch (Exception ex)
             {
@@ -224,8 +217,11 @@ namespace SagaDB
                 return null;
             }
 
-            if (result.Count == 0) return null;
-            account = new Account();
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            Account account = new Account();
             account.AccountID = (int)(uint)result[0]["account_id"];
             account.Name = name;
             account.Password = (string)result[0]["password"];
@@ -237,26 +233,20 @@ namespace SagaDB
             {
                 account.LastIP2 = (string)result[0]["lastip2"];
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.ShowError(ex);
             }
-
-            if ((byte)result[0]["banned"] == 1)
-                account.Banned = true;
-            else
-                account.Banned = false;
+            account.Banned = ((byte)result[0]["banned"] == 1);
             return account;
         }
 
         public bool CheckPassword(string user, string password, uint frontword, uint backword)
         {
-            string sqlstr;
-            var sha1 = SHA1.Create();
-            DataRowCollection result = null;
-            sqlstr = "SELECT * FROM `login` WHERE `username`='" + CheckSQLString(user) + "' LIMIT 1";
             try
             {
-                result = SQLExecuteQuery(sqlstr);
+                DataRowCollection result = SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + CheckSQLString(user) + "' LIMIT 1");
+                return (result.Count == 0) ? false : password == Conversions.bytes2HexString(SHA1.Create().ComputeHash(Encoding.ASCII.GetBytes(string.Format("{0}{1}{2}", frontword, ((string)result[0]["password"]).ToLower(), backword)))).ToLower();
             }
             catch (Exception ex)
             {
@@ -264,22 +254,15 @@ namespace SagaDB
                 return false;
             }
 
-            if (result.Count == 0) return false;
-            byte[] buf;
-            var str = string.Format("{0}{1}{2}", frontword, ((string)result[0]["password"]).ToLower(), backword);
-            buf = sha1.ComputeHash(Encoding.ASCII.GetBytes(str));
-            var testpwd = Conversions.bytes2HexString(buf).ToLower();
-            return password == testpwd;
+            
         }
 
         public int GetAccountID(string user)
         {
-            string sqlstr;
-            DataRowCollection result = null;
-            sqlstr = "SELECT * FROM `login` WHERE `username`='" + user + "' LIMIT 1";
             try
             {
-                result = SQLExecuteQuery(sqlstr);
+                DataRowCollection result = SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + user + "' LIMIT 1");
+                return (result.Count == 0) ? -1 : (int)result[0]["account_id"];
             }
             catch (Exception ex)
             {
@@ -287,8 +270,6 @@ namespace SagaDB
                 return -1;
             }
 
-            if (result.Count == 0) return -1;
-            return (int)result[0]["account_id"];
         }
 
         //#endregion

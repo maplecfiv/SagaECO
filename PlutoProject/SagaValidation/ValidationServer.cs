@@ -28,12 +28,6 @@ namespace SagaValidation
                         charDB.Connect();
                         accountDB.Connect();
                         return true;
-                    case 1:
-                        accountDB = new AccessAccountDB(Configuration.Instance.DBHost);
-                        charDB = new AccessActorDb(Configuration.Instance.DBHost);
-                        charDB.Connect();
-                        accountDB.Connect();
-                        return true;
                     default:
                         return false;
                 }

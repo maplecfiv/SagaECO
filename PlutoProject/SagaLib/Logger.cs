@@ -111,7 +111,7 @@ namespace SagaLib
         private static void SQLLog(EventType type, string src, string dst, string detail)
         {
             var time = DateTime.Now;
-            defaultSql.CheckSQLString(ref src);
+            src = defaultSql.CheckSQLString(src);
             var sql = string.Format(
                 "INSERT INTO `log`(`eventType`,`eventTime`,`src`,`dst`,`detail`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
                 type, defaultSql.ToSQLDateTime(time), defaultSql.CheckSQLString(src), defaultSql.CheckSQLString(dst),
