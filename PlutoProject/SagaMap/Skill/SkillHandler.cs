@@ -210,6 +210,16 @@ using WindArrow = SagaMap.Skill.SkillDefinations.Monster.WindArrow;
 
 namespace SagaMap.Skill
 {
+    public class GetElementResult{
+        public Elements Elements { get; set; }
+        public int Value { get; set; }
+
+        public GetElementResult(Elements elements, int value)
+        {
+            Elements = elements;
+            Value = value;
+        }
+    }
     public class SkillHandler : Singleton<SkillHandler>
     {
         private float
@@ -1684,9 +1694,13 @@ namespace SagaMap.Skill
             var atkValue = 0;
             var defValue = 0;
 
-            attackElement = GetAttackElement(sActor, ref atkValue, map, sx, sy);
-            defineElement = GetDefElement(dActor, ref defValue, map, dx, dy);
-
+            GetElementResult getAtkElementResult = GetAttackElement(sActor, atkValue, map, sx, sy);
+            attackElement = getAtkElementResult.Elements;
+            atkValue = getAtkElementResult.Value;
+            GetElementResult getDefElementResult = GetDefElement(dActor,  defValue, map, dx, dy);
+            defineElement = getDefElementResult.Elements;
+            defValue = getDefElementResult.Value;
+            
             if (sActor.type == ActorType.MOB)
             {
                 attackElement = Elements.Neutral;
@@ -1886,7 +1900,7 @@ namespace SagaMap.Skill
                 var elementbonustype = bonustype(attackElement, defineElement);
 
 
-                GetElementFactor(atkValue, defValue, elementbonustype, ref Factor);
+                Factor = GetElementFactor(atkValue, defValue, elementbonustype, Factor);
 
                 res = res * Factor;
             }
@@ -1917,7 +1931,7 @@ namespace SagaMap.Skill
             return res;
         }
 
-        private void GetElementFactor(int atkValue, int defValue, int type, ref float Factor)
+        private float GetElementFactor(int atkValue, int defValue, int type, float Factor)
         {
             int deflevel = GetDefElementLevel(defValue);
             Factor = defaultbonus(deflevel, type);
@@ -1928,6 +1942,8 @@ namespace SagaMap.Skill
                 else
                     Factor += atkValue / 100.0f;
             }
+
+            return Factor;
         }
 
 
@@ -1974,7 +1990,7 @@ namespace SagaMap.Skill
             return 20;
         }
 
-        private Elements GetAttackElement(Actor sActor, ref int atkvalue, Map map, byte x, byte y)
+        private GetElementResult GetAttackElement(Actor sActor, int atkvalue, Map map, byte x, byte y)
         {
             var ele = Elements.Neutral;
 
@@ -1996,10 +2012,10 @@ namespace SagaMap.Skill
             }
 
             atkvalue += fieldelements(map, x, y, ele);
-            return ele;
+            return new GetElementResult(ele, atkvalue);
         }
 
-        private Elements GetDefElement(Actor dActor, ref int defvalue, Map map, byte x, byte y)
+        private GetElementResult GetDefElement(Actor dActor, int defvalue, Map map, byte x, byte y)
         {
             var ele = Elements.Neutral;
 
@@ -2035,7 +2051,7 @@ namespace SagaMap.Skill
                 defvalue = 100;
             }
 
-            return ele;
+            return new GetElementResult(ele, defvalue);
         }
 
         /// <summary>

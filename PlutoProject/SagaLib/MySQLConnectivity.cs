@@ -224,10 +224,6 @@ namespace SagaLib
                 date.Second);
         }
 
-        public void CheckSQLString(ref string str)
-        {
-            str = str.Replace("\\", "").Replace("'", "\\'");
-        }
 
         public string CheckSQLString(string str)
         {
