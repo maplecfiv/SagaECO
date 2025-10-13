@@ -55,6 +55,10 @@
         <Folder Include="Packets\*"/>
         <Folder Include="Properties\*"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
     <ItemGroup>
         <Content Include="icon1.ico"/>
         <Content Include="icon2.ico"/>
@@ -81,6 +85,7 @@
         <ProjectReference Include="..\SagaLib\SagaLib.csproj"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="log4net" Version="3.2.0" />
         <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0"/>
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>

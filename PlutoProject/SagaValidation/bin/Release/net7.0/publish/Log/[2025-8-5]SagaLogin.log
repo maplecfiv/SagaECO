@@ -1,0 +1,115 @@
+5/8/2025 10:49:23 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:49:23 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:49:23 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <3cd0e9ab2f874ad19ca4fa2d9d7ed2ef>:0 
+5/8/2025 10:50:53 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:50:53 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:50:53 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <3cd0e9ab2f874ad19ca4fa2d9d7ed2ef>:0 
+5/8/2025 10:52:45 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 10:52:45 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 10:52:45 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:14:49 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:14:49 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:14:49 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:15:41 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:15:41 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:15:41 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:17:50 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:17:50 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:17:50 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <e395a6defa95407db11dcdc0d1eb4392>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <175bca3deb984d1b8a5ad47d835d8c06>:0 
+5/8/2025 11:28:58 PM|[Error]Fatal: An unhandled exception is thrown, terminating...
+5/8/2025 11:28:58 PM|[Error]Error Message:Could not load file or assembly 'Microsoft.VisualBasic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' or one of its dependencies.
+5/8/2025 11:28:58 PM|[Error]Call Stack:  at SagaLib.Factory`2[K,T].Init (System.String[] files, System.Text.Encoding encoding) [0x0002d] in <3239ff6037df4a35a05c292b210b5350>:0 
+  at SagaLogin.LoginServer.Main (System.String[] args) [0x00232] in <780f473cb08542d7ab94b195b805ed5f>:0 
+5/8/2025 11:32:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:32:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:07 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:17 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:27 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:37 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:33:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:07 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:17 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:27 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:37 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:47 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:34:57 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:35:07 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:42:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:43:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:44:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:45:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:46:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:47:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:48:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:49:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:50:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:51:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:52:58 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:08 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:18 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:28 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:38 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:48 PM|[Error]Failed.. Trying again in 10sec
+5/8/2025 11:53:58 PM|[Error]Failed.. Trying again in 10sec

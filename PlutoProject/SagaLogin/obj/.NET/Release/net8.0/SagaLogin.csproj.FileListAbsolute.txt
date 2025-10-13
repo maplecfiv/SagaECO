@@ -40,3 +40,4 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/.NET/Release/net8.0/SagaLogin.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/.NET/Release/net8.0/SagaLogin.genruntimeconfig.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/.NET/Release/net8.0/ref/SagaLogin.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/log4net.dll

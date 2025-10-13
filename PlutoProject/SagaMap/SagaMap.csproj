@@ -27,6 +27,7 @@
         <BootstrapperEnabled>true</BootstrapperEnabled>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
+    
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <OutputPath>..\Bin\</OutputPath>
         <PlatformTarget>x86</PlatformTarget>
@@ -66,6 +67,10 @@
         <Folder Include="Skill\*"/>
         <Folder Include="Tasks\*"/>
         <Folder Include="WebServer\*"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="Icon1.ico"/>
@@ -145,6 +150,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="log4net" Version="3.2.0" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>

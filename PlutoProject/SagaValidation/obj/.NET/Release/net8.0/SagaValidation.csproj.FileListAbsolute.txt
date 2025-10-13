@@ -40,3 +40,4 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/.NET/Release/net8.0/SagaValidation.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/.NET/Release/net8.0/SagaValidation.genruntimeconfig.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaValidation/obj/.NET/Release/net8.0/ref/SagaValidation.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaValidation/bin/.NET/Release/net8.0/log4net.dll

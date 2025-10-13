@@ -26,9 +26,13 @@
         <ProjectReference Include="..\SagaLib\SagaLib.csproj"/>
     </ItemGroup>
     <ItemGroup>
+        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+    <ItemGroup>
         <Content Include="icon3.ico"/>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="log4net" Version="3.2.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
     </ItemGroup>
     <PropertyGroup/>

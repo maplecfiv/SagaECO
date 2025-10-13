@@ -48,3 +48,4 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/.NET/Release/net8.0/SagaMap.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/.NET/Release/net8.0/SagaMap.genruntimeconfig.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/.NET/Release/net8.0/ref/SagaMap.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/log4net.dll
