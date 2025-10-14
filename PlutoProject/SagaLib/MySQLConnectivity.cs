@@ -6,6 +6,19 @@ using MySql.Data.MySqlClient;
 
 namespace SagaLib
 {
+    public class SQLExecuteScalarResult
+    {
+        public bool IsSuccess { set; get; }
+
+        public uint Index { set; get; }
+
+        public SQLExecuteScalarResult(bool isSuccess, uint index)
+        {
+            IsSuccess = isSuccess;
+            Index = index;
+        }
+    }
+
     public abstract class MySQLConnectivity
     {
         private readonly Thread mysqlPool;
@@ -156,15 +169,23 @@ namespace SagaLib
             return true;
         }
 
-        public bool SQLExecuteScalar(string sqlstr, out uint index)
+        public SQLExecuteScalarResult SQLExecuteScalar(string sqlstr)
         {
+            uint index = 0;
             var criticalarea = ClientManager.Blocked;
-            var result = true;
+            var result = false;
             if (criticalarea)
+            {
                 ClientManager.LeaveCriticalArea();
+            }
+
             try
             {
-                if (sqlstr.Substring(sqlstr.Length - 1) != ";") sqlstr += ";";
+                if (sqlstr.Substring(sqlstr.Length - 1) != ";")
+                {
+                    sqlstr += ";";
+                }
+
                 sqlstr += "SELECT LAST_INSERT_ID();";
                 var cmd = new MySQLCommand(new MySqlCommand(sqlstr), MySQLCommand.CommandType.Scalar);
                 lock (waitQueue)
@@ -174,17 +195,19 @@ namespace SagaLib
 
                 while (cmd.Scalar == uint.MaxValue) Thread.Sleep(10);
                 index = cmd.Scalar;
+                result = true;
             }
             catch (Exception ex)
             {
                 Logger.ShowSQL(ex, Logger.defaultlogger);
-                result = false;
-                index = 0;
             }
 
             if (criticalarea)
+            {
                 ClientManager.EnterCriticalArea();
-            return result;
+            }
+
+            return new SQLExecuteScalarResult(result, index);
         }
 
         public DataRowCollection SQLExecuteQuery(string sqlstr)

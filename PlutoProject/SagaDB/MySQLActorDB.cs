@@ -61,81 +61,101 @@ namespace SagaDB
                 SagaLib.Logger.ShowError(ex, null);
             }
 
-            if (db != null)
+            if (db == null)
             {
-                if (db.State != ConnectionState.Closed) isconnected = true;
-                else _logger.Debug("SQL Connection error");
+                _logger.Warn("db is null");
+                return;
+            }
+
+            if (db.State != ConnectionState.Closed)
+            {
+                isconnected = true;
+            }
+            else
+            {
+                _logger.Debug("SQL Connection error");
             }
         }
 
         public bool Connect()
         {
-            if (!isconnected)
+            if (isconnected)
             {
-                if (db.State == ConnectionState.Open)
-                {
-                    isconnected = true;
-                    return true;
-                }
-
-                try
-                {
-                    db.Open();
-                }catch (Exception exception)
-                {
-                    SagaLib.Logger.ShowError(exception, null);
-                }
-
-                if (db != null)
-                {
-                    if (db.State != ConnectionState.Closed) return true;
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            if (db.State == ConnectionState.Open)
+            {
+                isconnected = true;
+                return true;
+            }
+
+            try
+            {
+                db.Open();
+            }
+            catch (Exception exception)
+            {
+                SagaLib.Logger.ShowError(exception, null);
+            }
+
+            return db != null && (db.State != ConnectionState.Closed);
         }
 
         public bool isConnected()
         {
-            if (isconnected)
+            if (!isconnected)
             {
-                var newtime = DateTime.Now - tick;
-                if (newtime.TotalMinutes > 5)
-                {
-                    MySqlConnection tmp;
-                    SagaLib.Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
-                    /* we actually disconnect from the mysql server, because if we keep the connection too long
-                     * and the user resource of this mysql connection is full, mysql will begin to ignore our
-                     * queries -_-
-                     */
-                    var criticalarea = ClientManager.Blocked;
-                    if (criticalarea)
-                        ClientManager.LeaveCriticalArea();
-                    DatabaseWaitress.EnterCriticalArea();
-                    tmp = dbinactive;
-                    if (tmp.State == ConnectionState.Open) tmp.Close();
-                    try
-                    {
-                        tmp.Open();
-                    }catch (Exception exception)
-                    {
-                        SagaLib.Logger.ShowError(exception, null);
-                        tmp = new MySqlConnection(string.Format(
-                            "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
-                            dbuser, dbpass));
-                        tmp.Open();
-                    }
+                return false;
+            }
 
-                    dbinactive = db;
-                    db = tmp;
-                    tick = DateTime.Now;
-                    DatabaseWaitress.LeaveCriticalArea();
-                    if (criticalarea)
-                        ClientManager.EnterCriticalArea();
+            var newtime = DateTime.Now - tick;
+            if (newtime.TotalMinutes > 5)
+            {
+                SagaLib.Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
+                /* we actually disconnect from the mysql server, because if we keep the connection too long
+                 * and the user resource of this mysql connection is full, mysql will begin to ignore our
+                 * queries -_-
+                 */
+                var criticalarea = ClientManager.Blocked;
+                if (criticalarea)
+                {
+                    ClientManager.LeaveCriticalArea();
                 }
 
-                if (db.State == ConnectionState.Broken || db.State == ConnectionState.Closed) isconnected = false;
+                DatabaseWaitress.EnterCriticalArea();
+                MySqlConnection tmp = dbinactive;
+                if (tmp.State == ConnectionState.Open)
+                {
+                    tmp.Close();
+                }
+
+                try
+                {
+                    tmp.Open();
+                }
+                catch (Exception exception)
+                {
+                    SagaLib.Logger.ShowError(exception, null);
+                    tmp = new MySqlConnection(string.Format(
+                        "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
+                        dbuser, dbpass));
+                    tmp.Open();
+                }
+
+                dbinactive = db;
+                db = tmp;
+                tick = DateTime.Now;
+                DatabaseWaitress.LeaveCriticalArea();
+                if (criticalarea)
+                {
+                    ClientManager.EnterCriticalArea();
+                }
+            }
+
+            if (db.State == ConnectionState.Broken || db.State == ConnectionState.Closed)
+            {
+                isconnected = false;
             }
 
             return isconnected;
@@ -143,10 +163,9 @@ namespace SagaDB
 
         public void AJIClear()
         {
-            var sqlstr = "UPDATE `char` SET `lv` = 1, `cexp` = 0;";
             try
             {
-                SQLExecuteNonQuery(sqlstr);
+                SQLExecuteNonQuery("UPDATE `char` SET `lv` = 1, `cexp` = 0;");
             }
             catch (Exception ex)
             {
@@ -158,11 +177,24 @@ namespace SagaDB
         {
             string sqlstr;
             uint charID = 0;
-            if (aChar != null && isConnected())
+            if (aChar == null)
             {
-                var name = CheckSQLString( aChar.Name);
-                //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
-                sqlstr = string.Format(
+                SagaLib.Logger.ShowError("aChar is null");
+                return;
+            }
+
+            if (!isConnected())
+            {
+                SagaLib.Logger.ShowError("db not connected");
+                return;
+            }
+
+            var name = CheckSQLString(aChar.Name);
+            //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
+
+            try
+            {
+                charID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `char`(`account_id`,`name`,`race`,`gender`,`hairStyle`,`hairColor`,`wig`," +
                     "`face`,`job`,`mapID`,`lv`,`jlv1`,`jlv2x`,`jlv2t`,`questRemaining`,`slot`,`x`,`y`,`dir`,`hp`,`max_hp`,`mp`," +
                     "`max_mp`,`sp`,`max_sp`,`str`,`dex`,`intel`,`vit`,`agi`,`mag`,`statspoint`,`skillpoint`,`skillpoint2x`,`skillpoint2t`,`gold`," +
@@ -178,43 +210,33 @@ namespace SagaDB
                     aChar.Mag, aChar.StatsPoint,
                     aChar.SkillPoint, aChar.SkillPoint2X, aChar.SkillPoint2T, aChar.Gold, aChar.EP,
                     ToSQLDateTime(aChar.EPLoginTime), aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
-                    aChar.Level1, aChar.JobLevel3, aChar.SkillPoint3, aChar.ExplorerEXP);
+                    aChar.Level1, aChar.JobLevel3, aChar.SkillPoint3, aChar.ExplorerEXP)).Index;
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
+            }
 
+            aChar.CharID = charID;
+            var cmd = new MySqlCommand(
+                string.Format("INSERT INTO `inventory`(`char_id`,`data`) VALUES ('{0}',?data);\r\n", aChar.CharID));
+            cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.ToBytes();
+
+            try
+            {
+                SQLExecuteNonQuery(cmd);
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
+            }
+
+            if (aChar.Inventory.WareHouse != null)
+            {
                 try
                 {
-                    SQLExecuteScalar(sqlstr, out charID);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
-
-                aChar.CharID = charID;
-                var cmd = new MySqlCommand(
-                    string.Format("INSERT INTO `inventory`(`char_id`,`data`) VALUES ('{0}',?data);\r\n", aChar.CharID));
-                cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.ToBytes();
-
-                try
-                {
-                    SQLExecuteNonQuery(cmd);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
-
-                if (aChar.Inventory.WareHouse != null)
-                {
-                    DataRowCollection result = null;
-                    sqlstr = "SELECT count(*) FROM `warehouse` WHERE `account_id`='" + account_id + "' LIMIT 1;";
-                    try
-                    {
-                        result = SQLExecuteQuery(sqlstr);
-                    }
-                    catch (Exception ex)
-                    {
-                        SagaLib.Logger.ShowError(ex);
-                    }
+                    DataRowCollection result = SQLExecuteQuery("SELECT count(*) FROM `warehouse` WHERE `account_id`='" +
+                                                               account_id + "' LIMIT 1;");
 
                     if (Convert.ToInt32(result[0][0]) == 0)
                     {
@@ -222,21 +244,18 @@ namespace SagaDB
                             "INSERT INTO `warehouse`(`account_id`,`data`) VALUES ('{0}',?data);\r\n", account_id));
                         cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.WareToBytes();
 
-                        try
-                        {
-                            SQLExecuteNonQuery(cmd);
-                        }
-                        catch (Exception ex)
-                        {
-                            SagaLib.Logger.ShowError(ex);
-                        }
+                        SQLExecuteNonQuery(cmd);
                     }
                 }
-
-                aChar.Inventory.WareHouse = null;
-                //to avoid deleting items from warehouse
-                SaveItem(aChar);
+                catch (Exception ex)
+                {
+                    SagaLib.Logger.ShowError(ex);
+                }
             }
+
+            aChar.Inventory.WareHouse = null;
+            //to avoid deleting items from warehouse
+            SaveItem(aChar);
         }
 
         public uint CreatePartner(Item.Item partnerItem)
@@ -249,100 +268,106 @@ namespace SagaDB
             ap.SP = ap.BaseData.sp_in;
             ap.MaxSP = ap.BaseData.sp_in;
             ap.ai_mode = 1;
-            uint apid = 0;
             //tbc
-            string sqlstr;
-            if (ap != null && isConnected())
+            if (!isConnected())
             {
-                var name = CheckSQLString(ap.BaseData.name);
-                sqlstr = string.Format(
+                return 0;
+            }
+
+            var name = CheckSQLString(ap.BaseData.name);
+            try
+            {
+                ap.ActorPartnerID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `partner`(`pid`,`name`,`lv`,`tlv`,`rb`,`rank`,`perkspoints`,`perk0`,`perk1`,`perk2`," +
                     " `perk3`,`perk4`,`perk5`,`aimode`,`basicai1`,`basicai2`,`hp`,`maxhp`,`mp`,`maxmp`,`sp`,`maxsp`)" +
                     "VALUES ('{0}','{1}','{2}','{3}','0','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}'," +
                     "'{17}','{18}','{19}','{20}','{21}');",
                     ap.partnerid, ap.Name, ap.Level, ap.reliability, ap.rebirth, ap.rank, ap.perkpoint, ap.perk0,
-                    ap.perk1, ap.perk2, ap.perk3, ap.perk4, ap.perk5, ap.ai_mode, ap.basic_ai_mode, ap.basic_ai_mode_2,
-                    ap.HP, ap.MaxHP, ap.MP, ap.MaxMP, ap.SP, ap.MaxSP);
-                try
-                {
-                    SQLExecuteScalar(sqlstr, out apid);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
+                    ap.perk1, ap.perk2, ap.perk3, ap.perk4, ap.perk5, ap.ai_mode, ap.basic_ai_mode,
+                    ap.basic_ai_mode_2,
+                    ap.HP, ap.MaxHP, ap.MP, ap.MaxMP, ap.SP, ap.MaxSP)).Index;
 
-                ap.ActorPartnerID = apid;
+                return ap.ActorPartnerID;
             }
-
-            return apid;
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
+                return 0;
+            }
         }
 
         public void SavePartner(ActorPartner ap)
         {
-            string sqlstr;
-            if (ap != null)
+            if (ap == null)
             {
-                var apid = ap.ActorPartnerID;
-                byte rb = 0;
-                if (ap.rebirth) rb = 1;
-                sqlstr = string.Format(
+                return;
+            }
+
+            //SagaLib.Logger.ShowError(sqlstr);
+            try
+            {
+                SQLExecuteNonQuery(string.Format(
                     "UPDATE `partner` SET `pid`='{1}',`name`='{2}',`lv`='{3}',`tlv`='{4}',`rb`='{5}',`rank`='{6}',`perkspoints`='{7}'," +
                     "`hp`='{8}',`maxhp`='{9}',`mp`='{10}',`maxmp`='{11}',`sp`='{12}',`maxsp`='{13}',`perk0`='{14}',`perk1`='{15}',`perk2`='{16}',`perk3`='{17}'" +
                     ",`perk4`='{18}',`perk5`='{19}',`aimode`='{20}',`basicai1`='{21}',`basicai2`='{22}',`exp` = '{23}',`pictid` = '{24}',`nextfeedtime` = '{25}'" +
                     ", `reliabilityuprate`='{26}',`texp`='{27}' WHERE apid='{0}' LIMIT 1",
-                    apid, ap.partnerid, ap.Name, ap.Level, ap.reliability, rb, ap.rank, ap.perkpoint, ap.HP, ap.MaxHP,
+                    ap.ActorPartnerID, ap.partnerid, ap.Name, ap.Level, ap.reliability, (ap.rebirth) ? 1 : 0, ap.rank,
+                    ap.perkpoint, ap.HP, ap.MaxHP,
                     ap.MP, ap.MaxMP, ap.SP, ap.MaxSP,
                     ap.perk0, ap.perk1, ap.perk2, ap.perk3, ap.perk4, ap.perk5, ap.ai_mode, ap.basic_ai_mode,
                     ap.basic_ai_mode_2, ap.exp, ap.PictID, ToSQLDateTime(ap.nextfeedtime), ap.reliabilityuprate,
-                    ap.reliabilityexp);
-                //SagaLib.Logger.ShowError(sqlstr);
-                try
-                {
-                    SQLExecuteNonQuery(sqlstr);
-                    /*SavePartnerEquip(ap);
-                    SavePartnerCube(ap);
-                    SavePartnerAI(ap);*/
-                    //暂时注释防止卡死
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
+                    ap.reliabilityexp));
+                /*SavePartnerEquip(ap);
+                SavePartnerCube(ap);
+                SavePartnerAI(ap);*/
+                //暂时注释防止卡死
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
         public void SavePartnerEquip(ActorPartner ap)
         {
             string sqlstr;
-            if (ap != null)
+            if (ap == null)
             {
-                var apid = ap.ActorPartnerID;
-                sqlstr = string.Format("DELETE FROM `partnerequip` WHERE `apid`='{0}';", apid);
-                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME))
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','1','{1}','{2}');",
-                        apid, ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
-                        ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack);
-                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON))
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','2','{1}','{2}');",
-                        apid, ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
-                        ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack);
-                if (ap.foods.Count > 0)
-                    for (var i = 0; i < ap.foods.Count; i++)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','3','{1}','{2}');",
-                            apid, ap.foods[i].ItemID, ap.foods[i].Stack);
+                return;
+            }
 
-                try
-                {
-                    SQLExecuteNonQuery(sqlstr);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
+            var apid = ap.ActorPartnerID;
+            sqlstr = string.Format("DELETE FROM `partnerequip` WHERE `apid`='{0}';", apid);
+            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME))
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','1','{1}','{2}');",
+                    apid, ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
+                    ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack);
+            }
+
+            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON))
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','2','{1}','{2}');",
+                    apid, ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
+                    ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack);
+            }
+
+            for (var i = 0; i < ap.foods.Count; i++)
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','3','{1}','{2}');",
+                    apid, ap.foods[i].ItemID, ap.foods[i].Stack);
+            }
+
+            try
+            {
+                SQLExecuteNonQuery(sqlstr);
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -390,43 +415,50 @@ namespace SagaDB
 
         public void SavePartnerAI(ActorPartner ap)
         {
-            string sqlstr;
-            if (ap != null)
+            if (ap == null)
             {
-                var apid = ap.ActorPartnerID;
-                sqlstr = string.Format("DELETE FROM `partnerai` WHERE `apid`='{0}';", apid);
-                if (ap.ai_conditions.Count > 0)
-                    foreach (var item in ap.ai_conditions)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','1','{1}','{2}');",
-                            apid, item.Key, item.Value);
+                return;
+            }
 
-                if (ap.ai_reactions.Count > 0)
-                    foreach (var item in ap.ai_reactions)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','2','{1}','{2}');",
-                            apid, item.Key, item.Value);
+            string sqlstr = string.Format("DELETE FROM `partnerai` WHERE `apid`='{0}';", ap.ActorPartnerID);
 
-                if (ap.ai_intervals.Count > 0)
-                    foreach (var item in ap.ai_intervals)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','3','{1}','{2}');",
-                            apid, item.Key, item.Value);
+            foreach (var item in ap.ai_conditions)
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','1','{1}','{2}');",
+                    ap.ActorPartnerID, item.Key, item.Value);
+            }
 
-                if (ap.ai_states.Count > 0)
-                    foreach (var item in ap.ai_states)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','4','{1}','{2}');",
-                            apid, item.Key, Convert.ToUInt16(item.Value));
 
-                try
-                {
-                    SQLExecuteNonQuery(sqlstr);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
+            foreach (var item in ap.ai_reactions)
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','2','{1}','{2}');",
+                    ap.ActorPartnerID, item.Key, item.Value);
+            }
+
+            foreach (var item in ap.ai_intervals)
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','3','{1}','{2}');",
+                    ap.ActorPartnerID, item.Key, item.Value);
+            }
+
+
+            foreach (var item in ap.ai_states)
+            {
+                sqlstr += string.Format(
+                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','4','{1}','{2}');",
+                    ap.ActorPartnerID, item.Key, Convert.ToUInt16(item.Value));
+            }
+
+            try
+            {
+                SQLExecuteNonQuery(sqlstr);
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -434,48 +466,46 @@ namespace SagaDB
         {
             var sqlstr = string.Format("SELECT * FROM `partner` WHERE `apid`='{0}' LIMIT 1;", ActorPartnerID);
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
+            if (result.Count == 0)
             {
-                var partnerid = (uint)result[0]["pid"];
-                var ap = new ActorPartner(partnerid, partneritem);
-                ap.ActorPartnerID = ActorPartnerID;
-                ap.Name = (string)result[0]["name"];
-                ap.Level = (byte)result[0]["lv"];
-                ap.reliability = (byte)result[0]["tlv"];
-                ap.reliabilityexp = (ulong)result[0]["texp"];
-                if ((byte)result[0]["rb"] == 0)
-                    ap.rebirth = false;
-                else
-                    ap.rebirth = true;
-                ap.rank = (byte)result[0]["rank"];
-                ap.perkpoint = (ushort)result[0]["perkspoints"];
-                ap.HP = (uint)result[0]["hp"];
-                ap.MaxHP = (uint)result[0]["maxhp"];
-                ap.MP = (uint)result[0]["mp"];
-                ap.MaxMP = (uint)result[0]["maxmp"];
-                ap.SP = (uint)result[0]["sp"];
-                ap.MaxSP = (uint)result[0]["maxsp"];
-                ap.perk0 = (byte)result[0]["perk0"];
-                ap.perk1 = (byte)result[0]["perk1"];
-                ap.perk2 = (byte)result[0]["perk2"];
-                ap.perk3 = (byte)result[0]["perk3"];
-                ap.perk4 = (byte)result[0]["perk4"];
-                ap.perk5 = (byte)result[0]["perk5"];
-                ap.ai_mode = (byte)result[0]["aimode"];
-                ap.basic_ai_mode = (byte)result[0]["basicai1"];
-                ap.basic_ai_mode_2 = (byte)result[0]["basicai2"];
-                ap.exp = (ulong)result[0]["exp"];
-                ap.nextfeedtime = (DateTime)result[0]["nextfeedtime"];
-                ap.reliabilityuprate = (ushort)result[0]["reliabilityuprate"];
-
-                GetPartnerEquip(ap);
-                GetPartnerCube(ap);
-                GetPartnerAI(ap);
-                return ap;
-                //暂时注释防止卡死
+                return null;
             }
 
-            return null;
+
+            var partnerid = (uint)result[0]["pid"];
+            var ap = new ActorPartner(partnerid, partneritem);
+            ap.ActorPartnerID = ActorPartnerID;
+            ap.Name = (string)result[0]["name"];
+            ap.Level = (byte)result[0]["lv"];
+            ap.reliability = (byte)result[0]["tlv"];
+            ap.reliabilityexp = (ulong)result[0]["texp"];
+            ap.rebirth = ((byte)result[0]["rb"] != 0);
+            ap.rank = (byte)result[0]["rank"];
+            ap.perkpoint = (ushort)result[0]["perkspoints"];
+            ap.HP = (uint)result[0]["hp"];
+            ap.MaxHP = (uint)result[0]["maxhp"];
+            ap.MP = (uint)result[0]["mp"];
+            ap.MaxMP = (uint)result[0]["maxmp"];
+            ap.SP = (uint)result[0]["sp"];
+            ap.MaxSP = (uint)result[0]["maxsp"];
+            ap.perk0 = (byte)result[0]["perk0"];
+            ap.perk1 = (byte)result[0]["perk1"];
+            ap.perk2 = (byte)result[0]["perk2"];
+            ap.perk3 = (byte)result[0]["perk3"];
+            ap.perk4 = (byte)result[0]["perk4"];
+            ap.perk5 = (byte)result[0]["perk5"];
+            ap.ai_mode = (byte)result[0]["aimode"];
+            ap.basic_ai_mode = (byte)result[0]["basicai1"];
+            ap.basic_ai_mode_2 = (byte)result[0]["basicai2"];
+            ap.exp = (ulong)result[0]["exp"];
+            ap.nextfeedtime = (DateTime)result[0]["nextfeedtime"];
+            ap.reliabilityuprate = (ushort)result[0]["reliabilityuprate"];
+
+            GetPartnerEquip(ap);
+            GetPartnerCube(ap);
+            GetPartnerAI(ap);
+            return ap;
+            //暂时注释防止卡死
         }
 
         public void GetPartnerEquip(ActorPartner ap)
@@ -498,34 +528,30 @@ namespace SagaDB
 
         public void GetPartnerCube(ActorPartner ap)
         {
-            var sqlstr = string.Format("SELECT * FROM `partnercube` WHERE `apid`='{0}';", ap.ActorPartnerID);
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-                foreach (DataRow i in result)
-                {
-                    if ((byte)i["type"] == 1)
-                        ap.equipcubes_condition.Add((ushort)i["unique_id"]);
-                    if ((byte)i["type"] == 2)
-                        ap.equipcubes_action.Add((ushort)i["unique_id"]);
-                    if ((byte)i["type"] == 3)
-                        ap.equipcubes_activeskill.Add((ushort)i["unique_id"]);
-                    if ((byte)i["type"] == 4)
-                        ap.equipcubes_passiveskill.Add((ushort)i["unique_id"]);
-                }
+            foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnercube` WHERE `apid`='{0}';",
+                         ap.ActorPartnerID)))
+            {
+                if ((byte)i["type"] == 1)
+                    ap.equipcubes_condition.Add((ushort)i["unique_id"]);
+                if ((byte)i["type"] == 2)
+                    ap.equipcubes_action.Add((ushort)i["unique_id"]);
+                if ((byte)i["type"] == 3)
+                    ap.equipcubes_activeskill.Add((ushort)i["unique_id"]);
+                if ((byte)i["type"] == 4)
+                    ap.equipcubes_passiveskill.Add((ushort)i["unique_id"]);
+            }
         }
 
         public void GetPartnerAI(ActorPartner ap)
         {
-            var sqlstr = string.Format("SELECT * FROM `partnerai` WHERE `apid`='{0}';", ap.ActorPartnerID);
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-                foreach (DataRow i in result)
-                {
-                    if ((byte)i["type"] == 1) ap.ai_conditions.Add((byte)i["index"], (ushort)i["value"]);
-                    if ((byte)i["type"] == 2) ap.ai_reactions.Add((byte)i["index"], (ushort)i["value"]);
-                    if ((byte)i["type"] == 3) ap.ai_intervals.Add((byte)i["index"], (ushort)i["value"]);
-                    if ((byte)i["type"] == 4) ap.ai_states.Add((byte)i["index"], Convert.ToBoolean((ushort)i["value"]));
-                }
+            foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnerai` WHERE `apid`='{0}';",
+                         ap.ActorPartnerID)))
+            {
+                if ((byte)i["type"] == 1) ap.ai_conditions.Add((byte)i["index"], (ushort)i["value"]);
+                if ((byte)i["type"] == 2) ap.ai_reactions.Add((byte)i["index"], (ushort)i["value"]);
+                if ((byte)i["type"] == 3) ap.ai_intervals.Add((byte)i["index"], (ushort)i["value"]);
+                if ((byte)i["type"] == 4) ap.ai_states.Add((byte)i["index"], Convert.ToBoolean((ushort)i["value"]));
+            }
         }
 
         public void SaveChar(ActorPC aChar)
@@ -549,115 +575,119 @@ namespace SagaDB
             else
             {
                 if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID / 1000 * 1000))
+                {
                     info = MapInfoFactory.Instance.MapInfo[aChar.MapID / 1000 * 1000];
+                }
             }
 
-            if (aChar != null)
+            if (aChar == null)
             {
-                uint questid = 0;
-                uint partyid = 0;
-                uint ringid = 0;
-                uint golemid = 0;
-                uint mapid = 0;
-                byte x = 0, y = 0;
-                int count1 = 0, count2 = 0, count3 = 0;
-                var questtime = DateTime.Now;
-                var status = QuestStatus.OPEN;
-                if (aChar.Quest != null)
-                {
-                    questid = aChar.Quest.ID;
-                    count1 = aChar.Quest.CurrentCount1;
-                    count2 = aChar.Quest.CurrentCount2;
-                    count3 = aChar.Quest.CurrentCount3;
-                    questtime = aChar.Quest.EndTime;
-                    status = aChar.Quest.Status;
-                }
-
-                if (aChar.Party != null)
-                    partyid = aChar.Party.ID;
-                if (aChar.Ring != null)
-                    ringid = aChar.Ring.ID;
-                if (aChar.Golem != null)
-                    golemid = aChar.Golem.ActorID;
-                if (info != null)
-                {
-                    mapid = aChar.MapID;
-                    x = Global.PosX16to8(aChar.X, info.width);
-                    y = Global.PosY16to8(aChar.Y, info.height);
-                }
-                else
-                {
-                    mapid = aChar.SaveMap;
-                    x = aChar.SaveX;
-                    y = aChar.SaveY;
-                }
-
-                var online = aChar.Online;
-                aChar.Online = false;
-                sqlstr = string.Format(
-                    "UPDATE `char` SET `name`='{0}',`race`='{1}',`gender`='{2}',`hairStyle`='{3}',`hairColor`='{4}',`wig`='{5}'," +
-                    "`face`='{6}',`job`='{7}',`mapID`='{8}',`lv`='{9}',`jlv1`='{10}',`jlv2x`='{11}',`jlv2t`='{12}',`questRemaining`='{13}',`slot`='{14}'" +
-                    ",`x`='{16}',`y`='{17}',`dir`='{18}',`hp`='{19}',`max_hp`='{20}',`mp`='{21}'," +
-                    "`max_mp`='{22}',`sp`='{23}',`max_sp`='{24}',`str`='{25}',`dex`='{26}',`intel`='{27}',`vit`='{28}',`agi`='{29}',`mag`='{30}'," +
-                    "`statspoint`='{31}',`skillpoint`='{32}',`skillpoint2x`='{33}',`skillpoint2t`='{34}',`skillpoint3`='{35}',`gold`='{36}',`cexp`='{37}',`jexp`='{38}'," +
-                    "`save_map`='{39}',`save_x`='{40}',`save_y`='{41}',`possession_target`='{42}',`questid`='{43}',`questendtime`='{44}'" +
-                    ",`queststatus`='{45}',`questcurrentcount1`='{46}',`questcurrentcount2`='{47}',`questcurrentcount3`='{48}'" +
-                    ",`questresettime`='{49}',`fame`='{50}',`party`='{51}',`ring`='{52}',`golem`='{53}'" +
-                    ",`cp`='{54}',`ecoin`='{55}'" +
-                    ",`jointjlv`='{56}',`jjexp`='{57}',`wrp`='{58}'" +
-                    ",`ep`='{59}',`eplogindate`='{60}',`epgreetingdate`='{61}',`cl`='{62}'" +
-                    ",`epused`='{63}',`tailStyle`='{64}',`wingStyle`='{65}',`wingColor`='{66}',`lv1`='{67}',`jlv3`='{68}',`explorerEXP`='{69}',`usingpaper_id` = '{70}'" +
-                    " ,`title_id` = '{71}' ,`abyssfloor`='{72}',`DualJobID`='{73}', exstatpoint='{74}',exskillpoint='{75}' " +
-                    " WHERE char_id='{15}' LIMIT 1",
-                    CheckSQLString(aChar.Name), (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor,
-                    aChar.Wig,
-                    aChar.Face, (byte)aChar.Job, mapid, aChar.Level, aChar.JobLevel1, aChar.JobLevel2X,
-                    aChar.JobLevel2T,
-                    aChar.QuestRemaining, aChar.Slot, aChar.CharID, x, y, (byte)(aChar.Dir / 45), aChar.HP, aChar.MaxHP,
-                    aChar.MP,
-                    aChar.MaxMP, aChar.SP, aChar.MaxSP, aChar.Str, aChar.Dex, aChar.Int, aChar.Vit, aChar.Agi,
-                    aChar.Mag, aChar.StatsPoint,
-                    aChar.SkillPoint, aChar.SkillPoint2X, aChar.SkillPoint2T, aChar.SkillPoint3, aChar.Gold, aChar.CEXP,
-                    aChar.JEXP, aChar.SaveMap, aChar.SaveX, aChar.SaveY,
-                    aChar.PossessionTarget, questid, ToSQLDateTime(questtime), (byte)status, count1, count2, count3,
-                    ToSQLDateTime(aChar.QuestNextResetTime),
-                    aChar.Fame, partyid, ringid, golemid,
-                    aChar.CP, aChar.ECoin, aChar.JointJobLevel,
-                    aChar.JointJEXP, aChar.WRP, aChar.EP, ToSQLDateTime(aChar.EPLoginTime),
-                    ToSQLDateTime(aChar.EPGreetingTime),
-                    aChar.CL, aChar.EPUsed, aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
-                    aChar.Level1, aChar.JobLevel3, aChar.ExplorerEXP, aChar.UsingPaperID.ToString(),
-                    aChar.PlayerTitleID.ToString(), aChar.AbyssFloor, aChar.DualJobID, aChar.EXStatPoint,
-                    aChar.EXSkillPoint);
-                aChar.Online = online;
-
-                try
-                {
-                    SQLExecuteNonQuery(sqlstr);
-                }
-                catch (Exception ex)
-                {
-                    SagaLib.Logger.ShowError(ex);
-                }
-
-                SaveVar(aChar);
-
-                SavePaper(aChar);
-                SaveFGarden(aChar);
-                //SaveFlyCastle(aChar.Ring);
-                //SaveNavi(aChar);
-                if (itemInfo)
-                    SaveItem(aChar);
-                if (fullinfo)
-                {
-                    SaveSkill(aChar);
-                    SaveDualJobInfo(aChar, true);
-                    //SaveNPCStates(aChar);
-                }
-
-                SaveQuestInfo(aChar);
-                SaveStamps(aChar);
+                return;
             }
+
+            uint questid = 0;
+            uint partyid = 0;
+            uint ringid = 0;
+            uint golemid = 0;
+            uint mapid = 0;
+            byte x = 0, y = 0;
+            int count1 = 0, count2 = 0, count3 = 0;
+            var questtime = DateTime.Now;
+            var status = QuestStatus.OPEN;
+            if (aChar.Quest != null)
+            {
+                questid = aChar.Quest.ID;
+                count1 = aChar.Quest.CurrentCount1;
+                count2 = aChar.Quest.CurrentCount2;
+                count3 = aChar.Quest.CurrentCount3;
+                questtime = aChar.Quest.EndTime;
+                status = aChar.Quest.Status;
+            }
+
+            if (aChar.Party != null)
+                partyid = aChar.Party.ID;
+            if (aChar.Ring != null)
+                ringid = aChar.Ring.ID;
+            if (aChar.Golem != null)
+                golemid = aChar.Golem.ActorID;
+            if (info != null)
+            {
+                mapid = aChar.MapID;
+                x = Global.PosX16to8(aChar.X, info.width);
+                y = Global.PosY16to8(aChar.Y, info.height);
+            }
+            else
+            {
+                mapid = aChar.SaveMap;
+                x = aChar.SaveX;
+                y = aChar.SaveY;
+            }
+
+            var online = aChar.Online;
+            aChar.Online = false;
+            sqlstr = string.Format(
+                "UPDATE `char` SET `name`='{0}',`race`='{1}',`gender`='{2}',`hairStyle`='{3}',`hairColor`='{4}',`wig`='{5}'," +
+                "`face`='{6}',`job`='{7}',`mapID`='{8}',`lv`='{9}',`jlv1`='{10}',`jlv2x`='{11}',`jlv2t`='{12}',`questRemaining`='{13}',`slot`='{14}'" +
+                ",`x`='{16}',`y`='{17}',`dir`='{18}',`hp`='{19}',`max_hp`='{20}',`mp`='{21}'," +
+                "`max_mp`='{22}',`sp`='{23}',`max_sp`='{24}',`str`='{25}',`dex`='{26}',`intel`='{27}',`vit`='{28}',`agi`='{29}',`mag`='{30}'," +
+                "`statspoint`='{31}',`skillpoint`='{32}',`skillpoint2x`='{33}',`skillpoint2t`='{34}',`skillpoint3`='{35}',`gold`='{36}',`cexp`='{37}',`jexp`='{38}'," +
+                "`save_map`='{39}',`save_x`='{40}',`save_y`='{41}',`possession_target`='{42}',`questid`='{43}',`questendtime`='{44}'" +
+                ",`queststatus`='{45}',`questcurrentcount1`='{46}',`questcurrentcount2`='{47}',`questcurrentcount3`='{48}'" +
+                ",`questresettime`='{49}',`fame`='{50}',`party`='{51}',`ring`='{52}',`golem`='{53}'" +
+                ",`cp`='{54}',`ecoin`='{55}'" +
+                ",`jointjlv`='{56}',`jjexp`='{57}',`wrp`='{58}'" +
+                ",`ep`='{59}',`eplogindate`='{60}',`epgreetingdate`='{61}',`cl`='{62}'" +
+                ",`epused`='{63}',`tailStyle`='{64}',`wingStyle`='{65}',`wingColor`='{66}',`lv1`='{67}',`jlv3`='{68}',`explorerEXP`='{69}',`usingpaper_id` = '{70}'" +
+                " ,`title_id` = '{71}' ,`abyssfloor`='{72}',`DualJobID`='{73}', exstatpoint='{74}',exskillpoint='{75}' " +
+                " WHERE char_id='{15}' LIMIT 1",
+                CheckSQLString(aChar.Name), (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor,
+                aChar.Wig,
+                aChar.Face, (byte)aChar.Job, mapid, aChar.Level, aChar.JobLevel1, aChar.JobLevel2X,
+                aChar.JobLevel2T,
+                aChar.QuestRemaining, aChar.Slot, aChar.CharID, x, y, (byte)(aChar.Dir / 45), aChar.HP, aChar.MaxHP,
+                aChar.MP,
+                aChar.MaxMP, aChar.SP, aChar.MaxSP, aChar.Str, aChar.Dex, aChar.Int, aChar.Vit, aChar.Agi,
+                aChar.Mag, aChar.StatsPoint,
+                aChar.SkillPoint, aChar.SkillPoint2X, aChar.SkillPoint2T, aChar.SkillPoint3, aChar.Gold, aChar.CEXP,
+                aChar.JEXP, aChar.SaveMap, aChar.SaveX, aChar.SaveY,
+                aChar.PossessionTarget, questid, ToSQLDateTime(questtime), (byte)status, count1, count2, count3,
+                ToSQLDateTime(aChar.QuestNextResetTime),
+                aChar.Fame, partyid, ringid, golemid,
+                aChar.CP, aChar.ECoin, aChar.JointJobLevel,
+                aChar.JointJEXP, aChar.WRP, aChar.EP, ToSQLDateTime(aChar.EPLoginTime),
+                ToSQLDateTime(aChar.EPGreetingTime),
+                aChar.CL, aChar.EPUsed, aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
+                aChar.Level1, aChar.JobLevel3, aChar.ExplorerEXP, aChar.UsingPaperID.ToString(),
+                aChar.PlayerTitleID.ToString(), aChar.AbyssFloor, aChar.DualJobID, aChar.EXStatPoint,
+                aChar.EXSkillPoint);
+            aChar.Online = online;
+
+            try
+            {
+                SQLExecuteNonQuery(sqlstr);
+            }
+            catch (Exception ex)
+            {
+                SagaLib.Logger.ShowError(ex);
+            }
+
+            SaveVar(aChar);
+
+            SavePaper(aChar);
+            SaveFGarden(aChar);
+            //SaveFlyCastle(aChar.Ring);
+            //SaveNavi(aChar);
+            if (itemInfo)
+                SaveItem(aChar);
+            if (fullinfo)
+            {
+                SaveSkill(aChar);
+                SaveDualJobInfo(aChar, true);
+                //SaveNPCStates(aChar);
+            }
+
+            SaveQuestInfo(aChar);
+            SaveStamps(aChar);
         }
 
         /*
@@ -1542,13 +1572,13 @@ namespace SagaDB
         public void NewParty(Party.Party party)
         {
             uint index = 0;
-            var name =  CheckSQLString(party.Name);
+            var name = CheckSQLString(party.Name);
             var sqlstr = $"INSERT INTO `party`(`name`,`leader`) VALUES ('{name}','{party.Leader.CharID}');";
-            SQLExecuteScalar(sqlstr, out index);
+            index = SQLExecuteScalar(sqlstr).Index;
 
             uint pos = 0;
             sqlstr = $"INSERT INTO `partymember`(`party_id`,`char_id`) VALUES ('{index}','{party.Leader.CharID}');";
-            SQLExecuteScalar(sqlstr, out pos);
+            pos = SQLExecuteScalar(sqlstr).Index;
             party.ID = index;
         }
 
@@ -1636,7 +1666,7 @@ namespace SagaDB
             {
                 sqlstr = string.Format("INSERT INTO `ring`(`leader`,`name`) VALUES " +
                                        "('0','{0}');", name);
-                SQLExecuteScalar(sqlstr, out index);
+                index = SQLExecuteScalar(sqlstr).Index;
                 ring.ID = index;
             }
         }
@@ -1839,9 +1869,7 @@ namespace SagaDB
                 , ids[1], ids[2], ids[3], ids[4], ids[5], ids[6], ids[7], ids[8], ids[9], counts[0], counts[1],
                 counts[2], counts[3], counts[4], counts[5]
                 , counts[6], counts[7], counts[8], counts[9]);
-            uint ID;
-            SQLExecuteScalar(sqlstr, out ID);
-            return ID;
+            return SQLExecuteScalar(sqlstr).Index;
         }
 
         public bool BBSNewPost(ActorPC poster, uint bbsID, string title, string content)
@@ -2177,8 +2205,7 @@ namespace SagaDB
             sqlstr = string.Format(
                 "INSERT INTO `ff`(`ring_id` ,`name`,`content`,`level`) VALUES ('{0}','{1}','{2}','{3}');", pc.Ring.ID,
                 pc.Ring.FlyingCastle.Name, pc.Ring.FlyingCastle.Content, pc.Ring.FlyingCastle.Level);
-            uint id = 0;
-            SQLExecuteScalar(sqlstr, out id);
+            uint id = SQLExecuteScalar(sqlstr).Index;
             pc.Ring.FlyingCastle.ID = id;
             pc.Ring.FF_ID = id;
             sqlstr = string.Format("UPDATE `ring` SET `ff_id`='{0}' WHERE `ring_id`='{1}' LIMIT 1;\r\n",
@@ -2316,13 +2343,12 @@ namespace SagaDB
 
         public void CreateTamaireLending(TamaireLending tamaireLending)
         {
-            uint index = 0;
             var comment = CheckSQLString(tamaireLending.Comment);
             var sqlstr = string.Format(
                 "INSERT INTO `tamairelending`(`char_id`,`jobtype`,`baselv`,`postdue`,`comment`,`renter1`,`renter2`,`renter3`,`renter4`) VALUES " +
                 "('{0}','{1}','{2}','{3}','{4}','0','0','0','0');", tamaireLending.Lender, tamaireLending.JobType,
                 tamaireLending.Baselv, ToSQLDateTime(tamaireLending.PostDue), comment);
-            SQLExecuteScalar(sqlstr, out index);
+            SQLExecuteScalar(sqlstr);
         }
 
         public void SaveTamaireLending(TamaireLending tamaireLending)
@@ -2377,12 +2403,11 @@ namespace SagaDB
 
         public void CreateTamaireRental(TamaireRental tamaireRental)
         {
-            uint index = 0;
             var sqlstr = string.Format(
                 "INSERT INTO `tamairerental`(`char_id`,`rentdue`,`currentlender`,`lastlender`) VALUES " +
                 "('{0}','{1}','{2}','{3}');", tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue),
                 tamaireRental.CurrentLender, tamaireRental.LastLender);
-            SQLExecuteScalar(sqlstr, out index);
+            SQLExecuteScalar(sqlstr);
         }
 
         public void SaveTamaireRental(TamaireRental tamaireRental)
@@ -2834,29 +2859,33 @@ namespace SagaDB
             for (byte index = 0; index < 7; index++)
             {
                 var member = (uint)result[index]["char_id"];
-                if (member != 0)
+                if (member == 0)
                 {
-                    var pc = new ActorPC();
-                    pc.CharID = member;
-
-                    sqlstr = $"SELECT `name`,`job` FROM `char` WHERE `char_id`='{member}' LIMIT 1;";
-                    var rows = SQLExecuteQuery(sqlstr);
-                    if (rows.Count > 0)
-                    {
-                        var row = rows[0];
-                        pc.Name = (string)row["name"];
-                        pc.Job = (PC_JOB)(byte)row["job"];
-                        party.Members.Add(index, pc);
-                    }
+                    continue;
                 }
+
+                var pc = new ActorPC();
+                pc.CharID = member;
+
+                sqlstr = $"SELECT `name`,`job` FROM `char` WHERE `char_id`='{member}' LIMIT 1;";
+                var rows = SQLExecuteQuery(sqlstr);
+                if (rows.Count == 0)
+                {
+                    continue;
+                }
+
+                var row = rows[0];
+                pc.Name = (string)row["name"];
+                pc.Job = (PC_JOB)(byte)row["job"];
+                party.Members.Add(index, pc);
             }
         }
 
         private void GetFlyingGarden(ActorPC pc)
         {
             var account = GetAccountID(pc);
-            var sqlstr = string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;", account);
-            var result = SQLExecuteQuery(sqlstr);
+            var result =
+                SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;", account));
             if (result.Count > 0)
             {
                 var garden = new FlyingGarden.FlyingGarden(pc);
@@ -2874,10 +2903,13 @@ namespace SagaDB
             }
 
             if (pc.FlyingGarden == null)
+            {
                 return;
-            sqlstr = string.Format("SELECT * FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';", pc.FlyingGarden.ID);
-            result = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in result)
+            }
+
+            foreach (DataRow i in SQLExecuteQuery(string.Format(
+                         "SELECT * FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
+                         pc.FlyingGarden.ID)))
             {
                 var place = (FlyingGarden.FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
@@ -2898,8 +2930,8 @@ namespace SagaDB
 
         public void GetPaper(ActorPC pc)
         {
-            var sqlstr = string.Format("SELECT * FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID);
-            var result = SQLExecuteQuery(sqlstr);
+            var result =
+                SQLExecuteQuery(string.Format("SELECT * FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID));
             foreach (DataRow i in result)
             {
                 var paperid = (uint)i["paper_id"];
@@ -2907,20 +2939,27 @@ namespace SagaDB
                 detail.value = new BitMask_Long();
                 detail.value.Value = (ulong)i["paper_value"];
                 detail.lv = (byte)i["paper_lv"];
-                if (!pc.AnotherPapers.ContainsKey(paperid))
-                    pc.AnotherPapers.Add(paperid, detail);
+                if (pc.AnotherPapers.ContainsKey(paperid))
+                {
+                    continue;
+                }
+
+                pc.AnotherPapers.Add(paperid, detail);
             }
         }
 
 
         private void SaveFGarden(ActorPC pc)
         {
-            if (pc.FlyingGarden == null) return;
+            if (pc.FlyingGarden == null)
+            {
+                return;
+            }
+
             var account = GetAccountID(pc);
-            string sqlstr;
             if (pc.FlyingGarden.ID > 0)
             {
-                sqlstr = string.Format(
+                SQLExecuteNonQuery(string.Format(
                     "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
                     "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
@@ -2932,13 +2971,13 @@ namespace SagaDB
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
                     pc.FlyingGarden.ID,
-                    pc.FlyingGarden.Fuel);
-                SQLExecuteNonQuery(sqlstr);
+                    pc.FlyingGarden.Fuel));
             }
             else
             {
-                sqlstr = string.Format("INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
-                                       "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
+                pc.FlyingGarden.ID = SQLExecuteScalar(string.Format(
+                    "INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
+                    "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
                     account,
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
@@ -2948,13 +2987,11 @@ namespace SagaDB
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
                     pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
-                    pc.FlyingGarden.Fuel);
-                uint id = 0;
-                SQLExecuteScalar(sqlstr, out id);
-                pc.FlyingGarden.ID = id;
+                    pc.FlyingGarden.Fuel)).Index;
             }
 
-            sqlstr = string.Format("DELETE FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';", pc.FlyingGarden.ID);
+            string sqlstr = string.Format("DELETE FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
+                pc.FlyingGarden.ID);
             foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
@@ -2976,8 +3013,7 @@ namespace SagaDB
 
         public void GetStamps(ActorPC pc)
         {
-            var sqlstr = $"SELECT * FROM `stamp` WHERE `char_id`='{pc.CharID}' ";
-            var ret = SQLExecuteQuery(sqlstr);
+            var ret = SQLExecuteQuery($"SELECT * FROM `stamp` WHERE `char_id`='{pc.CharID}' ");
             for (var i = 0; i < ret.Count; i++)
             {
                 var result = ret[i];
@@ -2989,8 +3025,7 @@ namespace SagaDB
 
         public void GetDualJobInfo(ActorPC pc)
         {
-            var sqlstr = $"select * from `dualjob` where `char_id` = '{pc.CharID}'";
-            var result = SQLExecuteQuery(sqlstr);
+            var result = SQLExecuteQuery($"select * from `dualjob` where `char_id` = '{pc.CharID}'");
             if (result.Count > 0)
             {
                 pc.PlayerDualJobList = new Dictionary<byte, PlayerDualJobInfo>();
@@ -3038,15 +3073,17 @@ namespace SagaDB
                     $"insert into `dualjob` values ('',{pc.CharID}, {dic[item].DualJobID},{dic[item].DualJobLevel}, {dic[item].DualJobExp});";
             SQLExecuteNonQuery(insertstr);
 
-            if (allinfo)
+            if (!allinfo)
             {
-                var delskillstr =
-                    $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
-                foreach (var item in pc.DualJobSkill)
-                    delskillstr +=
-                        $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
-                SQLExecuteNonQuery(delskillstr);
+                return;
             }
+
+            var delskillstr =
+                $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
+            foreach (var item in pc.DualJobSkill)
+                delskillstr +=
+                    $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
+            SQLExecuteNonQuery(delskillstr);
         }
 
         public void GetDualJobSkill(ActorPC pc)

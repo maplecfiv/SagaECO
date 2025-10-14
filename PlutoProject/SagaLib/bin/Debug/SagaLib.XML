@@ -76,77 +76,77 @@
         </member>
         <member name="T:SagaLib.BitMask_Long`1">
             <summary>
-                原子掩码类的泛型封装
+            原子掩码类的泛型封装
             </summary>
             <typeparam name="T">一个枚举类型</typeparam>
         </member>
-        <member name="P:SagaLib.BitMask_Long`1.Value">
-            <summary>
-                此子掩码64位整数值
-            </summary>
-        </member>
         <member name="M:SagaLib.BitMask_Long`1.Test(`0)">
             <summary>
-                检测某个标识
+            检测某个标识
             </summary>
-            <param name="mask">标识</param>
+            <param name="Mask">标识</param>
             <returns>值</returns>
         </member>
         <member name="M:SagaLib.BitMask_Long`1.SetValue(`0,System.Boolean)">
             <summary>
-                设定某标识的值
+            设定某标识的值
             </summary>
             <param name="bitmask">标识</param>
             <param name="val">真值</param>
         </member>
+        <member name="P:SagaLib.BitMask_Long`1.Value">
+            <summary>
+            此子掩码64位整数值
+            </summary>
+        </member>
         <member name="T:SagaLib.BitMask_Long">
             <summary>
-                子掩码标识类
+            子掩码标识类
             </summary>
         </member>
         <member name="M:SagaLib.BitMask_Long.#ctor(System.UInt64)">
             <summary>
-                由int32初始化子掩码
+            由int32初始化子掩码
             </summary>
             <param name="value">值</param>
         </member>
         <member name="M:SagaLib.BitMask_Long.#ctor(System.Boolean[])">
             <summary>
-                由Boolean初始化子掩码 (64Boolean)
+            由Boolean初始化子掩码 (64Boolean)
             </summary>
             <param name="values">真值</param>
         </member>
         <member name="M:SagaLib.BitMask_Long.Test(System.Object)">
             <summary>
-                检测某个标识
+            检测某个标识
             </summary>
-            <param name="mask">标识</param>
-            <returns>值</returns>
+            <param name="Mask">标识</param>
+            <returns>值</returns>        
         </member>
         <member name="M:SagaLib.BitMask_Long.Test(System.UInt64)">
             <summary>
-                检测某个标识
+            检测某个标识
             </summary>
-            <param name="mask">标识</param>
-            <returns>值</returns>
+            <param name="Mask">标识</param>
+            <returns>值</returns>        
         </member>
         <member name="M:SagaLib.BitMask_Long.SetValue(System.Object,System.Boolean)">
             <summary>
-                设定某标识的值
+            设定某标识的值
             </summary>
             <param name="bitmask">标识</param>
-            <param name="val">真值</param>
+            <param name="val">真值</param>        
         </member>
         <member name="M:SagaLib.BitMask_Long.SetValueForNum(System.Double,System.Boolean)">
             <summary>
-                根据数值设置2^(n-1)位标识的值
+            根据数值设置2^(n-1)位标识的值
             </summary>
             <param name="n">n</param>
-            <param name="val">真值</param>
+            <param name="val">真值</param>        
         </member>
         <member name="M:SagaLib.BitMask_Long.SetValue(System.UInt64,System.Boolean)">
             <summary>
-                设定某标识的值
+            设定某标识的值
             </summary>
             <param name="bitmask">标识</param>
             <param name="val">真值</param>
