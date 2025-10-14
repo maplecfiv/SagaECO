@@ -95,7 +95,7 @@ namespace SagaLib.Tasks
             for (var i = 0; i < slowCount; i++)
             {
                 var thread = new Thread(WorkerSlow);
-                thread.Name = string.Format("WorkerSlow({0})", thread.ManagedThreadId);
+                thread.Name = $"WorkerSlow({thread.ManagedThreadId})";
                 ClientManager.AddThread(thread);
                 thread.Start();
                 threadpool.Add(thread);
@@ -132,11 +132,13 @@ namespace SagaLib.Tasks
             }
 
             threadpool.Clear();
-            if (main != null)
+            if (main == null)
             {
-                ClientManager.RemoveThread(main.Name);
-                main.Abort();
+                return;
             }
+            
+            ClientManager.RemoveThread(main.Name);
+            main.Abort();
         }
 
         /// <summary>
@@ -198,29 +200,37 @@ namespace SagaLib.Tasks
             for (var i = 0; i < length; i++)
             {
                 var task = tasks[i];
+
+                if (task.executing || now <= task.NextUpdateTime)
+                {
+                    continue;
+                }
+
                 try
                 {
                     if (!task.executing && now > task.NextUpdateTime)
                     {
+                            
                         task.executing = true;
-                        task.NextUpdateTime = now.AddMilliseconds(task.Period);
-                        task.TaskBeginTime = now;
-                        if (task.IsSlowTask)
-                        {
-                            slowFifo.Enqueue(task);
-                            waiterSlow.Set();
-                        }
-                        else
-                        {
-                            fifo.Enqueue(task);
-                            waiter.Set();
-                        }
+                    }
+                    task.NextUpdateTime = now.AddMilliseconds(task.Period);
+                    task.TaskBeginTime = now;
+                    if (task.IsSlowTask)
+                    {
+                        slowFifo.Enqueue(task);
+                        waiterSlow.Set();
+                    }
+                    else
+                    {
+                        fifo.Enqueue(task);
+                        waiter.Set();
                     }
                 }
                 catch (Exception ex)
                 {
                     Logger.ShowError(ex);
                 }
+                
             }
 
             watch.Stop();
@@ -237,19 +247,26 @@ namespace SagaLib.Tasks
                 while (true)
                 {
                     PushTaskes();
-                    if (registered.Count > 1000)
+                    if (registered.Count <= 1000)
                     {
-                        var waitTime = 10000 / registered.Count;
-                        if (waitTime > 10)
-                            waitTime = 10;
-                        if (waitTime == 0)
-                            waitTime = 1;
-                        Thread.Sleep(waitTime);
-                    }
-                    else
-                    {
+                        
                         Thread.Sleep(1);
+                        continue;
                     }
+
+                    var waitTime = 10000 / registered.Count;
+                    if (waitTime > 10)
+                    {
+                        waitTime = 10;
+                    }
+
+                    if (waitTime == 0)
+                    {
+                            
+                        waitTime = 1;
+                    }
+
+                    Thread.Sleep(waitTime);
                 }
             }
             catch (ThreadAbortException)
@@ -280,8 +297,7 @@ namespace SagaLib.Tasks
             {
                 while (true)
                 {
-                    MultiRunTask task;
-                    while (fifo.TryDequeue(out task))
+                    while (fifo.TryDequeue(out var task))
                         try
                         {
                             task.CallBack();

@@ -40,8 +40,7 @@ namespace SagaLib
         {
             while (true)
             {
-                LogData data;
-                while (queue.TryDequeue(out data))
+                while (queue.TryDequeue(out var data))
                     switch (data.LogLevel)
                     {
                         case Level.Debug:

@@ -613,7 +613,7 @@ namespace SagaLib
         {
             if (p.data.Length < 2) return;
             ClientManager.AddThread(
-                string.Format("PacketParser({0}),Opcode:0x{1:X4}", Thread.CurrentThread.ManagedThreadId, p.ID),
+                $"PacketParser({Thread.CurrentThread.ManagedThreadId}),Opcode:0x{p.ID:X4}",
                 Thread.CurrentThread);
             Packet command;
             commandTable.TryGetValue(p.ID, out command);

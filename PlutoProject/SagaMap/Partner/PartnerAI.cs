@@ -704,38 +704,55 @@ namespace SagaMap.Partner
         {
             if (map == null)
             {
-                Logger.ShowWarning(string.Format("Mob:{0}({1})'s map is null!", Partner.ActorID, Partner.Name));
+                Logger.ShowWarning($"Mob:{Partner.ActorID}({Partner.Name})'s map is null!");
                 return;
             }
 
             if (Master != null)
+            {
                 for (var i = 0; i < arg.affectedActors.Count; i++)
-                    if (arg.affectedActors[i].ActorID == Master.ActorID)
+                {
+                    if (arg.affectedActors[i].ActorID != Master.ActorID)
                     {
-                        var actor = map.GetActor(arg.sActor);
-                        if (actor != null)
-                        {
-                            OnAttacked(actor, arg.hp[i]);
-                            if (Hate.Count == 1)
-                                SendAggroEffect();
-                        }
+                        continue;
                     }
+
+                    var actor = map.GetActor(arg.sActor);
+                    if (actor == null)
+                    {
+                        continue;
+                    }
+
+                    OnAttacked(actor, arg.hp[i]);
+                    if (Hate.Count == 1)
+                    {
+                        SendAggroEffect();
+                    }
+                }
+            }
 
             if (Mode.HateHeal)
             {
                 var actor = map.GetActor(arg.sActor);
-                if (actor != null && arg.skill != null && Hate.Count > 0)
-                    if (arg.skill.Support && actor.type == ActorType.PC)
+                if (actor != null && arg.skill != null && Hate.Count > 0 && arg.skill.Support &&
+                    actor.type == ActorType.PC)
+                {
+                    var damage = 0;
+                    foreach (var i in arg.hp)
                     {
-                        var damage = 0;
-                        foreach (var i in arg.hp) damage += -i;
-                        if (damage > 0)
-                        {
-                            if (Hate.Count == 0)
-                                SendAggroEffect();
-                            OnAttacked(actor, damage);
-                        }
+                        damage += -i;
                     }
+
+                    if (damage > 0)
+                    {
+                        if (Hate.Count == 0)
+                        {
+                            SendAggroEffect();
+                        }
+
+                        OnAttacked(actor, damage);
+                    }
+                }
             }
 
             if (arg.skill != null)
@@ -748,10 +765,18 @@ namespace SagaMap.Partner
                         var damage = 0;
                         foreach (var i in arg.hp) damage += -i * 2;
                         if (DamageTable.ContainsKey(actor.ActorID))
+                        {
                             DamageTable[actor.ActorID] += damage;
-                        else DamageTable.Add(actor.ActorID, damage);
+                        }
+                        else
+                        {
+                            DamageTable.Add(actor.ActorID, damage);
+                        }
+
                         if (DamageTable[actor.ActorID] > Partner.MaxHP)
+                        {
                             DamageTable[actor.ActorID] = (int)Partner.MaxHP;
+                        }
                     }
                 }
                 else if (arg.skill.ID == 3055) //复活
@@ -760,13 +785,20 @@ namespace SagaMap.Partner
                     var dActor = map.GetActor(arg.dActor);
                     if (actor.type == ActorType.PC && dActor.type == ActorType.PC && actor != null && dActor != null)
                     {
-                        var damage = 0;
-                        damage = (int)dActor.MaxHP * 2;
+                        var damage = (int)dActor.MaxHP * 2;
                         if (DamageTable.ContainsKey(actor.ActorID))
+                        {
                             DamageTable[actor.ActorID] += damage;
-                        else DamageTable.Add(actor.ActorID, damage);
+                        }
+                        else
+                        {
+                            DamageTable.Add(actor.ActorID, damage);
+                        }
+
                         if (DamageTable[actor.ActorID] > Partner.MaxHP)
+                        {
                             DamageTable[actor.ActorID] = (int)Partner.MaxHP;
+                        }
                     }
                 }
             }
@@ -774,22 +806,25 @@ namespace SagaMap.Partner
             if (Mode.HateMagic)
             {
                 var actor = map.GetActor(arg.sActor);
-                if (actor != null && arg.skill != null)
-                    if (arg.skill.Magical)
-                        if (actor.type == ActorType.PC)
-                        {
-                            if (Hate.Count == 0)
-                                SendAggroEffect();
-                            OnAttacked(actor, (int)(Partner.MaxHP / 10));
-                        }
+                if (actor != null && arg.skill != null && arg.skill.Magical && actor.type == ActorType.PC)
+                {
+                    if (Hate.Count == 0)
+                    {
+                        SendAggroEffect();
+                    }
+
+                    OnAttacked(actor, (int)(Partner.MaxHP / 10));
+                }
             }
         }
 
         private void SendAggroEffect()
         {
-            var arg = new EffectArg();
-            arg.actorID = Partner.ActorID;
-            arg.effectID = 4539;
+            var arg = new EffectArg
+            {
+                actorID = Partner.ActorID,
+                effectID = 4539
+            };
             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SHOW_EFFECT, arg, Partner, false);
         }
 
@@ -843,12 +878,22 @@ namespace SagaMap.Partner
             {
                 aiActivity = value;
                 if (Partner.Speed == 0)
+                {
                     return;
-                if (value == Activity.BUSY)
-                    Period = 100000 / Partner.Speed;
-                else if (value == Activity.LAZY)
-                    Period = 200000 / Partner.Speed;
-                else if (value == Activity.IDLE) Period = 1000;
+                }
+
+                switch (value)
+                {
+                    case Activity.BUSY:
+                        Period = 100000 / Partner.Speed;
+                        break;
+                    case Activity.LAZY:
+                        Period = 200000 / Partner.Speed;
+                        break;
+                    case Activity.IDLE:
+                        Period = 1000;
+                        break;
+                }
             }
         }
 
@@ -880,7 +925,11 @@ namespace SagaMap.Partner
         {
             try
             {
-                foreach (var i in commands.Keys) commands[i].Dispose();
+                foreach (var i in commands.Keys)
+                {
+                    commands[i].Dispose();
+                }
+
                 commands.Clear();
                 Partner.VisibleActors.Clear();
                 Partner.Status.attackingActors.Clear();
@@ -922,89 +971,102 @@ namespace SagaMap.Partner
                     }
                 }
 
-                if (commands.Count == 1)
-                    if (commands.ContainsKey("Attack"))
-                        if (Hate.Count == 0)
+                if (commands.Count == 1 && commands.ContainsKey("Attack") && Hate.Count == 0)
+                {
+                    if (Global.Random.Next(0, 99) < 10)
+                    {
+                        AIActivity = Activity.LAZY;
+                        if ((Math.Abs((int)(Partner.X - X_Spawn)) > 1000 ||
+                             Math.Abs((int)(Partner.Y - Y_Spawn)) > 1000) &&
+                            MoveRange != 0)
                         {
-                            AIActivity = Activity.IDLE;
-                            if (Global.Random.Next(0, 99) < 10)
-                            {
-                                AIActivity = Activity.LAZY;
-                                if ((Math.Abs((int)(Partner.X - X_Spawn)) > 1000 ||
-                                     Math.Abs((int)(Partner.Y - Y_Spawn)) > 1000) &&
-                                    MoveRange != 0)
-                                {
-                                    short x, y;
-                                    var len = GetLengthD(X_Spawn, Y_Spawn, Partner.X, Partner.Y);
-                                    x = (short)(Partner.X + (X_Spawn - Partner.X) / len * Partner.Speed);
-                                    y = (short)(Partner.Y + (Y_Spawn - Partner.Y) / len * Partner.Speed);
+                            var len = GetLengthD(X_Spawn, Y_Spawn, Partner.X, Partner.Y);
+                            short x = (short)(Partner.X + (X_Spawn - Partner.X) / len * Partner.Speed);
+                            short y = (short)(Partner.Y + (Y_Spawn - Partner.Y) / len * Partner.Speed);
 
-                                    var mov = new Move(this, x, y);
-                                    commands.Add("Move", mov);
-                                }
-                                else
-                                {
-                                    double x, y;
-                                    byte _x, _y;
-                                    var counter = 0;
-                                    do
-                                    {
-                                        x = Global.Random.Next(-100, 100);
-                                        y = Global.Random.Next(-100, 100);
-                                        var len = GetLengthD(0, 0, (short)x, (short)y);
-                                        x = x / len * 500;
-                                        y = y / len * 500;
-                                        x += Partner.X;
-                                        y += Partner.Y;
-                                        _x = Global.PosX16to8((short)x, map.Width);
-                                        _y = Global.PosY16to8((short)y, map.Height);
-                                        if (_x >= map.Width)
-                                            _x = (byte)(map.Width - 1);
-                                        if (_y >= map.Height)
-                                            _y = (byte)(map.Height - 1);
-                                        counter++;
-                                    } while (map.Info.walkable[_x, _y] != 2 && counter < 1000);
-
-                                    var mov = new Move(this, (short)x, (short)y);
-                                    commands.Add("Move", mov);
-                                }
-                            }
+                            var mov = new Move(this, x, y);
+                            commands.Add("Move", mov);
                         }
+                        else
+                        {
+                            double x, y;
+                            byte _x, _y;
+                            var counter = 0;
+                            do
+                            {
+                                x = Global.Random.Next(-100, 100);
+                                y = Global.Random.Next(-100, 100);
+                                var len = GetLengthD(0, 0, (short)x, (short)y);
+                                x = x / len * 500;
+                                y = y / len * 500;
+                                x += Partner.X;
+                                y += Partner.Y;
+                                _x = Global.PosX16to8((short)x, map.Width);
+                                _y = Global.PosY16to8((short)y, map.Height);
+                                if (_x >= map.Width)
+                                {
+                                    _x = (byte)(map.Width - 1);
+                                }
+
+                                if (_y >= map.Height)
+                                {
+                                    _y = (byte)(map.Height - 1);
+                                }
+
+                                counter++;
+                            } while (map.Info.walkable[_x, _y] != 2 && counter < 1000);
+
+                            var mov = new Move(this, (short)x, (short)y);
+                            commands.Add("Move", mov);
+                        }
+                    }
+                    else
+                    {
+                        AIActivity = Activity.IDLE;
+                    }
+                }
 
                 keys = new string[commands.Count];
                 commands.Keys.CopyTo(keys, 0);
                 var count = commands.Count;
                 for (var i = 0; i < count; i++)
+                {
                     try
                     {
-                        string j;
-                        j = keys[i];
-                        AICommand command;
-                        commands.TryGetValue(j, out command);
-                        if (command != null)
+                        string j = keys[i];
+                        commands.TryGetValue(j, out var command);
+                        if (command == null)
                         {
-                            if (command.Status != CommandStatus.FINISHED && command.Status != CommandStatus.DELETING &&
-                                command.Status != CommandStatus.PAUSED)
-                                lock (command)
-                                {
-                                    command.Update(null);
-                                }
+                            continue;
+                        }
 
-                            if (command.Status == CommandStatus.FINISHED)
+                        if (command.Status != CommandStatus.FINISHED && command.Status != CommandStatus.DELETING &&
+                            command.Status != CommandStatus.PAUSED)
+                        {
+                            lock (command)
                             {
-                                deletequeue.Add(j); //删除队列
-                                command.Status = CommandStatus.DELETING;
+                                command.Update(null);
                             }
+                        }
+
+                        if (command.Status == CommandStatus.FINISHED)
+                        {
+                            deletequeue.Add(j); //删除队列
+                            command.Status = CommandStatus.DELETING;
                         }
                     }
                     catch (Exception ex)
                     {
                         Logger.ShowError(ex);
                     }
+                }
 
                 lock (commands)
                 {
-                    foreach (var i in deletequeue) commands.Remove(i);
+                    foreach (var i in deletequeue)
+                    {
+                        commands.Remove(i);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1017,13 +1079,15 @@ namespace SagaMap.Partner
 
         public List<MapNode> FindPath(byte x, byte y, byte x2, byte y2)
         {
-            var src = new MapNode();
+            var src = new MapNode
+            {
+                x = x,
+                y = y,
+                F = 0,
+                G = 0,
+                H = 0
+            };
             var count = 0;
-            src.x = x;
-            src.y = y;
-            src.F = 0;
-            src.G = 0;
-            src.H = 0;
             var path = new List<MapNode>();
             var current = src;
             if (x2 > map.Info.width - 1 || y2 > map.Info.height - 1)
@@ -1051,7 +1115,10 @@ namespace SagaMap.Partner
                 var shortest = new MapNode();
                 shortest.F = int.MaxValue;
                 if (count > 1000)
+                {
                     break;
+                }
+
                 foreach (var i in openedNode.Values)
                 {
                     if (i.x == x2 && i.y == y2)
@@ -1062,7 +1129,9 @@ namespace SagaMap.Partner
                     }
 
                     if (i.F < shortest.F)
+                    {
                         shortest = i;
+                    }
                 }
 
                 current = shortest;
@@ -1110,15 +1179,14 @@ namespace SagaMap.Partner
         {
             var len = GetLengthD(0, 0, x, y);
             var degree = (int)(Math.Acos(y / len) / Math.PI * 180);
-            if (x < 0)
-                return (ushort)degree;
-            return (ushort)(360 - degree);
+            return (x < 0) ? (ushort)degree : (ushort)(360 - degree);
         }
 
         private MapNode GetNeighbor(MapNode node, byte x, byte y)
         {
             var res = node;
             for (var i = node.x - 1; i <= node.x + 1; i++)
+            {
                 for (var j = node.y - 1; j <= node.y + 1; j++)
                 {
                     if (j == -1 || i == -1)
@@ -1127,34 +1195,35 @@ namespace SagaMap.Partner
                         continue;
                     if (i >= map.Info.width || j >= map.Info.height)
                         continue;
-                    if (map.Info.walkable[i, j] == 2)
+                    if (map.Info.walkable[i, j] != 2)
                     {
-                        if (!openedNode.ContainsKey(i * 1000 + j))
+                        continue;
+                    }
+
+                    if (!openedNode.ContainsKey(i * 1000 + j))
+                    {
+                        var node2 = new MapNode
                         {
-                            var node2 = new MapNode();
-                            node2.x = (byte)i;
-                            node2.y = (byte)j;
-                            node2.Previous = node;
-                            if (i == node.x || j == node.y)
-                                node2.G = node.G + 10;
-                            else
-                                node2.G = node.G + 14;
-                            node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
-                            node2.F = node2.G + node2.H;
-                            openedNode.Add(i * 1000 + j, node2);
-                        }
-                        else
+                            x = (byte)i,
+                            y = (byte)j,
+                            Previous = node,
+                            G = node.G + ((i == node.x || j == node.y) ? 10 : 14)
+                        };
+                        node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
+                        node2.F = node2.G + node2.H;
+                        openedNode.Add(i * 1000 + j, node2);
+                    }
+                    else
+                    {
+                        var tmp = openedNode[i * 1000 + j];
+                        int G = (i == node.x || j == node.y) ? 10 : 14;
+                        if (node.G + G > tmp.G)
                         {
-                            var tmp = openedNode[i * 1000 + j];
-                            int G;
-                            if (i == node.x || j == node.y)
-                                G = 10;
-                            else
-                                G = 14;
-                            if (node.G + G > tmp.G) res = tmp;
+                            res = tmp;
                         }
                     }
                 }
+            }
 
             return res;
         }

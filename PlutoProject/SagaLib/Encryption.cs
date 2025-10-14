@@ -42,9 +42,9 @@ namespace SagaLib
         {
             if (privateKey == Two)
             {
-
                 return null;
             }
+
             return Two.modPow(privateKey, Module).getBytes();
         }
 
@@ -58,10 +58,8 @@ namespace SagaLib
             {
                 var tmp = (byte)(AESKey[i] >> 4);
                 var tmp2 = (byte)(AESKey[i] & 0xF);
-                if (tmp > 9)
-                    tmp = (byte)(tmp - 9);
-                if (tmp2 > 9)
-                    tmp2 = (byte)(tmp2 - 9);
+                tmp = (tmp > 9) ? (byte)(tmp - 9) : tmp;
+                tmp2 = (tmp2 > 9) ? (byte)(tmp2 - 9) : tmp2;
                 AESKey[i] = (byte)((tmp << 4) | tmp2);
             }
         }
@@ -77,6 +75,7 @@ namespace SagaLib
             {
                 return src;
             }
+
             var crypt = aes.CreateEncryptor(AESKey, new byte[16]);
             var len = src.Length - offset;
             var buf = new byte[src.Length];
@@ -96,6 +95,7 @@ namespace SagaLib
             {
                 return src;
             }
+
             var crypt = aes.CreateDecryptor(AESKey, new byte[16]);
             var len = src.Length - offset;
             var buf = new byte[src.Length];
