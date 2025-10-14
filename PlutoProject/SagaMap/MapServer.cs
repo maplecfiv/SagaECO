@@ -54,6 +54,7 @@ namespace SagaMap
     public class MapServer
     {
         private static readonly NLog.Logger _logger = Logger.InitLogger<MapServer>();
+
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -84,7 +85,8 @@ namespace SagaMap
                     default:
                         return false;
                 }
-            }catch (Exception exception)
+            }
+            catch (Exception exception)
             {
                 Logger.ShowError(exception, null);
                 return false;
@@ -191,12 +193,12 @@ namespace SagaMap
             _logger.Debug("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                              GlobalInfo.ModifyDate + ")");
+                          GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                              GlobalInfo.ModifyDate + ")");
+                          GlobalInfo.ModifyDate + ")");
 
             Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
 
@@ -270,7 +272,7 @@ namespace SagaMap
                 Encoding.UTF8);
             IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
                 Encoding.UTF8);
-            IrisDrawRateFactory.Instance.Init("DB/irisdrawrate.csv",
+            IrisDrawRateFactory.Instance.Init("DB/IrisDrawRate.csv",
                 Encoding.UTF8);
 
             ModelFactory.Instance.Init("DB/demic_chip_model.csv",
@@ -301,7 +303,7 @@ namespace SagaMap
                 Encoding.UTF8);
             PartnerFactory.Instance.InitPartnerFoodDB("DB/partner_food.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_Equip.csv",
+            PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_equip.csv",
                 Encoding.UTF8);
             PartnerFactory.Instance.InitPartnerTalksInfo("DB/partner_talks_db.csv",
                 Encoding.UTF8);
@@ -656,7 +658,8 @@ namespace SagaMap
                                 try
                                 {
                                     foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
-                                }catch (Exception exception)
+                                }
+                                catch (Exception exception)
                                 {
                                     Logger.ShowError(exception, null);
                                 }
@@ -674,7 +677,8 @@ namespace SagaMap
                                         select c;
                                     client = chr.First();
                                     client.NetIo.Disconnect();
-                                }catch (Exception exception)
+                                }
+                                catch (Exception exception)
                                 {
                                     Logger.ShowError(exception, null);
                                 }
@@ -697,7 +701,8 @@ namespace SagaMap
                                 {
                                     if (i.Character == null) continue;
                                     i.NetIo.Disconnect();
-                                }catch (Exception exception)
+                                }
+                                catch (Exception exception)
                                 {
                                     Logger.ShowError(exception, null);
                                 }
@@ -752,7 +757,8 @@ namespace SagaMap
                                         client = chr.First();
                                         client.NetIo.Disconnect();
                                     }
-                                }catch (Exception exception)
+                                }
+                                catch (Exception exception)
                                 {
                                     Logger.ShowError(exception, null);
                                 }
@@ -807,7 +813,8 @@ namespace SagaMap
                 {
                     if (i.Character == null) continue;
                     i.NetIo.Disconnect();
-                }catch (Exception exception)
+                }
+                catch (Exception exception)
                 {
                     Logger.ShowError(exception, null);
                 }
@@ -851,7 +858,8 @@ namespace SagaMap
                 {
                     if (i.Character == null) continue;
                     i.NetIo.Disconnect();
-                }catch (Exception exception)
+                }
+                catch (Exception exception)
                 {
                     Logger.ShowError(exception, null);
                 }

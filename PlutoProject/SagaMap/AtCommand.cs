@@ -1317,7 +1317,7 @@ namespace SagaMap
                                 SearchOption.TopDirectoryOnly),
                             Encoding.UTF8);
                         PartnerFactory.Instance.ClearPartnerEquips();
-                        PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_Equip.csv",
+                        PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_equip.csv",
                             Encoding.UTF8);
                         //SagaDB.Marionette.MarionetteFactory.Instance.Reload();
                         //SagaDB.Marionette.MarionetteFactory.Instance.Init("DB/marionette.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
@@ -1340,7 +1340,7 @@ namespace SagaMap
                             Encoding.UTF8);
                         IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
                             Encoding.UTF8);
-                        IrisDrawRateFactory.Instance.Init("DB/irisdrawrate.csv",
+                        IrisDrawRateFactory.Instance.Init("DB/IrisDrawRate.csv",
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] IRIS DB更新完毕");
                         break;
@@ -1715,17 +1715,17 @@ namespace SagaMap
                     var X = client.Character.X;
                     var Y = client.Character.Y;
                     for (var x = X - number * 100; x <= X + number * 100; x += 100)
-                        for (var y = Y - number * 100; y <= Y + number * 100; y += 100)
-                            if (!(X == x && Y == y))
-                            {
-                                var m = client.map.SpawnMob(id,
-                                    (short)x,
-                                    (short)y,
-                                    50,
-                                    null);
-                                var mh = (MobEventHandler)m.e;
-                                mh.AI.Mode = new AIMode(4);
-                            }
+                    for (var y = Y - number * 100; y <= Y + number * 100; y += 100)
+                        if (!(X == x && Y == y))
+                        {
+                            var m = client.map.SpawnMob(id,
+                                (short)x,
+                                (short)y,
+                                50,
+                                null);
+                            var mh = (MobEventHandler)m.e;
+                            mh.AI.Mode = new AIMode(4);
+                        }
                 }
                 catch
                 {
@@ -1862,9 +1862,9 @@ namespace SagaMap
             try
             {
                 var value = from x in ItemFactory.Instance.Items
-                            where x.Value.name.Contains(args)
-                            orderby x.Key descending
-                            select new { ItemID = x.Key, ItemName = x.Value.name };
+                    where x.Value.name.Contains(args)
+                    orderby x.Key descending
+                    select new { ItemID = x.Key, ItemName = x.Value.name };
 
 
                 var coll = value.ToList();
@@ -3033,7 +3033,7 @@ namespace SagaMap
                             client.Character.HairStyle = 20;
                             client.SendCharInfoUpdate();
                             break;
-                            //not working (3,4,5,7,8,9,)
+                        //not working (3,4,5,7,8,9,)
                     }
                 }
                 catch (Exception exception)

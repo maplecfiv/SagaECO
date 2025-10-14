@@ -668,6 +668,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net7.0/System.Security.Cryptography.ProtectedData.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/BigInteger.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/ICSharpCode.SharpZipLib.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/log4net.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/Microsoft.Diagnostics.NETCore.Client.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/Microsoft.Diagnostics.Runtime.dll
@@ -724,6 +725,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/netstandard2.0/SagaLib.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/netstandard2.0/SagaLib.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/netstandard2.0/SagaLib.XML
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/NLog.config
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/NLog.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/SagaDB.XML
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/SagaLib.XML
