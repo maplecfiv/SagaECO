@@ -447,7 +447,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return null;
             }
         }
@@ -460,7 +460,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return null;
             }
         }
@@ -470,13 +470,13 @@ namespace SagaMap
             try
             {
                 var chr = from c in pcByName.Values
-                          where c.CharID == charID
-                          select c;
+                    where c.CharID == charID
+                    select c;
                 return Enumerable.First<ActorPC>(chr);
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return null;
             }
         }
@@ -652,8 +652,8 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
-                        Logger.ShowError("oh,fuck!");
+                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.getLogger().Error("oh,fuck!");
                     }
                 }
 
@@ -661,7 +661,7 @@ namespace SagaMap
                     ClientManager.LeaveCriticalArea();
                 //double usedtime = (DateTime.Now - time).TotalMilliseconds;
                 //if (usedtime > 0)
-                //    Logger.ShowError("在地图:" + ID + " 注册ID: " + nActor.ActorID + " 花费时间:" + usedtime + "ms");
+                //    Logger.getLogger().Error("在地图:" + ID + " 注册ID: " + nActor.ActorID + " 花费时间:" + usedtime + "ms");
 
                 if (nActor.type == ActorType.PC && !pcByName.ContainsKey(nActor.Name))
                     pcByName.Add(nActor.Name, (ActorPC)nActor);
@@ -900,57 +900,33 @@ namespace SagaMap
                 //or are going "to see" mActor, or are still seeing mActor
                 if (!knockBack)
                     for (short deltaY = -1; deltaY <= 1; deltaY++)
-                        for (short deltaX = -1; deltaX <= 1; deltaX++)
+                    for (short deltaX = -1; deltaX <= 1; deltaX++)
+                    {
+                        var region = (uint)(mActor.region + deltaX * 10000 + deltaY);
+                        if (!actorsByRegion.ContainsKey(region)) continue;
+
+                        //ClientManager.EnterCriticalArea();
+                        var list = actorsByRegion[region].ToArray();
+
+                        //ClientManager.LeaveCriticalArea();
+                        foreach (var actor in list)
                         {
-                            var region = (uint)(mActor.region + deltaX * 10000 + deltaY);
-                            if (!actorsByRegion.ContainsKey(region)) continue;
-
-                            //ClientManager.EnterCriticalArea();
-                            var list = actorsByRegion[region].ToArray();
-
-                            //ClientManager.LeaveCriticalArea();
-                            foreach (var actor in list)
+                            if (actor.ActorID == mActor.ActorID && !sendToSelf) continue;
+                            if (!actorsByRegion[region].Contains(actor))
+                                continue;
+                            if (actor.Status == null)
                             {
-                                if (actor.ActorID == mActor.ActorID && !sendToSelf) continue;
-                                if (!actorsByRegion[region].Contains(actor))
-                                    continue;
-                                if (actor.Status == null)
-                                {
-                                    DeleteActor(actor);
-                                    continue;
-                                }
+                                DeleteActor(actor);
+                                continue;
+                            }
 
-                                // A) INFORM OTHER ACTORS
-                                //actor "could" see mActor at its "from" position
-                                if (ACanSeeB(actor, mActor))
+                            // A) INFORM OTHER ACTORS
+                            //actor "could" see mActor at its "from" position
+                            if (ACanSeeB(actor, mActor))
+                            {
+                                //actor will still be able to see mActor
+                                if (ACanSeeB(actor, mActor, pos[0], pos[1]))
                                 {
-                                    //actor will still be able to see mActor
-                                    if (ACanSeeB(actor, mActor, pos[0], pos[1]))
-                                    {
-                                        if (mType == MOVE_TYPE.START)
-                                        {
-                                            if (moveType != MoveType.RUN)
-                                                actor.e.OnActorStartsMoving(mActor, pos, dir, speed, moveType);
-                                            else
-                                                actor.e.OnActorStartsMoving(mActor, pos, dir, speed);
-                                        }
-                                        else
-                                        {
-                                            actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
-                                        }
-                                    }
-                                    //actor won't be able to see mActor anymore
-                                    else
-                                    {
-                                        actor.e.OnActorDisappears(mActor);
-                                    }
-                                }
-                                //actor "could not" see mActor, but will be able to see him now
-                                else if (ACanSeeB(actor, mActor, pos[0], pos[1]))
-                                {
-                                    actor.e.OnActorAppears(mActor);
-
-                                    //send move / move stop
                                     if (mType == MOVE_TYPE.START)
                                     {
                                         if (moveType != MoveType.RUN)
@@ -963,24 +939,48 @@ namespace SagaMap
                                         actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
                                     }
                                 }
-
-                                // B) INFORM mActor
-                                //mActor "could" see actor on its "from" position
-                                if (ACanSeeB(mActor, actor))
+                                //actor won't be able to see mActor anymore
+                                else
                                 {
-                                    //mActor won't be able to see actor anymore
-                                    if (!ACanSeeB(mActor, pos[0], pos[1], actor)) mActor.e.OnActorDisappears(actor);
-                                    //mAactor will still be able to see actor
-                                }
-
-                                else if (ACanSeeB(mActor, pos[0], pos[1], actor))
-                                {
-                                    //mActor "could not" see actor, but will be able to see him now
-                                    //send pcinfo
-                                    mActor.e.OnActorAppears(actor);
+                                    actor.e.OnActorDisappears(mActor);
                                 }
                             }
+                            //actor "could not" see mActor, but will be able to see him now
+                            else if (ACanSeeB(actor, mActor, pos[0], pos[1]))
+                            {
+                                actor.e.OnActorAppears(mActor);
+
+                                //send move / move stop
+                                if (mType == MOVE_TYPE.START)
+                                {
+                                    if (moveType != MoveType.RUN)
+                                        actor.e.OnActorStartsMoving(mActor, pos, dir, speed, moveType);
+                                    else
+                                        actor.e.OnActorStartsMoving(mActor, pos, dir, speed);
+                                }
+                                else
+                                {
+                                    actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
+                                }
+                            }
+
+                            // B) INFORM mActor
+                            //mActor "could" see actor on its "from" position
+                            if (ACanSeeB(mActor, actor))
+                            {
+                                //mActor won't be able to see actor anymore
+                                if (!ACanSeeB(mActor, pos[0], pos[1], actor)) mActor.e.OnActorDisappears(actor);
+                                //mAactor will still be able to see actor
+                            }
+
+                            else if (ACanSeeB(mActor, pos[0], pos[1], actor))
+                            {
+                                //mActor "could not" see actor, but will be able to see him now
+                                //send pcinfo
+                                mActor.e.OnActorAppears(actor);
+                            }
                         }
+                    }
                 else
                     mActor.e.OnActorStopsMoving(mActor, pos, dir, speed);
 
@@ -1013,7 +1013,7 @@ namespace SagaMap
 
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
             //moveCounter--;
         }
@@ -1232,59 +1232,59 @@ namespace SagaMap
         {
             //search all actors which can be seen by jActor and tell jActor about them
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-                for (short deltaX = -1; deltaX <= 1; deltaX++)
-                {
-                    var region = (uint)(jActor.region + deltaX * 10000 + deltaY);
-                    if (!actorsByRegion.ContainsKey(region)) continue;
-                    var list = actorsByRegion[region].ToArray();
-                    var listAF = new List<Actor>();
-                    foreach (var actor in list)
-                        try
-                        {
-                            if (actor.ActorID == jActor.ActorID) continue;
-                            if (actor.Status == null)
-                            {
-                                DeleteActor(actor);
-                                continue;
-                            }
-
-                            //check wheter jActor can see actor, if yes: inform jActor
-                            if (ACanSeeB(jActor, actor))
-                            {
-                                if (actor.type == ActorType.FURNITURE &&
-                                    ItemFactory.Instance.GetItem(((ActorFurniture)actor).ItemID).BaseData.itemType !=
-                                    ItemType.FF_CASTLE && ID > 90001000)
-                                    listAF.Add(actor);
-                                else
-                                    jActor.e.OnActorAppears(actor);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.ShowError(ex);
-                        }
-
-                    if (listAF.Count > 0)
+            for (short deltaX = -1; deltaX <= 1; deltaX++)
+            {
+                var region = (uint)(jActor.region + deltaX * 10000 + deltaY);
+                if (!actorsByRegion.ContainsKey(region)) continue;
+                var list = actorsByRegion[region].ToArray();
+                var listAF = new List<Actor>();
+                foreach (var actor in list)
+                    try
                     {
-                        var afs = new List<ActorFurniture>();
-                        var index = 0;
-                        foreach (var i in listAF)
+                        if (actor.ActorID == jActor.ActorID) continue;
+                        if (actor.Status == null)
                         {
-                            if (index >= 40)
-                            {
-                                jActor.e.OnActorFurnitureList(afs);
-                                afs.Clear();
-                                index = 0;
-                            }
-
-                            afs.Add((ActorFurniture)i);
-                            index++;
+                            DeleteActor(actor);
+                            continue;
                         }
 
-                        if (afs.Count > 0)
-                            jActor.e.OnActorFurnitureList(afs);
+                        //check wheter jActor can see actor, if yes: inform jActor
+                        if (ACanSeeB(jActor, actor))
+                        {
+                            if (actor.type == ActorType.FURNITURE &&
+                                ItemFactory.Instance.GetItem(((ActorFurniture)actor).ItemID).BaseData.itemType !=
+                                ItemType.FF_CASTLE && ID > 90001000)
+                                listAF.Add(actor);
+                            else
+                                jActor.e.OnActorAppears(actor);
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        Logger.getLogger().Error(ex, ex.Message);
+                    }
+
+                if (listAF.Count > 0)
+                {
+                    var afs = new List<ActorFurniture>();
+                    var index = 0;
+                    foreach (var i in listAF)
+                    {
+                        if (index >= 40)
+                        {
+                            jActor.e.OnActorFurnitureList(afs);
+                            afs.Clear();
+                            index = 0;
+                        }
+
+                        afs.Add((ActorFurniture)i);
+                        index++;
+                    }
+
+                    if (afs.Count > 0)
+                        jActor.e.OnActorFurnitureList(afs);
                 }
+            }
         }
 
         public void TeleportActor(Actor sActor, short x, short y)
@@ -1364,153 +1364,153 @@ namespace SagaMap
             try
             {
                 for (short deltaY = -1; deltaY <= 1; deltaY++)
-                    for (short deltaX = -1; deltaX <= 1; deltaX++)
-                    {
-                        var region = (uint)(sActor.region + deltaX * 10000 + deltaY);
-                        if (!actorsByRegion.ContainsKey(region)) continue;
-                        var actors = actorsByRegion[region].ToArray();
-                        foreach (var actor in actors)
-                            try
+                for (short deltaX = -1; deltaX <= 1; deltaX++)
+                {
+                    var region = (uint)(sActor.region + deltaX * 10000 + deltaY);
+                    if (!actorsByRegion.ContainsKey(region)) continue;
+                    var actors = actorsByRegion[region].ToArray();
+                    foreach (var actor in actors)
+                        try
+                        {
+                            if (!sendToSourceActor && actor.ActorID == sActor.ActorID) continue;
+                            if (actor.Status == null)
                             {
-                                if (!sendToSourceActor && actor.ActorID == sActor.ActorID) continue;
-                                if (actor.Status == null)
+                                if (etype != EVENT_TYPE.DISAPPEAR)
+                                    DeleteActor(actor);
+                                continue;
+                            }
+
+                            if (ACanSeeB(actor, sActor))
+                                switch (etype)
                                 {
-                                    if (etype != EVENT_TYPE.DISAPPEAR)
-                                        DeleteActor(actor);
-                                    continue;
+                                    case EVENT_TYPE.PLAYERSHOP_CHANGE:
+                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                            actor.e.OnPlayerShopChange(sActor);
+                                        break;
+                                    case EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE:
+                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                            actor.e.OnPlayerShopChangeClose(sActor);
+                                        break;
+
+                                    case EVENT_TYPE.PLAYER_SIZE_UPDATE:
+                                        actor.e.OnPlayerSizeChange(sActor);
+                                        break;
+
+
+                                    case EVENT_TYPE.CHAR_INFO_UPDATE:
+                                        actor.e.OnCharInfoUpdate(sActor);
+                                        break;
+
+                                    case EVENT_TYPE.CHANGE_STATUS:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+
+                                        actor.e.OnPlayerChangeStatus((ActorPC)sActor);
+                                        break;
+
+                                    case EVENT_TYPE.APPEAR:
+                                        actor.e.OnActorAppears(sActor);
+                                        break;
+
+                                    case EVENT_TYPE.DISAPPEAR:
+                                        actor.e.OnActorDisappears(sActor);
+                                        break;
+
+                                    case EVENT_TYPE.EMOTION:
+                                        actor.e.OnActorChangeEmotion(sActor, args);
+                                        break;
+
+                                    case EVENT_TYPE.MOTION:
+                                        actor.e.OnActorChangeMotion(sActor, args);
+                                        break;
+
+                                    case EVENT_TYPE.WAITTYPE:
+                                        actor.e.OnActorChangeWaitType(sActor);
+                                        break;
+
+                                    case EVENT_TYPE.CHAT:
+                                        actor.e.OnActorChat(sActor, args);
+                                        break;
+
+                                    case EVENT_TYPE.SKILL:
+                                        actor.e.OnActorSkillUse(sActor, args);
+                                        break;
+
+                                    case EVENT_TYPE.CHANGE_EQUIP:
+                                        actor.e.OnActorChangeEquip(sActor, args);
+                                        break;
+                                    case EVENT_TYPE.ATTACK:
+                                        actor.e.OnAttack(sActor, args);
+                                        break;
+                                    case EVENT_TYPE.HPMPSP_UPDATE:
+                                        actor.e.OnHPMPSPUpdate(sActor);
+                                        break;
+                                    case EVENT_TYPE.BUFF_CHANGE:
+                                        actor.e.OnActorChangeBuff(sActor);
+                                        break;
+                                    case EVENT_TYPE.LEVEL_UP:
+                                        actor.e.OnLevelUp(sActor, args);
+                                        break;
+                                    case EVENT_TYPE.PLAYER_MODE:
+                                        actor.e.OnPlayerMode(sActor);
+                                        break;
+                                    case EVENT_TYPE.SHOW_EFFECT:
+                                        actor.e.OnShowEffect(sActor, args);
+                                        break;
+                                    case EVENT_TYPE.POSSESSION:
+                                        actor.e.OnActorPossession(sActor, args);
+                                        break;
+                                    case EVENT_TYPE.PARTY_NAME_UPDATE:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorPartyUpdate((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.SPEED_UPDATE:
+                                        actor.e.OnActorSpeedChange(sActor);
+                                        break;
+                                    case EVENT_TYPE.SIGN_UPDATE:
+                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                            actor.e.OnSignUpdate(sActor);
+                                        break;
+                                    case EVENT_TYPE.RING_NAME_UPDATE:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorRingUpdate((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.WRP_RANKING_UPDATE:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorWRPRankingUpdate((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.ATTACK_TYPE_CHANGE:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorChangeAttackType((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.FURNITURE_SIT:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorFurnitureSit((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.PAPER_CHANGE:
+                                        if (sActor.type != ActorType.PC)
+                                            break;
+                                        actor.e.OnActorPaperChange((ActorPC)sActor);
+                                        break;
+                                    case EVENT_TYPE.SKILL_CANCEL:
+                                        actor.e.OnActorSkillCancel(sActor);
+                                        break;
                                 }
-
-                                if (ACanSeeB(actor, sActor))
-                                    switch (etype)
-                                    {
-                                        case EVENT_TYPE.PLAYERSHOP_CHANGE:
-                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                                actor.e.OnPlayerShopChange(sActor);
-                                            break;
-                                        case EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE:
-                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                                actor.e.OnPlayerShopChangeClose(sActor);
-                                            break;
-
-                                        case EVENT_TYPE.PLAYER_SIZE_UPDATE:
-                                            actor.e.OnPlayerSizeChange(sActor);
-                                            break;
-
-
-                                        case EVENT_TYPE.CHAR_INFO_UPDATE:
-                                            actor.e.OnCharInfoUpdate(sActor);
-                                            break;
-
-                                        case EVENT_TYPE.CHANGE_STATUS:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-
-                                            actor.e.OnPlayerChangeStatus((ActorPC)sActor);
-                                            break;
-
-                                        case EVENT_TYPE.APPEAR:
-                                            actor.e.OnActorAppears(sActor);
-                                            break;
-
-                                        case EVENT_TYPE.DISAPPEAR:
-                                            actor.e.OnActorDisappears(sActor);
-                                            break;
-
-                                        case EVENT_TYPE.EMOTION:
-                                            actor.e.OnActorChangeEmotion(sActor, args);
-                                            break;
-
-                                        case EVENT_TYPE.MOTION:
-                                            actor.e.OnActorChangeMotion(sActor, args);
-                                            break;
-
-                                        case EVENT_TYPE.WAITTYPE:
-                                            actor.e.OnActorChangeWaitType(sActor);
-                                            break;
-
-                                        case EVENT_TYPE.CHAT:
-                                            actor.e.OnActorChat(sActor, args);
-                                            break;
-
-                                        case EVENT_TYPE.SKILL:
-                                            actor.e.OnActorSkillUse(sActor, args);
-                                            break;
-
-                                        case EVENT_TYPE.CHANGE_EQUIP:
-                                            actor.e.OnActorChangeEquip(sActor, args);
-                                            break;
-                                        case EVENT_TYPE.ATTACK:
-                                            actor.e.OnAttack(sActor, args);
-                                            break;
-                                        case EVENT_TYPE.HPMPSP_UPDATE:
-                                            actor.e.OnHPMPSPUpdate(sActor);
-                                            break;
-                                        case EVENT_TYPE.BUFF_CHANGE:
-                                            actor.e.OnActorChangeBuff(sActor);
-                                            break;
-                                        case EVENT_TYPE.LEVEL_UP:
-                                            actor.e.OnLevelUp(sActor, args);
-                                            break;
-                                        case EVENT_TYPE.PLAYER_MODE:
-                                            actor.e.OnPlayerMode(sActor);
-                                            break;
-                                        case EVENT_TYPE.SHOW_EFFECT:
-                                            actor.e.OnShowEffect(sActor, args);
-                                            break;
-                                        case EVENT_TYPE.POSSESSION:
-                                            actor.e.OnActorPossession(sActor, args);
-                                            break;
-                                        case EVENT_TYPE.PARTY_NAME_UPDATE:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorPartyUpdate((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.SPEED_UPDATE:
-                                            actor.e.OnActorSpeedChange(sActor);
-                                            break;
-                                        case EVENT_TYPE.SIGN_UPDATE:
-                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                                actor.e.OnSignUpdate(sActor);
-                                            break;
-                                        case EVENT_TYPE.RING_NAME_UPDATE:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorRingUpdate((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.WRP_RANKING_UPDATE:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorWRPRankingUpdate((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.ATTACK_TYPE_CHANGE:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorChangeAttackType((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.FURNITURE_SIT:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorFurnitureSit((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.PAPER_CHANGE:
-                                            if (sActor.type != ActorType.PC)
-                                                break;
-                                            actor.e.OnActorPaperChange((ActorPC)sActor);
-                                            break;
-                                        case EVENT_TYPE.SKILL_CANCEL:
-                                            actor.e.OnActorSkillCancel(sActor);
-                                            break;
-                                    }
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.ShowError(ex);
-                            }
-                    }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.getLogger().Error(ex, ex.Message);
+                        }
+                }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1763,13 +1763,13 @@ namespace SagaMap
             var X = (short)Global.Random.Next(-100, 100);
             var Y = (short)Global.Random.Next(-100, 100);
             for (var i = X; i < 200; i += 100)
-                for (var j = Y; j < 200; j += 100)
-                    if (GetActorsArea((short)(x + i), (short)(y + j), 8, excludes).Count == 0)
-                    {
-                        x2 = (short)(x + i);
-                        y2 = (short)(y + j);
-                        return;
-                    }
+            for (var j = Y; j < 200; j += 100)
+                if (GetActorsArea((short)(x + i), (short)(y + j), 8, excludes).Count == 0)
+                {
+                    x2 = (short)(x + i);
+                    y2 = (short)(y + j);
+                    return;
+                }
 
             x2 = x;
             y2 = y;
@@ -1812,20 +1812,20 @@ namespace SagaMap
         {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-                for (short deltaX = -1; deltaX <= 1; deltaX++)
+            for (short deltaX = -1; deltaX <= 1; deltaX++)
+            {
+                var region = (uint)(GetRegion(sActor.X, sActor.Y) + deltaX * 1000000 + deltaY);
+                if (!actorsByRegion.ContainsKey(region)) continue;
+
+                var list = actorsByRegion[region].ToArray();
+                foreach (var actor in list)
                 {
-                    var region = (uint)(GetRegion(sActor.X, sActor.Y) + deltaX * 1000000 + deltaY);
-                    if (!actorsByRegion.ContainsKey(region)) continue;
+                    if (!includeSourceActor && actor.ActorID == sActor.ActorID) continue;
+                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                    var list = actorsByRegion[region].ToArray();
-                    foreach (var actor in list)
-                    {
-                        if (!includeSourceActor && actor.ActorID == sActor.ActorID) continue;
-                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
-
-                        if (ACanSeeB(actor, sActor, range)) actors.Add(actor);
-                    }
+                    if (ACanSeeB(actor, sActor, range)) actors.Add(actor);
                 }
+            }
 
             return actors;
         }
@@ -1889,22 +1889,22 @@ namespace SagaMap
         {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-                for (short deltaX = -1; deltaX <= 1; deltaX++)
+            for (short deltaX = -1; deltaX <= 1; deltaX++)
+            {
+                var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
+                if (!actorsByRegion.ContainsKey(region)) continue;
+
+                var list = actorsByRegion[region].ToArray();
+                foreach (var actor in list)
                 {
-                    var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
-                    if (!actorsByRegion.ContainsKey(region)) continue;
+                    if (actor == null)
+                        continue;
+                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                    var list = actorsByRegion[region].ToArray();
-                    foreach (var actor in list)
-                    {
-                        if (actor == null)
-                            continue;
-                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
-
-                        if ((actor.X - x) * (actor.X - x) + (actor.Y - y) * (actor.Y - y) <= range * range)
-                            actors.Add(actor);
-                    }
+                    if ((actor.X - x) * (actor.X - x) + (actor.Y - y) * (actor.Y - y) <= range * range)
+                        actors.Add(actor);
                 }
+            }
 
             return actors;
         }
@@ -1919,29 +1919,29 @@ namespace SagaMap
         {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-                for (short deltaX = -1; deltaX <= 1; deltaX++)
+            for (short deltaX = -1; deltaX <= 1; deltaX++)
+            {
+                var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
+                if (!actorsByRegion.ContainsKey(region)) continue;
+
+                var list = actorsByRegion[region].ToArray();
+                foreach (var actor in list)
                 {
-                    var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
-                    if (!actorsByRegion.ContainsKey(region)) continue;
+                    var skip = false;
+                    if (excludes != null)
+                        foreach (var j in excludes)
+                            if (actor == j)
+                                skip = true;
 
-                    var list = actorsByRegion[region].ToArray();
-                    foreach (var actor in list)
-                    {
-                        var skip = false;
-                        if (excludes != null)
-                            foreach (var j in excludes)
-                                if (actor == j)
-                                    skip = true;
+                    if (actor == null)
+                        continue;
+                    if (skip) continue;
+                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                        if (actor == null)
-                            continue;
-                        if (skip) continue;
-                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
-
-                        if (actor.X >= x - range && actor.X <= x + range && actor.Y >= y - range && actor.Y <= y + range)
-                            actors.Add(actor);
-                    }
+                    if (actor.X >= x - range && actor.X <= x + range && actor.Y >= y - range && actor.Y <= y + range)
+                        actors.Add(actor);
                 }
+            }
 
             return actors;
         }
@@ -2047,7 +2047,7 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     if (counter > 1000)
@@ -2112,7 +2112,7 @@ namespace SagaMap
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return null;
             }
         }
@@ -2181,7 +2181,7 @@ namespace SagaMap
                     skill.Skill.ID == 2311 || //重金属
                     skill.Skill.ID == 2312 || //摇滚
                     skill.Skill.ID == 2309 || //变化
-                                              //skill.Skill.ID == 2314 ||//安魂曲??
+                    //skill.Skill.ID == 2314 ||//安魂曲??
                     skill.Skill.ID == 2307 || //混合
                     skill.Skill.ID == 2308 //流行
                    )
@@ -2338,7 +2338,7 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
                 else
                     other.Add(i);

@@ -34,7 +34,7 @@ namespace SagaLib.Tasks
         public MultiRunTask(int dueTime, int period, string name)
         {
             if (period <= 0)
-                Logger.ShowWarning("period <= 0");
+                Logger.getLogger().Warning("period <= 0");
             DueTime = dueTime;
             Period = period;
             Name = name;

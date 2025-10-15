@@ -180,7 +180,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }

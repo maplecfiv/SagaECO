@@ -146,7 +146,7 @@ namespace SagaMap.Mob
                                     while (map_.Info.walkable[x_new, y_new] != 2)
                                     {
                                         if (counter > 1000 || range == 0)
-                                            //Logger.ShowWarning(string.Format("Cannot find free place for mob:{0} map:{1}[{2},{3}]", mobid, map, x, y), Logger.defaultlogger);
+                                            //Logger.getLogger().Warning(string.Format("Cannot find free place for mob:{0} map:{1}[{2},{3}]", mobid, map, x, y), Logger.defaultlogger);
                                             break;
                                         x_new = (byte)Global.Random.Next(min_x, max_x);
                                         y_new = (byte)Global.Random.Next(min_y, max_y);
@@ -155,7 +155,7 @@ namespace SagaMap.Mob
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.ShowError(ex);
+                                    Logger.getLogger().Error(ex, ex.Message);
                                 }
 
                                 if (counter > 1000)
@@ -205,7 +205,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             return total;
@@ -223,7 +223,7 @@ namespace SagaMap.Mob
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadOne(f, 0);
-            Logger.ShowInfo(total + " mobs spawned...");
+            Logger.getLogger().Information(total + " mobs spawned...");
         }
 
         public void LoadAnAI(string path)
@@ -231,7 +231,7 @@ namespace SagaMap.Mob
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadAI(f);
-            Logger.ShowInfo(total + " 加载新的AI...");
+            Logger.getLogger().Information(total + " 加载新的AI...");
         }
     }
 }

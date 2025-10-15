@@ -51,27 +51,27 @@ namespace SagaMap.Skill.NewSkill.Traveler
                     if (count < 15)
                     {
                         for (var j = -count; j <= count; j++)
-                            for (var k = -count; k <= count; k++)
-                                if (j * j + k * k <= count * count
-                                    && j * j + k * k > (count - 1) * (count - 1)
-                                    && (j + k) % 2 == 0) //多了会卡
-                                {
-                                    var s = skill.Clone();
-                                    s.x = (byte)(x + j);
-                                    s.y = (byte)(y + k);
-                                    var actors = map.GetRoundAreaActors(Global.PosX8to16(s.x, map.Width),
-                                        Global.PosY8to16(s.y, map.Height), 300);
-                                    var affected = new List<Actor>();
-                                    s.affectedActors.Clear();
-                                    foreach (var i in actors)
-                                        if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                                            affected.Add(i);
+                        for (var k = -count; k <= count; k++)
+                            if (j * j + k * k <= count * count
+                                && j * j + k * k > (count - 1) * (count - 1)
+                                && (j + k) % 2 == 0) //多了会卡
+                            {
+                                var s = skill.Clone();
+                                s.x = (byte)(x + j);
+                                s.y = (byte)(y + k);
+                                var actors = map.GetRoundAreaActors(Global.PosX8to16(s.x, map.Width),
+                                    Global.PosY8to16(s.y, map.Height), 300);
+                                var affected = new List<Actor>();
+                                s.affectedActors.Clear();
+                                foreach (var i in actors)
+                                    if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
+                                        affected.Add(i);
 
-                                    SkillHandler.Instance.MagicAttack(caster, affected, s, Elements.Earth, factor);
+                                SkillHandler.Instance.MagicAttack(caster, affected, s, Elements.Earth, factor);
 
-                                    //广播技能效果
-                                    map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, s, actor, false);
-                                }
+                                //广播技能效果
+                                map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, s, actor, false);
+                            }
 
                         count++;
                     }
@@ -84,7 +84,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
 
                 //解开同步锁

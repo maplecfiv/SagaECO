@@ -57,16 +57,16 @@ namespace SagaLib
                 case FactoryType.CSV:
                     foreach (var i in files)
                     {
-
                         count += InitCSV(i, encoding);
                     }
+
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
                     {
-
                         count += InitXML(i, encoding);
                     }
+
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -97,6 +97,7 @@ namespace SagaLib
                         pattern = "*.xml";
                         break;
                 }
+
                 files = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, pattern);
             }
             else
@@ -110,16 +111,16 @@ namespace SagaLib
                 case FactoryType.CSV:
                     foreach (var i in files)
                     {
-
                         count += InitCSV(i, encoding);
                     }
+
                     break;
                 case FactoryType.XML:
                     foreach (var i in files)
                     {
-
                         count += InitXML(i, encoding);
                     }
+
                     break;
                 default:
                     throw new Exception(string.Format("No FactoryType set for class:{0}", ToString()));
@@ -137,7 +138,6 @@ namespace SagaLib
         {
             foreach (var i in doc.ChildNodes)
             {
-
                 if (i.GetType() != typeof(XmlElement))
                 {
                     continue;
@@ -145,6 +145,7 @@ namespace SagaLib
 
                 return (XmlElement)i;
             }
+
             return null;
         }
 
@@ -159,21 +160,21 @@ namespace SagaLib
                 {
                     continue;
                 }
+
                 i = (XmlElement)j;
                 try
                 {
                     ParseXML(ele, i, item);
                     if (i.ChildNodes.Count != 0)
                     {
-
                         ParseNode(i, item);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError("Error on parsing:" + path);
-                    Logger.ShowError(ele.InnerXml);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing:" + path);
+                    Logger.getLogger().Error(ele.InnerXml);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -193,10 +194,9 @@ namespace SagaLib
                 var label = loadingTab;
                 if (list.Count > 100)
                 {
-
                     Logger.ProgressBarShow(0, (uint)list.Count, label);
-
                 }
+
                 foreach (var j in list)
                 {
                     var item = new T();
@@ -205,33 +205,31 @@ namespace SagaLib
                     {
                         continue;
                     }
+
                     i = (XmlElement)j;
                     try
                     {
                         ParseXML(root, i, item);
                         if (i.ChildNodes.Count != 0)
                         {
-
                             ParseNode(i, item);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError("Error on parsing:" + path);
-                        Logger.ShowError(GetKey(item).ToString());
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error("Error on parsing:" + path);
+                        Logger.getLogger().Error(GetKey(item).ToString());
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     var key = GetKey(item);
                     if (!Items.ContainsKey(key))
                     {
-
                         Items.Add(key, item);
                     }
                     else
                     {
-
-                        //Logger.ShowWarning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
+                        //Logger.getLogger().Warning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
                         Items[key] = item;
                     }
 #if !Web
@@ -241,7 +239,6 @@ namespace SagaLib
                         if (list.Count > 100)
                         {
                             Logger.ProgressBarShow((uint)count, (uint)list.Count, label);
-
                         }
                     }
 #endif
@@ -250,8 +247,8 @@ namespace SagaLib
             }
             catch (Exception ex)
             {
-                Logger.ShowError("Error on parsing:" + path);
-                Logger.ShowError(ex.Message);
+                Logger.getLogger().Error("Error on parsing:" + path);
+                Logger.getLogger().Error(ex.Message);
             }
 
             return count;
@@ -306,8 +303,8 @@ namespace SagaLib
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
-                    Logger.ShowError("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines);
+                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.getLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines);
                 }
             }
 

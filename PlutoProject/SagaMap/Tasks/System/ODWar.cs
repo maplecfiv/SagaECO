@@ -110,7 +110,7 @@ namespace SagaMap.Tasks.System
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
     }

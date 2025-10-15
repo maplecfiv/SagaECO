@@ -27,7 +27,7 @@
         <BootstrapperEnabled>true</BootstrapperEnabled>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
-    
+
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <OutputPath>..\Bin\</OutputPath>
         <PlatformTarget>x86</PlatformTarget>
@@ -70,7 +70,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest" />
+        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest"/>
     </ItemGroup>
     <ItemGroup>
         <Content Include="Icon1.ico"/>
@@ -150,7 +150,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="log4net" Version="3.2.0" />
+        <PackageReference Include="log4net" Version="3.2.0"/>
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.2"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0"/>
@@ -160,7 +160,8 @@
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1"/>
         <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
-        <PackageReference Include="NLog" Version="5.5.1"/>
+        <PackageReference Include="Serilog" Version="4.3.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
         <PackageReference Include="System.Buffers" Version="4.5.1"/>
         <PackageReference Include="System.CodeDom" Version="9.0.9"/>
         <PackageReference Include="System.Collections" Version="4.0.10"/>
@@ -170,7 +171,7 @@
         <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2"/>
         <PackageReference Include="System.Globalization" Version="4.0.10"/>
         <PackageReference Include="System.IO" Version="4.0.10"/>
-        <PackageReference Include="System.Memory" Version="4.5.5" />
+        <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0"/>
         <PackageReference Include="System.Resources.ResourceManager" Version="4.0.0"/>
         <PackageReference Include="System.Runtime" Version="4.0.20"/>

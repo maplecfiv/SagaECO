@@ -17,7 +17,6 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/Microsoft.Extensions.Options.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/Microsoft.Extensions.Primitives.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/Newtonsoft.Json.dll
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/NLog.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/System.CodeDom.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/System.Configuration.ConfigurationManager.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/System.Data.OleDb.dll
@@ -49,3 +48,5 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/.NET/Release/net8.0/SagaMap.genruntimeconfig.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/obj/.NET/Release/net8.0/ref/SagaMap.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/log4net.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/Serilog.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/.NET/Release/net8.0/Serilog.Sinks.Console.dll

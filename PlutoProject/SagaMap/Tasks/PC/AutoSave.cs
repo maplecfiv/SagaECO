@@ -34,12 +34,12 @@ namespace SagaMap.Tasks.PC
             {
                 var now = DateTime.Now;
                 MapServer.charDB.SaveChar(pc, false);
-                Logger.ShowInfo(
+                Logger.getLogger().Information(
                     "Autosaving " + pc.Name + "'s data, 耗时:" + (DateTime.Now - now).TotalMilliseconds + "ms");
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             ClientManager.LeaveCriticalArea();

@@ -25,7 +25,7 @@ namespace SagaDB.DEMIC
                 return chip;
             }
 
-            Logger.ShowWarning("Cannot find chip:" + itemID);
+            Logger.getLogger().Warning("Cannot find chip:" + itemID);
             return null;
         }
 

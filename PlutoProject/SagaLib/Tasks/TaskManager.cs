@@ -115,7 +115,7 @@ namespace SagaLib.Tasks
 
             main = new Thread(MainLoop);
             main.Name = string.Format("ThreadPoolMainLoop({0})", main.ManagedThreadId);
-            Logger.ShowInfo("主线程启动！：" + main.Name);
+            Logger.getLogger().Information("主线程启动！：" + main.Name);
             ClientManager.AddThread(main);
             main.Start();
         }
@@ -136,7 +136,7 @@ namespace SagaLib.Tasks
             {
                 return;
             }
-            
+
             ClientManager.RemoveThread(main.Name);
             main.Abort();
         }
@@ -210,9 +210,9 @@ namespace SagaLib.Tasks
                 {
                     if (!task.executing && now > task.NextUpdateTime)
                     {
-                            
                         task.executing = true;
                     }
+
                     task.NextUpdateTime = now.AddMilliseconds(task.Period);
                     task.TaskBeginTime = now;
                     if (task.IsSlowTask)
@@ -228,9 +228,8 @@ namespace SagaLib.Tasks
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
-                
             }
 
             watch.Stop();
@@ -249,7 +248,6 @@ namespace SagaLib.Tasks
                     PushTaskes();
                     if (registered.Count <= 1000)
                     {
-                        
                         Thread.Sleep(1);
                         continue;
                     }
@@ -262,7 +260,6 @@ namespace SagaLib.Tasks
 
                     if (waitTime == 0)
                     {
-                            
                         waitTime = 1;
                     }
 
@@ -275,7 +272,7 @@ namespace SagaLib.Tasks
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             ClientManager.RemoveThread(Thread.CurrentThread.Name);
@@ -307,7 +304,7 @@ namespace SagaLib.Tasks
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            Logger.getLogger().Error(ex, ex.Message);
                         }
 
                     waiter.WaitOne(5);
@@ -319,8 +316,8 @@ namespace SagaLib.Tasks
             }
             catch (Exception ex)
             {
-                Logger.ShowError("Critical ERROR! Worker terminated unexpected!");
-                Logger.ShowError(ex);
+                Logger.getLogger().Error("Critical ERROR! Worker terminated unexpected!");
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             ClientManager.RemoveThread(Thread.CurrentThread.Name);

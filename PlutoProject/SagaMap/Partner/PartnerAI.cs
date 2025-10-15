@@ -142,7 +142,7 @@ namespace SagaMap.Partner
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -704,7 +704,7 @@ namespace SagaMap.Partner
         {
             if (map == null)
             {
-                Logger.ShowWarning($"Mob:{Partner.ActorID}({Partner.Name})'s map is null!");
+                Logger.getLogger().Warning($"Mob:{Partner.ActorID}({Partner.Name})'s map is null!");
                 return;
             }
 
@@ -939,7 +939,7 @@ namespace SagaMap.Partner
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
+                Logger.getLogger().Error(ex, null);
             }
         }
 
@@ -1057,7 +1057,7 @@ namespace SagaMap.Partner
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
                 }
 
@@ -1071,8 +1071,8 @@ namespace SagaMap.Partner
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
-                Logger.ShowError(ex.StackTrace, null);
+                Logger.getLogger().Error(ex, null);
+                Logger.getLogger().Error(ex.StackTrace, null);
             }
             //ClientManager.LeaveCriticalArea();
         }

@@ -59,8 +59,7 @@ namespace SagaLogin.Configuration
                 if (encoding == null)
                 {
                     encoding = Encoding.UTF8.EncodingName;
-                    Logger.ShowDebug("DB Encoding not set, set to default value: "+encoding, Logger.CurrentLogger);
-                    
+                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, Logger.CurrentLogger);
                 }
 
                 return encoding;
@@ -136,7 +135,7 @@ namespace SagaLogin.Configuration
                             }
                             catch
                             {
-                                Logger.ShowWarning(string.Format(
+                                Logger.getLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
                             }
 
@@ -267,14 +266,14 @@ namespace SagaLogin.Configuration
                 }
 
                 if (!getVersion)
-                    Logger.ShowWarning(string.Format(
+                    Logger.getLogger().Warning(string.Format(
                         "Packet Version not set, using default version:[{0}], \r\n         please change Config/SagaMap.xml to set version",
                         Version));
-                Logger.ShowInfo("Done reading configuration...");
+                Logger.getLogger().Information("Done reading configuration...");
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
     }

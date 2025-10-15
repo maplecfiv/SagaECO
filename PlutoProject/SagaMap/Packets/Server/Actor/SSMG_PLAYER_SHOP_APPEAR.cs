@@ -33,7 +33,7 @@ namespace SagaMap.Packets.Server.Actor
                 PutBytes(title, 8);
 
                 //string www = string.Format("DL:{0}    L:{1}     TL{2}     T:{3}   buf", this.data.Length, value.Length, title.Length, value);
-                //Logger.ShowError(www);
+                //Logger.getLogger().Error(www);
             }
         }
     }

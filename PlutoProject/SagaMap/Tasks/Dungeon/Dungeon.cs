@@ -61,18 +61,18 @@ namespace SagaMap.Tasks.Dungeon
                         time = rest + LocalManager.Instance.Strings.ITD_SECOND;
                     var announce = string.Format(LocalManager.Instance.Strings.ITD_CRASHING, time);
                     foreach (var i in dungeon.Maps)
-                        foreach (var j in i.Map.Actors.Values)
-                            if (j.type == ActorType.PC)
-                                if (((ActorPC)j).Online)
-                                {
-                                    var eh = (PCEventHandler)j.e;
-                                    eh.Client.SendAnnounce(announce);
-                                }
+                    foreach (var j in i.Map.Actors.Values)
+                        if (j.type == ActorType.PC)
+                            if (((ActorPC)j).Online)
+                            {
+                                var eh = (PCEventHandler)j.e;
+                                eh.Client.SendAnnounce(announce);
+                            }
                 }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
     }

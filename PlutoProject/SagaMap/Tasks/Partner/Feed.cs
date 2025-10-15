@@ -37,7 +37,7 @@ namespace SagaMap.Tasks.Partner
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 Deactivate();
             }
 

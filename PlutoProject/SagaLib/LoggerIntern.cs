@@ -7,7 +7,7 @@ namespace SagaLib
     {
         public Level LogLevel;
         public string Text;
-        public NLog.Logger Logger;
+        public Serilog.Core.Logger Logger;
     }
 
     public enum Level
@@ -47,10 +47,10 @@ namespace SagaLib
                             data.Logger.Debug(data.Text);
                             break;
                         case Level.Info:
-                            data.Logger.Info(data.Text);
+                            data.Logger.Information(data.Text);
                             break;
                         case Level.Warn:
-                            data.Logger.Warn(data.Text);
+                            data.Logger.Warning(data.Text);
                             break;
                         case Level.Error:
                             data.Logger.Error(data.Text);
@@ -64,7 +64,7 @@ namespace SagaLib
             }
         }
 
-        public static void EnqueueMsg(Level level, string msg, NLog.Logger logger)
+        public static void EnqueueMsg(Level level, string msg, Serilog.Core.Logger logger)
         {
             var data = new LogData();
             data.LogLevel = level;

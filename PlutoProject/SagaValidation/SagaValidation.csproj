@@ -26,13 +26,15 @@
         <ProjectReference Include="..\SagaLib\SagaLib.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest" />
+        <Content Include="..\Bin\**" CopyToPublishDirectory="PreserveNewest"/>
     </ItemGroup>
     <ItemGroup>
         <Content Include="icon3.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="log4net" Version="3.2.0" />
+        <PackageReference Include="log4net" Version="3.2.0"/>
+        <PackageReference Include="Serilog" Version="4.3.0"/>
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
     </ItemGroup>
     <PropertyGroup/>

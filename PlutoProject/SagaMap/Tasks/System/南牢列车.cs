@@ -61,7 +61,7 @@ namespace SagaMap.Tasks.System
             }
             */
 
-            //Logger.ShowInfo("南牢火車Start");
+            //Logger.getLogger().Information("南牢火車Start");
 
             create(map, 150, 12, 150, 251);
             create(map, 105, 251, 105, 12);
@@ -81,7 +81,7 @@ namespace SagaMap.Tasks.System
             actor.Speed = 1000;
             actor.e = new NullEventHandler();
             map.RegisterActor(actor);
-            //Logger.ShowError(actor.MapID.ToString()+" " +actor.ActorID.ToString());
+            //Logger.getLogger().Error(actor.MapID.ToString()+" " +actor.ActorID.ToString());
             actor.invisble = false;
             map.OnActorVisibilityChange(actor);
             actor.Stackable = false;
@@ -155,7 +155,7 @@ namespace SagaMap.Tasks.System
                 {
                     map.DeleteActor(skill);
                     Deactivate();
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }

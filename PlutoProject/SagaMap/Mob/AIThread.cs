@@ -16,7 +16,7 @@ namespace SagaMap.Mob
         {
             mainThread = new Thread(mainLoop);
             mainThread.Name = string.Format("MobAIThread({0})", mainThread.ManagedThreadId);
-            Logger.ShowInfo("MobAI线程启动：" + mainThread.Name);
+            Logger.getLogger().Information("MobAI线程启动：" + mainThread.Name);
             ClientManager.AddThread(mainThread);
             mainThread.Start();
         }
@@ -74,7 +74,7 @@ namespace SagaMap.Mob
                             }
                             catch (Exception ex)
                             {
-                                Logger.ShowError(ex);
+                                Logger.getLogger().Error(ex, ex.Message);
                             }
 
                             i.NextUpdateTime = DateTime.Now + new TimeSpan(0, 0, 0, 0, i.Period);
@@ -90,7 +90,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
     }

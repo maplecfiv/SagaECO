@@ -81,7 +81,7 @@ namespace SagaDB.Mob
 
         //                            sw.WriteLine(paras[3].Replace(" ", "_") + ",");
         //                        }
-        //                        Logger.ShowInfo(string.Format("{0}",paras[3].Replace(" ", "_")));
+        //                        Logger.getLogger().Information(string.Format("{0}",paras[3].Replace(" ", "_")));
         //                    }
         //                    mob.mobSize = float.Parse(paras[4]);
         //                    if (paras[7] == "1")
@@ -156,7 +156,7 @@ namespace SagaDB.Mob
         //#if !Web
         //                                    if (!Treasure.TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup))
         //                                    {
-        //                                        //Logger.ShowWarning("Cannot find treasure group:" + newDrop.TreasureGroup + "\r\n           Droped by:" +
+        //                                        //Logger.getLogger().Warning("Cannot find treasure group:" + newDrop.TreasureGroup + "\r\n           Droped by:" +
         //                                            //mob.name + "(" + mob.id + ")");
         //                                    }
         //#endif
@@ -196,7 +196,7 @@ namespace SagaDB.Mob
         //                    }
         //                    if(items.ContainsKey(mob.id))
         //                    {
-        //                        Logger.ShowError("重复的怪物ID:" + mob.id.ToString() + ",[" + items[mob.id].name + "]的已存在" + ",让[" + mob.name + "]没有被添加。");
+        //                        Logger.getLogger().Error("重复的怪物ID:" + mob.id.ToString() + ",[" + items[mob.id].name + "]的已存在" + ",让[" + mob.name + "]没有被添加。");
         //                    }
         //                    else
         //                    items.Add(mob.id, mob);
@@ -212,8 +212,8 @@ namespace SagaDB.Mob
         //                catch (Exception ex)
         //                {
         //#if !Web
-        //                    Logger.ShowError("Error on parsing mob db!\r\nat line:" + line);
-        //                    Logger.ShowError(ex);
+        //                    Logger.getLogger().Error("Error on parsing mob db!\r\nat line:" + line);
+        //                    Logger.getLogger().Error(ex, ex.Message);
         //#endif
         //                }
         //            }
@@ -365,8 +365,8 @@ namespace SagaDB.Mob
 #if !Web
                                     if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup))
                                     {
-                                        Logger.ShowWarning("Can't find Drop Group: " + newDrop.TreasureGroup +
-                                                           " for Monster: " + mob.id);
+                                        Logger.getLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
+                                                                   " for Monster: " + mob.id);
                                         continue;
                                     }
 #endif
@@ -399,8 +399,8 @@ namespace SagaDB.Mob
 #if !Web
                                     if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup))
                                     {
-                                        Logger.ShowWarning("Can't find Drop Group: " + newDrop.TreasureGroup +
-                                                           " for Monster: " + mob.id);
+                                        Logger.getLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
+                                                                   " for Monster: " + mob.id);
                                         continue;
                                     }
 #endif
@@ -422,7 +422,7 @@ namespace SagaDB.Mob
                         }
                         catch (Exception exception)
                         {
-                            Logger.ShowError(exception, null);
+                            Logger.getLogger().Error(exception, null);
                         }
 
                     //}
@@ -439,8 +439,8 @@ namespace SagaDB.Mob
                     mob.guideFlag = byte.Parse(paras[122]);
                     mob.guideID = short.Parse(paras[123]);
                     if (Mobs.ContainsKey(mob.id))
-                        Logger.ShowError("the monster id:" + mob.id + ",[" + Mobs[mob.id].name + "]is exist." +
-                                         ",monster[" + mob.name + "]doesn't loaded.");
+                        Logger.getLogger().Error("the monster id:" + mob.id + ",[" + Mobs[mob.id].name + "]is exist." +
+                                                 ",monster[" + mob.name + "]doesn't loaded.");
                     else
                         Mobs.Add(mob.id, mob);
 #if !Web
@@ -455,8 +455,8 @@ namespace SagaDB.Mob
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing mob db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing mob db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -501,7 +501,7 @@ namespace SagaDB.Mob
                     }
                     catch (Exception exception)
                     {
-                        Logger.ShowError(exception, null);
+                        Logger.getLogger().Error(exception, null);
                         while (paras[3].Substring(paras[3].Length - 1) != "_")
                             paras[3] = paras[3].Substring(0, paras[3].Length - 1);
                         paras[3] = paras[3].Substring(0, paras[3].Length - 1);
@@ -588,8 +588,8 @@ namespace SagaDB.Mob
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing pet db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing pet db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -635,7 +635,7 @@ namespace SagaDB.Mob
                     }
                     catch (Exception exception)
                     {
-                        Logger.ShowError(exception, null);
+                        Logger.getLogger().Error(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -694,8 +694,8 @@ namespace SagaDB.Mob
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing partner db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing partner db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -784,7 +784,7 @@ namespace SagaDB.Mob
                             }
                             catch (Exception exception)
                             {
-                                Logger.ShowError(exception, null);
+                                Logger.getLogger().Error(exception, null);
                             }
 
                     if (paras[106] != "0")
@@ -808,8 +808,8 @@ namespace SagaDB.Mob
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing pet limit db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing pet limit db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }

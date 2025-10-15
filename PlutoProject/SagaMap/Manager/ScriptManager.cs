@@ -43,7 +43,7 @@ namespace SagaMap.Manager
 
         public void LoadScript(string path)
         {
-            Logger.ShowInfo("Loading uncompiled scripts");
+            Logger.getLogger().Information("Loading uncompiled scripts");
             var dic = new Dictionary<string, string> { { "CompilerVersion", "v4.0" } };
             var provider = new CSharpCodeProvider(dic);
             var eventcount = 0;
@@ -59,12 +59,12 @@ namespace SagaMap.Manager
                     if (newAssembly != null)
                     {
                         tmp = LoadAssembly(newAssembly);
-                        Logger.ShowInfo(string.Format("Containing {0} Events", tmp));
+                        Logger.getLogger().Information(string.Format("Containing {0} Events", tmp));
                         eventcount += tmp;
                     }
                 }
 
-                Logger.ShowInfo("Loading compiled scripts....");
+                Logger.getLogger().Information("Loading compiled scripts....");
                 files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
                 foreach (var i in files)
                 {
@@ -72,7 +72,7 @@ namespace SagaMap.Manager
                     if (newAssembly != null)
                     {
                         tmp = LoadAssembly(newAssembly);
-                        Logger.ShowInfo(string.Format("Loading {1}, Containing {0} Events", tmp, i));
+                        Logger.getLogger().Information(string.Format("Loading {1}, Containing {0} Events", tmp, i));
                         eventcount += tmp;
                     }
                 }
@@ -94,11 +94,11 @@ namespace SagaMap.Manager
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
 
-            Logger.ShowInfo(string.Format("Totally {0} Events Added", eventcount));
+            Logger.getLogger().Information(string.Format("Totally {0} Events Added", eventcount));
         }
 
         private Assembly CompileScript(string[] Source, CSharpCodeProvider Provider)
@@ -130,8 +130,8 @@ namespace SagaMap.Manager
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning)
                     {
-                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
-                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.getLogger().Error("Compile Error:" + error.ErrorText, null);
+                        Logger.getLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -161,7 +161,7 @@ namespace SagaMap.Manager
                         }
                         catch (Exception exception)
                         {
-                            Logger.ShowError(exception, null);
+                            Logger.getLogger().Error(exception, null);
                             continue;
                         }
 
@@ -172,13 +172,13 @@ namespace SagaMap.Manager
                         else
                         {
                             if (newEvent.EventID != 0)
-                                Logger.ShowWarning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                                Logger.getLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     newEvent.EventID, npcType.FullName));
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     count++;

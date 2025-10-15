@@ -70,8 +70,8 @@ namespace SagaDB.DEMIC
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing mob db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing mob db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }

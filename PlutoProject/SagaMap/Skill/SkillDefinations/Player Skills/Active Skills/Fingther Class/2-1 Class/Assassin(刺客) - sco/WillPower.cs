@@ -39,7 +39,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
             catch (Exception exception)
             {
-                SagaLib.Logger.ShowError(exception, null);
+                SagaLib.Logger.getLogger().Error(exception, null);
             }
         }
 

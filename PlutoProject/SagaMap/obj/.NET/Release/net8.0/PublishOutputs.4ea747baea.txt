@@ -712,6 +712,8 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/SagaValidation.dll.config
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/SagaValidation.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/SagaValidation.runtimeconfig.json
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/Serilog.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/Serilog.Sinks.Console.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/System.CodeDom.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/System.Configuration.ConfigurationManager.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/net8.0/System.Data.OleDb.dll
@@ -2884,7 +2886,8 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Microsoft.Extensions.Options.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Microsoft.Extensions.Primitives.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Newtonsoft.Json.dll
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/NLog.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Serilog.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Serilog.Sinks.Console.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/System.CodeDom.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/System.Configuration.ConfigurationManager.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/System.Data.OleDb.dll

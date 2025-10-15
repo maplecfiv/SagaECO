@@ -43,7 +43,7 @@ namespace SagaMap.Tasks.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 mob.Tasks.Remove("MobRecover");
                 Deactivate();
             }

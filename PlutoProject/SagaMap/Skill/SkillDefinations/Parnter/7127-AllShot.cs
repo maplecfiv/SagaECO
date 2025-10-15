@@ -78,7 +78,7 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -92,7 +92,6 @@ namespace SagaMap.Skill.SkillDefinations.Parnter
         /// </summary>
 
         //#region ISkill Members
-
         public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
         {
             return 0;

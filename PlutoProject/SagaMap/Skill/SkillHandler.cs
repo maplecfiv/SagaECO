@@ -210,7 +210,8 @@ using WindArrow = SagaMap.Skill.SkillDefinations.Monster.WindArrow;
 
 namespace SagaMap.Skill
 {
-    public class GetElementResult{
+    public class GetElementResult
+    {
         public Elements Elements { get; set; }
         public int Value { get; set; }
 
@@ -220,6 +221,7 @@ namespace SagaMap.Skill
             Value = value;
         }
     }
+
     public class SkillHandler : Singleton<SkillHandler>
     {
         private float
@@ -323,7 +325,7 @@ namespace SagaMap.Skill
                         case 2480: //神奇大师
                             if (spc.Level <= 60) a = true;
                             break;
-                            //bool depend on dActor
+                        //bool depend on dActor
                     }
                 }
             }
@@ -1697,10 +1699,10 @@ namespace SagaMap.Skill
             GetElementResult getAtkElementResult = GetAttackElement(sActor, atkValue, map, sx, sy);
             attackElement = getAtkElementResult.Elements;
             atkValue = getAtkElementResult.Value;
-            GetElementResult getDefElementResult = GetDefElement(dActor,  defValue, map, dx, dy);
+            GetElementResult getDefElementResult = GetDefElement(dActor, defValue, map, dx, dy);
             defineElement = getDefElementResult.Elements;
             defValue = getDefElementResult.Value;
-            
+
             if (sActor.type == ActorType.MOB)
             {
                 attackElement = Elements.Neutral;
@@ -2490,7 +2492,7 @@ namespace SagaMap.Skill
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
                 }
                 else
@@ -3230,7 +3232,7 @@ namespace SagaMap.Skill
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.ShowError(ex);
+                                    Logger.getLogger().Error(ex, ex.Message);
                                 }
                             }
 
@@ -3294,7 +3296,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            Logger.getLogger().Error(ex, ex.Message);
                         }
 
                         //伤害结算之前附加中毒效果,如果有涂毒而且目标没中毒的话
@@ -4642,7 +4644,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            Logger.getLogger().Error(ex, ex.Message);
                         }
                     }
                     else
@@ -5115,7 +5117,7 @@ namespace SagaMap.Skill
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.ShowError(ex);
+                                    Logger.getLogger().Error(ex, ex.Message);
                                 }
                             }
                         //吸血效果上
@@ -5146,7 +5148,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            Logger.getLogger().Error(ex, ex.Message);
                         }
 
                         arg.hp[index + counter] = damage;
@@ -6720,7 +6722,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return 0;
             }
         }
@@ -6757,7 +6759,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -7330,7 +7332,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 res = AttackResult.Miss;
                 return 0;
             }
@@ -7485,7 +7487,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return false;
             }
 
@@ -8006,7 +8008,8 @@ namespace SagaMap.Skill
             {
                 arg.affectedActors.Add(dActor);
                 arg.Init();
-                Logger.ShowWarning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")", null);
+                Logger.getLogger().Warning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")",
+                    null);
             }
         }
 
@@ -8766,73 +8769,73 @@ namespace SagaMap.Skill
                     case ActorType.SKILL:
                         return false;
                     case ActorType.PC:
+                    {
+                        //Logger.getLogger().Information("skillhandler");
+                        var target = (ActorPC)dActor;
+                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && target.Mode == PlayerMode.COLISEUM_MODE) ||
+                            (pc.Mode == PlayerMode.WRP && target.Mode == PlayerMode.WRP) ||
+                            (pc.Mode == PlayerMode.KNIGHT_WAR && target.Mode == PlayerMode.KNIGHT_WAR) ||
+                            ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
+                              pc.Mode == PlayerMode.KNIGHT_NORTH
+                              || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
+                              pc.Mode == PlayerMode.KNIGHT_WEST)
+                             && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                 target.Mode == PlayerMode.KNIGHT_NORTH
+                                 || target.Mode == PlayerMode.KNIGHT_ROCK || target.Mode == PlayerMode.KNIGHT_SOUTH ||
+                                 target.Mode == PlayerMode.KNIGHT_WEST)
+                            ))
                         {
-                            //Logger.ShowInfo("skillhandler");
-                            var target = (ActorPC)dActor;
-                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && target.Mode == PlayerMode.COLISEUM_MODE) ||
-                                (pc.Mode == PlayerMode.WRP && target.Mode == PlayerMode.WRP) ||
-                                (pc.Mode == PlayerMode.KNIGHT_WAR && target.Mode == PlayerMode.KNIGHT_WAR) ||
-                                ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                  pc.Mode == PlayerMode.KNIGHT_NORTH
-                                  || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
-                                  pc.Mode == PlayerMode.KNIGHT_WEST)
-                                 && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                     target.Mode == PlayerMode.KNIGHT_NORTH
-                                     || target.Mode == PlayerMode.KNIGHT_ROCK || target.Mode == PlayerMode.KNIGHT_SOUTH ||
-                                     target.Mode == PlayerMode.KNIGHT_WEST)
-                                ))
-                            {
-                                if ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                     pc.Mode == PlayerMode.KNIGHT_NORTH
-                                     || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
-                                     pc.Mode == PlayerMode.KNIGHT_WEST)
-                                    && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
-                                        target.Mode == PlayerMode.KNIGHT_NORTH
-                                        || target.Mode == PlayerMode.KNIGHT_ROCK ||
-                                        target.Mode == PlayerMode.KNIGHT_SOUTH || target.Mode == PlayerMode.KNIGHT_WEST)
-                                   )
-                                    //Logger.ShowInfo("skillhandler2");
-                                    if (pc.Mode == target.Mode)
-                                        return false;
-                                //Logger.ShowInfo("skillhandler3");
-                                if (pc.Party == target.Party && pc.Party != null)
+                            if ((pc.Mode == PlayerMode.KNIGHT_EAST || pc.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                 pc.Mode == PlayerMode.KNIGHT_NORTH
+                                 || pc.Mode == PlayerMode.KNIGHT_ROCK || pc.Mode == PlayerMode.KNIGHT_SOUTH ||
+                                 pc.Mode == PlayerMode.KNIGHT_WEST)
+                                && (target.Mode == PlayerMode.KNIGHT_EAST || target.Mode == PlayerMode.KNIGHT_FLOWER ||
+                                    target.Mode == PlayerMode.KNIGHT_NORTH
+                                    || target.Mode == PlayerMode.KNIGHT_ROCK ||
+                                    target.Mode == PlayerMode.KNIGHT_SOUTH || target.Mode == PlayerMode.KNIGHT_WEST)
+                               )
+                                //Logger.getLogger().Information("skillhandler2");
+                                if (pc.Mode == target.Mode)
                                     return false;
-                                if (target.PossessionTarget == 0)
-                                    return true;
+                            //Logger.getLogger().Information("skillhandler3");
+                            if (pc.Party == target.Party && pc.Party != null)
                                 return false;
-                                //Logger.ShowInfo("skillhandler4");
-                            }
-
+                            if (target.PossessionTarget == 0)
+                                return true;
                             return false;
+                            //Logger.getLogger().Information("skillhandler4");
                         }
+
+                        return false;
+                    }
                     case ActorType.PET:
+                    {
+                        var pet = (ActorPet)dActor;
+                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
+                            (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
+                            (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
                         {
-                            var pet = (ActorPet)dActor;
-                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
-                                (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
-                                (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
-                            {
-                                if (pc.Party == pet.Owner.Party)
-                                    return false;
-                                return true;
-                            }
-
-                            return false;
+                            if (pc.Party == pet.Owner.Party)
+                                return false;
+                            return true;
                         }
+
+                        return false;
+                    }
                     case ActorType.SHADOW:
+                    {
+                        var pet = (ActorShadow)dActor;
+                        if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
+                            (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
+                            (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
                         {
-                            var pet = (ActorShadow)dActor;
-                            if ((pc.Mode == PlayerMode.COLISEUM_MODE && pet.Owner.Mode == PlayerMode.COLISEUM_MODE) ||
-                                (pc.Mode == PlayerMode.WRP && pet.Owner.Mode == PlayerMode.WRP) ||
-                                (pc.Mode == PlayerMode.KNIGHT_WAR && pet.Owner.Mode == PlayerMode.KNIGHT_WAR))
-                            {
-                                if (pc.Party == pet.Owner.Party)
-                                    return false;
-                                return true;
-                            }
-
-                            return false;
+                            if (pc.Party == pet.Owner.Party)
+                                return false;
+                            return true;
                         }
+
+                        return false;
+                    }
                 }
             }
             else if (sActor.type == ActorType.MOB)
@@ -10064,7 +10067,7 @@ namespace SagaMap.Skill
 
         public void LoadSkill(string path)
         {
-            Logger.ShowInfo("開始加載技能...");
+            Logger.getLogger().Information("開始加載技能...");
             var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
             var provider = new CSharpCodeProvider(dic);
             var skillcount = 0;
@@ -10080,17 +10083,17 @@ namespace SagaMap.Skill
                     if (newAssembly != null)
                     {
                         tmp = LoadAssembly(newAssembly);
-                        Logger.ShowInfo(string.Format("Containing {0} Skills", tmp));
+                        Logger.getLogger().Information(string.Format("Containing {0} Skills", tmp));
                         skillcount += tmp;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
-            Logger.ShowInfo(string.Format("外置技能加載數：{0}", skillcount));
+            Logger.getLogger().Information(string.Format("外置技能加載數：{0}", skillcount));
         }
 
         private Assembly CompileScript(string[] Source, CodeDomProvider Provider)
@@ -10119,8 +10122,8 @@ namespace SagaMap.Skill
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning)
                     {
-                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
-                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.getLogger().Error("Compile Error:" + error.ErrorText, null);
+                        Logger.getLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -10157,13 +10160,13 @@ namespace SagaMap.Skill
                         else
                         {
                             if (skillID != 0)
-                                Logger.ShowWarning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                                Logger.getLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     skillID, npcType.FullName));
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     count++;
@@ -10240,7 +10243,7 @@ namespace SagaMap.Skill
             skillHandlers.Add(1114, new LuckyGoddess()); //18.08.04 lv 40
             skillHandlers.Add(2558, new FalseMoney()); //18.05.13 lv 47
             skillHandlers.Add(2559, new TimeIsMoney()); //16.06.08 lv50
-                                                        //no 35 40 45
+            //no 35 40 45
 
             //#endregion
 
@@ -10275,7 +10278,7 @@ namespace SagaMap.Skill
             skillHandlers.Add(992, new TreasureMaster()); //2018/4/5实装,job45
             skillHandlers.Add(2551, new PillageAct()); //2018/4/5实装,job47
             skillHandlers.Add(2552, new ArtFullTrap()); //2018/5/14,job50
-                                                        //缺少35、40
+            //缺少35、40
 
             //#endregion
 
@@ -10443,7 +10446,7 @@ namespace SagaMap.Skill
             skillHandlers.Add(2547, new MistletoeShooting()); //2018.1.18实装,Lv47
             skillHandlers.Add(2548, new MistletoeShootingSEQ()); //2018.1.18实装,Lv47
             skillHandlers.Add(2546, new PlantField()); //2018.1.18实装,Lv50
-                                                       //缺少40、45
+            //缺少40、45
 
             //#endregion
 

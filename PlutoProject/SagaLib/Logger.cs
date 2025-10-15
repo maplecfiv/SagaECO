@@ -1,19 +1,28 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Serilog;
 
 namespace SagaLib
 {
     public class Logger
     {
-        private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        public static NLog.Logger InitLogger<T>()
+        private static readonly Serilog.Core.Logger _logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateLogger();
+
+        public static Serilog.Core.Logger getLogger()
+        {
+            return _logger;
+        }
+
+        public static Serilog.Core.Logger InitLogger<T>()
         {
             {
                 // instantiate and configure logging. Using serilog here, to log to console and a text-file.
                 return _logger;
-
             }
         }
 
@@ -138,7 +147,7 @@ namespace SagaLib
 
         public static Logger defaultlogger;
         public static Logger CurrentLogger = defaultlogger;
-        public static NLog.Logger DefaultLogger = null;
+        public static Serilog.Core.Logger DefaultLogger = null;
         private readonly string filename;
 
         public LogContent LogLevel = (LogContent)31;
@@ -365,7 +374,7 @@ namespace SagaLib
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.Error(e, e.Message);
             }
         }
 
@@ -385,7 +394,7 @@ namespace SagaLib
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.Error(e, e.Message);
             }
         }
 

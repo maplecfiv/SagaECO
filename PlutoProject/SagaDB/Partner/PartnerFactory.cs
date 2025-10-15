@@ -118,7 +118,7 @@ namespace SagaDB.Partner
                     }
                     catch (Exception exception)
                     {
-                        Logger.ShowError(exception, null);
+                        Logger.getLogger().Error(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -138,8 +138,8 @@ namespace SagaDB.Partner
 
                     if (partners_info.ContainsKey(partner.id))
                     {
-                        Logger.ShowError("重复的PartnerID:" + partner.id + ",[" + partners_info[partner.id].name +
-                                         "]的已存在" + ",让[" + partner.name + "]没有被添加到Info。");
+                        Logger.getLogger().Error("重复的PartnerID:" + partner.id + ",[" + partners_info[partner.id].name +
+                                                 "]的已存在" + ",让[" + partner.name + "]没有被添加到Info。");
                     }
                     else
                     {
@@ -157,8 +157,8 @@ namespace SagaDB.Partner
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing Partner Info!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing Partner Info!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -191,11 +191,11 @@ namespace SagaDB.Partner
                     if (Partners.ContainsKey(id))
                         Partners[id].base_rank = baserank;
                     else
-                        Logger.ShowError("不存在ID为" + id + "的伙伴，设置初始RANK失败。");
+                        Logger.getLogger().Error("不存在ID为" + id + "的伙伴，设置初始RANK失败。");
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
 
@@ -295,7 +295,7 @@ namespace SagaDB.Partner
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -321,7 +321,7 @@ namespace SagaDB.Partner
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -353,7 +353,7 @@ namespace SagaDB.Partner
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -397,7 +397,7 @@ namespace SagaDB.Partner
                     }
                     catch (Exception exception)
                     {
-                        Logger.ShowError(exception, null);
+                        Logger.getLogger().Error(exception, null);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -500,8 +500,9 @@ namespace SagaDB.Partner
 
                     if (Partners.ContainsKey(partner.id))
                     {
-                        Logger.ShowError("重复的PartnerID:" + partner.id + ",[" + Partners[partner.id].name + "]的已存在" +
-                                         ",让[" + partner.name + "]没有被添加到DB。");
+                        Logger.getLogger().Error("重复的PartnerID:" + partner.id + ",[" + Partners[partner.id].name +
+                                                 "]的已存在" +
+                                                 ",让[" + partner.name + "]没有被添加到DB。");
                     }
                     else
                     {
@@ -519,8 +520,8 @@ namespace SagaDB.Partner
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing Partner DB!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing Partner DB!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -564,7 +565,7 @@ namespace SagaDB.Partner
 
                     if (partnerfoods_db.ContainsKey(food.itemID))
                     {
-                        Logger.ShowError("重复的PartnerFoodID:" + food.itemID + ",已存在,没有被添加到DB。");
+                        Logger.getLogger().Error("重复的PartnerFoodID:" + food.itemID + ",已存在,没有被添加到DB。");
                     }
                     else
                     {
@@ -582,8 +583,8 @@ namespace SagaDB.Partner
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing Partner Food DB!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing Partner Food DB!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -663,7 +664,7 @@ namespace SagaDB.Partner
 
                     if (partnerequips_db.ContainsKey(equip.itemID))
                     {
-                        Logger.ShowError("重复的PartnerEquipID:" + equip.itemID + ",已存在,没有被添加到DB。");
+                        Logger.getLogger().Error("重复的PartnerEquipID:" + equip.itemID + ",已存在,没有被添加到DB。");
                     }
                     else
                     {
@@ -681,8 +682,8 @@ namespace SagaDB.Partner
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing Partner Equip DB!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing Partner Equip DB!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }
@@ -732,7 +733,7 @@ namespace SagaDB.Partner
 
                     if (actcubes_db_itemID.ContainsKey(cube.itemID))
                     {
-                        Logger.ShowError("重复的PartnerCubeItemID:" + cube.itemID + ",已存在,没有被添加到DB。");
+                        Logger.getLogger().Error("重复的PartnerCubeItemID:" + cube.itemID + ",已存在,没有被添加到DB。");
                     }
                     else
                     {
@@ -742,7 +743,7 @@ namespace SagaDB.Partner
 
                     if (actcubes_db_uniqueID.ContainsKey(cube.uniqueID))
                     {
-                        Logger.ShowError("重复的PartnerCubeUniqueID:" + cube.uniqueID + ",已存在,没有被添加到DB。");
+                        Logger.getLogger().Error("重复的PartnerCubeUniqueID:" + cube.uniqueID + ",已存在,没有被添加到DB。");
                     }
                     else
                     {
@@ -760,8 +761,8 @@ namespace SagaDB.Partner
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing Partner Cube DB!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing Partner Cube DB!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }

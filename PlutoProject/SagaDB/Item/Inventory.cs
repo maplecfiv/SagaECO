@@ -282,8 +282,8 @@ namespace SagaDB.Item
                     var rest = (ushort)(oriItem.Stack - 9999);
                     if (rest > 9999)
                     {
-                        Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                           "), setting count to the maximal value(9999)");
+                        Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                                   "), setting count to the maximal value(9999)");
                         rest = 9999;
                     }
 
@@ -301,8 +301,8 @@ namespace SagaDB.Item
 
                 if (item.Stack > 9999)
                 {
-                    Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                       "), setting count to the maximal value(9999)");
+                    Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                               "), setting count to the maximal value(9999)");
                     item.Stack = 9999;
                 }
 
@@ -314,7 +314,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return InventoryAddResult.ERROR;
             }
         }
@@ -392,8 +392,8 @@ namespace SagaDB.Item
                         var rest = (ushort)(oriItem.Stack - 9999);
                         if (rest > 9999)
                         {
-                            Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                               "), setting count to the maximal value(9999)");
+                            Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                                       "), setting count to the maximal value(9999)");
                             rest = 9999;
                         }
 
@@ -422,8 +422,8 @@ namespace SagaDB.Item
 
                     if (item.Stack > 9999)
                     {
-                        Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                           "), setting count to the maximal value(9999)");
+                        Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                                   "), setting count to the maximal value(9999)");
                         item.Stack = 9999;
                     }
 
@@ -549,7 +549,7 @@ namespace SagaDB.Item
 
         public Item GetItem2()
         {
-            //Logger.ShowError(string.Format("Get:{0}", DBID));
+            //Logger.getLogger().Error(string.Format("Get:{0}", DBID));
             for (var i = 2; i < 32; i++)
                 if (i < 6 || i == 31)
                 {
@@ -570,7 +570,7 @@ namespace SagaDB.Item
                     continue;
                 var item = Equipments[(EnumEquipSlot)i];
                 if (item.ChangeMode)
-                    //Logger.ShowError(string.Format("Get1:{0}", item.DBID));
+                    //Logger.getLogger().Error(string.Format("Get1:{0}", item.DBID));
                     return item;
             }
 
@@ -580,7 +580,7 @@ namespace SagaDB.Item
                     continue;
                 var item = Parts[(EnumEquipSlot)i];
                 if (item.ChangeMode)
-                    //Logger.ShowError(string.Format("Get2:{0}", item.DBID));
+                    //Logger.getLogger().Error(string.Format("Get2:{0}", item.DBID));
                     return item;
             }
 
@@ -689,7 +689,7 @@ namespace SagaDB.Item
                     if (item.Stack == 0)
                     {
                         list.Remove(item);
-                        //Logger.ShowError("0 "+list.Remove(item).ToString()); ;
+                        //Logger.getLogger().Error("0 "+list.Remove(item).ToString()); ;
                         return InventoryDeleteResult.ALL_DELETED;
                     }
 
@@ -934,7 +934,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return false;
             }
         }
@@ -1422,7 +1422,7 @@ namespace SagaDB.Item
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, false))
-                                    Logger.ShowWarning(string.Format(
+                                    Logger.getLogger().Warning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }
@@ -1454,7 +1454,7 @@ namespace SagaDB.Item
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, true))
-                                    Logger.ShowWarning(string.Format(
+                                    Logger.getLogger().Warning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }
@@ -1468,7 +1468,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1514,7 +1514,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
     }

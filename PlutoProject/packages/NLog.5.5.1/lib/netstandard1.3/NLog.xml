@@ -39,7 +39,7 @@
             {
               foreach (var book in books) {
                 if (book != null) // Warning: Expression is always true
-                 Console.WriteLine(book.ToUpper());
+                 Logger.getLogger().Information(book.ToUpper());
               }
             }
             </code></example>
@@ -56,7 +56,7 @@
               foreach (var book in books)
               {
                 // Warning: Possible 'System.NullReferenceException'
-                Console.WriteLine(book.ToUpper());
+                Logger.getLogger().Information(book.ToUpper());
               }
             }
             </code></example>

@@ -253,7 +253,7 @@ namespace SagaLogin.Network.Client
             catch (Exception ex)
             {
                 SendResult(1, "礼物处理失败！" + ex.Message);
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -362,7 +362,7 @@ namespace SagaLogin.Network.Client
 
         public void OnSendVersion(CSMG_SEND_VERSION p)
         {
-            Logger.ShowInfo("Client(Version:" + p.GetVersion() + ") is trying to connect...");
+            Logger.getLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
             client_Version = p.GetVersion();
 
             var args = "FF FF E8 6A 6A CA DC E8 06 05 2B 29 F8 96 2F 86 7C AB 2A 57 AD 30";
@@ -684,7 +684,7 @@ namespace SagaLogin.Network.Client
                 }
                 else
                 {
-                    Logger.ShowWarning("No map server registered for mapID:" + selectedChar.MapID);
+                    Logger.getLogger().Warning("No map server registered for mapID:" + selectedChar.MapID);
                     p1.ServerID = 255;
                     p1.IP = "127.0.0.001";
                     p1.Port = 10000;
@@ -722,7 +722,7 @@ namespace SagaLogin.Network.Client
             var p2 = new SSMG_CHAR_DATA();
             p2.Chars = account.Characters;
             NetIo.SendPacket(p2);
-            //Logger.ShowInfo(this.netIO.DumpData(p2));
+            //Logger.getLogger().Information(this.netIO.DumpData(p2));
 
             var p3 = new SSMG_CHAR_EQUIP();
             p3.Characters = account.Characters;
@@ -798,7 +798,7 @@ namespace SagaLogin.Network.Client
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return "LoginClient";
             }
         }
@@ -813,7 +813,7 @@ namespace SagaLogin.Network.Client
             {
                 if (IsMapServer)
                 {
-                    Logger.ShowWarning("A map server has just disconnected...");
+                    Logger.getLogger().Warning("A map server has just disconnected...");
                     foreach (var i in server.HostedMaps)
                         if (MapServerManager.Instance.MapServers.ContainsKey(i))
                             MapServerManager.Instance.MapServers.Remove(i);
@@ -828,11 +828,11 @@ namespace SagaLogin.Network.Client
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     if (account != null)
-                        Logger.ShowInfo(account.Name + " logged out.");
+                        Logger.getLogger().Information(account.Name + " logged out.");
                 }
             }
 
@@ -1060,7 +1060,8 @@ namespace SagaLogin.Network.Client
             p1.StartupSetting = Configuration.Configuration.Instance.StartupSetting;
             NetIo.SendPacket(p1);
 
-            Logger.ShowInfo(string.Format("Mapserver:{0}:{1} is requesting configuration...", server.IP, server.port));
+            Logger.getLogger().Information(string.Format("Mapserver:{0}:{1} is requesting configuration...", server.IP,
+                server.port));
         }
 
         public void OnInternMapRegister(INTERN_LOGIN_REGISTER p)
@@ -1072,7 +1073,7 @@ namespace SagaLogin.Network.Client
                 this.server = server;
                 if (server.Password != Configuration.Configuration.Instance.Password)
                 {
-                    Logger.ShowWarning(string.Format(
+                    Logger.getLogger().Warning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
                         server.Password));
                     return;
@@ -1082,7 +1083,7 @@ namespace SagaLogin.Network.Client
             {
                 if (server.Password != Configuration.Configuration.Instance.Password)
                 {
-                    Logger.ShowWarning(string.Format(
+                    Logger.getLogger().Warning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
                         server.Password));
                     return;
@@ -1102,10 +1103,10 @@ namespace SagaLogin.Network.Client
                 }
                 else
                 {
-                    //Logger.ShowWarning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
+                    //Logger.getLogger().Warning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
                 }
 
-            Logger.ShowInfo(
+            Logger.getLogger().Information(
                 string.Format("{0} maps registered for MapServer:{1}:{2}...", count, server.IP, server.port));
         }
     }

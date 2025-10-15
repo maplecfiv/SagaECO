@@ -196,7 +196,7 @@ namespace SagaMap.Tasks.Golem
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 golem.Tasks.Remove("GolemTask");
                 Deactivate();
             }

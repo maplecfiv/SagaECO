@@ -11,12 +11,14 @@ using SagaLib;
 using SagaLib.Properties;
 using SagaLib.VirtualFileSytem;
 using SagaLogin.Manager;
+using Serilog;
 
 namespace SagaLogin
 {
     public class LoginServer
     {
-        private static readonly NLog.Logger _logger = Logger.InitLogger<LoginServer>();
+        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<LoginServer>();
+
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -45,9 +47,10 @@ namespace SagaLogin
                     default:
                         return false;
                 }
-            }catch (Exception exception)
+            }
+            catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return false;
             }
         }
@@ -58,24 +61,24 @@ namespace SagaLogin
 
             if (!charDB.isConnected())
             {
-                Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.ShowInfo("Trying to reconnect to char db server ..", null);
+                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
                 charDB.Connect();
                 if (!charDB.isConnected())
                 {
-                    Logger.ShowError("Failed.. Trying again in 10sec", null);
+                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.ShowInfo("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.ShowInfo("Clients can now connect again", null);
+                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.getLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -87,24 +90,24 @@ namespace SagaLogin
 
             if (!accountDB.isConnected())
             {
-                Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.ShowInfo("Trying to reconnect to char db server ..", null);
+                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected())
                 {
-                    Logger.ShowError("Failed.. Trying again in 10sec", null);
+                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.ShowInfo("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.ShowInfo("Clients can now connect again", null);
+                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.getLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -129,9 +132,6 @@ namespace SagaLogin
             Console.CancelKeyPress += ShutingDown;
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            var Log = new Logger("SagaLogin.log");
-            Logger.defaultlogger = Log;
-            Logger.CurrentLogger = Log;
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
@@ -142,7 +142,7 @@ namespace SagaLogin
             //Console.ResetColor();
 
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.ShowInfo("Version Informations:");
+            Logger.getLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaLogin");
             //Console.ForegroundColor = ConsoleColor.White;
@@ -151,20 +151,20 @@ namespace SagaLogin
             _logger.Debug("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                              GlobalInfo.ModifyDate + ")");
+                          GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                              GlobalInfo.ModifyDate + ")");
+                          GlobalInfo.ModifyDate + ")");
 
-            Logger.ShowInfo("Starting Initialization...", null);
+            Logger.getLogger().Information("Starting Initialization...", null);
 
             Configuration.Configuration.Instance.Initialization("./Config/SagaLogin.xml");
 
             Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
-            Logger.ShowInfo("Initializing VirtualFileSystem...");
+            Logger.getLogger().Information("Initializing VirtualFileSystem...");
 #if FreeVersion1
             VirtualFileSystemManager.Instance.Init(FileSystems.LPK, "./DB/DB.lpk");
 #else
@@ -179,8 +179,8 @@ namespace SagaLogin
 
             if (!StartDatabase())
             {
-                Logger.ShowError("cannot connect to dbserver", null);
-                Logger.ShowError("Shutting down in 20sec.", null);
+                Logger.getLogger().Error("cannot connect to dbserver", null);
+                Logger.getLogger().Error("Shutting down in 20sec.", null);
                 Thread.Sleep(20000);
                 return;
             }
@@ -188,8 +188,8 @@ namespace SagaLogin
             LoginClientManager.Instance.Start();
             if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port))
             {
-                Logger.ShowError("cannot listen on port: " + Configuration.Configuration.Instance.Port);
-                Logger.ShowInfo("Shutting down in 20sec.");
+                Logger.getLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
+                Logger.getLogger().Information("Shutting down in 20sec.");
                 Thread.Sleep(20000);
                 return;
             }
@@ -216,15 +216,15 @@ namespace SagaLogin
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
         {
-            Logger.ShowInfo("Closing.....", null);
+            Logger.getLogger().Information("Closing.....", null);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            Logger.ShowError("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.ShowError("Error Message:" + ex.Message);
-            Logger.ShowError("Call Stack:" + ex.StackTrace);
+            Logger.getLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
+            Logger.getLogger().Error("Error Message:" + ex.Message);
+            Logger.getLogger().Error("Call Stack:" + ex.StackTrace);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace SagaMap.Tasks.System
             }
             catch (Exception exception)
             {
-                SagaLib.Logger.ShowError(exception, null);
+                SagaLib.Logger.getLogger().Error(exception, null);
             }
         }
     }

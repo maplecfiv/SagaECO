@@ -21,7 +21,7 @@ namespace SagaMap.Tasks.System
             {
                 var evnt = ScriptManager.Instance.Events[ID];
                 evnt.OnEvent(ScriptManager.Instance.VariableHolder);
-                Logger.ShowInfo("已成功加載腳本：" + evnt);
+                Logger.getLogger().Information("已成功加載腳本：" + evnt);
             }
 
             Deactivate();

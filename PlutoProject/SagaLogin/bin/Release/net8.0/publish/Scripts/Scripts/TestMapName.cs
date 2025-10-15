@@ -16,8 +16,8 @@ namespace SagaScript.Scripts
 
         public override void OnEvent(ActorPC pc)
         {
-            Console.WriteLine(pc.SaveMap);
-            Console.WriteLine(GetMapName(pc.SaveMap));
+            Logger.getLogger().Information(pc.SaveMap);
+            Logger.getLogger().Information(GetMapName(pc.SaveMap));
         }
     }
 }

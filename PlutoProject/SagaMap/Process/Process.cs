@@ -38,7 +38,7 @@ namespace SagaMap.Process
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -125,12 +125,12 @@ namespace SagaMap.Process
             //Check if Char is online
             MapClient i;
             var chr = from c in MapClientManager.Instance.OnlinePlayer
-                      where c.Character.Name == pc.Name
-                      select c;
+                where c.Character.Name == pc.Name
+                select c;
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.ShowInfo("API Command execute successfully. (" + pc.Name + ")");
+            Logger.getLogger().Information("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;
@@ -145,15 +145,15 @@ namespace SagaMap.Process
 
             if (pc == null)
             {
-                Logger.ShowError("NO SUCH CHARID" + charid);
+                Logger.getLogger().Error("NO SUCH CHARID" + charid);
                 return false;
             }
 
             //Check if Char is online
             MapClient i;
             var chr = from c in MapClientManager.Instance.OnlinePlayer
-                      where c.Character.Name == pc.Name
-                      select c;
+                where c.Character.Name == pc.Name
+                select c;
             if (chr.Count() == 0)
             {
                 try
@@ -162,16 +162,17 @@ namespace SagaMap.Process
                 }
                 catch
                 {
-                    Logger.ShowError("ERROR ON SAVE OFFLINE APIITEM");
+                    Logger.getLogger().Error("ERROR ON SAVE OFFLINE APIITEM");
                 }
 
-                Logger.ShowInfo("Player: " + pc.Name + " is offline, Item will be process on next login");
+                Logger.getLogger()
+                    .Information("Player: " + pc.Name + " is offline, Item will be process on next login");
                 return true;
             }
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.ShowInfo("API Command execute successfully. (" + pc.Name + ")");
+            Logger.getLogger().Information("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;

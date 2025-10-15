@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
-
 using SagaDB;
 using SagaLib;
 
@@ -18,8 +17,12 @@ namespace SagaValidation.Network.Client
 
         public enum SESSION_STATE
         {
-            LOGIN, MAP, REDIRECTING, DISCONNECTED
+            LOGIN,
+            MAP,
+            REDIRECTING,
+            DISCONNECTED
         }
+
         public SESSION_STATE state;
 
         public ValidationClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
@@ -29,10 +32,11 @@ namespace SagaValidation.Network.Client
             NetIo.SetMode(NetIO.Mode.Server);
             if (NetIo.sock.Connected) OnConnect();
         }
+
         public override void OnConnect()
         {
-
         }
+
         public void OnLogin(Packets.Client.CSMG_LOGIN p)
         {
             p.GetContent();
@@ -78,7 +82,6 @@ namespace SagaValidation.Network.Client
                     return;
                     //TCP Connection terminated.
                 }
-
             }
             else
             {
@@ -90,9 +93,10 @@ namespace SagaValidation.Network.Client
                 //TCP Connection terminated.
             }
         }
+
         public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p)
         {
-            Logger.ShowInfo("Client(Version:" + p.GetVersion() + ") is trying to connect...");
+            Logger.getLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
             client_Version = p.GetVersion();
 
             string args = "FF FF E8 6A 6A CA DC E8 06 05 2B 29 F8 96 2F 86 7C AB 2A 57 AD 30";
@@ -113,16 +117,17 @@ namespace SagaValidation.Network.Client
             p2.BackWord = backWord;
             NetIo.SendPacket(p2);
         }
+
         public void OnPing(Packets.Client.CSMG_PING p)
         {
             Packets.Server.SSMG_PONG p1 = new Packets.Server.SSMG_PONG();
             NetIo.SendPacket(p1);
         }
+
         public void OnUnknownList(Packets.Client.CSMG_UNKNOWN_LIST p)
         {
             Packets.Server.SSMG_UNKNOWN_RETURN p1 = new Packets.Server.SSMG_UNKNOWN_RETURN();
             NetIo.SendPacket(p1);
         }
-
     }
 }

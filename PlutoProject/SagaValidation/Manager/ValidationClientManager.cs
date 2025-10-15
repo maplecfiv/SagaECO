@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
-
 using SagaLib;
 using SagaValidation.Network.Client;
 
@@ -11,6 +10,7 @@ namespace SagaValidation.Manager
     {
         List<ValidationClient> clients;
         public Thread check;
+
         ValidationClientManager()
         {
             clients = new List<ValidationClient>();
@@ -22,13 +22,12 @@ namespace SagaValidation.Manager
             CommandTable.Add(0x000A, new Packets.Client.CSMG_PING());
             WaitressQueue = new AutoResetEvent(true);
         }
+
         public static ValidationClientManager Instance
         {
-            get
-            {
-                return Nested.instance;
-            }
+            get { return Nested.instance; }
         }
+
         class Nested
         {
             // Explicit static constructor to tell C# compiler
@@ -39,6 +38,7 @@ namespace SagaValidation.Manager
 
             internal static readonly ValidationClientManager instance = new ValidationClientManager();
         }
+
         /// <summary>
         /// Connects new clients
         /// </summary>
@@ -47,12 +47,11 @@ namespace SagaValidation.Manager
             for (int i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
                 Socket sock = Listener.AcceptSocket();
-                Logger.ShowInfo("New client from: " + sock.RemoteEndPoint.ToString(), null);
+                Logger.getLogger().Information("New client from: " + sock.RemoteEndPoint.ToString(), null);
 
                 ValidationClient client = new ValidationClient(sock, CommandTable);
                 clients.Add(client);
             }
         }
     }
-
 }

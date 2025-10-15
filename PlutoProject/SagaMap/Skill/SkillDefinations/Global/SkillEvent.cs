@@ -47,7 +47,7 @@ namespace SagaMap.Skill.SkillDefinations.Global
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             //ClientManager.LeaveCriticalArea();

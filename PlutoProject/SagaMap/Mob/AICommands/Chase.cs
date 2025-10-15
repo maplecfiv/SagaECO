@@ -107,7 +107,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -266,7 +266,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
+                Logger.getLogger().Error(ex, null);
                 Status = CommandStatus.FINISHED;
             }
         }

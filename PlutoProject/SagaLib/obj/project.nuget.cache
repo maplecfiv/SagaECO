@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "c8mIGSXOqxI=",
+  "dgSpecHash": "YaoV/04Bkso=",
   "success": true,
   "projectFilePath": "/home/maple/projects/SagaECO/PlutoProject/SagaLib/SagaLib.csproj",
   "expectedPackageFiles": [
@@ -15,7 +15,8 @@
     "/home/maple/.nuget/packages/microsoft.extensions.options/6.0.1/microsoft.extensions.options.6.0.1.nupkg.sha512",
     "/home/maple/.nuget/packages/microsoft.extensions.primitives/6.0.1/microsoft.extensions.primitives.6.0.1.nupkg.sha512",
     "/home/maple/.nuget/packages/microsoft.visualbasic/10.3.0/microsoft.visualbasic.10.3.0.nupkg.sha512",
-    "/home/maple/.nuget/packages/nlog/5.5.1/nlog.5.5.1.nupkg.sha512",
+    "/home/maple/.nuget/packages/serilog/4.3.0/serilog.4.3.0.nupkg.sha512",
+    "/home/maple/.nuget/packages/serilog.sinks.console/6.0.0/serilog.sinks.console.6.0.0.nupkg.sha512",
     "/home/maple/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
     "/home/maple/.nuget/packages/system.componentmodel.annotations/5.0.0/system.componentmodel.annotations.5.0.0.nupkg.sha512",
     "/home/maple/.nuget/packages/system.configuration.configurationmanager/8.0.1/system.configuration.configurationmanager.8.0.1.nupkg.sha512",

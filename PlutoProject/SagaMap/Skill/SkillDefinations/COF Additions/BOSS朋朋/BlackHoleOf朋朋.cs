@@ -100,7 +100,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
 
                 //解开同步锁

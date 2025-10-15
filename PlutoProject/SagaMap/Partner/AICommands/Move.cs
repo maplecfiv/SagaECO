@@ -85,7 +85,7 @@ namespace SagaMap.Partner.AICommands
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
+                Logger.getLogger().Error(ex, null);
             }
         }
 

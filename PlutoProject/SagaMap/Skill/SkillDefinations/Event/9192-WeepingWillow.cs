@@ -68,7 +68,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

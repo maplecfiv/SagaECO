@@ -13,7 +13,6 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/Microsoft.Extensions.Logging.Abstractions.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/Microsoft.Extensions.Options.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/Microsoft.Extensions.Primitives.dll
-/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/NLog.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/System.Configuration.ConfigurationManager.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/System.Data.OleDb.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/System.Diagnostics.EventLog.dll
@@ -41,3 +40,5 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/.NET/Release/net8.0/SagaLogin.genruntimeconfig.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/obj/.NET/Release/net8.0/ref/SagaLogin.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/log4net.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/Serilog.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/.NET/Release/net8.0/Serilog.Sinks.Console.dll

@@ -32,7 +32,7 @@ namespace SagaDB.Item
                 return f;
             }
 
-            Logger.ShowError("No Furniture Found! (" + id + ")");
+            Logger.getLogger().Error("No Furniture Found! (" + id + ")");
             return null;
         }
 

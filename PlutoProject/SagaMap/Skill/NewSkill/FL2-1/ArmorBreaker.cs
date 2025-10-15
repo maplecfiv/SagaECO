@@ -52,7 +52,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
                 lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime);
                 if (lifetime > 0)
                 {
-                    Logger.ShowError(dActor.Status.def_add_skill.ToString());
+                    Logger.getLogger().Error(dActor.Status.def_add_skill.ToString());
                     var skill = new DefaultBuff(args.skill, dActor, "ArmorBreaker", lifetime);
                     skill.OnAdditionStart += StartEventHandler;
                     skill.OnAdditionEnd += EndEventHandler;

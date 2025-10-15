@@ -12,7 +12,8 @@ namespace SagaDB.Skill
 {
     public class SkillFactory : Singleton<SkillFactory>
     {
-        private static readonly NLog.Logger _logger = Logger.InitLogger<SkillFactory>();
+        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<SkillFactory>();
+
         public enum SkillPaga
         {
             p1,
@@ -145,7 +146,7 @@ namespace SagaDB.Skill
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadOne(f);
-            Logger.ShowInfo("Skill list for jobs loaded...");
+            Logger.getLogger().Information("Skill list for jobs loaded...");
         }
 
         public int LoadOne(string f)
@@ -228,7 +229,7 @@ namespace SagaDB.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
 
             return total;
@@ -237,7 +238,7 @@ namespace SagaDB.Skill
         public void LoadSkillList(string path)
         {
             sklstpath = path;
-            Logger.ShowInfo("Now Loading Skill Tree...");
+            Logger.getLogger().Information("Now Loading Skill Tree...");
             var xml = new XmlDocument();
             try
             {
@@ -286,11 +287,11 @@ namespace SagaDB.Skill
                     }
                 }
 
-                Logger.ShowInfo("Done Loaded Skill Tree...");
+                Logger.getLogger().Information("Done Loaded Skill Tree...");
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -299,7 +300,7 @@ namespace SagaDB.Skill
             var sr = new StreamReader(path, encoding);
             var sw = new StreamWriter(path + ".csv", false, encoding);
             sw.WriteLine("#ID,Name,主动,最大Lv,Lv,JobLv,MP,SP,吟唱时间,延迟,射程,目标,目标2,范围,技能释放射程");
-            Logger.ShowInfo("Loading skill database...");
+            Logger.getLogger().Information("Loading skill database...");
             //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             var print = true;
@@ -358,14 +359,14 @@ namespace SagaDB.Skill
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError("Error on parsing skill db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing skill db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
 
             // _logger.Debug();
             //Console.ResetColor();
-            Logger.ShowInfo(count + " skills loaded.");
+            Logger.getLogger().Information(count + " skills loaded.");
             sw.Flush();
             sw.Close();
             sr.Close();
@@ -374,7 +375,7 @@ namespace SagaDB.Skill
         public void InitSSP(string path, Encoding encoding)
         {
             skdbpath = path;
-            Logger.ShowInfo("Now Loading Skill Data...");
+            Logger.getLogger().Information("Now Loading Skill Data...");
             var header = new List<sspHeader>();
             var line = "";
             var count = 0;
@@ -473,8 +474,8 @@ namespace SagaDB.Skill
             }
             catch (Exception ex)
             {
-                Logger.ShowError("技能DB解析错误!\r\n行信息: " + line);
-                Logger.ShowError(ex);
+                Logger.getLogger().Error("技能DB解析错误!\r\n行信息: " + line);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -541,8 +542,8 @@ namespace SagaDB.Skill
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing skill db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing skill db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
             }

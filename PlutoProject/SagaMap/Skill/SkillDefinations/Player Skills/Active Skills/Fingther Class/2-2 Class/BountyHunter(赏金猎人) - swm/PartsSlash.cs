@@ -89,7 +89,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
         //        }
         //        catch (Exception ex)
         //        {
-        //            Logger.ShowError(ex);
+        //            Logger.getLogger().Error(ex, ex.Message);
         //        }
         //        //解開同步鎖
         //        ClientManager.LeaveCriticalArea();

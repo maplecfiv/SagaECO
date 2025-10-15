@@ -150,95 +150,124 @@ namespace SagaMap.ActorEventHandlers
                     //this.Client.SendActorSpeed(mob, mob.BaseData.speed);
                     break;
                 case ActorType.PET:
-                    {
-                        var pet = (ActorPet)aActor;
-                        info = MapManager.Instance.GetMap(pet.MapID).Info;
-                        var p3 = new SSMG_ACTOR_PET_APPEAR();
-                        p3.ActorID = pet.ActorID;
+                {
+                    var pet = (ActorPet)aActor;
+                    info = MapManager.Instance.GetMap(pet.MapID).Info;
+                    var p3 = new SSMG_ACTOR_PET_APPEAR();
+                    p3.ActorID = pet.ActorID;
+                    p3.Union = 0x17;
+                    //if (pet.IsUnion)
+                    if (pet.Ride)
                         p3.Union = 0x17;
-                        //if (pet.IsUnion)
-                        if (pet.Ride)
-                            p3.Union = 0x17;
-                        p3.OwnerActorID = pet.Owner.ActorID;
-                        p3.OwnerCharID = pet.Owner.CharID;
-                        p3.OwnerLevel = pet.Owner.Level;
-                        p3.OwnerWRP = pet.Owner.WRPRanking;
-                        p3.Dir = (byte)(pet.Dir / 45);
-                        p3.HP = pet.HP;
-                        p3.MaxHP = pet.MaxHP;
-                        p3.Speed = pet.Speed;
-                        p3.X = Global.PosX16to8(pet.X, info.width);
-                        p3.Y = Global.PosY16to8(pet.Y, info.height);
-                        Client.NetIo.SendPacket(p3);
-                        Client.SendPetInfo();
-                    }
+                    p3.OwnerActorID = pet.Owner.ActorID;
+                    p3.OwnerCharID = pet.Owner.CharID;
+                    p3.OwnerLevel = pet.Owner.Level;
+                    p3.OwnerWRP = pet.Owner.WRPRanking;
+                    p3.Dir = (byte)(pet.Dir / 45);
+                    p3.HP = pet.HP;
+                    p3.MaxHP = pet.MaxHP;
+                    p3.Speed = pet.Speed;
+                    p3.X = Global.PosX16to8(pet.X, info.width);
+                    p3.Y = Global.PosY16to8(pet.Y, info.height);
+                    Client.NetIo.SendPacket(p3);
+                    Client.SendPetInfo();
+                }
                     break;
                 case ActorType.PARTNER:
-                    {
-                        var pet = (ActorPartner)aActor;
-                        info = MapManager.Instance.GetMap(pet.MapID).Info;
-                        var p3 = new SSMG_ACTOR_PET_APPEAR();
-                        p3.ActorID = pet.ActorID;
-                        p3.Union = 0x17;
-                        p3.OwnerActorID = pet.Owner.ActorID;
-                        p3.OwnerCharID = pet.Owner.CharID;
-                        p3.OwnerLevel = pet.Owner.Level;
-                        p3.OwnerWRP = pet.Owner.WRPRanking;
-                        p3.Dir = (byte)(pet.Dir / 45);
-                        p3.HP = pet.HP;
-                        p3.MaxHP = pet.MaxHP;
-                        p3.Speed = pet.Speed;
-                        p3.X = Global.PosX16to8(pet.X, info.width);
-                        p3.Y = Global.PosY16to8(pet.Y, info.height);
-                        Client.NetIo.SendPacket(p3);
-                        Client.SendPetInfo();
-                    }
+                {
+                    var pet = (ActorPartner)aActor;
+                    info = MapManager.Instance.GetMap(pet.MapID).Info;
+                    var p3 = new SSMG_ACTOR_PET_APPEAR();
+                    p3.ActorID = pet.ActorID;
+                    p3.Union = 0x17;
+                    p3.OwnerActorID = pet.Owner.ActorID;
+                    p3.OwnerCharID = pet.Owner.CharID;
+                    p3.OwnerLevel = pet.Owner.Level;
+                    p3.OwnerWRP = pet.Owner.WRPRanking;
+                    p3.Dir = (byte)(pet.Dir / 45);
+                    p3.HP = pet.HP;
+                    p3.MaxHP = pet.MaxHP;
+                    p3.Speed = pet.Speed;
+                    p3.X = Global.PosX16to8(pet.X, info.width);
+                    p3.Y = Global.PosY16to8(pet.Y, info.height);
+                    Client.NetIo.SendPacket(p3);
+                    Client.SendPetInfo();
+                }
                     break;
                 case ActorType.SKILL:
-                    {
-                        var skill = (ActorSkill)aActor;
-                        info = MapManager.Instance.GetMap(skill.MapID).Info;
-                        var p4 = new SSMG_ACTOR_SKILL_APPEAR();
-                        p4.ActorID = skill.ActorID;
-                        p4.Dir = (byte)(skill.Dir / 45);
-                        p4.Speed = skill.Speed;
-                        p4.SkillID = (ushort)skill.Skill.ID;
-                        p4.SkillLv = skill.Skill.Level;
-                        p4.X = Global.PosX16to8(skill.X, info.width);
-                        p4.Y = Global.PosY16to8(skill.Y, info.height);
-                        Client.NetIo.SendPacket(p4);
-                    }
+                {
+                    var skill = (ActorSkill)aActor;
+                    info = MapManager.Instance.GetMap(skill.MapID).Info;
+                    var p4 = new SSMG_ACTOR_SKILL_APPEAR();
+                    p4.ActorID = skill.ActorID;
+                    p4.Dir = (byte)(skill.Dir / 45);
+                    p4.Speed = skill.Speed;
+                    p4.SkillID = (ushort)skill.Skill.ID;
+                    p4.SkillLv = skill.Skill.Level;
+                    p4.X = Global.PosX16to8(skill.X, info.width);
+                    p4.Y = Global.PosY16to8(skill.Y, info.height);
+                    Client.NetIo.SendPacket(p4);
+                }
                     break;
                 case ActorType.SHADOW:
-                    {
-                        var pet = (ActorShadow)aActor;
-                        info = MapManager.Instance.GetMap(pet.MapID).Info;
-                        var p3 = new SSMG_ACTOR_PET_APPEAR();
-                        p3.ActorID = pet.ActorID;
-                        p3.Union = 0;
-                        p3.OwnerActorID = pet.Owner.ActorID;
-                        p3.OwnerCharID = pet.Owner.CharID;
-                        p3.Dir = (byte)(pet.Dir / 45);
-                        p3.HP = pet.HP;
-                        p3.MaxHP = pet.MaxHP;
-                        p3.Speed = pet.Speed;
-                        p3.X = Global.PosX16to8(pet.X, info.width);
-                        p3.Y = Global.PosY16to8(pet.Y, info.height);
-                        Client.NetIo.SendPacket(p3);
-                    }
+                {
+                    var pet = (ActorShadow)aActor;
+                    info = MapManager.Instance.GetMap(pet.MapID).Info;
+                    var p3 = new SSMG_ACTOR_PET_APPEAR();
+                    p3.ActorID = pet.ActorID;
+                    p3.Union = 0;
+                    p3.OwnerActorID = pet.Owner.ActorID;
+                    p3.OwnerCharID = pet.Owner.CharID;
+                    p3.Dir = (byte)(pet.Dir / 45);
+                    p3.HP = pet.HP;
+                    p3.MaxHP = pet.MaxHP;
+                    p3.Speed = pet.Speed;
+                    p3.X = Global.PosX16to8(pet.X, info.width);
+                    p3.Y = Global.PosY16to8(pet.Y, info.height);
+                    Client.NetIo.SendPacket(p3);
+                }
                     break;
                 case ActorType.EVENT:
-                    {
-                        var actor = (ActorEvent)aActor;
-                        var p3 = new SSMG_ACTOR_EVENT_APPEAR();
-                        p3.Actor = actor;
-                        Client.NetIo.SendPacket(p3);
-                    }
+                {
+                    var actor = (ActorEvent)aActor;
+                    var p3 = new SSMG_ACTOR_EVENT_APPEAR();
+                    p3.Actor = actor;
+                    Client.NetIo.SendPacket(p3);
+                }
                     break;
                 case ActorType.FURNITUREUNIT:
+                {
+                    var actor = (ActorFurnitureUnit)aActor;
+                    var item = ItemFactory.Instance.GetItem(actor.ItemID);
+                    if (item.BaseData.itemType == ItemType.FF_CASTLE)
                     {
-                        var actor = (ActorFurnitureUnit)aActor;
-                        var item = ItemFactory.Instance.GetItem(actor.ItemID);
+                        var p3 = new SSMG_FF_CASTLE_APPEAR();
+                        p3.ActorID = actor.ActorID;
+                        p3.X = 0xF6EE;
+                        p3.Z = 0xFF28;
+                        p3.Yaxis = 0x64;
+                        Client.NetIo.SendPacket(p3);
+                    }
+                    else
+                    {
+                        var p3 = new SSMG_FF_UNIT_APPEAR();
+                        p3.ActorID = actor.ActorID;
+                        p3.ItemID = actor.ItemID;
+                        p3.PictID = actor.PictID;
+                        p3.X = actor.X;
+                        p3.Z = actor.Z;
+                        p3.Yaxis = actor.Yaxis;
+                        Client.NetIo.SendPacket(p3);
+                    }
+
+                    break;
+                }
+                case ActorType.FURNITURE:
+                {
+                    var actor = (ActorFurniture)aActor;
+                    var item = ItemFactory.Instance.GetItem(actor.ItemID);
+                    if (Client.Map.ID > 90001000)
+                    {
                         if (item.BaseData.itemType == ItemType.FF_CASTLE)
                         {
                             var p3 = new SSMG_FF_CASTLE_APPEAR();
@@ -250,57 +279,7 @@ namespace SagaMap.ActorEventHandlers
                         }
                         else
                         {
-                            var p3 = new SSMG_FF_UNIT_APPEAR();
-                            p3.ActorID = actor.ActorID;
-                            p3.ItemID = actor.ItemID;
-                            p3.PictID = actor.PictID;
-                            p3.X = actor.X;
-                            p3.Z = actor.Z;
-                            p3.Yaxis = actor.Yaxis;
-                            Client.NetIo.SendPacket(p3);
-                        }
-
-                        break;
-                    }
-                case ActorType.FURNITURE:
-                    {
-                        var actor = (ActorFurniture)aActor;
-                        var item = ItemFactory.Instance.GetItem(actor.ItemID);
-                        if (Client.Map.ID > 90001000)
-                        {
-                            if (item.BaseData.itemType == ItemType.FF_CASTLE)
-                            {
-                                var p3 = new SSMG_FF_CASTLE_APPEAR();
-                                p3.ActorID = actor.ActorID;
-                                p3.X = 0xF6EE;
-                                p3.Z = 0xFF28;
-                                p3.Yaxis = 0x64;
-                                Client.NetIo.SendPacket(p3);
-                            }
-                            else
-                            {
-                                var p3 = new SSMG_FF_ACTOR_APPEAR(3);
-                                p3.ActorID = actor.ActorID;
-                                p3.ItemID = actor.ItemID;
-                                p3.PictID = actor.PictID;
-                                p3.X = actor.X;
-                                p3.Y = actor.Y;
-                                p3.Z = actor.Z;
-                                //p3.Zaxis = actor.Dir;
-                                p3.Xaxis = actor.Xaxis;
-                                p3.Yaxis = actor.Yaxis;
-                                p3.Zaxis = actor.Zaxis;
-                                p3.Motion = actor.Motion;
-                                p3.Name = actor.Name;
-                                Client.NetIo.SendPacket(p3);
-                            }
-                        }
-                        else
-                        {
-                            //byte type = 2;
-                            //if (this.Client.map.ID < 70000000)
-                            //    type = 1;
-                            var p3 = new SSMG_FG_ACTOR_APPEAR(1);
+                            var p3 = new SSMG_FF_ACTOR_APPEAR(3);
                             p3.ActorID = actor.ActorID;
                             p3.ItemID = actor.ItemID;
                             p3.PictID = actor.PictID;
@@ -316,34 +295,55 @@ namespace SagaMap.ActorEventHandlers
                             Client.NetIo.SendPacket(p3);
                         }
                     }
+                    else
+                    {
+                        //byte type = 2;
+                        //if (this.Client.map.ID < 70000000)
+                        //    type = 1;
+                        var p3 = new SSMG_FG_ACTOR_APPEAR(1);
+                        p3.ActorID = actor.ActorID;
+                        p3.ItemID = actor.ItemID;
+                        p3.PictID = actor.PictID;
+                        p3.X = actor.X;
+                        p3.Y = actor.Y;
+                        p3.Z = actor.Z;
+                        //p3.Zaxis = actor.Dir;
+                        p3.Xaxis = actor.Xaxis;
+                        p3.Yaxis = actor.Yaxis;
+                        p3.Zaxis = actor.Zaxis;
+                        p3.Motion = actor.Motion;
+                        p3.Name = actor.Name;
+                        Client.NetIo.SendPacket(p3);
+                    }
+                }
                     break;
                 case ActorType.GOLEM:
+                {
+                    var actor = (ActorGolem)aActor;
+                    info = MapManager.Instance.GetMap(actor.MapID).Info;
+                    var p3 = new SSMG_GOLEM_ACTOR_APPEAR();
+                    p3.ActorID = actor.ActorID;
+                    //p3.PictID = actor.Item.BaseData.marionetteID;
+                    p3.PictID = actor.PictID;
+                    p3.X = Global.PosX16to8(actor.X, info.width);
+                    p3.Y = Global.PosY16to8(actor.Y, info.height);
+                    p3.Speed = actor.Speed;
+                    p3.Dir = (byte)(actor.Dir / 45);
+                    p3.GolemID = actor.ActorID;
+                    p3.GolemType = actor.GolemType;
+                    p3.CharName = actor.Name;
+                    p3.Title = actor.Title;
+                    p3.Unknown = 1;
+                    Client.NetIo.SendPacket(p3);
+                    if (actor.MotionLoop)
                     {
-                        var actor = (ActorGolem)aActor;
-                        info = MapManager.Instance.GetMap(actor.MapID).Info;
-                        var p3 = new SSMG_GOLEM_ACTOR_APPEAR();
-                        p3.ActorID = actor.ActorID;
-                        //p3.PictID = actor.Item.BaseData.marionetteID;
-                        p3.PictID = actor.PictID;
-                        p3.X = Global.PosX16to8(actor.X, info.width);
-                        p3.Y = Global.PosY16to8(actor.Y, info.height);
-                        p3.Speed = actor.Speed;
-                        p3.Dir = (byte)(actor.Dir / 45);
-                        p3.GolemID = actor.ActorID;
-                        p3.GolemType = actor.GolemType;
-                        p3.CharName = actor.Name;
-                        p3.Title = actor.Title;
-                        p3.Unknown = 1;
-                        Client.NetIo.SendPacket(p3);
-                        if (actor.MotionLoop)
-                        {
-                            var parg = new ChatArg();
-                            parg.motion = (MotionType)actor.Motion;
-                            parg.loop = 1;
-                            var map = MapManager.Instance.GetMap(actor.MapID);
-                            map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.MOTION, parg, actor, false);
-                        }
+                        var parg = new ChatArg();
+                        parg.motion = (MotionType)actor.Motion;
+                        parg.loop = 1;
+                        var map = MapManager.Instance.GetMap(actor.MapID);
+                        map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.MOTION, parg, actor, false);
                     }
+                }
                     break;
             }
 
@@ -602,7 +602,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1075,7 +1075,7 @@ namespace SagaMap.ActorEventHandlers
             //Packets.Server.SSMG_ACTOR_PC_INFO p1 = new Packets.Server.SSMG_ACTOR_PC_INFO();
             var pc = (ActorPC)aActor;
             p.ActorID = aActor.ActorID;
-            //Logger.ShowInfo("OnPlayerMode");
+            //Logger.getLogger().Information("OnPlayerMode");
             switch (pc.Mode)
             {
                 case PlayerMode.NORMAL:

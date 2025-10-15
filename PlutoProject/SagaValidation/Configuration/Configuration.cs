@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Xml;
-
 using SagaLib;
 
 namespace SagaValidation
@@ -17,20 +16,84 @@ namespace SagaValidation
         bool serverclose = false;
 
         SagaLib.Version version;
-        public string DBHost { get { return dbhost; } set { dbhost = value; } }
-        public string DBUser { get { return dbuser; } set { dbuser = value; } }
-        public string DBPass { get { return dbpass; } set { dbpass = value; } }
-        public string DBName { get { return dbname; } set { dbname = value; } }
-        public string Password { get { return password; } set { password = value; } }
-        public int DBPort { get { return dbport; } set { dbport = value; } }
-        public int Port { get { return port; } set { port = value; } }
-        public int DBType { get { return dbType; } set { dbType = value; } }
 
-        public string ServerName { get { return servername; } set { servername = value; } }
-        public string ServerIP { get { return serverip; } set { serverip = value; } }
-        public SagaLib.Version Version { get { return version; } set { version = value; } }
-        public string ClientGameVersion { get { return clientgameversion; } set { clientgameversion = value; } }
-        public bool ServerClose { get { return serverclose; } set { serverclose = value; } }
+        public string DBHost
+        {
+            get { return dbhost; }
+            set { dbhost = value; }
+        }
+
+        public string DBUser
+        {
+            get { return dbuser; }
+            set { dbuser = value; }
+        }
+
+        public string DBPass
+        {
+            get { return dbpass; }
+            set { dbpass = value; }
+        }
+
+        public string DBName
+        {
+            get { return dbname; }
+            set { dbname = value; }
+        }
+
+        public string Password
+        {
+            get { return password; }
+            set { password = value; }
+        }
+
+        public int DBPort
+        {
+            get { return dbport; }
+            set { dbport = value; }
+        }
+
+        public int Port
+        {
+            get { return port; }
+            set { port = value; }
+        }
+
+        public int DBType
+        {
+            get { return dbType; }
+            set { dbType = value; }
+        }
+
+        public string ServerName
+        {
+            get { return servername; }
+            set { servername = value; }
+        }
+
+        public string ServerIP
+        {
+            get { return serverip; }
+            set { serverip = value; }
+        }
+
+        public SagaLib.Version Version
+        {
+            get { return version; }
+            set { version = value; }
+        }
+
+        public string ClientGameVersion
+        {
+            get { return clientgameversion; }
+            set { clientgameversion = value; }
+        }
+
+        public bool ServerClose
+        {
+            get { return serverclose; }
+            set { serverclose = value; }
+        }
 
         public string DBEncoding
         {
@@ -39,15 +102,19 @@ namespace SagaValidation
                 if (encoding == null)
                 {
                     encoding = Encoding.UTF8.EncodingName;
-                    Logger.ShowDebug("DB Encoding not set, set to default value: "+encoding, Logger.CurrentLogger);
-                    
+                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, Logger.CurrentLogger);
                 }
+
                 return encoding;
             }
             set { encoding = value; }
         }
 
-        public int LogLevel { get { return loglevel; } set { loglevel = value; } }
+        public int LogLevel
+        {
+            get { return loglevel; }
+            set { loglevel = value; }
+        }
 
 
         public void Initialization(string path)
@@ -107,8 +174,10 @@ namespace SagaValidation
                             }
                             catch
                             {
-                                Logger.ShowWarning(string.Format("Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, version));
+                                Logger.getLogger().Warning(string.Format(
+                                    "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, version));
                             }
+
                             break;
                         case "clientgameversion":
                             clientgameversion = i.InnerText;
@@ -117,6 +186,7 @@ namespace SagaValidation
                                 clientgameversion = "All";
                                 nullClientGameVersion = true;
                             }
+
                             break;
                         case "servername":
                             servername = i.InnerText;
@@ -129,15 +199,15 @@ namespace SagaValidation
                             break;
                     }
                 }
+
                 if (nullClientGameVersion)
-                    Logger.ShowWarning("ClientGameVersion is undefined, accepting all version.");
-                Logger.ShowInfo("Done reading configuration...");
+                    Logger.getLogger().Warning("ClientGameVersion is undefined, accepting all version.");
+                Logger.getLogger().Information("Done reading configuration...");
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
-
         }
     }
 }

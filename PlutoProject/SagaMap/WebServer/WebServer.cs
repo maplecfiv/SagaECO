@@ -9,7 +9,7 @@ namespace SagaMap.WebServer
 {
     public class WebServer
     {
-        private static readonly NLog.Logger _logger = Logger.InitLogger<WebServer>();
+        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<WebServer>();
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
         private bool data;
@@ -53,7 +53,8 @@ namespace SagaMap.WebServer
                             if (ctx.Request.HttpMethod == "POST")
                             {
                                 //Allow POST to connect
-                                Logger.ShowInfo("Client connected:" + ctx.Request.RemoteEndPoint.Address);
+                                Logger.getLogger()
+                                    .Information("Client connected:" + ctx.Request.RemoteEndPoint.Address);
 
                                 //Debug
                                 //_logger.Debug(ctx.Request.Headers.Get("token"));
@@ -71,7 +72,7 @@ namespace SagaMap.WebServer
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
                                             {
-                                                Logger.ShowWarning("No char_id received");
+                                                Logger.getLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -86,7 +87,7 @@ namespace SagaMap.WebServer
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
                                             {
-                                                Logger.ShowWarning("No char_id received");
+                                                Logger.getLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -110,21 +111,21 @@ namespace SagaMap.WebServer
                                             reader.Close();
 
                                             var message = ctx.Request.Headers.Get("message");
-                                            Logger.ShowInfo("An announce has made. (" + s + ")");
+                                            Logger.getLogger().Information("An announce has made. (" + s + ")");
 
                                             var p3 = new Process.Process();
                                             p3.Announce(message);
                                             success = true;
                                             break;
                                         default:
-                                            Logger.ShowWarning("Action is empty or not exists.");
+                                            Logger.getLogger().Warning("Action is empty or not exists.");
 
                                             break;
                                     }
                                 }
                                 else
                                 {
-                                    Logger.ShowWarning("Token access deined.");
+                                    Logger.getLogger().Warning("Token access deined.");
                                     //Console.ForegroundColor = ConsoleColor.Red;
                                     _logger.Debug("Dropped.");
                                     ctx.Response.OutputStream.Close();
@@ -133,7 +134,7 @@ namespace SagaMap.WebServer
                             else
                             {
                                 //Not allow to GET
-                                Logger.ShowWarning("Method disallowed from:" + ctx.Request.UserHostAddress);
+                                Logger.getLogger().Warning("Method disallowed from:" + ctx.Request.UserHostAddress);
                                 //Console.ForegroundColor = ConsoleColor.Red;
                                 _logger.Debug("Dropped.");
                                 ctx.Response.OutputStream.Close();

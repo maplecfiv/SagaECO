@@ -18,7 +18,7 @@ using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
 using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
-using Logger = NLog.Logger;
+using Logger = Serilog.Core.Logger;
 
 namespace SagaDB
 {
@@ -58,12 +58,12 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex, null);
+                SagaLib.Logger.getLogger().Error(ex, null);
             }
 
             if (db == null)
             {
-                _logger.Warn("db is null");
+                _logger.Warning("db is null");
                 return;
             }
 
@@ -96,7 +96,7 @@ namespace SagaDB
             }
             catch (Exception exception)
             {
-                SagaLib.Logger.ShowError(exception, null);
+                SagaLib.Logger.getLogger().Error(exception, null);
             }
 
             return db != null && (db.State != ConnectionState.Closed);
@@ -136,7 +136,7 @@ namespace SagaDB
                 }
                 catch (Exception exception)
                 {
-                    SagaLib.Logger.ShowError(exception, null);
+                    SagaLib.Logger.getLogger().Error(exception, null);
                     tmp = new MySqlConnection(string.Format(
                         "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
                         dbuser, dbpass));
@@ -169,7 +169,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -179,13 +179,13 @@ namespace SagaDB
             uint charID = 0;
             if (aChar == null)
             {
-                SagaLib.Logger.ShowError("aChar is null");
+                SagaLib.Logger.getLogger().Error("aChar is null");
                 return;
             }
 
             if (!isConnected())
             {
-                SagaLib.Logger.ShowError("db not connected");
+                SagaLib.Logger.getLogger().Error("db not connected");
                 return;
             }
 
@@ -214,7 +214,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             aChar.CharID = charID;
@@ -228,7 +228,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             if (aChar.Inventory.WareHouse != null)
@@ -249,7 +249,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 }
             }
 
@@ -291,7 +291,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 return 0;
             }
         }
@@ -303,7 +303,7 @@ namespace SagaDB
                 return;
             }
 
-            //SagaLib.Logger.ShowError(sqlstr);
+            //SagaLib.Logger.getLogger().Error(sqlstr);
             try
             {
                 SQLExecuteNonQuery(string.Format(
@@ -324,7 +324,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -367,7 +367,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -408,7 +408,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -458,7 +458,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -668,7 +668,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             SaveVar(aChar);
@@ -712,7 +712,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
         public void GetNavi(ActorPC pc)
@@ -728,7 +728,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                     return;
                 }
                 uint categoryId, eventId, stepId; ;
@@ -742,7 +742,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return;
             }
         }
@@ -757,7 +757,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -788,7 +788,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -807,7 +807,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     return null;
                 }
 
@@ -964,7 +964,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             return pc;
@@ -1095,7 +1095,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1222,7 +1222,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             ms = new MemoryStream();
@@ -1268,7 +1268,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1287,7 +1287,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     return;
                 }
 
@@ -1383,7 +1383,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1418,7 +1418,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             if (Convert.ToInt32(result[0][0]) > 0) return true;
@@ -1454,7 +1454,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 return new uint[0];
             }
 
@@ -1793,7 +1793,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 return false;
             }
         }
@@ -1807,7 +1807,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 return false;
             }
         }
@@ -2051,7 +2051,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 }
         }
 
@@ -2251,7 +2251,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2475,7 +2475,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
 
             return (uint)result[0]["charID"];
@@ -2500,7 +2500,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2534,12 +2534,12 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2627,7 +2627,7 @@ namespace SagaDB
                     cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = itemdata;
 
                     if (pc.Account != null)
-                        SagaLib.Logger.ShowInfo(
+                        SagaLib.Logger.getLogger().Information(
                             "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" + itemdata.Length);
                     try
                     {
@@ -2635,7 +2635,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        SagaLib.Logger.ShowError(ex);
+                        SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     }
                 }
 
@@ -2654,13 +2654,13 @@ namespace SagaDB
                         }
                         catch (Exception ex)
                         {
-                            SagaLib.Logger.ShowError(ex);
+                            SagaLib.Logger.getLogger().Error(ex, ex.Message);
                         }
                     }
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2693,7 +2693,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2708,7 +2708,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
                 return;
             }
 
@@ -2734,7 +2734,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     return;
                 }
 
@@ -2744,7 +2744,8 @@ namespace SagaDB
                     try
                     {
                         var buf = (byte[])result[0]["data"];
-                        SagaLib.Logger.ShowInfo("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
+                        SagaLib.Logger.getLogger()
+                            .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                         var ms = new MemoryStream(buf);
                         if (buf[0] == 0x42 && buf[1] == 0x5A)
                         {
@@ -2770,7 +2771,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        SagaLib.Logger.ShowError(ex);
+                        SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     }
                 }
 
@@ -2781,7 +2782,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    SagaLib.Logger.ShowError(ex);
+                    SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     return;
                 }
 
@@ -2820,7 +2821,7 @@ namespace SagaDB
                     }
                     catch (Exception ex)
                     {
-                        SagaLib.Logger.ShowError(ex);
+                        SagaLib.Logger.getLogger().Error(ex, ex.Message);
                     }
                 }
 
@@ -2847,7 +2848,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                SagaLib.Logger.ShowError(ex);
+                SagaLib.Logger.getLogger().Error(ex, ex.Message);
             }
         }
 

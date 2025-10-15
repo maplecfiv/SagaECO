@@ -109,7 +109,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             if (!SkillHandler.Instance.CheckValidAttackTarget(_caster, act))
                                 if (!act.Status.Additions.ContainsKey("Fusion"))
                                 {
-                                    var skill2 = new DefaultBuff(_skill.skill, act, "Fusion", _lifeTime - _count * Period,
+                                    var skill2 = new DefaultBuff(_skill.skill, act, "Fusion",
+                                        _lifeTime - _count * Period,
                                         200);
                                     skill2.OnAdditionStart += StartEventHandler;
                                     skill2.OnAdditionEnd += EndEventHandler;
@@ -130,7 +131,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

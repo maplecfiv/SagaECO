@@ -45,7 +45,7 @@ namespace SagaMap.Skill.NewSkill.FL2_2
                 (short)(x2 + sActor.X), (short)(y2 + sActor.Y),
                 (short)(x3 + sActor.X), (short)(y3 + sActor.Y),
                 (short)(x4 + sActor.X), (short)(y4 + sActor.Y));
-            //Logger.ShowError(actors.Count.ToString());
+            //Logger.getLogger().Error(actors.Count.ToString());
             var affected = new List<Actor>();
             foreach (var i in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))

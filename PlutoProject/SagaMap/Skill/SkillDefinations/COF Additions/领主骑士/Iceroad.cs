@@ -30,7 +30,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             //矩阵旋转
             var angel = map.DirChange(sActor.Dir) * Math.PI / 180;
             //double angel=sActor.Dir * Math.PI / 180;
-            //Logger.ShowError(angel.ToString());
+            //Logger.getLogger().Error(angel.ToString());
             var x1 = (short)(ox1 * Math.Cos(angel) - oy1 * Math.Sin(angel));
             var y1 = (short)(ox1 * Math.Sin(angel) + oy1 * Math.Cos(angel));
             var x2 = (short)(ox2 * Math.Cos(angel) - oy2 * Math.Sin(angel));
@@ -39,7 +39,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.领主骑士
             var y3 = (short)(ox3 * Math.Sin(angel) + oy3 * Math.Cos(angel));
             var x4 = (short)(ox4 * Math.Cos(angel) - oy4 * Math.Sin(angel));
             var y4 = (short)(ox4 * Math.Sin(angel) + oy4 * Math.Cos(angel));
-            //Logger.ShowError(x1.ToString() + "," + y1.ToString() + " " + 
+            //Logger.getLogger().Error(x1.ToString() + "," + y1.ToString() + " " + 
             //  x2.ToString() + "," + y2.ToString() + " " + 
             //x3.ToString() + "," + y3.ToString() + " " + 
             //x4.ToString() + "," + y4.ToString());

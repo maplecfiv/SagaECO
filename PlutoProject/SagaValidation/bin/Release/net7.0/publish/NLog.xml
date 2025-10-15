@@ -39,7 +39,7 @@
             {
               foreach (var book in books) {
                 if (book != null) // Warning: Expression is always true
-                 Console.WriteLine(book.ToUpper());
+                 Logger.getLogger().Information(book.ToUpper());
               }
             }
             </code></example>
@@ -56,7 +56,7 @@
               foreach (var book in books)
               {
                 // Warning: Possible 'System.NullReferenceException'
-                Console.WriteLine(book.ToUpper());
+                Logger.getLogger().Information(book.ToUpper());
               }
             }
             </code></example>
@@ -22544,7 +22544,7 @@
             <param name="encoding">Override the default Encoding for output (Ex. UTF8)</param>
             <param name="stderr">Write to stderr instead of standard output (stdout)</param>
             <param name="detectConsoleAvailable">Skip overhead from writing to console, when not available (Ex. running as Windows Service)</param>
-            <param name="writeBuffered">Enable batch writing of logevents, instead of Console.WriteLine for each logevent (Requires <see cref="M:NLog.SetupLoadConfigurationExtensions.WithAsync(NLog.Config.ISetupConfigurationTargetBuilder,NLog.Targets.Wrappers.AsyncTargetWrapperOverflowAction,System.Int32,System.Int32)"/>)</param>
+            <param name="writeBuffered">Enable batch writing of logevents, instead of Logger.getLogger().Information for each logevent (Requires <see cref="M:NLog.SetupLoadConfigurationExtensions.WithAsync(NLog.Config.ISetupConfigurationTargetBuilder,NLog.Targets.Wrappers.AsyncTargetWrapperOverflowAction,System.Int32,System.Int32)"/>)</param>
         </member>
         <member name="M:NLog.SetupLoadConfigurationExtensions.WriteToColoredConsole(NLog.Config.ISetupConfigurationTargetBuilder,NLog.Layouts.Layout,System.Boolean,System.Text.Encoding,System.Boolean,System.Boolean,System.Boolean)">
             <summary>
@@ -23199,7 +23199,7 @@
         </member>
         <member name="P:NLog.Targets.ColoredConsoleTarget.AutoFlush">
             <summary>
-            Gets or sets a value indicating whether to auto-flush after <see cref="M:System.Console.WriteLine"/>
+            Gets or sets a value indicating whether to auto-flush after <see cref="M:System.Logger.getLogger().Information"/>
             </summary>
             <remarks>
             Normally not required as standard Console.Out will have <see cref="P:System.IO.StreamWriter.AutoFlush"/> = true, but not when pipe to file
@@ -23455,7 +23455,7 @@
         </member>
         <member name="P:NLog.Targets.ConsoleTarget.AutoFlush">
             <summary>
-            Gets or sets a value indicating whether to auto-flush after <see cref="M:System.Console.WriteLine"/>
+            Gets or sets a value indicating whether to auto-flush after <see cref="M:System.Logger.getLogger().Information"/>
             </summary>
             <remarks>
             Normally not required as standard Console.Out will have <see cref="P:System.IO.StreamWriter.AutoFlush"/> = true, but not when pipe to file
@@ -23464,13 +23464,13 @@
         </member>
         <member name="P:NLog.Targets.ConsoleTarget.ForceWriteLine">
             <summary>
-            Gets or sets whether to force <see cref="M:System.Console.WriteLine"/> (slower) instead of the faster internal buffering.
+            Gets or sets whether to force <see cref="M:System.Logger.getLogger().Information"/> (slower) instead of the faster internal buffering.
             </summary>
             <docgen category='Console Options' order='10' />
         </member>
         <member name="P:NLog.Targets.ConsoleTarget.WriteBuffer">
             <summary>
-            Gets or sets whether to activate internal buffering to allow batch writing, instead of using <see cref="M:System.Console.WriteLine"/>
+            Gets or sets whether to activate internal buffering to allow batch writing, instead of using <see cref="M:System.Logger.getLogger().Information"/>
             </summary>
             <docgen category='Console Options' order='10' />
         </member>

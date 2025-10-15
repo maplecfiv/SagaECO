@@ -45,7 +45,7 @@ namespace SagaMap.Manager
             foreach (var mapID in Configuration.Configuration.Instance.HostedMaps)
                 if (mapInfo.ContainsKey(mapID))
                     if (!AddMap(new Map(mapInfo[mapID])))
-                        Logger.ShowError("Cannot load map " + mapID, null);
+                        Logger.getLogger().Error("Cannot load map " + mapID, null);
         }
 
         public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY)
@@ -78,7 +78,7 @@ namespace SagaMap.Manager
                 if (!this.maps.ContainsKey((uint)(template * 100 + i)))
                 {
                     newMap.ID = (uint)(template * 100 + i);
-                    SagaLib.Logger.ShowInfo(newMap.ID.ToString());
+                    SagaLib.Logger.getLogger().Information(newMap.ID.ToString());
                     break;
                 }
             }
@@ -98,7 +98,7 @@ namespace SagaMap.Manager
                     if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i)))
                     {
                         newMap.ID = (uint)(template / 1000 * 1000 + template % 1000 + i);
-                        Logger.ShowInfo(newMap.ID + "副本创建者：" + creator.Name);
+                        Logger.getLogger().Information(newMap.ID + "副本创建者：" + creator.Name);
                         break;
                     }
             }
@@ -187,7 +187,7 @@ namespace SagaMap.Manager
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 

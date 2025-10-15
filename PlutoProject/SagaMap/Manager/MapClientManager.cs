@@ -445,7 +445,8 @@ namespace SagaMap.Manager
             for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
                 var sock = Listener.AcceptSocket();
-                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
+                Logger.getLogger()
+                    .Information(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
                 var client = new MapClient(sock, CommandTable);
                 Clients.Add(client);
             }
@@ -464,8 +465,8 @@ namespace SagaMap.Manager
         public override Client GetClient(uint actorID)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.ActorID == actorID
-                      select c;
+                where c.Character.ActorID == actorID
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;
@@ -474,8 +475,8 @@ namespace SagaMap.Manager
         public override Client GetClientForName(string actorName)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.Name == actorName
-                      select c;
+                where c.Character.Name == actorName
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;
@@ -484,8 +485,8 @@ namespace SagaMap.Manager
         public MapClient FindClient(uint charID)
         {
             var chr = from c in OnlinePlayer
-                      where c.Character.CharID == charID
-                      select c;
+                where c.Character.CharID == charID
+                select c;
             if (chr.Count() != 0)
                 return chr.First();
             return null;

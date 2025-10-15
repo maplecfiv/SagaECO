@@ -49,7 +49,7 @@ namespace SagaDB.Mob
                     var data = new string[paras.Length - 1];
                     for (var i = 1; i < paras.Length; i++) data[i - 1] = paras[i];
                     if (Dropgroup.ContainsKey(ushort.Parse(paras[0])))
-                        Logger.ShowError("the group id:" + paras[0] + "is exist, skip it");
+                        Logger.getLogger().Error("the group id:" + paras[0] + "is exist, skip it");
                     else
                         Dropgroup.Add(ushort.Parse(paras[0]), data);
 
@@ -66,8 +66,8 @@ namespace SagaDB.Mob
                 catch (Exception ex)
                 {
 #if !Web
-                    Logger.ShowError("Error on parsing dropgroup db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing dropgroup db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
 #endif
                 }
 #if !Web

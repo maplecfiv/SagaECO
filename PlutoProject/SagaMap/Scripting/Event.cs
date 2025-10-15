@@ -768,7 +768,7 @@ namespace SagaMap.Scripting
             p.unknown = 1;
             client.NetIo.SendPacket(p);
 
-            //Logger.ShowInfo("\n"+p.DumpData());
+            //Logger.getLogger().Information("\n"+p.DumpData());
         }
 
         /// <summary>
@@ -1188,7 +1188,7 @@ namespace SagaMap.Scripting
         {
             foreach (var i in goods)
                 if (Goods.Count == 12)
-                    Logger.ShowWarning(ToString() + ":Maximal shop items(12) reached, skiping");
+                    Logger.getLogger().Warning(ToString() + ":Maximal shop items(12) reached, skiping");
                 else
                     Goods.Add(i);
         }
@@ -1577,8 +1577,8 @@ namespace SagaMap.Scripting
             {
                 var list = pc.Inventory.Items[(ContainerType)i];
                 var query = from it in list
-                            where it.ItemID == ID
-                            select it;
+                    where it.ItemID == ID
+                    select it;
                 result.AddRange(query);
             }
 
@@ -1721,7 +1721,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return 0;
             }
         }
@@ -1788,7 +1788,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
                 return false;
             }
         }
@@ -3129,7 +3129,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -3157,7 +3157,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -3185,7 +3185,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -3213,7 +3213,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -3241,7 +3241,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.ShowError(exception, null);
+                Logger.getLogger().Error(exception, null);
             }
         }
 
@@ -3275,8 +3275,8 @@ namespace SagaMap.Scripting
         public List<SagaDB.Item.Item.ItemData> GetItemTypeList(params ItemType[] types)
         {
             var lst = from KeyValuePair<uint, SagaDB.Item.Item.ItemData> i in ItemFactory.Instance.Items
-                      where types.Contains(i.Value.itemType)
-                      select i.Value;
+                where types.Contains(i.Value.itemType)
+                select i.Value;
             return lst.ToList();
         }
 
@@ -3288,8 +3288,8 @@ namespace SagaMap.Scripting
         public List<SagaDB.Item.Item> GetItemTypeList(ActorPC pc, params ItemType[] types)
         {
             var lst = from SagaDB.Item.Item i in pc.Inventory.Items[ContainerType.BODY]
-                      where types.Contains(i.BaseData.itemType)
-                      select i;
+                where types.Contains(i.BaseData.itemType)
+                select i;
             return lst.ToList();
         }
 
@@ -3610,8 +3610,8 @@ namespace SagaMap.Scripting
         {
             var hairstyles = new List<HairStyleList>();
             var res = from hair in HairFactory.Instance.Hairs
-                      where CountItem(pc, hair.ItemID) > 0 && hair.ItemID == id
-                      select hair;
+                where CountItem(pc, hair.ItemID) > 0 && hair.ItemID == id
+                select hair;
             var hairs = res.ToList();
             foreach (var i in hairs)
             {
@@ -3868,9 +3868,9 @@ namespace SagaMap.Scripting
         protected bool ItemEnhance(ActorPC pc, uint price)
         {
             var res = from item in pc.Inventory.GetContainer(ContainerType.BODY)
-                      where (item.IsArmor || item.IsWeapon || item.BaseData.itemType == ItemType.SHIELD ||
-                             item.BaseData.itemType == ItemType.ACCESORY_NECK) && item.Refine < 30
-                      select item;
+                where (item.IsArmor || item.IsWeapon || item.BaseData.itemType == ItemType.SHIELD ||
+                       item.BaseData.itemType == ItemType.ACCESORY_NECK) && item.Refine < 30
+                select item;
             var items = res.ToList();
 
             foreach (var itemsitem in res.ToList())

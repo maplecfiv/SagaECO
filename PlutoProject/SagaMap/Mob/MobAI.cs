@@ -154,7 +154,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
+                Logger.getLogger().Error(ex, null);
             }
         }
 
@@ -265,7 +265,7 @@ namespace SagaMap.Mob
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                 lock (commands)
@@ -275,8 +275,8 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex, null);
-                Logger.ShowError(ex.StackTrace, null);
+                Logger.getLogger().Error(ex, null);
+                Logger.getLogger().Error(ex.StackTrace, null);
             }
             //ClientManager.LeaveCriticalArea();
         }
@@ -385,42 +385,42 @@ namespace SagaMap.Mob
         {
             var res = node;
             for (var i = node.x - 1; i <= node.x + 1; i++)
-                for (var j = node.y - 1; j <= node.y + 1; j++)
+            for (var j = node.y - 1; j <= node.y + 1; j++)
+            {
+                if (j == -1 || i == -1)
+                    continue;
+                if (j == node.y && i == node.x)
+                    continue;
+                if (i >= map.Info.width || j >= map.Info.height)
+                    continue;
+                if (map.Info.walkable[i, j] == 2)
                 {
-                    if (j == -1 || i == -1)
-                        continue;
-                    if (j == node.y && i == node.x)
-                        continue;
-                    if (i >= map.Info.width || j >= map.Info.height)
-                        continue;
-                    if (map.Info.walkable[i, j] == 2)
+                    if (!openedNode.ContainsKey(i * 1000 + j))
                     {
-                        if (!openedNode.ContainsKey(i * 1000 + j))
-                        {
-                            var node2 = new MapNode();
-                            node2.x = (byte)i;
-                            node2.y = (byte)j;
-                            node2.Previous = node;
-                            if (i == node.x || j == node.y)
-                                node2.G = node.G + 10;
-                            else
-                                node2.G = node.G + 14;
-                            node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
-                            node2.F = node2.G + node2.H;
-                            openedNode.Add(i * 1000 + j, node2);
-                        }
+                        var node2 = new MapNode();
+                        node2.x = (byte)i;
+                        node2.y = (byte)j;
+                        node2.Previous = node;
+                        if (i == node.x || j == node.y)
+                            node2.G = node.G + 10;
                         else
-                        {
-                            var tmp = openedNode[i * 1000 + j];
-                            int G;
-                            if (i == node.x || j == node.y)
-                                G = 10;
-                            else
-                                G = 14;
-                            if (node.G + G > tmp.G) res = tmp;
-                        }
+                            node2.G = node.G + 14;
+                        node2.H = Math.Abs(x - node2.x) * 10 + Math.Abs(y - node2.y) * 10;
+                        node2.F = node2.G + node2.H;
+                        openedNode.Add(i * 1000 + j, node2);
+                    }
+                    else
+                    {
+                        var tmp = openedNode[i * 1000 + j];
+                        int G;
+                        if (i == node.x || j == node.y)
+                            G = 10;
+                        else
+                            G = 14;
+                        if (node.G + G > tmp.G) res = tmp;
                     }
                 }
+            }
 
             return res;
         }
@@ -554,7 +554,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -655,7 +655,7 @@ namespace SagaMap.Mob
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     longSkillTime = DateTime.Now.AddSeconds(mode.LongCD);
@@ -1053,7 +1053,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return null;
             }
         }
@@ -1211,7 +1211,7 @@ namespace SagaMap.Mob
         {
             if (map == null)
             {
-                Logger.ShowWarning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
+                Logger.getLogger().Warning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
                 return;
             }
 

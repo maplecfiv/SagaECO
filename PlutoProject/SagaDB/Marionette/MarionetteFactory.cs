@@ -25,7 +25,7 @@ namespace SagaDB.Marionette
         public void Init(string path, Encoding encoding)
         {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
-            Logger.ShowInfo("Loading marionette database...");
+            Logger.getLogger().Information("Loading marionette database...");
             //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             string[] paras;
@@ -99,13 +99,13 @@ namespace SagaDB.Marionette
                 }
                 catch (Exception ex)
                 {
-                    Logger.ShowError("Error on parsing marionette db!\r\nat line:" + line);
-                    Logger.ShowError(ex);
+                    Logger.getLogger().Error("Error on parsing marionette db!\r\nat line:" + line);
+                    Logger.getLogger().Error(ex, ex.Message);
                 }
             }
 
             //Console.ResetColor();
-            Logger.ShowInfo(count + " marionette loaded.");
+            Logger.getLogger().Information(count + " marionette loaded.");
             sr.Close();
         }
     }

@@ -83,7 +83,7 @@ namespace SagaMap.Mob.AICommands
                         }
                         catch (Exception ex)
                         {
-                            Logger.ShowError(ex);
+                            Logger.getLogger().Error(ex, ex.Message);
                         }
 
                         return;
@@ -274,7 +274,7 @@ namespace SagaMap.Mob.AICommands
 
                 if (MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) > size * 150 || ifChase)
                 {
-                    //SagaLib.Logger.ShowInfo(size.ToString());
+                    //SagaLib.Logger.getLogger().Information(size.ToString());
                     if (!mob.Mode.RunAway || MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) < 2000)
                     {
                         var chase = new Chase(mob, dest);
@@ -311,7 +311,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -459,7 +459,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
                 return null;
             }
         }

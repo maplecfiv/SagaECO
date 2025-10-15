@@ -19,8 +19,8 @@ namespace SagaMap.Manager
             var theList = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.Namespace == "SagaMap.Packets.Server")
                 .ToList();
-            
-            // Logger.ShowInfo("Loading uncompiled PacketFiles");
+
+            // Logger.getLogger().Information("Loading uncompiled PacketFiles");
             // var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
             // var provider = new CSharpCodeProvider(dic);
             // Directory.SetCurrentDirectory(Directory.GetParent(path).FullName);
@@ -46,14 +46,14 @@ namespace SagaMap.Manager
                 //     if (newAssembly != null)
                 //     {
                 //         tmp = LoadAssembly(newAssembly);
-                //         Logger.ShowInfo(string.Format("Containing {0} Events", tmp));
+                //         Logger.getLogger().Information(string.Format("Containing {0} Events", tmp));
                 //         Packetcount += tmp;
                 //     }
                 // }
             }
             catch (Exception ex)
             {
-                Logger.ShowError(ex);
+                Logger.getLogger().Error(ex, ex.Message);
             }
         }
 
@@ -77,8 +77,8 @@ namespace SagaMap.Manager
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning)
                     {
-                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
-                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.getLogger().Error("Compile Error:" + error.ErrorText, null);
+                        Logger.getLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -107,7 +107,7 @@ namespace SagaMap.Manager
                         }
                         catch (Exception exception)
                         {
-                            Logger.ShowError(exception, null);
+                            Logger.getLogger().Error(exception, null);
                             continue;
                         }
 
@@ -115,7 +115,7 @@ namespace SagaMap.Manager
                     }
                     catch (Exception ex)
                     {
-                        Logger.ShowError(ex);
+                        Logger.getLogger().Error(ex, ex.Message);
                     }
 
                     count++;
