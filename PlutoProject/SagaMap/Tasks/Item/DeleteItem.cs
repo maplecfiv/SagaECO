@@ -28,7 +28,7 @@ namespace SagaMap.Tasks.Item
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
 
             ClientManager.LeaveCriticalArea();

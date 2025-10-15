@@ -84,7 +84,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
 
                 //解开同步锁

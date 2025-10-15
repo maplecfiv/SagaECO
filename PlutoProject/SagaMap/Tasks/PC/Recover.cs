@@ -46,7 +46,7 @@ namespace SagaMap.Tasks.PC
                     var s = DateTime.Now;
                     BuffChecker(pc);
                     if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.getLogger().Error("玩家" + client.Character.Name + "BUFF检测耗时：" +
+                        Logger.GetLogger().Error("玩家" + client.Character.Name + "BUFF检测耗时：" +
                                                  (DateTime.Now - s).TotalMilliseconds);
                     if (pc.MapID == 91000999 && pc.FurnitureID != 0 && pc.FurnitureID != 255)
                         client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.FURNITURE_SIT, null, pc, true);
@@ -72,7 +72,7 @@ namespace SagaMap.Tasks.PC
                     }
 
                     if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.getLogger().Error("玩家" + client.Character.Name + "自然恢复总耗时：" +
+                        Logger.GetLogger().Error("玩家" + client.Character.Name + "自然恢复总耗时：" +
                                                  (DateTime.Now - s).TotalMilliseconds);
                 }
 
@@ -84,7 +84,7 @@ namespace SagaMap.Tasks.PC
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 Deactivate();
                 client.Character.Tasks.Remove("Recover");
             }

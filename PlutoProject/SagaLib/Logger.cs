@@ -13,7 +13,7 @@ namespace SagaLib
             .WriteTo.Console()
             .CreateLogger();
 
-        public static Serilog.Core.Logger getLogger()
+        public static Serilog.Core.Logger GetLogger()
         {
             return _logger;
         }

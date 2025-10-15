@@ -172,9 +172,9 @@ namespace SagaLib
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error("Error on parsing:" + path);
-                    Logger.getLogger().Error(ele.InnerXml);
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error("Error on parsing:" + path);
+                    Logger.GetLogger().Error(ele.InnerXml);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -217,9 +217,9 @@ namespace SagaLib
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error("Error on parsing:" + path);
-                        Logger.getLogger().Error(GetKey(item).ToString());
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error("Error on parsing:" + path);
+                        Logger.GetLogger().Error(GetKey(item).ToString());
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     var key = GetKey(item);
@@ -247,8 +247,8 @@ namespace SagaLib
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error("Error on parsing:" + path);
-                Logger.getLogger().Error(ex.Message);
+                Logger.GetLogger().Error("Error on parsing:" + path);
+                Logger.GetLogger().Error(ex.Message);
             }
 
             return count;

@@ -53,7 +53,7 @@ namespace SagaMap.Manager
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -77,8 +77,8 @@ namespace SagaMap.Manager
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning)
                     {
-                        Logger.getLogger().Error("Compile Error:" + error.ErrorText, null);
-                        Logger.getLogger().Error("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
+                        Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -107,7 +107,7 @@ namespace SagaMap.Manager
                         }
                         catch (Exception exception)
                         {
-                            Logger.getLogger().Error(exception, null);
+                            Logger.GetLogger().Error(exception, null);
                             continue;
                         }
 
@@ -115,7 +115,7 @@ namespace SagaMap.Manager
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     count++;

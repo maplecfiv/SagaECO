@@ -46,7 +46,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, null);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             if (db != null)
@@ -72,7 +72,7 @@ namespace SagaDB
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
                 if (db != null)
@@ -110,7 +110,7 @@ namespace SagaDB
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                         tmp = new MySqlConnection(string.Format("Server={1};Port={2};Uid={3};Pwd={4};Database={0};",
                             database, host, port, dbuser, dbpass));
                         tmp.Open();
@@ -157,7 +157,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -174,7 +174,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
 
@@ -196,7 +196,7 @@ namespace SagaDB
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
 
                 accounts.Add(account);
@@ -215,7 +215,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
 
@@ -238,7 +238,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             account.Banned = ((byte)result[0]["banned"] == 1);
@@ -259,7 +259,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
         }
@@ -274,7 +274,7 @@ namespace SagaDB
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return -1;
             }
         }

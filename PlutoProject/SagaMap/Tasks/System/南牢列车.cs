@@ -155,7 +155,7 @@ namespace SagaMap.Tasks.System
                 {
                     map.DeleteActor(skill);
                     Deactivate();
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
         }

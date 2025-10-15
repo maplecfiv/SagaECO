@@ -106,7 +106,7 @@ namespace SagaMap.Partner
             catch (Exception ex)
             {
                 Deactivate();
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
     }

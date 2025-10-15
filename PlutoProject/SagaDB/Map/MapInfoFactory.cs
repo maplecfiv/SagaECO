@@ -59,7 +59,7 @@ namespace SagaDB.Map
         public void LoadGatherInterval(string path, Encoding encoding)
         {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
-            Logger.getLogger().Information("Loading Gather database...");
+            Logger.GetLogger().Information("Loading Gather database...");
             var count = 0;
             string[] paras;
             while (!sr.EndOfStream)
@@ -93,12 +93,12 @@ namespace SagaDB.Map
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error("Error on parsing gather db!\r\nat line:" + line);
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error("Error on parsing gather db!\r\nat line:" + line);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
 
-            Logger.getLogger().Information(count + " gather informations loaded.");
+            Logger.GetLogger().Information(count + " gather informations loaded.");
             sr.Close();
         }
 
@@ -164,7 +164,7 @@ namespace SagaDB.Map
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -195,7 +195,7 @@ namespace SagaDB.Map
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 

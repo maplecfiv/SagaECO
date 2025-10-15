@@ -21,7 +21,7 @@ namespace SagaMap.Partner
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadAI(f);
-            Logger.getLogger().Information(total + " 加载新的AI...");
+            Logger.GetLogger().Information(total + " 加载新的AI...");
         }
     }
 }

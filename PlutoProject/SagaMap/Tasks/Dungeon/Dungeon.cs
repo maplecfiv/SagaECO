@@ -72,7 +72,7 @@ namespace SagaMap.Tasks.Dungeon
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
     }

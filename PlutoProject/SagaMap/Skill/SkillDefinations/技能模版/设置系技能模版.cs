@@ -68,7 +68,7 @@ namespace SagaMap.Skill.SkillDefinations.技能模版
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
 
                 //解开同步锁

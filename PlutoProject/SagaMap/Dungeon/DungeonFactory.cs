@@ -145,7 +145,7 @@ namespace SagaMap.Dungeon
                 {
                     if (openMaps.Count == 0)
                     {
-                        Logger.getLogger().Warning("Dungeon(" + id +
+                        Logger.GetLogger().Warning("Dungeon(" + id +
                                            "): All nodes closed, but still rooms remaining, Recreating....");
                         dungeon.Destory(DestroyType.QuestCancel);
 

@@ -38,7 +38,7 @@ namespace SagaMap.Process
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 
@@ -130,7 +130,7 @@ namespace SagaMap.Process
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.getLogger().Information("API Command execute successfully. (" + pc.Name + ")");
+            Logger.GetLogger().Information("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;
@@ -145,7 +145,7 @@ namespace SagaMap.Process
 
             if (pc == null)
             {
-                Logger.getLogger().Error("NO SUCH CHARID" + charid);
+                Logger.GetLogger().Error("NO SUCH CHARID" + charid);
                 return false;
             }
 
@@ -162,17 +162,17 @@ namespace SagaMap.Process
                 }
                 catch
                 {
-                    Logger.getLogger().Error("ERROR ON SAVE OFFLINE APIITEM");
+                    Logger.GetLogger().Error("ERROR ON SAVE OFFLINE APIITEM");
                 }
 
-                Logger.getLogger()
+                Logger.GetLogger()
                     .Information("Player: " + pc.Name + " is offline, Item will be process on next login");
                 return true;
             }
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.getLogger().Information("API Command execute successfully. (" + pc.Name + ")");
+            Logger.GetLogger().Information("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;

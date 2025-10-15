@@ -447,7 +447,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return null;
             }
         }
@@ -460,7 +460,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return null;
             }
         }
@@ -476,7 +476,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return null;
             }
         }
@@ -652,8 +652,8 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
-                        Logger.getLogger().Error("oh,fuck!");
+                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error("oh,fuck!");
                     }
                 }
 
@@ -1013,7 +1013,7 @@ namespace SagaMap
 
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
             //moveCounter--;
         }
@@ -1261,7 +1261,7 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                 if (listAF.Count > 0)
@@ -1504,13 +1504,13 @@ namespace SagaMap
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
                 }
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -2047,7 +2047,7 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     if (counter > 1000)
@@ -2112,7 +2112,7 @@ namespace SagaMap
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
         }
@@ -2338,7 +2338,7 @@ namespace SagaMap
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
                 else
                     other.Add(i);

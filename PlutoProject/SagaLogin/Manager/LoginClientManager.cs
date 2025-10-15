@@ -95,7 +95,7 @@ namespace SagaLogin.Manager
             for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
                 var sock = Listener.AcceptSocket();
-                Logger.getLogger().Information("New client from: " + sock.RemoteEndPoint, null);
+                Logger.GetLogger().Information("New client from: " + sock.RemoteEndPoint, null);
                 var client = new LoginClient(sock, CommandTable);
                 Clients.Add(client);
             }

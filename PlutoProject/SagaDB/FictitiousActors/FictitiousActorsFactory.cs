@@ -26,7 +26,7 @@ namespace SagaDB.FictitiousActors
             var total = 0;
             foreach (var f in file)
                 total += LoadOne(f);
-            Logger.getLogger().Information("Actors loaded...");
+            Logger.GetLogger().Information("Actors loaded...");
         }
 
         public void LoadShopLists(string path)
@@ -36,7 +36,7 @@ namespace SagaDB.FictitiousActors
             var total = 0;
             foreach (var f in file)
                 total += LoadShopListOne(f);
-            Logger.getLogger().Information("Actors loaded...");
+            Logger.GetLogger().Information("Actors loaded...");
         }
 
         public int LoadShopListOne(string f)
@@ -105,7 +105,7 @@ namespace SagaDB.FictitiousActors
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return total;
@@ -404,7 +404,7 @@ namespace SagaDB.FictitiousActors
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return total;

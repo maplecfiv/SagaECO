@@ -37,7 +37,7 @@ namespace SagaValidation
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
@@ -45,38 +45,38 @@ namespace SagaValidation
         static void Main(string[] args)
         {
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.getLogger().Information("======================================================================");
+            Logger.GetLogger().Information("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            Logger.getLogger().Information("                     SagaECO Validation Server             ");
-            Logger.getLogger()
+            Logger.GetLogger().Information("                     SagaECO Validation Server             ");
+            Logger.GetLogger()
                 .Information("           (C)2013-2017 The Pluto ECO Project Development Team                  ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.getLogger().Information("======================================================================");
+            Logger.GetLogger().Information("======================================================================");
 
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information("Version Informations:");
+            Logger.GetLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.getLogger().Information("SagaValidation");
+            Logger.GetLogger().Information("SagaValidation");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.getLogger().Information("SagaLib");
+            Logger.GetLogger().Information("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.getLogger().Information("SagaDB");
+            Logger.GetLogger().Information("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
 
-            Logger.getLogger().Information("Starting Initialization...", null);
+            Logger.GetLogger().Information("Starting Initialization...", null);
 
             Configuration.Instance.Initialization("./Config/SagaValidation.xml");
             Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
             if (!StartDatabase())
             {
-                Logger.getLogger().Error("cannot connect to dbserver", null);
-                Logger.getLogger().Error("Shutting down in 20sec.", null);
+                Logger.GetLogger().Error("cannot connect to dbserver", null);
+                Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 System.Threading.Thread.Sleep(20000);
                 return;
             }
@@ -84,18 +84,18 @@ namespace SagaValidation
             ValidationClientManager.Instance.Start();
             if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port))
             {
-                Logger.getLogger().Error("cannot listen on port: " + Configuration.Instance.Port);
-                Logger.getLogger().Information("Shutting down in 20sec.");
+                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Instance.Port);
+                Logger.GetLogger().Information("Shutting down in 20sec.");
                 System.Threading.Thread.Sleep(20000);
                 return;
             }
 
             Global.clientMananger = (ClientManager)ValidationClientManager.Instance;
 
-            Logger.getLogger().Information(string.Format("Accept Client Version at : {0}",
+            Logger.GetLogger().Information(string.Format("Accept Client Version at : {0}",
                 Configuration.Instance.ClientGameVersion));
 
-            Logger.getLogger().Information("Accepting clients.");
+            Logger.GetLogger().Information("Accepting clients.");
 
             while (true)
             {
@@ -114,7 +114,7 @@ namespace SagaValidation
 
             if (!accountDB.isConnected())
             {
-                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 connected = false;
             }
             else
@@ -124,18 +124,18 @@ namespace SagaValidation
 
             while (!connected)
             {
-                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected())
                 {
-                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     System.Threading.Thread.Sleep(10000);
                     connected = false;
                     continue;
                 }
 
-                Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                Logger.getLogger().Information("Clients can now connect again", null);
+                Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                Logger.GetLogger().Information("Clients can now connect again", null);
                 connected = true;
             }
         }

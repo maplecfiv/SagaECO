@@ -155,7 +155,7 @@ namespace SagaMap.Mob
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.getLogger().Error(ex, ex.Message);
+                                    Logger.GetLogger().Error(ex, ex.Message);
                                 }
 
                                 if (counter > 1000)
@@ -205,7 +205,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return total;
@@ -223,7 +223,7 @@ namespace SagaMap.Mob
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadOne(f, 0);
-            Logger.getLogger().Information(total + " mobs spawned...");
+            Logger.GetLogger().Information(total + " mobs spawned...");
         }
 
         public void LoadAnAI(string path)
@@ -231,7 +231,7 @@ namespace SagaMap.Mob
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadAI(f);
-            Logger.getLogger().Information(total + " 加载新的AI...");
+            Logger.GetLogger().Information(total + " 加载新的AI...");
         }
     }
 }

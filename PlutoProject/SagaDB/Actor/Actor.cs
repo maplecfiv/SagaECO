@@ -626,7 +626,7 @@ namespace SagaDB.Actor
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
             var additionlist = new Addition[Status.Additions.Count];

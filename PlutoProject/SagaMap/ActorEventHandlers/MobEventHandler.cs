@@ -107,7 +107,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -149,7 +149,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -205,7 +205,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -284,7 +284,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
             if (AI.firstAttacker != null)
@@ -357,7 +357,7 @@ namespace SagaMap.ActorEventHandlers
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
 
                 AI.Pause();
@@ -598,7 +598,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -743,7 +743,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -768,7 +768,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -793,7 +793,7 @@ namespace SagaMap.ActorEventHandlers
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 

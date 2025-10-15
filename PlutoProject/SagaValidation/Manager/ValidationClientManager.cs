@@ -47,7 +47,7 @@ namespace SagaValidation.Manager
             for (int i = 0; Listener.Pending() && i < maxNewConnections; i++)
             {
                 Socket sock = Listener.AcceptSocket();
-                Logger.getLogger().Information("New client from: " + sock.RemoteEndPoint.ToString(), null);
+                Logger.GetLogger().Information("New client from: " + sock.RemoteEndPoint.ToString(), null);
 
                 ValidationClient client = new ValidationClient(sock, CommandTable);
                 clients.Add(client);

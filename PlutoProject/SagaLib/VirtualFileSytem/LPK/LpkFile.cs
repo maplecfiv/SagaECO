@@ -312,7 +312,7 @@ namespace SagaLib.VirtualFileSytem.LPK
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                     throw new Exception(string.Format("File:{1} CRC({0:X}) error, file open failed!", fileInfo.CRC,
                         fileName));
                 }

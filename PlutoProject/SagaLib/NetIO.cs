@@ -116,17 +116,17 @@ namespace SagaLib
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, null);
+                    Logger.GetLogger().Error(ex, ex.Message);
                     try //this could crash the gateway somehow,so better ignore the Exception
                     {
                         Disconnect();
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                     }
 
-                    Logger.getLogger().Warning("Invalid packet head from:" + sock.RemoteEndPoint, null);
+                    Logger.GetLogger().Warning("Invalid packet head from:" + sock.RemoteEndPoint, null);
                 }
             }
             else
@@ -155,7 +155,7 @@ namespace SagaLib
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -177,7 +177,7 @@ namespace SagaLib
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -206,7 +206,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -227,7 +227,7 @@ namespace SagaLib
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                         //Logger.getLogger().Error(ex, ex.Message);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
@@ -266,7 +266,7 @@ namespace SagaLib
                     }
                     catch (Exception exception)
                     {
-                        Logger.getLogger().Error(exception, null);
+                        Logger.GetLogger().Error(exception, null);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -297,7 +297,7 @@ namespace SagaLib
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 Disconnect();
                 //Logger.getLogger().Error(ex, ex.Message);
             }
@@ -319,17 +319,17 @@ namespace SagaLib
                 }
                 catch (Exception e)
                 {
-                    Logger.getLogger().Error(e, null);
+                    Logger.GetLogger().Error(e, e.Message);
                 }
 
                 disconnecting = true;
                 try
                 {
-                    Logger.getLogger().Information(sock.RemoteEndPoint + " disconnected", null);
+                    Logger.GetLogger().Information(sock.RemoteEndPoint + " disconnected", null);
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
                 try
@@ -338,7 +338,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
                 try
@@ -347,19 +347,19 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
             }
             catch (Exception e)
             {
-                Logger.getLogger().Error(e, null);
+                Logger.GetLogger().Error(e, e.Message);
                 try
                 {
                     stream.Close();
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
                 //try { sock.Disconnect(true); }
@@ -369,7 +369,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
                 //Logger.getLogger().Information(sock.RemoteEndPoint.ToString() + " disconnected", null);
             }
@@ -408,7 +408,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -421,7 +421,7 @@ namespace SagaLib
 
                 if (size < 4)
                 {
-                    Logger.getLogger().Warning(sock.RemoteEndPoint + " error: packet size is < 4", null);
+                    Logger.GetLogger().Warning(sock.RemoteEndPoint + " error: packet size is < 4", null);
                     return;
                 }
 
@@ -463,7 +463,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -472,7 +472,7 @@ namespace SagaLib
 
             catch (Exception e)
             {
-                Logger.getLogger().Error(e, null);
+                Logger.GetLogger().Error(e, e.Message);
             }
         }
 
@@ -498,7 +498,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -518,7 +518,7 @@ namespace SagaLib
                         {
                             if (waitCounter > 300)
                             {
-                                Logger.getLogger().Warning("Receive Timeout for client:" + client);
+                                Logger.GetLogger().Warning("Receive Timeout for client:" + client);
                                 ClientManager.EnterCriticalArea();
                                 Disconnect();
                                 ClientManager.LeaveCriticalArea();
@@ -538,7 +538,7 @@ namespace SagaLib
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                         ClientManager.EnterCriticalArea();
                         Disconnect();
                         ClientManager.LeaveCriticalArea();
@@ -605,7 +605,7 @@ namespace SagaLib
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                     ClientManager.EnterCriticalArea();
                     Disconnect();
                     ClientManager.LeaveCriticalArea();
@@ -613,7 +613,7 @@ namespace SagaLib
             }
             catch (Exception e)
             {
-                Logger.getLogger().Error(e, null);
+                Logger.GetLogger().Error(e, e.Message);
             }
         }
 
@@ -641,7 +641,7 @@ namespace SagaLib
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
 
                 ClientManager.LeaveCriticalArea();
@@ -662,7 +662,7 @@ namespace SagaLib
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     ClientManager.LeaveCriticalArea();
@@ -756,7 +756,7 @@ namespace SagaLib
             {
                 if (client != null)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                     Disconnect();
                     client = null;
                 }

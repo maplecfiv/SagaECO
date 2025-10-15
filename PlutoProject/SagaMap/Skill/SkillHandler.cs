@@ -2492,7 +2492,7 @@ namespace SagaMap.Skill
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
                 }
                 else
@@ -3232,7 +3232,7 @@ namespace SagaMap.Skill
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.getLogger().Error(ex, ex.Message);
+                                    Logger.GetLogger().Error(ex, ex.Message);
                                 }
                             }
 
@@ -3296,7 +3296,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
 
                         //伤害结算之前附加中毒效果,如果有涂毒而且目标没中毒的话
@@ -4644,7 +4644,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
                     }
                     else
@@ -5117,7 +5117,7 @@ namespace SagaMap.Skill
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.getLogger().Error(ex, ex.Message);
+                                    Logger.GetLogger().Error(ex, ex.Message);
                                 }
                             }
                         //吸血效果上
@@ -5148,7 +5148,7 @@ namespace SagaMap.Skill
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
 
                         arg.hp[index + counter] = damage;
@@ -6722,7 +6722,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return 0;
             }
         }
@@ -6759,7 +6759,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -7332,7 +7332,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 res = AttackResult.Miss;
                 return 0;
             }
@@ -7487,7 +7487,7 @@ namespace SagaMap.Skill
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
 
@@ -8008,7 +8008,7 @@ namespace SagaMap.Skill
             {
                 arg.affectedActors.Add(dActor);
                 arg.Init();
-                Logger.getLogger().Warning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")",
+                Logger.GetLogger().Warning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")",
                     null);
             }
         }
@@ -10067,7 +10067,7 @@ namespace SagaMap.Skill
 
         public void LoadSkill(string path)
         {
-            Logger.getLogger().Information("開始加載技能...");
+            Logger.GetLogger().Information("開始加載技能...");
             var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
             var provider = new CSharpCodeProvider(dic);
             var skillcount = 0;
@@ -10083,17 +10083,17 @@ namespace SagaMap.Skill
                     if (newAssembly != null)
                     {
                         tmp = LoadAssembly(newAssembly);
-                        Logger.getLogger().Information(string.Format("Containing {0} Skills", tmp));
+                        Logger.GetLogger().Information(string.Format("Containing {0} Skills", tmp));
                         skillcount += tmp;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
 
-            Logger.getLogger().Information(string.Format("外置技能加載數：{0}", skillcount));
+            Logger.GetLogger().Information(string.Format("外置技能加載數：{0}", skillcount));
         }
 
         private Assembly CompileScript(string[] Source, CodeDomProvider Provider)
@@ -10122,8 +10122,8 @@ namespace SagaMap.Skill
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning)
                     {
-                        Logger.getLogger().Error("Compile Error:" + error.ErrorText, null);
-                        Logger.getLogger().Error("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
+                        Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -10160,13 +10160,13 @@ namespace SagaMap.Skill
                         else
                         {
                             if (skillID != 0)
-                                Logger.getLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                                Logger.GetLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     skillID, npcType.FullName));
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     count++;

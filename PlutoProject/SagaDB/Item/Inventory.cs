@@ -282,7 +282,7 @@ namespace SagaDB.Item
                     var rest = (ushort)(oriItem.Stack - 9999);
                     if (rest > 9999)
                     {
-                        Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                        Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
                                                    "), setting count to the maximal value(9999)");
                         rest = 9999;
                     }
@@ -301,7 +301,7 @@ namespace SagaDB.Item
 
                 if (item.Stack > 9999)
                 {
-                    Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                    Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
                                                "), setting count to the maximal value(9999)");
                     item.Stack = 9999;
                 }
@@ -314,7 +314,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return InventoryAddResult.ERROR;
             }
         }
@@ -392,7 +392,7 @@ namespace SagaDB.Item
                         var rest = (ushort)(oriItem.Stack - 9999);
                         if (rest > 9999)
                         {
-                            Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                            Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
                                                        "), setting count to the maximal value(9999)");
                             rest = 9999;
                         }
@@ -422,7 +422,7 @@ namespace SagaDB.Item
 
                     if (item.Stack > 9999)
                     {
-                        Logger.getLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                        Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
                                                    "), setting count to the maximal value(9999)");
                         item.Stack = 9999;
                     }
@@ -934,7 +934,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
         }
@@ -1422,7 +1422,7 @@ namespace SagaDB.Item
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, false))
-                                    Logger.getLogger().Warning(string.Format(
+                                    Logger.GetLogger().Warning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }
@@ -1454,7 +1454,7 @@ namespace SagaDB.Item
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, true))
-                                    Logger.getLogger().Warning(string.Format(
+                                    Logger.GetLogger().Warning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }
@@ -1468,7 +1468,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1514,7 +1514,7 @@ namespace SagaDB.Item
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
     }

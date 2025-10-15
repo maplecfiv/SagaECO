@@ -174,7 +174,7 @@ namespace SagaValidation
                             }
                             catch
                             {
-                                Logger.getLogger().Warning(string.Format(
+                                Logger.GetLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, version));
                             }
 
@@ -201,12 +201,12 @@ namespace SagaValidation
                 }
 
                 if (nullClientGameVersion)
-                    Logger.getLogger().Warning("ClientGameVersion is undefined, accepting all version.");
-                Logger.getLogger().Information("Done reading configuration...");
+                    Logger.GetLogger().Warning("ClientGameVersion is undefined, accepting all version.");
+                Logger.GetLogger().Information("Done reading configuration...");
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
     }

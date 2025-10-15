@@ -51,7 +51,7 @@ namespace SagaMap.Network.LoginServer
             {
                 if (times < 0)
                 {
-                    Logger.getLogger().Error("Cannot connect to the loginserver,please check the configuration!", null);
+                    Logger.GetLogger().Error("Cannot connect to the loginserver,please check the configuration!", null);
                     return;
                 }
 
@@ -63,8 +63,8 @@ namespace SagaMap.Network.LoginServer
                 }
                 catch (Exception e)
                 {
-                    Logger.getLogger().Error("Failed... Trying again in 5sec", null);
-                    Logger.getLogger().Error(e.ToString(), null);
+                    Logger.GetLogger().Error("Failed... Trying again in 5sec", null);
+                    Logger.GetLogger().Error(e.ToString(), null);
                     Thread.Sleep(5000);
                     Connected = false;
                 }
@@ -72,7 +72,7 @@ namespace SagaMap.Network.LoginServer
                 times--;
             } while (!Connected);
 
-            Logger.getLogger().Information("Successfully connected to the loginserver", null);
+            Logger.GetLogger().Information("Successfully connected to the loginserver", null);
             state = SESSION_STATE.CONNECTED;
             try
             {
@@ -86,7 +86,7 @@ namespace SagaMap.Network.LoginServer
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Warning(ex.StackTrace, null);
+                Logger.GetLogger().Warning(ex.StackTrace, null);
             }
         }
 
@@ -125,7 +125,7 @@ namespace SagaMap.Network.LoginServer
             if (p.AuthOK)
             {
                 Configuration.Configuration.Instance.StartupSetting = p.StartupSetting;
-                Logger.getLogger().Information("Got Configuration from login server:");
+                Logger.GetLogger().Information("Got Configuration from login server:");
                 foreach (var i in Configuration.Configuration.Instance.StartupSetting.Keys)
                 {
                     //Console.ForegroundColor = ConsoleColor.Green;
@@ -145,7 +145,7 @@ namespace SagaMap.Network.LoginServer
             }
             else
             {
-                Logger.getLogger().Error("FATAL: Request Rejected from loginserver,terminating");
+                Logger.GetLogger().Error("FATAL: Request Rejected from loginserver,terminating");
                 state = SESSION_STATE.REJECTED;
             }
         }

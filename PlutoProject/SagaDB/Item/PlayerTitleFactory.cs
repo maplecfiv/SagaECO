@@ -60,7 +60,7 @@ namespace SagaDB.Item
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
 

@@ -28,7 +28,7 @@ namespace SagaMap.Tasks.PC
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 Deactivate();
             }
 

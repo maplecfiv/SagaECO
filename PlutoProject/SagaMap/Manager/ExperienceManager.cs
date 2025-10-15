@@ -1166,7 +1166,7 @@ namespace SagaMap.Manager
                 //计算团队伤害比重
                 if (damageParty[i] < 0)
                 {
-                    Logger.getLogger().Information("fix damage party value low than 0");
+                    Logger.GetLogger().Information("fix damage party value low than 0");
                     damageParty[i] = 0;
                 }
 
@@ -1188,7 +1188,7 @@ namespace SagaMap.Manager
                 var difference = (uint)Math.Abs(maxlv - minlv);
                 if (bonus < 0)
                 {
-                    Logger.getLogger().Information("fix bonus low than 0");
+                    Logger.GetLogger().Information("fix bonus low than 0");
                     bonus = 0;
                 }
 

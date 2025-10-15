@@ -96,7 +96,7 @@ namespace SagaValidation.Network.Client
 
         public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p)
         {
-            Logger.getLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
+            Logger.GetLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
             client_Version = p.GetVersion();
 
             string args = "FF FF E8 6A 6A CA DC E8 06 05 2B 29 F8 96 2F 86 7C AB 2A 57 AD 30";

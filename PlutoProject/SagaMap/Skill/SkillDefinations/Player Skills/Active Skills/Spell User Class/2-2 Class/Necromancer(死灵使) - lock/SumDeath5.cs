@@ -54,7 +54,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
         }
 

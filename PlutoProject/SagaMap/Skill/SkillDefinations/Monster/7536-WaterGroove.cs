@@ -202,7 +202,7 @@ namespace SagaMap.Skill.SkillDefinations.Monster
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

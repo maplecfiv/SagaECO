@@ -55,7 +55,7 @@ namespace SagaMap.Tasks.PC
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 client.Character.Tasks.Remove("PossessionRecover");
                 Deactivate();
             }

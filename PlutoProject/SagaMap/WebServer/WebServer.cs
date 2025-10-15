@@ -53,7 +53,7 @@ namespace SagaMap.WebServer
                             if (ctx.Request.HttpMethod == "POST")
                             {
                                 //Allow POST to connect
-                                Logger.getLogger()
+                                Logger.GetLogger()
                                     .Information("Client connected:" + ctx.Request.RemoteEndPoint.Address);
 
                                 //Debug
@@ -72,7 +72,7 @@ namespace SagaMap.WebServer
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
                                             {
-                                                Logger.getLogger().Warning("No char_id received");
+                                                Logger.GetLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -87,7 +87,7 @@ namespace SagaMap.WebServer
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
                                             {
-                                                Logger.getLogger().Warning("No char_id received");
+                                                Logger.GetLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -111,21 +111,21 @@ namespace SagaMap.WebServer
                                             reader.Close();
 
                                             var message = ctx.Request.Headers.Get("message");
-                                            Logger.getLogger().Information("An announce has made. (" + s + ")");
+                                            Logger.GetLogger().Information("An announce has made. (" + s + ")");
 
                                             var p3 = new Process.Process();
                                             p3.Announce(message);
                                             success = true;
                                             break;
                                         default:
-                                            Logger.getLogger().Warning("Action is empty or not exists.");
+                                            Logger.GetLogger().Warning("Action is empty or not exists.");
 
                                             break;
                                     }
                                 }
                                 else
                                 {
-                                    Logger.getLogger().Warning("Token access deined.");
+                                    Logger.GetLogger().Warning("Token access deined.");
                                     //Console.ForegroundColor = ConsoleColor.Red;
                                     _logger.Debug("Dropped.");
                                     ctx.Response.OutputStream.Close();
@@ -134,7 +134,7 @@ namespace SagaMap.WebServer
                             else
                             {
                                 //Not allow to GET
-                                Logger.getLogger().Warning("Method disallowed from:" + ctx.Request.UserHostAddress);
+                                Logger.GetLogger().Warning("Method disallowed from:" + ctx.Request.UserHostAddress);
                                 //Console.ForegroundColor = ConsoleColor.Red;
                                 _logger.Debug("Dropped.");
                                 ctx.Response.OutputStream.Close();

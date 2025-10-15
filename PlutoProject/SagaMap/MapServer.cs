@@ -88,7 +88,7 @@ namespace SagaMap
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
@@ -99,24 +99,24 @@ namespace SagaMap
 
             if (!charDB.isConnected())
             {
-                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 charDB.Connect();
                 if (!charDB.isConnected())
                 {
-                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.getLogger().Information("Clients can now connect again", null);
+                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.GetLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -128,24 +128,24 @@ namespace SagaMap
 
             if (!accountDB.isConnected())
             {
-                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected())
                 {
-                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.getLogger().Information("Clients can now connect again", null);
+                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.GetLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -181,7 +181,7 @@ namespace SagaMap
             _logger.Debug("======================================================================");
             //Console.ResetColor();
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information("Version Informations:");
+            Logger.GetLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaMap");
             //Console.ForegroundColor = ConsoleColor.White;
@@ -197,7 +197,7 @@ namespace SagaMap
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
                           GlobalInfo.ModifyDate + ")");
 
-            Logger.getLogger().Information(LocalManager.Instance.Strings.INITIALIZATION, null);
+            Logger.GetLogger().Information(LocalManager.Instance.Strings.INITIALIZATION, null);
 
             Configuration.Configuration.Instance.Initialization("./Config/SagaMap.xml");
 
@@ -228,7 +228,7 @@ namespace SagaMap
 
             Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
-            Logger.getLogger().Information("Initializing VirtualFileSystem...");
+            Logger.GetLogger().Information("Initializing VirtualFileSystem...");
 #if FreeVersion1
             VirtualFileSystemManager.Instance.Init(FileSystems.LPK, "./DB/DB.lpk");
 #else
@@ -433,7 +433,7 @@ namespace SagaMap
 
             if (login.state == LoginSession.SESSION_STATE.REJECTED)
             {
-                Logger.getLogger().Error("Shutting down in 20sec.", null);
+                Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
                 return;
@@ -441,8 +441,8 @@ namespace SagaMap
 
             if (!StartDatabase())
             {
-                Logger.getLogger().Error("cannot connect to dbserver", null);
-                Logger.getLogger().Error("Shutting down in 20sec.", null);
+                Logger.GetLogger().Error("cannot connect to dbserver", null);
+                Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
                 return;
@@ -459,14 +459,14 @@ namespace SagaMap
                       Configuration.Configuration.Instance.APIPort + "/";
             var ws = new WebServer.WebServer(SendResponse, pre);
             ws.Run();
-            Logger.getLogger().Information("Accepting API Clients from: " + pre);
+            Logger.GetLogger().Information("Accepting API Clients from: " + pre);
 
 
             MapClientManager.Instance.Start();
             if (!MapClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port))
             {
-                Logger.getLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
-                Logger.getLogger().Information("Shutting down in 20sec.");
+                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
+                Logger.GetLogger().Information("Shutting down in 20sec.");
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
                 return;
@@ -475,13 +475,13 @@ namespace SagaMap
             if (Logger.defaultSql != null)
             {
                 Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online`=0;");
-                Logger.getLogger().Information("Clearing SQL Logs");
+                Logger.GetLogger().Information("Clearing SQL Logs");
                 Logger.defaultSql.SQLExecuteNonQuery(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';",
                     Logger.defaultSql.ToSQLDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
             }
 
             Logger.ProgressBarHide("加载总耗时：" + (DateTime.Now - time).TotalMilliseconds + "ms");
-            Logger.getLogger().Information(LocalManager.Instance.Strings.ACCEPTING_CLIENT);
+            Logger.GetLogger().Information(LocalManager.Instance.Strings.ACCEPTING_CLIENT);
 
             //激活AJIMODE線程
             //SagaMap.Tasks.System.AJImode aji = new Tasks.System.AJImode();
@@ -571,7 +571,7 @@ namespace SagaMap
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
 
                         shouldRefreshStatistic = false;
@@ -590,7 +590,7 @@ namespace SagaMap
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
         }
 
@@ -616,22 +616,22 @@ namespace SagaMap
                             ClientManager.PrintAllThreads();
                             break;
                         case "printtaskinfo":
-                            Logger.getLogger().Warning("Active AI count:" + AIThread.Instance.ActiveAI);
+                            Logger.GetLogger().Warning("Active AI count:" + AIThread.Instance.ActiveAI);
                             var tasks = TaskManager.Instance.RegisteredTasks;
-                            Logger.getLogger().Warning("Active Tasks:" + tasks.Count);
-                            foreach (var i in tasks) Logger.getLogger().Warning(i);
+                            Logger.GetLogger().Warning("Active Tasks:" + tasks.Count);
+                            foreach (var i in tasks) Logger.GetLogger().Warning(i);
                             break;
                         case "printband":
                             var sendTotal = 0;
                             var receiveTotal = 0;
-                            Logger.getLogger().Warning("Bandwidth usage information:");
+                            Logger.GetLogger().Warning("Bandwidth usage information:");
                             try
                             {
                                 foreach (var i in MapClientManager.Instance.OnlinePlayer)
                                 {
                                     sendTotal += i.NetIo.UpStreamBand;
                                     receiveTotal += i.NetIo.DownStreamBand;
-                                    Logger.getLogger().Warning(string.Format(
+                                    Logger.GetLogger().Warning(string.Format(
                                         "Client:{0} Receive:{1:0.##}KB/s Send:{2:0.##}KB/s",
                                         i,
                                         (float)i.NetIo.DownStreamBand / 1024,
@@ -642,7 +642,7 @@ namespace SagaMap
                             {
                             }
 
-                            Logger.getLogger().Warning(string.Format("Total: Receive:{0:0.##}KB/s Send:{1:0.##}KB/s",
+                            Logger.GetLogger().Warning(string.Format("Total: Receive:{0:0.##}KB/s Send:{1:0.##}KB/s",
                                 (float)receiveTotal / 1024,
                                 (float)sendTotal / 1024));
                             break;
@@ -658,7 +658,7 @@ namespace SagaMap
                                 }
                                 catch (Exception exception)
                                 {
-                                    Logger.getLogger().Error(exception, null);
+                                    Logger.GetLogger().Error(exception, null);
                                 }
                             }
 
@@ -677,21 +677,21 @@ namespace SagaMap
                                 }
                                 catch (Exception exception)
                                 {
-                                    Logger.getLogger().Error(exception, null);
+                                    Logger.GetLogger().Error(exception, null);
                                 }
 
                             break;
                         case "savevar":
                             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
-                            Logger.getLogger().Information("Saving ....", null);
+                            Logger.GetLogger().Information("Saving ....", null);
                             break;
                         case "quit":
-                            Logger.getLogger().Information("Closing.....", null);
+                            Logger.GetLogger().Information("Closing.....", null);
                             shutingdown = true;
                             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
                             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
                             MapClientManager.Instance.Clients.CopyTo(clients);
-                            Logger.getLogger().Information("Saving player's data.....", null);
+                            Logger.GetLogger().Information("Saving player's data.....", null);
 
                             foreach (var i in clients)
                                 try
@@ -701,10 +701,10 @@ namespace SagaMap
                                 }
                                 catch (Exception exception)
                                 {
-                                    Logger.getLogger().Error(exception, null);
+                                    Logger.GetLogger().Error(exception, null);
                                 }
 
-                            Logger.getLogger().Information("Saving golem's data.....", null);
+                            Logger.GetLogger().Information("Saving golem's data.....", null);
 
                             foreach (var i in MapManager.Instance.Maps.Values)
                             {
@@ -732,15 +732,15 @@ namespace SagaMap
 
                                 x = Global.PosX16to8(i.Character.X, i.map.Width);
                                 y = Global.PosY16to8(i.Character.Y, i.map.Height);
-                                Logger.getLogger().Information(i.Character.Name + "(CharID:" + i.Character.CharID +
+                                Logger.GetLogger().Information(i.Character.Name + "(CharID:" + i.Character.CharID +
                                                                ")[" + i.Map.Name +
                                                                " " + x + "," + y + "] IP：" +
                                                                i.Character.Account.LastIP);
                             }
 
-                            Logger.getLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                            Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
                                                            MapClientManager.Instance.OnlinePlayer.Count);
-                            Logger.getLogger()
+                            Logger.GetLogger()
                                 .Information("当前IP在线：" + MapClientManager.Instance.OnlinePlayerOnlyIP.Count);
                             break;
                         case "kick2":
@@ -760,7 +760,7 @@ namespace SagaMap
                                 }
                                 catch (Exception exception)
                                 {
-                                    Logger.getLogger().Error(exception, null);
+                                    Logger.GetLogger().Error(exception, null);
                                 }
 
                             break;
@@ -773,12 +773,12 @@ namespace SagaMap
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
         {
-            Logger.getLogger().Information("Closing.....", null);
+            Logger.GetLogger().Information("Closing.....", null);
             shutingdown = true;
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
             MapClientManager.Instance.Clients.CopyTo(clients);
-            Logger.getLogger().Information("Saving golem's data.....", null);
+            Logger.GetLogger().Information("Saving golem's data.....", null);
 
             var maps = MapManager.Instance.Maps.Values.ToArray();
             foreach (var i in maps)
@@ -806,7 +806,7 @@ namespace SagaMap
                     }
             }
 
-            Logger.getLogger().Information("Saving player's data.....", null);
+            Logger.GetLogger().Information("Saving player's data.....", null);
 
             foreach (var i in clients)
                 try
@@ -816,11 +816,11 @@ namespace SagaMap
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
 
-            Logger.getLogger().Information("Closing MySQL connection....");
+            Logger.GetLogger().Information("Closing MySQL connection....");
             if (charDB.GetType() == typeof(MySQLConnectivity))
             {
                 var con = (MySQLConnectivity)charDB;
@@ -845,10 +845,10 @@ namespace SagaMap
         {
             var ex = e.ExceptionObject as Exception;
             shutingdown = true;
-            Logger.getLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.getLogger().Error("Error Message:" + ex);
-            Logger.getLogger().Error("Call Stack:" + ex.StackTrace);
-            Logger.getLogger().Error("Trying to save all player's data");
+            Logger.GetLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
+            Logger.GetLogger().Error("Error Message:" + ex);
+            Logger.GetLogger().Error("Call Stack:" + ex.StackTrace);
+            Logger.GetLogger().Error("Trying to save all player's data");
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
 
             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
@@ -861,10 +861,10 @@ namespace SagaMap
                 }
                 catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
+                    Logger.GetLogger().Error(exception, null);
                 }
 
-            Logger.getLogger().Error("Trying to clear golem actor");
+            Logger.GetLogger().Error("Trying to clear golem actor");
 
             var maps = MapManager.Instance.Maps.Values.ToArray();
             foreach (var i in maps)
@@ -884,7 +884,7 @@ namespace SagaMap
                     i.OnDestrory();
             }
 
-            Logger.getLogger().Information("Closing MySQL connection....");
+            Logger.GetLogger().Information("Closing MySQL connection....");
             if (charDB.GetType() == typeof(MySQLConnectivity))
             {
                 var con = (MySQLConnectivity)charDB;

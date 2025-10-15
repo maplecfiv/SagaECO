@@ -186,7 +186,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return "MapClient";
             }
         }
@@ -250,9 +250,9 @@ namespace SagaMap.Network.Client
 
                 Character.VisibleActors.Clear();
 
-                Logger.getLogger().Information(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT,
+                Logger.GetLogger().Information(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT,
                     (object)Character.Name));
-                Logger.getLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
                                                MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
@@ -462,7 +462,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1176,7 +1176,7 @@ namespace SagaMap.Network.Client
                         string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound_Msg, EventID), 131, "");
                 SendNPCMessageEnd();
                 SendEventEnd();
-                Logger.getLogger().Warning("No script loaded for EventID:" + EventID);
+                Logger.GetLogger().Warning("No script loaded for EventID:" + EventID);
             }
         }
 
@@ -1253,7 +1253,7 @@ namespace SagaMap.Network.Client
                         evnt.CurrentPC = null;
                     currentEvent = null;
                     if (Character != null)
-                        Logger.getLogger().Warning(string.Format(
+                        Logger.GetLogger().Warning(string.Format(
                             "Player:{0} logged out while script thread is still running, terminating the script thread!",
                             Character.Name));
                 }
@@ -1281,7 +1281,7 @@ namespace SagaMap.Network.Client
                         SendEventEnd();
                     }
 
-                    Logger.getLogger().Warning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
+                    Logger.GetLogger().Warning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
                                                ex.Message + "\r\n" + ex.StackTrace);
                 }
                 catch
@@ -1391,7 +1391,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -3170,7 +3170,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -5633,7 +5633,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -6465,7 +6465,7 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -7134,7 +7134,7 @@ namespace SagaMap.Network.Client
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
         }
@@ -7171,7 +7171,7 @@ namespace SagaMap.Network.Client
 
             catch (Exception ex)
             {
-                Logger.getLogger().Error(main.Name + " Thread " + ex);
+                Logger.GetLogger().Error(main.Name + " Thread " + ex);
             }
         }
 
@@ -10129,7 +10129,7 @@ namespace SagaMap.Network.Client
             if (Configuration.Configuration.Instance.ClientVersion == null ||
                 Configuration.Configuration.Instance.ClientVersion == p.GetVersion())
             {
-                Logger.getLogger()
+                Logger.GetLogger()
                     .Information(string.Format(LocalManager.Instance.Strings.CLIENT_CONNECTING, p.GetVersion()));
                 client_Version = p.GetVersion();
 
@@ -10415,9 +10415,9 @@ namespace SagaMap.Network.Client
                 Character.Ring = RingManager.Instance.GetRing(Character.Ring);
                 RingManager.Instance.PlayerOnline(Character.Ring, Character);
 
-                Logger.getLogger()
+                Logger.GetLogger()
                     .Information(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_IN, Character.Name));
-                Logger.getLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
                                                MapClientManager.Instance.OnlinePlayer.Count);
 
                 var SerPC = ScriptManager.Instance.VariableHolder;
@@ -10891,7 +10891,7 @@ namespace SagaMap.Network.Client
                         MapManager.Instance.DeleteMapInstance(map.ID);
                     }
 
-                    Logger.getLogger().Information("Destory Player's Tent : " + Character.Name + " (" +
+                    Logger.GetLogger().Information("Destory Player's Tent : " + Character.Name + " (" +
                                                    Character.TenkActor.EventID +
                                                    ")");
 
@@ -11263,7 +11263,7 @@ namespace SagaMap.Network.Client
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
         }
 
@@ -11742,23 +11742,27 @@ namespace SagaMap.Network.Client
             }
             catch (Exception ex1)
             {
-                Logger.getLogger().Error(ex1, ex1.Message);
+                Logger.GetLogger().Error(ex1, ex1.Message);
             }
 
-            var p1 = new SSMG_PLAYER_SHOP_APPEAR();
-            p1.ActorID = Character.ActorID;
-            p1.Title = Shoptitle;
+
+            byte buttonInd = 0;
             if (ids.Length != 0 && Shoptitle != "" && Character.Playershoplist.Count > 0)
             {
                 Shopswitch = 1;
-                p1.button = 1;
+                buttonInd = 1;
             }
             else
             {
                 Shopswitch = 0;
                 Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE, null, Character, true);
-                p1.button = 0;
+                buttonInd = 0;
             }
+
+            var p1 = new SSMG_PLAYER_SHOP_APPEAR();
+            p1.ActorID = Character.ActorID;
+            p1.Title = Shoptitle;
+            p1.button = buttonInd;
 
             NetIo.SendPacket(p1);
         }
@@ -11777,176 +11781,180 @@ namespace SagaMap.Network.Client
             var actor = map.GetActor(p.ActorID);
             var items = p.Items;
             var p1 = new SSMG_PLAYER_SHOP_ANSWER();
-            if (actor.type == ActorType.PC)
+            if (actor.type != ActorType.PC)
             {
-                var pc = (ActorPC)actor;
-                var client = FromActorPC(pc);
-                long gold = 0;
-                //if (client.Character.Account.MacAddress == Character.Account.MacAddress && client.account.GMLevel < 200)
-                //{
-                //    MapClient clients = FromActorPC(Character);
-                //    clients.SendSystemMessage("发生未知的错误，交易失败。");
-                //    return;
-                //}
-                foreach (var i in items.Keys)
+                return;
+            }
+
+            var pc = (ActorPC)actor;
+            var client = FromActorPC(pc);
+            long gold = 0;
+            //if (client.Character.Account.MacAddress == Character.Account.MacAddress && client.account.GMLevel < 200)
+            //{
+            //    MapClient clients = FromActorPC(Character);
+            //    clients.SendSystemMessage("发生未知的错误，交易失败。");
+            //    return;
+            //}
+            foreach (var i in items.Keys)
+            {
+                var item = pc.Inventory.GetItem(i);
+                /*GAME_SMSG_STALL_VEN_DEAL_ERR1,"露店を見ていないのに取引しようとしました"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR2,"露店を見ている最中に相手が変わりました"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR3,"指定した人は商人ではありません"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR4,"露店を開いていません"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR5,"露店の客として認識されていませんでした"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR6,"指定した露店は自分の露店です"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR7,"取引可能な商品がありませんでした"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR8,"現在の所持金が取引金額に達していませんでした"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR9,"これ以上アイテムを所持することはできません"
+                    GAME_SMSG_STALL_VEN_DEAL_ERR10,"相手の所持金が上限に達したためキャンセルされました"*/
+                if (item == null)
                 {
-                    var item = pc.Inventory.GetItem(i);
-                    /*GAME_SMSG_STALL_VEN_DEAL_ERR1,"露店を見ていないのに取引しようとしました"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR2,"露店を見ている最中に相手が変わりました"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR3,"指定した人は商人ではありません"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR4,"露店を開いていません"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR5,"露店の客として認識されていませんでした"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR6,"指定した露店は自分の露店です"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR7,"取引可能な商品がありませんでした"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR8,"現在の所持金が取引金額に達していませんでした"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR9,"これ以上アイテムを所持することはできません"
-                        GAME_SMSG_STALL_VEN_DEAL_ERR10,"相手の所持金が上限に達したためキャンセルされました"*/
-                    if (item == null)
-                    {
-                        p1.Result = -4;
-                        NetIo.SendPacket(p1);
-                        return;
-                    }
-
-                    if (item.ItemID == 950000006 || item.ItemID == 950000007)
-                    {
-                        p1.Result = -1;
-                        NetIo.SendPacket(p1);
-                        return;
-                    }
-
-                    if (items[i] == 0)
-                    {
-                        p1.Result = -2;
-                        NetIo.SendPacket(p1);
-                        return;
-                    }
-
-                    /*if (item.IsEquipt)
-                    {
-                        p1.Result = -4;
-                        this.NetIo.SendPacket(p1);
-                        return;
-                    }*/
-                    if (item.Stack >= items[i])
-                    {
-                        gold += (long)(pc.Playershoplist[i].Price * items[i]);
-                        var singleprice = (long)(pc.Playershoplist[i].Price * items[i]);
-                        if (Character.Gold < gold)
-                        {
-                            p1.Result = -7;
-                            NetIo.SendPacket(p1);
-                            return;
-                        }
-
-                        if (gold + pc.Gold >= 999999999999)
-                        {
-                            p1.Result = -9;
-                            NetIo.SendPacket(p1);
-                            return;
-                        }
-
-                        uint cpfee = 0; //(uint)(100 + singleprice * 0.01f);
-                        /*if(client.Character.CP < cpfee)
-                        {
-                            client.SendSystemMessage("玩家: " + this.Character.Name + " 试图向您购买物品，可是您的CP不足，无法贩卖。");
-                            this.SendSystemMessage("无法向玩家: " + client.Character.Name + " 购买物品，因为他的CP不足了。");
-                            return;
-                        }
-                        //client.Character.CP -= cpfee;*/
-
-                        var newItem = item.Clone();
-                        newItem.Stack = items[i];
-                        if (newItem.Stack > 0)
-                            Logger.LogItemLost(Logger.EventType.ItemGolemLost,
-                                Character.Name + "(" + Character.CharID + ")",
-                                newItem.BaseData.name + "(" + newItem.ItemID + ")",
-                                string.Format("GolemSell Count:{0}", items[i]), false);
-                        var result = pc.Inventory.DeleteItem(i, items[i]);
-                        pc.Playershoplist[i].Count -= items[i];
-
-                        SendShopGoodInfo(i, pc.Playershoplist[i].Count, pc.Playershoplist[i].Price);
-
-                        if (pc.Playershoplist[i].Count == 0)
-                            pc.Playershoplist.Remove(i);
-                        //返回卖家info
-                        switch (result)
-                        {
-                            case InventoryDeleteResult.STACK_UPDATED:
-                                var p2 = new SSMG_ITEM_COUNT_UPDATE();
-                                p2.InventorySlot = item.Slot;
-                                p2.Stack = item.Stack;
-                                client.NetIo.SendPacket(p2);
-                                break;
-                            case InventoryDeleteResult.ALL_DELETED:
-                                var p3 = new SSMG_ITEM_DELETE();
-                                p3.InventorySlot = item.Slot;
-                                client.NetIo.SendPacket(p3);
-                                break;
-                        }
-
-
-                        client.Character.Inventory.CalcPayloadVolume();
-                        client.SendCapacity();
-                        client.SendSystemMessage("玩家: " + Character.Name + " 向您购买了 " + newItem.Stack + " 个 [" +
-                                                 newItem.BaseData.name + "]，售价：" + singleprice + "G");
-                        client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.ITEM_DELETED,
-                            item.BaseData.name, items[i]));
-                        Logger.LogItemGet(Logger.EventType.ItemGolemGet, Character.Name + "(" + Character.CharID + ")",
-                            item.BaseData.name + "(" + item.ItemID + ")",
-                            string.Format("GolemBuy Count:{0}", item.Stack), false);
-                        SendSystemMessage("向玩家: " + client.Character.Name + " 购买了 " + newItem.Stack + " 个 [" +
-                                          newItem.BaseData.name + "]，花费：" + singleprice + "G");
-                        if (newItem.BaseData.itemType == ItemType.PARTNER)
-                            newItem.ActorPartnerID = 0;
-                        AddItem(newItem, true);
-
-
-                        var log = new Logger("玩家交易记录.txt");
-                        var text = "\r\n玩家: " + Character.Name + " 向玩家：" + client.Character.Name + " 购买了 " +
-                                   newItem.Stack + " 个 [" + newItem.BaseData.name + "]，花费：" + singleprice + "G";
-                        text += "\r\n买家IP/MAC：" + Character.Account.LastIP + "/" + Character.Account.MacAddress +
-                                "   卖家IP/MAC：" + client.Character.Account.LastIP + "/" +
-                                client.Character.Account.MacAddress;
-                        if (newItem.Refine > 10)
-                            text += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
-                        log.WriteLog(text);
-
-
-                        if (Character.Account.MacAddress == client.Character.Account.MacAddress ||
-                            Character.Account.LastIP == client.Character.Account.LastIP)
-                        {
-                            var log2 = new Logger("同IP或MAC的玩家交易记录.txt");
-                            var text2 = "\r\n玩家: " + Character.Name + " 向玩家：" + client.Character.Name + " 购买了 " +
-                                        newItem.Stack + " 个 [" + newItem.BaseData.name + "]，花费：" + singleprice + "G";
-                            text2 += "\r\n买家IP/MAC：" + Character.Account.LastIP + "/" + Character.Account.MacAddress +
-                                     "   卖家IP/MAC：" + client.Character.Account.LastIP + "/" +
-                                     client.Character.Account.MacAddress;
-                            if (newItem.Refine > 10)
-                                text2 += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
-                            log2.WriteLog(text2);
-                        }
-                    }
-                    else
-                    {
-                        p1.Result = -5;
-                        NetIo.SendPacket(p1);
-                        return;
-                    }
+                    p1.Result = -4;
+                    NetIo.SendPacket(p1);
+                    return;
                 }
 
-                Character.Gold -= gold;
-                pc.Gold += gold;
-
-                if (pc.Playershoplist.Count == 0)
+                if (item.ItemID == 950000006 || item.ItemID == 950000007)
                 {
-                    pc.Fictitious = false;
-                    client.Shopswitch = 0;
-                    map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, pc, true);
-                    map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE, null, Character,
-                        true);
+                    p1.Result = -1;
+                    NetIo.SendPacket(p1);
+                    return;
+                }
+
+                if (items[i] == 0)
+                {
+                    p1.Result = -2;
+                    NetIo.SendPacket(p1);
+                    return;
+                }
+
+                /*if (item.IsEquipt)
+                {
+                    p1.Result = -4;
+                    this.NetIo.SendPacket(p1);
+                    return;
+                }*/
+                if (item.Stack >= items[i])
+                {
+                    gold += (long)(pc.Playershoplist[i].Price * items[i]);
+                    var singleprice = (long)(pc.Playershoplist[i].Price * items[i]);
+                    if (Character.Gold < gold)
+                    {
+                        p1.Result = -7;
+                        NetIo.SendPacket(p1);
+                        return;
+                    }
+
+                    if (gold + pc.Gold >= 999999999999)
+                    {
+                        p1.Result = -9;
+                        NetIo.SendPacket(p1);
+                        return;
+                    }
+
+                    uint cpfee = 0; //(uint)(100 + singleprice * 0.01f);
+                    /*if(client.Character.CP < cpfee)
+                    {
+                        client.SendSystemMessage("玩家: " + this.Character.Name + " 试图向您购买物品，可是您的CP不足，无法贩卖。");
+                        this.SendSystemMessage("无法向玩家: " + client.Character.Name + " 购买物品，因为他的CP不足了。");
+                        return;
+                    }
+                    //client.Character.CP -= cpfee;*/
+
+                    var newItem = item.Clone();
+                    newItem.Stack = items[i];
+                    if (newItem.Stack > 0)
+                        Logger.LogItemLost(Logger.EventType.ItemGolemLost,
+                            Character.Name + "(" + Character.CharID + ")",
+                            newItem.BaseData.name + "(" + newItem.ItemID + ")",
+                            string.Format("GolemSell Count:{0}", items[i]), false);
+                    var result = pc.Inventory.DeleteItem(i, items[i]);
+                    pc.Playershoplist[i].Count -= items[i];
+
+                    SendShopGoodInfo(i, pc.Playershoplist[i].Count, pc.Playershoplist[i].Price);
+
+                    if (pc.Playershoplist[i].Count == 0)
+                        pc.Playershoplist.Remove(i);
+                    //返回卖家info
+                    switch (result)
+                    {
+                        case InventoryDeleteResult.STACK_UPDATED:
+                            var p2 = new SSMG_ITEM_COUNT_UPDATE();
+                            p2.InventorySlot = item.Slot;
+                            p2.Stack = item.Stack;
+                            client.NetIo.SendPacket(p2);
+                            break;
+                        case InventoryDeleteResult.ALL_DELETED:
+                            var p3 = new SSMG_ITEM_DELETE();
+                            p3.InventorySlot = item.Slot;
+                            client.NetIo.SendPacket(p3);
+                            break;
+                    }
+
+
+                    client.Character.Inventory.CalcPayloadVolume();
+                    client.SendCapacity();
+                    client.SendSystemMessage("玩家: " + Character.Name + " 向您购买了 " + newItem.Stack + " 个 [" +
+                                             newItem.BaseData.name + "]，售价：" + singleprice + "G");
+                    client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.ITEM_DELETED,
+                        item.BaseData.name, items[i]));
+                    Logger.LogItemGet(Logger.EventType.ItemGolemGet, Character.Name + "(" + Character.CharID + ")",
+                        item.BaseData.name + "(" + item.ItemID + ")",
+                        string.Format("GolemBuy Count:{0}", item.Stack), false);
+                    SendSystemMessage("向玩家: " + client.Character.Name + " 购买了 " + newItem.Stack + " 个 [" +
+                                      newItem.BaseData.name + "]，花费：" + singleprice + "G");
+                    if (newItem.BaseData.itemType == ItemType.PARTNER)
+                        newItem.ActorPartnerID = 0;
+                    AddItem(newItem, true);
+
+
+                    // var log = new Logger("玩家交易记录.txt");
+                    var text = "\r\n玩家: " + Character.Name + " 向玩家：" + client.Character.Name + " 购买了 " +
+                               newItem.Stack + " 个 [" + newItem.BaseData.name + "]，花费：" + singleprice + "G";
+                    text += "\r\n买家IP/MAC：" + Character.Account.LastIP + "/" + Character.Account.MacAddress +
+                            "   卖家IP/MAC：" + client.Character.Account.LastIP + "/" +
+                            client.Character.Account.MacAddress;
+                    if (newItem.Refine > 10)
+                        text += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
+                    SagaLib.Logger.GetLogger().Information(text);
+
+
+                    if (Character.Account.MacAddress == client.Character.Account.MacAddress ||
+                        Character.Account.LastIP == client.Character.Account.LastIP)
+                    {
+                        var log2 = new Logger("同IP或MAC的玩家交易记录.txt");
+                        var text2 = "\r\n玩家: " + Character.Name + " 向玩家：" + client.Character.Name + " 购买了 " +
+                                    newItem.Stack + " 个 [" + newItem.BaseData.name + "]，花费：" + singleprice + "G";
+                        text2 += "\r\n买家IP/MAC：" + Character.Account.LastIP + "/" + Character.Account.MacAddress +
+                                 "   卖家IP/MAC：" + client.Character.Account.LastIP + "/" +
+                                 client.Character.Account.MacAddress;
+                        if (newItem.Refine > 10)
+                            text2 += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
+                        SagaLib.Logger.GetLogger().Information(text2);
+                    }
+                }
+                else
+                {
+                    p1.Result = -5;
+                    NetIo.SendPacket(p1);
+                    return;
                 }
             }
+
+            Character.Gold -= gold;
+            pc.Gold += gold;
+
+            if (pc.Playershoplist.Count != 0)
+            {
+                return;
+            }
+
+            pc.Fictitious = false;
+            client.Shopswitch = 0;
+            map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.CHAR_INFO_UPDATE, null, pc, true);
+            map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE, null, Character,
+                true);
         }
 
         public void OnPlayerShopBuyClose(CSMG_PLAYER_SETSHOP_CLOSE p)
@@ -13636,7 +13644,7 @@ namespace SagaMap.Network.Client
                     {
                         Character.Gold -= 5000;
 
-                        Logger.getLogger().Information("Refine Item:" + item.BaseData.name + "[" + p.InventorySlot +
+                        Logger.GetLogger().Information("Refine Item:" + item.BaseData.name + "[" + p.InventorySlot +
                                                        "] Protect Item: " +
                                                        (ItemFactory.Instance.GetItem(p.ProtectItem).ItemID != 10000000
                                                            ? ItemFactory.Instance.GetItem(p.ProtectItem).BaseData.name
@@ -13651,8 +13659,8 @@ namespace SagaMap.Network.Client
                                                            : "None"));
 
 
-                        Logger.getLogger().Information("BaseLevel: " + p.BaseLevel + " JLevel: " + p.JobLevel);
-                        Logger.getLogger().Information("ExpRate: " + p.ExpRate + " JExpRate: " + p.JExpRate);
+                        Logger.GetLogger().Information("BaseLevel: " + p.BaseLevel + " JLevel: " + p.JobLevel);
+                        Logger.GetLogger().Information("ExpRate: " + p.ExpRate + " JExpRate: " + p.JExpRate);
 
                         var Material = p.Material;
 
@@ -17090,9 +17098,9 @@ namespace SagaMap.Network.Client
                     this.tradeCounts[i] = item.Stack;
                     //SendSystemMessage("你试图通过某种方法修改交易数量！你已经被记录于系统，请联系管理员接受处理。");
                     //Character.Account.Banned = true;
-                    var log = new Logger("玩家异常.txt");
+                    // var log = new Logger("玩家异常.txt");
                     var logtext = "\r\n" + Character.Name + "使用了交易，修改了数量：" + this.tradeCounts[i] + "/" + item.Stack;
-                    log.WriteLog(logtext);
+                    SagaLib.Logger.GetLogger().Information(logtext);
                 }
 
                 item.Stack = this.tradeCounts[i];
@@ -17194,7 +17202,7 @@ namespace SagaMap.Network.Client
                 p2.Item = item;
                 p2.InventorySlot = tradeItems[i];
                 p2.Container = ContainerType.BODY;
-                Logger.getLogger().Information("尝试交易道具:" + item.ItemID + "[" + item.Name + "] " + item.Stack +
+                Logger.GetLogger().Information("尝试交易道具:" + item.ItemID + "[" + item.Name + "] " + item.Stack +
                                                "个  , 道具栏ID: " +
                                                tradeItems[i]);
                 client.NetIo.SendPacket(p2);

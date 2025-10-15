@@ -114,7 +114,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 }
                 catch (Exception ex)
                 {
-                    Logger.getLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error(ex, ex.Message);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

@@ -76,7 +76,7 @@ namespace SagaMap.PC
                         value += atk_def_matk[i];
                     break;
                 default:
-                    Logger.getLogger().Error("未知的附魔类型");
+                    Logger.GetLogger().Error("未知的附魔类型");
                     value = 0;
                     break;
             }

@@ -50,7 +50,7 @@ namespace SagaLogin
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
@@ -61,24 +61,24 @@ namespace SagaLogin
 
             if (!charDB.isConnected())
             {
-                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 charDB.Connect();
                 if (!charDB.isConnected())
                 {
-                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.getLogger().Information("Clients can now connect again", null);
+                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.GetLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -90,24 +90,24 @@ namespace SagaLogin
 
             if (!accountDB.isConnected())
             {
-                Logger.getLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected)
             {
-                Logger.getLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected())
                 {
-                    Logger.getLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
                 else
                 {
-                    Logger.getLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.getLogger().Information("Clients can now connect again", null);
+                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.GetLogger().Information("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -142,7 +142,7 @@ namespace SagaLogin
             //Console.ResetColor();
 
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.getLogger().Information("Version Informations:");
+            Logger.GetLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
             _logger.Debug("SagaLogin");
             //Console.ForegroundColor = ConsoleColor.White;
@@ -158,13 +158,13 @@ namespace SagaLogin
             _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
                           GlobalInfo.ModifyDate + ")");
 
-            Logger.getLogger().Information("Starting Initialization...", null);
+            Logger.GetLogger().Information("Starting Initialization...", null);
 
             Configuration.Configuration.Instance.Initialization("./Config/SagaLogin.xml");
 
             Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
-            Logger.getLogger().Information("Initializing VirtualFileSystem...");
+            Logger.GetLogger().Information("Initializing VirtualFileSystem...");
 #if FreeVersion1
             VirtualFileSystemManager.Instance.Init(FileSystems.LPK, "./DB/DB.lpk");
 #else
@@ -179,8 +179,8 @@ namespace SagaLogin
 
             if (!StartDatabase())
             {
-                Logger.getLogger().Error("cannot connect to dbserver", null);
-                Logger.getLogger().Error("Shutting down in 20sec.", null);
+                Logger.GetLogger().Error("cannot connect to dbserver", null);
+                Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 Thread.Sleep(20000);
                 return;
             }
@@ -188,8 +188,8 @@ namespace SagaLogin
             LoginClientManager.Instance.Start();
             if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port))
             {
-                Logger.getLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
-                Logger.getLogger().Information("Shutting down in 20sec.");
+                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
+                Logger.GetLogger().Information("Shutting down in 20sec.");
                 Thread.Sleep(20000);
                 return;
             }
@@ -216,15 +216,15 @@ namespace SagaLogin
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
         {
-            Logger.getLogger().Information("Closing.....", null);
+            Logger.GetLogger().Information("Closing.....", null);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var ex = e.ExceptionObject as Exception;
-            Logger.getLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.getLogger().Error("Error Message:" + ex.Message);
-            Logger.getLogger().Error("Call Stack:" + ex.StackTrace);
+            Logger.GetLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
+            Logger.GetLogger().Error("Error Message:" + ex.Message);
+            Logger.GetLogger().Error("Call Stack:" + ex.StackTrace);
         }
     }
 }

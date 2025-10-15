@@ -207,7 +207,7 @@ namespace SagaLib
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex.Message);
+                Logger.GetLogger().Error(ex.Message);
             }
 
             return count;
@@ -272,8 +272,8 @@ namespace SagaLib
                     count++;
                 }catch (Exception exception)
                 {
-                    Logger.getLogger().Error(exception, null);
-                    Logger.getLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines +
+                    Logger.GetLogger().Error(exception, null);
+                    Logger.GetLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines +
                                      "\r\n       Content:" + line);
                 }
             }

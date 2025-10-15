@@ -154,7 +154,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, null);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -265,7 +265,7 @@ namespace SagaMap.Mob
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                 lock (commands)
@@ -275,8 +275,8 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, null);
-                Logger.getLogger().Error(ex.StackTrace, null);
+                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex.StackTrace, null);
             }
             //ClientManager.LeaveCriticalArea();
         }
@@ -554,7 +554,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -655,7 +655,7 @@ namespace SagaMap.Mob
                     }
                     catch (Exception ex)
                     {
-                        Logger.getLogger().Error(ex, ex.Message);
+                        Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     longSkillTime = DateTime.Now.AddSeconds(mode.LongCD);
@@ -1053,7 +1053,7 @@ namespace SagaMap.Mob
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
         }
@@ -1211,7 +1211,7 @@ namespace SagaMap.Mob
         {
             if (map == null)
             {
-                Logger.getLogger().Warning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
+                Logger.GetLogger().Warning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
                 return;
             }
 

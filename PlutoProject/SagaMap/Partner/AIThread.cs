@@ -16,7 +16,7 @@ namespace SagaMap.Partner
         {
             mainThread = new Thread(mainLoop);
             mainThread.Name = string.Format("PartnerAIThread({0})", mainThread.ManagedThreadId);
-            Logger.getLogger().Information("PartnerAI线程启动：" + mainThread.Name);
+            Logger.GetLogger().Information("PartnerAI线程启动：" + mainThread.Name);
             ClientManager.AddThread(mainThread);
             mainThread.Start();
         }
@@ -72,7 +72,7 @@ namespace SagaMap.Partner
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
 
                         i.NextUpdateTime = DateTime.Now + new TimeSpan(0, 0, 0, 0, i.Period);

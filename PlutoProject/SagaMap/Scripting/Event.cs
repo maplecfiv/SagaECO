@@ -1188,7 +1188,7 @@ namespace SagaMap.Scripting
         {
             foreach (var i in goods)
                 if (Goods.Count == 12)
-                    Logger.getLogger().Warning(ToString() + ":Maximal shop items(12) reached, skiping");
+                    Logger.GetLogger().Warning(ToString() + ":Maximal shop items(12) reached, skiping");
                 else
                     Goods.Add(i);
         }
@@ -1721,7 +1721,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return 0;
             }
         }
@@ -1788,7 +1788,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
@@ -3129,7 +3129,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 
@@ -3157,7 +3157,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 
@@ -3185,7 +3185,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 
@@ -3213,7 +3213,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 
@@ -3241,7 +3241,7 @@ namespace SagaMap.Scripting
             }
             catch (Exception exception)
             {
-                Logger.getLogger().Error(exception, null);
+                Logger.GetLogger().Error(exception, null);
             }
         }
 

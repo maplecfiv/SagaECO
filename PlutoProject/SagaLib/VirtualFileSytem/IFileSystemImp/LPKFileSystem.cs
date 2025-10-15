@@ -20,7 +20,7 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
 

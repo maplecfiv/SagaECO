@@ -92,7 +92,7 @@ namespace SagaMap.Configuration
             {
                 if (apiport == null || apiport == 0)
                 {
-                    Logger.getLogger().Warning("PORT ARE NOT SET.USEING DEFAULT PORT (8080).");
+                    Logger.GetLogger().Warning("PORT ARE NOT SET.USEING DEFAULT PORT (8080).");
                     apiport = 8080;
                 }
 
@@ -107,7 +107,7 @@ namespace SagaMap.Configuration
             {
                 if (prefixes == null)
                 {
-                    Logger.getLogger().Warning("PREFIXES ARE NOT SET.USEING DEFAULT PREFIXES (localhost).");
+                    Logger.GetLogger().Warning("PREFIXES ARE NOT SET.USEING DEFAULT PREFIXES (localhost).");
                     prefixes = "http://localhost";
                 }
 
@@ -656,7 +656,7 @@ namespace SagaMap.Configuration
                             }
                             catch
                             {
-                                Logger.getLogger().Warning(string.Format(
+                                Logger.GetLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
                             }
 
@@ -791,14 +791,14 @@ namespace SagaMap.Configuration
                 }
 
                 if (!getVersion)
-                    Logger.getLogger().Warning(string.Format(
+                    Logger.GetLogger().Warning(string.Format(
                         "Packet Version not set, using default version:[{0}], \r\n         please change Config/SagaMap.xml to set version",
                         Version));
-                Logger.getLogger().Information("Done reading configuration...");
+                Logger.GetLogger().Information("Done reading configuration...");
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 

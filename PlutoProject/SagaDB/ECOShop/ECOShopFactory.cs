@@ -51,7 +51,7 @@ namespace SagaDB.ECOShop
                             if (!item.Items.ContainsKey(itemID))
                                 item.Items.Add(itemID, newItem);
                             else
-                                Logger.getLogger().Warning(string.Format(
+                                Logger.GetLogger().Warning(string.Format(
                                     "Item:{0} already added for shop category:{1}! overwriting....", itemID, item.ID));
                             lastItem = newItem;
                             break;

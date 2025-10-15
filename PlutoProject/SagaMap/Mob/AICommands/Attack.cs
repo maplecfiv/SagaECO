@@ -83,7 +83,7 @@ namespace SagaMap.Mob.AICommands
                         }
                         catch (Exception ex)
                         {
-                            Logger.getLogger().Error(ex, ex.Message);
+                            Logger.GetLogger().Error(ex, ex.Message);
                         }
 
                         return;
@@ -311,7 +311,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -459,7 +459,7 @@ namespace SagaMap.Mob.AICommands
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
         }

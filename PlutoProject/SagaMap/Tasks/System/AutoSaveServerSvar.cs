@@ -17,12 +17,12 @@ namespace SagaMap.Tasks.System
             //ClientManager.EnterCriticalArea();
             try
             {
-                Logger.getLogger().Information("Autosaving Server Svar data...");
+                Logger.GetLogger().Information("Autosaving Server Svar data...");
                 MapServer.charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
             }
             //ClientManager.LeaveCriticalArea();
         }

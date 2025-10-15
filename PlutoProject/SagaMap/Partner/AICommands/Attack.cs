@@ -291,7 +291,7 @@ namespace SagaMap.Partner.AICommands
             }
             catch (Exception ex)
             {
-                Logger.getLogger().Error(ex, ex.Message);
+                Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
         }

@@ -177,7 +177,7 @@ namespace SagaDB.Item
             }
             else
             {
-                Logger.getLogger().Warning("Item:" + id + " not found! Creating dummy Item.");
+                Logger.GetLogger().Warning("Item:" + id + " not found! Creating dummy Item.");
                 var item = new Item(Items[10000000]);
                 item.Stack = 1;
                 item.Durability = item.BaseData.durability;

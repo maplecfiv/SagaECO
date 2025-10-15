@@ -27,7 +27,7 @@ namespace SagaMap.Tasks.Mob
             }
             catch (Exception exception)
             {
-                SagaLib.Logger.getLogger().Error(exception, null);
+                SagaLib.Logger.GetLogger().Error(exception, null);
             }
         }
     }
