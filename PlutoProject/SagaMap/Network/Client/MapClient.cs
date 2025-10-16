@@ -11923,7 +11923,7 @@ namespace SagaMap.Network.Client
                     if (Character.Account.MacAddress == client.Character.Account.MacAddress ||
                         Character.Account.LastIP == client.Character.Account.LastIP)
                     {
-                        var log2 = new Logger("同IP或MAC的玩家交易记录.txt");
+                        // var log2 = new Logger("同IP或MAC的玩家交易记录.txt");
                         var text2 = "\r\n玩家: " + Character.Name + " 向玩家：" + client.Character.Name + " 购买了 " +
                                     newItem.Stack + " 个 [" + newItem.BaseData.name + "]，花费：" + singleprice + "G";
                         text2 += "\r\n买家IP/MAC：" + Character.Account.LastIP + "/" + Character.Account.MacAddress +

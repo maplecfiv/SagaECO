@@ -53,7 +53,7 @@ namespace SagaLib
 
         private static string GetStackTrace()
         {
-            var trace = new StackTrace(2, false).ToString().Split('\n');
+            var trace = new StackTrace().ToString().Split('\n');
             var Stacktrace = "";
             foreach (var i in trace)
             {
@@ -153,16 +153,16 @@ namespace SagaLib
         public LogContent LogLevel = (LogContent)31;
         private string path;
 
-        public Logger(string filename)
-        {
-            this.filename = filename;
-            path = GetLogFile();
-            if (!File.Exists(path))
-            {
-                var f = File.Create(path);
-                f.Close();
-            }
-        }
+        // public Logger(string filename)
+        // {
+        //     this.filename = filename;
+        //     path = GetLogFile();
+        //     if (!File.Exists(path))
+        //     {
+        //         var f = File.Create(path);
+        //         f.Close();
+        //     }
+        // }
 
 
         /*public Logger(string path)
@@ -180,13 +180,14 @@ namespace SagaLib
         {
             try
             {
-                path = GetLogFile();
-                var file = new FileStream(path, FileMode.Append);
-                var sw = new StreamWriter(file);
+                // path = GetLogFile();
+                // var file = new FileStream(path, FileMode.Append);
+                // var sw = new StreamWriter(file);
                 var final = GetDate() + "|" +
                             p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
-                sw.WriteLine(final);
-                sw.Close();
+                // sw.WriteLine(final);
+                // sw.Close();
+                _logger.Information(final);
             }
             catch (Exception ex)
             {
@@ -198,14 +199,15 @@ namespace SagaLib
         {
             try
             {
-                path = GetLogFile();
-                p = string.Format("{0}->{1}", prefix, p);
-                var file = new FileStream(path, FileMode.Append);
-                var sw = new StreamWriter(file);
+                // path = GetLogFile();
+                p = $"{prefix}->{p}";
+                // var file = new FileStream(path, FileMode.Append);
+                // var sw = new StreamWriter(file);
                 var final = GetDate() + "|" +
                             p; // Add character to make exploding string easier for reading specific log entry by ReadLog()
-                sw.WriteLine(final);
-                sw.Close();
+                // sw.WriteLine(final);
+                // sw.Close();
+                _logger.Information(final);
             }
             catch (Exception exception)
             {
@@ -215,34 +217,34 @@ namespace SagaLib
 
         public static void ShowInfo(Exception ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug("[Info]");
+            _logger.Debug($"[Info] {ex.Message}\r\n {ex.StackTrace}");
             ////Console.ResetColor();
-            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
-            if (log != null) log.WriteLog(ex.Message);
+            // _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
+            // if (log != null) log.WriteLog(ex.Message);
         }
 
         public static void ShowInfo(string ex)
         {
-            if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug("[Info]");
+            _logger.Debug($"[Info] {ex}");
             ////Console.ResetColor();
-            _logger.Debug(ex);
+            // _logger.Debug(ex);
         }
 
         public static void ShowInfo(string ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug("[Info]");
+            _logger.Debug($"[Info] {ex}");
             ////Console.ResetColor();
-            _logger.Debug(ex);
-            if (log != null) log.WriteLog(ex);
+            // _logger.Debug(ex);
+            // if (log != null) log.WriteLog(ex);
         }
 
         public static void ShowSQL(Exception ex)
@@ -257,37 +259,37 @@ namespace SagaLib
 
         public static void ShowWarning(Exception ex)
         {
-            if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
+            //     return;
             ShowWarning(ex, defaultlogger);
         }
 
         public static void ShowWarning(string ex)
         {
-            if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
+            //     return;
             ShowWarning(ex, defaultlogger);
         }
 
         public static void ShowDebug(Exception ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Debug("[Debug]");
+            _logger.Debug($"[Debug] {ex.Message} \r\n {ex.StackTrace}");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
+            // _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
             ////Console.ResetColor();
-            if (log != null)
-                log.WriteLog("[Debug]" + ex.Message + "\r\n" + ex.StackTrace);
+            // if (log != null)
+            //     log.WriteLog("[Debug]" + ex.Message + "\r\n" + ex.StackTrace);
         }
 
         public static void ShowDebug(string ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Debug("[Debug]");
+            // _logger.Debug("[Debug]");
             ////Console.ForegroundColor = ConsoleColor.White;
             var Stacktrace = new StackTrace(1, true);
             var txt = ex;
@@ -295,22 +297,23 @@ namespace SagaLib
                 txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name + " " +
                       i.GetFileName() + ":" + i.GetFileLineNumber();
             txt = FilterSQL(txt);
-            _logger.Debug(txt);
+            // _logger.Debug(txt);
+            _logger.Debug($"[Debug] {txt}");
             ////Console.ResetColor();
-            if (log != null) log.WriteLog("[Debug]" + txt);
+            // if (log != null) log.WriteLog("[Debug]" + txt);
         }
 
         public static void ShowSQL(Exception ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
-            _logger.Debug("[SQL]");
+            _logger.Debug($"[SQL] {ex.Message} \r\n {FilterSQL(ex.StackTrace)}");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
+            // _logger.Debug(ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
             ////Console.ResetColor();
-            if (log != null)
-                log.WriteLog("[SQL]" + ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
+            // if (log != null)
+            //     log.WriteLog("[SQL]" + ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
         }
 
         private static string FilterSQL(string input)
@@ -325,91 +328,45 @@ namespace SagaLib
 
         public static void ShowSQL(string ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
-                return;
+            // if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
+            //     return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
-            _logger.Debug("[SQL]");
+            _logger.Debug($"[SQL] {ex}");
             ////Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(ex);
+            // _logger.Debug(ex);
             ////Console.ResetColor();
-            if (log != null)
-                log.WriteLog("[SQL]" + ex);
+            // if (log != null)
+            //     log.WriteLog("[SQL]" + ex);
         }
 
         public static void ShowWarning(Exception ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
-                return;
-            ////Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("[Warning]");
-            ////Console.ResetColor();
-            _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
-            if (log != null) log.WriteLog("Warning:" + ex);
+            ShowError(ex, log);
         }
 
         public static void ShowWarning(string ex, Logger log)
         {
-            if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
-                return;
-            ////Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("[Warning]");
-            ////Console.ResetColor();
-            _logger.Debug(ex);
-            if (log != null) log.WriteLog("Warning:" + ex);
+            _logger.Warning(ex);
         }
 
         public static void ShowError(Exception ex, Logger log)
         {
-            try
-            {
-                if ((defaultlogger.LogLevel | LogContent.Error) != defaultlogger.LogLevel)
-                    return;
-                if (log == null) log = defaultlogger;
-                ////Console.ForegroundColor = ConsoleColor.Red;
-                _logger.Debug("[Error]");
-                ////Console.ForegroundColor = ConsoleColor.White;
-                _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
-                ////Console.ResetColor();
-                log.WriteLog("[Error]" + ex.Message + "\r\n" + ex.StackTrace);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e, e.Message);
-            }
+            ShowError(ex);
         }
 
         public static void ShowError(string ex, Logger log)
         {
-            try
-            {
-                if ((defaultlogger.LogLevel | LogContent.Error) != defaultlogger.LogLevel)
-                    return;
-                if (log == null) log = defaultlogger;
-                ////Console.ForegroundColor = ConsoleColor.Red;
-                _logger.Debug("[Error]");
-                ////Console.ForegroundColor = ConsoleColor.White;
-                _logger.Debug(ex);
-                ////Console.ResetColor();
-                log.WriteLog("[Error]" + ex);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(e, e.Message);
-            }
+            ShowError(ex);
         }
 
         public static void ShowError(string ex)
         {
-            if ((defaultlogger.LogLevel | LogContent.Error) != defaultlogger.LogLevel)
-                return;
-            ShowError(ex, defaultlogger);
+            _logger.Error(ex);
         }
 
         public static void ShowError(Exception ex)
         {
-            if ((defaultlogger.LogLevel | LogContent.Error) != defaultlogger.LogLevel)
-                return;
-            ShowError(ex, defaultlogger);
+            _logger.Error(ex, ex.Message);
         }
 
         public string GetLogFile()

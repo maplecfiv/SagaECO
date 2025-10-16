@@ -246,7 +246,7 @@ namespace SagaLib
                     p1.PutByte(0x32, 8);
                     p1.PutUInt(0x100, 9);
                     Crypt.MakePrivateKey();
-                    var bufstring = Conversions.bytes2HexString(Encryption.Module.getBytes());
+                    var bufstring = Conversions.bytes2HexString(Encryption.Module.ToByteArray());
                     p1.PutBytes(Encoding.ASCII.GetBytes(bufstring.ToLower()), 13);
                     p1.PutUInt(0x100, 269);
                     bufstring = Conversions.bytes2HexString(Crypt.GetKeyExchangeBytes());

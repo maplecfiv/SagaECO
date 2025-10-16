@@ -43,6 +43,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "BigNumerics": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
             "Microsoft.Bcl.AsyncInterfaces": {
               "target": "Package",
               "version": "[6.0.0, )"
@@ -79,6 +83,10 @@
               "target": "Package",
               "version": "[10.3.0, )"
             },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.4.0, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.3.0, )"
@@ -86,6 +94,10 @@
             "Serilog.Sinks.Console": {
               "target": "Package",
               "version": "[6.0.0, )"
+            },
+            "SharpZipLib": {
+              "target": "Package",
+              "version": "[1.4.2, )"
             },
             "System.Buffers": {
               "target": "Package",
@@ -101,7 +113,7 @@
             },
             "System.Diagnostics.DiagnosticSource": {
               "target": "Package",
-              "version": "[6.0.2, )"
+              "version": "[9.0.10, )"
             },
             "System.Memory": {
               "target": "Package",
@@ -111,10 +123,6 @@
               "target": "Package",
               "version": "[4.5.0, )"
             },
-            "System.Runtime.CompilerServices.Unsafe": {
-              "target": "Package",
-              "version": "[6.0.0, )"
-            },
             "System.Security.Cryptography.ProtectedData": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -122,10 +130,6 @@
             "System.Threading.Tasks.Extensions": {
               "target": "Package",
               "version": "[4.5.4, )"
-            },
-            "log4net": {
-              "target": "Package",
-              "version": "[3.2.0, )"
             }
           },
           "imports": [

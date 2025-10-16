@@ -2750,7 +2750,7 @@ namespace SagaDB
                         if (buf[0] == 0x42 && buf[1] == 0x5A)
                         {
                             var ms2 = new MemoryStream();
-                            BZip2.Decompress(ms, ms2);
+                            BZip2.Decompress(ms, ms2, true);
                             ms = new MemoryStream(ms2.ToArray());
 #pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();
@@ -2797,7 +2797,7 @@ namespace SagaDB
                         {
                             pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
                             var ms2 = new MemoryStream();
-                            BZip2.Decompress(ms, ms2);
+                            BZip2.Decompress(ms, ms2, true);
                             ms = new MemoryStream(ms2.ToArray());
 #pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();

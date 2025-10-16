@@ -43,21 +43,9 @@
         <UseVSHostingProcess>false</UseVSHostingProcess>
     </PropertyGroup>
     <ItemGroup>
-        <Reference
-                Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\Dependecies\ICSharpCode.SharpZipLib.dll</HintPath>
-        </Reference>
-        <Reference
-                Include="MySql.Data, Version=5.1.2.2, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\Dependecies\MySql.Data.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Configuration"/>
         <Reference Update="System.Core">
             <RequiredTargetFramework>3.5</RequiredTargetFramework>
         </Reference>
-        <Reference Include="System.IO.Compression"/>
         <Reference Update="System.Xml.Linq">
             <RequiredTargetFramework>3.5</RequiredTargetFramework>
         </Reference>
@@ -126,11 +114,13 @@
         </BootstrapperPackage>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="log4net" Version="3.2.0"/>
         <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0"/>
+        <PackageReference Include="MySql.Data" Version="9.4.0"/>
         <PackageReference Include="Serilog" Version="4.3.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
+        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
         <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0"/>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1"/>
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0"/>
         <PackageReference Include="System.Data.OleDb" Version="8.0.1"/>
     </ItemGroup>
@@ -144,10 +134,9 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1"/>
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.1"/>
         <PackageReference Include="System.Buffers" Version="4.5.1"/>
-        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.2"/>
+        <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="9.0.10"/>
         <PackageReference Include="System.Memory" Version="4.5.5"/>
         <PackageReference Include="System.Numerics.Vectors" Version="4.5.0"/>
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0"/>
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4"/>
     </ItemGroup>
     <PropertyGroup/>
