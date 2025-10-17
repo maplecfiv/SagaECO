@@ -1,5 +1,4 @@
 using SagaLib;
-using SagaValidation.Network.Client;
 
 namespace SagaValidation.Packets.Client
 {
@@ -9,6 +8,7 @@ namespace SagaValidation.Packets.Client
         {
             offset = 2;
         }
+
         public override Packet New()
         {
             return (Packet)new CSMG_SERVERLET_ASK();

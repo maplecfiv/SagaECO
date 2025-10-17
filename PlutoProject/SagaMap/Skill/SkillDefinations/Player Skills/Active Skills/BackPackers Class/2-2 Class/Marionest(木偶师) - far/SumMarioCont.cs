@@ -5,41 +5,34 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Marionest_木偶师____far
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Marionest_木偶师____far {
     /// <summary>
     ///     召喚活動木偶皇帝 [接續技能]
     /// </summary>
-    public class SumMarioCont : ISkill
-    {
+    public class SumMarioCont : ISkill {
         private readonly Elements element;
 
-        public SumMarioCont(Elements e)
-        {
+        public SumMarioCont(Elements e) {
             element = e;
         }
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 0.7f + 3f * level;
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
 
                 //不管是主职还是副职, 只要习得技能
-                if (pc.Skills3.ContainsKey(993) || pc.DualJobSkill.Exists(x => x.ID == 993))
-                {
+                if (pc.Skills3.ContainsKey(993) || pc.DualJobSkills.Exists(x => x.ID == 993)) {
                     //这里取副职的等级
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 993))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 993).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 993))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 993).Level;
 
                     //这里取主职的等级
                     var mainlv = 0;

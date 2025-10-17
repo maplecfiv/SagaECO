@@ -1,8 +1,3 @@
-using SagaDB.Actor;
-using SagaLogin.Manager;
-using SagaLogin.Packets.Client;
-using SagaLogin.Packets.Server;
-
 namespace SagaLogin.Network.Client
 {
     public enum CharStatus

@@ -377,6 +377,7 @@ namespace SagaMap.Configuration
                 }
                 catch (Exception ex)
                 {
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
 

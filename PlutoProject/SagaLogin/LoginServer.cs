@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using SagaDB;
@@ -11,7 +10,6 @@ using SagaLib;
 using SagaLib.Properties;
 using SagaLib.VirtualFileSytem;
 using SagaLogin.Manager;
-using Serilog;
 
 namespace SagaLogin
 {
@@ -114,13 +112,10 @@ namespace SagaLogin
         }
 
         // [DllImport("User32.dll ", EntryPoint = "FindWindow")]
-        private static extern int FindWindow(string lpClassName, string lpWindowName);
 
         // [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
 
         // [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
-        private static extern int RemoveMenu(IntPtr hMenu, int nPos, int flags);
 
         private static void Main(string[] args)
         {

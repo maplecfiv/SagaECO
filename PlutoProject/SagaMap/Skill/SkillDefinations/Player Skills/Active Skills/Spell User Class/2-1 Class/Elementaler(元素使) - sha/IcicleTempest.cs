@@ -7,14 +7,12 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
-{
-    internal class IcicleTempest : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.
+    Elementaler_元素使____sha {
+    internal class IcicleTempest : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax = 3;
@@ -25,8 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private int count;
 
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -35,8 +32,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 DueTime = 0;
                 var Me = (ActorPC)caster;
 
-                switch (level)
-                {
+                switch (level) {
                     case 1:
                         factor *= 1f;
                         countMax = 3;
@@ -59,9 +55,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         break;
                 }
 
-                if (Me.Skills2.ContainsKey(3036))
-                {
-                    TotalLv = Me.Skills2[3036].BaseData.lv;
+                if (Me.Skills2.ContainsKey(3036)) {
+                    TotalLv = Me.Skills2[3036].lv;
                     if (TotalLv == 2 || TotalLv == 1)
                         factor += 0.3f;
                     else if (TotalLv == 4 || TotalLv == 3)
@@ -70,9 +65,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         factor += 0.9f;
                 }
 
-                if (Me.SkillsReserve.ContainsKey(3036))
-                {
-                    TotalLv = Me.SkillsReserve[3036].BaseData.lv;
+                if (Me.SkillsReserve.ContainsKey(3036)) {
+                    TotalLv = Me.SkillsReserve[3036].lv;
                     if (TotalLv == 2 || TotalLv == 1)
                         factor += 0.3f;
                     else if (TotalLv == 4 || TotalLv == 3)
@@ -81,18 +75,16 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         factor += 0.9f;
                 }
 
-                if (Me.Skills2.ContainsKey(3025))
-                {
-                    TotalLv = Me.Skills2[3025].BaseData.lv;
+                if (Me.Skills2.ContainsKey(3025)) {
+                    TotalLv = Me.Skills2[3025].lv;
                     if (TotalLv == 3 || TotalLv == 2)
                         factor += 0.3f;
                     else if (TotalLv == 5 || TotalLv == 4)
                         factor += 0.6f;
                 }
 
-                if (Me.SkillsReserve.ContainsKey(3025))
-                {
-                    TotalLv = Me.SkillsReserve[3025].BaseData.lv;
+                if (Me.SkillsReserve.ContainsKey(3025)) {
+                    TotalLv = Me.SkillsReserve[3025].lv;
                     if (TotalLv == 3 || TotalLv == 2)
                         factor += 0.3f;
                     else if (TotalLv == 5 || TotalLv == 4)
@@ -100,19 +92,15 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         var actors = map.GetActorsArea(actor, 300, false);
                         var affected = new List<Actor>();
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 var Stiff = new Stiff(skill.skill, i, 400); //Mob can not move as soon as attacked.
                                 SkillHandler.ApplyAddition(i, Stiff);
                                 affected.Add(i);
@@ -122,14 +110,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Logger.GetLogger().Error(ex, ex.Message);
                 }
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -140,16 +126,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return -17;
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             actor.MapID = sActor.MapID;

@@ -2,24 +2,21 @@
 using System.Linq;
 using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.BountyHunter_赏金猎人____swm
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.
+    BountyHunter_赏金猎人____swm {
     /// <summary>
     ///     連續居合斬（連続居合い斬り）
     /// </summary>
-    public class ComboIai : ISkill
-    {
+    public class ComboIai : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor)) return 0;
 
             return -14;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //建立設置型技能實體
             //ActorSkill actor = new ActorSkill(args.skill, sActor);
             //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);
@@ -41,14 +38,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             var sActorPC = (ActorPC)sActor;
             //args.argType = SkillArg.ArgType.Attack;
             args.type = ATTACK_TYPE.SLASH;
-            if (sActorPC.Skills.ContainsKey(Iai_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai_SkillID))
-            {
+            if (sActorPC.Skills.ContainsKey(Iai_SkillID) || sActorPC.DualJobSkills.Exists(x => x.ID == Iai_SkillID)) {
                 var info = new AutoCastInfo();
                 info.skillID = Iai_SkillID;
 
                 var duallv = 0;
-                if (sActorPC.DualJobSkill.Exists(x => x.ID == Iai_SkillID))
-                    duallv = sActorPC.DualJobSkill.FirstOrDefault(x => x.ID == Iai_SkillID).Level;
+                if (sActorPC.DualJobSkills.Exists(x => x.ID == Iai_SkillID))
+                    duallv = sActorPC.DualJobSkills.FirstOrDefault(x => x.ID == Iai_SkillID).Level;
 
                 var mainlv = 0;
                 if (sActorPC.Skills.ContainsKey(Iai_SkillID))
@@ -64,13 +60,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
 
             uint Iai2_SkillID = 2201;
-            if (sActorPC.Skills.ContainsKey(Iai2_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai2_SkillID))
-            {
+            if (sActorPC.Skills.ContainsKey(Iai2_SkillID) || sActorPC.DualJobSkills.Exists(x => x.ID == Iai2_SkillID)) {
                 var info = new AutoCastInfo();
                 info.skillID = Iai2_SkillID;
                 var duallv = 0;
-                if (sActorPC.DualJobSkill.Exists(x => x.ID == Iai2_SkillID))
-                    duallv = sActorPC.DualJobSkill.FirstOrDefault(x => x.ID == Iai2_SkillID).Level;
+                if (sActorPC.DualJobSkills.Exists(x => x.ID == Iai2_SkillID))
+                    duallv = sActorPC.DualJobSkills.FirstOrDefault(x => x.ID == Iai2_SkillID).Level;
 
                 var mainlv = 0;
                 if (sActorPC.Skills.ContainsKey(Iai2_SkillID))
@@ -82,13 +77,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
 
             uint Iai3_SkillID = 2202;
-            if (sActorPC.Skills.ContainsKey(Iai3_SkillID) || sActorPC.DualJobSkill.Exists(x => x.ID == Iai3_SkillID))
-            {
+            if (sActorPC.Skills.ContainsKey(Iai3_SkillID) || sActorPC.DualJobSkills.Exists(x => x.ID == Iai3_SkillID)) {
                 var info = new AutoCastInfo();
                 info.skillID = Iai3_SkillID;
                 var duallv = 0;
-                if (sActorPC.DualJobSkill.Exists(x => x.ID == Iai3_SkillID))
-                    duallv = sActorPC.DualJobSkill.FirstOrDefault(x => x.ID == Iai3_SkillID).Level;
+                if (sActorPC.DualJobSkills.Exists(x => x.ID == Iai3_SkillID))
+                    duallv = sActorPC.DualJobSkills.FirstOrDefault(x => x.ID == Iai3_SkillID).Level;
 
                 var mainlv = 0;
                 if (sActorPC.Skills.ContainsKey(Iai3_SkillID))

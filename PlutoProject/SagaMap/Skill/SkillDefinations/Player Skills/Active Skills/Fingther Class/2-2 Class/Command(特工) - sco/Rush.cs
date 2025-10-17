@@ -2,24 +2,20 @@
 using System.Linq;
 using SagaDB.Actor;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.Command_特工____sco {
     /// <summary>
     ///     極速連擊（ラッシュ）
     /// </summary>
-    public class Rush : ISkill
-    {
+    public class Rush : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
 
             return -14;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor; // = 0.75f + 0.15f * level;
             //uint MartialArtDamUp_SkillID = 125;
             var actorPC = (ActorPC)sActor;
@@ -38,16 +34,16 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             //    }
             //}
             var duallv = 0;
-            if (actorPC.DualJobSkill.Exists(x => x.ID == 125))
-                duallv = actorPC.DualJobSkill.FirstOrDefault(x => x.ID == 125).Level;
+            if (actorPC.DualJobSkills.Exists(x => x.ID == 125))
+                duallv = actorPC.DualJobSkills.FirstOrDefault(x => x.ID == 125).Level;
 
             var mainlv = 0;
             if (actorPC.Skills2_2.ContainsKey(125))
                 mainlv = actorPC.Skills2_2[125].Level;
 
             var duallv3 = 0;
-            if (actorPC.DualJobSkill.Exists(x => x.ID == 984))
-                duallv3 = actorPC.DualJobSkill.FirstOrDefault(x => x.ID == 984).Level;
+            if (actorPC.DualJobSkills.Exists(x => x.ID == 984))
+                duallv3 = actorPC.DualJobSkills.FirstOrDefault(x => x.ID == 984).Level;
 
             var mainlv3 = 0;
             if (actorPC.Skills3.ContainsKey(984))

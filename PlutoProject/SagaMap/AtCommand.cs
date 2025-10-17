@@ -264,7 +264,11 @@ namespace SagaMap
 
         public void ProcessRing(MapClient client, string args)
         {
-            if (args != "") ;
+            if (args == "")
+            {
+                return;
+            }
+
             RingManager.Instance.CreateRing(client.Character, args);
         }
 

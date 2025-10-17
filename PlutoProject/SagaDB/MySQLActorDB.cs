@@ -20,10 +20,8 @@ using SagaLib;
 using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
 using Logger = Serilog.Core.Logger;
 
-namespace SagaDB
-{
-    public class MySQLActorDB : MySQLConnectivity, ActorDB
-    {
+namespace SagaDB {
+    public class MySQLActorDB : MySQLConnectivity, ActorDB {
         private static readonly Logger _logger = SagaLib.Logger.InitLogger<MySQLActorDB>();
         private readonly string database;
         private readonly string dbpass;
@@ -35,16 +33,14 @@ namespace SagaDB
         private DateTime tick = DateTime.Now;
 
 
-        public MySQLActorDB(string host, int port, string database, string user, string pass)
-        {
+        public MySQLActorDB(string host, int port, string database, string user, string pass) {
             this.host = host;
             this.port = port.ToString();
             dbuser = user;
             dbpass = pass;
             this.database = database;
             isconnected = false;
-            try
-            {
+            try {
                 db = new MySqlConnection(string.Format("Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;",
                     database, host, port, user, pass));
                 dbinactive = new MySqlConnection(string.Format(
@@ -52,90 +48,73 @@ namespace SagaDB
                     pass));
                 db.Open();
             }
-            catch (MySqlException ex)
-            {
+            catch (MySqlException ex) {
                 SagaLib.Logger.ShowSQL(ex, null);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
-            if (db == null)
-            {
+            if (db == null) {
                 _logger.Warning("db is null");
                 return;
             }
 
-            if (db.State != ConnectionState.Closed)
-            {
+            if (db.State != ConnectionState.Closed) {
                 isconnected = true;
             }
-            else
-            {
+            else {
                 _logger.Debug("SQL Connection error");
             }
         }
 
-        public bool Connect()
-        {
-            if (isconnected)
-            {
+        public bool Connect() {
+            if (isconnected) {
                 return true;
             }
 
-            if (db.State == ConnectionState.Open)
-            {
+            if (db.State == ConnectionState.Open) {
                 isconnected = true;
                 return true;
             }
 
-            try
-            {
+            try {
                 db.Open();
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 SagaLib.Logger.GetLogger().Error(exception, null);
             }
 
             return db != null && (db.State != ConnectionState.Closed);
         }
 
-        public bool isConnected()
-        {
-            if (!isconnected)
-            {
+        public bool isConnected() {
+            if (!isconnected) {
                 return false;
             }
 
             var newtime = DateTime.Now - tick;
-            if (newtime.TotalMinutes > 5)
-            {
+            if (newtime.TotalMinutes > 5) {
                 SagaLib.Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
                 /* we actually disconnect from the mysql server, because if we keep the connection too long
                  * and the user resource of this mysql connection is full, mysql will begin to ignore our
                  * queries -_-
                  */
                 var criticalarea = ClientManager.Blocked;
-                if (criticalarea)
-                {
+                if (criticalarea) {
                     ClientManager.LeaveCriticalArea();
                 }
 
                 DatabaseWaitress.EnterCriticalArea();
                 MySqlConnection tmp = dbinactive;
-                if (tmp.State == ConnectionState.Open)
-                {
+                if (tmp.State == ConnectionState.Open) {
                     tmp.Close();
                 }
 
-                try
-                {
+                try {
                     tmp.Open();
                 }
-                catch (Exception exception)
-                {
+                catch (Exception exception) {
                     SagaLib.Logger.GetLogger().Error(exception, null);
                     tmp = new MySqlConnection(string.Format(
                         "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
@@ -147,44 +126,36 @@ namespace SagaDB
                 db = tmp;
                 tick = DateTime.Now;
                 DatabaseWaitress.LeaveCriticalArea();
-                if (criticalarea)
-                {
+                if (criticalarea) {
                     ClientManager.EnterCriticalArea();
                 }
             }
 
-            if (db.State == ConnectionState.Broken || db.State == ConnectionState.Closed)
-            {
+            if (db.State == ConnectionState.Broken || db.State == ConnectionState.Closed) {
                 isconnected = false;
             }
 
             return isconnected;
         }
 
-        public void AJIClear()
-        {
-            try
-            {
+        public void AJIClear() {
+            try {
                 SQLExecuteNonQuery("UPDATE `char` SET `lv` = 1, `cexp` = 0;");
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void CreateChar(ActorPC aChar, int account_id)
-        {
+        public void CreateChar(ActorPC aChar, int account_id) {
             string sqlstr;
             uint charID = 0;
-            if (aChar == null)
-            {
+            if (aChar == null) {
                 SagaLib.Logger.GetLogger().Error("aChar is null");
                 return;
             }
 
-            if (!isConnected())
-            {
+            if (!isConnected()) {
                 SagaLib.Logger.GetLogger().Error("db not connected");
                 return;
             }
@@ -192,8 +163,7 @@ namespace SagaDB
             var name = CheckSQLString(aChar.Name);
             //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
 
-            try
-            {
+            try {
                 charID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `char`(`account_id`,`name`,`race`,`gender`,`hairStyle`,`hairColor`,`wig`," +
                     "`face`,`job`,`mapID`,`lv`,`jlv1`,`jlv2x`,`jlv2t`,`questRemaining`,`slot`,`x`,`y`,`dir`,`hp`,`max_hp`,`mp`," +
@@ -212,8 +182,7 @@ namespace SagaDB
                     ToSQLDateTime(aChar.EPLoginTime), aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
                     aChar.Level1, aChar.JobLevel3, aChar.SkillPoint3, aChar.ExplorerEXP)).Index;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
@@ -222,24 +191,19 @@ namespace SagaDB
                 string.Format("INSERT INTO `inventory`(`char_id`,`data`) VALUES ('{0}',?data);\r\n", aChar.CharID));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.ToBytes();
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
-            if (aChar.Inventory.WareHouse != null)
-            {
-                try
-                {
+            if (aChar.Inventory.WareHouse != null) {
+                try {
                     DataRowCollection result = SQLExecuteQuery("SELECT count(*) FROM `warehouse` WHERE `account_id`='" +
                                                                account_id + "' LIMIT 1;");
 
-                    if (Convert.ToInt32(result[0][0]) == 0)
-                    {
+                    if (Convert.ToInt32(result[0][0]) == 0) {
                         cmd = new MySqlCommand(string.Format(
                             "INSERT INTO `warehouse`(`account_id`,`data`) VALUES ('{0}',?data);\r\n", account_id));
                         cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.WareToBytes();
@@ -247,8 +211,7 @@ namespace SagaDB
                         SQLExecuteNonQuery(cmd);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
@@ -258,8 +221,7 @@ namespace SagaDB
             SaveItem(aChar);
         }
 
-        public uint CreatePartner(Item.Item partnerItem)
-        {
+        public uint CreatePartner(Item.Item partnerItem) {
             var ap = new ActorPartner(partnerItem.BaseData.petID, partnerItem);
             ap.HP = ap.BaseData.hp_in;
             ap.MaxHP = ap.BaseData.hp_in;
@@ -269,14 +231,12 @@ namespace SagaDB
             ap.MaxSP = ap.BaseData.sp_in;
             ap.ai_mode = 1;
             //tbc
-            if (!isConnected())
-            {
+            if (!isConnected()) {
                 return 0;
             }
 
             var name = CheckSQLString(ap.BaseData.name);
-            try
-            {
+            try {
                 ap.ActorPartnerID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `partner`(`pid`,`name`,`lv`,`tlv`,`rb`,`rank`,`perkspoints`,`perk0`,`perk1`,`perk2`," +
                     " `perk3`,`perk4`,`perk5`,`aimode`,`basicai1`,`basicai2`,`hp`,`maxhp`,`mp`,`maxmp`,`sp`,`maxsp`)" +
@@ -289,23 +249,19 @@ namespace SagaDB
 
                 return ap.ActorPartnerID;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return 0;
             }
         }
 
-        public void SavePartner(ActorPartner ap)
-        {
-            if (ap == null)
-            {
+        public void SavePartner(ActorPartner ap) {
+            if (ap == null) {
                 return;
             }
 
             //SagaLib.Logger.getLogger().Error(sqlstr);
-            try
-            {
+            try {
                 SQLExecuteNonQuery(string.Format(
                     "UPDATE `partner` SET `pid`='{1}',`name`='{2}',`lv`='{3}',`tlv`='{4}',`rb`='{5}',`rank`='{6}',`perkspoints`='{7}'," +
                     "`hp`='{8}',`maxhp`='{9}',`mp`='{10}',`maxmp`='{11}',`sp`='{12}',`maxsp`='{13}',`perk0`='{14}',`perk1`='{15}',`perk2`='{16}',`perk3`='{17}'" +
@@ -322,60 +278,50 @@ namespace SagaDB
                 SavePartnerAI(ap);*/
                 //暂时注释防止卡死
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SavePartnerEquip(ActorPartner ap)
-        {
+        public void SavePartnerEquip(ActorPartner ap) {
             string sqlstr;
-            if (ap == null)
-            {
+            if (ap == null) {
                 return;
             }
 
             var apid = ap.ActorPartnerID;
             sqlstr = string.Format("DELETE FROM `partnerequip` WHERE `apid`='{0}';", apid);
-            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME))
-            {
+            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME)) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','1','{1}','{2}');",
                     apid, ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
                     ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack);
             }
 
-            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON))
-            {
+            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON)) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','2','{1}','{2}');",
                     apid, ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
                     ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack);
             }
 
-            for (var i = 0; i < ap.foods.Count; i++)
-            {
+            for (var i = 0; i < ap.foods.Count; i++) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','3','{1}','{2}');",
                     apid, ap.foods[i].ItemID, ap.foods[i].Stack);
             }
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SavePartnerCube(ActorPartner ap)
-        {
+        public void SavePartnerCube(ActorPartner ap) {
             string sqlstr;
-            if (ap != null)
-            {
+            if (ap != null) {
                 var apid = ap.ActorPartnerID;
                 sqlstr = string.Format("DELETE FROM `partnercube` WHERE `apid`='{0}';", apid);
                 if (ap.equipcubes_condition.Count > 0)
@@ -402,72 +348,60 @@ namespace SagaDB
                             "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','4','{1}');",
                             apid, ap.equipcubes_passiveskill[i]);
 
-                try
-                {
+                try {
                     SQLExecuteNonQuery(sqlstr);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
         }
 
-        public void SavePartnerAI(ActorPartner ap)
-        {
-            if (ap == null)
-            {
+        public void SavePartnerAI(ActorPartner ap) {
+            if (ap == null) {
                 return;
             }
 
             string sqlstr = string.Format("DELETE FROM `partnerai` WHERE `apid`='{0}';", ap.ActorPartnerID);
 
-            foreach (var item in ap.ai_conditions)
-            {
+            foreach (var item in ap.ai_conditions) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','1','{1}','{2}');",
                     ap.ActorPartnerID, item.Key, item.Value);
             }
 
 
-            foreach (var item in ap.ai_reactions)
-            {
+            foreach (var item in ap.ai_reactions) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','2','{1}','{2}');",
                     ap.ActorPartnerID, item.Key, item.Value);
             }
 
-            foreach (var item in ap.ai_intervals)
-            {
+            foreach (var item in ap.ai_intervals) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','3','{1}','{2}');",
                     ap.ActorPartnerID, item.Key, item.Value);
             }
 
 
-            foreach (var item in ap.ai_states)
-            {
+            foreach (var item in ap.ai_states) {
                 sqlstr += string.Format(
                     "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','4','{1}','{2}');",
                     ap.ActorPartnerID, item.Key, Convert.ToUInt16(item.Value));
             }
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public ActorPartner GetActorPartner(uint ActorPartnerID, Item.Item partneritem)
-        {
+        public ActorPartner GetActorPartner(uint ActorPartnerID, Item.Item partneritem) {
             var sqlstr = string.Format("SELECT * FROM `partner` WHERE `apid`='{0}' LIMIT 1;", ActorPartnerID);
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count == 0)
-            {
+            if (result.Count == 0) {
                 return null;
             }
 
@@ -508,13 +442,11 @@ namespace SagaDB
             //暂时注释防止卡死
         }
 
-        public void GetPartnerEquip(ActorPartner ap)
-        {
+        public void GetPartnerEquip(ActorPartner ap) {
             var sqlstr = string.Format("SELECT * FROM `partnerequip` WHERE `apid`='{0}';", ap.ActorPartnerID);
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0)
-                foreach (DataRow i in result)
-                {
+                foreach (DataRow i in result) {
                     var item = ItemFactory.Instance.GetItem((uint)i["item_id"]);
                     item.Stack = (ushort)i["count"];
                     if (byte.Parse(i["type"].ToString()) == 0x1)
@@ -526,11 +458,9 @@ namespace SagaDB
                 }
         }
 
-        public void GetPartnerCube(ActorPartner ap)
-        {
+        public void GetPartnerCube(ActorPartner ap) {
             foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnercube` WHERE `apid`='{0}';",
-                         ap.ActorPartnerID)))
-            {
+                         ap.ActorPartnerID))) {
                 if ((byte)i["type"] == 1)
                     ap.equipcubes_condition.Add((ushort)i["unique_id"]);
                 if ((byte)i["type"] == 2)
@@ -542,11 +472,9 @@ namespace SagaDB
             }
         }
 
-        public void GetPartnerAI(ActorPartner ap)
-        {
+        public void GetPartnerAI(ActorPartner ap) {
             foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnerai` WHERE `apid`='{0}';",
-                         ap.ActorPartnerID)))
-            {
+                         ap.ActorPartnerID))) {
                 if ((byte)i["type"] == 1) ap.ai_conditions.Add((byte)i["index"], (ushort)i["value"]);
                 if ((byte)i["type"] == 2) ap.ai_reactions.Add((byte)i["index"], (ushort)i["value"]);
                 if ((byte)i["type"] == 3) ap.ai_intervals.Add((byte)i["index"], (ushort)i["value"]);
@@ -554,34 +482,27 @@ namespace SagaDB
             }
         }
 
-        public void SaveChar(ActorPC aChar)
-        {
+        public void SaveChar(ActorPC aChar) {
             SaveChar(aChar, true);
         }
 
-        public void SaveChar(ActorPC aChar, bool fullinfo)
-        {
+        public void SaveChar(ActorPC aChar, bool fullinfo) {
             SaveChar(aChar, true, fullinfo);
         }
 
-        public void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo)
-        {
+        public void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo) {
             string sqlstr;
             MapInfo info = null;
-            if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID))
-            {
+            if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID)) {
                 info = MapInfoFactory.Instance.MapInfo[aChar.MapID];
             }
-            else
-            {
-                if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID / 1000 * 1000))
-                {
+            else {
+                if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID / 1000 * 1000)) {
                     info = MapInfoFactory.Instance.MapInfo[aChar.MapID / 1000 * 1000];
                 }
             }
 
-            if (aChar == null)
-            {
+            if (aChar == null) {
                 return;
             }
 
@@ -594,8 +515,7 @@ namespace SagaDB
             int count1 = 0, count2 = 0, count3 = 0;
             var questtime = DateTime.Now;
             var status = QuestStatus.OPEN;
-            if (aChar.Quest != null)
-            {
+            if (aChar.Quest != null) {
                 questid = aChar.Quest.ID;
                 count1 = aChar.Quest.CurrentCount1;
                 count2 = aChar.Quest.CurrentCount2;
@@ -610,14 +530,12 @@ namespace SagaDB
                 ringid = aChar.Ring.ID;
             if (aChar.Golem != null)
                 golemid = aChar.Golem.ActorID;
-            if (info != null)
-            {
+            if (info != null) {
                 mapid = aChar.MapID;
                 x = Global.PosX16to8(aChar.X, info.width);
                 y = Global.PosY16to8(aChar.Y, info.height);
             }
-            else
-            {
+            else {
                 mapid = aChar.SaveMap;
                 x = aChar.SaveX;
                 y = aChar.SaveY;
@@ -638,7 +556,7 @@ namespace SagaDB
                 ",`jointjlv`='{56}',`jjexp`='{57}',`wrp`='{58}'" +
                 ",`ep`='{59}',`eplogindate`='{60}',`epgreetingdate`='{61}',`cl`='{62}'" +
                 ",`epused`='{63}',`tailStyle`='{64}',`wingStyle`='{65}',`wingColor`='{66}',`lv1`='{67}',`jlv3`='{68}',`explorerEXP`='{69}',`usingpaper_id` = '{70}'" +
-                " ,`title_id` = '{71}' ,`abyssfloor`='{72}',`DualJobID`='{73}', exstatpoint='{74}',exskillpoint='{75}' " +
+                " ,`title_id` = '{71}' ,`abyssfloor`='{72}',`DualJobId`='{73}', exstatpoint='{74}',exskillpoint='{75}' " +
                 " WHERE char_id='{15}' LIMIT 1",
                 CheckSQLString(aChar.Name), (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor,
                 aChar.Wig,
@@ -662,12 +580,10 @@ namespace SagaDB
                 aChar.EXSkillPoint);
             aChar.Online = online;
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
@@ -679,8 +595,7 @@ namespace SagaDB
             //SaveNavi(aChar);
             if (itemInfo)
                 SaveItem(aChar);
-            if (fullinfo)
-            {
+            if (fullinfo) {
                 SaveSkill(aChar);
                 SaveDualJobInfo(aChar, true);
                 //SaveNPCStates(aChar);
@@ -747,22 +662,18 @@ namespace SagaDB
             }
         }
         */
-        public void SaveWRP(ActorPC pc)
-        {
+        public void SaveWRP(ActorPC pc) {
             var sqlstr = string.Format("UPDATE `char` SET `wrp`='{0}' WHERE char_id='{1}' LIMIT 1",
                 pc.WRP, pc.CharID);
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void DeleteChar(ActorPC aChar)
-        {
+        public void DeleteChar(ActorPC aChar) {
             string sqlstr;
             _ = (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + aChar.CharID + "' LIMIT 1")
                 [0]["account_id"];
@@ -782,31 +693,25 @@ namespace SagaDB
                     if (aChar.Ring.Leader.CharID == aChar.CharID)
                         DeleteRing(aChar.Ring);
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public ActorPC GetChar(uint charID, bool fullinfo)
-        {
+        public ActorPC GetChar(uint charID, bool fullinfo) {
             string sqlstr;
             DataRow result = null;
             ActorPC pc = null;
-            try
-            {
+            try {
                 GetAccountID(charID);
                 sqlstr = "SELECT * FROM `char` WHERE `char_id`='" + charID + "' LIMIT 1";
-                try
-                {
+                try {
                     result = SQLExecuteQuery(sqlstr)[0];
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     return null;
                 }
@@ -840,15 +745,12 @@ namespace SagaDB
                 pc.QuestNextResetTime = (DateTime)result["questresettime"];
                 pc.Fame = (uint)result["fame"];
                 pc.Slot = (byte)result["slot"];
-                if (fullinfo)
-                {
+                if (fullinfo) {
                     MapInfo info = null;
-                    if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID))
-                    {
+                    if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID)) {
                         info = MapInfoFactory.Instance.MapInfo[pc.MapID];
                     }
-                    else
-                    {
+                    else {
                         if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID / 1000 * 1000))
                             info = MapInfoFactory.Instance.MapInfo[pc.MapID / 1000 * 1000];
                     }
@@ -890,8 +792,7 @@ namespace SagaDB
                 //pc.MDefLv = (byte)result["mdeflv"];
                 //pc.DefPoint = (uint)result["defpoint"];
                 //pc.MDefPoint = (uint)result["mdefpoint"];
-                lock (this)
-                {
+                lock (this) {
                     var old = SagaLib.Logger.SQLLogLevel.Value;
                     SagaLib.Logger.SQLLogLevel.Value = 0;
                     pc.Gold = (long)result["gold"];
@@ -916,20 +817,17 @@ namespace SagaDB
                 if (ring.ID != 0)
                     pc.Ring = ring;
                 var golem = (uint)result["golem"];
-                if (golem != 0)
-                {
+                if (golem != 0) {
                     pc.Golem = new ActorGolem();
                     pc.Golem.ActorID = golem;
                 }
 
-                pc.DualJobID = (byte)(result["DualJobID"] == null ? 0 : result["DualJobID"]);
+                pc.DualJobID = (byte)(result["DualJobId"] == null ? 0 : result["DualJobId"]);
 
-                if (fullinfo)
-                {
+                if (fullinfo) {
                     var questid = (uint)result["questid"];
                     if (questid != 0)
-                        try
-                        {
+                        try {
                             var quest = new Quest(questid);
                             quest.EndTime = (DateTime)result["questendtime"];
                             quest.Status = (QuestStatus)(byte)result["queststatus"];
@@ -938,8 +836,7 @@ namespace SagaDB
                             quest.CurrentCount3 = (int)result["questcurrentcount3"];
                             pc.Quest = quest;
                         }
-                        catch
-                        {
+                        catch {
                         }
 
                     GetSkill(pc);
@@ -962,21 +859,18 @@ namespace SagaDB
                 GetTamaireRental(pc);
                 GetMosterGuide(pc);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return pc;
         }
 
-        public ActorPC GetChar(uint charID)
-        {
+        public ActorPC GetChar(uint charID) {
             return GetChar(charID, true);
         }
 
-        public void GetVShop(ActorPC pc)
-        {
+        public void GetVShop(ActorPC pc) {
             var account = GetAccountID(pc);
             var sqlstr = "SELECT `vshop_points`,`used_vshop_points` FROM `login` WHERE account_id='" + account +
                          "' LIMIT 1";
@@ -988,8 +882,7 @@ namespace SagaDB
             pc.UsedVShopPoints = (uint)result["used_vshop_points"];
         }
 
-        public void SaveSkill(ActorPC pc)
-        {
+        public void SaveSkill(ActorPC pc) {
             var ms = new MemoryStream();
             var bw = new BinaryWriter(ms);
             var count = pc.Skills.Count + pc.Skills2.Count + pc.SkillsReserve.Count;
@@ -1001,8 +894,7 @@ namespace SagaDB
             foreach (var i in pc.Skills.Values)
                 if (i.NoSave)
                     nosave++;
-            if (pc.Rebirth || pc.Job == pc.Job3)
-            {
+            if (pc.Rebirth || pc.Job == pc.Job3) {
                 foreach (var i in pc.Skills2_1.Values)
                     if (i.NoSave)
                         nosave++;
@@ -1013,8 +905,7 @@ namespace SagaDB
                     if (i.NoSave)
                         nosave++;
             }
-            else
-            {
+            else {
                 foreach (var i in pc.Skills2.Values)
                     if (i.NoSave)
                         nosave++;
@@ -1025,52 +916,44 @@ namespace SagaDB
 
             count -= nosave;
             bw.Write(count);
-            foreach (var j in pc.Skills.Keys)
-            {
+            foreach (var j in pc.Skills.Keys) {
                 if (pc.Skills[j].NoSave)
                     continue;
                 bw.Write(j);
                 bw.Write(pc.Skills[j].Level);
             }
 
-            if (pc.Rebirth || pc.Job == pc.Job3)
-            {
-                foreach (var j in pc.Skills2_1.Keys)
-                {
+            if (pc.Rebirth || pc.Job == pc.Job3) {
+                foreach (var j in pc.Skills2_1.Keys) {
                     if (pc.Skills2_1[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2_1[j].Level);
                 }
 
-                foreach (var j in pc.Skills2_2.Keys)
-                {
+                foreach (var j in pc.Skills2_2.Keys) {
                     if (pc.Skills2_2[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2_2[j].Level);
                 }
 
-                foreach (var j in pc.Skills3.Keys)
-                {
+                foreach (var j in pc.Skills3.Keys) {
                     if (pc.Skills3[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills3[j].Level);
                 }
             }
-            else
-            {
-                foreach (var j in pc.Skills2.Keys)
-                {
+            else {
+                foreach (var j in pc.Skills2.Keys) {
                     if (pc.Skills2[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2[j].Level);
                 }
 
-                foreach (var j in pc.SkillsReserve.Keys)
-                {
+                foreach (var j in pc.SkillsReserve.Keys) {
                     if (pc.SkillsReserve[j].NoSave)
                         continue;
                     bw.Write(j);
@@ -1088,19 +971,16 @@ namespace SagaDB
                 pc.SkillPoint3));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
             ms.Close();
-            try
-            {
+            try {
                 //SQLExecuteNonQuery(sqlstr);
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SaveVShop(ActorPC pc)
-        {
+        public void SaveVShop(ActorPC pc) {
             var eh = pc.e;
             pc.e = null;
             var sqlstr = string.Format("UPDATE `login` SET `vshop_points`='{0}',`used_vshop_points`='{1}'" +
@@ -1110,8 +990,7 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SaveServerVar(ActorPC fakepc)
-        {
+        public void SaveServerVar(ActorPC fakepc) {
             var sqlstr = "TRUNCATE TABLE `sVar`;";
             foreach (var i in fakepc.AStr.Keys)
                 sqlstr += string.Format("INSERT INTO `sVar`(`name`,`type`,`content`) VALUES " + "('{0}',0,'{1}');", i,
@@ -1125,25 +1004,23 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
             sqlstr = "TRUNCATE TABLE `sList`;";
             foreach (var item in fakepc.Adict)
-            foreach (var i in item.Value.Keys)
-                sqlstr += string.Format(
-                    "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');", item.Key,
-                    i, item.Value[i]);
+                foreach (var i in item.Value.Keys)
+                    sqlstr += string.Format(
+                        "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');",
+                        item.Key,
+                        i, item.Value[i]);
 
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public ActorPC LoadServerVar()
-        {
+        public ActorPC LoadServerVar() {
             var fakepc = new ActorPC();
             var sqlstr = "SELECT * FROM `sVar`;";
             DataRowCollection res;
             res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res)
-            {
+            foreach (DataRow i in res) {
                 var type = (byte)i["type"];
-                switch (type)
-                {
+                switch (type) {
                     case 0:
                         fakepc.AStr[(string)i["name"]] = (string)i["content"];
                         break;
@@ -1158,11 +1035,9 @@ namespace SagaDB
 
             sqlstr = "SELECT * FROM `sList`;";
             res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res)
-            {
+            foreach (DataRow i in res) {
                 var type = (byte)i["type"];
-                switch (type)
-                {
+                switch (type) {
                     case 1:
                         fakepc.Adict[(string)i["name"]][(string)i["key"]] = int.Parse((string)i["content"]);
                         break;
@@ -1172,8 +1047,7 @@ namespace SagaDB
             return fakepc;
         }
 
-        public void SaveVar(ActorPC pc)
-        {
+        public void SaveVar(ActorPC pc) {
             var account_id =
                 (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1")[0][
                     "account_id"];
@@ -1182,8 +1056,7 @@ namespace SagaDB
             var ms = new MemoryStream();
             var bw = new BinaryWriter(ms);
             bw.Write(pc.CInt.Count);
-            foreach (var j in pc.CInt.Keys)
-            {
+            foreach (var j in pc.CInt.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1191,8 +1064,7 @@ namespace SagaDB
             }
 
             bw.Write(pc.CMask.Count);
-            foreach (var j in pc.CMask.Keys)
-            {
+            foreach (var j in pc.CMask.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1200,8 +1072,7 @@ namespace SagaDB
             }
 
             bw.Write(pc.CStr.Count);
-            foreach (var j in pc.CStr.Keys)
-            {
+            foreach (var j in pc.CStr.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1216,20 +1087,17 @@ namespace SagaDB
                 pc.CharID));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
             ms.Close();
-            try
-            {
+            try {
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             ms = new MemoryStream();
             bw = new BinaryWriter(ms);
             bw.Write(pc.AInt.Count);
-            foreach (var j in pc.AInt.Keys)
-            {
+            foreach (var j in pc.AInt.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1237,8 +1105,7 @@ namespace SagaDB
             }
 
             bw.Write(pc.AMask.Count);
-            foreach (var j in pc.AMask.Keys)
-            {
+            foreach (var j in pc.AMask.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1246,8 +1113,7 @@ namespace SagaDB
             }
 
             bw.Write(pc.AStr.Count);
-            foreach (var j in pc.AStr.Keys)
-            {
+            foreach (var j in pc.AStr.Keys) {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -1262,37 +1128,30 @@ namespace SagaDB
                 account_id));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
             ms.Close();
-            try
-            {
+            try {
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetSkill(ActorPC pc)
-        {
-            try
-            {
+        public void GetSkill(ActorPC pc) {
+            try {
                 string sqlstr;
                 DataRowCollection result = null;
                 //sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
                 sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" +
                          (int)pc.JobBasic + "' LIMIT 1;";
-                try
-                {
+                try {
                     result = SQLExecuteQuery(sqlstr);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     return;
                 }
 
-                if (result.Count > 0)
-                {
+                if (result.Count > 0) {
                     var buf = (byte[])result[0]["skills"];
                     pc.JobLevel3 = (byte)result[0]["joblv"];
                     if (pc.JobLevel3 == 0) pc.JobLevel3 = 1;
@@ -1310,87 +1169,70 @@ namespace SagaDB
                     var ms = new MemoryStream(buf);
                     var br = new BinaryReader(ms);
                     var count = br.ReadInt32();
-                    for (var i = 0; i < count; i++)
-                    {
+                    for (var i = 0; i < count; i++) {
                         var skillID = br.ReadUInt32();
                         var lv = br.ReadByte();
                         var skill = SkillFactory.Instance.GetSkill(skillID, lv);
                         if (skill == null)
                             continue;
-                        if (skills.ContainsKey(skill.ID))
-                        {
+                        if (skills.ContainsKey(skill.ID)) {
                             if (!pc.Skills.ContainsKey(skill.ID))
                                 pc.Skills.Add(skill.ID, skill);
                         }
-                        else if (skills2x.ContainsKey(skill.ID))
-                        {
-                            if (!pc.Rebirth || pc.Job != pc.Job3)
-                            {
-                                if (pc.Job == pc.Job2X)
-                                {
+                        else if (skills2x.ContainsKey(skill.ID)) {
+                            if (!pc.Rebirth || pc.Job != pc.Job3) {
+                                if (pc.Job == pc.Job2X) {
                                     if (!pc.Skills2.ContainsKey(skill.ID))
                                         pc.Skills2.Add(skill.ID, skill);
                                 }
-                                else
-                                {
+                                else {
                                     if (!pc.SkillsReserve.ContainsKey(skill.ID))
                                         pc.SkillsReserve.Add(skill.ID, skill);
                                 }
                             }
-                            else
-                            {
+                            else {
                                 if (!pc.Skills2_1.ContainsKey(skill.ID))
                                     pc.Skills2_1.Add(skill.ID, skill);
                                 if (!pc.Skills2.ContainsKey(skill.ID))
                                     pc.Skills2.Add(skill.ID, skill);
                             }
                         }
-                        else if (skills2t.ContainsKey(skill.ID))
-                        {
-                            if (!pc.Rebirth || pc.Job != pc.Job3)
-                            {
-                                if (pc.Job == pc.Job2T)
-                                {
+                        else if (skills2t.ContainsKey(skill.ID)) {
+                            if (!pc.Rebirth || pc.Job != pc.Job3) {
+                                if (pc.Job == pc.Job2T) {
                                     if (!pc.Skills2.ContainsKey(skill.ID))
                                         pc.Skills2.Add(skill.ID, skill);
                                 }
-                                else
-                                {
+                                else {
                                     if (!pc.SkillsReserve.ContainsKey(skill.ID))
                                         pc.SkillsReserve.Add(skill.ID, skill);
                                 }
                             }
-                            else
-                            {
+                            else {
                                 if (!pc.Skills2_2.ContainsKey(skill.ID))
                                     pc.Skills2_2.Add(skill.ID, skill);
                                 if (!pc.Skills2.ContainsKey(skill.ID))
                                     pc.Skills2.Add(skill.ID, skill);
                             }
                         }
-                        else if (skills3.ContainsKey(skill.ID))
-                        {
+                        else if (skills3.ContainsKey(skill.ID)) {
                             if (!pc.Skills3.ContainsKey(skill.ID))
                                 pc.Skills3.Add(skill.ID, skill);
                         }
-                        else
-                        {
+                        else {
                             if (!pc.Skills.ContainsKey(skill.ID))
                                 pc.Skills.Add(skill.ID, skill);
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SaveNPCState(ActorPC pc, uint npcID)
-        {
-            if (pc.NPCStates.ContainsKey(npcID))
-            {
+        public void SaveNPCState(ActorPC pc, uint npcID) {
+            if (pc.NPCStates.ContainsKey(npcID)) {
                 var state = pc.NPCStates[npcID];
                 byte value = 0;
                 if (state)
@@ -1407,17 +1249,14 @@ namespace SagaDB
             }
         }
 
-        public bool CharExists(string name)
-        {
+        public bool CharExists(string name) {
             string sqlstr;
             DataRowCollection result = null;
             sqlstr = "SELECT count(*) FROM `char` WHERE name='" + CheckSQLString(name) + "'";
-            try
-            {
+            try {
                 result = SQLExecuteQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
@@ -1425,8 +1264,7 @@ namespace SagaDB
             return false;
         }
 
-        public uint GetAccountID(uint charID)
-        {
+        public uint GetAccountID(uint charID) {
             var sqlstr = "SELECT `account_id` FROM `char` WHERE `char_id`='" + charID + "' LIMIT 1;";
 
             var result = SQLExecuteQuery(sqlstr);
@@ -1435,25 +1273,21 @@ namespace SagaDB
             return (uint)result[0]["account_id"];
         }
 
-        public uint GetAccountID(ActorPC pc)
-        {
+        public uint GetAccountID(ActorPC pc) {
             if (pc.Account != null)
                 return (uint)pc.Account.AccountID;
             return GetAccountID(pc.CharID);
         }
 
-        public uint[] GetCharIDs(int account_id)
-        {
+        public uint[] GetCharIDs(int account_id) {
             string sqlstr;
             uint[] buf;
             DataRowCollection result = null;
             sqlstr = "SELECT `char_id` FROM `char` WHERE account_id='" + account_id + "'";
-            try
-            {
+            try {
                 result = SQLExecuteQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return new uint[0];
             }
@@ -1464,8 +1298,7 @@ namespace SagaDB
             return buf;
         }
 
-        public string GetCharName(uint id)
-        {
+        public string GetCharName(uint id) {
             var sqlstr = "SELECT `name` FROM `char` WHERE `char_id`='" + id + "' LIMIT 1;";
 
             var result = SQLExecuteQuery(sqlstr);
@@ -1474,13 +1307,11 @@ namespace SagaDB
             return (string)result[0]["name"];
         }
 
-        public List<ActorPC> GetFriendList(ActorPC pc)
-        {
+        public List<ActorPC> GetFriendList(ActorPC pc) {
             var sqlstr = "SELECT `friend_char_id` FROM `friend` WHERE `char_id`='" + pc.CharID + "';";
             var result = SQLExecuteQuery(sqlstr);
             var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++)
-            {
+            for (var i = 0; i < result.Count; i++) {
                 var friend = (uint)result[i]["friend_char_id"];
                 var chara = new ActorPC();
                 chara.CharID = friend;
@@ -1502,13 +1333,11 @@ namespace SagaDB
             return list;
         }
 
-        public List<ActorPC> GetFriendList2(ActorPC pc)
-        {
+        public List<ActorPC> GetFriendList2(ActorPC pc) {
             var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + pc.CharID + "';";
             var result = SQLExecuteQuery(sqlstr);
             var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++)
-            {
+            for (var i = 0; i < result.Count; i++) {
                 var friend = (uint)result[i]["char_id"];
                 var chara = new ActorPC();
                 chara.CharID = friend;
@@ -1531,34 +1360,29 @@ namespace SagaDB
             return list;
         }
 
-        public void AddFriend(ActorPC pc, uint charID)
-        {
+        public void AddFriend(ActorPC pc, uint charID) {
             var sqlstr = string.Format("INSERT INTO `friend`(`char_id`,`friend_char_id`) VALUES " +
                                        "('{0}','{1}');", pc.CharID, charID);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public bool IsFriend(uint char1, uint char2)
-        {
+        public bool IsFriend(uint char1, uint char2) {
             var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" +
                          char1 + "';";
             var result = SQLExecuteQuery(sqlstr);
             return result.Count > 0;
         }
 
-        public void DeleteFriend(uint char1, uint char2)
-        {
+        public void DeleteFriend(uint char1, uint char2) {
             var sqlstr = "DELETE FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" + char1 + "';";
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public Party.Party GetParty(uint id)
-        {
+        public Party.Party GetParty(uint id) {
             var sqlstr = $"SELECT * FROM `party` WHERE `party_id`='{id}' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
             var party = new Party.Party();
-            if (result.Count != 0)
-            {
+            if (result.Count != 0) {
                 party.ID = id;
                 party.Name = (string)result[0]["name"];
                 if (party.Leader == null)
@@ -1569,8 +1393,7 @@ namespace SagaDB
             return null;
         }
 
-        public void NewParty(Party.Party party)
-        {
+        public void NewParty(Party.Party party) {
             uint index = 0;
             var name = CheckSQLString(party.Name);
             var sqlstr = $"INSERT INTO `party`(`name`,`leader`) VALUES ('{name}','{party.Leader.CharID}');";
@@ -1582,8 +1405,7 @@ namespace SagaDB
             party.ID = index;
         }
 
-        public void SaveParty(Party.Party party)
-        {
+        public void SaveParty(Party.Party party) {
             var leader = party.Leader.CharID;
             var name = CheckSQLString(party.Name);
 
@@ -1593,16 +1415,14 @@ namespace SagaDB
 
             sqlstr = $"DELETE FROM `partymember` WHERE `party_id`='{party.ID}';";
             SQLExecuteNonQuery(sqlstr);
-            foreach (var i in party.Members.Keys)
-            {
+            foreach (var i in party.Members.Keys) {
                 sqlstr +=
                     $"INSERT INTO `partymember`(`party_id`,`char_id`) VALUES ('{party.ID}','{party.Members[i].CharID}');";
                 SQLExecuteNonQuery(sqlstr);
             }
         }
 
-        public void DeleteParty(Party.Party party)
-        {
+        public void DeleteParty(Party.Party party) {
             var sqlstr = $"DELETE FROM `party` WHERE `party_id`='{party.ID}';";
             SQLExecuteNonQuery(sqlstr);
 
@@ -1610,14 +1430,12 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public Ring.Ring GetRing(uint id)
-        {
+        public Ring.Ring GetRing(uint id) {
             var sqlstr = "SELECT `leader`,`name`,`fame`,`ff_id` FROM `ring` WHERE `ring_id`='" + id + "' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
 
             var ring = new Ring.Ring();
-            if (result.Count != 0)
-            {
+            if (result.Count != 0) {
                 ring.ID = id;
                 var leader = (uint)result[0]["leader"];
                 ring.Name = (string)result[0]["name"];
@@ -1626,14 +1444,12 @@ namespace SagaDB
                     ring.FF_ID = (uint)result[0]["ff_id"];
                 sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
                 var result2 = SQLExecuteQuery(sqlstr);
-                for (var i = 0; i < result2.Count; i++)
-                {
+                for (var i = 0; i < result2.Count; i++) {
                     var pc = new ActorPC();
                     pc.CharID = (uint)result2[i]["char_id"];
                     sqlstr = "SELECT `name`,`job` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
                     var rows = SQLExecuteQuery(sqlstr);
-                    if (rows.Count > 0)
-                    {
+                    if (rows.Count > 0) {
                         var row = rows[0];
                         pc.Name = (string)row["name"];
                         pc.Job = (PC_JOB)(byte)row["job"];
@@ -1653,17 +1469,14 @@ namespace SagaDB
             return null;
         }
 
-        public void NewRing(Ring.Ring ring)
-        {
+        public void NewRing(Ring.Ring ring) {
             uint index = 0;
             var name = CheckSQLString(ring.Name);
             var sqlstr = string.Format("SELECT `name` FROM `ring` WHERE `name`='{0}' LIMIT 1", ring.Name);
-            if (SQLExecuteQuery(sqlstr).Count > 0)
-            {
+            if (SQLExecuteQuery(sqlstr).Count > 0) {
                 ring.ID = 0xFFFFFFFF;
             }
-            else
-            {
+            else {
                 sqlstr = string.Format("INSERT INTO `ring`(`leader`,`name`) VALUES " +
                                        "('0','{0}');", name);
                 index = SQLExecuteScalar(sqlstr).Index;
@@ -1671,13 +1484,11 @@ namespace SagaDB
             }
         }
 
-        public void SaveRing(Ring.Ring ring, bool saveMembers)
-        {
+        public void SaveRing(Ring.Ring ring, bool saveMembers) {
             var sqlstr = string.Format(
                 "UPDATE `ring` SET `leader`='{0}',`name`='{1}',`fame`='{2}',`ff_id`='{3}' WHERE `ring_id`='{4}' LIMIT 1;\r\n",
                 ring.Leader.CharID, ring.Name, ring.Fame, ring.FF_ID, ring.ID);
-            if (saveMembers)
-            {
+            if (saveMembers) {
                 sqlstr += string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';\r\n", ring.ID);
                 foreach (var i in ring.Members.Keys)
                     sqlstr += string.Format(
@@ -1688,29 +1499,25 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void DeleteRing(Ring.Ring ring)
-        {
+        public void DeleteRing(Ring.Ring ring) {
             var sqlstr = string.Format("DELETE FROM `ring` WHERE `ring_id`='{0}';", ring.ID);
             sqlstr += string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';", ring.ID);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void RingEmblemUpdate(Ring.Ring ring, byte[] buf)
-        {
+        public void RingEmblemUpdate(Ring.Ring ring, byte[] buf) {
             var sqlstr = string.Format(
                 "UPDATE `ring` SET `emblem`=0x{0},`emblem_date`='{1}' WHERE `ring_id`='{2}' LIMIT 1;",
                 Conversions.bytes2HexString(buf), ToSQLDateTime(DateTime.Now.ToUniversalTime()), ring.ID);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date)
-        {
+        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date) {
             var sqlstr = string.Format("SELECT `emblem`,`emblem_date` FROM `ring` WHERE `ring_id`='{0}' LIMIT 1",
                 ring_id);
 
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0)
-            {
+            if (result.Count != 0) {
                 if (result[0]["emblem"].GetType() == typeof(DBNull))
                     return new GetRingEmblemResult(null, false, DateTime.Now);
 
@@ -1723,14 +1530,12 @@ namespace SagaDB
             return new GetRingEmblemResult(null, false, DateTime.Now);
         }
 
-        public List<Post> GetBBS(uint bbsID)
-        {
+        public List<Post> GetBBS(uint bbsID) {
             var sqlstr = string.Format("SELECT * FROM `bbs` WHERE `bbsid`='{0}' ORDER BY `postdate` DESC;", bbsID);
             var list = new List<Post>();
             var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var post = new Post();
                 post.Name = (string)i["name"];
                 post.Title = (string)i["title"];
@@ -1742,15 +1547,13 @@ namespace SagaDB
             return list;
         }
 
-        public List<Post> GetBBSPage(uint bbsID, int page)
-        {
+        public List<Post> GetBBSPage(uint bbsID, int page) {
             var sqlstr = string.Format("SELECT * FROM `bbs` WHERE `bbsid`='{0}' ORDER BY `postdate` DESC LIMIT {1},5;",
                 bbsID, (page - 1) * 5);
             var list = new List<Post>();
             var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var post = new Post();
                 post.Name = (string)i["name"];
                 post.Title = (string)i["title"];
@@ -1762,15 +1565,13 @@ namespace SagaDB
             return list;
         }
 
-        public List<Mail> GetMail(ActorPC pc)
-        {
+        public List<Mail> GetMail(ActorPC pc) {
             var sqlstr = string.Format("SELECT * FROM `mails` WHERE `char_id`='{0}' ORDER BY `postdate` DESC;",
                 pc.CharID);
             var list = new List<Mail>();
             var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var post = new Mail();
                 post.MailID = (uint)i["mail_id"];
                 post.Name = (string)i["sender"];
@@ -1784,44 +1585,36 @@ namespace SagaDB
             return list;
         }
 
-        public bool DeleteGift(Gift gift)
-        {
+        public bool DeleteGift(Gift gift) {
             var sqlstr = "DELETE FROM `gifts` WHERE mail_id='" + gift.MailID + "';";
-            try
-            {
+            try {
                 return SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
         }
 
-        public bool DeleteMail(Mail mail)
-        {
+        public bool DeleteMail(Mail mail) {
             var sqlstr = "DELETE FROM `mails` WHERE mail_id='" + mail.MailID + "';";
-            try
-            {
+            try {
                 return SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
         }
 
-        public List<Gift> GetGifts(ActorPC pc)
-        {
+        public List<Gift> GetGifts(ActorPC pc) {
             if (pc == null) return null;
             var sqlstr = string.Format("SELECT * FROM `gifts` WHERE `a_id`='{0}' ORDER BY `postdate` DESC;",
                 pc.Account.AccountID);
             var list = new List<Gift>();
             var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var post = new Gift();
                 post.MailID = (uint)i["mail_id"];
                 post.AccountID = (uint)i["a_id"];
@@ -1829,8 +1622,7 @@ namespace SagaDB
                 post.Title = (string)i["title"];
                 post.Date = (DateTime)i["postdate"];
                 post.Items = new Dictionary<uint, ushort>();
-                for (var y = 1; y < 11; y++)
-                {
+                for (var y = 1; y < 11; y++) {
                     var itemid = (uint)i["itemid" + y];
                     var count = (ushort)i["count" + y];
                     if (!post.Items.ContainsKey(itemid) && itemid != 0)
@@ -1844,15 +1636,12 @@ namespace SagaDB
             return list;
         }
 
-        public uint AddNewGift(Gift gift)
-        {
+        public uint AddNewGift(Gift gift) {
             var ids = new List<uint> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             var counts = new List<ushort> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             byte index = 0;
-            foreach (var item in gift.Items.Keys)
-            {
-                if (item != 0)
-                {
+            foreach (var item in gift.Items.Keys) {
+                if (item != 0) {
                     ids[index] = item;
                     counts[index] = gift.Items[item];
                 }
@@ -1872,8 +1661,7 @@ namespace SagaDB
             return SQLExecuteScalar(sqlstr).Index;
         }
 
-        public bool BBSNewPost(ActorPC poster, uint bbsID, string title, string content)
-        {
+        public bool BBSNewPost(ActorPC poster, uint bbsID, string title, string content) {
             title = CheckSQLString(title);
             content = CheckSQLString(content);
             var sqlstr = string.Format(
@@ -1883,8 +1671,7 @@ namespace SagaDB
             return SQLExecuteNonQuery(sqlstr);
         }
 
-        public uint GetFlyCastleRindID(uint ffid)
-        {
+        public uint GetFlyCastleRindID(uint ffid) {
             var sqlstr = string.Format("SELECT `ring_id` FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", ffid);
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0) return (uint)result[0]["ring_id"];
@@ -1892,15 +1679,12 @@ namespace SagaDB
             return 0;
         }
 
-        public void GetFlyCastle(ActorPC pc)
-        {
-            if (pc.Ring != null)
-            {
+        public void GetFlyCastle(ActorPC pc) {
+            if (pc.Ring != null) {
                 var sqlstr = string.Format("SELECT * FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", pc.Ring.FF_ID);
                 var result = SQLExecuteQuery(sqlstr);
                 if (result.Count > 0)
-                    if (pc.Ring.FlyingCastle == null)
-                    {
+                    if (pc.Ring.FlyingCastle == null) {
                         pc.Ring.FlyingCastle = new FlyingCastle.FlyingCastle();
                         pc.Ring.FlyingCastle.ID = (uint)result[0]["ff_id"];
                         pc.Ring.FlyingCastle.Name = (string)result[0]["name"];
@@ -1912,13 +1696,11 @@ namespace SagaDB
             }
         }
 
-        public void GetFlyingCastleFurniture(Ring.Ring ring)
-        {
+        public void GetFlyingCastleFurniture(Ring.Ring ring) {
             if (ring.FlyingCastle == null)
                 return;
             if (!ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
-                !ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
-            {
+                !ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM)) {
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -1926,8 +1708,7 @@ namespace SagaDB
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
                 var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
                 var result = SQLExecuteQuery(sqlstr);
-                foreach (DataRow i in result)
-                {
+                foreach (DataRow i in result) {
                     var place = (FurniturePlace)(byte)i["place"];
                     var actor = new ActorFurniture();
                     actor.ItemID = (uint)i["item_id"];
@@ -1946,8 +1727,7 @@ namespace SagaDB
             }
         }
 
-        public void GetFlyingCastleFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
-        {
+        public void GetFlyingCastleFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures) {
             Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -1955,8 +1735,7 @@ namespace SagaDB
             Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
             var sqlstr = "SELECT * FROM `ff_furniture_copy` WHERE `ff_id`='3';";
             var result = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var place = (FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
@@ -1974,14 +1753,12 @@ namespace SagaDB
             }
         }
 
-        public List<FlyingCastle.FlyingCastle> GetFlyingCastles()
-        {
+        public List<FlyingCastle.FlyingCastle> GetFlyingCastles() {
             var sqlstr = "SELECT * FROM `ff`;";
             var list = new List<FlyingCastle.FlyingCastle>();
             var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var ff = new FlyingCastle.FlyingCastle();
                 ff.Name = (string)i["name"];
                 ff.Content = (string)i["content"];
@@ -1994,8 +1771,7 @@ namespace SagaDB
             return list;
         }
 
-        public void SaveFlyCastleCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
-        {
+        public void SaveFlyCastleCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures) {
             //uint account = GetAccountID(pc);
             string sqlstr;
             sqlstr = "DELETE FROM `ff_furniture_copy` WHERE `ff_id`='3';";
@@ -2037,11 +1813,9 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SavePaper(ActorPC pc)
-        {
+        public void SavePaper(ActorPC pc) {
             if (pc.AnotherPapers != null)
-                try
-                {
+                try {
                     var sqlstr = string.Format("DELETE FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID);
                     foreach (var i in pc.AnotherPapers)
                         sqlstr += string.Format(
@@ -2049,21 +1823,17 @@ namespace SagaDB
                             "VALUES ('{0}','{1}','{2}','{3}');", pc.CharID, i.Key, i.Value.lv, i.Value.value.Value);
                     SQLExecuteNonQuery(sqlstr);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
         }
 
-        public void SaveFlyCastle(Ring.Ring ring)
-        {
-            if (ring != null)
-            {
+        public void SaveFlyCastle(Ring.Ring ring) {
+            if (ring != null) {
                 if (ring.FlyingCastle == null) return;
                 //uint account = GetAccountID(pc);
                 string sqlstr;
-                if (ring.FlyingCastle.ID > 0)
-                {
+                if (ring.FlyingCastle.ID > 0) {
                     sqlstr = string.Format(
                         "UPDATE `ff` SET `level`='{0}',`content`='{1}',`name`='{2}' WHERE `ff_id`='{3}';",
                         ring.FlyingCastle.Level, ring.FlyingCastle.Content, ring.Name, ring.FlyingCastle.ID);
@@ -2120,8 +1890,7 @@ namespace SagaDB
             }
         }
 
-        public void SaveSerFF(Server.Server ser)
-        {
+        public void SaveSerFF(Server.Server ser) {
             var sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", 99999);
             foreach (var i in ser.Furnitures[FurniturePlace.GARDEN])
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
@@ -2144,10 +1913,9 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetSerFFurniture(Server.Server ser)
-        {
-            if (!ser.Furnitures.ContainsKey(FurniturePlace.GARDEN) || !ser.Furnitures.ContainsKey(FurniturePlace.ROOM))
-            {
+        public void GetSerFFurniture(Server.Server ser) {
+            if (!ser.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
+                !ser.Furnitures.ContainsKey(FurniturePlace.ROOM)) {
                 ser.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -2155,11 +1923,9 @@ namespace SagaDB
                 ser.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
                 var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", 99999);
                 var result = SQLExecuteQuery(sqlstr);
-                foreach (DataRow i in result)
-                {
+                foreach (DataRow i in result) {
                     var p = (byte)i["place"];
-                    if (p < 5)
-                    {
+                    if (p < 5) {
                         var place = (FurniturePlace)p;
                         var actor = new ActorFurniture();
                         actor.ItemID = (uint)i["item_id"];
@@ -2175,8 +1941,7 @@ namespace SagaDB
                         actor.invisble = false;
                         ser.Furnitures[place].Add(actor);
                     }
-                    else
-                    {
+                    else {
                         p -= 4;
                         var place = (FurniturePlace)p;
                         var actor = new ActorFurniture();
@@ -2197,8 +1962,7 @@ namespace SagaDB
             }
         }
 
-        public void CreateFF(ActorPC pc)
-        {
+        public void CreateFF(ActorPC pc) {
             if (pc.Ring.FlyingCastle == null) return;
             GetAccountID(pc);
             string sqlstr;
@@ -2213,14 +1977,12 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public List<ActorPC> GetWRPRanking()
-        {
+        public List<ActorPC> GetWRPRanking() {
             var sqlstr = "SELECT `char_id`,`name`,`lv`,`jlv3`,`job`,`wrp` FROM `char` ORDER BY `wrp` DESC LIMIT 100;";
             var result = SQLExecuteQuery(sqlstr);
             var res = new List<ActorPC>();
             uint count = 1;
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var pc = new ActorPC();
                 pc.CharID = (uint)i["char_id"];
                 pc.Name = (string)i["name"];
@@ -2236,11 +1998,9 @@ namespace SagaDB
             return res;
         }
 
-        public void SavaLevelLimit()
-        {
+        public void SavaLevelLimit() {
             var LL = LevelLimit.LevelLimit.Instance;
-            try
-            {
+            try {
                 var sqlstr = string.Format(
                     "UPDATE `levellimit` SET `NowLevelLimit`='{0}',`NextLevelLimit`='{1}',`SetNextUpLevel`='{2}',`SetNextUpDays`='{3}',`ReachTime`='{4}',`NextTime`='{5}'"
                     + ",`FirstPlayer`='{6}',`SecondPlayer`='{7}',`ThirdPlayer`='{8}',`FourthPlayer`='{9}',`FifthPlayer`='{10}',`LastTimeLevelLimit`='{11}',`IsLock`='{12}'"
@@ -2249,21 +2009,18 @@ namespace SagaDB
                     , LL.FourthPlayer, LL.FifthPlayer, LL.LastTimeLevelLimit, LL.IsLock);
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetLevelLimit()
-        {
+        public void GetLevelLimit() {
             var sqlstr =
                 "SELECT `NowLevelLimit`,`NextLevelLimit`,`SetNextUpLevel`,`SetNextUpDays`,`ReachTime`,`NextTime`,`LastTimeLevelLimit`,`FirstPlayer`" +
                 ",`SecondPlayer`,`ThirdPlayer`,`FourthPlayer`,`FifthPlayer`,`IsLock` FROM `levellimit`";
             var levellimit = LevelLimit.LevelLimit.Instance;
             var resule = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in resule)
-            {
+            foreach (DataRow i in resule) {
                 levellimit.NowLevelLimit = (uint)i["NowLevelLimit"];
                 levellimit.NextLevelLimit = (uint)i["NextLevelLimit"];
                 levellimit.SetNextUpLevelLimit = (uint)i["SetNextUpLevel"];
@@ -2280,8 +2037,7 @@ namespace SagaDB
             }
         }
 
-        public void SaveStamp(ActorPC pc, StampGenre genre)
-        {
+        public void SaveStamp(ActorPC pc, StampGenre genre) {
             var sqlstr = $"SELECT * FROM `stamp` WHERE `stamp_id`='{(byte)genre}' AND `char_id`='{pc.CharID}' ";
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0)
@@ -2293,21 +2049,18 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public List<TamaireLending> GetTamaireLendings()
-        {
+        public List<TamaireLending> GetTamaireLendings() {
             var sqlstr = "SELECT * FROM `tamairelending`;";
             var result = SQLExecuteQuery(sqlstr);
             var tamaireLendings = new List<TamaireLending>();
-            for (var i = 0; i < result.Count; i++)
-            {
+            for (var i = 0; i < result.Count; i++) {
                 var tamaireLending = new TamaireLending();
                 tamaireLending.Lender = (uint)result[0]["char_id"];
                 tamaireLending.Baselv = (byte)result[0]["baselv"];
                 tamaireLending.JobType = (byte)result[0]["jobtype"];
                 tamaireLending.PostDue = (DateTime)result[0]["postdue"];
                 tamaireLending.Comment = (string)result[0]["comment"];
-                for (byte j = 1; j <= 4; j++)
-                {
+                for (byte j = 1; j <= 4; j++) {
                     var renterid = (uint)result[0]["renter" + j];
                     if (renterid != 0)
                         tamaireLending.Renters.Add(renterid);
@@ -2319,12 +2072,10 @@ namespace SagaDB
             return tamaireLendings;
         }
 
-        public void GetTamaireLending(ActorPC pc)
-        {
+        public void GetTamaireLending(ActorPC pc) {
             var sqlstr = $"SELECT * FROM `tamairelending` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0)
-            {
+            if (result.Count != 0) {
                 if (pc.TamaireLending == null)
                     pc.TamaireLending = new TamaireLending();
                 pc.TamaireLending.Lender = (uint)result[0]["char_id"];
@@ -2332,8 +2083,7 @@ namespace SagaDB
                 pc.TamaireLending.PostDue = (DateTime)result[0]["postdue"];
                 pc.TamaireLending.JobType = (byte)result[0]["jobtype"];
                 pc.TamaireLending.Baselv = (byte)result[0]["baselv"];
-                for (byte j = 1; j <= 4; j++)
-                {
+                for (byte j = 1; j <= 4; j++) {
                     var renterid = (uint)result[0]["renter" + j];
                     if (renterid != 0)
                         pc.TamaireLending.Renters.Add(renterid);
@@ -2341,8 +2091,7 @@ namespace SagaDB
             }
         }
 
-        public void CreateTamaireLending(TamaireLending tamaireLending)
-        {
+        public void CreateTamaireLending(TamaireLending tamaireLending) {
             var comment = CheckSQLString(tamaireLending.Comment);
             var sqlstr = string.Format(
                 "INSERT INTO `tamairelending`(`char_id`,`jobtype`,`baselv`,`postdue`,`comment`,`renter1`,`renter2`,`renter3`,`renter4`) VALUES " +
@@ -2351,8 +2100,7 @@ namespace SagaDB
             SQLExecuteScalar(sqlstr);
         }
 
-        public void SaveTamaireLending(TamaireLending tamaireLending)
-        {
+        public void SaveTamaireLending(TamaireLending tamaireLending) {
             uint renter1, renter2, renter3, renter4;
             var comment = CheckSQLString(tamaireLending.Comment);
 
@@ -2380,18 +2128,15 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void DeleteTamaireLending(TamaireLending tamaireLending)
-        {
+        public void DeleteTamaireLending(TamaireLending tamaireLending) {
             var sqlstr = string.Format("DELETE FROM `tamairelending` WHERE `char_id`='{0}';", tamaireLending.Lender);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetTamaireRental(ActorPC pc)
-        {
+        public void GetTamaireRental(ActorPC pc) {
             var sqlstr = $"SELECT * FROM `tamairerental` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0)
-            {
+            if (result.Count != 0) {
                 if (pc.TamaireRental == null)
                     pc.TamaireRental = new TamaireRental();
                 pc.TamaireRental.Renter = (uint)result[0]["char_id"];
@@ -2401,8 +2146,7 @@ namespace SagaDB
             }
         }
 
-        public void CreateTamaireRental(TamaireRental tamaireRental)
-        {
+        public void CreateTamaireRental(TamaireRental tamaireRental) {
             var sqlstr = string.Format(
                 "INSERT INTO `tamairerental`(`char_id`,`rentdue`,`currentlender`,`lastlender`) VALUES " +
                 "('{0}','{1}','{2}','{3}');", tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue),
@@ -2410,8 +2154,7 @@ namespace SagaDB
             SQLExecuteScalar(sqlstr);
         }
 
-        public void SaveTamaireRental(TamaireRental tamaireRental)
-        {
+        public void SaveTamaireRental(TamaireRental tamaireRental) {
             var sqlstr = string.Format(
                 "UPDATE `tamairerental` SET `rentdue`='{1}',`currentlender`='{2}',`lastlender`='{3}' WHERE `char_id`='{0}' LIMIT 1;",
                 tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue), tamaireRental.CurrentLender,
@@ -2419,19 +2162,16 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void DeleteTamaireRental(TamaireRental tamaireRental)
-        {
+        public void DeleteTamaireRental(TamaireRental tamaireRental) {
             var sqlstr = string.Format("DELETE FROM `tamairerental` WHERE `char_id`='{0}';", tamaireRental.Renter);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetMosterGuide(ActorPC pc)
-        {
+        public void GetMosterGuide(ActorPC pc) {
             var guide = new Dictionary<uint, bool>();
             var sqlstr = $"SELECT * FROM `mobstates` WHERE `char_id`='{pc.CharID}'";
             var results = SQLExecuteQuery(sqlstr);
-            foreach (DataRow result in results)
-            {
+            foreach (DataRow result in results) {
                 //uint mobID = (uint)result["mob_id"];
                 //bool state = (bool)result["state"];
                 var mobID = Convert.ToUInt32(result["mob_id"]);
@@ -2444,8 +2184,7 @@ namespace SagaDB
             pc.MosterGuide = guide;
         }
 
-        public void SaveMosterGuide(ActorPC pc, uint mobID, bool state)
-        {
+        public void SaveMosterGuide(ActorPC pc, uint mobID, bool state) {
             byte value = 0;
             if (state)
                 value = 1;
@@ -2460,32 +2199,26 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        private uint getCharID(string name)
-        {
+        private uint getCharID(string name) {
             string sqlstr;
             DataRowCollection result = null;
             sqlstr = "SELECT `char_id` FROM `char` WHERE name='" + name + "' LIMIT 1";
-            try
-            {
+            try {
                 result = SQLExecuteQuery(sqlstr);
             }
-            catch (MySqlException ex)
-            {
+            catch (MySqlException ex) {
                 SagaLib.Logger.ShowSQL(ex, null);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return (uint)result[0]["charID"];
         }
 
-        public void SaveQuestInfo(ActorPC pc)
-        {
+        public void SaveQuestInfo(ActorPC pc) {
             var sqlstr = string.Format("DELETE FROM `questinfo` WHERE `char_id`='{0}';", pc.CharID);
-            foreach (var i in pc.KillList)
-            {
+            foreach (var i in pc.KillList) {
                 byte ss = 0;
                 if (i.Value.isFinish)
                     ss = 1;
@@ -2494,29 +2227,23 @@ namespace SagaDB
                     pc.CharID, i.Key, i.Value.Count, i.Value.TotalCount, ss);
             }
 
-            try
-            {
+            try {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetQuestInfo(ActorPC pc)
-        {
+        public void GetQuestInfo(ActorPC pc) {
             string sqlstr;
             DataRowCollection result = null;
-            try
-            {
+            try {
                 sqlstr = "SELECT * FROM `questinfo` WHERE `char_id`='" + pc.CharID + "'";
-                try
-                {
+                try {
                     result = SQLExecuteQuery(sqlstr);
                     if (result.Count > 0)
-                        for (var i = 0; i < result.Count; i++)
-                        {
+                        for (var i = 0; i < result.Count; i++) {
                             var ki = new ActorPC.KillInfo();
                             var mobid = (uint)result[i]["object_id"];
                             var c = (uint)result[i]["count"];
@@ -2532,19 +2259,16 @@ namespace SagaDB
                                 pc.KillList.Add(mobid, ki);
                         }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        private void GetVar(ActorPC pc)
-        {
+        private void GetVar(ActorPC pc) {
             var sqlstr = "SELECT * FROM `cvar` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
             var account_id =
                 (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1")[0][
@@ -2553,28 +2277,24 @@ namespace SagaDB
             DataRowCollection res;
             res = SQLExecuteQuery(sqlstr);
 
-            if (res.Count > 0)
-            {
+            if (res.Count > 0) {
                 var buf = (byte[])res[0]["values"];
                 var ms = new MemoryStream(buf);
                 var br = new BinaryReader(ms);
                 var count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CInt[name] = br.ReadInt32();
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CMask[name] = new BitMask(br.ReadInt32());
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CStr[name] = enc.GetString(br.ReadBytes(br.ReadInt32()));
                 }
@@ -2582,44 +2302,37 @@ namespace SagaDB
 
             sqlstr = "SELECT * FROM `avar` WHERE `account_id`='" + account_id + "' LIMIT 1;";
             res = SQLExecuteQuery(sqlstr);
-            if (res.Count > 0)
-            {
+            if (res.Count > 0) {
                 var buf = (byte[])res[0]["values"];
                 var ms = new MemoryStream(buf);
                 var br = new BinaryReader(ms);
                 var count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AInt[name] = br.ReadInt32();
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AMask[name] = new BitMask(br.ReadInt32());
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AStr[name] = enc.GetString(br.ReadBytes(br.ReadInt32()));
                 }
             }
         }
 
-        public void SaveItem(ActorPC pc)
-        {
-            try
-            {
+        public void SaveItem(ActorPC pc) {
+            try {
                 var account = GetAccountID(pc);
 #pragma warning disable SYSLIB0011
                 MySqlCommand cmd;
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
-                    pc.Inventory.Items[ContainerType.BODY].Count < 1000)
-                {
+                    pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
                     cmd = new MySqlCommand(string.Format(
                         "UPDATE `inventory` SET `data`=?data WHERE `char_id`='{0}' LIMIT 1;\r\n",
                         pc.CharID));
@@ -2629,47 +2342,39 @@ namespace SagaDB
                     if (pc.Account != null)
                         SagaLib.Logger.GetLogger().Information(
                             "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" + itemdata.Length);
-                    try
-                    {
+                    try {
                         SQLExecuteNonQuery(cmd);
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     }
                 }
 
                 if (pc.Inventory.WareHouse != null)
-                    if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare)
-                    {
+                    if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
                         cmd = new MySqlCommand(string.Format(
                             "UPDATE `warehouse` SET `data`=?data WHERE `account_id`='{0}' LIMIT 1;\r\n",
                             account));
                         var para = cmd.Parameters.Add("?data", MySqlDbType.Blob);
                         para.Value = pc.Inventory.WareToBytes();
 
-                        try
-                        {
+                        try {
                             SQLExecuteNonQuery(cmd);
                         }
-                        catch (Exception ex)
-                        {
+                        catch (Exception ex) {
                             SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                         }
                     }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetJobLV(ActorPC pc)
-        {
+        public void GetJobLV(ActorPC pc) {
             string sqlstr;
             DataRowCollection result = null;
-            try
-            {
+            try {
                 sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 1 +
                          "' LIMIT 1;";
                 result = SQLExecuteQuery(sqlstr);
@@ -2691,64 +2396,52 @@ namespace SagaDB
                 if (result.Count > 0)
                     pc.JobLV_CARDINAL = (byte)result[0]["joblv"];
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetNPCStates(ActorPC pc)
-        {
+        public void GetNPCStates(ActorPC pc) {
             string sqlstr;
             DataRowCollection result = null;
             sqlstr = $"SELECT * FROM `npcstates` WHERE `char_id`='{pc.CharID}';";
-            try
-            {
+            try {
                 result = SQLExecuteQuery(sqlstr);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return;
             }
 
-            for (var i = 0; i < result.Count; i++)
-            {
+            for (var i = 0; i < result.Count; i++) {
                 var npcID = (uint)result[i]["npc_id"];
                 var state = (bool)result[i]["state"];
                 pc.NPCStates.Add(npcID, state);
             }
         }
 
-        public void GetItem(ActorPC pc)
-        {
-            try
-            {
+        public void GetItem(ActorPC pc) {
+            try {
                 string sqlstr;
                 DataRowCollection result = null;
                 var account = GetAccountID(pc);
                 sqlstr = "SELECT * FROM `inventory` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
-                try
-                {
+                try {
                     result = SQLExecuteQuery(sqlstr);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     return;
                 }
 
-                if (result.Count > 0)
-                {
+                if (result.Count > 0) {
                     Inventory inv = null;
-                    try
-                    {
+                    try {
                         var buf = (byte[])result[0]["data"];
                         SagaLib.Logger.GetLogger()
                             .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                         var ms = new MemoryStream(buf);
-                        if (buf[0] == 0x42 && buf[1] == 0x5A)
-                        {
+                        if (buf[0] == 0x42 && buf[1] == 0x5A) {
                             var ms2 = new MemoryStream();
                             BZip2.Decompress(ms, ms2, true);
                             ms = new MemoryStream(ms2.ToArray());
@@ -2756,45 +2449,37 @@ namespace SagaDB
                             var bf = new BinaryFormatter();
                             inv = (Inventory)bf.Deserialize(ms);
 
-                            if (inv != null)
-                            {
+                            if (inv != null) {
                                 pc.Inventory = inv;
                                 pc.Inventory.Owner = pc;
                             }
                         }
-                        else
-                        {
+                        else {
                             inv = new Inventory(pc);
                             inv.FromStream(ms);
                             pc.Inventory = inv;
                         }
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     }
                 }
 
                 sqlstr = "SELECT * FROM `warehouse` WHERE `account_id`='" + account + "';";
-                try
-                {
+                try {
                     result = SQLExecuteQuery(sqlstr);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     return;
                 }
 
-                if (result.Count > 0)
-                {
+                if (result.Count > 0) {
                     Dictionary<WarehousePlace, List<Item.Item>> inv = null;
-                    try
-                    {
+                    try {
                         var buf = (byte[])result[0]["data"];
                         var ms = new MemoryStream(buf);
-                        if (buf[0] == 0x42 && buf[1] == 0x5A)
-                        {
+                        if (buf[0] == 0x42 && buf[1] == 0x5A) {
                             pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
                             var ms2 = new MemoryStream();
                             BZip2.Decompress(ms, ms2, true);
@@ -2802,25 +2487,21 @@ namespace SagaDB
 #pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();
                             inv = (Dictionary<WarehousePlace, List<Item.Item>>)bf.Deserialize(ms);
-                            if (inv != null)
-                            {
+                            if (inv != null) {
                                 pc.Inventory.wareIndex = 200000001;
-                                foreach (var i in inv.Keys)
-                                {
+                                foreach (var i in inv.Keys) {
                                     pc.Inventory.WareHouse.Add(i, new List<Item.Item>());
                                     foreach (var j in inv[i]) pc.Inventory.AddWareItem(i, j);
                                 }
                             }
                         }
-                        else
-                        {
+                        else {
                             if (pc.Inventory.WareHouse == null)
                                 pc.Inventory.WareHouse = new Inventory(pc).WareHouse;
                             pc.Inventory.WareFromSteam(ms);
                         }
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     }
                 }
@@ -2846,22 +2527,18 @@ namespace SagaDB
                 if (!pc.Inventory.WareHouse.ContainsKey(WarehousePlace.Tonka))
                     pc.Inventory.WareHouse.Add(WarehousePlace.Tonka, new List<Item.Item>());
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetPartyMember(Party.Party party)
-        {
+        public void GetPartyMember(Party.Party party) {
             var sqlstr = $"SELECT `char_id` FROM `partymember` WHERE `party_id`='{party.ID}';";
             var result = SQLExecuteQuery(sqlstr);
 
-            for (byte index = 0; index < 7; index++)
-            {
+            for (byte index = 0; index < 7; index++) {
                 var member = (uint)result[index]["char_id"];
-                if (member == 0)
-                {
+                if (member == 0) {
                     continue;
                 }
 
@@ -2870,8 +2547,7 @@ namespace SagaDB
 
                 sqlstr = $"SELECT `name`,`job` FROM `char` WHERE `char_id`='{member}' LIMIT 1;";
                 var rows = SQLExecuteQuery(sqlstr);
-                if (rows.Count == 0)
-                {
+                if (rows.Count == 0) {
                     continue;
                 }
 
@@ -2882,13 +2558,11 @@ namespace SagaDB
             }
         }
 
-        private void GetFlyingGarden(ActorPC pc)
-        {
+        private void GetFlyingGarden(ActorPC pc) {
             var account = GetAccountID(pc);
             var result =
                 SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;", account));
-            if (result.Count > 0)
-            {
+            if (result.Count > 0) {
                 var garden = new FlyingGarden.FlyingGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
                 garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
@@ -2903,15 +2577,13 @@ namespace SagaDB
                 pc.FlyingGarden = garden;
             }
 
-            if (pc.FlyingGarden == null)
-            {
+            if (pc.FlyingGarden == null) {
                 return;
             }
 
             foreach (DataRow i in SQLExecuteQuery(string.Format(
                          "SELECT * FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
-                         pc.FlyingGarden.ID)))
-            {
+                         pc.FlyingGarden.ID))) {
                 var place = (FlyingGarden.FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
@@ -2929,19 +2601,16 @@ namespace SagaDB
             }
         }
 
-        public void GetPaper(ActorPC pc)
-        {
+        public void GetPaper(ActorPC pc) {
             var result =
                 SQLExecuteQuery(string.Format("SELECT * FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID));
-            foreach (DataRow i in result)
-            {
+            foreach (DataRow i in result) {
                 var paperid = (uint)i["paper_id"];
                 var detail = new AnotherDetail();
                 detail.value = new BitMask_Long();
                 detail.value.Value = (ulong)i["paper_value"];
                 detail.lv = (byte)i["paper_lv"];
-                if (pc.AnotherPapers.ContainsKey(paperid))
-                {
+                if (pc.AnotherPapers.ContainsKey(paperid)) {
                     continue;
                 }
 
@@ -2950,16 +2619,13 @@ namespace SagaDB
         }
 
 
-        private void SaveFGarden(ActorPC pc)
-        {
-            if (pc.FlyingGarden == null)
-            {
+        private void SaveFGarden(ActorPC pc) {
+            if (pc.FlyingGarden == null) {
                 return;
             }
 
             var account = GetAccountID(pc);
-            if (pc.FlyingGarden.ID > 0)
-            {
+            if (pc.FlyingGarden.ID > 0) {
                 SQLExecuteNonQuery(string.Format(
                     "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
                     "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
@@ -2974,8 +2640,7 @@ namespace SagaDB
                     pc.FlyingGarden.ID,
                     pc.FlyingGarden.Fuel));
             }
-            else
-            {
+            else {
                 pc.FlyingGarden.ID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
                     "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
@@ -3006,17 +2671,14 @@ namespace SagaDB
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SaveStamps(ActorPC pc)
-        {
+        public void SaveStamps(ActorPC pc) {
             foreach (StampGenre genre in Enum.GetValues(typeof(StampGenre)))
                 SaveStamp(pc, genre);
         }
 
-        public void GetStamps(ActorPC pc)
-        {
+        public void GetStamps(ActorPC pc) {
             var ret = SQLExecuteQuery($"SELECT * FROM `stamp` WHERE `char_id`='{pc.CharID}' ");
-            for (var i = 0; i < ret.Count; i++)
-            {
+            for (var i = 0; i < ret.Count; i++) {
                 var result = ret[i];
                 pc.Stamp[(StampGenre)(byte)result["stamp_id"]].Value = (short)result["value"];
             }
@@ -3024,26 +2686,22 @@ namespace SagaDB
 
         //#region 副职相关
 
-        public void GetDualJobInfo(ActorPC pc)
-        {
+        public void GetDualJobInfo(ActorPC pc) {
             var result = SQLExecuteQuery($"select * from `dualjob` where `char_id` = '{pc.CharID}'");
-            if (result.Count > 0)
-            {
+            if (result.Count > 0) {
                 pc.PlayerDualJobList = new Dictionary<byte, PlayerDualJobInfo>();
                 foreach (DataRow item in result)
-                    if (pc.PlayerDualJobList.ContainsKey(byte.Parse(item["series_id"].ToString())))
-                    {
-                        pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobID =
+                    if (pc.PlayerDualJobList.ContainsKey(byte.Parse(item["series_id"].ToString()))) {
+                        pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobId =
                             byte.Parse(item["series_id"].ToString());
                         pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobLevel =
                             byte.Parse(item["level"].ToString());
                         pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobExp =
                             ulong.Parse(item["exp"].ToString());
                     }
-                    else
-                    {
+                    else {
                         var pi = new PlayerDualJobInfo();
-                        pi.DualJobID = byte.Parse(item["series_id"].ToString());
+                        pi.DualJobId = byte.Parse(item["series_id"].ToString());
                         pi.DualJobLevel = byte.Parse(item["level"].ToString());
                         pi.DualJobExp = ulong.Parse(item["exp"].ToString());
                         pc.PlayerDualJobList.Add(byte.Parse(item["series_id"].ToString()), pi);
@@ -3065,55 +2723,48 @@ namespace SagaDB
             //}
         }
 
-        public void SaveDualJobInfo(ActorPC pc, bool allinfo)
-        {
+        public void SaveDualJobInfo(ActorPC pc, bool allinfo) {
             var dic = pc.PlayerDualJobList;
             var insertstr = $"delete from `dualjob` where `char_id` = {pc.CharID};";
             foreach (var item in dic.Keys)
                 insertstr +=
-                    $"insert into `dualjob` values ('',{pc.CharID}, {dic[item].DualJobID},{dic[item].DualJobLevel}, {dic[item].DualJobExp});";
+                    $"insert into `dualjob` values ('',{pc.CharID}, {dic[item].DualJobId},{dic[item].DualJobLevel}, {dic[item].DualJobExp});";
             SQLExecuteNonQuery(insertstr);
 
-            if (!allinfo)
-            {
+            if (!allinfo) {
                 return;
             }
 
             var delskillstr =
                 $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
-            foreach (var item in pc.DualJobSkill)
+            foreach (var item in pc.DualJobSkills)
                 delskillstr +=
                     $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
             SQLExecuteNonQuery(delskillstr);
         }
 
-        public void GetDualJobSkill(ActorPC pc)
-        {
+        public void GetDualJobSkill(ActorPC pc) {
             var sqlstr = $"select * from `dualjob_skill` where `char_id` = '{pc.CharID}' and series_id={pc.DualJobID}";
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-            {
-                pc.DualJobSkill = new List<Skill.Skill>();
-                foreach (DataRow item in result)
-                {
+            if (result.Count > 0) {
+                pc.DualJobSkills = new List<Skill.Skill>();
+                foreach (DataRow item in result) {
                     var id = uint.Parse(item["skill_id"].ToString());
                     var level = byte.Parse(item["skill_level"].ToString());
                     var s = SkillFactory.Instance.GetSkill(id, level);
                     if (s != null)
-                        pc.DualJobSkill.Add(s);
+                        pc.DualJobSkills.Add(s);
                 }
             }
-            else
-            {
-                pc.DualJobSkill = new List<Skill.Skill>();
+            else {
+                pc.DualJobSkills = new List<Skill.Skill>();
             }
         }
 
-        public void SaveDualJobSkill(ActorPC pc)
-        {
+        public void SaveDualJobSkill(ActorPC pc) {
             var delskillstr =
                 $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
-            foreach (var item in pc.DualJobSkill)
+            foreach (var item in pc.DualJobSkills)
                 delskillstr +=
                     $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
             SQLExecuteNonQuery(delskillstr);

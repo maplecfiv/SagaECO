@@ -5,25 +5,22 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.BountyHunter_赏金猎人____swm
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.
+    BountyHunter_赏金猎人____swm {
     /// <summary>
     ///     一閃（一閃）
     /// </summary>
-    public class IsSeN : ISkill
-    {
+    public class IsSeN : ISkill {
         public Dictionary<SkillHandler.ActorDirection, List<int>> range =
             new Dictionary<SkillHandler.ActorDirection, List<int>>();
 
-        public IsSeN()
-        {
+        public IsSeN() {
             init();
         }
 
         //#region Init
 
-        public void init()
-        {
+        public void init() {
             //建立List
             for (var i = 0; i < 8; i++) range.Add((SkillHandler.ActorDirection)i, new List<int>());
             //塞入內容
@@ -98,26 +95,22 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor = 0;
             factor = 1.75f + 0.25f * level;
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkill.Exists(x => x.ID == 1117))
-                {
+                if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkills.Exists(x => x.ID == 1117)) {
                     //lv = pc.Skills3[1117].Level;
                     //这里取副职的剑圣等级
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 1117))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 1117).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 1117))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 1117).Level;
 
                     //这里取主职的剑圣等级
                     var mainlv = 0;
@@ -150,12 +143,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                  * □□☆□□　□☆■■□
                  *
                  */
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act)) {
                     int XDiff, YDiff;
                     SkillHandler.Instance.GetXYDiff(map, sActor, act, out XDiff, out YDiff);
-                    if (range[dir].Contains(SkillHandler.Instance.CalcPosHashCode(XDiff, YDiff, 2)))
-                    {
+                    if (range[dir].Contains(SkillHandler.Instance.CalcPosHashCode(XDiff, YDiff, 2))) {
                         realAffected.Add(act);
                         if (act.type == ActorType.PC)
                             if (SagaLib.Global.Random.Next(0, 99) < rate)

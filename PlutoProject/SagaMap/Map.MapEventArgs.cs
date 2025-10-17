@@ -4,10 +4,8 @@ using SagaDB.Item;
 using SagaDB.Skill;
 using SagaLib;
 
-namespace SagaMap
-{
-    public class ChatArg : MapEventArgs
-    {
+namespace SagaMap {
+    public class ChatArg : MapEventArgs {
         public string content;
         public uint emotion;
         public byte expression;
@@ -15,14 +13,12 @@ namespace SagaMap
         public MotionType motion;
     }
 
-    public class MoveArg : MapEventArgs
-    {
+    public class MoveArg : MapEventArgs {
         public MoveType type;
         public ushort x, y, dir;
     }
 
-    public class EffectArg : MapEventArgs
-    {
+    public class EffectArg : MapEventArgs {
         public uint actorID;
         public uint effectID;
         public ushort height = 0xFFFF;
@@ -30,8 +26,7 @@ namespace SagaMap
         public byte x = 0xFF, y = 0xFF;
     }
 
-    public class PossessionArg : MapEventArgs
-    {
+    public class PossessionArg : MapEventArgs {
         public bool cancel = false;
         public string comment;
         public byte dir;
@@ -42,8 +37,7 @@ namespace SagaMap
         public byte y;
     }
 
-    public class AutoCastInfo
-    {
+    public class AutoCastInfo {
         public int delay;
         public byte level;
         public uint skillID;
@@ -51,10 +45,8 @@ namespace SagaMap
         public byte y = 0xff;
     }
 
-    public class SkillArg : MapEventArgs
-    {
-        public enum ArgType
-        {
+    public class SkillArg : MapEventArgs {
+        public enum ArgType {
             Attack,
             Cast,
             Active,
@@ -81,8 +73,7 @@ namespace SagaMap
         public bool useMPSP = true;
         public byte x, y;
 
-        public SkillArg Clone()
-        {
+        public SkillArg Clone() {
             var arg = new SkillArg();
             arg.sActor = sActor;
             arg.dActor = dActor;
@@ -94,29 +85,26 @@ namespace SagaMap
             return arg;
         }
 
-        public SkillArg CloneWithoutSkill()
-        {
-            var arg = new SkillArg();
-            var skill = new SagaDB.Skill.Skill();
-            skill.BaseData = new SkillData();
-            skill.BaseData.id = 0;
-            arg.sActor = sActor;
-            arg.dActor = dActor;
-            arg.skill = skill;
-            arg.x = x;
-            arg.y = y;
-            arg.argType = argType;
+        public SkillArg CloneWithoutSkill() {
+            var arg = new SkillArg {
+                sActor = sActor,
+                dActor = dActor,
+                skill = new SagaDB.Skill.Skill {
+                    id = 0
+                },
+                x = x,
+                y = y,
+                argType = argType
+            };
             return arg;
         }
 
-        public void Init()
-        {
+        public void Init() {
             hp = new List<int>();
             mp = new List<int>();
             sp = new List<int>();
             flag = new List<AttackFlag>();
-            for (var i = 0; i < affectedActors.Count; i++)
-            {
+            for (var i = 0; i < affectedActors.Count; i++) {
                 flag.Add(0);
                 hp.Add(0);
                 mp.Add(0);
@@ -124,10 +112,8 @@ namespace SagaMap
             }
         }
 
-        public void Add(SkillArg arg)
-        {
-            for (var i = 0; i < arg.affectedActors.Count; i++)
-            {
+        public void Add(SkillArg arg) {
+            for (var i = 0; i < arg.affectedActors.Count; i++) {
                 affectedActors.Add(arg.affectedActors[i]);
                 flag.Add(arg.flag[i]);
                 hp.Add(arg.hp[i]);
@@ -136,22 +122,18 @@ namespace SagaMap
             }
         }
 
-        public void AddSameActor(SkillArg arg)
-        {
+        public void AddSameActor(SkillArg arg) {
             var count = affectedActors.Count;
             for (var i = 0; i < arg.affectedActors.Count; i++)
-                for (var j = 0; j < count; j++)
-                {
-                    if (arg.affectedActors[i].ActorID == affectedActors[j].ActorID)
-                    {
+                for (var j = 0; j < count; j++) {
+                    if (arg.affectedActors[i].ActorID == affectedActors[j].ActorID) {
                         hp[j] += arg.hp[i];
                         mp[j] += arg.mp[i];
                         sp[j] += arg.sp[i];
                         break;
                     }
 
-                    if (j == count - 1)
-                    {
+                    if (j == count - 1) {
                         affectedActors.Add(arg.affectedActors[i]);
                         flag.Add(arg.flag[i]);
                         hp.Add(arg.hp[i]);
@@ -161,10 +143,8 @@ namespace SagaMap
                 }
         }
 
-        public void Remove(Actor actor)
-        {
-            if (affectedActors.Contains(actor))
-            {
+        public void Remove(Actor actor) {
+            if (affectedActors.Contains(actor)) {
                 hp.RemoveAt(affectedActors.IndexOf(actor));
                 mp.RemoveAt(affectedActors.IndexOf(actor));
                 sp.RemoveAt(affectedActors.IndexOf(actor));
@@ -173,8 +153,7 @@ namespace SagaMap
             }
         }
 
-        public void Extend(int count)
-        {
+        public void Extend(int count) {
             for (var i = 0; i < count; i++)
                 hp.Add(0);
             for (var i = 0; i < count; i++)

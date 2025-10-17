@@ -83,6 +83,10 @@
               "target": "Package",
               "version": "[9.4.0, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.3.0, )"
@@ -94,6 +98,10 @@
             "SharpZipLib": {
               "target": "Package",
               "version": "[1.4.2, )"
+            },
+            "SqlSugarCore": {
+              "target": "Package",
+              "version": "[5.1.4.205, )"
             },
             "System.Buffers": {
               "target": "Package",
@@ -121,7 +129,7 @@
             },
             "System.Memory": {
               "target": "Package",
-              "version": "[4.5.5, )"
+              "version": "[4.6.3, )"
             },
             "System.Numerics.Vectors": {
               "target": "Package",
@@ -235,6 +243,10 @@
               "target": "Package",
               "version": "[9.4.0, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.4, )"
+            },
             "Serilog": {
               "target": "Package",
               "version": "[4.3.0, )"
@@ -265,7 +277,7 @@
             },
             "System.Memory": {
               "target": "Package",
-              "version": "[4.5.5, )"
+              "version": "[4.6.3, )"
             },
             "System.Numerics.Vectors": {
               "target": "Package",

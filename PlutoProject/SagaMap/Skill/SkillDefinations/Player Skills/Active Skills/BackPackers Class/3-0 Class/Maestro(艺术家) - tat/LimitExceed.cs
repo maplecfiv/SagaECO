@@ -4,32 +4,26 @@ using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Maestro_艺术家____tat {
     /// <summary>
     ///     レールガン
     /// </summary>
-    public class LimitExceed : ISkill
-    {
-        private void ValidCheck(ActorPC pc, Actor dActor, out int result)
-        {
+    public class LimitExceed : ISkill {
+        private void ValidCheck(ActorPC pc, Actor dActor, out int result) {
             result = TryCast(pc, dActor, null);
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             var trans_am_atk_up = 0.3f + 0.1f * skill.skill.Level;
             var trans_am_defadd_up = 0.3f + 0.1f * skill.skill.Level;
             var trans_am_def_up = 0.3f + 0.1f * skill.skill.Level;
-            if (actor is ActorPC)
-            {
+            if (actor is ActorPC) {
                 var pc = actor as ActorPC;
 
-                if (pc.Skills3.ContainsKey(2489) || pc.DualJobSkill.Exists(x => x.ID == 2489))
-                {
+                if (pc.Skills3.ContainsKey(2489) || pc.DualJobSkills.Exists(x => x.ID == 2489)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 2489))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2489).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 2489))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2489).Level;
 
                     var mainlv = 0;
                     if (pc.Skills3.ContainsKey(2489))
@@ -37,8 +31,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
                     var maxlv = Math.Max(duallv, mainlv);
                     float atkendup = 0;
-                    switch (skill.skill.Level)
-                    {
+                    switch (skill.skill.Level) {
                         case 1:
                             atkendup = 0.8f + 0.1f * maxlv;
                             trans_am_atk_up += atkendup;
@@ -62,11 +55,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     }
                 }
 
-                if (pc.Skills3.ContainsKey(2500) || pc.DualJobSkill.Exists(x => x.ID == 2500))
-                {
+                if (pc.Skills3.ContainsKey(2500) || pc.DualJobSkills.Exists(x => x.ID == 2500)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 2500))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2500).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 2500))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2500).Level;
 
                     var mainlv = 0;
                     if (pc.Skills3.ContainsKey(2500))
@@ -75,8 +67,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                     var maxlv = Math.Max(duallv, mainlv);
                     float defaddendup = 0;
                     float defendup = 0;
-                    switch (skill.skill.Level)
-                    {
+                    switch (skill.skill.Level) {
                         case 1:
                             defaddendup = 0.8f + 0.1f * maxlv;
                             defendup = 0.32f + 0.1f * maxlv;
@@ -155,8 +146,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             actor.Status.min_atk1_skill -= (short)skill.Variable["Robotminatk1Up"];
             actor.Status.min_atk2_skill -= (short)skill.Variable["Robotminatk2Up"];
             actor.Status.min_atk3_skill -= (short)skill.Variable["Robotminatk3Up"];
@@ -172,8 +162,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             MapManager.Instance.GetMap(actor.MapID)
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             var pet = SkillHandler.Instance.GetPet(actor);
-            if (pet != null && SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT"))
-            {
+            if (pet != null && SkillHandler.Instance.CheckMobType(pet, "MACHINE_RIDE_ROBOT")) {
                 int[] lifetime = { 0, 50000, 70000, 80000, 100000, 100000 };
                 skill.OnAdditionStart += StartEventHandler2;
                 skill.OnAdditionEnd += EndEventHandler2;
@@ -182,8 +171,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             }
         }
 
-        private void StartEventHandler2(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler2(Actor actor, DefaultBuff skill) {
             var trans_am_atk_down = new[] { 0, 0.2f, 0.35f, 0.45f, 0.65f, 0.75f }[skill.skill.Level];
             var trans_am_defadd_down = 0.1f * skill.skill.Level; //没有wiki资料，暂定为下降10%每等级
             var trans_am_def_down = 0.1f * skill.skill.Level;
@@ -238,8 +226,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler2(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler2(Actor actor, DefaultBuff skill) {
             actor.Status.min_atk1_skill += (short)skill.Variable["Robotminatk1down"];
             actor.Status.min_atk2_skill += (short)skill.Variable["Robotminatk2down"];
             actor.Status.min_atk3_skill += (short)skill.Variable["Robotminatk3down"];
@@ -257,8 +244,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return -54; //已经写好了逻辑,但问题太多,放弃治疗,先封印
             //ActorPet pet = SkillHandler.Instance.GetPet(sActor);
             //if (pet == null)
@@ -272,8 +258,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             //return -54;//需回傳"需裝備寵物"
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var lifetime = 180000;
             var skill = new DefaultBuff(args.skill, sActor, "LimitExceed", lifetime);
             skill.OnAdditionStart += StartEventHandler;

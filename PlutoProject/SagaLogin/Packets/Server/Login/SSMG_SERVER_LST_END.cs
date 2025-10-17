@@ -1,11 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-
 using SagaLib;
-
-using SagaDB.Actor;
 
 namespace SagaLogin.Packets.Server
 {
@@ -17,6 +10,5 @@ namespace SagaLogin.Packets.Server
             offset = 2;
             ID = 0x34;
         }
-
     }
 }

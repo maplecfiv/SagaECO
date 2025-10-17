@@ -5,20 +5,16 @@ using SagaDB.Actor;
 using SagaDB.Item;
 
 namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.
-    TreasureHunter_考古学家____rag
-{
+    TreasureHunter_考古学家____rag {
     /// <summary>
     ///     鞭子瞬連（ウィップラッシュ）
     /// </summary>
-    public class ConthWhip : ISkill
-    {
+    public class ConthWhip : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.ROPE) ||
-                sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
-            {
+                sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0) {
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, dActor)) return 0;
 
                 return -14;
@@ -27,19 +23,16 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             return -5;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 1.0f + 0.1f * level;
 
             int[] attackTimes = { 0, 2, 3, 4, 5, 6, 10 };
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
-                if (pc.Skills3.ContainsKey(992) || pc.DualJobSkill.Exists(x => x.ID == 992))
-                {
+                if (pc.Skills3.ContainsKey(992) || pc.DualJobSkills.Exists(x => x.ID == 992)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 992))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 992).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 992))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 992).Level;
 
                     //这里取主职的剑圣等级
                     var mainlv = 0;

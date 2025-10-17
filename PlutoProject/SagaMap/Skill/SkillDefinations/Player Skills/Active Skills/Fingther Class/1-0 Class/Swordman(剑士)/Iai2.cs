@@ -3,26 +3,21 @@ using System.Linq;
 using SagaDB.Actor;
 using SagaDB.Item;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._1_0_Class.Swordman_剑士_ {
     /// <summary>
     ///     居和2段
     /// </summary>
-    public class Iai2 : ISkill
-    {
+    public class Iai2 : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             if (CheckPossible(pc))
                 return 0;
             return -5;
         }
 
-        private bool CheckPossible(Actor sActor)
-        {
-            if (sActor.type == ActorType.PC)
-            {
+        private bool CheckPossible(Actor sActor) {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
                 if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
                     pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
@@ -33,20 +28,16 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             return true;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor = 0;
-            if (CheckPossible(sActor))
-            {
+            if (CheckPossible(sActor)) {
                 args.type = ATTACK_TYPE.SLASH;
                 factor = 1.2f + 0.3f * level;
-                if (sActor is ActorPC)
-                {
+                if (sActor is ActorPC) {
                     var pc = sActor as ActorPC;
 
                     //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                    if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkill.Exists(x => x.ID == 1117))
-                    {
+                    if (pc.Skills3.ContainsKey(1117) || pc.DualJobSkills.Exists(x => x.ID == 1117)) {
                         //斩击无双
                         SkillHandler.Instance.SetNextComboSkill(sActor, 2401);
                         //百鬼哭
@@ -67,8 +58,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         SkillHandler.Instance.SetNextComboSkill(sActor, 2534);
                         //这里取副职的剑圣等级
                         var duallv = 0;
-                        if (pc.DualJobSkill.Exists(x => x.ID == 1117))
-                            duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 1117).Level;
+                        if (pc.DualJobSkills.Exists(x => x.ID == 1117))
+                            duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 1117).Level;
 
                         //这里取主职的剑圣等级
                         var mainlv = 0;

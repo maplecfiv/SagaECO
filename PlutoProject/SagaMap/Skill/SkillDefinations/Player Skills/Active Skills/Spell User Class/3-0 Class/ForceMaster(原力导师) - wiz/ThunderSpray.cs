@@ -6,46 +6,40 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.
+    ForceMaster_原力导师____wiz {
     /// <summary>
     ///     フリークブラスト
     /// </summary>
-    public class ThunderSpray : ISkill
-    {
+    public class ThunderSpray : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 2.0f + 1.0f * level;
             int[] lifetime = { 0, 4000, 6000, 8000, 10000, 12000 };
-            if (sActor.type == ActorType.PC)
-            {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
-                if (pc.Skills2_2.ContainsKey(2330) || pc.DualJobSkill.Exists(x => x.ID == 2330)) factor += 0.7f;
+                if (pc.Skills2_2.ContainsKey(2330) || pc.DualJobSkills.Exists(x => x.ID == 2330)) factor += 0.7f;
             }
 
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(dActor, 200, true);
             var affected = new List<Actor>();
             foreach (var i in actors)
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i))
-                {
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, i)) {
                     affected.Add(i);
                     if (!SkillHandler.Instance.isBossMob(i))
-                        if (sActor.type == ActorType.PC)
-                        {
+                        if (sActor.type == ActorType.PC) {
                             var pc = (ActorPC)sActor;
-                            if (pc.Skills.ContainsKey(3135) || pc.DualJobSkill.Exists(x => x.ID == 3135)) //剧毒诅咒
+                            if (pc.Skills.ContainsKey(3135) || pc.DualJobSkills.Exists(x => x.ID == 3135)) //剧毒诅咒
                             {
                                 var duallv = 0;
-                                if (pc.DualJobSkill.Exists(x => x.ID == 3135))
-                                    duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3135).Level;
+                                if (pc.DualJobSkills.Exists(x => x.ID == 3135))
+                                    duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3135).Level;
 
                                 var mainlv = 0;
                                 if (pc.Skills.ContainsKey(3135))
@@ -53,18 +47,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
                                 var maxlv = Math.Max(duallv, mainlv);
                                 if (SkillHandler.Instance.CanAdditionApply(sActor, i,
-                                        SkillHandler.DefaultAdditions.Poison, 15 + maxlv * 15))
-                                {
+                                        SkillHandler.DefaultAdditions.Poison, 15 + maxlv * 15)) {
                                     var skill = new Poison(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
 
-                            if (pc.Skills.ContainsKey(3136) || pc.DualJobSkill.Exists(x => x.ID == 3136)) //石化诅咒
+                            if (pc.Skills.ContainsKey(3136) || pc.DualJobSkills.Exists(x => x.ID == 3136)) //石化诅咒
                             {
                                 var duallv = 0;
-                                if (pc.DualJobSkill.Exists(x => x.ID == 3136))
-                                    duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3136).Level;
+                                if (pc.DualJobSkills.Exists(x => x.ID == 3136))
+                                    duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3136).Level;
 
                                 var mainlv = 0;
                                 if (pc.Skills.ContainsKey(3136))
@@ -72,18 +65,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
                                 var maxlv = Math.Max(duallv, mainlv);
                                 if (SkillHandler.Instance.CanAdditionApply(sActor, i,
-                                        SkillHandler.DefaultAdditions.Stone, 15 + maxlv * 15))
-                                {
+                                        SkillHandler.DefaultAdditions.Stone, 15 + maxlv * 15)) {
                                     var skill = new Stone(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
 
-                            if (pc.Skills.ContainsKey(3139) || pc.DualJobSkill.Exists(x => x.ID == 3139)) //沉默诅咒
+                            if (pc.Skills.ContainsKey(3139) || pc.DualJobSkills.Exists(x => x.ID == 3139)) //沉默诅咒
                             {
                                 var duallv = 0;
-                                if (pc.DualJobSkill.Exists(x => x.ID == 3139))
-                                    duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3139).Level;
+                                if (pc.DualJobSkills.Exists(x => x.ID == 3139))
+                                    duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3139).Level;
 
                                 var mainlv = 0;
                                 if (pc.Skills.ContainsKey(3139))
@@ -91,27 +83,23 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
                                 var maxlv = Math.Max(duallv, mainlv);
                                 if (SkillHandler.Instance.CanAdditionApply(sActor, i,
-                                        SkillHandler.DefaultAdditions.Silence, 15 + maxlv * 15))
-                                {
+                                        SkillHandler.DefaultAdditions.Silence, 15 + maxlv * 15)) {
                                     var skill = new Silence(args.skill, i, 2000 + level * 2000);
                                     SkillHandler.ApplyAddition(i, skill);
                                 }
                             }
                         }
 
-                    if (sActor.type == ActorType.PC)
-                    {
+                    if (sActor.type == ActorType.PC) {
                         var pc = (ActorPC)sActor;
-                        if (pc.Skills2_1.ContainsKey(3255) || pc.DualJobSkill.Exists(x => x.ID == 3255))
-                        {
+                        if (pc.Skills2_1.ContainsKey(3255) || pc.DualJobSkills.Exists(x => x.ID == 3255)) {
                             var StrVitAgiDownOne = new DefaultBuff(args.skill, i, "StrVitAgiDownOne", lifetime[level]);
                             StrVitAgiDownOne.OnAdditionStart += StartEventHandler;
                             StrVitAgiDownOne.OnAdditionEnd += EndEventHandler;
                             SkillHandler.ApplyAddition(i, StrVitAgiDownOne);
                         }
 
-                        if (pc.Skills2_1.ContainsKey(3256) || pc.DualJobSkill.Exists(x => x.ID == 3256))
-                        {
+                        if (pc.Skills2_1.ContainsKey(3256) || pc.DualJobSkills.Exists(x => x.ID == 3256)) {
                             var MagIntDexDownOne = new DefaultBuff(args.skill, i, "MagIntDexDownOne", lifetime[level]);
                             MagIntDexDownOne.OnAdditionStart += StartEventHandler2;
                             MagIntDexDownOne.OnAdditionEnd += EndEventHandler2;
@@ -123,11 +111,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.Instance.MagicAttack(sActor, affected, args, Elements.Neutral, factor);
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             int level = skill.skill.Level;
-            if (actor is ActorPC)
-            {
+            if (actor is ActorPC) {
                 //STR
                 var str_add = new[] { 0, 5, 6, 7, 8, 10 }[level];
                 if (skill.Variable.ContainsKey("StrVitAgiDownOne_str"))
@@ -152,8 +138,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor.Buff.AGIDown = true;
                 actor.Buff.VITDown = true;
             }
-            else if (actor is ActorMob)
-            {
+            else if (actor is ActorMob) {
                 var min_atk1_add = (int)(actor.Status.min_atk1 * (0.1f + 0.04f * level));
                 var min_atk2_add = (int)(actor.Status.min_atk2 * (0.1f + 0.04f * level));
                 var min_atk3_add = (int)(actor.Status.min_atk3 * (0.1f + 0.04f * level));
@@ -218,10 +203,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
-            if (actor is ActorPC)
-            {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
+            if (actor is ActorPC) {
                 //STR
                 actor.Status.str_skill += (short)skill.Variable["StrVitAgiDownOne_str"];
 
@@ -234,8 +217,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor.Buff.AGIDown = false;
                 actor.Buff.VITDown = false;
             }
-            else if (actor is ActorMob)
-            {
+            else if (actor is ActorMob) {
                 actor.Status.min_atk1_skill += (short)skill.Variable["StrVitAgiDownOne_minatk1"];
                 actor.Status.min_atk2_skill += (short)skill.Variable["StrVitAgiDownOne_minatk2"];
                 actor.Status.min_atk3_skill += (short)skill.Variable["StrVitAgiDownOne_minatk3"];
@@ -259,11 +241,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         }
 
 
-        private void StartEventHandler2(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler2(Actor actor, DefaultBuff skill) {
             int level = skill.skill.Level;
-            if (actor is ActorPC)
-            {
+            if (actor is ActorPC) {
                 //INT
                 var int_add = new[] { 0, 6, 7, 9, 11, 12 }[level] * -1;
                 if (skill.Variable.ContainsKey("MagIntDexDownOne_int"))
@@ -288,8 +268,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor.Buff.DEXDown = true;
                 actor.Buff.MAGDown = true;
             }
-            else if (actor is ActorMob)
-            {
+            else if (actor is ActorMob) {
                 var max_matk_add = (int)(actor.Status.max_matk * (0.10f + 0.04f * level));
                 var min_matk_add = (int)(actor.Status.min_matk * (0.10f + 0.04f * level));
                 var magic_reduce = (int)((0.10f + 0.04f * level) * 100.0f);
@@ -329,10 +308,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
-        private void EndEventHandler2(Actor actor, DefaultBuff skill)
-        {
-            if (actor is ActorPC)
-            {
+        private void EndEventHandler2(Actor actor, DefaultBuff skill) {
+            if (actor is ActorPC) {
                 //INT
                 actor.Status.int_skill += (short)skill.Variable["MagIntDexDownOne_int"];
 
@@ -345,8 +322,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 actor.Buff.DEXDown = false;
                 actor.Buff.MAGDown = false;
             }
-            else if (actor is ActorMob)
-            {
+            else if (actor is ActorMob) {
                 actor.Status.min_matk_skill += (short)skill.Variable["MagIntDexDownOne_MinMatk"];
                 actor.Status.max_matk_skill += (short)skill.Variable["MagIntDexDownOne_MaxMatk"];
                 actor.Status.MagicRuduceRate += skill.Variable["MagIntDexDownOne_MagicReduce"];

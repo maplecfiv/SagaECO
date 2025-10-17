@@ -5,31 +5,25 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Marionest_木偶师____far
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._2_2_Class.Marionest_木偶师____far {
     /// <summary>
     ///     烈焰暴風（ブレイジングトルネード）
     /// </summary>
-    public class MarioFireWind : ISkill
-    {
+    public class MarioFireWind : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 0.4f + 0.1f * level;
             var map = MapManager.Instance.GetMap(sActor.MapID);
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
 
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                if (pc.Skills2_2.ContainsKey(981) || pc.DualJobSkill.Exists(x => x.ID == 981))
-                {
+                if (pc.Skills2_2.ContainsKey(981) || pc.DualJobSkills.Exists(x => x.ID == 981)) {
                     var EleSelect = map.GetActorsArea(sActor, 400, false);
                     var ok = false;
                     foreach (var act in EleSelect)
@@ -43,8 +37,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         //    }
                         //}
                         //判定玩家活动木偶
-                        if (act.type == ActorType.PC)
-                        {
+                        if (act.type == ActorType.PC) {
                             var apc = (ActorPC)act;
                             if (apc.Marionette != null)
                                 if (apc.Marionette.ID == 10030001) //电路机械
@@ -54,11 +47,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                                 }
                         }
 
-                    if (ok)
-                    {
+                    if (ok) {
                         var duallv = 0;
-                        if (pc.DualJobSkill.Exists(x => x.ID == 981))
-                            duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 981).Level;
+                        if (pc.DualJobSkills.Exists(x => x.ID == 981))
+                            duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 981).Level;
 
                         var mainlv = 0;
                         if (pc.Skills2_2.ContainsKey(981))

@@ -5,22 +5,17 @@ using SagaDB.Item;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Assassin_刺客____sco
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Assassin_刺客____sco {
     /// <summary>
     ///     狂毒氣（狂気毒）
     /// </summary>
-    public class PoisonReate : ISkill
-    {
+    public class PoisonReate : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             uint itemID = 10000353; //刺客的內服藥
-            if (SkillHandler.Instance.CountItem(pc, itemID) > 0)
-            {
-                if (CheckPossible(pc))
-                {
+            if (SkillHandler.Instance.CountItem(pc, itemID) > 0) {
+                if (CheckPossible(pc)) {
                     SkillHandler.Instance.TakeItem(pc, itemID, 1);
                     return 0;
                 }
@@ -31,8 +26,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             return -2;
         }
 
-        private bool CheckPossible(Actor sActor)
-        {
+        private bool CheckPossible(Actor sActor) {
             if (sActor.type == ActorType.PC)
                 return SkillHandler.Instance.isEquipmentRight(sActor, ItemType.CLAW) ||
                        SkillHandler.Instance.CheckDEMRightEquip(sActor, ItemType.PARTS_SLASH);
@@ -40,20 +34,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             return true;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             Actor realdActor = SkillHandler.Instance.GetPossesionedActor((ActorPC)sActor);
-            if (CheckPossible(realdActor))
-            {
+            if (CheckPossible(realdActor)) {
                 var life = 60000;
                 var pc = sActor as ActorPC;
                 var PMlv = 0;
-                if (pc.Skills3.ContainsKey(994) || pc.DualJobSkill.Exists(x => x.ID == 994))
-                {
+                if (pc.Skills3.ContainsKey(994) || pc.DualJobSkills.Exists(x => x.ID == 994)) {
                     //这里取副职的加成技能专精等级
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 994))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 994).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 994))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 994).Level;
 
                     //这里取主职的加成技能等级
                     var mainlv = 0;
@@ -74,17 +65,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             }
         }
 
-        private void ValidCheck(ActorPC pc, Actor dActor, out int result)
-        {
+        private void ValidCheck(ActorPC pc, Actor dActor, out int result) {
             result = TryCast(pc, dActor, null);
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             float spd = 0;
             int level = skill.skill.Level, rate = 0;
-            switch (level)
-            {
+            switch (level) {
                 case 1:
                     spd = 1.25f;
                     rate = 1;
@@ -101,12 +89,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
             var pc = actor as ActorPC;
             var PMlv = 0;
-            if (pc.Skills3.ContainsKey(994) || pc.DualJobSkill.Exists(x => x.ID == 994))
-            {
+            if (pc.Skills3.ContainsKey(994) || pc.DualJobSkills.Exists(x => x.ID == 994)) {
                 //这里取副职的加成技能专精等级
                 var duallv = 0;
-                if (pc.DualJobSkill.Exists(x => x.ID == 994))
-                    duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 994).Level;
+                if (pc.DualJobSkills.Exists(x => x.ID == 994))
+                    duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 994).Level;
 
                 //这里取主职的加成技能等级
                 var mainlv = 0;
@@ -123,8 +110,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             actor.Status.aspd_skill_perc += spd;
             actor.Buff.DelayCancel = true;
             //中毒?
-            if (SkillHandler.Instance.CanAdditionApply(actor, actor, SkillHandler.DefaultAdditions.Poison, rate))
-            {
+            if (SkillHandler.Instance.CanAdditionApply(actor, actor, SkillHandler.DefaultAdditions.Poison, rate)) {
                 var nskill = new Poison(skill.skill, actor, 7000);
                 SkillHandler.ApplyAddition(actor, nskill);
             }
@@ -133,12 +119,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             float spd = 0;
             int level = skill.skill.Level;
-            switch (level)
-            {
+            switch (level) {
                 case 1:
                     spd = 1.25f;
                     break;

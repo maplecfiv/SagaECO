@@ -5,33 +5,27 @@ using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.NewSkill.FR2_2
-{
+namespace SagaMap.Skill.NewSkill.FR2_2 {
     /// <summary>
     ///     暴風之箭（ブラストアロー）
     /// </summary>
-    public class BlastArrow : ISkill
-    {
+    public class BlastArrow : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return SkillHandler.Instance.CheckPcBowAndArrow(sActor);
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             SkillHandler.Instance.PcArrowDown(sActor);
             var factor = 2.3f + 0.5f * level;
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                if (pc.Skills.ContainsKey(2130) || pc.DualJobSkill.Exists(x => x.ID == 2130))
-                {
+                if (pc.Skills.ContainsKey(2130) || pc.DualJobSkills.Exists(x => x.ID == 2130)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 2130))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2130).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 2130))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2130).Level;
 
                     //这里取主职的剑圣等级
                     var mainlv = 0;

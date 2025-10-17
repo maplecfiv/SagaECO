@@ -2,24 +2,20 @@ using SagaDB.Actor;
 using SagaMap.Network.Client;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.
+    ForceMaster_原力导师____wiz {
     /// <summary>
     ///     フォースシールド
     /// </summary>
-    public class ForceShield : ISkill
-    {
+    public class ForceShield : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            if (dActor.type == ActorType.PC && dActor.HP < dActor.MaxHP * 0.4)
-            {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
+            if (dActor.type == ActorType.PC && dActor.HP < dActor.MaxHP * 0.4) {
                 var lifetime = 15000 + 3000 * level;
                 var skill = new DefaultBuff(args.skill, dActor, "ForceShield", lifetime);
                 skill.OnAdditionStart += StartEventHandler;
@@ -28,16 +24,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             short left_def_add = 15;
             short right_def_add = 80;
             short left_mdef_add = 15;
             short right_mdef_add = 80;
             var Me = (ActorPC)actor;
             if (Me.Skills.ContainsKey(3113))
-                switch (Me.Skills[3113].BaseData.lv)
-                {
+                switch (Me.Skills[3113].lv) {
                     case 1:
                         left_def_add += 3;
                         right_def_add += 5;
@@ -61,8 +55,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
 
             if (Me.Skills.ContainsKey(3114))
-                switch (Me.Skills[3114].BaseData.lv)
-                {
+                switch (Me.Skills[3114].lv) {
                     case 1:
                         left_mdef_add += 15;
                         right_mdef_add += 5;
@@ -108,8 +101,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             MapClient.FromActorPC(pc).SendSystemMessage("フォースシールド被触发！");
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             actor.Status.def_skill -= (short)skill.Variable["ForceShield_Left_Def"];
             actor.Status.def_add_skill -= (short)skill.Variable["ForceShield_Right_Def"];
             actor.Status.mdef_skill -= (short)skill.Variable["ForceShield_Left_MDef"];

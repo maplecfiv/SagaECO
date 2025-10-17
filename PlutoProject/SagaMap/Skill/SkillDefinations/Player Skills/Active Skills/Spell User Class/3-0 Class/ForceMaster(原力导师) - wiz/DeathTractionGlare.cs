@@ -5,35 +5,30 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.
+    ForceMaster_原力导师____wiz {
     /// <summary>
     ///     デストラクショングレアー (DeathTractionGlare)
     /// </summary>
-    public class DeathTractionGlare : ISkill
-    {
+    public class DeathTractionGlare : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //初始威力
             var factor = 12.5f + 0.5f * level;
             //前置追加威力
-            if (sActor.type == ActorType.PC)
-            {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
                 //检测是否存在3298
-                if (pc.Skills2_1.ContainsKey(3298) || pc.DualJobSkill.Exists(x => x.ID == 3298))
-                {
+                if (pc.Skills2_1.ContainsKey(3298) || pc.DualJobSkills.Exists(x => x.ID == 3298)) {
                     //这里取副职等级
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 3298))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3298).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 3298))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3298).Level;
 
                     //这里取主职等级
                     var mainlv = 0;
@@ -47,15 +42,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             //获取当前地图
             var map = MapManager.Instance.GetMap(sActor.MapID);
-            if (sActor.type != ActorType.PC)
-            {
+            if (sActor.type != ActorType.PC) {
                 int longth = Map.Distance(sActor, dActor);
-                if (SagaLib.Global.Random.Next(1, 100) < 50)
-                {
+                if (SagaLib.Global.Random.Next(1, 100) < 50) {
                     var actorszero = map.GetActorsArea(sActor, 700, true);
                     foreach (var i in actorszero)
-                        if (Map.Distance(sActor, i) > longth)
-                        {
+                        if (Map.Distance(sActor, i) > longth) {
                             longth = Map.Distance(sActor, i);
                             dActor = i;
                             break;

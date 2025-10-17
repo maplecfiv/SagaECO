@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using SagaDB.Actor;
 using SagaLib;
@@ -7,14 +6,11 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha
-{
-    public class ElementStar : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha {
+    public class ElementStar : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax;
@@ -27,8 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private readonly float[] Windfactor = { 0, 0.5f, 0.5f, 3.5f, 0.5f, 1.8f };
             private int count;
 
-            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -42,22 +37,18 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 dActor = theDActor;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
+                try {
                     float anotherfactor = 0;
-                    if (caster.type == ActorType.PC)
-                    {
+                    if (caster.type == ActorType.PC) {
                         var pc = (ActorPC)caster;
-                        if (pc.Skills2_2.ContainsKey(3319) || pc.DualJobSkill.Exists(x => x.ID == 3319))
-                        {
+                        if (pc.Skills2_2.ContainsKey(3319) || pc.DualJobSkills.Exists(x => x.ID == 3319)) {
                             //这里取副职的剑圣等级
                             var duallv = 0;
-                            if (pc.DualJobSkill.Exists(x => x.ID == 3319))
-                                duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3319).Level;
+                            if (pc.DualJobSkills.Exists(x => x.ID == 3319))
+                                duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3319).Level;
 
                             //这里取主职的剑圣等级
                             var mainlv = 0;
@@ -69,8 +60,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         }
                     }
 
-                    if (count < countMax)
-                    {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(dActor, 300, true);
                         //取得有效Actor（即怪物）
@@ -79,8 +69,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 var FireDamage = SkillHandler.Instance.CalcDamage(false, caster, i, skill,
                                     SkillHandler.DefType.MDef, Elements.Fire, 100,
                                     Firefactor[skill.skill.Level] + anotherfactor);
@@ -106,15 +95,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Logger.GetLogger().Error(ex, ex.Message);
                 }
                 //解开同步锁
@@ -126,16 +113,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             short range = 300;
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.CheckActorSkillInRange(dActor.X, dActor.Y, range)) return -17;
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

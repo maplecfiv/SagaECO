@@ -6,19 +6,15 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha
-{
-    internal class ElementMemory : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha {
+    internal class ElementMemory : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var actor = new ActorSkill(args.skill, dActor); //Register the substituted groove skill-actor.
             var map = MapManager.Instance.GetMap(dActor.MapID);
             actor.MapID = dActor.MapID;
@@ -37,8 +33,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         //#endregion
     }
 
-    internal class ActivatorB : MultiRunTask
-    {
+    internal class ActivatorB : MultiRunTask {
         private readonly Actor AimActor;
         private readonly SkillArg Arg;
         private readonly int attacknumber = 3;
@@ -49,8 +44,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         private int count;
         private SkillArg SkillFireBolt = new SkillArg();
 
-        public ActivatorB(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level)
-        {
+        public ActivatorB(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level) {
             DueTime = 100;
             Period = 200;
             AimActor = dActor;
@@ -67,14 +61,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 factor = 0.1f;
 
 
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
-                if (pc.Skills3.ContainsKey(3409) || pc.DualJobSkill.Exists(x => x.ID == 3409))
-                {
+                if (pc.Skills3.ContainsKey(3409) || pc.DualJobSkills.Exists(x => x.ID == 3409)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 3409))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3409).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 3409))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3409).Level;
 
                     var mainlv = 0;
                     if (pc.Skills3.ContainsKey(3409))
@@ -87,13 +79,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             //测试去除技能同步锁ClientManager.EnterCriticalArea();
             var DistanceA = Map.Distance(SkillBody, AimActor);
             //short[] Diss = new short[] { 400, 500, 600, 700, 800 };
-            if (count <= attacknumber)
-            {
+            if (count <= attacknumber) {
                 if (DistanceA <= 600) //If mob is out the range that FireBolt can cast, skip out.
                 {
                     //if (count == attacknumber)
@@ -153,8 +143,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
                 count++;
             }
-            else
-            {
+            else {
                 map.DeleteActor(SkillBody);
                 Deactivate();
             }

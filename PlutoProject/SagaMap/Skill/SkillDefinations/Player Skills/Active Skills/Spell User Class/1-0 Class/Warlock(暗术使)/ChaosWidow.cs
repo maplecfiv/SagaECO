@@ -3,34 +3,27 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_
-{
-    public class ChaosWidow : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Warlock_暗术使_ {
+    public class ChaosWidow : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             if (SkillHandler.Instance.CheckValidAttackTarget(pc, dActor)) return 0;
 
             return -14;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor = 0;
             float SuckBlood = 0;
             factor = 1.10f + 0.25f * level;
-            if (dActor.Darks == 1)
-            {
+            if (dActor.Darks == 1) {
                 var factor2 = 1.5f + 0.5f * level;
-                if (level == 6)
-                {
+                if (level == 6) {
                     factor2 = 3f;
                     SuckBlood = 0.3f;
                 }
-                else
-                {
+                else {
                     SuckBlood = 0.05f;
                 }
 
@@ -38,11 +31,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 dActor.Darks = 0;
                 var add = new SkillArg();
                 add = args.Clone();
-                add.skill.BaseData.id = 100;
+                add.skill.id = 100;
                 SkillHandler.Instance.MagicAttack(sActor, dActor, add, Elements.Dark, factor2);
                 MapManager.Instance.GetMap(sActor.MapID)
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, add, sActor, true);
-                add.skill.BaseData.id = 3134;
+                add.skill.id = 3134;
             }
 
             var list = new List<Actor>();

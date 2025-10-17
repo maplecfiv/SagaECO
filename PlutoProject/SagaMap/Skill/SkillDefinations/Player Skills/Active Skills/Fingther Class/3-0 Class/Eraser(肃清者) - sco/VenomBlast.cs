@@ -3,27 +3,22 @@ using System.Linq;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Eraser_肃清者____sco
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Eraser_肃清者____sco {
     /// <summary>
     ///     ヴェノムブラスト
     /// </summary>
-    public class VenomBlast : ISkill
-    {
+    public class VenomBlast : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 2.60f + 0.2f * level;
 
 
-            if (sActor is ActorPC)
-            {
+            if (sActor is ActorPC) {
                 var pc = sActor as ActorPC;
                 //if (pc.SkillsReserve.ContainsKey(2142))//毒霧
                 //{
@@ -35,12 +30,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 //}
                 //在所有可能的位置搜索毒雾技能
                 if (pc.SkillsReserve.ContainsKey(2142) || pc.Skills2_1.ContainsKey(2142) ||
-                    pc.DualJobSkill.Exists(x => x.ID == 2142))
-                {
+                    pc.DualJobSkills.Exists(x => x.ID == 2142)) {
                     //这里取副职的毒雾等级
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 2142))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2142).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 2142))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2142).Level;
 
                     //这里取主职的毒雾等级
                     var mainlv = 0;

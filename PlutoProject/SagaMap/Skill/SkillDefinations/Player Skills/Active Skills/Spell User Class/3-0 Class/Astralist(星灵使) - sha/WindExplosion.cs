@@ -5,23 +5,18 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha
-{
-    internal class WindExplosion : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Astralist_星灵使____sha {
+    internal class WindExplosion : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor = 0;
             if (sActor.type != ActorType.PC) level = 5;
-            switch (level)
-            {
+            switch (level) {
                 case 1:
                     factor = 3.0f;
                     break;
@@ -39,14 +34,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     break;
             }
 
-            if (sActor.type == ActorType.PC)
-            {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
-                if (pc.Skills2_1.ContainsKey(3261) || pc.DualJobSkill.Exists(x => x.ID == 3261))
-                {
+                if (pc.Skills2_1.ContainsKey(3261) || pc.DualJobSkills.Exists(x => x.ID == 3261)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 3261))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3261).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 3261))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3261).Level;
 
                     var mainlv = 0;
                     if (pc.Skills2_1.ContainsKey(3261))
@@ -55,11 +48,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     factor += 0.5f * Math.Max(duallv, mainlv);
                 }
 
-                if (pc.Skills2_1.ContainsKey(3264) || pc.DualJobSkill.Exists(x => x.ID == 3264))
-                {
+                if (pc.Skills2_1.ContainsKey(3264) || pc.DualJobSkills.Exists(x => x.ID == 3264)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 3264))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3264).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 3264))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3264).Level;
 
                     var mainlv = 0;
                     if (pc.Skills2_1.ContainsKey(3264))

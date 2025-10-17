@@ -18,14 +18,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
         {
-            uint itemID = 10022308;
-            if (SkillHandler.Instance.CountItem(sActor, itemID) > 0)
+            uint itemId = 10022308;
+            if (SkillHandler.Instance.CountItem(sActor, itemId) <= 0)
             {
-                SkillHandler.Instance.TakeItem(sActor, itemID, 1);
-                return 0;
+                return -12;
             }
 
-            return -12;
+            SkillHandler.Instance.TakeItem(sActor, itemId, 1);
+            return 0;
         }
 
         public override void BeforeProc(Actor sActor, Actor dActor, SkillArg args, byte level)
@@ -67,8 +67,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 var affected = map.GetActorsArea(sActor, 350, false);
                 var realAffected = new List<Actor>();
                 foreach (var act in affected)
+                {
                     if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
+                    {
                         realAffected.Add(act);
+                    }
+                }
 
                 SkillHandler.Instance.PhysicalAttack(sActor, realAffected, args, sActor.WeaponElement, factor);
                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, args, actor, false);

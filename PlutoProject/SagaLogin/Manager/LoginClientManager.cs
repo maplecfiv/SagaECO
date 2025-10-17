@@ -7,7 +7,6 @@ using System.Threading;
 using SagaDB.Actor;
 using SagaLib;
 using SagaLogin.Network.Client;
-using SagaLogin.Packets.Client;
 using SagaLogin.Packets.Client.Chat;
 using SagaLogin.Packets.Client.FriendList;
 using SagaLogin.Packets.Client.Login;

@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using SagaDB;
@@ -44,7 +43,6 @@ using SagaMap.Mob;
 using SagaMap.Network.Client;
 using SagaMap.Network.LoginServer;
 using SagaMap.Partner;
-using SagaLib.Properties;
 using SagaMap.Skill;
 using SagaMap.Tasks.System;
 using AIThread = SagaMap.Mob.AIThread;
@@ -152,13 +150,10 @@ namespace SagaMap
         }
 
         // [DllImport("User32.dll ", EntryPoint = "FindWindow")]
-        private static extern int FindWindow(string lpClassName, string lpWindowName);
 
         // [DllImport("user32.dll ", EntryPoint = "GetSystemMenu")]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, IntPtr bRevert);
 
         // [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
-        private static extern int RemoveMenu(IntPtr hMenu, int nPos, int flags);
 
         private static void Main(string[] args)
         {

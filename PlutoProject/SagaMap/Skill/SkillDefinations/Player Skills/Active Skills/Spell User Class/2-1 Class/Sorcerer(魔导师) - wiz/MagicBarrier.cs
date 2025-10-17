@@ -1,38 +1,31 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Sorcerer_魔导师____wiz {
     /// <summary>
     ///     マジックバリア
     /// </summary>
-    public class MagicBarrier : ISkill
-    {
+    public class MagicBarrier : ISkill {
         private readonly bool MobUse;
 
-        public MagicBarrier()
-        {
+        public MagicBarrier() {
             MobUse = false;
         }
 
-        public MagicBarrier(bool MobUse)
-        {
+        public MagicBarrier(bool MobUse) {
             this.MobUse = MobUse;
         }
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             if (MobUse)
                 level = 5;
 
@@ -41,8 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var affected = map.GetActorsArea(sActor, 250, true);
             foreach (var act in affected)
-                if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
+                if (!SkillHandler.Instance.CheckValidAttackTarget(sActor, act)) {
                     SkillHandler.RemoveAddition(act, "DevineBarrier");
                     var skill = new DefaultBuff(args.skill, act, "MagicBarrier", life);
                     skill.OnAdditionStart += StartEventHandler;
@@ -58,20 +50,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 }
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             int atk1 = 0, atk2 = 0;
             var level3114 = 0;
-            if (actor is ActorPC)
-            {
+            if (actor is ActorPC) {
                 var pc = actor as ActorPC;
 
                 //不管是主职还是副职, 只要习得剑圣技能, 都会导致combo成立, 这里一步就行了
-                if (pc.Skills.ContainsKey(3114) || pc.DualJobSkill.Exists(x => x.ID == 3114))
-                {
+                if (pc.Skills.ContainsKey(3114) || pc.DualJobSkills.Exists(x => x.ID == 3114)) {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 3114))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 3114).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 3114))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 3114).Level;
 
                     //这里取主职的剑圣等级
                     var mainlv = 0;
@@ -81,14 +70,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     //这里取等级最高的剑圣等级用来做居合的倍率加成
                     level3114 += Math.Max(duallv, mainlv);
                 }
-                else
-                {
+                else {
                     level3114 = 1;
                 }
             }
 
-            switch (level3114)
-            {
+            switch (level3114) {
                 case 1:
                     atk1 = 4;
                     atk2 = 5;
@@ -126,8 +113,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             var value = skill.Variable["MDef"];
             actor.Status.mdef_skill -= (short)value;
             value = skill.Variable["MDefAdd"];
@@ -139,10 +125,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        public void RemoveAddition(Actor actor, string additionName)
-        {
-            if (actor.Status.Additions.ContainsKey(additionName))
-            {
+        public void RemoveAddition(Actor actor, string additionName) {
+            if (actor.Status.Additions.ContainsKey(additionName)) {
                 var addition = actor.Status.Additions[additionName];
                 actor.Status.Additions.Remove(additionName);
                 if (addition.Activated) addition.AdditionEnd();

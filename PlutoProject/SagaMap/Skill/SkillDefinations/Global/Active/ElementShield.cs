@@ -5,28 +5,22 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global.Active
-{
-    public class ElementShield : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Global.Active {
+    public class ElementShield : ISkill {
         public Elements element;
         public bool monsteruse;
 
-        public ElementShield(Elements e, bool ismonster = false)
-        {
+        public ElementShield(Elements e, bool ismonster = false) {
             element = e;
             monsteruse = ismonster;
         }
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            if (monsteruse)
-            {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
+            if (monsteruse) {
                 level = 5;
                 dActor = sActor;
             }
@@ -56,18 +50,16 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             var atk1 = skill.skill.Level * 5;
-            if (actor.type == ActorType.PC)
-            {
+            if (actor.type == ActorType.PC) {
                 var pc = (ActorPC)actor;
-                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkill.Exists(x => x.ID == 934)) &&
+                if ((pc.Skills2_1.ContainsKey(934) || pc.DualJobSkills.Exists(x => x.ID == 934)) &&
                     element == Elements.Holy) //GU2-1光明之魂
                 {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 934))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 934).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 934))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 934).Level;
 
 
                     var mainlv = 0;
@@ -76,12 +68,12 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
 
                     atk1 += 5 * (Math.Max(duallv, mainlv) - 1);
                 }
-                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkill.Exists(x => x.ID == 935)) &&
+                else if ((pc.Skills2_2.ContainsKey(935) || pc.DualJobSkills.Exists(x => x.ID == 935)) &&
                          element == Elements.Dark) //GU2-2黑暗之魂
                 {
                     var duallv = 0;
-                    if (pc.DualJobSkill.Exists(x => x.ID == 935))
-                        duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 935).Level;
+                    if (pc.DualJobSkills.Exists(x => x.ID == 935))
+                        duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 935).Level;
 
 
                     var mainlv = 0;
@@ -104,8 +96,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             var value = skill.Variable["ElementShield"];
             actor.Status.elements_skill[element] -= (short)value;
             if (actor.Status.Additions.ContainsKey("Amplement"))

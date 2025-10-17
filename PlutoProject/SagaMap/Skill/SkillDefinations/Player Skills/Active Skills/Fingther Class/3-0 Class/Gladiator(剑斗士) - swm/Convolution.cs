@@ -5,22 +5,18 @@ using SagaDB.Actor;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm {
     /// <summary>
     ///     大车轮 (大車輪)
     /// </summary>
-    public class Convolution : ISkill
-    {
+    public class Convolution : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             if (sActor.type != ActorType.PC) level = 5;
             var factor = 1.3f + 0.5f * level;
             var pc = (ActorPC)sActor;
@@ -34,8 +30,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             //}
             //这里取副职的旋风剑等级
             var duallv = 0;
-            if (pc.DualJobSkill.Exists(x => x.ID == 2116))
-                duallv = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2116).Level;
+            if (pc.DualJobSkills.Exists(x => x.ID == 2116))
+                duallv = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2116).Level;
 
             //这里取主职的旋风剑等级
             var mainlv = 0;
@@ -62,8 +58,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             //}
             //这里取副职的重力波等级
             var duallv2 = 0;
-            if (pc.DualJobSkill.Exists(x => x.ID == 2354))
-                duallv2 = pc.DualJobSkill.FirstOrDefault(x => x.ID == 2354).Level;
+            if (pc.DualJobSkills.Exists(x => x.ID == 2354))
+                duallv2 = pc.DualJobSkills.FirstOrDefault(x => x.ID == 2354).Level;
 
             //这里取主职的重力波等级
             var mainlv2 = 0;
@@ -84,13 +80,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             var affected = map.GetActorsArea(sActor, 200, false);
             var realAffected = new List<Actor>();
             foreach (var act in affected)
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act)) {
                     realAffected.Add(act);
                     SkillHandler.Instance.PushBack(sActor, act, 3);
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.鈍足,
-                            MoveSlowDownRate))
-                    {
+                            MoveSlowDownRate)) {
                         //这里并不知道顿足的持续时间, 先暂时设定为本技能1级时持续1秒, 每级增加0.25秒 满级顿足 2.25秒
                         var skill = new 鈍足(args.skill, act, 750 + 250 * level);
                         SkillHandler.ApplyAddition(act, skill);

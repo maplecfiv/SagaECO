@@ -4,19 +4,16 @@ using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Mob;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
-{
-    internal class ChainLightning : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.
+    Elementaler_元素使____sha {
+    internal class ChainLightning : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actor = new ActorSkill(args.skill, sActor);
             actor.MapID = sActor.MapID;
@@ -25,8 +22,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var ai = new MobAI(actor, true);
             var path = ai.FindPath(SagaLib.Global.PosX16to8(sActor.X, map.Width),
                 SagaLib.Global.PosY16to8(sActor.Y, map.Height), args.x, args.y);
-            if (path.Count >= 2)
-            {
+            if (path.Count >= 2) {
                 //根据现有路径推算一步
                 var deltaX = path[path.Count - 1].x - path[path.Count - 2].x;
                 var deltaY = path[path.Count - 1].y - path[path.Count - 2].y;
@@ -38,8 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 path.Add(node);
             }
 
-            if (path.Count == 1)
-            {
+            if (path.Count == 1) {
                 //根据现有路径推算一步
                 var deltaX = path[path.Count - 1].x - SagaLib.Global.PosX16to8(sActor.X, map.Width);
                 var deltaY = path[path.Count - 1].y - SagaLib.Global.PosY16to8(sActor.Y, map.Height);
@@ -55,8 +50,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var affected = new List<Actor>();
             List<Actor> list;
             var count = -1;
-            while (path.Count > count + 1)
-            {
+            while (path.Count > count + 1) {
                 pos2[0] = SagaLib.Global.PosX8to16(path[count + 1].x, map.Width);
                 pos2[1] = SagaLib.Global.PosY8to16(path[count + 1].y, map.Height);
                 //取得当前格子内的Actor
@@ -78,12 +72,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             Skill_Shaman.Add(3020);
             Skill_Shaman.Add(3017);
             var TotalLv = 0;
-            foreach (uint j in Skill_Shaman)
-            {
+            foreach (uint j in Skill_Shaman) {
                 if (Me.Skills.ContainsKey(j))
-                    TotalLv = TotalLv + Me.Skills[j].BaseData.lv;
+                    TotalLv = TotalLv + Me.Skills[j].lv;
                 if (Me.Skills2.ContainsKey(j))
-                    TotalLv = TotalLv + Me.Skills2[j].BaseData.lv;
+                    TotalLv = TotalLv + Me.Skills2[j].lv;
             }
 
             var factor = 1f;
