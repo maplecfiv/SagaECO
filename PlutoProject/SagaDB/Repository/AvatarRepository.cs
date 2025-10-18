@@ -26,7 +26,7 @@ public class AvatarRepository {
                 case 1:
                     var avatar = avatars[0];
                     avatar.Valuess = values;
-                    SqlSugarHelper.Db.Updateable<Avatar>().ExecuteCommand();
+                    SqlSugarHelper.Db.Updateable<Avatar>(avatar).ExecuteCommand();
                     break;
                 default:
                     throw new Exception($"more than avatars for {accountId} found!");

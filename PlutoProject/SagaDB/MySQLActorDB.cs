@@ -423,51 +423,8 @@ namespace SagaDB {
                 y = aChar.SaveY;
             }
 
-            var online = aChar.Online;
-            aChar.Online = false;
-            sqlstr = string.Format(
-                "UPDATE `char` SET `name`='{0}',`race`='{1}',`gender`='{2}',`hairStyle`='{3}',`hairColor`='{4}',`wig`='{5}'," +
-                "`face`='{6}',`job`='{7}',`mapID`='{8}',`lv`='{9}',`jlv1`='{10}',`jlv2x`='{11}',`jlv2t`='{12}',`questRemaining`='{13}',`slot`='{14}'" +
-                ",`x`='{16}',`y`='{17}',`dir`='{18}',`hp`='{19}',`max_hp`='{20}',`mp`='{21}'," +
-                "`max_mp`='{22}',`sp`='{23}',`max_sp`='{24}',`str`='{25}',`dex`='{26}',`intel`='{27}',`vit`='{28}',`agi`='{29}',`mag`='{30}'," +
-                "`statspoint`='{31}',`skillpoint`='{32}',`skillpoint2x`='{33}',`skillpoint2t`='{34}',`skillpoint3`='{35}',`gold`='{36}',`cexp`='{37}',`jexp`='{38}'," +
-                "`save_map`='{39}',`save_x`='{40}',`save_y`='{41}',`possession_target`='{42}',`questid`='{43}',`questendtime`='{44}'" +
-                ",`queststatus`='{45}',`questcurrentcount1`='{46}',`questcurrentcount2`='{47}',`questcurrentcount3`='{48}'" +
-                ",`questresettime`='{49}',`fame`='{50}',`party`='{51}',`ring`='{52}',`golem`='{53}'" +
-                ",`cp`='{54}',`ecoin`='{55}'" +
-                ",`jointjlv`='{56}',`jjexp`='{57}',`wrp`='{58}'" +
-                ",`ep`='{59}',`eplogindate`='{60}',`epgreetingdate`='{61}',`cl`='{62}'" +
-                ",`epused`='{63}',`tailStyle`='{64}',`wingStyle`='{65}',`wingColor`='{66}',`lv1`='{67}',`jlv3`='{68}',`explorerEXP`='{69}',`usingpaper_id` = '{70}'" +
-                " ,`title_id` = '{71}' ,`abyssfloor`='{72}',`DualJobId`='{73}', exstatpoint='{74}',exskillpoint='{75}' " +
-                " WHERE char_id='{15}' LIMIT 1",
-                CheckSQLString(aChar.Name), (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor,
-                aChar.Wig,
-                aChar.Face, (byte)aChar.Job, mapid, aChar.Level, aChar.JobLevel1, aChar.JobLevel2X,
-                aChar.JobLevel2T,
-                aChar.QuestRemaining, aChar.Slot, aChar.CharID, x, y, (byte)(aChar.Dir / 45), aChar.HP, aChar.MaxHP,
-                aChar.MP,
-                aChar.MaxMP, aChar.SP, aChar.MaxSP, aChar.Str, aChar.Dex, aChar.Int, aChar.Vit, aChar.Agi,
-                aChar.Mag, aChar.StatsPoint,
-                aChar.SkillPoint, aChar.SkillPoint2X, aChar.SkillPoint2T, aChar.SkillPoint3, aChar.Gold, aChar.CEXP,
-                aChar.JEXP, aChar.SaveMap, aChar.SaveX, aChar.SaveY,
-                aChar.PossessionTarget, questid, ToSQLDateTime(questtime), (byte)status, count1, count2, count3,
-                ToSQLDateTime(aChar.QuestNextResetTime),
-                aChar.Fame, partyid, ringid, golemid,
-                aChar.CP, aChar.ECoin, aChar.JointJobLevel,
-                aChar.JointJEXP, aChar.WRP, aChar.EP, ToSQLDateTime(aChar.EPLoginTime),
-                ToSQLDateTime(aChar.EPGreetingTime),
-                aChar.CL, aChar.EPUsed, aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
-                aChar.Level1, aChar.JobLevel3, aChar.ExplorerEXP, aChar.UsingPaperID.ToString(),
-                aChar.PlayerTitleID.ToString(), aChar.AbyssFloor, aChar.DualJobID, aChar.EXStatPoint,
-                aChar.EXSkillPoint);
-            aChar.Online = online;
-
-            try {
-                SQLExecuteNonQuery(sqlstr);
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
+            CharacterRepository.SaveCharacter(aChar, mapid, x, y, questid, questtime, (byte)status,
+                count1, count2, count3, partyid, ringid, golemid);
 
             SaveVar(aChar);
 
