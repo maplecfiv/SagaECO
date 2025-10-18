@@ -8,6 +8,7 @@ using ICSharpCode.SharpZipLib.BZip2;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
 using SagaDB.BBS;
+using SagaDB.Entities;
 using SagaDB.FlyingGarden;
 using SagaDB.Item;
 using SagaDB.Map;
@@ -1814,80 +1815,96 @@ namespace SagaDB {
         }
 
         public void SavePaper(ActorPC pc) {
-            if (pc.AnotherPapers != null)
-                try {
-                    var sqlstr = string.Format("DELETE FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID);
-                    foreach (var i in pc.AnotherPapers)
-                        sqlstr += string.Format(
-                            "INSERT INTO `another_paper`(`char_id`,`paper_id`,`paper_lv`,`paper_value`)" +
-                            "VALUES ('{0}','{1}','{2}','{3}');", pc.CharID, i.Key, i.Value.lv, i.Value.value.Value);
-                    SQLExecuteNonQuery(sqlstr);
+            if (pc.AnotherPapers == null) {
+                return;
+            }
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                SqlSugarHelper.Db.Deleteable<AnotherPaper>().Where(item => item.CharId == pc.CharID).ExecuteCommand();
+                foreach (var i in pc.AnotherPapers) {
+                    AnotherPaper anotherPaper = new AnotherPaper();
+                    anotherPaper.CharId = pc.CharID;
+                    anotherPaper.PaperId = i.Key;
+                    anotherPaper.PaperLv = i.Value.lv;
+                    anotherPaper.PaperValue = i.Value.value.Value;
+                    SqlSugarHelper.Db.Insertable<AnotherPaper>(anotherPaper).ExecuteCommand();
                 }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            }
         }
 
         public void SaveFlyCastle(Ring.Ring ring) {
-            if (ring != null) {
-                if (ring.FlyingCastle == null) return;
-                //uint account = GetAccountID(pc);
-                string sqlstr;
-                if (ring.FlyingCastle.ID > 0) {
-                    sqlstr = string.Format(
-                        "UPDATE `ff` SET `level`='{0}',`content`='{1}',`name`='{2}' WHERE `ff_id`='{3}';",
-                        ring.FlyingCastle.Level, ring.FlyingCastle.Content, ring.Name, ring.FlyingCastle.ID);
-                    SQLExecuteNonQuery(sqlstr);
-                }
+            if (ring == null) {
+                return;
+            }
 
-                sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
-                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN))
-                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.GARDEN])
-                        sqlstr += string.Format(
-                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                            i.Motion,
-                            i.Name);
+            if (ring.FlyingCastle == null) {
+                return;
+            }
 
-                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
-                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.ROOM])
-                        sqlstr += string.Format(
-                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                            i.Motion,
-                            i.Name);
-
-                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FARM))
-                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FARM])
-                        sqlstr += string.Format(
-                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                            i.Motion,
-                            i.Name);
-
-                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FISHERY))
-                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FISHERY])
-                        sqlstr += string.Format(
-                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                            i.Motion,
-                            i.Name);
-
-                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.HOUSE))
-                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.HOUSE])
-                        sqlstr += string.Format(
-                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                            i.Motion,
-                            i.Name);
-
+            //uint account = GetAccountID(pc);
+            string sqlstr;
+            if (ring.FlyingCastle.ID > 0) {
+                sqlstr = string.Format(
+                    "UPDATE `ff` SET `level`='{0}',`content`='{1}',`name`='{2}' WHERE `ff_id`='{3}';",
+                    ring.FlyingCastle.Level, ring.FlyingCastle.Content, ring.Name, ring.FlyingCastle.ID);
                 SQLExecuteNonQuery(sqlstr);
             }
+
+            sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
+            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN))
+                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.GARDEN])
+                    sqlstr += string.Format(
+                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                        i.Motion,
+                        i.Name);
+
+            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
+                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.ROOM])
+                    sqlstr += string.Format(
+                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                        i.Motion,
+                        i.Name);
+
+            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FARM))
+                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FARM])
+                    sqlstr += string.Format(
+                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                        i.Motion,
+                        i.Name);
+
+            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FISHERY))
+                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FISHERY])
+                    sqlstr += string.Format(
+                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                        i.Motion,
+                        i.Name);
+
+            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.HOUSE))
+                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.HOUSE])
+                    sqlstr += string.Format(
+                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                        i.Motion,
+                        i.Name);
+
+            SQLExecuteNonQuery(sqlstr);
         }
 
         public void SaveSerFF(Server.Server ser) {
@@ -2602,22 +2619,20 @@ namespace SagaDB {
         }
 
         public void GetPaper(ActorPC pc) {
-            var result =
-                SQLExecuteQuery(string.Format("SELECT * FROM `another_paper` WHERE `char_id`='{0}';", pc.CharID));
-            foreach (DataRow i in result) {
-                var paperid = (uint)i["paper_id"];
-                var detail = new AnotherDetail();
-                detail.value = new BitMask_Long();
-                detail.value.Value = (ulong)i["paper_value"];
-                detail.lv = (byte)i["paper_lv"];
-                if (pc.AnotherPapers.ContainsKey(paperid)) {
+            foreach (var anotherPaper in SqlSugarHelper.Db.Queryable<AnotherPaper>()
+                         .Where(item => item.CharId == pc.CharID).ToList()) {
+                if (pc.AnotherPapers.ContainsKey(anotherPaper.PaperId)) {
                     continue;
                 }
 
-                pc.AnotherPapers.Add(paperid, detail);
+                var detail = new AnotherDetail();
+                detail.value = new BitMask_Long();
+                detail.value.Value = anotherPaper.PaperValue;
+                detail.lv = anotherPaper.PaperLv;
+
+                pc.AnotherPapers.Add(anotherPaper.PaperId, detail);
             }
         }
-
 
         private void SaveFGarden(ActorPC pc) {
             if (pc.FlyingGarden == null) {
