@@ -3,22 +3,18 @@ using SagaDB.Actor;
 using SagaDB.Skill;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock {
     /// <summary>
     ///     蝙蝠變身（トランスフォーム）
     /// </summary>
-    public class ChgTrance : ISkill
-    {
+    public class ChgTrance : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var lifetime = 300000;
             var skill = new DefaultBuff(args.skill, dActor, "ChgTrance", lifetime);
             skill.OnAdditionStart += StartEventHandler;
@@ -26,11 +22,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.ApplyAddition(dActor, skill);
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             var pc = (ActorPC)actor;
-            switch (skill.skill.Level)
-            {
+            switch (skill.skill.Level) {
                 case 1:
                     AddSkill(pc, 952, 1); //吸血
                     AddSkill(pc, 3282, 1); //隱身
@@ -50,11 +44,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             var pc = (ActorPC)actor;
-            switch (skill.skill.Level)
-            {
+            switch (skill.skill.Level) {
                 case 1:
                     DelSkill(pc, 952); //吸血
                     DelSkill(pc, 3282); //隱身
@@ -73,18 +65,16 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillHandler.Instance.TranceMob(pc, 0);
         }
 
-        private void AddSkill(ActorPC actor, uint SkillID, byte lv)
-        {
+        private void AddSkill(ActorPC actor, uint SkillID, byte lv) {
             var s = SkillFactory.Instance.GetSkill(SkillID, lv);
             s.NoSave = true;
             actor.Skills.Add(s.ID, s);
         }
 
-        private void DelSkill(ActorPC actor, uint SkillID)
-        {
-            var s = (from SagaDB.Skill.Skill x in actor.Skills
-                     where x.ID == SkillID
-                     select x).First();
+        private void DelSkill(ActorPC actor, uint SkillID) {
+            var s = (from SagaDB.Skill.Skill x in actor.Skills.Values
+                where x.ID == SkillID
+                select x).First();
             actor.Skills.Remove(s.ID);
         }
 

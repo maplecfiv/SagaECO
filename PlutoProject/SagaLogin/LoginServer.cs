@@ -11,10 +11,8 @@ using SagaLib.Properties;
 using SagaLib.VirtualFileSytem;
 using SagaLogin.Manager;
 
-namespace SagaLogin
-{
-    public class LoginServer
-    {
+namespace SagaLogin {
+    public class LoginServer {
         private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<LoginServer>();
 
         /// <summary>
@@ -24,86 +22,53 @@ namespace SagaLogin
 
         public static AccountDB accountDB;
 
-        public static bool StartDatabase()
-        {
-            try
-            {
-                switch (Configuration.Configuration.Instance.DBType)
-                {
+        public static bool StartDatabase() {
+            try {
+                switch (Configuration.Configuration.Instance.DBType) {
                     case 0:
-                        charDB = new MySQLActorDB(Configuration.Configuration.Instance.DBHost,
-                            Configuration.Configuration.Instance.DBPort,
-                            Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
-                            Configuration.Configuration.Instance.DBPass);
+                        charDB = new MySqlActorDb();
                         accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
                             Configuration.Configuration.Instance.DBPort,
                             Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
                             Configuration.Configuration.Instance.DBPass);
-                        charDB.Connect();
+                        // charDB.Connect();
                         accountDB.Connect();
                         return true;
                     default:
                         return false;
                 }
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
 
-        public static void EnsureCharDB()
-        {
+        public static void EnsureCharDB() {
             var notConnected = false;
 
-            if (!charDB.isConnected())
-            {
-                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
-                notConnected = true;
-            }
-
-            while (notConnected)
-            {
+            while (notConnected) {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
-                charDB.Connect();
-                if (!charDB.isConnected())
-                {
-                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
-                    Thread.Sleep(10000);
-                    notConnected = true;
-                }
-                else
-                {
-                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.GetLogger().Information("Clients can now connect again", null);
-                    notConnected = false;
-                }
             }
         }
 
-        public static void EnsureAccountDB()
-        {
+        public static void EnsureAccountDB() {
             var notConnected = false;
 
-            if (!accountDB.isConnected())
-            {
+            if (!accountDB.isConnected()) {
                 Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
-            while (notConnected)
-            {
+            while (notConnected) {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
-                if (!accountDB.isConnected())
-                {
+                if (!accountDB.isConnected()) {
                     Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
-                else
-                {
+                else {
                     Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
                     Logger.GetLogger().Information("Clients can now connect again", null);
                     notConnected = false;
@@ -117,8 +82,7 @@ namespace SagaLogin
 
         // [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
 
-        private static void Main(string[] args)
-        {
+        private static void Main(string[] args) {
             // var WINDOW_HANDLER = FindWindow(null, fullPath);
             // var CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
             // var SC_CLOSE = 0xF060;
@@ -172,8 +136,7 @@ namespace SagaLogin
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
 
-            if (!StartDatabase())
-            {
+            if (!StartDatabase()) {
                 Logger.GetLogger().Error("cannot connect to dbserver", null);
                 Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 Thread.Sleep(20000);
@@ -181,8 +144,7 @@ namespace SagaLogin
             }
 
             LoginClientManager.Instance.Start();
-            if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port))
-            {
+            if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
                 Logger.GetLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
                 Logger.GetLogger().Information("Shutting down in 20sec.");
                 Thread.Sleep(20000);
@@ -194,8 +156,7 @@ namespace SagaLogin
 
             _logger.Debug("Accepting clients.");
 
-            while (true)
-            {
+            while (true) {
                 // keep the connections to the database servers alive
                 EnsureCharDB();
                 EnsureAccountDB();
@@ -209,13 +170,11 @@ namespace SagaLogin
             }
         }
 
-        private static void ShutingDown(object sender, ConsoleCancelEventArgs args)
-        {
+        private static void ShutingDown(object sender, ConsoleCancelEventArgs args) {
             Logger.GetLogger().Information("Closing.....", null);
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
             var ex = e.ExceptionObject as Exception;
             Logger.GetLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
             Logger.GetLogger().Error("Error Message:" + ex.Message);

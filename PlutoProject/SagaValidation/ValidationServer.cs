@@ -4,10 +4,8 @@ using SagaDB;
 using SagaValidation.Manager;
 using SagaLib.Properties;
 
-namespace SagaValidation
-{
-    public class ValidationServer
-    {
+namespace SagaValidation {
+    public class ValidationServer {
         /// <summary>
         /// The characterdatabase associated to this mapserver.
         /// </summary>
@@ -15,35 +13,27 @@ namespace SagaValidation
 
         public static AccountDB accountDB;
 
-        public static bool StartDatabase()
-        {
-            try
-            {
-                switch (Configuration.Instance.DBType)
-                {
+        public static bool StartDatabase() {
+            try {
+                switch (Configuration.Instance.DBType) {
                     case 0:
-                        charDB = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
-                            Configuration.Instance.DBPass);
+                        charDB = new MySqlActorDb();
                         accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
                             Configuration.Instance.DBName, Configuration.Instance.DBUser,
                             Configuration.Instance.DBPass);
-                        charDB.Connect();
                         accountDB.Connect();
                         return true;
                     default:
                         return false;
                 }
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 Logger.GetLogger().Error(exception, null);
                 return false;
             }
         }
 
-        static void Main(string[] args)
-        {
+        static void Main(string[] args) {
             //Console.ForegroundColor = ConsoleColor.Yellow;
             Logger.GetLogger().Information("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
@@ -73,8 +63,7 @@ namespace SagaValidation
             Configuration.Instance.Initialization("./Config/SagaValidation.xml");
             Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
-            if (!StartDatabase())
-            {
+            if (!StartDatabase()) {
                 Logger.GetLogger().Error("cannot connect to dbserver", null);
                 Logger.GetLogger().Error("Shutting down in 20sec.", null);
                 System.Threading.Thread.Sleep(20000);
@@ -82,8 +71,7 @@ namespace SagaValidation
             }
 
             ValidationClientManager.Instance.Start();
-            if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port))
-            {
+            if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port)) {
                 Logger.GetLogger().Error("cannot listen on port: " + Configuration.Instance.Port);
                 Logger.GetLogger().Information("Shutting down in 20sec.");
                 System.Threading.Thread.Sleep(20000);
@@ -97,8 +85,7 @@ namespace SagaValidation
 
             Logger.GetLogger().Information("Accepting clients.");
 
-            while (true)
-            {
+            while (true) {
                 // keep the connections to the database servers alive
                 EnsureAccountDB();
                 // let new clients (max 10) connect
@@ -108,26 +95,21 @@ namespace SagaValidation
             }
         }
 
-        public static void EnsureAccountDB()
-        {
+        public static void EnsureAccountDB() {
             bool connected = false;
 
-            if (!accountDB.isConnected())
-            {
+            if (!accountDB.isConnected()) {
                 Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 connected = false;
             }
-            else
-            {
+            else {
                 connected = true;
             }
 
-            while (!connected)
-            {
+            while (!connected) {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
-                if (!accountDB.isConnected())
-                {
+                if (!accountDB.isConnected()) {
                     Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
                     System.Threading.Thread.Sleep(10000);
                     connected = false;

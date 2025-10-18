@@ -58,7 +58,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     石像拥有者
         /// </summary>
-        public ActorPC Owner { get; set; }
+        public new ActorPC Owner { get; set; }
 
         /// <summary>
         ///     石像类型

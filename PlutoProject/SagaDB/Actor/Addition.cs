@@ -77,7 +77,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Name of this Addition
         /// </summary>
-        public string Name { get; set; }
+        public new string Name { get; set; }
 
         /// <summary>
         ///     Returns the activation interval
@@ -95,7 +95,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Returns if this addition is activated
         /// </summary>
-        public bool Activated { get; set; }
+        public new bool Activated { get; set; }
 
 
         /// <summary>

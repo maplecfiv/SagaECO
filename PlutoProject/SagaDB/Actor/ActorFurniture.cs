@@ -18,7 +18,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     图像ID，用于确定怪物雕像的怪物ID
         /// </summary>
-        public uint PictID { get; set; }
+        public new uint PictID { get; set; }
 
         /// <summary>
         ///     Z坐标

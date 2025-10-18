@@ -22,122 +22,9 @@ using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
 using Logger = Serilog.Core.Logger;
 
 namespace SagaDB {
-    public class MySQLActorDB : MySQLConnectivity, ActorDB {
-        private static readonly Logger _logger = SagaLib.Logger.InitLogger<MySQLActorDB>();
-        private readonly string database;
-        private readonly string dbpass;
-        private readonly string dbuser;
-        private readonly string host;
-        private readonly string port;
-        private Encoding encoder = Encoding.UTF8;
-        private bool isconnected;
-        private DateTime tick = DateTime.Now;
+    public class MySqlActorDb : MySQLConnectivity, ActorDB {
+        private static readonly Logger _logger = SagaLib.Logger.InitLogger<MySqlActorDb>();
 
-
-        public MySQLActorDB(string host, int port, string database, string user, string pass) {
-            this.host = host;
-            this.port = port.ToString();
-            dbuser = user;
-            dbpass = pass;
-            this.database = database;
-            isconnected = false;
-            try {
-                db = new MySqlConnection(string.Format("Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;",
-                    database, host, port, user, pass));
-                dbinactive = new MySqlConnection(string.Format(
-                    "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port, user,
-                    pass));
-                db.Open();
-            }
-            catch (MySqlException ex) {
-                SagaLib.Logger.ShowSQL(ex, null);
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            if (db == null) {
-                _logger.Warning("db is null");
-                return;
-            }
-
-            if (db.State != ConnectionState.Closed) {
-                isconnected = true;
-            }
-            else {
-                _logger.Debug("SQL Connection error");
-            }
-        }
-
-        public bool Connect() {
-            if (isconnected) {
-                return true;
-            }
-
-            if (db.State == ConnectionState.Open) {
-                isconnected = true;
-                return true;
-            }
-
-            try {
-                db.Open();
-            }
-            catch (Exception exception) {
-                SagaLib.Logger.GetLogger().Error(exception, null);
-            }
-
-            return db != null && (db.State != ConnectionState.Closed);
-        }
-
-        public bool isConnected() {
-            if (!isconnected) {
-                return false;
-            }
-
-            var newtime = DateTime.Now - tick;
-            if (newtime.TotalMinutes > 5) {
-                SagaLib.Logger.ShowSQL("ActorDB:Pinging SQL Server to keep the connection alive", null);
-                /* we actually disconnect from the mysql server, because if we keep the connection too long
-                 * and the user resource of this mysql connection is full, mysql will begin to ignore our
-                 * queries -_-
-                 */
-                var criticalarea = ClientManager.Blocked;
-                if (criticalarea) {
-                    ClientManager.LeaveCriticalArea();
-                }
-
-                DatabaseWaitress.EnterCriticalArea();
-                MySqlConnection tmp = dbinactive;
-                if (tmp.State == ConnectionState.Open) {
-                    tmp.Close();
-                }
-
-                try {
-                    tmp.Open();
-                }
-                catch (Exception exception) {
-                    SagaLib.Logger.GetLogger().Error(exception, null);
-                    tmp = new MySqlConnection(string.Format(
-                        "Server={1};Port={2};Uid={3};Pwd={4};Database={0};Charset=utf8;", database, host, port,
-                        dbuser, dbpass));
-                    tmp.Open();
-                }
-
-                dbinactive = db;
-                db = tmp;
-                tick = DateTime.Now;
-                DatabaseWaitress.LeaveCriticalArea();
-                if (criticalarea) {
-                    ClientManager.EnterCriticalArea();
-                }
-            }
-
-            if (db.State == ConnectionState.Broken || db.State == ConnectionState.Closed) {
-                isconnected = false;
-            }
-
-            return isconnected;
-        }
 
         public void AJIClear() {
             try {
@@ -153,11 +40,6 @@ namespace SagaDB {
             uint charID = 0;
             if (aChar == null) {
                 SagaLib.Logger.GetLogger().Error("aChar is null");
-                return;
-            }
-
-            if (!isConnected()) {
-                SagaLib.Logger.GetLogger().Error("db not connected");
                 return;
             }
 
@@ -231,10 +113,6 @@ namespace SagaDB {
             ap.SP = ap.BaseData.sp_in;
             ap.MaxSP = ap.BaseData.sp_in;
             ap.ai_mode = 1;
-            //tbc
-            if (!isConnected()) {
-                return 0;
-            }
 
             var name = CheckSQLString(ap.BaseData.name);
             try {
@@ -322,39 +200,41 @@ namespace SagaDB {
 
         public void SavePartnerCube(ActorPartner ap) {
             string sqlstr;
-            if (ap != null) {
-                var apid = ap.ActorPartnerID;
-                sqlstr = string.Format("DELETE FROM `partnercube` WHERE `apid`='{0}';", apid);
-                if (ap.equipcubes_condition.Count > 0)
-                    for (var i = 0; i < ap.equipcubes_condition.Count; i++)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','1','{1}');",
-                            apid, ap.equipcubes_condition[i]);
+            if (ap == null) {
+                return;
+            }
 
-                if (ap.equipcubes_action.Count > 0)
-                    for (var i = 0; i < ap.equipcubes_action.Count; i++)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','2','{1}');",
-                            apid, ap.equipcubes_action[i]);
+            var apid = ap.ActorPartnerID;
+            sqlstr = string.Format("DELETE FROM `partnercube` WHERE `apid`='{0}';", apid);
+            if (ap.equipcubes_condition.Count > 0)
+                for (var i = 0; i < ap.equipcubes_condition.Count; i++)
+                    sqlstr += string.Format(
+                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','1','{1}');",
+                        apid, ap.equipcubes_condition[i]);
 
-                if (ap.equipcubes_activeskill.Count > 0)
-                    for (var i = 0; i < ap.equipcubes_activeskill.Count; i++)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','3','{1}');",
-                            apid, ap.equipcubes_activeskill[i]);
+            if (ap.equipcubes_action.Count > 0)
+                for (var i = 0; i < ap.equipcubes_action.Count; i++)
+                    sqlstr += string.Format(
+                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','2','{1}');",
+                        apid, ap.equipcubes_action[i]);
 
-                if (ap.equipcubes_passiveskill.Count > 0)
-                    for (var i = 0; i < ap.equipcubes_passiveskill.Count; i++)
-                        sqlstr += string.Format(
-                            "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','4','{1}');",
-                            apid, ap.equipcubes_passiveskill[i]);
+            if (ap.equipcubes_activeskill.Count > 0)
+                for (var i = 0; i < ap.equipcubes_activeskill.Count; i++)
+                    sqlstr += string.Format(
+                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','3','{1}');",
+                        apid, ap.equipcubes_activeskill[i]);
 
-                try {
-                    SQLExecuteNonQuery(sqlstr);
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                }
+            if (ap.equipcubes_passiveskill.Count > 0)
+                for (var i = 0; i < ap.equipcubes_passiveskill.Count; i++)
+                    sqlstr += string.Format(
+                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','4','{1}');",
+                        apid, ap.equipcubes_passiveskill[i]);
+
+            try {
+                SQLExecuteNonQuery(sqlstr);
+            }
+            catch (Exception ex) {
+                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
@@ -1125,14 +1005,34 @@ namespace SagaDB {
 
             ms.Flush();
 
-            cmd = new MySqlCommand(string.Format("REPLACE INTO `avar`(`account_id`,`values`) VALUES ('{0}',?data); ",
-                account_id));
-            cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
+            byte[] values = ms.ToArray();
             ms.Close();
             try {
-                SQLExecuteNonQuery(cmd);
+                SqlSugarHelper.Db.BeginTran();
+
+                var avatars = SqlSugarHelper.Db.Queryable<Avatar>().Where(item => item.AccountId == account_id)
+                    .ToList();
+
+                switch (avatars.Count) {
+                    case 0:
+                        SqlSugarHelper.Db.Insertable<Avatar>(new Avatar {
+                            AccountId = account_id,
+                            Valuess = values
+                        }).ExecuteCommand();
+                        break;
+                    case 1:
+                        var avatar = avatars[0];
+                        avatar.Valuess = values;
+                        SqlSugarHelper.Db.Updateable<Avatar>().ExecuteCommand();
+                        break;
+                    default:
+                        throw new Exception($"more than avatars for {account_id} found!");
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
@@ -2317,12 +2217,10 @@ namespace SagaDB {
                 }
             }
 
-            sqlstr = "SELECT * FROM `avar` WHERE `account_id`='" + account_id + "' LIMIT 1;";
-            res = SQLExecuteQuery(sqlstr);
-            if (res.Count > 0) {
-                var buf = (byte[])res[0]["values"];
-                var ms = new MemoryStream(buf);
-                var br = new BinaryReader(ms);
+            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().Where(item => item.AccountId == account_id).ToList();
+
+            foreach (var avatar in avatars) {
+                var br = new BinaryReader(new MemoryStream(avatar.Valuess));
                 var count = br.ReadInt32();
                 for (var i = 0; i < count; i++) {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
@@ -2786,5 +2684,5 @@ namespace SagaDB {
         }
     }
 
-    //#endregion
+//#endregion
 }

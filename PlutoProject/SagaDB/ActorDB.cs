@@ -4,25 +4,21 @@ using SagaDB.Actor;
 using SagaDB.BBS;
 using SagaDB.Tamaire;
 
-namespace SagaDB
-{
-
-    public class GetRingEmblemResult
-    {
+namespace SagaDB {
+    public class GetRingEmblemResult {
         public byte[] Data { get; }
         public bool NeedUpdate { get; }
 
         public DateTime NewTime { get; }
 
-        public GetRingEmblemResult(byte[] data, bool needUpdate, DateTime newTime)
-        {
+        public GetRingEmblemResult(byte[] data, bool needUpdate, DateTime newTime) {
             Data = data;
             NeedUpdate = needUpdate;
             NewTime = newTime;
         }
     }
-    public interface ActorDB
-    {
+
+    public interface ActorDB {
         void AJIClear();
 
         /// <summary>
@@ -55,10 +51,6 @@ namespace SagaDB
         uint[] GetCharIDs(int account_id);
 
         string GetCharName(uint id);
-
-        bool Connect();
-
-        bool isConnected();
 
         /// <summary>
         ///     取得指定玩家的好友列表

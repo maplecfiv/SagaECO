@@ -105,7 +105,7 @@ namespace SagaDB.Actor
             this.sightRange = 1500;
         }*/
 
-        public ActorPC Owner { get; set; }
+        public new ActorPC Owner { get; set; }
 
         public bool Ride { get; set; }
 
