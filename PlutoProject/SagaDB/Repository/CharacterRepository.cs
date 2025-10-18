@@ -1,6 +1,7 @@
 using System;
 using SagaDB.Actor;
 using SagaDB.Entities;
+using SqlSugar;
 
 namespace SagaDB.Repository;
 
@@ -11,7 +12,7 @@ public class CharacterRepository {
         try {
             SqlSugarHelper.Db.BeginTran();
 
-            foreach (var character in SqlSugarHelper.Db.Queryable<Character>()
+            foreach (var character in SqlSugarHelper.Db.Queryable<Character>().TranLock(DbLockType.Wait)
                          .Where(item => item.CharacterId == aChar.CharID).ToList()) {
                 character.Name = (aChar.Name);
                 character.Race = (byte)aChar.Race;

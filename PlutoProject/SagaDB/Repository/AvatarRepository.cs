@@ -1,5 +1,6 @@
 using System;
 using SagaDB.Entities;
+using SqlSugar;
 
 namespace SagaDB.Repository;
 
@@ -13,7 +14,8 @@ public class AvatarRepository {
         try {
             SqlSugarHelper.Db.BeginTran();
 
-            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().Where(item => item.AccountId == accountId)
+            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().TranLock(DbLockType.Wait)
+                .Where(item => item.AccountId == accountId)
                 .ToList();
 
             switch (avatars.Count) {
