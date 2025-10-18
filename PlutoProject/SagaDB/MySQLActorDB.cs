@@ -502,12 +502,19 @@ namespace SagaDB {
         }
         */
         public void SaveWRP(ActorPC pc) {
-            var sqlstr = string.Format("UPDATE `char` SET `wrp`='{0}' WHERE char_id='{1}' LIMIT 1",
-                pc.WRP, pc.CharID);
             try {
-                SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var character in SqlSugarHelper.Db.Queryable<Character>()
+                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                    character.Wrp = pc.WRP;
+                    SqlSugarHelper.Db.Updateable<Character>(character).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
@@ -541,49 +548,44 @@ namespace SagaDB {
         }
 
         public ActorPC GetChar(uint charID, bool fullinfo) {
-            string sqlstr;
-            DataRow result = null;
             ActorPC pc = null;
             try {
-                GetAccountID(charID);
-                sqlstr = "SELECT * FROM `char` WHERE `char_id`='" + charID + "' LIMIT 1";
-                try {
-                    result = SQLExecuteQuery(sqlstr)[0];
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                // GetAccountID(charID);
+                var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charID)
+                    .First();
+                if (character == null) {
                     return null;
                 }
 
                 pc = new ActorPC();
                 pc.CharID = charID;
                 pc.Account = null;
-                pc.Name = (string)result["name"];
-                pc.Race = (PC_RACE)(byte)result["race"];
-                pc.UsingPaperID = (ushort)result["usingpaper_id"];
-                pc.PlayerTitleID = (ushort)result["title_id"];
-                pc.Gender = (PC_GENDER)(byte)result["gender"];
-                pc.TailStyle = (byte)result["tailStyle"];
-                pc.WingStyle = (byte)result["wingStyle"];
-                pc.WingColor = (byte)result["wingColor"];
-                pc.HairStyle = (ushort)result["hairStyle"];
-                pc.HairColor = (byte)result["hairColor"];
-                pc.Wig = (ushort)result["wig"];
-                pc.Face = (ushort)result["face"];
-                pc.Job = (PC_JOB)(byte)result["job"];
-                pc.MapID = (uint)result["mapID"];
-                pc.Level = (byte)result["lv"];
-                pc.Level1 = (byte)result["lv1"];
-                pc.JobLevel1 = (byte)result["jlv1"];
-                pc.JobLevel2X = (byte)result["jlv2x"];
-                pc.JobLevel2T = (byte)result["jlv2t"];
-                pc.JobLevel3 = (byte)result["jlv3"];
-                pc.JointJobLevel = (byte)result["jointjlv"];
+                pc.Name = character.Name;
+                pc.Race = (PC_RACE)character.Race;
+                pc.UsingPaperID = character.UsingPaperId;
+                pc.PlayerTitleID = character.TitleId;
+                pc.Gender = (PC_GENDER)character.Gender;
+                pc.TailStyle = character.TailStyle;
+                pc.WingStyle = character.WingStyle;
+                pc.WingColor = character.WingColor;
+                pc.HairStyle = character.HairStyle;
+                pc.HairColor = character.HairColor;
+                pc.Wig = character.Wig;
+                pc.Face = character.Face;
+                pc.Job = (PC_JOB)character.Job;
+                pc.MapID = character.MapId;
+                pc.Level = character.Lv;
+                pc.Level1 = character.Lv1;
+                pc.JobLevel1 = character.JobLv1;
+                pc.JobLevel2X = character.JobLv2x;
+                pc.JobLevel2T = character.JobLv2t;
+                pc.JobLevel3 = character.JobLv3;
+                pc.JointJobLevel = character.JointJobLv;
 
-                pc.QuestRemaining = (ushort)result["questRemaining"];
-                pc.QuestNextResetTime = (DateTime)result["questresettime"];
-                pc.Fame = (uint)result["fame"];
-                pc.Slot = (byte)result["slot"];
+                pc.QuestRemaining = character.QuestRemaining;
+                pc.QuestNextResetTime = character.QuestResetTime;
+                pc.Fame = character.Fame;
+                pc.Slot = character.Slot;
                 if (fullinfo) {
                     MapInfo info = null;
                     if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID)) {
@@ -594,39 +596,39 @@ namespace SagaDB {
                             info = MapInfoFactory.Instance.MapInfo[pc.MapID / 1000 * 1000];
                     }
 
-                    pc.X = Global.PosX8to16((byte)result["x"], info.width);
-                    pc.Y = Global.PosY8to16((byte)result["y"], info.height);
+                    pc.X = Global.PosX8to16(character.X, info.width);
+                    pc.Y = Global.PosY8to16(character.Y, info.height);
                 }
 
-                pc.Dir = (ushort)((byte)result["dir"] * 45);
+                pc.Dir = (ushort)(character.Dir * 45);
 
-                pc.SaveMap = (uint)result["save_map"];
-                pc.SaveX = (byte)result["save_x"];
-                pc.SaveY = (byte)result["save_y"];
-                pc.HP = (uint)result["hp"];
-                pc.MP = (uint)result["mp"];
-                pc.SP = (uint)result["sp"];
-                pc.MaxHP = (uint)result["max_hp"];
-                pc.MaxMP = (uint)result["max_mp"];
-                pc.MaxSP = (uint)result["max_sp"];
-                pc.EP = (uint)result["ep"];
-                pc.EPLoginTime = (DateTime)result["eplogindate"];
-                pc.EPGreetingTime = (DateTime)result["epgreetingdate"];
-                pc.EPUsed = (short)result["epused"];
-                pc.CL = (short)result["cl"];
-                pc.Str = (ushort)result["str"];
-                pc.Dex = (ushort)result["dex"];
-                pc.Int = (ushort)result["intel"];
-                pc.Vit = (ushort)result["vit"];
-                pc.Agi = (ushort)result["agi"];
-                pc.Mag = (ushort)result["mag"];
-                pc.StatsPoint = (ushort)result["statspoint"];
-                pc.SkillPoint = (ushort)result["skillpoint"];
-                pc.SkillPoint2X = (ushort)result["skillpoint2x"];
-                pc.SkillPoint2T = (ushort)result["skillpoint2t"];
-                pc.SkillPoint3 = (ushort)result["skillpoint3"];
-                pc.EXStatPoint = (ushort)result["exstatpoint"];
-                pc.EXSkillPoint = (byte)result["exskillpoint"];
+                pc.SaveMap = character.SaveMap;
+                pc.SaveX = character.SaveX;
+                pc.SaveY = character.SaveY;
+                pc.HP = character.Hp;
+                pc.MP = character.Mp;
+                pc.SP = character.Sp;
+                pc.MaxHP = character.MaxHp;
+                pc.MaxMP = character.MaxMp;
+                pc.MaxSP = character.MaxSp;
+                pc.EP = character.Ep;
+                pc.EPLoginTime = character.EpLoginDate;
+                pc.EPGreetingTime = character.EpGreetingDate;
+                pc.EPUsed = character.EpUsed;
+                pc.CL = character.Cl;
+                pc.Str = character.Str;
+                pc.Dex = character.Dex;
+                pc.Int = character.Int;
+                pc.Vit = character.Vit;
+                pc.Agi = character.Agi;
+                pc.Mag = character.Mag;
+                pc.StatsPoint = character.StatsPoint;
+                pc.SkillPoint = character.SkillPoint;
+                pc.SkillPoint2X = character.SkillPoint2x;
+                pc.SkillPoint2T = character.SkillPoint2t;
+                pc.SkillPoint3 = character.SkillPoint3;
+                pc.EXStatPoint = character.ExStatPoint;
+                pc.EXSkillPoint = character.ExSkillPoint;
                 //pc.DefLv = (byte)result["deflv"];
                 //pc.MDefLv = (byte)result["mdeflv"];
                 //pc.DefPoint = (uint)result["defpoint"];
@@ -634,49 +636,51 @@ namespace SagaDB {
                 lock (this) {
                     var old = SagaLib.Logger.SQLLogLevel.Value;
                     SagaLib.Logger.SQLLogLevel.Value = 0;
-                    pc.Gold = (long)result["gold"];
+                    pc.Gold = character.Gold;
                     SagaLib.Logger.SQLLogLevel.Value = old;
                 }
 
-                pc.CP = (uint)result["cp"];
-                pc.ECoin = (uint)result["ecoin"];
-                pc.CEXP = (ulong)result["cexp"];
+                pc.CP = character.Cp;
+                pc.ECoin = character.ECoin;
+                pc.CEXP = character.CExp;
                 //pc.JEXP = (ulong)result["jexp"];
-                pc.JointJEXP = (ulong)result["jjexp"];
-                pc.ExplorerEXP = (ulong)result["explorerEXP"];
-                pc.WRP = (int)result["wrp"];
-                pc.PossessionTarget = (uint)result["possession_target"];
-                pc.AbyssFloor = (int)result["abyssfloor"];
+                pc.JointJEXP = character.JointJobExp;
+                pc.ExplorerEXP = character.ExplorerExp;
+                pc.WRP = character.Wrp;
+                pc.PossessionTarget = character.PossessionTarget;
+                pc.AbyssFloor = character.AbyssFloor;
                 var party = new Party.Party();
-                party.ID = (uint)result["party"];
+                party.ID = character.Party;
                 var ring = new Ring.Ring();
-                ring.ID = (uint)result["ring"];
+                ring.ID = character.Ring;
                 if (party.ID != 0)
                     pc.Party = party;
                 if (ring.ID != 0)
                     pc.Ring = ring;
-                var golem = (uint)result["golem"];
+                var golem = character.Golem;
                 if (golem != 0) {
                     pc.Golem = new ActorGolem();
                     pc.Golem.ActorID = golem;
                 }
 
-                pc.DualJobID = (byte)(result["DualJobId"] == null ? 0 : result["DualJobId"]);
+                pc.DualJobID = character.DualJobId == null ? (byte)0 : character.DualJobId;
 
                 if (fullinfo) {
-                    var questid = (uint)result["questid"];
-                    if (questid != 0)
+                    var questid = character.QuestId;
+                    if (questid != 0) {
                         try {
                             var quest = new Quest(questid);
-                            quest.EndTime = (DateTime)result["questendtime"];
-                            quest.Status = (QuestStatus)(byte)result["queststatus"];
-                            quest.CurrentCount1 = (int)result["questcurrentcount1"];
-                            quest.CurrentCount2 = (int)result["questcurrentcount2"];
-                            quest.CurrentCount3 = (int)result["questcurrentcount3"];
+                            quest.EndTime = character.QuestEndTime;
+                            quest.Status = (QuestStatus)character.QuestStatus;
+                            quest.CurrentCount1 = character.QuestCurrentCount1;
+                            quest.CurrentCount2 = character.QuestCurrentCount2;
+                            quest.CurrentCount3 = character.QuestCurrentCount3;
                             pc.Quest = quest;
                         }
-                        catch {
+                        catch (Exception e) {
+                            SagaLib.Logger.ShowError(e);
                         }
+                    }
 
                     GetSkill(pc);
                     GetJobLV(pc);

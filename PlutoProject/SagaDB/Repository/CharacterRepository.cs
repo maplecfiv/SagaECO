@@ -6,9 +6,9 @@ using SqlSugar;
 namespace SagaDB.Repository;
 
 public class CharacterRepository {
-    public static bool SaveCharacter(ActorPC aChar, uint mapid, byte x, byte y, uint questid, DateTime questtime,
+    public static bool SaveCharacter(ActorPC aChar, uint mapId, byte x, byte y, uint questid, DateTime questRemainTime,
         byte status,
-        int count1, int count2, int count3, uint partyid, uint ringid, uint golemid) {
+        int count1, int count2, int count3, uint partyId, uint ringId, uint golemId) {
         try {
             SqlSugarHelper.Db.BeginTran();
 
@@ -22,7 +22,7 @@ public class CharacterRepository {
                 character.Wig = aChar.Wig;
                 character.Face = aChar.Face;
                 character.Job = (byte)aChar.Job;
-                character.MapId = mapid;
+                character.MapId = mapId;
                 character.Lv = aChar.Level;
                 character.JobLv1 = aChar.JobLevel1;
                 character.JobLv2x = aChar.JobLevel2X;
@@ -57,16 +57,16 @@ public class CharacterRepository {
                 character.SaveY = aChar.SaveY;
                 character.PossessionTarget = aChar.PossessionTarget;
                 character.QuestId = questid;
-                character.QuestEndTime = questtime;
+                character.QuestEndTime = questRemainTime;
                 character.QuestStatus = (byte)status;
                 character.QuestCurrentCount1 = count1;
                 character.QuestCurrentCount2 = count2;
                 character.QuestCurrentCount3 = count3;
                 character.QuestResetTime = aChar.QuestNextResetTime;
                 character.Fame = aChar.Fame;
-                character.Party = partyid;
-                character.Ring = ringid;
-                character.Golem = golemid;
+                character.Party = partyId;
+                character.Ring = ringId;
+                character.Golem = golemId;
                 character.Cp = aChar.CP;
                 character.ECoin = aChar.ECoin;
                 character.JointJobLv = aChar.JointJobLevel;
