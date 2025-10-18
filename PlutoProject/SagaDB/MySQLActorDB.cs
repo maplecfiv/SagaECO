@@ -15,6 +15,7 @@ using SagaDB.Map;
 using SagaDB.Mob;
 using SagaDB.Partner;
 using SagaDB.Quests;
+using SagaDB.Repository;
 using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
@@ -35,7 +36,7 @@ namespace SagaDB {
             }
         }
 
-        public void CreateChar(ActorPC aChar, int account_id) {
+        public void CreateChar(ActorPC aChar, int accountId) {
             string sqlstr;
             uint charID = 0;
             if (aChar == null) {
@@ -54,7 +55,7 @@ namespace SagaDB {
                     "`ep`,`eplogindate` ,`tailStyle` ,`wingStyle` ,`wingColor` ,`lv1` ,`jlv3`,`skillpoint3`,`explorerEXP`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}'," +
                     "'{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}'" +
                     ",'{24}','{25}','{26}','{27}','{28}','{29}','{30}','{31}','{32}','{33}','{34}','{35}','{36}','{37}','{38}','{39}','{40}','{41}','{42}','{43}','{44}');",
-                    account_id, name, (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor, aChar.Wig,
+                    accountId, name, (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor, aChar.Wig,
                     aChar.Face, (byte)aChar.Job, aChar.MapID, aChar.Level, aChar.JobLevel1, aChar.JobLevel2X,
                     aChar.JobLevel2T,
                     aChar.QuestRemaining, aChar.Slot, aChar.X2, aChar.Y2, (byte)(aChar.Dir / 45), aChar.HP, aChar.MaxHP,
@@ -84,11 +85,11 @@ namespace SagaDB {
             if (aChar.Inventory.WareHouse != null) {
                 try {
                     DataRowCollection result = SQLExecuteQuery("SELECT count(*) FROM `warehouse` WHERE `account_id`='" +
-                                                               account_id + "' LIMIT 1;");
+                                                               accountId + "' LIMIT 1;");
 
                     if (Convert.ToInt32(result[0][0]) == 0) {
                         cmd = new MySqlCommand(string.Format(
-                            "INSERT INTO `warehouse`(`account_id`,`data`) VALUES ('{0}',?data);\r\n", account_id));
+                            "INSERT INTO `warehouse`(`account_id`,`data`) VALUES ('{0}',?data);\r\n", accountId));
                         cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.WareToBytes();
 
                         SQLExecuteNonQuery(cmd);
@@ -1007,34 +1008,7 @@ namespace SagaDB {
 
             byte[] values = ms.ToArray();
             ms.Close();
-            try {
-                SqlSugarHelper.Db.BeginTran();
-
-                var avatars = SqlSugarHelper.Db.Queryable<Avatar>().Where(item => item.AccountId == account_id)
-                    .ToList();
-
-                switch (avatars.Count) {
-                    case 0:
-                        SqlSugarHelper.Db.Insertable<Avatar>(new Avatar {
-                            AccountId = account_id,
-                            Valuess = values
-                        }).ExecuteCommand();
-                        break;
-                    case 1:
-                        var avatar = avatars[0];
-                        avatar.Valuess = values;
-                        SqlSugarHelper.Db.Updateable<Avatar>().ExecuteCommand();
-                        break;
-                    default:
-                        throw new Exception($"more than avatars for {account_id} found!");
-                }
-
-                SqlSugarHelper.Db.CommitTran();
-            }
-            catch (Exception ex) {
-                SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
+            AvatarRepository.SaveAvatar(account_id, values);
         }
 
         public void GetSkill(ActorPC pc) {
@@ -1431,36 +1405,31 @@ namespace SagaDB {
             return new GetRingEmblemResult(null, false, DateTime.Now);
         }
 
-        public List<Post> GetBBS(uint bbsID) {
-            var sqlstr = string.Format("SELECT * FROM `bbs` WHERE `bbsid`='{0}' ORDER BY `postdate` DESC;", bbsID);
+        public List<Post> GetBBS(uint bbsId) {
             var list = new List<Post>();
-            var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result) {
-                var post = new Post();
-                post.Name = (string)i["name"];
-                post.Title = (string)i["title"];
-                post.Content = (string)i["content"];
-                post.Date = (DateTime)i["postdate"];
-                list.Add(post);
+            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId)) {
+                list.Add(new Post {
+                    Name = bbs.Name,
+                    Title = bbs.Title,
+                    Content = bbs.Content,
+                    Date = bbs.PostDate
+                });
             }
 
             return list;
         }
 
-        public List<Post> GetBBSPage(uint bbsID, int page) {
-            var sqlstr = string.Format("SELECT * FROM `bbs` WHERE `bbsid`='{0}' ORDER BY `postdate` DESC LIMIT {1},5;",
-                bbsID, (page - 1) * 5);
+        public List<Post> GetBBSPage(uint bbsId, int page) {
             var list = new List<Post>();
-            var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result) {
-                var post = new Post();
-                post.Name = (string)i["name"];
-                post.Title = (string)i["title"];
-                post.Content = (string)i["content"];
-                post.Date = (DateTime)i["postdate"];
-                list.Add(post);
+            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId, page, 5)) {
+                list.Add(new Post {
+                    Name = bbs.Name,
+                    Title = bbs.Title,
+                    Content = bbs.Content,
+                    Date = bbs.PostDate
+                });
             }
 
             return list;
@@ -1562,14 +1531,8 @@ namespace SagaDB {
             return SQLExecuteScalar(sqlstr).Index;
         }
 
-        public bool BBSNewPost(ActorPC poster, uint bbsID, string title, string content) {
-            title = CheckSQLString(title);
-            content = CheckSQLString(content);
-            var sqlstr = string.Format(
-                "INSERT INTO `bbs`(`bbsid`,`postdate`,`charid`,`name`,`title`,`content`) VALUES " +
-                "('{0}','{1}','{2}','{3}','{4}','{5}');", bbsID, ToSQLDateTime(DateTime.Now.ToUniversalTime()),
-                poster.CharID, poster.Name, title, content);
-            return SQLExecuteNonQuery(sqlstr);
+        public bool BBSNewPost(ActorPC poster, uint bbsId, string title, string content) {
+            return BbsRepository.Insert(poster, bbsId, title, content);
         }
 
         public uint GetFlyCastleRindID(uint ffid) {
@@ -2217,9 +2180,9 @@ namespace SagaDB {
                 }
             }
 
-            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().Where(item => item.AccountId == account_id).ToList();
+            var avatar = AvatarRepository.GetAvatar(account_id);
 
-            foreach (var avatar in avatars) {
+            if (avatar != null) {
                 var br = new BinaryReader(new MemoryStream(avatar.Valuess));
                 var count = br.ReadInt32();
                 for (var i = 0; i < count; i++) {
