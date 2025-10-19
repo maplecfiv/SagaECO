@@ -1181,55 +1181,86 @@ namespace SagaDB {
         }
 
         public Party.Party GetParty(uint id) {
-            var sqlstr = $"SELECT * FROM `party` WHERE `party_id`='{id}' LIMIT 1;";
-            var result = SQLExecuteQuery(sqlstr);
-            var party = new Party.Party();
-            if (result.Count != 0) {
-                party.ID = id;
-                party.Name = (string)result[0]["name"];
-                if (party.Leader == null)
-                    return null;
-                return party;
+            var result = SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().Where(item => item.PartyId == id)
+                .ToList();
+            if (result.Count == 0) {
+                return null;
             }
 
-            return null;
+
+            var party = new Party.Party();
+            party.ID = id;
+            party.Name = (string)result[0].Name;
+            return party;
         }
 
         public void NewParty(Party.Party party) {
-            uint index = 0;
-            var name = CheckSQLString(party.Name);
-            var sqlstr = $"INSERT INTO `party`(`name`,`leader`) VALUES ('{name}','{party.Leader.CharID}');";
-            index = SQLExecuteScalar(sqlstr).Index;
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            uint pos = 0;
-            sqlstr = $"INSERT INTO `partymember`(`party_id`,`char_id`) VALUES ('{index}','{party.Leader.CharID}');";
-            pos = SQLExecuteScalar(sqlstr).Index;
-            party.ID = index;
+                uint index = SqlSugarHelper.Db.Insertable<SagaDB.Entities.Party>(new SagaDB.Entities.Party {
+                    Name = party.Name, Leader = party.Leader.CharID
+                }).ExecuteReturnEntity().PartyId;
+                SqlSugarHelper.Db.Insertable<PartyMember>(new PartyMember {
+                    PartyId = index, CharId = party.Leader.CharID
+                }).ExecuteCommand();
+
+                party.ID = (uint)index;
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void SaveParty(Party.Party party) {
-            var leader = party.Leader.CharID;
-            var name = CheckSQLString(party.Name);
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            var sqlstr =
-                $"UPDATE `party` SET `name`='{name}',`leader`='{leader}'  WHERE `party_id`='{party.ID}' LIMIT 1;";
-            SQLExecuteNonQuery(sqlstr);
+                foreach (var _party in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().TranLock(DbLockType.Wait)
+                             .Where(item => item.PartyId == party.ID).ToList()) {
+                    _party.Name = party.Name;
+                    _party.Leader = party.Leader.CharID;
+                    SqlSugarHelper.Db.Updateable(_party).ExecuteCommand();
+                }
 
-            sqlstr = $"DELETE FROM `partymember` WHERE `party_id`='{party.ID}';";
-            SQLExecuteNonQuery(sqlstr);
-            foreach (var i in party.Members.Keys) {
-                sqlstr +=
-                    $"INSERT INTO `partymember`(`party_id`,`char_id`) VALUES ('{party.ID}','{party.Members[i].CharID}');";
-                SQLExecuteNonQuery(sqlstr);
+
+                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>() {
+                    new PartyMember() { PartyId = party.ID }
+                }).ExecuteCommand();
+
+                foreach (var i in party.Members.Keys) {
+                    SqlSugarHelper.Db.Insertable<PartyMember>(
+                        new PartyMember() { PartyId = party.ID, CharId = party.Members[i].CharID }
+                    ).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
         }
 
         public void DeleteParty(Party.Party party) {
-            var sqlstr = $"DELETE FROM `party` WHERE `party_id`='{party.ID}';";
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>() {
+                    new PartyMember() { PartyId = party.ID }
+                }).ExecuteCommand();
 
-            sqlstr = $"DELETE FROM `partymember` WHERE `party_id`='{party.ID}';";
-            SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.Deleteable<SagaDB.Entities.Party>(new SagaDB.Entities.Party() { PartyId = party.ID }
+                ).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public Ring.Ring GetRing(uint id) {
@@ -2323,11 +2354,10 @@ namespace SagaDB {
         }
 
         public void GetPartyMember(Party.Party party) {
-            var sqlstr = $"SELECT `char_id` FROM `partymember` WHERE `party_id`='{party.ID}';";
-            var result = SQLExecuteQuery(sqlstr);
+            var result = SqlSugarHelper.Db.Queryable<PartyMember>().Where(item => item.PartyId == party.ID).ToList();
 
             for (byte index = 0; index < 7; index++) {
-                var memberCharId = (uint)result[index]["char_id"];
+                var memberCharId = (uint)result[index].CharId;
                 if (memberCharId == 0) {
                     continue;
                 }

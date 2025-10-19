@@ -161,7 +161,7 @@ public class CharacterRepository {
             character.ExplorerExp = aChar.ExplorerEXP;
 
 
-            uint charID = (uint)SqlSugarHelper.Db.Insertable<Character>(character).ExecuteCommand();
+            uint charID = SqlSugarHelper.Db.Insertable<Character>(character).ExecuteReturnEntity().CharacterId;
 
             SqlSugarHelper.Db.CommitTran();
             return charID;
