@@ -6,7 +6,7 @@ namespace SagaDB.Entities;
 public class Character {
     [SugarColumn(IsPrimaryKey = true)] public uint CharacterId { get; set; }
 
-    public int AccountId { get; set; }
+    public uint AccountId { get; set; }
 
     public string Name { get; set; }
 

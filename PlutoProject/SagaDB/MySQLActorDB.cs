@@ -19,7 +19,9 @@ using SagaDB.Repository;
 using SagaDB.Skill;
 using SagaDB.Tamaire;
 using SagaLib;
+using SqlSugar;
 using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
+using Inventory = SagaDB.Entities.Inventory;
 using Logger = Serilog.Core.Logger;
 
 namespace SagaDB {
@@ -28,74 +30,50 @@ namespace SagaDB {
 
 
         public void AJIClear() {
-            try {
-                SQLExecuteNonQuery("UPDATE `char` SET `lv` = 1, `cexp` = 0;");
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
+            CharacterRepository.AjiClear();
         }
 
         public void CreateChar(ActorPC aChar, int accountId) {
             string sqlstr;
-            uint charID = 0;
             if (aChar == null) {
                 SagaLib.Logger.GetLogger().Error("aChar is null");
                 return;
             }
 
-            var name = CheckSQLString(aChar.Name);
             //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
 
-            try {
-                charID = SQLExecuteScalar(string.Format(
-                    "INSERT INTO `char`(`account_id`,`name`,`race`,`gender`,`hairStyle`,`hairColor`,`wig`," +
-                    "`face`,`job`,`mapID`,`lv`,`jlv1`,`jlv2x`,`jlv2t`,`questRemaining`,`slot`,`x`,`y`,`dir`,`hp`,`max_hp`,`mp`," +
-                    "`max_mp`,`sp`,`max_sp`,`str`,`dex`,`intel`,`vit`,`agi`,`mag`,`statspoint`,`skillpoint`,`skillpoint2x`,`skillpoint2t`,`gold`," +
-                    "`ep`,`eplogindate` ,`tailStyle` ,`wingStyle` ,`wingColor` ,`lv1` ,`jlv3`,`skillpoint3`,`explorerEXP`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}'," +
-                    "'{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}'" +
-                    ",'{24}','{25}','{26}','{27}','{28}','{29}','{30}','{31}','{32}','{33}','{34}','{35}','{36}','{37}','{38}','{39}','{40}','{41}','{42}','{43}','{44}');",
-                    accountId, name, (byte)aChar.Race, (byte)aChar.Gender, aChar.HairStyle, aChar.HairColor, aChar.Wig,
-                    aChar.Face, (byte)aChar.Job, aChar.MapID, aChar.Level, aChar.JobLevel1, aChar.JobLevel2X,
-                    aChar.JobLevel2T,
-                    aChar.QuestRemaining, aChar.Slot, aChar.X2, aChar.Y2, (byte)(aChar.Dir / 45), aChar.HP, aChar.MaxHP,
-                    aChar.MP,
-                    aChar.MaxMP, aChar.SP, aChar.MaxSP, aChar.Str, aChar.Dex, aChar.Int, aChar.Vit, aChar.Agi,
-                    aChar.Mag, aChar.StatsPoint,
-                    aChar.SkillPoint, aChar.SkillPoint2X, aChar.SkillPoint2T, aChar.Gold, aChar.EP,
-                    ToSQLDateTime(aChar.EPLoginTime), aChar.TailStyle, aChar.WingStyle, aChar.WingColor,
-                    aChar.Level1, aChar.JobLevel3, aChar.SkillPoint3, aChar.ExplorerEXP)).Index;
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            aChar.CharID = charID;
-            var cmd = new MySqlCommand(
-                string.Format("INSERT INTO `inventory`(`char_id`,`data`) VALUES ('{0}',?data);\r\n", aChar.CharID));
-            cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.ToBytes();
+            aChar.CharID = CharacterRepository.createCharacter(aChar, (uint)accountId);
 
             try {
-                SQLExecuteNonQuery(cmd);
+                SqlSugarHelper.Db.BeginTran();
+
+                SqlSugarHelper.Db.Insertable<Inventory>(new Inventory {
+                    CharacterId = aChar.CharID,
+                    Data = aChar.Inventory.ToBytes()
+                }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             if (aChar.Inventory.WareHouse != null) {
                 try {
-                    DataRowCollection result = SQLExecuteQuery("SELECT count(*) FROM `warehouse` WHERE `account_id`='" +
-                                                               accountId + "' LIMIT 1;");
-
-                    if (Convert.ToInt32(result[0][0]) == 0) {
-                        cmd = new MySqlCommand(string.Format(
-                            "INSERT INTO `warehouse`(`account_id`,`data`) VALUES ('{0}',?data);\r\n", accountId));
-                        cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = aChar.Inventory.WareToBytes();
-
-                        SQLExecuteNonQuery(cmd);
+                    SqlSugarHelper.Db.BeginTran();
+                    if (SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == accountId).ToList()
+                            .Count == 0) {
+                        SqlSugarHelper.Db.Insertable<Warehouse>(new Warehouse {
+                            AccountId = accountId,
+                            Data = aChar.Inventory.WareToBytes()
+                        });
                     }
+
+                    SqlSugarHelper.Db.CommitTran();
                 }
                 catch (Exception ex) {
+                    SqlSugarHelper.Db.RollbackTran();
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
@@ -521,8 +499,7 @@ namespace SagaDB {
 
         public void DeleteChar(ActorPC aChar) {
             string sqlstr;
-            _ = (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + aChar.CharID + "' LIMIT 1")
-                [0]["account_id"];
+            _ = GetAccountID((aChar.CharID));
             sqlstr = "DELETE FROM `char` WHERE char_id='" + aChar.CharID + "';";
             sqlstr += "DELETE FROM `inventory` WHERE char_id='" + aChar.CharID + "';";
             sqlstr += "DELETE FROM `skill` WHERE char_id='" + aChar.CharID + "';";
@@ -557,35 +534,36 @@ namespace SagaDB {
                     return null;
                 }
 
-                pc = new ActorPC();
-                pc.CharID = charID;
-                pc.Account = null;
-                pc.Name = character.Name;
-                pc.Race = (PC_RACE)character.Race;
-                pc.UsingPaperID = character.UsingPaperId;
-                pc.PlayerTitleID = character.TitleId;
-                pc.Gender = (PC_GENDER)character.Gender;
-                pc.TailStyle = character.TailStyle;
-                pc.WingStyle = character.WingStyle;
-                pc.WingColor = character.WingColor;
-                pc.HairStyle = character.HairStyle;
-                pc.HairColor = character.HairColor;
-                pc.Wig = character.Wig;
-                pc.Face = character.Face;
-                pc.Job = (PC_JOB)character.Job;
-                pc.MapID = character.MapId;
-                pc.Level = character.Lv;
-                pc.Level1 = character.Lv1;
-                pc.JobLevel1 = character.JobLv1;
-                pc.JobLevel2X = character.JobLv2x;
-                pc.JobLevel2T = character.JobLv2t;
-                pc.JobLevel3 = character.JobLv3;
-                pc.JointJobLevel = character.JointJobLv;
+                pc = new ActorPC {
+                    CharID = charID,
+                    Account = null,
+                    Name = character.Name,
+                    Race = (PC_RACE)character.Race,
+                    UsingPaperID = character.UsingPaperId,
+                    PlayerTitleID = character.TitleId,
+                    Gender = (PC_GENDER)character.Gender,
+                    TailStyle = character.TailStyle,
+                    WingStyle = character.WingStyle,
+                    WingColor = character.WingColor,
+                    HairStyle = character.HairStyle,
+                    HairColor = character.HairColor,
+                    Wig = character.Wig,
+                    Face = character.Face,
+                    Job = (PC_JOB)character.Job,
+                    MapID = character.MapId,
+                    Level = character.Lv,
+                    Level1 = character.Lv1,
+                    JobLevel1 = character.JobLv1,
+                    JobLevel2X = character.JobLv2x,
+                    JobLevel2T = character.JobLv2t,
+                    JobLevel3 = character.JobLv3,
+                    JointJobLevel = character.JointJobLv,
+                    QuestRemaining = character.QuestRemaining,
+                    QuestNextResetTime = character.QuestResetTime,
+                    Fame = character.Fame,
+                    Slot = character.Slot
+                };
 
-                pc.QuestRemaining = character.QuestRemaining;
-                pc.QuestNextResetTime = character.QuestResetTime;
-                pc.Fame = character.Fame;
-                pc.Slot = character.Slot;
                 if (fullinfo) {
                     MapInfo info = null;
                     if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID)) {
@@ -891,9 +869,8 @@ namespace SagaDB {
         }
 
         public void SaveVar(ActorPC pc) {
-            var account_id =
-                (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1")[0][
-                    "account_id"];
+            var account_id = this.GetAccountID(pc.CharID);
+
             var enc = Encoding.UTF8;
 
             var ms = new MemoryStream();
@@ -1086,27 +1063,13 @@ namespace SagaDB {
         }
 
         public bool CharExists(string name) {
-            string sqlstr;
-            DataRowCollection result = null;
-            sqlstr = "SELECT count(*) FROM `char` WHERE name='" + CheckSQLString(name) + "'";
-            try {
-                result = SQLExecuteQuery(sqlstr);
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            if (Convert.ToInt32(result[0][0]) > 0) return true;
-            return false;
+            return SqlSugarHelper.Db.Queryable<Character>().Where(item => item.Name.Equals((name))).Any();
         }
 
         public uint GetAccountID(uint charID) {
-            var sqlstr = "SELECT `account_id` FROM `char` WHERE `char_id`='" + charID + "' LIMIT 1;";
-
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count == 0)
-                return 0;
-            return (uint)result[0]["account_id"];
+            var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charID)
+                .First();
+            return character == null ? 0 : character.AccountId;
         }
 
         public uint GetAccountID(ActorPC pc) {
@@ -1116,31 +1079,32 @@ namespace SagaDB {
         }
 
         public uint[] GetCharIDs(int account_id) {
-            string sqlstr;
-            uint[] buf;
-            DataRowCollection result = null;
-            sqlstr = "SELECT `char_id` FROM `char` WHERE account_id='" + account_id + "'";
             try {
-                result = SQLExecuteQuery(sqlstr);
+                var characters = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.AccountId == account_id)
+                    .ToList();
+                if (characters.Count == 0) {
+                    return new uint[0];
+                }
+
+                uint[] buf = new uint[characters.Count];
+                for (var i = 0; i < buf.Length; i++) {
+                    buf[i] = characters[i].CharacterId;
+                }
+
+                return buf;
             }
             catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return new uint[0];
             }
-
-            if (result.Count == 0) return new uint[0];
-            buf = new uint[result.Count];
-            for (var i = 0; i < buf.Length; i++) buf[i] = (uint)result[i]["char_id"];
-            return buf;
         }
 
         public string GetCharName(uint id) {
-            var sqlstr = "SELECT `name` FROM `char` WHERE `char_id`='" + id + "' LIMIT 1;";
-
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count == 0)
+            var characters = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == id)
+                .ToList();
+            if (characters.Count == 0)
                 return null;
-            return (string)result[0]["name"];
+            return characters[0].Name;
         }
 
         public List<ActorPC> GetFriendList(ActorPC pc) {
@@ -1149,21 +1113,23 @@ namespace SagaDB {
             var list = new List<ActorPC>();
             for (var i = 0; i < result.Count; i++) {
                 var friend = (uint)result[i]["friend_char_id"];
-                var chara = new ActorPC();
-                chara.CharID = friend;
-                sqlstr = "SELECT `name`,`job`,`lv`,`jlv1`,`jlv2x`,`jlv2t` FROM `char` WHERE `char_id`='" + friend +
-                         "' LIMIT 1;";
-                var res = SQLExecuteQuery(sqlstr);
+
+
+                var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
+                    .ToList();
+
                 if (res.Count == 0)
                     continue;
                 var row = res[0];
-                chara.Name = (string)row["name"];
-                chara.Job = (PC_JOB)(byte)row["job"];
-                chara.Level = (byte)row["lv"];
-                chara.JobLevel1 = (byte)row["jlv1"];
-                chara.JobLevel2X = (byte)row["jlv2x"];
-                chara.JobLevel2T = (byte)row["jlv2t"];
-                list.Add(chara);
+                list.Add(new ActorPC {
+                    CharID = row.CharacterId,
+                    Name = (string)row.Name,
+                    Job = (PC_JOB)(byte)row.Job,
+                    Level = (byte)row.Lv,
+                    JobLevel1 = (byte)row.JobLv1,
+                    JobLevel2X = (byte)row.JobLv2x,
+                    JobLevel2T = (byte)row.JobLv2t
+                });
             }
 
             return list;
@@ -1175,22 +1141,22 @@ namespace SagaDB {
             var list = new List<ActorPC>();
             for (var i = 0; i < result.Count; i++) {
                 var friend = (uint)result[i]["char_id"];
-                var chara = new ActorPC();
-                chara.CharID = friend;
-                sqlstr = "SELECT `name`,`job`,`lv`,`jlv1`,`jlv2x`,`jlv2t`,`jlv3` FROM `char` WHERE `char_id`='" +
-                         friend + "' LIMIT 1;";
-                var res = SQLExecuteQuery(sqlstr);
+
+                var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
+                    .ToList();
                 if (res.Count == 0)
                     continue;
                 var row = res[0];
-                chara.Name = (string)row["name"];
-                chara.Job = (PC_JOB)(byte)row["job"];
-                chara.Level = (byte)row["lv"];
-                chara.JobLevel1 = (byte)row["jlv1"];
-                chara.JobLevel2X = (byte)row["jlv2x"];
-                chara.JobLevel2T = (byte)row["jlv2t"];
-                chara.JobLevel3 = (byte)row["jlv3"];
-                list.Add(chara);
+                list.Add(new ActorPC {
+                    CharID = friend,
+                    Name = (string)row.Name,
+                    Job = (PC_JOB)(byte)row.Job,
+                    Level = (byte)row.Lv,
+                    JobLevel1 = (byte)row.JobLv1,
+                    JobLevel2X = (byte)row.JobLv2x,
+                    JobLevel2T = (byte)row.JobLv2t,
+                    JobLevel3 = (byte)row.JobLv3
+                });
             }
 
             return list;
@@ -1281,14 +1247,16 @@ namespace SagaDB {
                 sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
                 var result2 = SQLExecuteQuery(sqlstr);
                 for (var i = 0; i < result2.Count; i++) {
-                    var pc = new ActorPC();
-                    pc.CharID = (uint)result2[i]["char_id"];
-                    sqlstr = "SELECT `name`,`job` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
-                    var rows = SQLExecuteQuery(sqlstr);
+                    var rows = SqlSugarHelper.Db.Queryable<Character>()
+                        .Where(item => item.CharacterId == (uint)result2[i]["char_id"])
+                        .ToList();
                     if (rows.Count > 0) {
                         var row = rows[0];
-                        pc.Name = (string)row["name"];
-                        pc.Job = (PC_JOB)(byte)row["job"];
+                        var pc = new ActorPC {
+                            CharID = row.CharacterId,
+                            Name = (string)row.Name,
+                            Job = (PC_JOB)(byte)row.Job
+                        };
                         var index = ring.NewMember(pc);
                         if (index >= 0)
                             ring.Rights[index].Value = (int)(uint)result2[i]["right"];
@@ -1804,7 +1772,10 @@ namespace SagaDB {
         }
 
         public void CreateFF(ActorPC pc) {
-            if (pc.Ring.FlyingCastle == null) return;
+            if (pc.Ring.FlyingCastle == null) {
+                return;
+            }
+
             GetAccountID(pc);
             string sqlstr;
             sqlstr = string.Format(
@@ -1819,18 +1790,18 @@ namespace SagaDB {
         }
 
         public List<ActorPC> GetWRPRanking() {
-            var sqlstr = "SELECT `char_id`,`name`,`lv`,`jlv3`,`job`,`wrp` FROM `char` ORDER BY `wrp` DESC LIMIT 100;";
-            var result = SQLExecuteQuery(sqlstr);
+            var characters = SqlSugarHelper.Db.Queryable<Character>().OrderByDescending(item => item.Wrp).Take(100)
+                .ToList();
             var res = new List<ActorPC>();
             uint count = 1;
-            foreach (DataRow i in result) {
+            foreach (Character character in characters) {
                 var pc = new ActorPC();
-                pc.CharID = (uint)i["char_id"];
-                pc.Name = (string)i["name"];
-                pc.Level = (byte)i["lv"];
-                pc.JobLevel3 = (byte)i["jlv3"];
-                pc.Job = (PC_JOB)(byte)i["job"];
-                pc.WRP = (int)i["wrp"];
+                pc.CharID = character.CharacterId;
+                pc.Name = character.Name;
+                pc.Level = character.Lv;
+                pc.JobLevel3 = character.JobLv3;
+                pc.Job = (PC_JOB)character.Job;
+                pc.WRP = character.Wrp;
                 pc.WRPRanking = count;
                 res.Add(pc);
                 count++;
@@ -2040,23 +2011,6 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        private uint getCharID(string name) {
-            string sqlstr;
-            DataRowCollection result = null;
-            sqlstr = "SELECT `char_id` FROM `char` WHERE name='" + name + "' LIMIT 1";
-            try {
-                result = SQLExecuteQuery(sqlstr);
-            }
-            catch (MySqlException ex) {
-                SagaLib.Logger.ShowSQL(ex, null);
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            return (uint)result[0]["charID"];
-        }
-
         public void SaveQuestInfo(ActorPC pc) {
             var sqlstr = string.Format("DELETE FROM `questinfo` WHERE `char_id`='{0}';", pc.CharID);
             foreach (var i in pc.KillList) {
@@ -2111,9 +2065,7 @@ namespace SagaDB {
 
         private void GetVar(ActorPC pc) {
             var sqlstr = "SELECT * FROM `cvar` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
-            var account_id =
-                (uint)SQLExecuteQuery("SELECT `account_id` FROM `char` WHERE `char_id`='" + pc.CharID + "' LIMIT 1")[0][
-                    "account_id"];
+            var account_id = this.GetAccountID(pc.CharID);
             var enc = Encoding.UTF8;
             DataRowCollection res;
             res = SQLExecuteQuery(sqlstr);
@@ -2172,35 +2124,45 @@ namespace SagaDB {
                 MySqlCommand cmd;
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
                     pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
-                    cmd = new MySqlCommand(string.Format(
-                        "UPDATE `inventory` SET `data`=?data WHERE `char_id`='{0}' LIMIT 1;\r\n",
-                        pc.CharID));
-                    var itemdata = pc.Inventory.ToBytes();
-                    cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = itemdata;
-
-                    if (pc.Account != null)
+                    if (pc.Account != null) {
                         SagaLib.Logger.GetLogger().Information(
-                            "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" + itemdata.Length);
+                            "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" +
+                            pc.Inventory.ToBytes().Length);
+                    }
+
                     try {
-                        SQLExecuteNonQuery(cmd);
+                        SqlSugarHelper.Db.BeginTran();
+                        foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Wait)
+                                     .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                            inventory.Data = pc.Inventory.ToBytes();
+                            SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
+                        }
+
+                        SqlSugarHelper.Db.CommitTran();
                     }
                     catch (Exception ex) {
+                        SqlSugarHelper.Db.RollbackTran();
                         SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     }
                 }
 
+
                 if (pc.Inventory.WareHouse != null)
                     if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
-                        cmd = new MySqlCommand(string.Format(
-                            "UPDATE `warehouse` SET `data`=?data WHERE `account_id`='{0}' LIMIT 1;\r\n",
-                            account));
-                        var para = cmd.Parameters.Add("?data", MySqlDbType.Blob);
-                        para.Value = pc.Inventory.WareToBytes();
-
                         try {
-                            SQLExecuteNonQuery(cmd);
+                            SqlSugarHelper.Db.BeginTran();
+
+                            foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Wait)
+                                         .Where(item => item.AccountId == account).ToList()) {
+                                warehouse.Data = pc.Inventory.WareToBytes();
+
+                                SqlSugarHelper.Db.Updateable<Warehouse>(warehouse).ExecuteCommand();
+                            }
+
+                            SqlSugarHelper.Db.CommitTran();
                         }
                         catch (Exception ex) {
+                            SqlSugarHelper.Db.RollbackTran();
                             SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                         }
                     }
@@ -2261,22 +2223,15 @@ namespace SagaDB {
 
         public void GetItem(ActorPC pc) {
             try {
-                string sqlstr;
-                DataRowCollection result = null;
                 var account = GetAccountID(pc);
-                sqlstr = "SELECT * FROM `inventory` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
-                try {
-                    result = SQLExecuteQuery(sqlstr);
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                    return;
-                }
+                var inventories = SqlSugarHelper.Db.Queryable<Inventory>().Where(item => item.CharacterId == pc.CharID)
+                    .ToList();
 
-                if (result.Count > 0) {
-                    Inventory inv = null;
+
+                if (inventories.Count > 0) {
+                    SagaDB.Item.Inventory inv = null;
                     try {
-                        var buf = (byte[])result[0]["data"];
+                        var buf = (byte[])inventories[0].Data;
                         SagaLib.Logger.GetLogger()
                             .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                         var ms = new MemoryStream(buf);
@@ -2286,7 +2241,7 @@ namespace SagaDB {
                             ms = new MemoryStream(ms2.ToArray());
 #pragma warning disable SYSLIB0011
                             var bf = new BinaryFormatter();
-                            inv = (Inventory)bf.Deserialize(ms);
+                            inv = (SagaDB.Item.Inventory)bf.Deserialize(ms);
 
                             if (inv != null) {
                                 pc.Inventory = inv;
@@ -2294,7 +2249,7 @@ namespace SagaDB {
                             }
                         }
                         else {
-                            inv = new Inventory(pc);
+                            inv = new SagaDB.Item.Inventory(pc);
                             inv.FromStream(ms);
                             pc.Inventory = inv;
                         }
@@ -2304,19 +2259,13 @@ namespace SagaDB {
                     }
                 }
 
-                sqlstr = "SELECT * FROM `warehouse` WHERE `account_id`='" + account + "';";
-                try {
-                    result = SQLExecuteQuery(sqlstr);
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                    return;
-                }
+                var warehouse = SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == account)
+                    .ToList();
 
-                if (result.Count > 0) {
+                if (warehouse.Count > 0) {
                     Dictionary<WarehousePlace, List<Item.Item>> inv = null;
                     try {
-                        var buf = (byte[])result[0]["data"];
+                        var buf = (byte[])warehouse[0].Data;
                         var ms = new MemoryStream(buf);
                         if (buf[0] == 0x42 && buf[1] == 0x5A) {
                             pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
@@ -2335,8 +2284,10 @@ namespace SagaDB {
                             }
                         }
                         else {
-                            if (pc.Inventory.WareHouse == null)
-                                pc.Inventory.WareHouse = new Inventory(pc).WareHouse;
+                            if (pc.Inventory.WareHouse == null) {
+                                pc.Inventory.WareHouse = new SagaDB.Item.Inventory(pc).WareHouse;
+                            }
+
                             pc.Inventory.WareFromSteam(ms);
                         }
                     }
@@ -2376,24 +2327,23 @@ namespace SagaDB {
             var result = SQLExecuteQuery(sqlstr);
 
             for (byte index = 0; index < 7; index++) {
-                var member = (uint)result[index]["char_id"];
-                if (member == 0) {
+                var memberCharId = (uint)result[index]["char_id"];
+                if (memberCharId == 0) {
                     continue;
                 }
 
-                var pc = new ActorPC();
-                pc.CharID = member;
-
-                sqlstr = $"SELECT `name`,`job` FROM `char` WHERE `char_id`='{member}' LIMIT 1;";
-                var rows = SQLExecuteQuery(sqlstr);
-                if (rows.Count == 0) {
+                var members = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == memberCharId)
+                    .ToList();
+                if (members.Count == 0) {
                     continue;
                 }
 
-                var row = rows[0];
-                pc.Name = (string)row["name"];
-                pc.Job = (PC_JOB)(byte)row["job"];
-                party.Members.Add(index, pc);
+                var member = members[0];
+                party.Members.Add(index, new ActorPC {
+                    CharID = member.CharacterId,
+                    Name = member.Name,
+                    Job = (PC_JOB)member.Job
+                });
             }
         }
 
