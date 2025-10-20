@@ -32,7 +32,7 @@ namespace SagaDB {
 
         void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo);
 
-        void CreateChar(ActorPC aChar, int account_id);
+        bool CreateChar(ActorPC aChar, int account_id);
 
         void SaveVar(ActorPC aChar);
 

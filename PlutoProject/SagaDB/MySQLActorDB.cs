@@ -26,42 +26,31 @@ using Logger = Serilog.Core.Logger;
 
 namespace SagaDB {
     public class MySqlActorDb : MySQLConnectivity, ActorDB {
-        private static readonly Logger _logger = SagaLib.Logger.InitLogger<MySqlActorDb>();
-
-
         public void AJIClear() {
             CharacterRepository.AjiClear();
         }
 
-        public void CreateChar(ActorPC aChar, int accountId) {
-            string sqlstr;
+        public bool CreateChar(ActorPC aChar, int accountId) {
             if (aChar == null) {
                 SagaLib.Logger.GetLogger().Error("aChar is null");
-                return;
+                return false;
             }
 
             //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
 
-            aChar.CharID = CharacterRepository.createCharacter(aChar, (uint)accountId);
 
             try {
                 SqlSugarHelper.Db.BeginTran();
+
+                aChar.CharID = CharacterRepository.createCharacter(aChar, (uint)accountId);
+
 
                 SqlSugarHelper.Db.Insertable<Inventory>(new Inventory {
                     CharacterId = aChar.CharID,
                     Data = aChar.Inventory.ToBytes()
                 }).ExecuteCommand();
 
-                SqlSugarHelper.Db.CommitTran();
-            }
-            catch (Exception ex) {
-                SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            if (aChar.Inventory.WareHouse != null) {
-                try {
-                    SqlSugarHelper.Db.BeginTran();
+                if (aChar.Inventory.WareHouse != null) {
                     if (SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == accountId).ToList()
                             .Count == 0) {
                         SqlSugarHelper.Db.Insertable<Warehouse>(new Warehouse {
@@ -69,18 +58,21 @@ namespace SagaDB {
                             Data = aChar.Inventory.WareToBytes()
                         });
                     }
+                }
 
-                    SqlSugarHelper.Db.CommitTran();
-                }
-                catch (Exception ex) {
-                    SqlSugarHelper.Db.RollbackTran();
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                }
+                SqlSugarHelper.Db.CommitTran();
+
+
+                aChar.Inventory.WareHouse = null;
+                //to avoid deleting items from warehouse
+                SaveItem(aChar);
+                return true;
             }
-
-            aChar.Inventory.WareHouse = null;
-            //to avoid deleting items from warehouse
-            SaveItem(aChar);
+            catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                return false;
+            }
         }
 
         public uint CreatePartner(Item.Item partnerItem) {
@@ -1268,40 +1260,40 @@ namespace SagaDB {
             var result = SQLExecuteQuery(sqlstr);
 
             var ring = new Ring.Ring();
-            if (result.Count != 0) {
-                ring.ID = id;
-                var leader = (uint)result[0]["leader"];
-                ring.Name = (string)result[0]["name"];
-                ring.Fame = (uint)result[0]["fame"];
-                if (result[0]["ff_id"] != null)
-                    ring.FF_ID = (uint)result[0]["ff_id"];
-                sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
-                var result2 = SQLExecuteQuery(sqlstr);
-                for (var i = 0; i < result2.Count; i++) {
-                    var rows = SqlSugarHelper.Db.Queryable<Character>()
-                        .Where(item => item.CharacterId == (uint)result2[i]["char_id"])
-                        .ToList();
-                    if (rows.Count > 0) {
-                        var row = rows[0];
-                        var pc = new ActorPC {
-                            CharID = row.CharacterId,
-                            Name = (string)row.Name,
-                            Job = (PC_JOB)(byte)row.Job
-                        };
-                        var index = ring.NewMember(pc);
-                        if (index >= 0)
-                            ring.Rights[index].Value = (int)(uint)result2[i]["right"];
-                        if (leader == pc.CharID)
-                            ring.Leader = pc;
-                    }
-                }
-
-                if (ring.Leader == null)
-                    return null;
-                return ring;
+            if (result.Count == 0) {
+                return null;
             }
 
-            return null;
+            ring.ID = id;
+            var leader = (uint)result[0]["leader"];
+            ring.Name = (string)result[0]["name"];
+            ring.Fame = (uint)result[0]["fame"];
+            if (result[0]["ff_id"] != null)
+                ring.FF_ID = (uint)result[0]["ff_id"];
+            sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
+            var result2 = SQLExecuteQuery(sqlstr);
+            for (var i = 0; i < result2.Count; i++) {
+                var rows = SqlSugarHelper.Db.Queryable<Character>()
+                    .Where(item => item.CharacterId == (uint)result2[i]["char_id"])
+                    .ToList();
+                if (rows.Count > 0) {
+                    var row = rows[0];
+                    var pc = new ActorPC {
+                        CharID = row.CharacterId,
+                        Name = (string)row.Name,
+                        Job = (PC_JOB)(byte)row.Job
+                    };
+                    var index = ring.NewMember(pc);
+                    if (index >= 0)
+                        ring.Rights[index].Value = (int)(uint)result2[i]["right"];
+                    if (leader == pc.CharID)
+                        ring.Leader = pc;
+                }
+            }
+
+            if (ring.Leader == null)
+                return null;
+            return ring;
         }
 
         public void NewRing(Ring.Ring ring) {
@@ -1496,27 +1488,33 @@ namespace SagaDB {
         }
 
         public uint GetFlyCastleRindID(uint ffid) {
-            var sqlstr = string.Format("SELECT `ring_id` FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", ffid);
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0) return (uint)result[0]["ring_id"];
+            foreach (var flyingCastle in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>()
+                         .Where(item => item.FfId == ffid).ToList()) {
+                return flyingCastle.RingId;
+            }
 
             return 0;
         }
 
         public void GetFlyCastle(ActorPC pc) {
-            if (pc.Ring != null) {
-                var sqlstr = string.Format("SELECT * FROM `ff` WHERE `ff_id`='{0}' LIMIT 1;", pc.Ring.FF_ID);
-                var result = SQLExecuteQuery(sqlstr);
-                if (result.Count > 0)
-                    if (pc.Ring.FlyingCastle == null) {
-                        pc.Ring.FlyingCastle = new FlyingCastle.FlyingCastle();
-                        pc.Ring.FlyingCastle.ID = (uint)result[0]["ff_id"];
-                        pc.Ring.FlyingCastle.Name = (string)result[0]["name"];
-                        pc.Ring.FlyingCastle.RingID = (uint)result[0]["ring_id"];
-                        pc.Ring.FlyingCastle.ObMode = 3;
-                        pc.Ring.FlyingCastle.Content = (string)result[0]["content"];
-                        pc.Ring.FlyingCastle.Level = (uint)result[0]["level"];
-                    }
+            if (pc.Ring == null) {
+                return;
+            }
+
+            var result = SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>().Where(item => item.FfId == pc.Ring.FF_ID)
+                .ToList();
+            if (result.Count == 0) {
+                return;
+            }
+
+            if (pc.Ring.FlyingCastle == null) {
+                pc.Ring.FlyingCastle = new FlyingCastle.FlyingCastle();
+                pc.Ring.FlyingCastle.ID = (uint)result[0].FfId;
+                pc.Ring.FlyingCastle.Name = (string)result[0].Name;
+                pc.Ring.FlyingCastle.RingID = (uint)result[0].RingId;
+                pc.Ring.FlyingCastle.ObMode = 3;
+                pc.Ring.FlyingCastle.Content = (string)result[0].Content;
+                pc.Ring.FlyingCastle.Level = (uint)result[0].Level;
             }
         }
 
@@ -1578,17 +1576,17 @@ namespace SagaDB {
         }
 
         public List<FlyingCastle.FlyingCastle> GetFlyingCastles() {
-            var sqlstr = "SELECT * FROM `ff`;";
-            var list = new List<FlyingCastle.FlyingCastle>();
-            var result = SQLExecuteQuery(sqlstr);
+            ;
 
-            foreach (DataRow i in result) {
+            var list = new List<FlyingCastle.FlyingCastle>();
+
+            foreach (Entities.FlyingCastle i in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>().ToList()) {
                 var ff = new FlyingCastle.FlyingCastle();
-                ff.Name = (string)i["name"];
-                ff.Content = (string)i["content"];
-                ff.ID = (uint)i["ff_id"];
-                ff.RingID = (uint)i["ring_id"];
-                ff.Level = (uint)i["level"];
+                ff.Name = (string)i.Name;
+                ff.Content = (string)i.Content;
+                ff.ID = (uint)i.FfId;
+                ff.RingID = (uint)i.RingId;
+                ff.Level = (uint)i.Level;
                 list.Add(ff);
             }
 
@@ -1672,62 +1670,77 @@ namespace SagaDB {
                 return;
             }
 
-            //uint account = GetAccountID(pc);
-            string sqlstr;
-            if (ring.FlyingCastle.ID > 0) {
-                sqlstr = string.Format(
-                    "UPDATE `ff` SET `level`='{0}',`content`='{1}',`name`='{2}' WHERE `ff_id`='{3}';",
-                    ring.FlyingCastle.Level, ring.FlyingCastle.Content, ring.Name, ring.FlyingCastle.ID);
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                //uint account = GetAccountID(pc);
+                string sqlstr;
+                if (ring.FlyingCastle.ID > 0) {
+                    foreach (var flyingCastle in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>()
+                                 .TranLock(DbLockType.Wait)
+                                 .Where(item => item.FfId == ring.FlyingCastle.ID).ToList()) {
+                        flyingCastle.Level = ring.FlyingCastle.Level;
+                        flyingCastle.Content = ring.FlyingCastle.Content;
+                        flyingCastle.Name = ring.FlyingCastle.Name;
+                        SqlSugarHelper.Db.Updateable(flyingCastle).ExecuteCommand();
+                    }
+                }
+
+                sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
+                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN))
+                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.GARDEN])
+                        sqlstr += string.Format(
+                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
+                            i.Name);
+
+                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
+                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.ROOM])
+                        sqlstr += string.Format(
+                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
+                            i.Name);
+
+                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FARM))
+                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FARM])
+                        sqlstr += string.Format(
+                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
+                            i.Name);
+
+                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FISHERY))
+                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FISHERY])
+                        sqlstr += string.Format(
+                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
+                            i.Name);
+
+                if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.HOUSE))
+                    foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.HOUSE])
+                        sqlstr += string.Format(
+                            "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
+                            "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
+                            ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
+                            i.Motion,
+                            i.Name);
+
                 SQLExecuteNonQuery(sqlstr);
+
+                SqlSugarHelper.Db.CommitTran();
             }
-
-            sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
-            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN))
-                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.GARDEN])
-                    sqlstr += string.Format(
-                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                        i.Motion,
-                        i.Name);
-
-            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
-                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.ROOM])
-                    sqlstr += string.Format(
-                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                        i.Motion,
-                        i.Name);
-
-            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FARM))
-                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FARM])
-                    sqlstr += string.Format(
-                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','2','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                        i.Motion,
-                        i.Name);
-
-            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.FISHERY))
-                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.FISHERY])
-                    sqlstr += string.Format(
-                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','3','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                        i.Motion,
-                        i.Name);
-
-            if (ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.HOUSE))
-                foreach (var i in ring.FlyingCastle.Furnitures[FurniturePlace.HOUSE])
-                    sqlstr += string.Format(
-                        "INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                        "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','4','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                        ring.FlyingCastle.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis,
-                        i.Motion,
-                        i.Name);
-
-            SQLExecuteNonQuery(sqlstr);
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void SaveSerFF(Server.Server ser) {
@@ -1809,15 +1822,32 @@ namespace SagaDB {
 
             GetAccountID(pc);
             string sqlstr;
-            sqlstr = string.Format(
-                "INSERT INTO `ff`(`ring_id` ,`name`,`content`,`level`) VALUES ('{0}','{1}','{2}','{3}');", pc.Ring.ID,
-                pc.Ring.FlyingCastle.Name, pc.Ring.FlyingCastle.Content, pc.Ring.FlyingCastle.Level);
-            uint id = SQLExecuteScalar(sqlstr).Index;
-            pc.Ring.FlyingCastle.ID = id;
-            pc.Ring.FF_ID = id;
-            sqlstr = string.Format("UPDATE `ring` SET `ff_id`='{0}' WHERE `ring_id`='{1}' LIMIT 1;\r\n",
-                pc.Ring.FF_ID, pc.Ring.ID);
-            SQLExecuteNonQuery(sqlstr);
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                uint id = SqlSugarHelper.Db.Insertable<Entities.FlyingCastle>(new Entities.FlyingCastle {
+                    RingId = pc.Ring.ID,
+                    Name = pc.Ring.FlyingCastle.Name,
+                    Content = pc.Ring.FlyingCastle.Content,
+                    Level = pc.Ring.FlyingCastle.Level
+                }).ExecuteReturnEntity().FfId;
+
+                pc.Ring.FlyingCastle.ID = id;
+                pc.Ring.FF_ID = id;
+
+                foreach (var ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                             .Where(item => item.RingId == pc.Ring.ID).ToList()) {
+                    ring.FfId = pc.Ring.FF_ID;
+                    SqlSugarHelper.Db.Updateable(ring).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public List<ActorPC> GetWRPRanking() {
@@ -1972,7 +2002,8 @@ namespace SagaDB {
         }
 
         public void DeleteTamaireLending(TamaireLending tamaireLending) {
-            var sqlstr = string.Format("DELETE FROM `tamairelending` WHERE `char_id`='{0}';", tamaireLending.Lender);
+            var sqlstr = string.Format("DELETE FROM `tamairelending` WHERE `char_id`='{0}';",
+                tamaireLending.Lender);
             SQLExecuteNonQuery(sqlstr);
         }
 
@@ -2150,9 +2181,8 @@ namespace SagaDB {
 
         public void SaveItem(ActorPC pc) {
             try {
+                SqlSugarHelper.Db.BeginTran();
                 var account = GetAccountID(pc);
-#pragma warning disable SYSLIB0011
-                MySqlCommand cmd;
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
                     pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
                     if (pc.Account != null) {
@@ -2161,44 +2191,29 @@ namespace SagaDB {
                             pc.Inventory.ToBytes().Length);
                     }
 
-                    try {
-                        SqlSugarHelper.Db.BeginTran();
-                        foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Wait)
-                                     .Where(item => item.CharacterId == pc.CharID).ToList()) {
-                            inventory.Data = pc.Inventory.ToBytes();
-                            SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
-                        }
-
-                        SqlSugarHelper.Db.CommitTran();
-                    }
-                    catch (Exception ex) {
-                        SqlSugarHelper.Db.RollbackTran();
-                        SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                    foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Wait)
+                                 .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                        inventory.Data = pc.Inventory.ToBytes();
+                        SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
                     }
                 }
 
 
-                if (pc.Inventory.WareHouse != null)
+                if (pc.Inventory.WareHouse != null) {
                     if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
-                        try {
-                            SqlSugarHelper.Db.BeginTran();
+                        foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Wait)
+                                     .Where(item => item.AccountId == account).ToList()) {
+                            warehouse.Data = pc.Inventory.WareToBytes();
 
-                            foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Wait)
-                                         .Where(item => item.AccountId == account).ToList()) {
-                                warehouse.Data = pc.Inventory.WareToBytes();
-
-                                SqlSugarHelper.Db.Updateable<Warehouse>(warehouse).ExecuteCommand();
-                            }
-
-                            SqlSugarHelper.Db.CommitTran();
-                        }
-                        catch (Exception ex) {
-                            SqlSugarHelper.Db.RollbackTran();
-                            SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                            SqlSugarHelper.Db.Updateable<Warehouse>(warehouse).ExecuteCommand();
                         }
                     }
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
@@ -2255,38 +2270,33 @@ namespace SagaDB {
         public void GetItem(ActorPC pc) {
             try {
                 var account = GetAccountID(pc);
-                var inventories = SqlSugarHelper.Db.Queryable<Inventory>().Where(item => item.CharacterId == pc.CharID)
+                var inventories = SqlSugarHelper.Db.Queryable<Inventory>()
+                    .Where(item => item.CharacterId == pc.CharID)
                     .ToList();
 
 
                 if (inventories.Count > 0) {
                     SagaDB.Item.Inventory inv = null;
-                    try {
-                        var buf = (byte[])inventories[0].Data;
-                        SagaLib.Logger.GetLogger()
-                            .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
-                        var ms = new MemoryStream(buf);
-                        if (buf[0] == 0x42 && buf[1] == 0x5A) {
-                            var ms2 = new MemoryStream();
-                            BZip2.Decompress(ms, ms2, true);
-                            ms = new MemoryStream(ms2.ToArray());
-#pragma warning disable SYSLIB0011
-                            var bf = new BinaryFormatter();
-                            inv = (SagaDB.Item.Inventory)bf.Deserialize(ms);
 
-                            if (inv != null) {
-                                pc.Inventory = inv;
-                                pc.Inventory.Owner = pc;
-                            }
-                        }
-                        else {
-                            inv = new SagaDB.Item.Inventory(pc);
-                            inv.FromStream(ms);
-                            pc.Inventory = inv;
-                        }
+                    var buf = (byte[])inventories[0].Data;
+                    SagaLib.Logger.GetLogger()
+                        .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
+                    var ms = new MemoryStream(buf);
+                    if (buf[0] == 0x42 && buf[1] == 0x5A) {
+                        var ms2 = new MemoryStream();
+                        BZip2.Decompress(ms, ms2, true);
+                        ms = new MemoryStream(ms2.ToArray());
+#pragma warning disable SYSLIB0011
+                        var bf = new BinaryFormatter();
+                        inv = (SagaDB.Item.Inventory)bf.Deserialize(ms);
+
+                        pc.Inventory = inv;
+                        pc.Inventory.Owner = pc;
                     }
-                    catch (Exception ex) {
-                        SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                    else {
+                        inv = new SagaDB.Item.Inventory(pc);
+                        inv.FromStream(ms);
+                        pc.Inventory = inv;
                     }
                 }
 
@@ -2295,35 +2305,30 @@ namespace SagaDB {
 
                 if (warehouse.Count > 0) {
                     Dictionary<WarehousePlace, List<Item.Item>> inv = null;
-                    try {
-                        var buf = (byte[])warehouse[0].Data;
-                        var ms = new MemoryStream(buf);
-                        if (buf[0] == 0x42 && buf[1] == 0x5A) {
-                            pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
-                            var ms2 = new MemoryStream();
-                            BZip2.Decompress(ms, ms2, true);
-                            ms = new MemoryStream(ms2.ToArray());
+                    var buf = (byte[])warehouse[0].Data;
+                    var ms = new MemoryStream(buf);
+                    if (buf[0] == 0x42 && buf[1] == 0x5A) {
+                        pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
+                        var ms2 = new MemoryStream();
+                        BZip2.Decompress(ms, ms2, true);
+                        ms = new MemoryStream(ms2.ToArray());
 #pragma warning disable SYSLIB0011
-                            var bf = new BinaryFormatter();
-                            inv = (Dictionary<WarehousePlace, List<Item.Item>>)bf.Deserialize(ms);
-                            if (inv != null) {
-                                pc.Inventory.wareIndex = 200000001;
-                                foreach (var i in inv.Keys) {
-                                    pc.Inventory.WareHouse.Add(i, new List<Item.Item>());
-                                    foreach (var j in inv[i]) pc.Inventory.AddWareItem(i, j);
-                                }
+                        var bf = new BinaryFormatter();
+                        inv = (Dictionary<WarehousePlace, List<Item.Item>>)bf.Deserialize(ms);
+                        if (inv != null) {
+                            pc.Inventory.wareIndex = 200000001;
+                            foreach (var i in inv.Keys) {
+                                pc.Inventory.WareHouse.Add(i, new List<Item.Item>());
+                                foreach (var j in inv[i]) pc.Inventory.AddWareItem(i, j);
                             }
-                        }
-                        else {
-                            if (pc.Inventory.WareHouse == null) {
-                                pc.Inventory.WareHouse = new SagaDB.Item.Inventory(pc).WareHouse;
-                            }
-
-                            pc.Inventory.WareFromSteam(ms);
                         }
                     }
-                    catch (Exception ex) {
-                        SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                    else {
+                        if (pc.Inventory.WareHouse == null) {
+                            pc.Inventory.WareHouse = new SagaDB.Item.Inventory(pc).WareHouse;
+                        }
+
+                        pc.Inventory.WareFromSteam(ms);
                     }
                 }
 
@@ -2354,7 +2359,8 @@ namespace SagaDB {
         }
 
         public void GetPartyMember(Party.Party party) {
-            var result = SqlSugarHelper.Db.Queryable<PartyMember>().Where(item => item.PartyId == party.ID).ToList();
+            var result = SqlSugarHelper.Db.Queryable<PartyMember>().Where(item => item.PartyId == party.ID)
+                .ToList();
 
             for (byte index = 0; index < 7; index++) {
                 var memberCharId = (uint)result[index].CharId;
@@ -2362,7 +2368,8 @@ namespace SagaDB {
                     continue;
                 }
 
-                var members = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == memberCharId)
+                var members = SqlSugarHelper.Db.Queryable<Character>()
+                    .Where(item => item.CharacterId == memberCharId)
                     .ToList();
                 if (members.Count == 0) {
                     continue;
@@ -2380,7 +2387,8 @@ namespace SagaDB {
         private void GetFlyingGarden(ActorPC pc) {
             var account = GetAccountID(pc);
             var result =
-                SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;", account));
+                SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;",
+                    account));
             if (result.Count > 0) {
                 var garden = new FlyingGarden.FlyingGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
@@ -2479,12 +2487,14 @@ namespace SagaDB {
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
+                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                    i.Name);
             foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
                 sqlstr += string.Format(
                     "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
                     "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion, i.Name);
+                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
+                    i.Name);
             SQLExecuteNonQuery(sqlstr);
         }
 
@@ -2561,7 +2571,8 @@ namespace SagaDB {
         }
 
         public void GetDualJobSkill(ActorPC pc) {
-            var sqlstr = $"select * from `dualjob_skill` where `char_id` = '{pc.CharID}' and series_id={pc.DualJobID}";
+            var sqlstr =
+                $"select * from `dualjob_skill` where `char_id` = '{pc.CharID}' and series_id={pc.DualJobID}";
             var result = SQLExecuteQuery(sqlstr);
             if (result.Count > 0) {
                 pc.DualJobSkills = new List<Skill.Skill>();
