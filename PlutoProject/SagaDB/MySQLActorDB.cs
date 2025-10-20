@@ -1271,11 +1271,13 @@ namespace SagaDB {
                 ring.FF_ID = (uint)result[0].FfId;
             }
 
-            string sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
-            var result2 = SQLExecuteQuery(sqlstr);
+
+            var result2 = SqlSugarHelper.Db.Queryable<RingMember>()
+                .Where(item => item.RingId == ring.ID).ToList();
+
             for (var i = 0; i < result2.Count; i++) {
                 var rows = SqlSugarHelper.Db.Queryable<Character>()
-                    .Where(item => item.CharacterId == (uint)result2[i]["char_id"])
+                    .Where(item => item.CharacterId == (uint)result2[i].CharacterId)
                     .ToList();
                 if (rows.Count > 0) {
                     var row = rows[0];
@@ -1285,8 +1287,10 @@ namespace SagaDB {
                         Job = (PC_JOB)(byte)row.Job
                     };
                     var index = ring.NewMember(pc);
-                    if (index >= 0)
-                        ring.Rights[index].Value = (int)(uint)result2[i]["right"];
+                    if (index >= 0) {
+                        ring.Rights[index].Value = result2[i].Right;
+                    }
+
                     if (leader == pc.CharID)
                         ring.Leader = pc;
                 }
@@ -1334,11 +1338,16 @@ namespace SagaDB {
                 }
 
                 if (saveMembers) {
-                    string sqlstr = string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';\r\n", ring.ID);
+                    foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
+                                 .Where(item => item.RingId == ring.ID).ToList()) {
+                        SqlSugarHelper.Db.Deleteable((ringMember));
+                    }
+
                     foreach (var i in ring.Members.Keys) {
-                        sqlstr += string.Format(
-                            "INSERT INTO `ringmember`(`ring_id`,`char_id`,`right`) VALUES ('{0}','{1}','{2}');\r\n",
-                            ring.ID, ring.Members[i].CharID, ring.Rights[i].Value);
+                        SqlSugarHelper.Db.Insertable<RingMember>(new RingMember {
+                                RingId = ring.ID, CharacterId = ring.Members[i].CharID, Right = ring.Rights[i].Value
+                            })
+                            .ExecuteCommand();
                     }
                 }
 
@@ -1354,8 +1363,11 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                var sqlstr = string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';", ring.ID);
-                SQLExecuteNonQuery(sqlstr);
+
+                foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
+                             .Where(item => item.RingId == ring.ID).ToList()) {
+                    SqlSugarHelper.Db.Deleteable((ringMember));
+                }
 
 
                 foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
@@ -2127,9 +2139,7 @@ namespace SagaDB {
         public void SaveQuestInfo(ActorPC pc) {
             var sqlstr = string.Format("DELETE FROM `questinfo` WHERE `char_id`='{0}';", pc.CharID);
             foreach (var i in pc.KillList) {
-                byte ss = 0;
-                if (i.Value.isFinish)
-                    ss = 1;
+                byte ss = (i.Value.isFinish) ? (byte)1 : (byte)0;
                 sqlstr += string.Format(
                     "INSERT INTO `questinfo`(`char_id`,`object_id`,`count`,`totalcount`,`infinish`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
                     pc.CharID, i.Key, i.Value.Count, i.Value.TotalCount, ss);
@@ -2565,24 +2575,22 @@ namespace SagaDB {
         //#region 副职相关
 
         public void GetDualJobInfo(ActorPC pc) {
-            var result = SQLExecuteQuery($"select * from `dualjob` where `char_id` = '{pc.CharID}'");
+            var result = SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
+                .Where(item => item.CharacterId == pc.CharID).ToList();
             if (result.Count > 0) {
                 pc.PlayerDualJobList = new Dictionary<byte, PlayerDualJobInfo>();
-                foreach (DataRow item in result)
-                    if (pc.PlayerDualJobList.ContainsKey(byte.Parse(item["series_id"].ToString()))) {
-                        pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobId =
-                            byte.Parse(item["series_id"].ToString());
-                        pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobLevel =
-                            byte.Parse(item["level"].ToString());
-                        pc.PlayerDualJobList[byte.Parse(item["series_id"].ToString())].DualJobExp =
-                            ulong.Parse(item["exp"].ToString());
+                foreach (Entities.DualJob item in result)
+                    if (pc.PlayerDualJobList.ContainsKey(item.SeriesId)) {
+                        pc.PlayerDualJobList[item.SeriesId].DualJobId = item.SeriesId;
+                        pc.PlayerDualJobList[item.SeriesId].DualJobLevel = item.Level;
+                        pc.PlayerDualJobList[item.SeriesId].DualJobExp = item.Exp;
                     }
                     else {
                         var pi = new PlayerDualJobInfo();
-                        pi.DualJobId = byte.Parse(item["series_id"].ToString());
-                        pi.DualJobLevel = byte.Parse(item["level"].ToString());
-                        pi.DualJobExp = ulong.Parse(item["exp"].ToString());
-                        pc.PlayerDualJobList.Add(byte.Parse(item["series_id"].ToString()), pi);
+                        pi.DualJobId = item.SeriesId;
+                        pi.DualJobLevel = item.Level;
+                        pi.DualJobExp = item.Exp;
+                        pc.PlayerDualJobList.Add(item.SeriesId, pi);
                     }
             }
 
@@ -2603,50 +2611,83 @@ namespace SagaDB {
 
         public void SaveDualJobInfo(ActorPC pc, bool allinfo) {
             var dic = pc.PlayerDualJobList;
-            var insertstr = $"delete from `dualjob` where `char_id` = {pc.CharID};";
-            foreach (var item in dic.Keys)
-                insertstr +=
-                    $"insert into `dualjob` values ('',{pc.CharID}, {dic[item].DualJobId},{dic[item].DualJobLevel}, {dic[item].DualJobExp});";
-            SQLExecuteNonQuery(insertstr);
 
-            if (!allinfo) {
-                return;
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var dualJob in SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(dualJob).ExecuteCommand();
+                }
+
+                foreach (var item in dic.Keys) {
+                    SqlSugarHelper.Db.Insertable(new Entities.DualJob {
+                        CharacterId = pc.CharID,
+                        SeriesId = dic[item].DualJobId,
+                        Level = dic[item].DualJobLevel,
+                        Exp = dic[item].DualJobExp
+                    }).ExecuteCommand();
+                }
+
+                if (!allinfo) {
+                    foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
+                                 .TranLock(DbLockType.Wait)
+                                 .Where(item => item.CharacterId == pc.CharID)
+                                 .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                        SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
+                    }
+
+                    foreach (var item in pc.DualJobSkills) {
+                        SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
+                            CharacterId = pc.CharID,
+                            SeriesId = pc.DualJobID,
+                            SkillId = item.ID,
+                            SkillLevel = item.Level
+                        }).ExecuteCommand();
+                    }
+
+                    ;
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
-
-            var delskillstr =
-                $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
-            foreach (var item in pc.DualJobSkills)
-                delskillstr +=
-                    $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
-            SQLExecuteNonQuery(delskillstr);
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void GetDualJobSkill(ActorPC pc) {
-            var sqlstr =
-                $"select * from `dualjob_skill` where `char_id` = '{pc.CharID}' and series_id={pc.DualJobID}";
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0) {
-                pc.DualJobSkills = new List<Skill.Skill>();
-                foreach (DataRow item in result) {
-                    var id = uint.Parse(item["skill_id"].ToString());
-                    var level = byte.Parse(item["skill_level"].ToString());
-                    var s = SkillFactory.Instance.GetSkill(id, level);
-                    if (s != null)
-                        pc.DualJobSkills.Add(s);
+            pc.DualJobSkills = new List<Skill.Skill>();
+            foreach (Entities.DualJobSkill item in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
+                         .Where(item => item.CharacterId == pc.CharID)
+                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                var id = item.SkillId;
+                var level = item.SkillLevel;
+                var s = SkillFactory.Instance.GetSkill(id, level);
+                if (s != null) {
+                    pc.DualJobSkills.Add(s);
                 }
-            }
-            else {
-                pc.DualJobSkills = new List<Skill.Skill>();
             }
         }
 
         public void SaveDualJobSkill(ActorPC pc) {
-            var delskillstr =
-                $"delete from `dualjob_skill` where `char_id` = {pc.CharID} and `series_id` = {pc.DualJobID};";
-            foreach (var item in pc.DualJobSkills)
-                delskillstr +=
-                    $"insert into `dualjob_skill` values ('',{pc.CharID}, {pc.DualJobID}, {item.ID}, {item.Level});";
-            SQLExecuteNonQuery(delskillstr);
+            foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
+                         .TranLock(DbLockType.Wait)
+                         .Where(item => item.CharacterId == pc.CharID)
+                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
+            }
+
+            foreach (var item in pc.DualJobSkills) {
+                SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
+                    CharacterId = pc.CharID,
+                    SeriesId = pc.DualJobID,
+                    SkillId = item.ID,
+                    SkillLevel = item.Level
+                }).ExecuteCommand();
+            }
         }
     }
 
