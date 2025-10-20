@@ -5,23 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class HairFactory : Singleton<HairFactory>
-    {
+namespace SagaDB.Item {
+    public class HairFactory : Singleton<HairFactory> {
         public List<Hair> Hairs { get; } = new List<Hair>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -41,8 +36,8 @@ namespace SagaDB.Item
 
                     Hairs.Add(hair);
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
+                    SagaLib.Logger.ShowError(ex);
                 }
             }
 

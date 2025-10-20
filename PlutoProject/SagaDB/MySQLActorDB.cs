@@ -1256,8 +1256,7 @@ namespace SagaDB {
         }
 
         public Ring.Ring GetRing(uint id) {
-            var sqlstr = "SELECT `leader`,`name`,`fame`,`ff_id` FROM `ring` WHERE `ring_id`='" + id + "' LIMIT 1;";
-            var result = SQLExecuteQuery(sqlstr);
+            var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().Where(item => item.RingId == id).ToList();
 
             var ring = new Ring.Ring();
             if (result.Count == 0) {
@@ -1265,12 +1264,14 @@ namespace SagaDB {
             }
 
             ring.ID = id;
-            var leader = (uint)result[0]["leader"];
-            ring.Name = (string)result[0]["name"];
-            ring.Fame = (uint)result[0]["fame"];
-            if (result[0]["ff_id"] != null)
-                ring.FF_ID = (uint)result[0]["ff_id"];
-            sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
+            var leader = (uint)result[0].Leader;
+            ring.Name = (string)result[0].Name;
+            ring.Fame = (uint)result[0].Fame;
+            if (result[0].FfId != null) {
+                ring.FF_ID = (uint)result[0].FfId;
+            }
+
+            string sqlstr = "SELECT * FROM `ringmember` WHERE `ring_id`='" + id + "';";
             var result2 = SQLExecuteQuery(sqlstr);
             for (var i = 0; i < result2.Count; i++) {
                 var rows = SqlSugarHelper.Db.Queryable<Character>()
@@ -1297,64 +1298,114 @@ namespace SagaDB {
         }
 
         public void NewRing(Ring.Ring ring) {
-            uint index = 0;
-            var name = CheckSQLString(ring.Name);
-            var sqlstr = string.Format("SELECT `name` FROM `ring` WHERE `name`='{0}' LIMIT 1", ring.Name);
-            if (SQLExecuteQuery(sqlstr).Count > 0) {
+            if (SqlSugarHelper.Db.Queryable<Entities.Ring>().Where(item => item.Name.Equals(ring.Name)).ToList().Count >
+                0) {
                 ring.ID = 0xFFFFFFFF;
+                return;
             }
-            else {
-                sqlstr = string.Format("INSERT INTO `ring`(`leader`,`name`) VALUES " +
-                                       "('0','{0}');", name);
-                index = SQLExecuteScalar(sqlstr).Index;
-                ring.ID = index;
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                ring.ID = SqlSugarHelper.Db.Insertable<Entities.Ring>(new Entities.Ring {
+                    Leader = 0,
+                    Name = ring.Name
+                }).ExecuteReturnEntity().RingId;
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
         }
 
         public void SaveRing(Ring.Ring ring, bool saveMembers) {
-            var sqlstr = string.Format(
-                "UPDATE `ring` SET `leader`='{0}',`name`='{1}',`fame`='{2}',`ff_id`='{3}' WHERE `ring_id`='{4}' LIMIT 1;\r\n",
-                ring.Leader.CharID, ring.Name, ring.Fame, ring.FF_ID, ring.ID);
-            if (saveMembers) {
-                sqlstr += string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';\r\n", ring.ID);
-                foreach (var i in ring.Members.Keys)
-                    sqlstr += string.Format(
-                        "INSERT INTO `ringmember`(`ring_id`,`char_id`,`right`) VALUES ('{0}','{1}','{2}');\r\n",
-                        ring.ID, ring.Members[i].CharID, ring.Rights[i].Value);
-            }
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            SQLExecuteNonQuery(sqlstr);
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                             .Where(item => item.RingId == ring.ID).ToList()) {
+                    _ring.Leader = ring.Leader.CharID;
+                    _ring.Name = ring.Name;
+                    _ring.Fame = ring.Fame;
+                    _ring.FfId = ring.FF_ID;
+                    SqlSugarHelper.Db.Updateable(_ring).ExecuteCommand();
+                }
+
+                if (saveMembers) {
+                    string sqlstr = string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';\r\n", ring.ID);
+                    foreach (var i in ring.Members.Keys) {
+                        sqlstr += string.Format(
+                            "INSERT INTO `ringmember`(`ring_id`,`char_id`,`right`) VALUES ('{0}','{1}','{2}');\r\n",
+                            ring.ID, ring.Members[i].CharID, ring.Rights[i].Value);
+                    }
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void DeleteRing(Ring.Ring ring) {
-            var sqlstr = string.Format("DELETE FROM `ring` WHERE `ring_id`='{0}';", ring.ID);
-            sqlstr += string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';", ring.ID);
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                var sqlstr = string.Format("DELETE FROM `ringmember` WHERE `ring_id`='{0}';", ring.ID);
+                SQLExecuteNonQuery(sqlstr);
+
+
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                             .Where(item => item.RingId == ring.ID).ToList()) {
+                    SqlSugarHelper.Db.Deleteable<Entities.Ring>(_ring).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void RingEmblemUpdate(Ring.Ring ring, byte[] buf) {
-            var sqlstr = string.Format(
-                "UPDATE `ring` SET `emblem`=0x{0},`emblem_date`='{1}' WHERE `ring_id`='{2}' LIMIT 1;",
-                Conversions.bytes2HexString(buf), ToSQLDateTime(DateTime.Now.ToUniversalTime()), ring.ID);
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                             .Where(item => item.RingId == ring.ID).ToList()) {
+                    _ring.Emblem = buf;
+                    _ring.EmblemDate = DateTime.Now.ToUniversalTime();
+                    SqlSugarHelper.Db.Updateable(_ring).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date) {
-            var sqlstr = string.Format("SELECT `emblem`,`emblem_date` FROM `ring` WHERE `ring_id`='{0}' LIMIT 1",
-                ring_id);
-
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0) {
-                if (result[0]["emblem"].GetType() == typeof(DBNull))
-                    return new GetRingEmblemResult(null, false, DateTime.Now);
-
-                var newTime = (DateTime)result[0]["emblem_date"];
-                if (date < newTime) return new GetRingEmblemResult((byte[])result[0]["emblem"], true, newTime);
-
-                return new GetRingEmblemResult(new byte[0], false, newTime);
+            var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                .Where(item => item.RingId == ring_id).ToList();
+            if (result.Count == 0) {
+                return new GetRingEmblemResult(null, false, DateTime.Now);
             }
 
-            return new GetRingEmblemResult(null, false, DateTime.Now);
+            if (result[0].Emblem == null) {
+                return new GetRingEmblemResult(null, false, DateTime.Now);
+            }
+
+            var newTime = (DateTime)result[0].EmblemDate;
+            if (date < newTime) {
+                return new GetRingEmblemResult((byte[])result[0].Emblem, true, newTime);
+            }
+
+            return new GetRingEmblemResult(new byte[0], false, newTime);
         }
 
         public List<Post> GetBBS(uint bbsId) {
