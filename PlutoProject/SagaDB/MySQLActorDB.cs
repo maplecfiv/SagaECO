@@ -24,14 +24,19 @@ using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
 using Inventory = SagaDB.Entities.Inventory;
 using Logger = Serilog.Core.Logger;
 
-namespace SagaDB {
-    public class MySqlActorDb : MySQLConnectivity, ActorDB {
-        public void AJIClear() {
+namespace SagaDB
+{
+    public class MySqlActorDb : MySQLConnectivity, ActorDB
+    {
+        public void AJIClear()
+        {
             CharacterRepository.AjiClear();
         }
 
-        public bool CreateChar(ActorPC aChar, int accountId) {
-            if (aChar == null) {
+        public bool CreateChar(ActorPC aChar, int accountId)
+        {
+            if (aChar == null)
+            {
                 SagaLib.Logger.GetLogger().Error("aChar is null");
                 return false;
             }
@@ -39,21 +44,26 @@ namespace SagaDB {
             //Map.MapInfo info = Map.MapInfoFactory.Instance.MapInfo[aChar.MapID];
 
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 aChar.CharID = CharacterRepository.createCharacter(aChar, (uint)accountId);
 
 
-                SqlSugarHelper.Db.Insertable<Inventory>(new Inventory {
+                SqlSugarHelper.Db.Insertable<Inventory>(new Inventory
+                {
                     CharacterId = aChar.CharID,
                     Data = aChar.Inventory.ToBytes()
                 }).ExecuteCommand();
 
-                if (aChar.Inventory.WareHouse != null) {
+                if (aChar.Inventory.WareHouse != null)
+                {
                     if (SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == accountId).ToList()
-                            .Count == 0) {
-                        SqlSugarHelper.Db.Insertable<Warehouse>(new Warehouse {
+                            .Count == 0)
+                    {
+                        SqlSugarHelper.Db.Insertable<Warehouse>(new Warehouse
+                        {
                             AccountId = accountId,
                             Data = aChar.Inventory.WareToBytes()
                         });
@@ -68,14 +78,16 @@ namespace SagaDB {
                 SaveItem(aChar);
                 return true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
         }
 
-        public uint CreatePartner(Item.Item partnerItem) {
+        public uint CreatePartner(Item.Item partnerItem)
+        {
             var ap = new ActorPartner(partnerItem.BaseData.petID, partnerItem);
             ap.HP = ap.BaseData.hp_in;
             ap.MaxHP = ap.BaseData.hp_in;
@@ -85,207 +97,313 @@ namespace SagaDB {
             ap.MaxSP = ap.BaseData.sp_in;
             ap.ai_mode = 1;
 
-            var name = CheckSQLString(ap.BaseData.name);
-            try {
-                ap.ActorPartnerID = SQLExecuteScalar(string.Format(
-                    "INSERT INTO `partner`(`pid`,`name`,`lv`,`tlv`,`rb`,`rank`,`perkspoints`,`perk0`,`perk1`,`perk2`," +
-                    " `perk3`,`perk4`,`perk5`,`aimode`,`basicai1`,`basicai2`,`hp`,`maxhp`,`mp`,`maxmp`,`sp`,`maxsp`)" +
-                    "VALUES ('{0}','{1}','{2}','{3}','0','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}','{16}'," +
-                    "'{17}','{18}','{19}','{20}','{21}');",
-                    ap.partnerid, ap.Name, ap.Level, ap.reliability, ap.rebirth, ap.rank, ap.perkpoint, ap.perk0,
-                    ap.perk1, ap.perk2, ap.perk3, ap.perk4, ap.perk5, ap.ai_mode, ap.basic_ai_mode,
-                    ap.basic_ai_mode_2,
-                    ap.HP, ap.MaxHP, ap.MP, ap.MaxMP, ap.SP, ap.MaxSP)).Index;
+            try
+            {
+                SqlSugarHelper.Db.BeginTran();
 
+                ap.ActorPartnerID = SqlSugarHelper.Db.Insertable<Entities.Partner>(new Entities.Partner
+                {
+                    PartnerId = ap.partnerid,
+                    Name = ap.BaseData.name,
+                    Level = ap.Level,
+                    TrustLevel = ap.reliability, Rebirth = 0, Rank = ap.rank, PerkPoints = ap.perkpoint,
+                    Perk0 = ap.perk0,
+                    Perk1 = ap.perk1, Perk2 = ap.perk2, Perk3 = ap.perk3, Perk4 = ap.perk4, Perk5 = ap.perk5,
+                    AiMode = ap.ai_mode, BasicAiMode1 = ap.basic_ai_mode, BasicAiMode2 = ap.basic_ai_mode_2, Hp = ap.HP,
+                    MaxHp = ap.MaxHP, Mp = ap.MP, MaxMp = ap.MaxMP, Sp = ap.SP, MaxSp = ap.MaxSP
+                }).ExecuteReturnEntity().ActorPartnerId;
+
+                SqlSugarHelper.Db.CommitTran();
                 return ap.ActorPartnerID;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return 0;
             }
         }
 
-        public void SavePartner(ActorPartner ap) {
-            if (ap == null) {
+        public void SavePartner(ActorPartner ap)
+        {
+            if (ap == null)
+            {
                 return;
             }
 
             //SagaLib.Logger.getLogger().Error(sqlstr);
-            try {
-                SQLExecuteNonQuery(string.Format(
-                    "UPDATE `partner` SET `pid`='{1}',`name`='{2}',`lv`='{3}',`tlv`='{4}',`rb`='{5}',`rank`='{6}',`perkspoints`='{7}'," +
-                    "`hp`='{8}',`maxhp`='{9}',`mp`='{10}',`maxmp`='{11}',`sp`='{12}',`maxsp`='{13}',`perk0`='{14}',`perk1`='{15}',`perk2`='{16}',`perk3`='{17}'" +
-                    ",`perk4`='{18}',`perk5`='{19}',`aimode`='{20}',`basicai1`='{21}',`basicai2`='{22}',`exp` = '{23}',`pictid` = '{24}',`nextfeedtime` = '{25}'" +
-                    ", `reliabilityuprate`='{26}',`texp`='{27}' WHERE apid='{0}' LIMIT 1",
-                    ap.ActorPartnerID, ap.partnerid, ap.Name, ap.Level, ap.reliability, (ap.rebirth) ? 1 : 0, ap.rank,
-                    ap.perkpoint, ap.HP, ap.MaxHP,
-                    ap.MP, ap.MaxMP, ap.SP, ap.MaxSP,
-                    ap.perk0, ap.perk1, ap.perk2, ap.perk3, ap.perk4, ap.perk5, ap.ai_mode, ap.basic_ai_mode,
-                    ap.basic_ai_mode_2, ap.exp, ap.PictID, ToSQLDateTime(ap.nextfeedtime), ap.reliabilityuprate,
-                    ap.reliabilityexp));
+            try
+            {
+                SqlSugarHelper.Db.BeginTran();
+
+
+                foreach (var partner in SqlSugarHelper.Db.Queryable<Entities.Partner>().TranLock(DbLockType.Wait)
+                             .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList())
+                {
+                    partner.PartnerId = ap.partnerid;
+                    partner.Name = ap.Name;
+                    partner.Level = ap.Level;
+                    partner.TrustLevel = ap.reliability;
+                    partner.Rebirth = ap.rebirth ? (byte)1 : (byte)0;
+                    partner.Rank = ap.rank;
+                    partner.PerkPoints = ap.perkpoint;
+                    partner.Hp = ap.HP;
+                    partner.MaxHp = ap.MaxHP;
+                    partner.Mp = ap.MP;
+                    partner.MaxMp = ap.MaxMP;
+                    partner.Sp = ap.SP;
+                    partner.MaxSp = ap.MaxSP;
+                    partner.Perk0 = ap.perk0;
+                    partner.Perk1 = ap.perk1;
+                    partner.Perk2 = ap.perk2;
+                    partner.Perk3 = ap.perk3;
+                    partner.Perk4 = ap.perk4;
+                    partner.Perk5 = ap.perk5;
+                    partner.AiMode = ap.ai_mode;
+                    partner.BasicAiMode1 = ap.basic_ai_mode;
+                    partner.BasicAiMode2 = ap.basic_ai_mode_2;
+                    partner.Exp = ap.exp;
+                    partner.PictId = ap.PictID;
+                    partner.NextFeedTime = ap.nextfeedtime;
+                    partner.ReliabilityUprate = ap.reliabilityuprate;
+                    partner.TrustExp = ap.reliabilityexp;
+
+                    SqlSugarHelper.Db.Updateable(partner).ExecuteCommand();
+                }
+
                 /*SavePartnerEquip(ap);
                 SavePartnerCube(ap);
                 SavePartnerAI(ap);*/
                 //暂时注释防止卡死
+                SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SavePartnerEquip(ActorPartner ap) {
+        public void SavePartnerEquip(ActorPartner ap)
+        {
             string sqlstr;
-            if (ap == null) {
+            if (ap == null)
+            {
                 return;
             }
 
             var apid = ap.ActorPartnerID;
-            sqlstr = string.Format("DELETE FROM `partnerequip` WHERE `apid`='{0}';", apid);
-            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME)) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','1','{1}','{2}');",
-                    apid, ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
-                    ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack);
-            }
 
-            if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON)) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','2','{1}','{2}');",
-                    apid, ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
-                    ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack);
-            }
+            try
+            {
+                SqlSugarHelper.Db.BeginTran();
 
-            for (var i = 0; i < ap.foods.Count; i++) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerequip`(`apid`,`type`,`item_id`,`count`) VALUES ('{0}','3','{1}','{2}');",
-                    apid, ap.foods[i].ItemID, ap.foods[i].Stack);
-            }
+                foreach (var equip in SqlSugarHelper.Db.Queryable<Entities.PartnerEquip>().TranLock(DbLockType.Wait)
+                             .Where(item => item.ActorPartnerId == apid).ToList())
+                {
+                    SqlSugarHelper.Db.Deleteable(equip).ExecuteCommand();
+                }
 
-            try {
-                SQLExecuteNonQuery(sqlstr);
+                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME))
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerEquip
+                    {
+                        ActorPartnerId = apid, Type = 1, ItemId = ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
+                        Count = ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack
+                    }).ExecuteCommand();
+                }
+
+                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON))
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerEquip
+                    {
+                        ActorPartnerId = apid, Type = 2, ItemId = ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
+                        Count = ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack
+                    }).ExecuteCommand();
+                }
+
+                for (var i = 0; i < ap.foods.Count; i++)
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerEquip
+                    {
+                        ActorPartnerId = apid, Type = 3, ItemId = ap.foods[i].ItemID,
+                        Count = ap.foods[i].Stack
+                    }).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SavePartnerCube(ActorPartner ap) {
+        public void SavePartnerCube(ActorPartner ap)
+        {
             string sqlstr;
-            if (ap == null) {
+            if (ap == null)
+            {
                 return;
             }
 
             var apid = ap.ActorPartnerID;
-            sqlstr = string.Format("DELETE FROM `partnercube` WHERE `apid`='{0}';", apid);
-            if (ap.equipcubes_condition.Count > 0)
+
+
+            try
+            {
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var partnerCube in SqlSugarHelper.Db.Queryable<PartnerCube>().TranLock(DbLockType.Wait)
+                             .Where(item => item.ActorPartnerId == apid).ToList())
+                {
+                    SqlSugarHelper.Db.Deleteable(partnerCube);
+                }
+
+
                 for (var i = 0; i < ap.equipcubes_condition.Count; i++)
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','1','{1}');",
-                        apid, ap.equipcubes_condition[i]);
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerCube
+                    {
+                        ActorPartnerId = apid, Type = 1, UniqueId = ap.equipcubes_condition[i]
+                    }).ExecuteCommand();
+                }
 
-            if (ap.equipcubes_action.Count > 0)
                 for (var i = 0; i < ap.equipcubes_action.Count; i++)
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','2','{1}');",
-                        apid, ap.equipcubes_action[i]);
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerCube
+                    {
+                        ActorPartnerId = apid, Type = 2, UniqueId = ap.equipcubes_action[i]
+                    }).ExecuteCommand();
+                }
 
-            if (ap.equipcubes_activeskill.Count > 0)
                 for (var i = 0; i < ap.equipcubes_activeskill.Count; i++)
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','3','{1}');",
-                        apid, ap.equipcubes_activeskill[i]);
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerCube
+                    {
+                        ActorPartnerId = apid, Type = 3, UniqueId = ap.equipcubes_activeskill[i]
+                    }).ExecuteCommand();
+                }
 
-            if (ap.equipcubes_passiveskill.Count > 0)
                 for (var i = 0; i < ap.equipcubes_passiveskill.Count; i++)
-                    sqlstr += string.Format(
-                        "INSERT INTO `partnercube`(`apid`,`type`,`unique_id`) VALUES ('{0}','4','{1}');",
-                        apid, ap.equipcubes_passiveskill[i]);
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerCube
+                    {
+                        ActorPartnerId = apid, Type = 4, UniqueId = ap.equipcubes_passiveskill[i]
+                    }).ExecuteCommand();
+                }
 
-            try {
-                SQLExecuteNonQuery(sqlstr);
+
+                SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SavePartnerAI(ActorPartner ap) {
-            if (ap == null) {
+        public void SavePartnerAI(ActorPartner ap)
+        {
+            if (ap == null)
+            {
                 return;
             }
 
-            string sqlstr = string.Format("DELETE FROM `partnerai` WHERE `apid`='{0}';", ap.ActorPartnerID);
 
-            foreach (var item in ap.ai_conditions) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','1','{1}','{2}');",
-                    ap.ActorPartnerID, item.Key, item.Value);
+            try
+            {
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var ai in SqlSugarHelper.Db.Queryable<PartnerAi>().TranLock(DbLockType.Wait)
+                             .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList())
+                {
+                    SqlSugarHelper.Db.Deleteable((ai)).ExecuteCommand();
+                }
+
+                foreach (var item in ap.ai_conditions)
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerAi
+                    {
+                        ActorPartnerId = ap.ActorPartnerID, Type = 1, Index = item.Key, Value = item.Value
+                    }).ExecuteCommand();
+                }
+
+
+                foreach (var item in ap.ai_reactions)
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerAi
+                    {
+                        ActorPartnerId = ap.ActorPartnerID, Type = 2, Index = item.Key, Value = item.Value
+                    }).ExecuteCommand();
+                }
+
+                foreach (var item in ap.ai_intervals)
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerAi
+                    {
+                        ActorPartnerId = ap.ActorPartnerID, Type = 3, Index = item.Key, Value = item.Value
+                    }).ExecuteCommand();
+                }
+
+
+                foreach (var item in ap.ai_states)
+                {
+                    SqlSugarHelper.Db.Insertable(new PartnerAi
+                    {
+                        ActorPartnerId = ap.ActorPartnerID, Type = 4, Index = item.Key,
+                        Value = Convert.ToUInt16(item.Value)
+                    }).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
-
-
-            foreach (var item in ap.ai_reactions) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','2','{1}','{2}');",
-                    ap.ActorPartnerID, item.Key, item.Value);
-            }
-
-            foreach (var item in ap.ai_intervals) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','3','{1}','{2}');",
-                    ap.ActorPartnerID, item.Key, item.Value);
-            }
-
-
-            foreach (var item in ap.ai_states) {
-                sqlstr += string.Format(
-                    "INSERT INTO `partnerai`(`apid`,`type`,`index`,`value`) VALUES ('{0}','4','{1}','{2}');",
-                    ap.ActorPartnerID, item.Key, Convert.ToUInt16(item.Value));
-            }
-
-            try {
-                SQLExecuteNonQuery(sqlstr);
-            }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public ActorPartner GetActorPartner(uint ActorPartnerID, Item.Item partneritem) {
-            var sqlstr = string.Format("SELECT * FROM `partner` WHERE `apid`='{0}' LIMIT 1;", ActorPartnerID);
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count == 0) {
+        public ActorPartner GetActorPartner(uint actorPartnerId, Item.Item partneritem)
+        {
+            var result = SqlSugarHelper.Db.Queryable<Entities.Partner>()
+                .Where(item => item.ActorPartnerId == actorPartnerId).ToList();
+            if (result.Count == 0)
+            {
                 return null;
             }
 
 
-            var partnerid = (uint)result[0]["pid"];
+            var partnerid = (uint)result[0].PartnerId;
             var ap = new ActorPartner(partnerid, partneritem);
-            ap.ActorPartnerID = ActorPartnerID;
-            ap.Name = (string)result[0]["name"];
-            ap.Level = (byte)result[0]["lv"];
-            ap.reliability = (byte)result[0]["tlv"];
-            ap.reliabilityexp = (ulong)result[0]["texp"];
-            ap.rebirth = ((byte)result[0]["rb"] != 0);
-            ap.rank = (byte)result[0]["rank"];
-            ap.perkpoint = (ushort)result[0]["perkspoints"];
-            ap.HP = (uint)result[0]["hp"];
-            ap.MaxHP = (uint)result[0]["maxhp"];
-            ap.MP = (uint)result[0]["mp"];
-            ap.MaxMP = (uint)result[0]["maxmp"];
-            ap.SP = (uint)result[0]["sp"];
-            ap.MaxSP = (uint)result[0]["maxsp"];
-            ap.perk0 = (byte)result[0]["perk0"];
-            ap.perk1 = (byte)result[0]["perk1"];
-            ap.perk2 = (byte)result[0]["perk2"];
-            ap.perk3 = (byte)result[0]["perk3"];
-            ap.perk4 = (byte)result[0]["perk4"];
-            ap.perk5 = (byte)result[0]["perk5"];
-            ap.ai_mode = (byte)result[0]["aimode"];
-            ap.basic_ai_mode = (byte)result[0]["basicai1"];
-            ap.basic_ai_mode_2 = (byte)result[0]["basicai2"];
-            ap.exp = (ulong)result[0]["exp"];
-            ap.nextfeedtime = (DateTime)result[0]["nextfeedtime"];
-            ap.reliabilityuprate = (ushort)result[0]["reliabilityuprate"];
+            ap.ActorPartnerID = actorPartnerId;
+            ap.Name = (string)result[0].Name;
+            ap.Level = (byte)result[0].Level;
+            ap.reliability = (byte)result[0].TrustLevel;
+            ap.reliabilityexp = (ulong)result[0].TrustExp;
+            ap.rebirth = result[0].Rebirth != 0;
+            ap.rank = (byte)result[0].Rank;
+            ap.perkpoint = (ushort)result[0].PerkPoints;
+            ap.HP = (uint)result[0].Hp;
+            ap.MaxHP = (uint)result[0].MaxHp;
+            ap.MP = (uint)result[0].Mp;
+            ap.MaxMP = (uint)result[0].MaxMp;
+            ap.SP = (uint)result[0].Sp;
+            ap.MaxSP = (uint)result[0].MaxSp;
+            ap.perk0 = (byte)result[0].Perk0;
+            ap.perk1 = (byte)result[0].Perk1;
+            ap.perk2 = (byte)result[0].Perk2;
+            ap.perk3 = (byte)result[0].Perk3;
+            ap.perk4 = (byte)result[0].Perk4;
+            ap.perk5 = (byte)result[0].Perk5;
+            ap.ai_mode = (byte)result[0].AiMode;
+            ap.basic_ai_mode = (byte)result[0].BasicAiMode1;
+            ap.basic_ai_mode_2 = (byte)result[0].BasicAiMode2;
+            ap.exp = (ulong)result[0].Exp;
+            ap.nextfeedtime = (DateTime)result[0].NextFeedTime;
+            ap.reliabilityuprate = (ushort)result[0].ReliabilityUprate;
 
             GetPartnerEquip(ap);
             GetPartnerCube(ap);
@@ -294,67 +412,78 @@ namespace SagaDB {
             //暂时注释防止卡死
         }
 
-        public void GetPartnerEquip(ActorPartner ap) {
-            var sqlstr = string.Format("SELECT * FROM `partnerequip` WHERE `apid`='{0}';", ap.ActorPartnerID);
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-                foreach (DataRow i in result) {
-                    var item = ItemFactory.Instance.GetItem((uint)i["item_id"]);
-                    item.Stack = (ushort)i["count"];
-                    if (byte.Parse(i["type"].ToString()) == 0x1)
-                        ap.equipments[EnumPartnerEquipSlot.COSTUME] = item;
-                    if (byte.Parse(i["type"].ToString()) == 0x2)
-                        ap.equipments[EnumPartnerEquipSlot.WEAPON] = item;
-                    if (byte.Parse(i["type"].ToString()) == 0x3)
-                        ap.foods.Add(item);
-                }
-        }
-
-        public void GetPartnerCube(ActorPartner ap) {
-            foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnercube` WHERE `apid`='{0}';",
-                         ap.ActorPartnerID))) {
-                if ((byte)i["type"] == 1)
-                    ap.equipcubes_condition.Add((ushort)i["unique_id"]);
-                if ((byte)i["type"] == 2)
-                    ap.equipcubes_action.Add((ushort)i["unique_id"]);
-                if ((byte)i["type"] == 3)
-                    ap.equipcubes_activeskill.Add((ushort)i["unique_id"]);
-                if ((byte)i["type"] == 4)
-                    ap.equipcubes_passiveskill.Add((ushort)i["unique_id"]);
+        public void GetPartnerEquip(ActorPartner ap)
+        {
+            foreach (var i in SqlSugarHelper.Db.Queryable<Entities.PartnerEquip>()
+                         .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList())
+            {
+                var item = ItemFactory.Instance.GetItem(i.ItemId);
+                item.Stack = i.Count;
+                if (i.Type == 1)
+                    ap.equipments[EnumPartnerEquipSlot.COSTUME] = item;
+                if (i.Type == 2)
+                    ap.equipments[EnumPartnerEquipSlot.WEAPON] = item;
+                if (i.Type == 3)
+                    ap.foods.Add(item);
             }
         }
 
-        public void GetPartnerAI(ActorPartner ap) {
-            foreach (DataRow i in SQLExecuteQuery(string.Format("SELECT * FROM `partnerai` WHERE `apid`='{0}';",
-                         ap.ActorPartnerID))) {
-                if ((byte)i["type"] == 1) ap.ai_conditions.Add((byte)i["index"], (ushort)i["value"]);
-                if ((byte)i["type"] == 2) ap.ai_reactions.Add((byte)i["index"], (ushort)i["value"]);
-                if ((byte)i["type"] == 3) ap.ai_intervals.Add((byte)i["index"], (ushort)i["value"]);
-                if ((byte)i["type"] == 4) ap.ai_states.Add((byte)i["index"], Convert.ToBoolean((ushort)i["value"]));
+        public void GetPartnerCube(ActorPartner ap)
+        {
+            foreach (var i in SqlSugarHelper.Db.Queryable<PartnerCube>()
+                         .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList())
+            {
+                if (i.Type == 1)
+                    ap.equipcubes_condition.Add(i.UniqueId);
+                if (i.Type == 2)
+                    ap.equipcubes_action.Add(i.UniqueId);
+                if (i.Type == 3)
+                    ap.equipcubes_activeskill.Add(i.UniqueId);
+                if (i.Type == 4)
+                    ap.equipcubes_passiveskill.Add(i.UniqueId);
             }
         }
 
-        public void SaveChar(ActorPC aChar) {
+        public void GetPartnerAI(ActorPartner ap)
+        {
+            foreach (var i in SqlSugarHelper.Db.Queryable<PartnerAi>()
+                         .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList())
+            {
+                if ((byte)i.Type == 1) ap.ai_conditions.Add((byte)i.Index, (ushort)i.Value);
+                if ((byte)i.Type == 2) ap.ai_reactions.Add((byte)i.Index, (ushort)i.Value);
+                if ((byte)i.Type == 3) ap.ai_intervals.Add((byte)i.Index, (ushort)i.Value);
+                if ((byte)i.Type == 4) ap.ai_states.Add((byte)i.Index, Convert.ToBoolean((ushort)i.Value));
+            }
+        }
+
+        public void SaveChar(ActorPC aChar)
+        {
             SaveChar(aChar, true);
         }
 
-        public void SaveChar(ActorPC aChar, bool fullinfo) {
+        public void SaveChar(ActorPC aChar, bool fullinfo)
+        {
             SaveChar(aChar, true, fullinfo);
         }
 
-        public void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo) {
+        public void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo)
+        {
             string sqlstr;
             MapInfo info = null;
-            if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID)) {
+            if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID))
+            {
                 info = MapInfoFactory.Instance.MapInfo[aChar.MapID];
             }
-            else {
-                if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID / 1000 * 1000)) {
+            else
+            {
+                if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID / 1000 * 1000))
+                {
                     info = MapInfoFactory.Instance.MapInfo[aChar.MapID / 1000 * 1000];
                 }
             }
 
-            if (aChar == null) {
+            if (aChar == null)
+            {
                 return;
             }
 
@@ -367,7 +496,8 @@ namespace SagaDB {
             int count1 = 0, count2 = 0, count3 = 0;
             var questtime = DateTime.Now;
             var status = QuestStatus.OPEN;
-            if (aChar.Quest != null) {
+            if (aChar.Quest != null)
+            {
                 questid = aChar.Quest.ID;
                 count1 = aChar.Quest.CurrentCount1;
                 count2 = aChar.Quest.CurrentCount2;
@@ -382,12 +512,14 @@ namespace SagaDB {
                 ringid = aChar.Ring.ID;
             if (aChar.Golem != null)
                 golemid = aChar.Golem.ActorID;
-            if (info != null) {
+            if (info != null)
+            {
                 mapid = aChar.MapID;
                 x = Global.PosX16to8(aChar.X, info.width);
                 y = Global.PosY16to8(aChar.Y, info.height);
             }
-            else {
+            else
+            {
                 mapid = aChar.SaveMap;
                 x = aChar.SaveX;
                 y = aChar.SaveY;
@@ -404,7 +536,8 @@ namespace SagaDB {
             //SaveNavi(aChar);
             if (itemInfo)
                 SaveItem(aChar);
-            if (fullinfo) {
+            if (fullinfo)
+            {
                 SaveSkill(aChar);
                 SaveDualJobInfo(aChar, true);
                 //SaveNPCStates(aChar);
@@ -471,25 +604,30 @@ namespace SagaDB {
             }
         }
         */
-        public void SaveWRP(ActorPC pc) {
-            try {
+        public void SaveWRP(ActorPC pc)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var character in SqlSugarHelper.Db.Queryable<Character>()
-                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                             .Where(item => item.CharacterId == pc.CharID).ToList())
+                {
                     character.Wrp = pc.WRP;
                     SqlSugarHelper.Db.Updateable<Character>(character).ExecuteCommand();
                 }
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void DeleteChar(ActorPC aChar) {
+        public void DeleteChar(ActorPC aChar)
+        {
             string sqlstr;
             _ = GetAccountID((aChar.CharID));
             sqlstr = "DELETE FROM `char` WHERE char_id='" + aChar.CharID + "';";
@@ -508,25 +646,31 @@ namespace SagaDB {
                     if (aChar.Ring.Leader.CharID == aChar.CharID)
                         DeleteRing(aChar.Ring);
 
-            try {
+            try
+            {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public ActorPC GetChar(uint charID, bool fullinfo) {
+        public ActorPC GetChar(uint charID, bool fullinfo)
+        {
             ActorPC pc = null;
-            try {
+            try
+            {
                 // GetAccountID(charID);
                 var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charID)
                     .First();
-                if (character == null) {
+                if (character == null)
+                {
                     return null;
                 }
 
-                pc = new ActorPC {
+                pc = new ActorPC
+                {
                     CharID = charID,
                     Account = null,
                     Name = character.Name,
@@ -556,12 +700,15 @@ namespace SagaDB {
                     Slot = character.Slot
                 };
 
-                if (fullinfo) {
+                if (fullinfo)
+                {
                     MapInfo info = null;
-                    if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID)) {
+                    if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID))
+                    {
                         info = MapInfoFactory.Instance.MapInfo[pc.MapID];
                     }
-                    else {
+                    else
+                    {
                         if (MapInfoFactory.Instance.MapInfo.ContainsKey(pc.MapID / 1000 * 1000))
                             info = MapInfoFactory.Instance.MapInfo[pc.MapID / 1000 * 1000];
                     }
@@ -603,7 +750,8 @@ namespace SagaDB {
                 //pc.MDefLv = (byte)result["mdeflv"];
                 //pc.DefPoint = (uint)result["defpoint"];
                 //pc.MDefPoint = (uint)result["mdefpoint"];
-                lock (this) {
+                lock (this)
+                {
                     var old = SagaLib.Logger.SQLLogLevel.Value;
                     SagaLib.Logger.SQLLogLevel.Value = 0;
                     pc.Gold = character.Gold;
@@ -628,17 +776,21 @@ namespace SagaDB {
                 if (ring.ID != 0)
                     pc.Ring = ring;
                 var golem = character.Golem;
-                if (golem != 0) {
+                if (golem != 0)
+                {
                     pc.Golem = new ActorGolem();
                     pc.Golem.ActorID = golem;
                 }
 
                 pc.DualJobID = character.DualJobId == null ? (byte)0 : character.DualJobId;
 
-                if (fullinfo) {
+                if (fullinfo)
+                {
                     var questid = character.QuestId;
-                    if (questid != 0) {
-                        try {
+                    if (questid != 0)
+                    {
+                        try
+                        {
                             var quest = new Quest(questid);
                             quest.EndTime = character.QuestEndTime;
                             quest.Status = (QuestStatus)character.QuestStatus;
@@ -647,7 +799,8 @@ namespace SagaDB {
                             quest.CurrentCount3 = character.QuestCurrentCount3;
                             pc.Quest = quest;
                         }
-                        catch (Exception e) {
+                        catch (Exception e)
+                        {
                             SagaLib.Logger.ShowError(e);
                         }
                     }
@@ -672,18 +825,21 @@ namespace SagaDB {
                 GetTamaireRental(pc);
                 GetMosterGuide(pc);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             return pc;
         }
 
-        public ActorPC GetChar(uint charID) {
+        public ActorPC GetChar(uint charID)
+        {
             return GetChar(charID, true);
         }
 
-        public void GetVShop(ActorPC pc) {
+        public void GetVShop(ActorPC pc)
+        {
             var account = GetAccountID(pc);
             var sqlstr = "SELECT `vshop_points`,`used_vshop_points` FROM `login` WHERE account_id='" + account +
                          "' LIMIT 1";
@@ -695,7 +851,8 @@ namespace SagaDB {
             pc.UsedVShopPoints = (uint)result["used_vshop_points"];
         }
 
-        public void SaveSkill(ActorPC pc) {
+        public void SaveSkill(ActorPC pc)
+        {
             var ms = new MemoryStream();
             var bw = new BinaryWriter(ms);
             var count = pc.Skills.Count + pc.Skills2.Count + pc.SkillsReserve.Count;
@@ -707,7 +864,8 @@ namespace SagaDB {
             foreach (var i in pc.Skills.Values)
                 if (i.NoSave)
                     nosave++;
-            if (pc.Rebirth || pc.Job == pc.Job3) {
+            if (pc.Rebirth || pc.Job == pc.Job3)
+            {
                 foreach (var i in pc.Skills2_1.Values)
                     if (i.NoSave)
                         nosave++;
@@ -718,7 +876,8 @@ namespace SagaDB {
                     if (i.NoSave)
                         nosave++;
             }
-            else {
+            else
+            {
                 foreach (var i in pc.Skills2.Values)
                     if (i.NoSave)
                         nosave++;
@@ -729,44 +888,52 @@ namespace SagaDB {
 
             count -= nosave;
             bw.Write(count);
-            foreach (var j in pc.Skills.Keys) {
+            foreach (var j in pc.Skills.Keys)
+            {
                 if (pc.Skills[j].NoSave)
                     continue;
                 bw.Write(j);
                 bw.Write(pc.Skills[j].Level);
             }
 
-            if (pc.Rebirth || pc.Job == pc.Job3) {
-                foreach (var j in pc.Skills2_1.Keys) {
+            if (pc.Rebirth || pc.Job == pc.Job3)
+            {
+                foreach (var j in pc.Skills2_1.Keys)
+                {
                     if (pc.Skills2_1[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2_1[j].Level);
                 }
 
-                foreach (var j in pc.Skills2_2.Keys) {
+                foreach (var j in pc.Skills2_2.Keys)
+                {
                     if (pc.Skills2_2[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2_2[j].Level);
                 }
 
-                foreach (var j in pc.Skills3.Keys) {
+                foreach (var j in pc.Skills3.Keys)
+                {
                     if (pc.Skills3[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills3[j].Level);
                 }
             }
-            else {
-                foreach (var j in pc.Skills2.Keys) {
+            else
+            {
+                foreach (var j in pc.Skills2.Keys)
+                {
                     if (pc.Skills2[j].NoSave)
                         continue;
                     bw.Write(j);
                     bw.Write(pc.Skills2[j].Level);
                 }
 
-                foreach (var j in pc.SkillsReserve.Keys) {
+                foreach (var j in pc.SkillsReserve.Keys)
+                {
                     if (pc.SkillsReserve[j].NoSave)
                         continue;
                     bw.Write(j);
@@ -784,16 +951,19 @@ namespace SagaDB {
                 pc.SkillPoint3));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
             ms.Close();
-            try {
+            try
+            {
                 //SQLExecuteNonQuery(sqlstr);
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SaveVShop(ActorPC pc) {
+        public void SaveVShop(ActorPC pc)
+        {
             var eh = pc.e;
             pc.e = null;
             var sqlstr = string.Format("UPDATE `login` SET `vshop_points`='{0}',`used_vshop_points`='{1}'" +
@@ -803,7 +973,8 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SaveServerVar(ActorPC fakepc) {
+        public void SaveServerVar(ActorPC fakepc)
+        {
             var sqlstr = "TRUNCATE TABLE `sVar`;";
             foreach (var i in fakepc.AStr.Keys)
                 sqlstr += string.Format("INSERT INTO `sVar`(`name`,`type`,`content`) VALUES " + "('{0}',0,'{1}');", i,
@@ -817,23 +988,26 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
             sqlstr = "TRUNCATE TABLE `sList`;";
             foreach (var item in fakepc.Adict)
-                foreach (var i in item.Value.Keys)
-                    sqlstr += string.Format(
-                        "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');",
-                        item.Key,
-                        i, item.Value[i]);
+            foreach (var i in item.Value.Keys)
+                sqlstr += string.Format(
+                    "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');",
+                    item.Key,
+                    i, item.Value[i]);
 
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public ActorPC LoadServerVar() {
+        public ActorPC LoadServerVar()
+        {
             var fakepc = new ActorPC();
             var sqlstr = "SELECT * FROM `sVar`;";
             DataRowCollection res;
             res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res) {
+            foreach (DataRow i in res)
+            {
                 var type = (byte)i["type"];
-                switch (type) {
+                switch (type)
+                {
                     case 0:
                         fakepc.AStr[(string)i["name"]] = (string)i["content"];
                         break;
@@ -848,9 +1022,11 @@ namespace SagaDB {
 
             sqlstr = "SELECT * FROM `sList`;";
             res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res) {
+            foreach (DataRow i in res)
+            {
                 var type = (byte)i["type"];
-                switch (type) {
+                switch (type)
+                {
                     case 1:
                         fakepc.Adict[(string)i["name"]][(string)i["key"]] = int.Parse((string)i["content"]);
                         break;
@@ -860,7 +1036,8 @@ namespace SagaDB {
             return fakepc;
         }
 
-        public void SaveVar(ActorPC pc) {
+        public void SaveVar(ActorPC pc)
+        {
             var account_id = this.GetAccountID(pc.CharID);
 
             var enc = Encoding.UTF8;
@@ -868,7 +1045,8 @@ namespace SagaDB {
             var ms = new MemoryStream();
             var bw = new BinaryWriter(ms);
             bw.Write(pc.CInt.Count);
-            foreach (var j in pc.CInt.Keys) {
+            foreach (var j in pc.CInt.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -876,7 +1054,8 @@ namespace SagaDB {
             }
 
             bw.Write(pc.CMask.Count);
-            foreach (var j in pc.CMask.Keys) {
+            foreach (var j in pc.CMask.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -884,7 +1063,8 @@ namespace SagaDB {
             }
 
             bw.Write(pc.CStr.Count);
-            foreach (var j in pc.CStr.Keys) {
+            foreach (var j in pc.CStr.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -899,17 +1079,20 @@ namespace SagaDB {
                 pc.CharID));
             cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
             ms.Close();
-            try {
+            try
+            {
                 SQLExecuteNonQuery(cmd);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
 
             ms = new MemoryStream();
             bw = new BinaryWriter(ms);
             bw.Write(pc.AInt.Count);
-            foreach (var j in pc.AInt.Keys) {
+            foreach (var j in pc.AInt.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -917,7 +1100,8 @@ namespace SagaDB {
             }
 
             bw.Write(pc.AMask.Count);
-            foreach (var j in pc.AMask.Keys) {
+            foreach (var j in pc.AMask.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -925,7 +1109,8 @@ namespace SagaDB {
             }
 
             bw.Write(pc.AStr.Count);
-            foreach (var j in pc.AStr.Keys) {
+            foreach (var j in pc.AStr.Keys)
+            {
                 var buf = enc.GetBytes(j);
                 bw.Write(buf.Length);
                 bw.Write(buf);
@@ -941,22 +1126,27 @@ namespace SagaDB {
             AvatarRepository.SaveAvatar(account_id, values);
         }
 
-        public void GetSkill(ActorPC pc) {
-            try {
+        public void GetSkill(ActorPC pc)
+        {
+            try
+            {
                 string sqlstr;
                 DataRowCollection result = null;
                 //sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
                 sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" +
                          (int)pc.JobBasic + "' LIMIT 1;";
-                try {
+                try
+                {
                     result = SQLExecuteQuery(sqlstr);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                     return;
                 }
 
-                if (result.Count > 0) {
+                if (result.Count > 0)
+                {
                     var buf = (byte[])result[0]["skills"];
                     pc.JobLevel3 = (byte)result[0]["joblv"];
                     if (pc.JobLevel3 == 0) pc.JobLevel3 = 1;
@@ -974,70 +1164,87 @@ namespace SagaDB {
                     var ms = new MemoryStream(buf);
                     var br = new BinaryReader(ms);
                     var count = br.ReadInt32();
-                    for (var i = 0; i < count; i++) {
+                    for (var i = 0; i < count; i++)
+                    {
                         var skillID = br.ReadUInt32();
                         var lv = br.ReadByte();
                         var skill = SkillFactory.Instance.GetSkill(skillID, lv);
                         if (skill == null)
                             continue;
-                        if (skills.ContainsKey(skill.ID)) {
+                        if (skills.ContainsKey(skill.ID))
+                        {
                             if (!pc.Skills.ContainsKey(skill.ID))
                                 pc.Skills.Add(skill.ID, skill);
                         }
-                        else if (skills2x.ContainsKey(skill.ID)) {
-                            if (!pc.Rebirth || pc.Job != pc.Job3) {
-                                if (pc.Job == pc.Job2X) {
+                        else if (skills2x.ContainsKey(skill.ID))
+                        {
+                            if (!pc.Rebirth || pc.Job != pc.Job3)
+                            {
+                                if (pc.Job == pc.Job2X)
+                                {
                                     if (!pc.Skills2.ContainsKey(skill.ID))
                                         pc.Skills2.Add(skill.ID, skill);
                                 }
-                                else {
+                                else
+                                {
                                     if (!pc.SkillsReserve.ContainsKey(skill.ID))
                                         pc.SkillsReserve.Add(skill.ID, skill);
                                 }
                             }
-                            else {
+                            else
+                            {
                                 if (!pc.Skills2_1.ContainsKey(skill.ID))
                                     pc.Skills2_1.Add(skill.ID, skill);
                                 if (!pc.Skills2.ContainsKey(skill.ID))
                                     pc.Skills2.Add(skill.ID, skill);
                             }
                         }
-                        else if (skills2t.ContainsKey(skill.ID)) {
-                            if (!pc.Rebirth || pc.Job != pc.Job3) {
-                                if (pc.Job == pc.Job2T) {
+                        else if (skills2t.ContainsKey(skill.ID))
+                        {
+                            if (!pc.Rebirth || pc.Job != pc.Job3)
+                            {
+                                if (pc.Job == pc.Job2T)
+                                {
                                     if (!pc.Skills2.ContainsKey(skill.ID))
                                         pc.Skills2.Add(skill.ID, skill);
                                 }
-                                else {
+                                else
+                                {
                                     if (!pc.SkillsReserve.ContainsKey(skill.ID))
                                         pc.SkillsReserve.Add(skill.ID, skill);
                                 }
                             }
-                            else {
+                            else
+                            {
                                 if (!pc.Skills2_2.ContainsKey(skill.ID))
                                     pc.Skills2_2.Add(skill.ID, skill);
                                 if (!pc.Skills2.ContainsKey(skill.ID))
                                     pc.Skills2.Add(skill.ID, skill);
                             }
                         }
-                        else if (skills3.ContainsKey(skill.ID)) {
+                        else if (skills3.ContainsKey(skill.ID))
+                        {
                             if (!pc.Skills3.ContainsKey(skill.ID))
                                 pc.Skills3.Add(skill.ID, skill);
                         }
-                        else {
+                        else
+                        {
                             if (!pc.Skills.ContainsKey(skill.ID))
                                 pc.Skills.Add(skill.ID, skill);
                         }
                     }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SaveNPCState(ActorPC pc, uint npcID) {
-            if (pc.NPCStates.ContainsKey(npcID)) {
+        public void SaveNPCState(ActorPC pc, uint npcID)
+        {
+            if (pc.NPCStates.ContainsKey(npcID))
+            {
                 var state = pc.NPCStates[npcID];
                 byte value = 0;
                 if (state)
@@ -1054,44 +1261,53 @@ namespace SagaDB {
             }
         }
 
-        public bool CharExists(string name) {
+        public bool CharExists(string name)
+        {
             return SqlSugarHelper.Db.Queryable<Character>().Where(item => item.Name.Equals((name))).Any();
         }
 
-        public uint GetAccountID(uint charID) {
+        public uint GetAccountID(uint charID)
+        {
             var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charID)
                 .First();
             return character == null ? 0 : character.AccountId;
         }
 
-        public uint GetAccountID(ActorPC pc) {
+        public uint GetAccountID(ActorPC pc)
+        {
             if (pc.Account != null)
                 return (uint)pc.Account.AccountID;
             return GetAccountID(pc.CharID);
         }
 
-        public uint[] GetCharIDs(int account_id) {
-            try {
+        public uint[] GetCharIDs(int account_id)
+        {
+            try
+            {
                 var characters = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.AccountId == account_id)
                     .ToList();
-                if (characters.Count == 0) {
+                if (characters.Count == 0)
+                {
                     return new uint[0];
                 }
 
                 uint[] buf = new uint[characters.Count];
-                for (var i = 0; i < buf.Length; i++) {
+                for (var i = 0; i < buf.Length; i++)
+                {
                     buf[i] = characters[i].CharacterId;
                 }
 
                 return buf;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return new uint[0];
             }
         }
 
-        public string GetCharName(uint id) {
+        public string GetCharName(uint id)
+        {
             var characters = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == id)
                 .ToList();
             if (characters.Count == 0)
@@ -1099,11 +1315,13 @@ namespace SagaDB {
             return characters[0].Name;
         }
 
-        public List<ActorPC> GetFriendList(ActorPC pc) {
+        public List<ActorPC> GetFriendList(ActorPC pc)
+        {
             var sqlstr = "SELECT `friend_char_id` FROM `friend` WHERE `char_id`='" + pc.CharID + "';";
             var result = SQLExecuteQuery(sqlstr);
             var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++) {
+            for (var i = 0; i < result.Count; i++)
+            {
                 var friend = (uint)result[i]["friend_char_id"];
 
 
@@ -1113,7 +1331,8 @@ namespace SagaDB {
                 if (res.Count == 0)
                     continue;
                 var row = res[0];
-                list.Add(new ActorPC {
+                list.Add(new ActorPC
+                {
                     CharID = row.CharacterId,
                     Name = (string)row.Name,
                     Job = (PC_JOB)(byte)row.Job,
@@ -1127,11 +1346,13 @@ namespace SagaDB {
             return list;
         }
 
-        public List<ActorPC> GetFriendList2(ActorPC pc) {
+        public List<ActorPC> GetFriendList2(ActorPC pc)
+        {
             var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + pc.CharID + "';";
             var result = SQLExecuteQuery(sqlstr);
             var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++) {
+            for (var i = 0; i < result.Count; i++)
+            {
                 var friend = (uint)result[i]["char_id"];
 
                 var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
@@ -1139,7 +1360,8 @@ namespace SagaDB {
                 if (res.Count == 0)
                     continue;
                 var row = res[0];
-                list.Add(new ActorPC {
+                list.Add(new ActorPC
+                {
                     CharID = friend,
                     Name = (string)row.Name,
                     Job = (PC_JOB)(byte)row.Job,
@@ -1154,28 +1376,33 @@ namespace SagaDB {
             return list;
         }
 
-        public void AddFriend(ActorPC pc, uint charID) {
+        public void AddFriend(ActorPC pc, uint charID)
+        {
             var sqlstr = string.Format("INSERT INTO `friend`(`char_id`,`friend_char_id`) VALUES " +
                                        "('{0}','{1}');", pc.CharID, charID);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public bool IsFriend(uint char1, uint char2) {
+        public bool IsFriend(uint char1, uint char2)
+        {
             var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" +
                          char1 + "';";
             var result = SQLExecuteQuery(sqlstr);
             return result.Count > 0;
         }
 
-        public void DeleteFriend(uint char1, uint char2) {
+        public void DeleteFriend(uint char1, uint char2)
+        {
             var sqlstr = "DELETE FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" + char1 + "';";
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public Party.Party GetParty(uint id) {
+        public Party.Party GetParty(uint id)
+        {
             var result = SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().Where(item => item.PartyId == id)
                 .ToList();
-            if (result.Count == 0) {
+            if (result.Count == 0)
+            {
                 return null;
             }
 
@@ -1186,14 +1413,18 @@ namespace SagaDB {
             return party;
         }
 
-        public void NewParty(Party.Party party) {
-            try {
+        public void NewParty(Party.Party party)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
-                uint index = SqlSugarHelper.Db.Insertable<SagaDB.Entities.Party>(new SagaDB.Entities.Party {
+                uint index = SqlSugarHelper.Db.Insertable<SagaDB.Entities.Party>(new SagaDB.Entities.Party
+                {
                     Name = party.Name, Leader = party.Leader.CharID
                 }).ExecuteReturnEntity().PartyId;
-                SqlSugarHelper.Db.Insertable<PartyMember>(new PartyMember {
+                SqlSugarHelper.Db.Insertable<PartyMember>(new PartyMember
+                {
                     PartyId = index, CharId = party.Leader.CharID
                 }).ExecuteCommand();
 
@@ -1201,29 +1432,35 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void SaveParty(Party.Party party) {
-            try {
+        public void SaveParty(Party.Party party)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var _party in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().TranLock(DbLockType.Wait)
-                             .Where(item => item.PartyId == party.ID).ToList()) {
+                             .Where(item => item.PartyId == party.ID).ToList())
+                {
                     _party.Name = party.Name;
                     _party.Leader = party.Leader.CharID;
                     SqlSugarHelper.Db.Updateable(_party).ExecuteCommand();
                 }
 
 
-                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>() {
+                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>()
+                {
                     new PartyMember() { PartyId = party.ID }
                 }).ExecuteCommand();
 
-                foreach (var i in party.Members.Keys) {
+                foreach (var i in party.Members.Keys)
+                {
                     SqlSugarHelper.Db.Insertable<PartyMember>(
                         new PartyMember() { PartyId = party.ID, CharId = party.Members[i].CharID }
                     ).ExecuteCommand();
@@ -1231,16 +1468,20 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void DeleteParty(Party.Party party) {
-            try {
+        public void DeleteParty(Party.Party party)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
-                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>() {
+                SqlSugarHelper.Db.Deleteable<PartyMember>(new List<PartyMember>()
+                {
                     new PartyMember() { PartyId = party.ID }
                 }).ExecuteCommand();
 
@@ -1249,17 +1490,20 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public Ring.Ring GetRing(uint id) {
+        public Ring.Ring GetRing(uint id)
+        {
             var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().Where(item => item.RingId == id).ToList();
 
             var ring = new Ring.Ring();
-            if (result.Count == 0) {
+            if (result.Count == 0)
+            {
                 return null;
             }
 
@@ -1267,7 +1511,8 @@ namespace SagaDB {
             var leader = (uint)result[0].Leader;
             ring.Name = (string)result[0].Name;
             ring.Fame = (uint)result[0].Fame;
-            if (result[0].FfId != null) {
+            if (result[0].FfId != null)
+            {
                 ring.FF_ID = (uint)result[0].FfId;
             }
 
@@ -1275,19 +1520,23 @@ namespace SagaDB {
             var result2 = SqlSugarHelper.Db.Queryable<RingMember>()
                 .Where(item => item.RingId == ring.ID).ToList();
 
-            for (var i = 0; i < result2.Count; i++) {
+            for (var i = 0; i < result2.Count; i++)
+            {
                 var rows = SqlSugarHelper.Db.Queryable<Character>()
                     .Where(item => item.CharacterId == (uint)result2[i].CharacterId)
                     .ToList();
-                if (rows.Count > 0) {
+                if (rows.Count > 0)
+                {
                     var row = rows[0];
-                    var pc = new ActorPC {
+                    var pc = new ActorPC
+                    {
                         CharID = row.CharacterId,
                         Name = (string)row.Name,
                         Job = (PC_JOB)(byte)row.Job
                     };
                     var index = ring.NewMember(pc);
-                    if (index >= 0) {
+                    if (index >= 0)
+                    {
                         ring.Rights[index].Value = result2[i].Right;
                     }
 
@@ -1301,35 +1550,43 @@ namespace SagaDB {
             return ring;
         }
 
-        public void NewRing(Ring.Ring ring) {
+        public void NewRing(Ring.Ring ring)
+        {
             if (SqlSugarHelper.Db.Queryable<Entities.Ring>().Where(item => item.Name.Equals(ring.Name)).ToList().Count >
-                0) {
+                0)
+            {
                 ring.ID = 0xFFFFFFFF;
                 return;
             }
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
-                ring.ID = SqlSugarHelper.Db.Insertable<Entities.Ring>(new Entities.Ring {
+                ring.ID = SqlSugarHelper.Db.Insertable<Entities.Ring>(new Entities.Ring
+                {
                     Leader = 0,
                     Name = ring.Name
                 }).ExecuteReturnEntity().RingId;
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void SaveRing(Ring.Ring ring, bool saveMembers) {
-            try {
+        public void SaveRing(Ring.Ring ring, bool saveMembers)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
-                             .Where(item => item.RingId == ring.ID).ToList()) {
+                             .Where(item => item.RingId == ring.ID).ToList())
+                {
                     _ring.Leader = ring.Leader.CharID;
                     _ring.Name = ring.Name;
                     _ring.Fame = ring.Fame;
@@ -1337,14 +1594,18 @@ namespace SagaDB {
                     SqlSugarHelper.Db.Updateable(_ring).ExecuteCommand();
                 }
 
-                if (saveMembers) {
+                if (saveMembers)
+                {
                     foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
-                                 .Where(item => item.RingId == ring.ID).ToList()) {
+                                 .Where(item => item.RingId == ring.ID).ToList())
+                    {
                         SqlSugarHelper.Db.Deleteable((ringMember));
                     }
 
-                    foreach (var i in ring.Members.Keys) {
-                        SqlSugarHelper.Db.Insertable<RingMember>(new RingMember {
+                    foreach (var i in ring.Members.Keys)
+                    {
+                        SqlSugarHelper.Db.Insertable<RingMember>(new RingMember
+                            {
                                 RingId = ring.ID, CharacterId = ring.Members[i].CharID, Right = ring.Rights[i].Value
                             })
                             .ExecuteCommand();
@@ -1353,41 +1614,50 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void DeleteRing(Ring.Ring ring) {
-            try {
+        public void DeleteRing(Ring.Ring ring)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
 
                 foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
-                             .Where(item => item.RingId == ring.ID).ToList()) {
+                             .Where(item => item.RingId == ring.ID).ToList())
+                {
                     SqlSugarHelper.Db.Deleteable((ringMember));
                 }
 
 
                 foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
-                             .Where(item => item.RingId == ring.ID).ToList()) {
+                             .Where(item => item.RingId == ring.ID).ToList())
+                {
                     SqlSugarHelper.Db.Deleteable<Entities.Ring>(_ring).ExecuteCommand();
                 }
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void RingEmblemUpdate(Ring.Ring ring, byte[] buf) {
-            try {
+        public void RingEmblemUpdate(Ring.Ring ring, byte[] buf)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
                 foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
-                             .Where(item => item.RingId == ring.ID).ToList()) {
+                             .Where(item => item.RingId == ring.ID).ToList())
+                {
                     _ring.Emblem = buf;
                     _ring.EmblemDate = DateTime.Now.ToUniversalTime();
                     SqlSugarHelper.Db.Updateable(_ring).ExecuteCommand();
@@ -1395,36 +1665,44 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date) {
+        public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date)
+        {
             var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
                 .Where(item => item.RingId == ring_id).ToList();
-            if (result.Count == 0) {
+            if (result.Count == 0)
+            {
                 return new GetRingEmblemResult(null, false, DateTime.Now);
             }
 
-            if (result[0].Emblem == null) {
+            if (result[0].Emblem == null)
+            {
                 return new GetRingEmblemResult(null, false, DateTime.Now);
             }
 
             var newTime = (DateTime)result[0].EmblemDate;
-            if (date < newTime) {
+            if (date < newTime)
+            {
                 return new GetRingEmblemResult((byte[])result[0].Emblem, true, newTime);
             }
 
             return new GetRingEmblemResult(new byte[0], false, newTime);
         }
 
-        public List<Post> GetBBS(uint bbsId) {
+        public List<Post> GetBBS(uint bbsId)
+        {
             var list = new List<Post>();
 
-            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId)) {
-                list.Add(new Post {
+            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId))
+            {
+                list.Add(new Post
+                {
                     Name = bbs.Name,
                     Title = bbs.Title,
                     Content = bbs.Content,
@@ -1435,11 +1713,14 @@ namespace SagaDB {
             return list;
         }
 
-        public List<Post> GetBBSPage(uint bbsId, int page) {
+        public List<Post> GetBBSPage(uint bbsId, int page)
+        {
             var list = new List<Post>();
 
-            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId, page, 5)) {
-                list.Add(new Post {
+            foreach (Bbs bbs in BbsRepository.GetBbs(bbsId, page, 5))
+            {
+                list.Add(new Post
+                {
                     Name = bbs.Name,
                     Title = bbs.Title,
                     Content = bbs.Content,
@@ -1450,11 +1731,13 @@ namespace SagaDB {
             return list;
         }
 
-        public List<Mail> GetMail(ActorPC pc) {
+        public List<Mail> GetMail(ActorPC pc)
+        {
             var list = new List<Mail>();
 
             foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().Where(item => item.CharacterId == pc.CharID)
-                         .OrderByDescending(item => item.PostDate).ToList()) {
+                         .OrderByDescending(item => item.PostDate).ToList())
+            {
                 var post = new Mail();
                 post.MailID = (uint)i.MailId;
                 post.Name = (string)i.Sender;
@@ -1468,21 +1751,25 @@ namespace SagaDB {
             return list;
         }
 
-        public bool DeleteGift(Gift gift) {
+        public bool DeleteGift(Gift gift)
+        {
             bool isSuccess = false;
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
                              .Where(item => item.MailId == gift.MailID)
-                             .ToList()) {
+                             .ToList())
+                {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
 
                 SqlSugarHelper.Db.CommitTran();
                 isSuccess = true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
@@ -1490,21 +1777,25 @@ namespace SagaDB {
             return isSuccess;
         }
 
-        public bool DeleteMail(Mail mail) {
+        public bool DeleteMail(Mail mail)
+        {
             bool isSuccess = false;
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().TranLock(DbLockType.Wait)
                              .Where(item => item.MailId == mail.MailID)
-                             .ToList()) {
+                             .ToList())
+                {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
 
                 SqlSugarHelper.Db.CommitTran();
                 isSuccess = true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
@@ -1512,8 +1803,10 @@ namespace SagaDB {
             return isSuccess;
         }
 
-        public List<Gift> GetGifts(ActorPC pc) {
-            if (pc == null) {
+        public List<Gift> GetGifts(ActorPC pc)
+        {
+            if (pc == null)
+            {
                 return null;
             }
 
@@ -1521,7 +1814,8 @@ namespace SagaDB {
 
             foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
                          .Where(item => item.AccountId == pc.Account.AccountID)
-                         .ToList()) {
+                         .ToList())
+            {
                 var post = new Gift();
                 post.MailID = (uint)i.MailId;
                 post.AccountID = (uint)i.AccountId;
@@ -1529,43 +1823,53 @@ namespace SagaDB {
                 post.Title = (string)i.Title;
                 post.Date = (DateTime)i.PostDate;
                 post.Items = new Dictionary<uint, ushort>();
-                if (!post.Items.ContainsKey(i.ItemId1) && i.ItemId1 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId1) && i.ItemId1 != 0)
+                {
                     post.Items.Add(i.ItemId1, i.ItemCount1);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId2) && i.ItemId2 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId2) && i.ItemId2 != 0)
+                {
                     post.Items.Add(i.ItemId2, i.ItemCount2);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId3) && i.ItemId3 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId3) && i.ItemId3 != 0)
+                {
                     post.Items.Add(i.ItemId3, i.ItemCount3);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId4) && i.ItemId4 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId4) && i.ItemId4 != 0)
+                {
                     post.Items.Add(i.ItemId4, i.ItemCount4);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId5) && i.ItemId5 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId5) && i.ItemId5 != 0)
+                {
                     post.Items.Add(i.ItemId5, i.ItemCount5);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId6) && i.ItemId6 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId6) && i.ItemId6 != 0)
+                {
                     post.Items.Add(i.ItemId6, i.ItemCount6);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId7) && i.ItemId7 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId7) && i.ItemId7 != 0)
+                {
                     post.Items.Add(i.ItemId7, i.ItemCount7);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId8) && i.ItemId8 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId8) && i.ItemId8 != 0)
+                {
                     post.Items.Add(i.ItemId8, i.ItemCount8);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId9) && i.ItemId9 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId9) && i.ItemId9 != 0)
+                {
                     post.Items.Add(i.ItemId9, i.ItemCount9);
                 }
 
-                if (!post.Items.ContainsKey(i.ItemId10) && i.ItemId10 != 0) {
+                if (!post.Items.ContainsKey(i.ItemId10) && i.ItemId10 != 0)
+                {
                     post.Items.Add(i.ItemId10, i.ItemCount10);
                 }
 
@@ -1576,12 +1880,15 @@ namespace SagaDB {
             return list;
         }
 
-        public uint AddNewGift(Gift gift) {
+        public uint AddNewGift(Gift gift)
+        {
             var ids = new List<uint> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             var counts = new List<ushort> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             byte index = 0;
-            foreach (var item in gift.Items.Keys) {
-                if (item != 0) {
+            foreach (var item in gift.Items.Keys)
+            {
+                if (item != 0)
+                {
                     ids[index] = item;
                     counts[index] = gift.Items[item];
                 }
@@ -1589,10 +1896,12 @@ namespace SagaDB {
                 index++;
             }
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
-                var gifts = SqlSugarHelper.Db.Insertable<Gifts>(new Gifts {
+                var gifts = SqlSugarHelper.Db.Insertable<Gifts>(new Gifts
+                {
                     AccountId = gift.AccountID,
                     Sender = gift.Name,
                     PostDate = DateTime.Now.ToUniversalTime(),
@@ -1624,7 +1933,8 @@ namespace SagaDB {
 
                 return gifts.GiftId;
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
 
@@ -1632,31 +1942,38 @@ namespace SagaDB {
             }
         }
 
-        public bool BBSNewPost(ActorPC poster, uint bbsId, string title, string content) {
+        public bool BBSNewPost(ActorPC poster, uint bbsId, string title, string content)
+        {
             return BbsRepository.Insert(poster, bbsId, title, content);
         }
 
-        public uint GetFlyCastleRindID(uint ffid) {
+        public uint GetFlyCastleRindID(uint ffid)
+        {
             foreach (var flyingCastle in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>()
-                         .Where(item => item.FfId == ffid).ToList()) {
+                         .Where(item => item.FfId == ffid).ToList())
+            {
                 return flyingCastle.RingId;
             }
 
             return 0;
         }
 
-        public void GetFlyCastle(ActorPC pc) {
-            if (pc.Ring == null) {
+        public void GetFlyCastle(ActorPC pc)
+        {
+            if (pc.Ring == null)
+            {
                 return;
             }
 
             var result = SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>().Where(item => item.FfId == pc.Ring.FF_ID)
                 .ToList();
-            if (result.Count == 0) {
+            if (result.Count == 0)
+            {
                 return;
             }
 
-            if (pc.Ring.FlyingCastle == null) {
+            if (pc.Ring.FlyingCastle == null)
+            {
                 pc.Ring.FlyingCastle = new FlyingCastle.FlyingCastle();
                 pc.Ring.FlyingCastle.ID = (uint)result[0].FfId;
                 pc.Ring.FlyingCastle.Name = (string)result[0].Name;
@@ -1667,11 +1984,13 @@ namespace SagaDB {
             }
         }
 
-        public void GetFlyingCastleFurniture(Ring.Ring ring) {
+        public void GetFlyingCastleFurniture(Ring.Ring ring)
+        {
             if (ring.FlyingCastle == null)
                 return;
             if (!ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
-                !ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM)) {
+                !ring.FlyingCastle.Furnitures.ContainsKey(FurniturePlace.ROOM))
+            {
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -1679,7 +1998,8 @@ namespace SagaDB {
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
                 var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", ring.FlyingCastle.ID);
                 var result = SQLExecuteQuery(sqlstr);
-                foreach (DataRow i in result) {
+                foreach (DataRow i in result)
+                {
                     var place = (FurniturePlace)(byte)i["place"];
                     var actor = new ActorFurniture();
                     actor.ItemID = (uint)i["item_id"];
@@ -1698,7 +2018,8 @@ namespace SagaDB {
             }
         }
 
-        public void GetFlyingCastleFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures) {
+        public void GetFlyingCastleFurnitureCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        {
             Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -1706,7 +2027,8 @@ namespace SagaDB {
             Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
             var sqlstr = "SELECT * FROM `ff_furniture_copy` WHERE `ff_id`='3';";
             var result = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in result) {
+            foreach (DataRow i in result)
+            {
                 var place = (FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
@@ -1724,12 +2046,14 @@ namespace SagaDB {
             }
         }
 
-        public List<FlyingCastle.FlyingCastle> GetFlyingCastles() {
+        public List<FlyingCastle.FlyingCastle> GetFlyingCastles()
+        {
             ;
 
             var list = new List<FlyingCastle.FlyingCastle>();
 
-            foreach (Entities.FlyingCastle i in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>().ToList()) {
+            foreach (Entities.FlyingCastle i in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>().ToList())
+            {
                 var ff = new FlyingCastle.FlyingCastle();
                 ff.Name = (string)i.Name;
                 ff.Content = (string)i.Content;
@@ -1742,7 +2066,8 @@ namespace SagaDB {
             return list;
         }
 
-        public void SaveFlyCastleCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures) {
+        public void SaveFlyCastleCopy(Dictionary<FurniturePlace, List<ActorFurniture>> Furnitures)
+        {
             //uint account = GetAccountID(pc);
             string sqlstr;
             sqlstr = "DELETE FROM `ff_furniture_copy` WHERE `ff_id`='3';";
@@ -1784,16 +2109,20 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SavePaper(ActorPC pc) {
-            if (pc.AnotherPapers == null) {
+        public void SavePaper(ActorPC pc)
+        {
+            if (pc.AnotherPapers == null)
+            {
                 return;
             }
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 SqlSugarHelper.Db.Deleteable<AnotherPaper>().Where(item => item.CharId == pc.CharID).ExecuteCommand();
-                foreach (var i in pc.AnotherPapers) {
+                foreach (var i in pc.AnotherPapers)
+                {
                     AnotherPaper anotherPaper = new AnotherPaper();
                     anotherPaper.CharId = pc.CharID;
                     anotherPaper.PaperId = i.Key;
@@ -1804,31 +2133,38 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void SaveFlyCastle(Ring.Ring ring) {
-            if (ring == null) {
+        public void SaveFlyCastle(Ring.Ring ring)
+        {
+            if (ring == null)
+            {
                 return;
             }
 
-            if (ring.FlyingCastle == null) {
+            if (ring.FlyingCastle == null)
+            {
                 return;
             }
 
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 //uint account = GetAccountID(pc);
                 string sqlstr;
-                if (ring.FlyingCastle.ID > 0) {
+                if (ring.FlyingCastle.ID > 0)
+                {
                     foreach (var flyingCastle in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>()
                                  .TranLock(DbLockType.Wait)
-                                 .Where(item => item.FfId == ring.FlyingCastle.ID).ToList()) {
+                                 .Where(item => item.FfId == ring.FlyingCastle.ID).ToList())
+                    {
                         flyingCastle.Level = ring.FlyingCastle.Level;
                         flyingCastle.Content = ring.FlyingCastle.Content;
                         flyingCastle.Name = ring.FlyingCastle.Name;
@@ -1886,13 +2222,15 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void SaveSerFF(Server.Server ser) {
+        public void SaveSerFF(Server.Server ser)
+        {
             var sqlstr = string.Format("DELETE FROM `ff_furniture` WHERE `ff_id`='{0}';", 99999);
             foreach (var i in ser.Furnitures[FurniturePlace.GARDEN])
                 sqlstr += string.Format("INSERT INTO `ff_furniture`(`ff_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
@@ -1915,9 +2253,11 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetSerFFurniture(Server.Server ser) {
+        public void GetSerFFurniture(Server.Server ser)
+        {
             if (!ser.Furnitures.ContainsKey(FurniturePlace.GARDEN) ||
-                !ser.Furnitures.ContainsKey(FurniturePlace.ROOM)) {
+                !ser.Furnitures.ContainsKey(FurniturePlace.ROOM))
+            {
                 ser.Furnitures.Add(FurniturePlace.GARDEN, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.ROOM, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
@@ -1925,9 +2265,11 @@ namespace SagaDB {
                 ser.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
                 var sqlstr = string.Format("SELECT * FROM `ff_furniture` WHERE `ff_id`='{0}';", 99999);
                 var result = SQLExecuteQuery(sqlstr);
-                foreach (DataRow i in result) {
+                foreach (DataRow i in result)
+                {
                     var p = (byte)i["place"];
-                    if (p < 5) {
+                    if (p < 5)
+                    {
                         var place = (FurniturePlace)p;
                         var actor = new ActorFurniture();
                         actor.ItemID = (uint)i["item_id"];
@@ -1943,7 +2285,8 @@ namespace SagaDB {
                         actor.invisble = false;
                         ser.Furnitures[place].Add(actor);
                     }
-                    else {
+                    else
+                    {
                         p -= 4;
                         var place = (FurniturePlace)p;
                         var actor = new ActorFurniture();
@@ -1964,18 +2307,22 @@ namespace SagaDB {
             }
         }
 
-        public void CreateFF(ActorPC pc) {
-            if (pc.Ring.FlyingCastle == null) {
+        public void CreateFF(ActorPC pc)
+        {
+            if (pc.Ring.FlyingCastle == null)
+            {
                 return;
             }
 
             GetAccountID(pc);
             string sqlstr;
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
-                uint id = SqlSugarHelper.Db.Insertable<Entities.FlyingCastle>(new Entities.FlyingCastle {
+                uint id = SqlSugarHelper.Db.Insertable<Entities.FlyingCastle>(new Entities.FlyingCastle
+                {
                     RingId = pc.Ring.ID,
                     Name = pc.Ring.FlyingCastle.Name,
                     Content = pc.Ring.FlyingCastle.Content,
@@ -1986,25 +2333,29 @@ namespace SagaDB {
                 pc.Ring.FF_ID = id;
 
                 foreach (var ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
-                             .Where(item => item.RingId == pc.Ring.ID).ToList()) {
+                             .Where(item => item.RingId == pc.Ring.ID).ToList())
+                {
                     ring.FfId = pc.Ring.FF_ID;
                     SqlSugarHelper.Db.Updateable(ring).ExecuteCommand();
                 }
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public List<ActorPC> GetWRPRanking() {
+        public List<ActorPC> GetWRPRanking()
+        {
             var characters = SqlSugarHelper.Db.Queryable<Character>().OrderByDescending(item => item.Wrp).Take(100)
                 .ToList();
             var res = new List<ActorPC>();
             uint count = 1;
-            foreach (Character character in characters) {
+            foreach (Character character in characters)
+            {
                 var pc = new ActorPC();
                 pc.CharID = character.CharacterId;
                 pc.Name = character.Name;
@@ -2020,9 +2371,11 @@ namespace SagaDB {
             return res;
         }
 
-        public void SavaLevelLimit() {
+        public void SavaLevelLimit()
+        {
             var LL = LevelLimit.LevelLimit.Instance;
-            try {
+            try
+            {
                 var sqlstr = string.Format(
                     "UPDATE `levellimit` SET `NowLevelLimit`='{0}',`NextLevelLimit`='{1}',`SetNextUpLevel`='{2}',`SetNextUpDays`='{3}',`ReachTime`='{4}',`NextTime`='{5}'"
                     + ",`FirstPlayer`='{6}',`SecondPlayer`='{7}',`ThirdPlayer`='{8}',`FourthPlayer`='{9}',`FifthPlayer`='{10}',`LastTimeLevelLimit`='{11}',`IsLock`='{12}'"
@@ -2031,18 +2384,21 @@ namespace SagaDB {
                     , LL.FourthPlayer, LL.FifthPlayer, LL.LastTimeLevelLimit, LL.IsLock);
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetLevelLimit() {
+        public void GetLevelLimit()
+        {
             var sqlstr =
                 "SELECT `NowLevelLimit`,`NextLevelLimit`,`SetNextUpLevel`,`SetNextUpDays`,`ReachTime`,`NextTime`,`LastTimeLevelLimit`,`FirstPlayer`" +
                 ",`SecondPlayer`,`ThirdPlayer`,`FourthPlayer`,`FifthPlayer`,`IsLock` FROM `levellimit`";
             var levellimit = LevelLimit.LevelLimit.Instance;
             var resule = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in resule) {
+            foreach (DataRow i in resule)
+            {
                 levellimit.NowLevelLimit = (uint)i["NowLevelLimit"];
                 levellimit.NextLevelLimit = (uint)i["NextLevelLimit"];
                 levellimit.SetNextUpLevelLimit = (uint)i["SetNextUpLevel"];
@@ -2059,21 +2415,27 @@ namespace SagaDB {
             }
         }
 
-        public void SaveStamp(ActorPC pc, StampGenre genre) {
-            try {
+        public void SaveStamp(ActorPC pc, StampGenre genre)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 var result = SqlSugarHelper.Db.Queryable<Entities.Stamp>().TranLock(DbLockType.Wait)
                     .Where(item => item.CharacterId == pc.CharID).Where(item => item.StampId == (byte)genre).ToList();
 
-                if (result.Count > 0) {
-                    foreach (var i in result) {
+                if (result.Count > 0)
+                {
+                    foreach (var i in result)
+                    {
                         i.Value = pc.Stamp[genre].Value;
                         SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
                     }
                 }
-                else {
-                    SqlSugarHelper.Db.Insertable<Entities.Stamp>(new Entities.Stamp {
+                else
+                {
+                    SqlSugarHelper.Db.Insertable<Entities.Stamp>(new Entities.Stamp
+                    {
                         CharacterId = pc.CharID,
                         StampId = (byte)genre,
                         Value = pc.Stamp[genre].Value
@@ -2082,24 +2444,28 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public List<TamaireLending> GetTamaireLendings() {
+        public List<TamaireLending> GetTamaireLendings()
+        {
             var sqlstr = "SELECT * FROM `tamairelending`;";
             var result = SQLExecuteQuery(sqlstr);
             var tamaireLendings = new List<TamaireLending>();
-            for (var i = 0; i < result.Count; i++) {
+            for (var i = 0; i < result.Count; i++)
+            {
                 var tamaireLending = new TamaireLending();
                 tamaireLending.Lender = (uint)result[0]["char_id"];
                 tamaireLending.Baselv = (byte)result[0]["baselv"];
                 tamaireLending.JobType = (byte)result[0]["jobtype"];
                 tamaireLending.PostDue = (DateTime)result[0]["postdue"];
                 tamaireLending.Comment = (string)result[0]["comment"];
-                for (byte j = 1; j <= 4; j++) {
+                for (byte j = 1; j <= 4; j++)
+                {
                     var renterid = (uint)result[0]["renter" + j];
                     if (renterid != 0)
                         tamaireLending.Renters.Add(renterid);
@@ -2111,10 +2477,12 @@ namespace SagaDB {
             return tamaireLendings;
         }
 
-        public void GetTamaireLending(ActorPC pc) {
+        public void GetTamaireLending(ActorPC pc)
+        {
             var sqlstr = $"SELECT * FROM `tamairelending` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0) {
+            if (result.Count != 0)
+            {
                 if (pc.TamaireLending == null)
                     pc.TamaireLending = new TamaireLending();
                 pc.TamaireLending.Lender = (uint)result[0]["char_id"];
@@ -2122,7 +2490,8 @@ namespace SagaDB {
                 pc.TamaireLending.PostDue = (DateTime)result[0]["postdue"];
                 pc.TamaireLending.JobType = (byte)result[0]["jobtype"];
                 pc.TamaireLending.Baselv = (byte)result[0]["baselv"];
-                for (byte j = 1; j <= 4; j++) {
+                for (byte j = 1; j <= 4; j++)
+                {
                     var renterid = (uint)result[0]["renter" + j];
                     if (renterid != 0)
                         pc.TamaireLending.Renters.Add(renterid);
@@ -2130,7 +2499,8 @@ namespace SagaDB {
             }
         }
 
-        public void CreateTamaireLending(TamaireLending tamaireLending) {
+        public void CreateTamaireLending(TamaireLending tamaireLending)
+        {
             var comment = CheckSQLString(tamaireLending.Comment);
             var sqlstr = string.Format(
                 "INSERT INTO `tamairelending`(`char_id`,`jobtype`,`baselv`,`postdue`,`comment`,`renter1`,`renter2`,`renter3`,`renter4`) VALUES " +
@@ -2139,7 +2509,8 @@ namespace SagaDB {
             SQLExecuteScalar(sqlstr);
         }
 
-        public void SaveTamaireLending(TamaireLending tamaireLending) {
+        public void SaveTamaireLending(TamaireLending tamaireLending)
+        {
             uint renter1, renter2, renter3, renter4;
             var comment = CheckSQLString(tamaireLending.Comment);
 
@@ -2167,16 +2538,19 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void DeleteTamaireLending(TamaireLending tamaireLending) {
+        public void DeleteTamaireLending(TamaireLending tamaireLending)
+        {
             var sqlstr = string.Format("DELETE FROM `tamairelending` WHERE `char_id`='{0}';",
                 tamaireLending.Lender);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetTamaireRental(ActorPC pc) {
+        public void GetTamaireRental(ActorPC pc)
+        {
             var sqlstr = $"SELECT * FROM `tamairerental` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
             var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0) {
+            if (result.Count != 0)
+            {
                 if (pc.TamaireRental == null)
                     pc.TamaireRental = new TamaireRental();
                 pc.TamaireRental.Renter = (uint)result[0]["char_id"];
@@ -2186,7 +2560,8 @@ namespace SagaDB {
             }
         }
 
-        public void CreateTamaireRental(TamaireRental tamaireRental) {
+        public void CreateTamaireRental(TamaireRental tamaireRental)
+        {
             var sqlstr = string.Format(
                 "INSERT INTO `tamairerental`(`char_id`,`rentdue`,`currentlender`,`lastlender`) VALUES " +
                 "('{0}','{1}','{2}','{3}');", tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue),
@@ -2194,7 +2569,8 @@ namespace SagaDB {
             SQLExecuteScalar(sqlstr);
         }
 
-        public void SaveTamaireRental(TamaireRental tamaireRental) {
+        public void SaveTamaireRental(TamaireRental tamaireRental)
+        {
             var sqlstr = string.Format(
                 "UPDATE `tamairerental` SET `rentdue`='{1}',`currentlender`='{2}',`lastlender`='{3}' WHERE `char_id`='{0}' LIMIT 1;",
                 tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue), tamaireRental.CurrentLender,
@@ -2202,16 +2578,19 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void DeleteTamaireRental(TamaireRental tamaireRental) {
+        public void DeleteTamaireRental(TamaireRental tamaireRental)
+        {
             var sqlstr = string.Format("DELETE FROM `tamairerental` WHERE `char_id`='{0}';", tamaireRental.Renter);
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void GetMosterGuide(ActorPC pc) {
+        public void GetMosterGuide(ActorPC pc)
+        {
             var guide = new Dictionary<uint, bool>();
             var sqlstr = $"SELECT * FROM `mobstates` WHERE `char_id`='{pc.CharID}'";
             var results = SQLExecuteQuery(sqlstr);
-            foreach (DataRow result in results) {
+            foreach (DataRow result in results)
+            {
                 //uint mobID = (uint)result["mob_id"];
                 //bool state = (bool)result["state"];
                 var mobID = Convert.ToUInt32(result["mob_id"]);
@@ -2224,7 +2603,8 @@ namespace SagaDB {
             pc.MosterGuide = guide;
         }
 
-        public void SaveMosterGuide(ActorPC pc, uint mobID, bool state) {
+        public void SaveMosterGuide(ActorPC pc, uint mobID, bool state)
+        {
             byte value = 0;
             if (state)
                 value = 1;
@@ -2239,32 +2619,40 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SaveQuestInfo(ActorPC pc) {
+        public void SaveQuestInfo(ActorPC pc)
+        {
             var sqlstr = string.Format("DELETE FROM `questinfo` WHERE `char_id`='{0}';", pc.CharID);
-            foreach (var i in pc.KillList) {
+            foreach (var i in pc.KillList)
+            {
                 byte ss = (i.Value.isFinish) ? (byte)1 : (byte)0;
                 sqlstr += string.Format(
                     "INSERT INTO `questinfo`(`char_id`,`object_id`,`count`,`totalcount`,`infinish`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
                     pc.CharID, i.Key, i.Value.Count, i.Value.TotalCount, ss);
             }
 
-            try {
+            try
+            {
                 SQLExecuteNonQuery(sqlstr);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetQuestInfo(ActorPC pc) {
+        public void GetQuestInfo(ActorPC pc)
+        {
             string sqlstr;
             DataRowCollection result = null;
-            try {
+            try
+            {
                 sqlstr = "SELECT * FROM `questinfo` WHERE `char_id`='" + pc.CharID + "'";
-                try {
+                try
+                {
                     result = SQLExecuteQuery(sqlstr);
                     if (result.Count > 0)
-                        for (var i = 0; i < result.Count; i++) {
+                        for (var i = 0; i < result.Count; i++)
+                        {
                             var ki = new ActorPC.KillInfo();
                             var mobid = (uint)result[i]["object_id"];
                             var c = (uint)result[i]["count"];
@@ -2280,40 +2668,47 @@ namespace SagaDB {
                                 pc.KillList.Add(mobid, ki);
                         }
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        private void GetVar(ActorPC pc) {
+        private void GetVar(ActorPC pc)
+        {
             var sqlstr = "SELECT * FROM `cvar` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
             var account_id = this.GetAccountID(pc.CharID);
             var enc = Encoding.UTF8;
             DataRowCollection res;
             res = SQLExecuteQuery(sqlstr);
 
-            if (res.Count > 0) {
+            if (res.Count > 0)
+            {
                 var buf = (byte[])res[0]["values"];
                 var ms = new MemoryStream(buf);
                 var br = new BinaryReader(ms);
                 var count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CInt[name] = br.ReadInt32();
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CMask[name] = new BitMask(br.ReadInt32());
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.CStr[name] = enc.GetString(br.ReadBytes(br.ReadInt32()));
                 }
@@ -2321,52 +2716,64 @@ namespace SagaDB {
 
             var avatar = AvatarRepository.GetAvatar(account_id);
 
-            if (avatar != null) {
+            if (avatar != null)
+            {
                 var br = new BinaryReader(new MemoryStream(avatar.Valuess));
                 var count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AInt[name] = br.ReadInt32();
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AMask[name] = new BitMask(br.ReadInt32());
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++) {
+                for (var i = 0; i < count; i++)
+                {
                     var name = enc.GetString(br.ReadBytes(br.ReadInt32()));
                     pc.AStr[name] = enc.GetString(br.ReadBytes(br.ReadInt32()));
                 }
             }
         }
 
-        public void SaveItem(ActorPC pc) {
-            try {
+        public void SaveItem(ActorPC pc)
+        {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
                 var account = GetAccountID(pc);
                 if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
-                    pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
-                    if (pc.Account != null) {
+                    pc.Inventory.Items[ContainerType.BODY].Count < 1000)
+                {
+                    if (pc.Account != null)
+                    {
                         SagaLib.Logger.GetLogger().Information(
                             "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" +
                             pc.Inventory.ToBytes().Length);
                     }
 
                     foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Wait)
-                                 .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                                 .Where(item => item.CharacterId == pc.CharID).ToList())
+                    {
                         inventory.Data = pc.Inventory.ToBytes();
                         SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
                     }
                 }
 
 
-                if (pc.Inventory.WareHouse != null) {
-                    if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
+                if (pc.Inventory.WareHouse != null)
+                {
+                    if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare)
+                    {
                         foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Wait)
-                                     .Where(item => item.AccountId == account).ToList()) {
+                                     .Where(item => item.AccountId == account).ToList())
+                        {
                             warehouse.Data = pc.Inventory.WareToBytes();
 
                             SqlSugarHelper.Db.Updateable<Warehouse>(warehouse).ExecuteCommand();
@@ -2376,16 +2783,19 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetJobLV(ActorPC pc) {
+        public void GetJobLV(ActorPC pc)
+        {
             string sqlstr;
             DataRowCollection result = null;
-            try {
+            try
+            {
                 sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 1 +
                          "' LIMIT 1;";
                 result = SQLExecuteQuery(sqlstr);
@@ -2407,46 +2817,55 @@ namespace SagaDB {
                 if (result.Count > 0)
                     pc.JobLV_CARDINAL = (byte)result[0]["joblv"];
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetNPCStates(ActorPC pc) {
+        public void GetNPCStates(ActorPC pc)
+        {
             string sqlstr;
             DataRowCollection result = null;
             sqlstr = $"SELECT * FROM `npcstates` WHERE `char_id`='{pc.CharID}';";
-            try {
+            try
+            {
                 result = SQLExecuteQuery(sqlstr);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
                 return;
             }
 
-            for (var i = 0; i < result.Count; i++) {
+            for (var i = 0; i < result.Count; i++)
+            {
                 var npcID = (uint)result[i]["npc_id"];
                 var state = (bool)result[i]["state"];
                 pc.NPCStates.Add(npcID, state);
             }
         }
 
-        public void GetItem(ActorPC pc) {
-            try {
+        public void GetItem(ActorPC pc)
+        {
+            try
+            {
                 var account = GetAccountID(pc);
                 var inventories = SqlSugarHelper.Db.Queryable<Inventory>()
                     .Where(item => item.CharacterId == pc.CharID)
                     .ToList();
 
 
-                if (inventories.Count > 0) {
+                if (inventories.Count > 0)
+                {
                     SagaDB.Item.Inventory inv = null;
 
                     var buf = (byte[])inventories[0].Data;
                     SagaLib.Logger.GetLogger()
                         .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                     var ms = new MemoryStream(buf);
-                    if (buf[0] == 0x42 && buf[1] == 0x5A) {
+                    if (buf[0] == 0x42 && buf[1] == 0x5A)
+                    {
                         var ms2 = new MemoryStream();
                         BZip2.Decompress(ms, ms2, true);
                         ms = new MemoryStream(ms2.ToArray());
@@ -2457,7 +2876,8 @@ namespace SagaDB {
                         pc.Inventory = inv;
                         pc.Inventory.Owner = pc;
                     }
-                    else {
+                    else
+                    {
                         inv = new SagaDB.Item.Inventory(pc);
                         inv.FromStream(ms);
                         pc.Inventory = inv;
@@ -2467,11 +2887,13 @@ namespace SagaDB {
                 var warehouse = SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == account)
                     .ToList();
 
-                if (warehouse.Count > 0) {
+                if (warehouse.Count > 0)
+                {
                     Dictionary<WarehousePlace, List<Item.Item>> inv = null;
                     var buf = (byte[])warehouse[0].Data;
                     var ms = new MemoryStream(buf);
-                    if (buf[0] == 0x42 && buf[1] == 0x5A) {
+                    if (buf[0] == 0x42 && buf[1] == 0x5A)
+                    {
                         pc.Inventory.WareHouse = new Dictionary<WarehousePlace, List<Item.Item>>();
                         var ms2 = new MemoryStream();
                         BZip2.Decompress(ms, ms2, true);
@@ -2479,16 +2901,20 @@ namespace SagaDB {
 #pragma warning disable SYSLIB0011
                         var bf = new BinaryFormatter();
                         inv = (Dictionary<WarehousePlace, List<Item.Item>>)bf.Deserialize(ms);
-                        if (inv != null) {
+                        if (inv != null)
+                        {
                             pc.Inventory.wareIndex = 200000001;
-                            foreach (var i in inv.Keys) {
+                            foreach (var i in inv.Keys)
+                            {
                                 pc.Inventory.WareHouse.Add(i, new List<Item.Item>());
                                 foreach (var j in inv[i]) pc.Inventory.AddWareItem(i, j);
                             }
                         }
                     }
-                    else {
-                        if (pc.Inventory.WareHouse == null) {
+                    else
+                    {
+                        if (pc.Inventory.WareHouse == null)
+                        {
                             pc.Inventory.WareHouse = new SagaDB.Item.Inventory(pc).WareHouse;
                         }
 
@@ -2517,30 +2943,36 @@ namespace SagaDB {
                 if (!pc.Inventory.WareHouse.ContainsKey(WarehousePlace.Tonka))
                     pc.Inventory.WareHouse.Add(WarehousePlace.Tonka, new List<Item.Item>());
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public void GetPartyMember(Party.Party party) {
+        public void GetPartyMember(Party.Party party)
+        {
             var result = SqlSugarHelper.Db.Queryable<PartyMember>().Where(item => item.PartyId == party.ID)
                 .ToList();
 
-            for (byte index = 0; index < 7; index++) {
+            for (byte index = 0; index < 7; index++)
+            {
                 var memberCharId = (uint)result[index].CharId;
-                if (memberCharId == 0) {
+                if (memberCharId == 0)
+                {
                     continue;
                 }
 
                 var members = SqlSugarHelper.Db.Queryable<Character>()
                     .Where(item => item.CharacterId == memberCharId)
                     .ToList();
-                if (members.Count == 0) {
+                if (members.Count == 0)
+                {
                     continue;
                 }
 
                 var member = members[0];
-                party.Members.Add(index, new ActorPC {
+                party.Members.Add(index, new ActorPC
+                {
                     CharID = member.CharacterId,
                     Name = member.Name,
                     Job = (PC_JOB)member.Job
@@ -2548,12 +2980,14 @@ namespace SagaDB {
             }
         }
 
-        private void GetFlyingGarden(ActorPC pc) {
+        private void GetFlyingGarden(ActorPC pc)
+        {
             var account = GetAccountID(pc);
             var result =
                 SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;",
                     account));
-            if (result.Count > 0) {
+            if (result.Count > 0)
+            {
                 var garden = new FlyingGarden.FlyingGarden(pc);
                 garden.ID = (uint)result[0]["fgarden_id"];
                 garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
@@ -2568,13 +3002,15 @@ namespace SagaDB {
                 pc.FlyingGarden = garden;
             }
 
-            if (pc.FlyingGarden == null) {
+            if (pc.FlyingGarden == null)
+            {
                 return;
             }
 
             foreach (DataRow i in SQLExecuteQuery(string.Format(
                          "SELECT * FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
-                         pc.FlyingGarden.ID))) {
+                         pc.FlyingGarden.ID)))
+            {
                 var place = (FlyingGarden.FurniturePlace)(byte)i["place"];
                 var actor = new ActorFurniture();
                 actor.ItemID = (uint)i["item_id"];
@@ -2592,10 +3028,13 @@ namespace SagaDB {
             }
         }
 
-        public void GetPaper(ActorPC pc) {
+        public void GetPaper(ActorPC pc)
+        {
             foreach (var anotherPaper in SqlSugarHelper.Db.Queryable<AnotherPaper>()
-                         .Where(item => item.CharId == pc.CharID).ToList()) {
-                if (pc.AnotherPapers.ContainsKey(anotherPaper.PaperId)) {
+                         .Where(item => item.CharId == pc.CharID).ToList())
+            {
+                if (pc.AnotherPapers.ContainsKey(anotherPaper.PaperId))
+                {
                     continue;
                 }
 
@@ -2608,13 +3047,16 @@ namespace SagaDB {
             }
         }
 
-        private void SaveFGarden(ActorPC pc) {
-            if (pc.FlyingGarden == null) {
+        private void SaveFGarden(ActorPC pc)
+        {
+            if (pc.FlyingGarden == null)
+            {
                 return;
             }
 
             var account = GetAccountID(pc);
-            if (pc.FlyingGarden.ID > 0) {
+            if (pc.FlyingGarden.ID > 0)
+            {
                 SQLExecuteNonQuery(string.Format(
                     "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
                     "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
@@ -2629,7 +3071,8 @@ namespace SagaDB {
                     pc.FlyingGarden.ID,
                     pc.FlyingGarden.Fuel));
             }
-            else {
+            else
+            {
                 pc.FlyingGarden.ID = SQLExecuteScalar(string.Format(
                     "INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
                     "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
@@ -2662,33 +3105,40 @@ namespace SagaDB {
             SQLExecuteNonQuery(sqlstr);
         }
 
-        public void SaveStamps(ActorPC pc) {
+        public void SaveStamps(ActorPC pc)
+        {
             foreach (StampGenre genre in Enum.GetValues(typeof(StampGenre)))
                 SaveStamp(pc, genre);
         }
 
-        public void GetStamps(ActorPC pc) {
+        public void GetStamps(ActorPC pc)
+        {
             foreach (var i in SqlSugarHelper.Db.Queryable<Entities.Stamp>()
                          .Where(item => item.CharacterId == pc.CharID).ToList()
-                    ) {
+                    )
+            {
                 pc.Stamp[(StampGenre)(byte)i.StampId].Value = i.Value;
             }
         }
 
         //#region 副职相关
 
-        public void GetDualJobInfo(ActorPC pc) {
+        public void GetDualJobInfo(ActorPC pc)
+        {
             var result = SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
                 .Where(item => item.CharacterId == pc.CharID).ToList();
-            if (result.Count > 0) {
+            if (result.Count > 0)
+            {
                 pc.PlayerDualJobList = new Dictionary<byte, PlayerDualJobInfo>();
                 foreach (Entities.DualJob item in result)
-                    if (pc.PlayerDualJobList.ContainsKey(item.SeriesId)) {
+                    if (pc.PlayerDualJobList.ContainsKey(item.SeriesId))
+                    {
                         pc.PlayerDualJobList[item.SeriesId].DualJobId = item.SeriesId;
                         pc.PlayerDualJobList[item.SeriesId].DualJobLevel = item.Level;
                         pc.PlayerDualJobList[item.SeriesId].DualJobExp = item.Exp;
                     }
-                    else {
+                    else
+                    {
                         var pi = new PlayerDualJobInfo();
                         pi.DualJobId = item.SeriesId;
                         pi.DualJobLevel = item.Level;
@@ -2712,20 +3162,25 @@ namespace SagaDB {
             //}
         }
 
-        public void SaveDualJobInfo(ActorPC pc, bool allinfo) {
+        public void SaveDualJobInfo(ActorPC pc, bool allinfo)
+        {
             var dic = pc.PlayerDualJobList;
 
 
-            try {
+            try
+            {
                 SqlSugarHelper.Db.BeginTran();
 
                 foreach (var dualJob in SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
-                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                             .Where(item => item.CharacterId == pc.CharID).ToList())
+                {
                     SqlSugarHelper.Db.Deleteable(dualJob).ExecuteCommand();
                 }
 
-                foreach (var item in dic.Keys) {
-                    SqlSugarHelper.Db.Insertable(new Entities.DualJob {
+                foreach (var item in dic.Keys)
+                {
+                    SqlSugarHelper.Db.Insertable(new Entities.DualJob
+                    {
                         CharacterId = pc.CharID,
                         SeriesId = dic[item].DualJobId,
                         Level = dic[item].DualJobLevel,
@@ -2733,16 +3188,20 @@ namespace SagaDB {
                     }).ExecuteCommand();
                 }
 
-                if (!allinfo) {
+                if (!allinfo)
+                {
                     foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
                                  .TranLock(DbLockType.Wait)
                                  .Where(item => item.CharacterId == pc.CharID)
-                                 .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                                 .Where(item => item.SeriesId == pc.DualJobID).ToList())
+                    {
                         SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
                     }
 
-                    foreach (var item in pc.DualJobSkills) {
-                        SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
+                    foreach (var item in pc.DualJobSkills)
+                    {
+                        SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill
+                        {
                             CharacterId = pc.CharID,
                             SeriesId = pc.DualJobID,
                             SkillId = item.ID,
@@ -2755,36 +3214,44 @@ namespace SagaDB {
 
                 SqlSugarHelper.Db.CommitTran();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.ShowError(e);
             }
         }
 
-        public void GetDualJobSkill(ActorPC pc) {
+        public void GetDualJobSkill(ActorPC pc)
+        {
             pc.DualJobSkills = new List<Skill.Skill>();
             foreach (Entities.DualJobSkill item in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
                          .Where(item => item.CharacterId == pc.CharID)
-                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                         .Where(item => item.SeriesId == pc.DualJobID).ToList())
+            {
                 var id = item.SkillId;
                 var level = item.SkillLevel;
                 var s = SkillFactory.Instance.GetSkill(id, level);
-                if (s != null) {
+                if (s != null)
+                {
                     pc.DualJobSkills.Add(s);
                 }
             }
         }
 
-        public void SaveDualJobSkill(ActorPC pc) {
+        public void SaveDualJobSkill(ActorPC pc)
+        {
             foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
                          .TranLock(DbLockType.Wait)
                          .Where(item => item.CharacterId == pc.CharID)
-                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+                         .Where(item => item.SeriesId == pc.DualJobID).ToList())
+            {
                 SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
             }
 
-            foreach (var item in pc.DualJobSkills) {
-                SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
+            foreach (var item in pc.DualJobSkills)
+            {
+                SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill
+                {
                     CharacterId = pc.CharID,
                     SeriesId = pc.DualJobID,
                     SkillId = item.ID,
