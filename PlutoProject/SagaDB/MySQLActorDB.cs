@@ -1451,18 +1451,16 @@ namespace SagaDB {
         }
 
         public List<Mail> GetMail(ActorPC pc) {
-            var sqlstr = string.Format("SELECT * FROM `mails` WHERE `char_id`='{0}' ORDER BY `postdate` DESC;",
-                pc.CharID);
             var list = new List<Mail>();
-            var result = SQLExecuteQuery(sqlstr);
 
-            foreach (DataRow i in result) {
+            foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().Where(item => item.CharacterId == pc.CharID)
+                         .OrderByDescending(item => item.PostDate).ToList()) {
                 var post = new Mail();
-                post.MailID = (uint)i["mail_id"];
-                post.Name = (string)i["sender"];
-                post.Title = (string)i["title"];
-                post.Content = (string)i["content"];
-                post.Date = (DateTime)i["postdate"];
+                post.MailID = (uint)i.MailId;
+                post.Name = (string)i.Sender;
+                post.Title = (string)i.Title;
+                post.Content = (string)i.Content;
+                post.Date = (DateTime)i.PostDate;
                 list.Add(post);
             }
 
@@ -1471,47 +1469,104 @@ namespace SagaDB {
         }
 
         public bool DeleteGift(Gift gift) {
-            var sqlstr = "DELETE FROM `gifts` WHERE mail_id='" + gift.MailID + "';";
+            bool isSuccess = false;
             try {
-                return SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
+                             .Where(item => item.MailId == gift.MailID)
+                             .ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+                isSuccess = true;
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                return false;
             }
+
+            return isSuccess;
         }
 
         public bool DeleteMail(Mail mail) {
-            var sqlstr = "DELETE FROM `mails` WHERE mail_id='" + mail.MailID + "';";
+            bool isSuccess = false;
             try {
-                return SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().TranLock(DbLockType.Wait)
+                             .Where(item => item.MailId == mail.MailID)
+                             .ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+                isSuccess = true;
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                return false;
             }
+
+            return isSuccess;
         }
 
         public List<Gift> GetGifts(ActorPC pc) {
-            if (pc == null) return null;
-            var sqlstr = string.Format("SELECT * FROM `gifts` WHERE `a_id`='{0}' ORDER BY `postdate` DESC;",
-                pc.Account.AccountID);
-            var list = new List<Gift>();
-            var result = SQLExecuteQuery(sqlstr);
+            if (pc == null) {
+                return null;
+            }
 
-            foreach (DataRow i in result) {
+            var list = new List<Gift>();
+
+            foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
+                         .Where(item => item.AccountId == pc.Account.AccountID)
+                         .ToList()) {
                 var post = new Gift();
-                post.MailID = (uint)i["mail_id"];
-                post.AccountID = (uint)i["a_id"];
-                post.Name = (string)i["sender"];
-                post.Title = (string)i["title"];
-                post.Date = (DateTime)i["postdate"];
+                post.MailID = (uint)i.MailId;
+                post.AccountID = (uint)i.AccountId;
+                post.Name = (string)i.Sender;
+                post.Title = (string)i.Title;
+                post.Date = (DateTime)i.PostDate;
                 post.Items = new Dictionary<uint, ushort>();
-                for (var y = 1; y < 11; y++) {
-                    var itemid = (uint)i["itemid" + y];
-                    var count = (ushort)i["count" + y];
-                    if (!post.Items.ContainsKey(itemid) && itemid != 0)
-                        post.Items.Add(itemid, count);
+                if (!post.Items.ContainsKey(i.ItemId1) && i.ItemId1 != 0) {
+                    post.Items.Add(i.ItemId1, i.ItemCount1);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId2) && i.ItemId2 != 0) {
+                    post.Items.Add(i.ItemId2, i.ItemCount2);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId3) && i.ItemId3 != 0) {
+                    post.Items.Add(i.ItemId3, i.ItemCount3);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId4) && i.ItemId4 != 0) {
+                    post.Items.Add(i.ItemId4, i.ItemCount4);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId5) && i.ItemId5 != 0) {
+                    post.Items.Add(i.ItemId5, i.ItemCount5);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId6) && i.ItemId6 != 0) {
+                    post.Items.Add(i.ItemId6, i.ItemCount6);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId7) && i.ItemId7 != 0) {
+                    post.Items.Add(i.ItemId7, i.ItemCount7);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId8) && i.ItemId8 != 0) {
+                    post.Items.Add(i.ItemId8, i.ItemCount8);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId9) && i.ItemId9 != 0) {
+                    post.Items.Add(i.ItemId9, i.ItemCount9);
+                }
+
+                if (!post.Items.ContainsKey(i.ItemId10) && i.ItemId10 != 0) {
+                    post.Items.Add(i.ItemId10, i.ItemCount10);
                 }
 
                 list.Add(post);
@@ -1534,16 +1589,47 @@ namespace SagaDB {
                 index++;
             }
 
-            var sqlstr = string.Format("INSERT INTO `gifts`(`a_id`,`sender`,`postdate`,`title`" +
-                                       ",`itemid1`,`itemid2`,`itemid3`,`itemid4`,`itemid5`,`itemid6`,`itemid7`,`itemid8`,`itemid9`,`itemid10`" +
-                                       ",`count1`,`count2`,`count3`,`count4`,`count5`,`count6`,`count7`,`count8`,`count9`,`count10`) VALUES " +
-                                       "('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}','{11}','{12}','{13}','{14}','{15}'" +
-                                       ",'{16}','{17}','{18}','{19}','{20}','{21}','{22}','{23}');",
-                gift.AccountID, gift.Name, ToSQLDateTime(DateTime.Now.ToUniversalTime()), gift.Title, ids[0]
-                , ids[1], ids[2], ids[3], ids[4], ids[5], ids[6], ids[7], ids[8], ids[9], counts[0], counts[1],
-                counts[2], counts[3], counts[4], counts[5]
-                , counts[6], counts[7], counts[8], counts[9]);
-            return SQLExecuteScalar(sqlstr).Index;
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                var gifts = SqlSugarHelper.Db.Insertable<Gifts>(new Gifts {
+                    AccountId = gift.AccountID,
+                    Sender = gift.Name,
+                    PostDate = DateTime.Now.ToUniversalTime(),
+                    Title = gift.Title,
+                    ItemId1 = ids[0],
+                    ItemId2 = ids[1],
+                    ItemId3 = ids[2],
+                    ItemId4 = ids[3],
+                    ItemId5 = ids[4],
+                    ItemId6 = ids[5],
+                    ItemId7 = ids[6],
+                    ItemId8 = ids[7],
+                    ItemId9 = ids[8],
+                    ItemId10 = ids[9],
+                    ItemCount1 = counts[0],
+                    ItemCount2 = counts[1],
+                    ItemCount3 = counts[2],
+                    ItemCount4 = counts[3],
+                    ItemCount5 = counts[4],
+                    ItemCount6 = counts[5],
+                    ItemCount7 = counts[6],
+                    ItemCount8 = counts[7],
+                    ItemCount9 = counts[8],
+                    ItemCount10 = counts[9],
+                }).ExecuteReturnEntity();
+
+
+                SqlSugarHelper.Db.CommitTran();
+
+                return gifts.GiftId;
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+
+                return 0;
+            }
         }
 
         public bool BBSNewPost(ActorPC poster, uint bbsId, string title, string content) {
@@ -1974,15 +2060,32 @@ namespace SagaDB {
         }
 
         public void SaveStamp(ActorPC pc, StampGenre genre) {
-            var sqlstr = $"SELECT * FROM `stamp` WHERE `stamp_id`='{(byte)genre}' AND `char_id`='{pc.CharID}' ";
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-                sqlstr =
-                    $"UPDATE `stamp` SET `value`='{pc.Stamp[genre].Value}' WHERE `char_id`='{pc.CharID}' AND `stamp_id`='{(byte)genre}'";
-            else
-                sqlstr =
-                    $"INSERT INTO `stamp`(`char_id`,`stamp_id`,`value`) VALUES ('{pc.CharID}','{(byte)genre}','{pc.Stamp[genre].Value}')";
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                var result = SqlSugarHelper.Db.Queryable<Entities.Stamp>().TranLock(DbLockType.Wait)
+                    .Where(item => item.CharacterId == pc.CharID).Where(item => item.StampId == (byte)genre).ToList();
+
+                if (result.Count > 0) {
+                    foreach (var i in result) {
+                        i.Value = pc.Stamp[genre].Value;
+                        SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                    }
+                }
+                else {
+                    SqlSugarHelper.Db.Insertable<Entities.Stamp>(new Entities.Stamp {
+                        CharacterId = pc.CharID,
+                        StampId = (byte)genre,
+                        Value = pc.Stamp[genre].Value
+                    }).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public List<TamaireLending> GetTamaireLendings() {
@@ -2565,10 +2668,10 @@ namespace SagaDB {
         }
 
         public void GetStamps(ActorPC pc) {
-            var ret = SQLExecuteQuery($"SELECT * FROM `stamp` WHERE `char_id`='{pc.CharID}' ");
-            for (var i = 0; i < ret.Count; i++) {
-                var result = ret[i];
-                pc.Stamp[(StampGenre)(byte)result["stamp_id"]].Value = (short)result["value"];
+            foreach (var i in SqlSugarHelper.Db.Queryable<Entities.Stamp>()
+                         .Where(item => item.CharacterId == pc.CharID).ToList()
+                    ) {
+                pc.Stamp[(StampGenre)(byte)i.StampId].Value = i.Value;
             }
         }
 
