@@ -2425,48 +2425,42 @@ namespace SagaDB {
         }
 
         public void SaveQuestInfo(ActorPC pc) {
-            var sqlstr = string.Format("DELETE FROM `questinfo` WHERE `char_id`='{0}';", pc.CharID);
-            foreach (var i in pc.KillList) {
-                byte ss = (i.Value.isFinish) ? (byte)1 : (byte)0;
-                sqlstr += string.Format(
-                    "INSERT INTO `questinfo`(`char_id`,`object_id`,`count`,`totalcount`,`infinish`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
-                    pc.CharID, i.Key, i.Value.Count, i.Value.TotalCount, ss);
-            }
-
             try {
-                SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var questInfo in SqlSugarHelper.Db.Queryable<Entities.QuestInfo>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(questInfo).ExecuteCommand();
+                }
+
+                foreach (var i in pc.KillList) {
+                    SqlSugarHelper.Db.Insertable<Entities.QuestInfo>(new Entities.QuestInfo {
+                        CharacterId = pc.CharID, ObjectId = i.Key, Count = i.Value.Count,
+                        TotalCount = i.Value.TotalCount, Status = (i.Value.isFinish) ? (byte)1 : (byte)0
+                    }).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
         public void GetQuestInfo(ActorPC pc) {
-            string sqlstr;
-            DataRowCollection result = null;
             try {
-                sqlstr = "SELECT * FROM `questinfo` WHERE `char_id`='" + pc.CharID + "'";
-                try {
-                    result = SQLExecuteQuery(sqlstr);
-                    if (result.Count > 0)
-                        for (var i = 0; i < result.Count; i++) {
-                            var ki = new ActorPC.KillInfo();
-                            var mobid = (uint)result[i]["object_id"];
-                            var c = (uint)result[i]["count"];
-                            ki.Count = (int)c;
-                            c = (uint)result[i]["totalcount"];
-                            ki.TotalCount = (int)c;
-                            var s = (byte)result[i]["infinish"];
-                            if (s == 1)
-                                ki.isFinish = true;
-                            else
-                                ki.isFinish = false;
-                            if (!pc.KillList.ContainsKey(mobid))
-                                pc.KillList.Add(mobid, ki);
-                        }
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                foreach (var questInfo in SqlSugarHelper.Db.Queryable<Entities.QuestInfo>()
+                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
+                    if (pc.KillList.ContainsKey(questInfo.ObjectId)) {
+                        continue;
+                    }
+
+                    var ki = new ActorPC.KillInfo();
+                    ki.Count = questInfo.Count;
+                    ki.TotalCount = questInfo.TotalCount;
+                    ki.isFinish = (questInfo.Status == 1);
+                    pc.KillList.Add(questInfo.ObjectId, ki);
                 }
             }
             catch (Exception ex) {
