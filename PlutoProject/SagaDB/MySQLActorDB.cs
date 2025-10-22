@@ -1095,21 +1095,35 @@ namespace SagaDB {
             }
         }
 
-        public void SaveNPCState(ActorPC pc, uint npcID) {
-            if (pc.NPCStates.ContainsKey(npcID)) {
-                var state = pc.NPCStates[npcID];
-                byte value = 0;
-                if (state)
-                    value = 1;
-                var sqlstr = $"SELECT * FROM `npcstates` WHERE `npc_id`='{npcID}',char_id='{pc.CharID}'";
-                var result = SQLExecuteQuery(sqlstr);
-                if (result.Count > 0)
-                    sqlstr =
-                        $"INSERT INTO `npcstates`(`char_id`,`npc_id`,`state`) VALUES ('{pc.CharID}','{npcID}','{value}')";
-                else
-                    sqlstr =
-                        $"UPDATE `npcstates` SET `npc_id`='{npcID}',`state`='{value}' WHERE `char_id`='{pc.CharID}'";
-                SQLExecuteNonQuery(sqlstr);
+        public void SaveNPCState(ActorPC pc, uint npcId) {
+            if (!pc.NPCStates.ContainsKey(npcId)) {
+                return;
+            }
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                bool isFound = false;
+                foreach (var npcState in SqlSugarHelper.Db.Queryable<NpcStates>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == pc.CharID).Where(item => item.NpcId == npcId)
+                             .ToList()) {
+                    npcState.State = pc.NPCStates[npcId];
+                    SqlSugarHelper.Db.Updateable(npcState).ExecuteCommand();
+                    isFound = true;
+                }
+
+                if (!isFound) {
+                    SqlSugarHelper.Db.Insertable(new NpcStates {
+                        CharacterId = pc.CharID,
+                        NpcId = npcId,
+                        State = pc.NPCStates[npcId]
+                    }).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
         }
 
@@ -2592,21 +2606,15 @@ namespace SagaDB {
         }
 
         public void GetNPCStates(ActorPC pc) {
-            string sqlstr;
-            DataRowCollection result = null;
-            sqlstr = $"SELECT * FROM `npcstates` WHERE `char_id`='{pc.CharID}';";
             try {
-                result = SQLExecuteQuery(sqlstr);
+                var result = SqlSugarHelper.Db.Queryable<NpcStates>().Where(item => item.CharacterId == pc.CharID)
+                    .ToList();
+                for (var i = 0; i < result.Count; i++) {
+                    pc.NPCStates.Add(result[i].NpcId, result[i].State);
+                }
             }
             catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                return;
-            }
-
-            for (var i = 0; i < result.Count; i++) {
-                var npcID = (uint)result[i]["npc_id"];
-                var state = (bool)result[i]["state"];
-                pc.NPCStates.Add(npcID, state);
             }
         }
 
