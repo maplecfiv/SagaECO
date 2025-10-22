@@ -23,6 +23,8 @@ using SqlSugar;
 using FurniturePlace = SagaDB.FlyingCastle.FurniturePlace;
 using Inventory = SagaDB.Entities.Inventory;
 using Logger = Serilog.Core.Logger;
+using TamaireLending = SagaDB.Tamaire.TamaireLending;
+using TamaireRental = SagaDB.Tamaire.TamaireRental;
 
 namespace SagaDB {
     public class MySqlActorDb : MySQLConnectivity, ActorDB {
@@ -2189,21 +2191,23 @@ namespace SagaDB {
         }
 
         public List<TamaireLending> GetTamaireLendings() {
-            var sqlstr = "SELECT * FROM `tamairelending`;";
-            var result = SQLExecuteQuery(sqlstr);
+            var result = SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().ToList();
             var tamaireLendings = new List<TamaireLending>();
             for (var i = 0; i < result.Count; i++) {
                 var tamaireLending = new TamaireLending();
-                tamaireLending.Lender = (uint)result[0]["char_id"];
-                tamaireLending.Baselv = (byte)result[0]["baselv"];
-                tamaireLending.JobType = (byte)result[0]["jobtype"];
-                tamaireLending.PostDue = (DateTime)result[0]["postdue"];
-                tamaireLending.Comment = (string)result[0]["comment"];
-                for (byte j = 1; j <= 4; j++) {
-                    var renterid = (uint)result[0]["renter" + j];
-                    if (renterid != 0)
-                        tamaireLending.Renters.Add(renterid);
-                }
+                tamaireLending.Lender = (uint)result[i].CharacterId;
+                tamaireLending.Baselv = (byte)result[i].BaseLevel;
+                tamaireLending.JobType = (byte)result[i].JobType;
+                tamaireLending.PostDue = (DateTime)result[i].PostDue;
+                tamaireLending.Comment = (string)result[i].Comment;
+                if (result[i].Renter1 != 0)
+                    tamaireLending.Renters.Add(result[i].Renter1);
+                if (result[i].Renter2 != 0)
+                    tamaireLending.Renters.Add(result[i].Renter2);
+                if (result[i].Renter3 != 0)
+                    tamaireLending.Renters.Add(result[i].Renter3);
+                if (result[i].Renter4 != 0)
+                    tamaireLending.Renters.Add(result[i].Renter4);
 
                 tamaireLendings.Add(tamaireLending);
             }
@@ -2212,31 +2216,51 @@ namespace SagaDB {
         }
 
         public void GetTamaireLending(ActorPC pc) {
-            var sqlstr = $"SELECT * FROM `tamairelending` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0) {
-                if (pc.TamaireLending == null)
-                    pc.TamaireLending = new TamaireLending();
-                pc.TamaireLending.Lender = (uint)result[0]["char_id"];
-                pc.TamaireLending.Comment = (string)result[0]["comment"];
-                pc.TamaireLending.PostDue = (DateTime)result[0]["postdue"];
-                pc.TamaireLending.JobType = (byte)result[0]["jobtype"];
-                pc.TamaireLending.Baselv = (byte)result[0]["baselv"];
-                for (byte j = 1; j <= 4; j++) {
-                    var renterid = (uint)result[0]["renter" + j];
-                    if (renterid != 0)
-                        pc.TamaireLending.Renters.Add(renterid);
-                }
+            var result = SqlSugarHelper.Db.Queryable<Entities.TamaireLending>()
+                .Where(item => item.CharacterId == pc.CharID).ToList();
+            if (result.Count == 0) {
+                return;
             }
+
+            if (pc.TamaireLending == null)
+                pc.TamaireLending = new TamaireLending();
+            pc.TamaireLending.Lender = (uint)result[0].CharacterId;
+            pc.TamaireLending.Comment = (string)result[0].Comment;
+            pc.TamaireLending.PostDue = (DateTime)result[0].PostDue;
+            pc.TamaireLending.JobType = (byte)result[0].JobType;
+            pc.TamaireLending.Baselv = (byte)result[0].BaseLevel;
+            if (result[0].Renter1 != 0)
+                pc.TamaireLending.Renters.Add(result[0].Renter1);
+            if (result[0].Renter2 != 0)
+                pc.TamaireLending.Renters.Add(result[0].Renter2);
+            if (result[0].Renter3 != 0)
+                pc.TamaireLending.Renters.Add(result[0].Renter3);
+            if (result[0].Renter4 != 0)
+                pc.TamaireLending.Renters.Add(result[0].Renter4);
         }
 
         public void CreateTamaireLending(TamaireLending tamaireLending) {
-            var comment = CheckSQLString(tamaireLending.Comment);
-            var sqlstr = string.Format(
-                "INSERT INTO `tamairelending`(`char_id`,`jobtype`,`baselv`,`postdue`,`comment`,`renter1`,`renter2`,`renter3`,`renter4`) VALUES " +
-                "('{0}','{1}','{2}','{3}','{4}','0','0','0','0');", tamaireLending.Lender, tamaireLending.JobType,
-                tamaireLending.Baselv, ToSQLDateTime(tamaireLending.PostDue), comment);
-            SQLExecuteScalar(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                SqlSugarHelper.Db.Insertable<Entities.TamaireLending>(new Entities.TamaireLending {
+                    CharacterId = tamaireLending.Lender,
+                    JobType = tamaireLending.JobType,
+                    BaseLevel = tamaireLending.Baselv,
+                    PostDue = tamaireLending.PostDue,
+                    Comment = tamaireLending.Comment,
+                    Renter1 = 0,
+                    Renter2 = 0,
+                    Renter3 = 0,
+                    Renter4 = 0,
+                }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void SaveTamaireLending(TamaireLending tamaireLending) {
@@ -2259,52 +2283,113 @@ namespace SagaDB {
                 renter4 = tamaireLending.Renters[3];
             else
                 renter4 = 0;
-            var sqlstr = string.Format(
-                "UPDATE `tamairelending` SET `postdue`='{1}',`comment`='{2}', `renter1`='{3}',`renter2`='{4}'" +
-                ",`renter3`='{5}',`renter4`='{6}' WHERE `char_id`='{0}' LIMIT 1;",
-                tamaireLending.Lender, ToSQLDateTime(tamaireLending.PostDue), comment, renter1, renter2, renter3,
-                renter4);
-            SQLExecuteNonQuery(sqlstr);
-        }
 
-        public void DeleteTamaireLending(TamaireLending tamaireLending) {
-            var sqlstr = string.Format("DELETE FROM `tamairelending` WHERE `char_id`='{0}';",
-                tamaireLending.Lender);
-            SQLExecuteNonQuery(sqlstr);
-        }
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == tamaireLending.Lender).ToList()) {
+                    i.PostDue = tamaireLending.PostDue;
+                    i.Comment = tamaireLending.Comment;
+                    i.Renter1 = renter1;
+                    i.Renter2 = renter2;
+                    i.Renter3 = renter3;
+                    i.Renter4 = renter4;
 
-        public void GetTamaireRental(ActorPC pc) {
-            var sqlstr = $"SELECT * FROM `tamairerental` WHERE `char_id`='{pc.CharID}' LIMIT 1;";
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count != 0) {
-                if (pc.TamaireRental == null)
-                    pc.TamaireRental = new TamaireRental();
-                pc.TamaireRental.Renter = (uint)result[0]["char_id"];
-                pc.TamaireRental.RentDue = (DateTime)result[0]["rentdue"];
-                pc.TamaireRental.CurrentLender = (uint)result[0]["currentlender"];
-                pc.TamaireRental.LastLender = (uint)result[0]["lastlender"];
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
         }
 
+        public void DeleteTamaireLending(TamaireLending tamaireLending) {
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == tamaireLending.Lender).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
+        }
+
+        public void GetTamaireRental(ActorPC pc) {
+            var result = SqlSugarHelper.Db.Queryable<Entities.TamaireRental>()
+                .Where(item => item.CharacterId == pc.CharID).ToList();
+            if (result.Count == 0) {
+                return;
+            }
+
+            if (pc.TamaireRental == null)
+                pc.TamaireRental = new TamaireRental();
+            pc.TamaireRental.Renter = (uint)result[0].CharacterId;
+            pc.TamaireRental.RentDue = (DateTime)result[0].RentDue;
+            pc.TamaireRental.CurrentLender = (uint)result[0].CurrentLender;
+            pc.TamaireRental.LastLender = (uint)result[0].LastLender;
+        }
+
         public void CreateTamaireRental(TamaireRental tamaireRental) {
-            var sqlstr = string.Format(
-                "INSERT INTO `tamairerental`(`char_id`,`rentdue`,`currentlender`,`lastlender`) VALUES " +
-                "('{0}','{1}','{2}','{3}');", tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue),
-                tamaireRental.CurrentLender, tamaireRental.LastLender);
-            SQLExecuteScalar(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                SqlSugarHelper.Db.Insertable<Entities.TamaireRental>(new Entities.TamaireRental {
+                    CharacterId = tamaireRental.Renter,
+                    RentDue = tamaireRental.RentDue,
+                    CurrentLender = tamaireRental.CurrentLender,
+                    LastLender = tamaireRental.LastLender
+                }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void SaveTamaireRental(TamaireRental tamaireRental) {
-            var sqlstr = string.Format(
-                "UPDATE `tamairerental` SET `rentdue`='{1}',`currentlender`='{2}',`lastlender`='{3}' WHERE `char_id`='{0}' LIMIT 1;",
-                tamaireRental.Renter, ToSQLDateTime(tamaireRental.RentDue), tamaireRental.CurrentLender,
-                tamaireRental.LastLender);
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == tamaireRental.Renter).ToList()) {
+                    i.RentDue = tamaireRental.RentDue;
+                    i.CurrentLender = tamaireRental.CurrentLender;
+                    i.LastLender = tamaireRental.LastLender;
+
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void DeleteTamaireRental(TamaireRental tamaireRental) {
-            var sqlstr = string.Format("DELETE FROM `tamairerental` WHERE `char_id`='{0}';", tamaireRental.Renter);
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Wait)
+                             .Where(item => item.CharacterId == tamaireRental.Renter).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void GetMosterGuide(ActorPC pc) {
