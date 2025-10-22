@@ -863,55 +863,67 @@ namespace SagaDB {
         }
 
         public void SaveServerVar(ActorPC fakepc) {
-            var sqlstr = "TRUNCATE TABLE `sVar`;";
-            foreach (var i in fakepc.AStr.Keys)
-                sqlstr += string.Format("INSERT INTO `sVar`(`name`,`type`,`content`) VALUES " + "('{0}',0,'{1}');", i,
-                    fakepc.AStr[i]);
-            foreach (var i in fakepc.AInt.Keys)
-                sqlstr += string.Format("INSERT INTO `sVar`(`name`,`type`,`content`) VALUES " + "('{0}',1,'{1}');", i,
-                    fakepc.AInt[i]);
-            foreach (var i in fakepc.AMask.Keys)
-                sqlstr += string.Format("INSERT INTO `sVar`(`name`,`type`,`content`) VALUES " + "('{0}',2,'{1}');", i,
-                    fakepc.AMask[i].Value);
-            SQLExecuteNonQuery(sqlstr);
-            sqlstr = "TRUNCATE TABLE `sList`;";
-            foreach (var item in fakepc.Adict)
-                foreach (var i in item.Value.Keys)
-                    sqlstr += string.Format(
-                        "INSERT INTO `sList`(`name`,`key`,`type`,`content`) VALUES " + "('{0}','{1}',1,'{2}');",
-                        item.Key,
-                        i, item.Value[i]);
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            SQLExecuteNonQuery(sqlstr);
+                foreach (var i in SqlSugarHelper.Db.Queryable<ServerVariable>().TranLock(DbLockType.Wait).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                foreach (var i in fakepc.AStr.Keys)
+                    SqlSugarHelper.Db.Insertable<ServerVariable>(new ServerVariable {
+                        Name = i, Type = 0, Content = fakepc.AStr[i]
+                    }).ExecuteCommand();
+                foreach (var i in fakepc.AInt.Keys)
+                    SqlSugarHelper.Db.Insertable<ServerVariable>(new ServerVariable {
+                        Name = i, Type = 1, Content = fakepc.AInt[i].ToString()
+                    }).ExecuteCommand();
+
+                foreach (var i in fakepc.AMask.Keys)
+                    SqlSugarHelper.Db.Insertable<ServerVariable>(new ServerVariable {
+                        Name = i, Type = 2, Content = fakepc.AMask[i].Value.ToString()
+                    }).ExecuteCommand();
+
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<SettingList>().TranLock(DbLockType.Wait).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+
+                foreach (var item in fakepc.Adict)
+                    foreach (var i in item.Value.Keys)
+                        SqlSugarHelper.Db.Insertable<SettingList>(new SettingList {
+                            Name = item.Key, Key = i, Type = 1, Content = item.Value[i]
+                        }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public ActorPC LoadServerVar() {
             var fakepc = new ActorPC();
-            var sqlstr = "SELECT * FROM `sVar`;";
-            DataRowCollection res;
-            res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res) {
-                var type = (byte)i["type"];
-                switch (type) {
+            foreach (var i in SqlSugarHelper.Db.Queryable<ServerVariable>().ToList()) {
+                switch (i.Type) {
                     case 0:
-                        fakepc.AStr[(string)i["name"]] = (string)i["content"];
+                        fakepc.AStr[(string)i.Name] = i.Content;
                         break;
                     case 1:
-                        fakepc.AInt[(string)i["name"]] = int.Parse((string)i["content"]);
+                        fakepc.AInt[(string)i.Name] = int.Parse(i.Content);
                         break;
                     case 2:
-                        fakepc.AMask[(string)i["name"]] = new BitMask(int.Parse((string)i["content"]));
+                        fakepc.AMask[i.Name] = new BitMask(int.Parse(i.Content));
                         break;
                 }
             }
 
-            sqlstr = "SELECT * FROM `sList`;";
-            res = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in res) {
-                var type = (byte)i["type"];
-                switch (type) {
+            foreach (var i in SqlSugarHelper.Db.Queryable<SettingList>().ToList()) {
+                switch (i.Type) {
                     case 1:
-                        fakepc.Adict[(string)i["name"]][(string)i["key"]] = int.Parse((string)i["content"]);
+                        fakepc.Adict[i.Name][i.Key] = i.Content;
                         break;
                 }
             }
@@ -1173,76 +1185,93 @@ namespace SagaDB {
         }
 
         public List<ActorPC> GetFriendList(ActorPC pc) {
-            var sqlstr = "SELECT `friend_char_id` FROM `friend` WHERE `char_id`='" + pc.CharID + "';";
-            var result = SQLExecuteQuery(sqlstr);
             var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++) {
-                var friend = (uint)result[i]["friend_char_id"];
 
+            var exp = Expressionable.Create<Friend>();
+            exp.Or(item => item.CharacterId == pc.CharID);
+            exp.Or(item => item.FriendCharacterId == pc.CharID);
 
-                var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
-                    .ToList();
+            try {
+                var result = SqlSugarHelper.Db.Queryable<Friend>()
+                    .Where(exp.ToExpression()).ToList();
 
-                if (res.Count == 0)
-                    continue;
-                var row = res[0];
-                list.Add(new ActorPC {
-                    CharID = row.CharacterId,
-                    Name = (string)row.Name,
-                    Job = (PC_JOB)(byte)row.Job,
-                    Level = (byte)row.Lv,
-                    JobLevel1 = (byte)row.JobLv1,
-                    JobLevel2X = (byte)row.JobLv2x,
-                    JobLevel2T = (byte)row.JobLv2t
-                });
+                for (var i = 0; i < result.Count; i++) {
+                    var friend = (uint)result[i].CharacterId == pc.CharID
+                        ? result[i].FriendCharacterId
+                        : result[i].CharacterId;
+
+                    if (friend == pc.CharID) {
+                        continue;
+                    }
+
+                    var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
+                        .ToList();
+
+                    if (res.Count == 0)
+                        continue;
+                    var row = res[0];
+                    list.Add(new ActorPC {
+                        CharID = row.CharacterId,
+                        Name = (string)row.Name,
+                        Job = (PC_JOB)(byte)row.Job,
+                        Level = (byte)row.Lv,
+                        JobLevel1 = (byte)row.JobLv1,
+                        JobLevel2X = (byte)row.JobLv2x,
+                        JobLevel2T = (byte)row.JobLv2t
+                    });
+                }
+            }
+            catch (Exception e) {
+                SagaLib.Logger.ShowError(e);
             }
 
             return list;
         }
 
         public List<ActorPC> GetFriendList2(ActorPC pc) {
-            var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + pc.CharID + "';";
-            var result = SQLExecuteQuery(sqlstr);
-            var list = new List<ActorPC>();
-            for (var i = 0; i < result.Count; i++) {
-                var friend = (uint)result[i]["char_id"];
-
-                var res = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == friend)
-                    .ToList();
-                if (res.Count == 0)
-                    continue;
-                var row = res[0];
-                list.Add(new ActorPC {
-                    CharID = friend,
-                    Name = (string)row.Name,
-                    Job = (PC_JOB)(byte)row.Job,
-                    Level = (byte)row.Lv,
-                    JobLevel1 = (byte)row.JobLv1,
-                    JobLevel2X = (byte)row.JobLv2x,
-                    JobLevel2T = (byte)row.JobLv2t,
-                    JobLevel3 = (byte)row.JobLv3
-                });
-            }
-
-            return list;
+            return GetFriendList(pc);
         }
 
         public void AddFriend(ActorPC pc, uint charID) {
-            var sqlstr = string.Format("INSERT INTO `friend`(`char_id`,`friend_char_id`) VALUES " +
-                                       "('{0}','{1}');", pc.CharID, charID);
-            SQLExecuteNonQuery(sqlstr);
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                SqlSugarHelper.Db.Insertable<Friend>(new Friend { CharacterId = pc.CharID, FriendCharacterId = charID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public bool IsFriend(uint char1, uint char2) {
-            var sqlstr = "SELECT `char_id` FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" +
-                         char1 + "';";
-            var result = SQLExecuteQuery(sqlstr);
-            return result.Count > 0;
+            var exp = Expressionable.Create<Friend>();
+            exp.Or(item => item.CharacterId == char1 && item.FriendCharacterId == char2);
+            exp.Or(item => item.CharacterId == char2 && item.FriendCharacterId == char1);
+
+            return SqlSugarHelper.Db.Queryable<Friend>().Where(exp.ToExpression()).Count() > 0;
         }
 
         public void DeleteFriend(uint char1, uint char2) {
-            var sqlstr = "DELETE FROM `friend` WHERE `friend_char_id`='" + char2 + "' AND `char_id`='" + char1 + "';";
-            SQLExecuteNonQuery(sqlstr);
+            var exp = Expressionable.Create<Friend>();
+            exp.Or(item => item.CharacterId == char1 && item.FriendCharacterId == char2);
+            exp.Or(item => item.CharacterId == char2 && item.FriendCharacterId == char1);
+
+            try {
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<Friend>().TranLock(DbLockType.Wait)
+                             .Where(exp.ToExpression()).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public Party.Party GetParty(uint id) {
