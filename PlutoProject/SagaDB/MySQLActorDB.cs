@@ -549,44 +549,56 @@ namespace SagaDB {
         }
 
         public void DeleteChar(ActorPC aChar) {
-            string sqlstr;
+            string sqlstr = "";
             _ = GetAccountID((aChar.CharID));
-            sqlstr = "DELETE FROM `char` WHERE char_id='" + aChar.CharID + "';";
-            sqlstr += "DELETE FROM `inventory` WHERE char_id='" + aChar.CharID + "';";
-            sqlstr += "DELETE FROM `skill` WHERE char_id='" + aChar.CharID + "';";
-            sqlstr += "DELETE FROM `cvar` WHERE char_id='" + aChar.CharID + "';";
-            sqlstr += "DELETE FROM `friend` WHERE `char_id`='" + aChar.CharID + "' OR `friend_char_id`='" +
-                      aChar.CharID + "';";
-            if (aChar.Party != null)
-                if (aChar.Party.Leader != null)
-                    if (aChar.Party.Leader.CharID == aChar.CharID)
-                        DeleteParty(aChar.Party);
 
-            if (aChar.Ring != null)
-                if (aChar.Ring.Leader != null)
-                    if (aChar.Ring.Leader.CharID == aChar.CharID)
-                        DeleteRing(aChar.Ring);
 
             try {
-                SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                SqlSugarHelper.Db.Deleteable<Entities.Character>(new Entities.Character { CharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.Deleteable<Entities.Inventory>(new Entities.Inventory { CharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.Deleteable<Entities.Skill>(new Entities.Skill { CharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.Deleteable<Entities.CharacterVariable>(new Entities.CharacterVariable
+                        { CharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.Deleteable<Entities.Friend>(new Entities.Friend { CharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                SqlSugarHelper.Db.Deleteable<Entities.Friend>(new Entities.Friend { FriendCharacterId = aChar.CharID })
+                    .ExecuteCommand();
+                if (aChar.Party != null)
+                    if (aChar.Party.Leader != null)
+                        if (aChar.Party.Leader.CharID == aChar.CharID)
+                            DeleteParty(aChar.Party);
+
+                if (aChar.Ring != null)
+                    if (aChar.Ring.Leader != null)
+                        if (aChar.Ring.Leader.CharID == aChar.CharID)
+                            DeleteRing(aChar.Ring);
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        public ActorPC GetChar(uint charID, bool fullinfo) {
+        public ActorPC GetChar(uint charId, bool fullinfo) {
             ActorPC pc = null;
             try {
                 // GetAccountID(charID);
-                var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charID)
+                var character = SqlSugarHelper.Db.Queryable<Character>().Where(item => item.CharacterId == charId)
                     .First();
                 if (character == null) {
                     return null;
                 }
 
                 pc = new ActorPC {
-                    CharID = charID,
+                    CharID = charId,
                     Account = null,
                     Name = character.Name,
                     Race = (PC_RACE)character.Race,
@@ -836,18 +848,29 @@ namespace SagaDB {
             ms.Flush();
             //MySqlCommand cmd = new MySqlCommand(string.Format("REPLACE INTO `skill`(`char_id`,`skills`) VALUES ('{0}',?data);", pc.CharID));
             //string sqlstr = string.Format("DELETE FROM `skill` WHERE `char_id`='{0}' AND `jobbasic`='{1}';", pc.CharID, (int)pc.JobBasic);
-            var cmd = new MySqlCommand(string.Format(
-                "REPLACE INTO `skill`(`char_id`,`skills`,`jobbasic`,`joblv`,`jobexp`,`skillpoint`,`skillpoint2x`," +
-                "`skillpoint2t`,`skillpoint3`) VALUES ('{0}',?data,'{1}','{2}','{3}','{4}','{5}','{6}','{7}');",
-                pc.CharID, (int)pc.JobBasic, pc.JobLevel3, pc.JEXP, pc.SkillPoint, pc.SkillPoint2X, pc.SkillPoint2T,
-                pc.SkillPoint3));
-            cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
+
+            var data = ms.ToArray();
             ms.Close();
             try {
-                //SQLExecuteNonQuery(sqlstr);
-                SQLExecuteNonQuery(cmd);
+                SqlSugarHelper.Db.BeginTran();
+
+
+                SqlSugarHelper.Db.Storageable(new Entities.Skill {
+                    Skills = data,
+                    CharacterId = pc.CharID,
+                    JobBasic = (int)pc.JobBasic,
+                    JobLevel = pc.JobLevel3,
+                    JobExp = pc.JEXP,
+                    SkillPoint = pc.SkillPoint,
+                    SkillPoint2X = pc.SkillPoint2X,
+                    SkillPoint2T = pc.SkillPoint2T,
+                    SkillPoint3 = pc.SkillPoint3
+                }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
@@ -932,7 +955,7 @@ namespace SagaDB {
         }
 
         public void SaveVar(ActorPC pc) {
-            var account_id = this.GetAccountID(pc.CharID);
+            var accountId = this.GetAccountID(pc.CharID);
 
             var enc = Encoding.UTF8;
 
@@ -965,16 +988,17 @@ namespace SagaDB {
             }
 
             ms.Flush();
-
-            var cmd = new MySqlCommand(string.Format("REPLACE `cvar`(`char_id`,`values`) VALUES ('{0}',?data);",
-                pc.CharID));
-            cmd.Parameters.Add("?data", MySqlDbType.Blob).Value = ms.ToArray();
+            byte[] data = ms.ToArray();
             ms.Close();
             try {
-                SQLExecuteNonQuery(cmd);
+                SqlSugarHelper.Db.Storageable(new CharacterVariable { CharacterId = pc.CharID, Values = data })
+                    .ExecuteCommand();
             }
             catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            }
+            finally {
+                ms.Close();
             }
 
             ms = new MemoryStream();
@@ -1009,33 +1033,21 @@ namespace SagaDB {
 
             byte[] values = ms.ToArray();
             ms.Close();
-            AvatarRepository.SaveAvatar(account_id, values);
+            AvatarRepository.SaveAvatar(accountId, values);
         }
 
         public void GetSkill(ActorPC pc) {
             try {
-                string sqlstr;
-                DataRowCollection result = null;
-                //sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
-                sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" +
-                         (int)pc.JobBasic + "' LIMIT 1;";
-                try {
-                    result = SQLExecuteQuery(sqlstr);
-                }
-                catch (Exception ex) {
-                    SagaLib.Logger.GetLogger().Error(ex, ex.Message);
-                    return;
-                }
-
-                if (result.Count > 0) {
-                    var buf = (byte[])result[0]["skills"];
-                    pc.JobLevel3 = (byte)result[0]["joblv"];
+                foreach (var skillRecord in SqlSugarHelper.Db.Queryable<Entities.Skill>().Where(item =>
+                             item.CharacterId == pc.CharID && item.JobBasic == (int)pc.JobBasic).ToList()) {
+                    var buf = (byte[])skillRecord.Skills;
+                    pc.JobLevel3 = (byte)skillRecord.JobLevel;
                     if (pc.JobLevel3 == 0) pc.JobLevel3 = 1;
-                    pc.JEXP = (ulong)result[0]["jobexp"];
-                    pc.SkillPoint = (ushort)result[0]["skillpoint"];
-                    pc.SkillPoint2X = (ushort)result[0]["skillpoint2x"];
-                    pc.SkillPoint2T = (ushort)result[0]["skillpoint2t"];
-                    pc.SkillPoint3 = (ushort)result[0]["skillpoint3"];
+                    pc.JEXP = (ulong)skillRecord.JobExp;
+                    pc.SkillPoint = (ushort)skillRecord.SkillPoint;
+                    pc.SkillPoint2X = (ushort)skillRecord.SkillPoint2X;
+                    pc.SkillPoint2T = (ushort)skillRecord.SkillPoint2T;
+                    pc.SkillPoint3 = (ushort)skillRecord.SkillPoint3;
 
                     var skills = SkillFactory.Instance.SkillList(pc.JobBasic);
                     var skills2x = SkillFactory.Instance.SkillList(pc.Job2X);
@@ -1104,6 +1116,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                return;
             }
         }
 
@@ -2512,14 +2525,13 @@ namespace SagaDB {
         }
 
         private void GetVar(ActorPC pc) {
-            var sqlstr = "SELECT * FROM `cvar` WHERE `char_id`='" + pc.CharID + "' LIMIT 1;";
             var account_id = this.GetAccountID(pc.CharID);
             var enc = Encoding.UTF8;
-            DataRowCollection res;
-            res = SQLExecuteQuery(sqlstr);
+            var res = SqlSugarHelper.Db.Queryable<Entities.CharacterVariable>()
+                .Where(item => item.CharacterId == pc.CharID).ToList();
 
             if (res.Count > 0) {
-                var buf = (byte[])res[0]["values"];
+                var buf = (byte[])res[0].Values;
                 var ms = new MemoryStream(buf);
                 var br = new BinaryReader(ms);
                 var count = br.ReadInt32();
@@ -2605,29 +2617,23 @@ namespace SagaDB {
         }
 
         public void GetJobLV(ActorPC pc) {
-            string sqlstr;
-            DataRowCollection result = null;
             try {
-                sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 1 +
-                         "' LIMIT 1;";
-                result = SQLExecuteQuery(sqlstr);
+                var result = SqlSugarHelper.Db.Queryable<Entities.Skill>()
+                    .Where(item => item.CharacterId == pc.CharID && item.JobBasic == 1).ToList();
                 if (result.Count > 0)
-                    pc.JobLV_GLADIATOR = (byte)result[0]["joblv"];
-                sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 31 +
-                         "' LIMIT 1;";
-                result = SQLExecuteQuery(sqlstr);
+                    pc.JobLV_GLADIATOR = (byte)result[0].JobLevel;
+                result = SqlSugarHelper.Db.Queryable<Entities.Skill>()
+                    .Where(item => item.CharacterId == pc.CharID && item.JobBasic == 31).ToList();
                 if (result.Count > 0)
-                    pc.JobLV_HAWKEYE = (byte)result[0]["joblv"];
-                sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 41 +
-                         "' LIMIT 1;";
-                result = SQLExecuteQuery(sqlstr);
+                    pc.JobLV_HAWKEYE = (byte)result[0].JobLevel;
+                result = SqlSugarHelper.Db.Queryable<Entities.Skill>()
+                    .Where(item => item.CharacterId == pc.CharID && item.JobBasic == 41).ToList();
                 if (result.Count > 0)
-                    pc.JobLV_FORCEMASTER = (byte)result[0]["joblv"];
-                sqlstr = "SELECT * FROM `skill` WHERE `char_id`='" + pc.CharID + "' AND `jobbasic`='" + 61 +
-                         "' LIMIT 1;";
-                result = SQLExecuteQuery(sqlstr);
+                    pc.JobLV_FORCEMASTER = (byte)result[0].JobLevel;
+                result = SqlSugarHelper.Db.Queryable<Entities.Skill>()
+                    .Where(item => item.CharacterId == pc.CharID && item.JobBasic == 61).ToList();
                 if (result.Count > 0)
-                    pc.JobLV_CARDINAL = (byte)result[0]["joblv"];
+                    pc.JobLV_CARDINAL = (byte)result[0].JobLevel;
             }
             catch (Exception ex) {
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
@@ -2766,21 +2772,20 @@ namespace SagaDB {
 
         private void GetFlyingGarden(ActorPC pc) {
             var account = GetAccountID(pc);
-            var result =
-                SQLExecuteQuery(string.Format("SELECT * FROM `fgarden` WHERE `account_id`='{0}' LIMIT 1;",
-                    account));
+            var result = SqlSugarHelper.Db.Queryable<Entities.FlyingGarden>().Where(item => item.AccountId == account)
+                .ToList();
             if (result.Count > 0) {
                 var garden = new FlyingGarden.FlyingGarden(pc);
-                garden.ID = (uint)result[0]["fgarden_id"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE] = (uint)result[0]["part1"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL] = (uint)result[0]["part2"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR] = (uint)result[0]["part3"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0]["part4"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall] = (uint)result[0]["part5"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof] = (uint)result[0]["part6"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR] = (uint)result[0]["part7"];
-                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL] = (uint)result[0]["part8"];
-                garden.Fuel = (uint)result[0]["fuel"];
+                garden.ID = (uint)result[0].FlyingGardenId;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE] = (uint)result[0].Part1;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL] = (uint)result[0].Part2;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR] = (uint)result[0].Part3;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE] = (uint)result[0].Part4;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall] = (uint)result[0].Part5;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof] = (uint)result[0].Part6;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR] = (uint)result[0].Part7;
+                garden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL] = (uint)result[0].Part8;
+                garden.Fuel = (uint)result[0].Fuel;
                 pc.FlyingGarden = garden;
             }
 
@@ -2788,22 +2793,21 @@ namespace SagaDB {
                 return;
             }
 
-            foreach (DataRow i in SQLExecuteQuery(string.Format(
-                         "SELECT * FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
-                         pc.FlyingGarden.ID))) {
-                var place = (FlyingGarden.FurniturePlace)(byte)i["place"];
+            foreach (var i in SqlSugarHelper.Db.Queryable<Entities.FlyingGardenFurniture>()
+                         .Where(item => item.FlyingGardenId == pc.FlyingGarden.ID).ToList()) {
+                var place = (FlyingGarden.FurniturePlace)(byte)i.Place;
                 var actor = new ActorFurniture();
-                actor.ItemID = (uint)i["item_id"];
-                actor.PictID = (uint)i["pict_id"];
-                actor.X = (short)i["x"];
-                actor.Y = (short)i["y"];
-                actor.Z = (short)i["z"];
-                actor.Xaxis = (short)i["xaxis"];
-                actor.Yaxis = (short)i["yaxis"];
-                actor.Zaxis = (short)i["zaxis"];
-                //actor.Dir = (ushort)i["dir"];
-                actor.Motion = (ushort)i["motion"];
-                actor.Name = (string)i["name"];
+
+                actor.ItemID = (uint)i.ItemId;
+                actor.PictID = (uint)i.PictId;
+                actor.X = (short)i.X;
+                actor.Y = (short)i.Y;
+                actor.Z = (short)i.Z;
+                actor.Xaxis = (short)i.AxisX;
+                actor.Yaxis = (short)i.AxisY;
+                actor.Zaxis = (short)i.AxisZ;
+                actor.Motion = (ushort)i.Motion;
+                actor.Name = (string)i.Name;
                 pc.FlyingGarden.Furnitures[place].Add(actor);
             }
         }
@@ -2829,53 +2833,82 @@ namespace SagaDB {
                 return;
             }
 
-            var account = GetAccountID(pc);
-            if (pc.FlyingGarden.ID > 0) {
-                SQLExecuteNonQuery(string.Format(
-                    "UPDATE `fgarden` SET `part1`='{0}',`part2`='{1}',`part3`='{2}',`part4`='{3}',`part5`='{4}'," +
-                    "`part6`='{5}',`part7`='{6}',`part8`='{7}',`fuel`='{9}' WHERE `fgarden_id`='{8}';",
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
-                    pc.FlyingGarden.ID,
-                    pc.FlyingGarden.Fuel));
-            }
-            else {
-                pc.FlyingGarden.ID = SQLExecuteScalar(string.Format(
-                    "INSERT INTO `fgarden`(`account_id`,`part1`,`part2`,`part3`,`part4`,`part5`," +
-                    "`part6`,`part7`,`part8`,`fuel`) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}');",
-                    account,
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
-                    pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
-                    pc.FlyingGarden.Fuel)).Index;
-            }
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            string sqlstr = string.Format("DELETE FROM `fgarden_furniture` WHERE `fgarden_id`='{0}';",
-                pc.FlyingGarden.ID);
-            foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
-                sqlstr += string.Format(
-                    "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                    "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','0','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
-                    i.Name);
-            foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
-                sqlstr += string.Format(
-                    "INSERT INTO `fgarden_furniture`(`fgarden_id`,`place`,`item_id`,`pict_id`,`x`,`y`," +
-                    "`z`,`xaxis`,`yaxis`,`zaxis`,`motion`,`name`) VALUES ('{0}','1','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}');",
-                    pc.FlyingGarden.ID, i.ItemID, i.PictID, i.X, i.Y, i.Z, i.Xaxis, i.Yaxis, i.Zaxis, i.Motion,
-                    i.Name);
-            SQLExecuteNonQuery(sqlstr);
+                var account = GetAccountID(pc);
+
+                bool isFound = false;
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.FlyingGarden>().TranLock(DbLockType.Wait)
+                             .Where(item => item.AccountId == account).ToList()) {
+                    i.Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE];
+                    i.Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL];
+                    i.Part3 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR];
+                    i.Part4 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE];
+                    i.Part5 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall];
+                    i.Part6 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof];
+                    i.Part7 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR];
+                    i.Part8 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL];
+                    i.Fuel = pc.FlyingGarden.Fuel;
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                    isFound = true;
+                }
+
+                if (!isFound) {
+                    pc.FlyingGarden.ID = SqlSugarHelper.Db.Insertable<Entities.FlyingGarden>(new Entities.FlyingGarden {
+                            AccountId = account,
+                            Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
+                            Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
+                            Part3 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
+                            Part4 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
+                            Part5 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
+                            Part6 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
+                            Part7 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
+                            Part8 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
+                            Fuel = pc.FlyingGarden.Fuel,
+                        }).ExecuteReturnEntity()
+                        .FlyingGardenId;
+                }
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingGardenFurniture>().TranLock(DbLockType.Wait)
+                             .Where(item => item.FlyingGardenId == pc.FlyingGarden.ID).ToList()) {
+                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
+                }
+
+                foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
+                    SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
+                        FlyingGardenId = pc.FlyingGarden.ID,
+                        Place = 0,
+                        ItemId = i.ItemID,
+                        PictId = i.PictID,
+                        X = i.X,
+                        Y = i.Y,
+                        Z = i.Z,
+                        AxisX = i.Xaxis,
+                        AxisY = i.Yaxis,
+                        AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
+                    }).ExecuteCommand();
+                foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
+                    SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
+                        FlyingGardenId = pc.FlyingGarden.ID,
+                        Place = 1,
+                        ItemId = i.ItemID,
+                        PictId = i.PictID,
+                        X = i.X,
+                        Y = i.Y,
+                        Z = i.Z,
+                        AxisX = i.Xaxis,
+                        AxisY = i.Yaxis,
+                        AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
+                    }).ExecuteCommand();
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
+            }
         }
 
         public void SaveStamps(ActorPC pc) {
