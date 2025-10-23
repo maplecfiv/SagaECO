@@ -756,14 +756,15 @@ namespace SagaDB {
 
         public void GetVShop(ActorPC pc) {
             var account = GetAccountID(pc);
-            var sqlstr = "SELECT `vshop_points`,`used_vshop_points` FROM `login` WHERE account_id='" + account +
-                         "' LIMIT 1";
-            var result = SQLExecuteQuery(sqlstr)[0];
-            var eh = pc.e;
-            pc.e = null;
-            pc.VShopPoints = (uint)result["vshop_points"];
-            pc.e = eh;
-            pc.UsedVShopPoints = (uint)result["used_vshop_points"];
+            var records = SqlSugarHelper.Db.Queryable<Login>().Where(item => item.AccountId == account).ToList();
+            if (records.Count != 0) {
+                var result = records[0];
+                var eh = pc.e;
+                pc.e = null;
+                pc.VShopPoints = (uint)result.VShopPoints;
+                pc.e = eh;
+                pc.UsedVShopPoints = (uint)result.UsedVShopPoints;
+            }
         }
 
         public void SaveSkill(ActorPC pc) {
@@ -878,11 +879,14 @@ namespace SagaDB {
         public void SaveVShop(ActorPC pc) {
             var eh = pc.e;
             pc.e = null;
-            var sqlstr = string.Format("UPDATE `login` SET `vshop_points`='{0}',`used_vshop_points`='{1}'" +
-                                       " WHERE account_id='{2}' LIMIT 1",
-                pc.VShopPoints, pc.UsedVShopPoints, pc.Account.AccountID);
+            foreach (var i in SqlSugarHelper.Db.Queryable<Login>().TranLock(DbLockType.Wait)
+                         .Where(item => item.AccountId == pc.Account.AccountID).ToList()) {
+                i.VShopPoints = pc.VShopPoints;
+                i.UsedVShopPoints = pc.UsedVShopPoints;
+                SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+            }
+
             pc.e = eh;
-            SQLExecuteNonQuery(sqlstr);
         }
 
         public void SaveServerVar(ActorPC fakepc) {
@@ -2181,39 +2185,50 @@ namespace SagaDB {
         public void SavaLevelLimit() {
             var LL = LevelLimit.LevelLimit.Instance;
             try {
-                var sqlstr = string.Format(
-                    "UPDATE `levellimit` SET `NowLevelLimit`='{0}',`NextLevelLimit`='{1}',`SetNextUpLevel`='{2}',`SetNextUpDays`='{3}',`ReachTime`='{4}',`NextTime`='{5}'"
-                    + ",`FirstPlayer`='{6}',`SecondPlayer`='{7}',`ThirdPlayer`='{8}',`FourthPlayer`='{9}',`FifthPlayer`='{10}',`LastTimeLevelLimit`='{11}',`IsLock`='{12}'"
-                    , LL.NowLevelLimit, LL.NextLevelLimit, LL.SetNextUpLevelLimit, LL.SetNextUpDays, LL.ReachTime,
-                    LL.NextTime, LL.FirstPlayer, LL.SecondPlayer, LL.Thirdlayer
-                    , LL.FourthPlayer, LL.FifthPlayer, LL.LastTimeLevelLimit, LL.IsLock);
-                SQLExecuteNonQuery(sqlstr);
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.LevelLimit>().TranLock(DbLockType.Wait)
+                             .ToList()) {
+                    i.NowLevelLimit = LL.NowLevelLimit;
+                    i.NextLevelLimit = LL.NextLevelLimit;
+                    i.SetNextUpLevelLimit = LL.SetNextUpLevelLimit;
+                    i.SetNextUpDays = LL.SetNextUpDays;
+                    i.ReachTime = LL.ReachTime;
+                    i.NextTime = LL.NextTime;
+                    i.FirstPlayer = LL.FirstPlayer;
+                    i.SecondPlayer = LL.SecondPlayer;
+                    i.Thirdlayer = LL.Thirdlayer;
+                    i.FourthPlayer = LL.FourthPlayer;
+                    i.FifthPlayer = LL.FifthPlayer;
+                    i.LastTimeLevelLimit = LL.LastTimeLevelLimit;
+                    i.IsLock = LL.IsLock;
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                }
+
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 SagaLib.Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
         public void GetLevelLimit() {
-            var sqlstr =
-                "SELECT `NowLevelLimit`,`NextLevelLimit`,`SetNextUpLevel`,`SetNextUpDays`,`ReachTime`,`NextTime`,`LastTimeLevelLimit`,`FirstPlayer`" +
-                ",`SecondPlayer`,`ThirdPlayer`,`FourthPlayer`,`FifthPlayer`,`IsLock` FROM `levellimit`";
             var levellimit = LevelLimit.LevelLimit.Instance;
-            var resule = SQLExecuteQuery(sqlstr);
-            foreach (DataRow i in resule) {
-                levellimit.NowLevelLimit = (uint)i["NowLevelLimit"];
-                levellimit.NextLevelLimit = (uint)i["NextLevelLimit"];
-                levellimit.SetNextUpLevelLimit = (uint)i["SetNextUpLevel"];
-                levellimit.LastTimeLevelLimit = (uint)i["LastTimeLevelLimit"];
-                levellimit.SetNextUpDays = (uint)i["SetNextUpDays"];
-                levellimit.ReachTime = (DateTime)i["ReachTime"];
-                levellimit.NextTime = (DateTime)i["NextTime"];
-                levellimit.FirstPlayer = (uint)i["FirstPlayer"];
-                levellimit.SecondPlayer = (uint)i["SecondPlayer"];
-                levellimit.Thirdlayer = (uint)i["ThirdPlayer"];
-                levellimit.FourthPlayer = (uint)i["FourthPlayer"];
-                levellimit.FifthPlayer = (uint)i["FifthPlayer"];
-                levellimit.IsLock = (byte)i["IsLock"];
+            foreach (var i in SqlSugarHelper.Db.Queryable<Entities.LevelLimit>().ToList()) {
+                levellimit.NowLevelLimit = (uint)i.NowLevelLimit;
+                levellimit.NextLevelLimit = (uint)i.NextLevelLimit;
+                levellimit.SetNextUpLevelLimit = (uint)i.SetNextUpLevelLimit;
+                levellimit.LastTimeLevelLimit = (uint)i.LastTimeLevelLimit;
+                levellimit.SetNextUpDays = (uint)i.SetNextUpDays;
+                levellimit.ReachTime = (DateTime)i.ReachTime;
+                levellimit.NextTime = (DateTime)i.NextTime;
+                levellimit.FirstPlayer = (uint)i.FirstPlayer;
+                levellimit.SecondPlayer = (uint)i.SecondPlayer;
+                levellimit.Thirdlayer = (uint)i.Thirdlayer;
+                levellimit.FourthPlayer = (uint)i.FourthPlayer;
+                levellimit.FifthPlayer = (uint)i.FifthPlayer;
+                levellimit.IsLock = (byte)i.IsLock;
             }
         }
 
@@ -2450,34 +2465,22 @@ namespace SagaDB {
 
         public void GetMosterGuide(ActorPC pc) {
             var guide = new Dictionary<uint, bool>();
-            var sqlstr = $"SELECT * FROM `mobstates` WHERE `char_id`='{pc.CharID}'";
-            var results = SQLExecuteQuery(sqlstr);
-            foreach (DataRow result in results) {
+            foreach (var result in SqlSugarHelper.Db.Queryable<Entities.MobStates>()
+                         .Where(item => item.CharacterId == pc.CharID).ToList()) {
                 //uint mobID = (uint)result["mob_id"];
                 //bool state = (bool)result["state"];
-                var mobID = Convert.ToUInt32(result["mob_id"]);
-                var state = Convert.ToBoolean(result["state"]);
 
-                if (MobFactory.Instance.Mobs.ContainsKey(mobID))
-                    guide.Add(mobID, state);
+                if (MobFactory.Instance.Mobs.ContainsKey(result.MobId))
+                    guide.Add(result.MobId, result.State);
             }
 
             pc.MosterGuide = guide;
         }
 
-        public void SaveMosterGuide(ActorPC pc, uint mobID, bool state) {
-            byte value = 0;
-            if (state)
-                value = 1;
-            var sqlstr = $"SELECT * FROM `mobstates` WHERE `char_id`='{pc.CharID}' AND `mob_id`='{mobID}' ";
-            var result = SQLExecuteQuery(sqlstr);
-            if (result.Count > 0)
-                sqlstr =
-                    $"UPDATE `mobstates` SET `state`='{value}' WHERE `char_id`='{pc.CharID}' AND `mob_id`='{mobID}'";
-            else
-                sqlstr =
-                    $"REPLACE INTO `mobstates` (`char_id`,`mob_id`,`state`) VALUES ('{pc.CharID}','{mobID}','{value}')";
-            SQLExecuteNonQuery(sqlstr);
+        public void SaveMosterGuide(ActorPC pc, uint mobId, bool state) {
+            SqlSugarHelper.Db.Storageable(new MobStates
+                    { CharacterId = pc.CharID, MobId = mobId, State = state })
+                .ExecuteCommand();
         }
 
         public void SaveQuestInfo(ActorPC pc) {
