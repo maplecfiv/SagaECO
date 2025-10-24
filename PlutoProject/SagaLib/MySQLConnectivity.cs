@@ -4,94 +4,77 @@ using System.Data;
 using System.Threading;
 using MySql.Data.MySqlClient;
 
-namespace SagaLib
-{
-    public class SQLExecuteScalarResult
-    {
+namespace SagaLib {
+    public class SqlExecuteScalarResult {
         public bool IsSuccess { set; get; }
 
         public uint Index { set; get; }
 
-        public SQLExecuteScalarResult(bool isSuccess, uint index)
-        {
+        public SqlExecuteScalarResult(bool isSuccess, uint index) {
             IsSuccess = isSuccess;
             Index = index;
         }
     }
 
-    public abstract class MySQLConnectivity
-    {
+    public abstract class MySQLConnectivity {
         private readonly Thread mysqlPool;
 
-        private readonly List<MySQLCommand> waitQueue = new List<MySQLCommand>();
+        private readonly List<MySqlCommand> waitQueue = new List<MySqlCommand>();
         internal int cuurentCount;
         protected MySqlConnection db;
         protected MySqlConnection dbinactive;
 
-        public MySQLConnectivity()
-        {
+        public MySQLConnectivity() {
             mysqlPool = new Thread(ProcessMysql);
             mysqlPool.Start();
         }
 
-        public bool CanClose
-        {
-            get
-            {
-                lock (waitQueue)
-                {
+        public bool CanClose {
+            get {
+                lock (waitQueue) {
                     return waitQueue.Count == 0 && cuurentCount == 0;
                 }
             }
         }
 
-        private void ProcessMysql()
-        {
+        private void ProcessMysql() {
             while (true)
-                try
-                {
-                    MySQLCommand[] cmds;
-                    lock (waitQueue)
-                    {
-                        if (waitQueue.Count > 0)
-                        {
+                try {
+                    MySqlCommand[] cmds;
+                    lock (waitQueue) {
+                        if (waitQueue.Count > 0) {
                             cmds = waitQueue.ToArray();
                             waitQueue.Clear();
                             cuurentCount = cmds.Length;
                         }
-                        else
-                        {
-                            cmds = new MySQLCommand[0];
+                        else {
+                            cmds = new MySqlCommand[0];
                         }
                     }
 
-                    if (cmds.Length > 0)
-                    {
-                        var pending = new List<MySQLCommand>();
+                    if (cmds.Length > 0) {
+                        var pending = new List<MySqlCommand>();
                         DatabaseWaitress.EnterCriticalArea();
 
                         foreach (var i in cmds)
-                            try
-                            {
+                            try {
                                 i.Command.Connection = db;
-                                switch (i.Type)
-                                {
-                                    case MySQLCommand.CommandType.NonQuery:
+                                switch (i.Type) {
+                                    case MySqlCommand.CommandType.NonQuery:
                                         i.Command.ExecuteNonQuery();
                                         break;
-                                    case MySQLCommand.CommandType.Query:
+                                    case MySqlCommand.CommandType.Query:
                                         var adapter = new MySqlDataAdapter(i.Command);
                                         var set = new DataSet();
                                         adapter.Fill(set);
                                         i.DataRows = set.Tables[0].Rows;
                                         break;
-                                    case MySQLCommand.CommandType.Scalar:
+                                    case MySqlCommand.CommandType.Scalar:
                                         i.Scalar = Convert.ToUInt32(i.Command.ExecuteScalar());
                                         break;
                                 }
                             }
-                            catch (Exception ex)
-                            {
+                            catch (Exception ex) {
                                 Logger.ShowSQL("Error on query:" + command2String(i.Command), Logger.defaultlogger);
                                 Logger.ShowSQL(ex, Logger.defaultlogger);
                                 i.ErrorCount++;
@@ -103,8 +86,7 @@ namespace SagaLib
 
                         DatabaseWaitress.LeaveCriticalArea();
                         if (pending.Count > 0)
-                            lock (waitQueue)
-                            {
+                            lock (waitQueue) {
                                 foreach (var i in pending) waitQueue.Add(i);
                             }
 
@@ -115,29 +97,24 @@ namespace SagaLib
                     cuurentCount = 0;
                     Thread.Sleep(10);
                 }
-                catch (ThreadAbortException)
-                {
+                catch (ThreadAbortException) {
                     DatabaseWaitress.LeaveCriticalArea();
                 }
         }
 
-        public bool SQLExecuteNonQuery(string sqlstr)
-        {
-            lock (waitQueue)
-            {
-                var cmd = new MySQLCommand(new MySqlCommand(sqlstr));
+        public bool SQLExecuteNonQuery(string sqlstr) {
+            lock (waitQueue) {
+                var cmd = new MySqlCommand(new MySql.Data.MySqlClient.MySqlCommand(sqlstr));
                 waitQueue.Add(cmd);
             }
 
             return true;
         }
 
-        private string command2String(MySqlCommand cmd)
-        {
+        private string command2String(MySql.Data.MySqlClient.MySqlCommand cmd) {
             string output;
             output = cmd.CommandText;
-            if (cmd.Parameters.Count > 0)
-            {
+            if (cmd.Parameters.Count > 0) {
                 var para = "";
                 foreach (MySqlParameter i in cmd.Parameters)
                     para += string.Format("{0}={1},", i.ParameterName, value2String(i.Value));
@@ -148,10 +125,8 @@ namespace SagaLib
             return output;
         }
 
-        private string value2String(object val)
-        {
-            if (val.GetType() == typeof(byte[]))
-            {
+        private string value2String(object val) {
+            if (val.GetType() == typeof(byte[])) {
                 var tmp = (byte[])val;
                 return "0x" + Conversions.bytes2HexString(tmp);
             }
@@ -159,37 +134,31 @@ namespace SagaLib
             return val.ToString();
         }
 
-        public bool SQLExecuteNonQuery(MySqlCommand cmd)
-        {
-            lock (waitQueue)
-            {
-                waitQueue.Add(new MySQLCommand(cmd));
+        public bool SqlExecuteNonQuery(MySql.Data.MySqlClient.MySqlCommand cmd) {
+            lock (waitQueue) {
+                waitQueue.Add(new MySqlCommand(cmd));
             }
 
             return true;
         }
 
-        public SQLExecuteScalarResult SQLExecuteScalar(string sqlstr)
-        {
+        public SqlExecuteScalarResult SqlExecuteScalar(string sqlstr) {
             uint index = 0;
             var criticalarea = ClientManager.Blocked;
             var result = false;
-            if (criticalarea)
-            {
+            if (criticalarea) {
                 ClientManager.LeaveCriticalArea();
             }
 
-            try
-            {
-                if (sqlstr.Substring(sqlstr.Length - 1) != ";")
-                {
+            try {
+                if (sqlstr.Substring(sqlstr.Length - 1) != ";") {
                     sqlstr += ";";
                 }
 
                 sqlstr += "SELECT LAST_INSERT_ID();";
-                var cmd = new MySQLCommand(new MySqlCommand(sqlstr), MySQLCommand.CommandType.Scalar);
-                lock (waitQueue)
-                {
+                var cmd = new MySqlCommand(new MySql.Data.MySqlClient.MySqlCommand(sqlstr),
+                    MySqlCommand.CommandType.Scalar);
+                lock (waitQueue) {
                     waitQueue.Add(cmd);
                 }
 
@@ -197,31 +166,27 @@ namespace SagaLib
                 index = cmd.Scalar;
                 result = true;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.ShowSQL(ex, Logger.defaultlogger);
             }
 
-            if (criticalarea)
-            {
+            if (criticalarea) {
                 ClientManager.EnterCriticalArea();
             }
 
-            return new SQLExecuteScalarResult(result, index);
+            return new SqlExecuteScalarResult(result, index);
         }
 
-        public DataRowCollection SQLExecuteQuery(string sqlstr)
-        {
+        public DataRowCollection SqlExecuteQuery(string sqlstr) {
             DataRowCollection result;
             DataSet tmp;
             var criticalarea = ClientManager.Blocked;
             if (criticalarea)
                 ClientManager.LeaveCriticalArea();
-            try
-            {
-                var cmd = new MySQLCommand(new MySqlCommand(sqlstr), MySQLCommand.CommandType.Query);
-                lock (waitQueue)
-                {
+            try {
+                var cmd = new MySqlCommand(new MySql.Data.MySqlClient.MySqlCommand(sqlstr),
+                    MySqlCommand.CommandType.Query);
+                lock (waitQueue) {
                     waitQueue.Add(cmd);
                 }
 
@@ -231,8 +196,7 @@ namespace SagaLib
                     ClientManager.EnterCriticalArea();
                 return result;
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.ShowSQL("Error on query:" + sqlstr, Logger.defaultlogger);
                 Logger.ShowSQL(ex, Logger.defaultlogger);
                 if (criticalarea)
@@ -241,40 +205,34 @@ namespace SagaLib
             }
         }
 
-        public string ToSQLDateTime(DateTime date)
-        {
+        public string ToSqlDateTime(DateTime date) {
             return string.Format("{0}-{1}-{2} {3}:{4}:{5}", date.Year, date.Month, date.Day, date.Hour, date.Minute,
                 date.Second);
         }
 
 
-        public string CheckSQLString(string str)
-        {
+        public string CheckSqlString(string str) {
             return str.Replace("\\", "").Replace("'", "\\'");
         }
 
-        private class MySQLCommand
-        {
-            public enum CommandType
-            {
+        private class MySqlCommand {
+            public enum CommandType {
                 NonQuery,
                 Query,
                 Scalar
             }
 
-            public MySQLCommand(MySqlCommand cmd)
-            {
+            public MySqlCommand(MySql.Data.MySqlClient.MySqlCommand cmd) {
                 Command = cmd;
                 Type = CommandType.NonQuery;
             }
 
-            public MySQLCommand(MySqlCommand cmd, CommandType type)
-            {
+            public MySqlCommand(MySql.Data.MySqlClient.MySqlCommand cmd, CommandType type) {
                 Command = cmd;
                 Type = type;
             }
 
-            public MySqlCommand Command { get; }
+            public MySql.Data.MySqlClient.MySqlCommand Command { get; }
 
             public DataRowCollection DataRows { get; set; }
 

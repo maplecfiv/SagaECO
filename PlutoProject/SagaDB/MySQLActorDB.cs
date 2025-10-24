@@ -2336,7 +2336,7 @@ namespace SagaDB {
 
         public void SaveTamaireLending(TamaireLending tamaireLending) {
             uint renter1, renter2, renter3, renter4;
-            var comment = CheckSQLString(tamaireLending.Comment);
+            var comment = CheckSqlString(tamaireLending.Comment);
 
             if (tamaireLending.Renters.Count > 0)
                 renter1 = tamaireLending.Renters[0];

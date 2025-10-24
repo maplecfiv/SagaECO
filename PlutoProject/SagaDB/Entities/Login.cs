@@ -15,6 +15,7 @@ public class Login {
     public uint VShopPoints { get; set; }
     public uint UsedVShopPoints { get; set; }
     public string LastIp { get; set; }
+    public string LastIp2 { get; set; }
 
     public DateTime QuestResetTime { get; set; }
     public DateTime LastLoginTime { get; set; }

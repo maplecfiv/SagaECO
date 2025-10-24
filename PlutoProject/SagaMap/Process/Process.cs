@@ -1,15 +1,15 @@
 using System;
 using System.Data;
 using System.Linq;
+using SagaDB;
 using SagaDB.Item;
 using SagaLib;
 using SagaMap.Manager;
 using SagaMap.Network.Client;
+using SqlSugar;
 
-namespace SagaMap.Process
-{
-    internal class Process : MapServer
-    {
+namespace SagaMap.Process {
+    internal class Process : MapServer {
         private string action;
         private uint charid, itemid;
         private ContainerType continer;
@@ -18,81 +18,84 @@ namespace SagaMap.Process
         //MySQLActorDB sql = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort, Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
 
 
-        public void Action(uint charid, uint itemid, ushort qty)
-        {
+        public void Action(uint charid, uint itemid, ushort qty) {
             this.charid = charid;
             this.qty = qty;
             this.itemid = itemid;
         }
 
-        public void Query(uint charid)
-        {
+        public void Query(uint charid) {
             this.charid = charid;
         }
 
-        public void Announce(string msg)
-        {
-            try
-            {
+        public void Announce(string msg) {
+            try {
                 foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 Logger.GetLogger().Error(exception, null);
             }
         }
 
-        public int CheckAPIItem(uint charid, MapClient client)
-        {
+        public int CheckAPIItem(uint charid, MapClient client) {
             //System.Threading.Thread.Sleep(2000);
-
-            var sqlstr = string.Format("SELECT * FROM `apiitem` WHERE `char_id`='" + charid +
-                                       "' AND status = 0 ORDER BY `request_time` DESC;");
             //MapClient client = MC(charid);
-
-
-            //MySQLActorDB sql = ConnectToDB();
-            //MySQLActorDB sql = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort, Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
-            var result = Logger.defaultSql.SQLExecuteQuery(sqlstr);
 
             var count = 0;
 
-            foreach (DataRow i in result)
-            {
-                count++;
-
-                //Item Instance
-                var item = ItemFactory.Instance.GetItem((uint)i["item_id"]);
-                qty = (ushort)i["qty"];
-                item.Stack = qty;
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
 
-                //Execute Add Item
-                client.AddItem(item, true);
+                //MySQLActorDB sql = ConnectToDB();
+                //MySQLActorDB sql = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort, Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
+                var result = SqlSugarHelper.Db.Queryable<SagaDB.Entities.ApiItem>().TranLock(DbLockType.Wait)
+                    .Where(item => item.CharacterId == charid && item.Status == 0).ToList();
 
-                //Save Record
-                Logger.defaultSql.SQLExecuteNonQuery("UPDATE apiitem SET process_time = '" +
-                                                     DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                                     "', status = 1 WHERE apiitem_id = " + i["apiitem_id"] + ";");
+                foreach (SagaDB.Entities.ApiItem i in result) {
+                    count++;
 
-                //sql.SQLExecuteNonQuery(str);
+                    //Item Instance
+                    var item = ItemFactory.Instance.GetItem(i.ItemId);
+                    qty = i.Qty;
+                    item.Stack = qty;
+
+
+                    //Execute Add Item
+                    client.AddItem(item, true);
+
+                    //Save Record
+                    i.ProcessTime = DateTime.Now;
+                    i.Status = 1;
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+
+                    //sql.SQLExecuteNonQuery(str);
+                }
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                count = 0;
+                SagaLib.Logger.ShowError(e);
             }
 
             return count;
         }
 
-        public void SaveOfflineItem(uint charid, uint itemid, uint qty)
-        {
+        public void SaveOfflineItem(uint charid, uint itemid, ushort qty) {
             //MySQLActorDB sql = ConnectToDB();
             //MySQLActorDB sql = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort, Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
-            Logger.defaultSql.SQLExecuteNonQuery("INSERT INTO apiitem VALUES (null," + charid + "," + itemid + "," +
-                                                 qty + ",'" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") +
-                                                 "',null,0);");
+
+
+            SqlSugarHelper.Db.Insertable<SagaDB.Entities.ApiItem>(new SagaDB.Entities.ApiItem {
+                CharacterId = charid, ItemId = itemid, Qty = qty, RequestTime = DateTime.Now, Status = 0
+            }).ExecuteCommand();
+
             //sql.SQLExecuteNonQuery(str);
         }
 
-        public void AddItem(MapClient i, uint itemid, ushort qty)
-        {
+        public void AddItem(MapClient i, uint itemid, ushort qty) {
             //Item Instance
             var item = ItemFactory.Instance.GetItem(itemid);
             item.Stack = qty;
@@ -105,15 +108,16 @@ namespace SagaMap.Process
             //Save Record
             //MySQLActorDB sql = ConnectToDB();
             //MySQLActorDB sql = new MySQLActorDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort, Configuration.Instance.DBName, Configuration.Instance.DBUser, Configuration.Instance.DBPass);
-            Logger.defaultSql.SQLExecuteNonQuery("INSERT INTO apiitem VALUES (null," + i.Character.CharID + "," +
-                                                 itemid + "," + qty + ",'" +
-                                                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "','" +
-                                                 DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "',1);");
+
+            SqlSugarHelper.Db.Insertable<SagaDB.Entities.ApiItem>(new SagaDB.Entities.ApiItem {
+                CharacterId = charid, ItemId = itemid, Qty = qty, RequestTime = DateTime.Now,
+                ProcessTime = DateTime.Now, Status = 1
+            }).ExecuteCommand();
+
             //sql.SQLExecuteNonQuery(str);
         }
 
-        public bool InvQuery()
-        {
+        public bool InvQuery() {
             //Client client = new Client();
 
             //Get Char Info
@@ -136,15 +140,13 @@ namespace SagaMap.Process
             return true;
         }
 
-        public bool Load()
-        {
+        public bool Load() {
             //Client client = new Client();
 
             //Get Char Info
             var pc = charDB.GetChar(charid);
 
-            if (pc == null)
-            {
+            if (pc == null) {
                 Logger.GetLogger().Error("NO SUCH CHARID" + charid);
                 return false;
             }
@@ -154,14 +156,11 @@ namespace SagaMap.Process
             var chr = from c in MapClientManager.Instance.OnlinePlayer
                 where c.Character.Name == pc.Name
                 select c;
-            if (chr.Count() == 0)
-            {
-                try
-                {
+            if (chr.Count() == 0) {
+                try {
                     SaveOfflineItem(charid, itemid, qty);
                 }
-                catch
-                {
+                catch {
                     Logger.GetLogger().Error("ERROR ON SAVE OFFLINE APIITEM");
                 }
 

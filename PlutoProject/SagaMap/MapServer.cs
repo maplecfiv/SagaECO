@@ -45,6 +45,7 @@ using SagaMap.Network.LoginServer;
 using SagaMap.Partner;
 using SagaMap.Skill;
 using SagaMap.Tasks.System;
+using SqlSugar;
 using AIThread = SagaMap.Mob.AIThread;
 
 namespace SagaMap {
@@ -423,10 +424,15 @@ namespace SagaMap {
             }
 
             if (Logger.defaultSql != null) {
-                Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online`=0;");
+                foreach (var i in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>().TranLock(DbLockType.Wait)
+                             .ToList()) {
+                    i.Online = false;
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                }
+
                 Logger.GetLogger().Information("Clearing SQL Logs");
-                Logger.defaultSql.SQLExecuteNonQuery(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';",
-                    Logger.defaultSql.ToSQLDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
+                Logger.ShowInfo(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';",
+                    Logger.defaultSql.ToSqlDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
             }
 
             Logger.ProgressBarHide("加载总耗时：" + (DateTime.Now - time).TotalMilliseconds + "ms");
@@ -732,18 +738,18 @@ namespace SagaMap {
                 }
 
 
-            Logger.GetLogger().Information("Closing MySQL connection....");
-            if (charDB.GetType() == typeof(MySQLConnectivity)) {
-                var con = (MySQLConnectivity)charDB;
-                while (!con.CanClose)
-                    Thread.Sleep(100);
-            }
-
-            if (accountDB.GetType() == typeof(MySQLConnectivity)) {
-                var con = (MySQLConnectivity)accountDB;
-                while (!con.CanClose)
-                    Thread.Sleep(100);
-            }
+            // Logger.GetLogger().Information("Closing MySQL connection....");
+            // if (charDB.GetType() == typeof(MySQLConnectivity)) {
+            //     var con = (MySQLConnectivity)charDB;
+            //     while (!con.CanClose)
+            //         Thread.Sleep(100);
+            // }
+            //
+            // if (accountDB.GetType() == typeof(MySQLConnectivity)) {
+            //     var con = (MySQLConnectivity)accountDB;
+            //     while (!con.CanClose)
+            //         Thread.Sleep(100);
+            // }
         }
 
         public static string SendResponse(HttpListenerRequest request) {
@@ -787,18 +793,18 @@ namespace SagaMap {
                     i.OnDestrory();
             }
 
-            Logger.GetLogger().Information("Closing MySQL connection....");
-            if (charDB.GetType() == typeof(MySQLConnectivity)) {
-                var con = (MySQLConnectivity)charDB;
-                while (!con.CanClose)
-                    Thread.Sleep(100);
-            }
-
-            if (accountDB.GetType() == typeof(MySQLConnectivity)) {
-                var con = (MySQLConnectivity)accountDB;
-                while (!con.CanClose)
-                    Thread.Sleep(100);
-            }
+            // Logger.GetLogger().Information("Closing MySQL connection....");
+            // if (charDB.GetType() == typeof(MySQLConnectivity)) {
+            //     var con = (MySQLConnectivity)charDB;
+            //     while (!con.CanClose)
+            //         Thread.Sleep(100);
+            // }
+            //
+            // if (accountDB.GetType() == typeof(MySQLConnectivity)) {
+            //     var con = (MySQLConnectivity)accountDB;
+            //     while (!con.CanClose)
+            //         Thread.Sleep(100);
+            // }
         }
     }
 }

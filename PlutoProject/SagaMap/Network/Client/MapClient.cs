@@ -103,6 +103,7 @@ using SagaMap.Tasks.Partner;
 using SagaMap.Tasks.PC;
 using SagaMap.Tasks.Skill;
 using SagaMap.Tasks.System;
+using SqlSugar;
 using AIMode = SagaMap.Mob.AIMode;
 // using FurniturePlace = SagaDB.FFGarden.FurniturePlace;s
 using Item = SagaDB.Item.Item;
@@ -240,9 +241,12 @@ namespace SagaMap.Network.Client {
                                                MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
-                if (Logger.defaultSql != null)
-                    Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online` = 0 WHERE `char_id` = " +
-                                                         Character.CharID);
+                foreach (SagaDB.Entities.Character i in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>()
+                             .TranLock()
+                             .Where(item => item.CharacterId == Character.CharID).ToList()) {
+                    i.Online = false;
+                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                }
 
                 if (Character.HP == 0) {
                     /*this.Character.HP = 1;
@@ -9515,9 +9519,13 @@ namespace SagaMap.Network.Client {
                         break;
                     }
 
-                if (Logger.defaultSql != null)
-                    Logger.defaultSql.SQLExecuteNonQuery("UPDATE `char` SET `online` = 1 WHERE `char_id` = " +
-                                                         Character.CharID);
+                if (Logger.defaultSql != null) {
+                    foreach (var i in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>().TranLock(DbLockType.Wait)
+                                 .Where(item => item.CharacterId == Character.CharID).ToList()) {
+                        i.Online = true;
+                        SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
+                    }
+                }
             }
         }
 

@@ -4,29 +4,24 @@ using System.IO;
 using System.Text;
 using Serilog;
 
-namespace SagaLib
-{
-    public class Logger
-    {
+namespace SagaLib {
+    public class Logger {
         private static readonly Serilog.Core.Logger _logger = new LoggerConfiguration()
             .WriteTo.Console()
             .CreateLogger();
 
-        public static Serilog.Core.Logger GetLogger()
-        {
+        public static Serilog.Core.Logger GetLogger() {
             return _logger;
         }
 
-        public static Serilog.Core.Logger InitLogger<T>()
-        {
+        public static Serilog.Core.Logger InitLogger<T>() {
             {
                 // instantiate and configure logging. Using serilog here, to log to console and a text-file.
                 return _logger;
             }
         }
 
-        public enum EventType
-        {
+        public enum EventType {
             ItemGolemGet = 1,
             ItemLootGet = 2,
             ItemWareGet = 4,
@@ -50,12 +45,10 @@ namespace SagaLib
 
         public static BitMask<EventType> SQLLogLevel = new BitMask<EventType>(new BitMask(68712));
 
-        private static string GetStackTrace()
-        {
+        private static string GetStackTrace() {
             var trace = new StackTrace().ToString().Split('\n');
             var Stacktrace = "";
-            foreach (var i in trace)
-            {
+            foreach (var i in trace) {
                 if (i.Contains(" System."))
                     continue;
                 Stacktrace += i.Replace("\r", "\r\n");
@@ -68,11 +61,9 @@ namespace SagaLib
             return Stacktrace;
         }
 
-        public static void LogItemGet(EventType type, string pc, string item, string detail, bool stack)
-        {
+        public static void LogItemGet(EventType type, string pc, string item, string detail, bool stack) {
             if (type >= EventType.ItemGolemGet && type <= EventType.ItemGMGet)
-                if (defaultSql != null && SQLLogLevel.Test(type))
-                {
+                if (defaultSql != null && SQLLogLevel.Test(type)) {
                     var content = detail;
                     if (stack)
                         content += "\r\n" + GetStackTrace();
@@ -80,11 +71,9 @@ namespace SagaLib
                 }
         }
 
-        public static void LogItemLost(EventType type, string pc, string item, string detail, bool stack)
-        {
+        public static void LogItemLost(EventType type, string pc, string item, string detail, bool stack) {
             if (type >= EventType.ItemGolemLost && type <= EventType.ItemDropLost)
-                if (defaultSql != null && SQLLogLevel.Test(type))
-                {
+                if (defaultSql != null && SQLLogLevel.Test(type)) {
                     var content = detail;
                     if (stack)
                         content += "\r\n" + GetStackTrace();
@@ -92,50 +81,40 @@ namespace SagaLib
                 }
         }
 
-        public static void LogGoldChange(string pc, int amount)
-        {
+        public static void LogGoldChange(string pc, int amount) {
             if (defaultSql != null && SQLLogLevel.Test(EventType.GoldChange))
                 SQLLog(EventType.GoldChange, pc, amount.ToString(), GetStackTrace());
         }
 
-        public static void LogWarehouseGet(string pc, string item, string detail)
-        {
+        public static void LogWarehouseGet(string pc, string item, string detail) {
             if (defaultSql != null && SQLLogLevel.Test(EventType.WarehouseGet))
                 SQLLog(EventType.WarehouseGet, pc, item, detail);
         }
 
-        public static void LogWarehousePut(string pc, string item, string detail)
-        {
+        public static void LogWarehousePut(string pc, string item, string detail) {
             if (defaultSql != null && SQLLogLevel.Test(EventType.WarehouseGet))
                 SQLLog(EventType.WarehousePut, pc, item, detail);
         }
 
-        public static void LogGMCommand(string pc, string item, string detail)
-        {
+        public static void LogGMCommand(string pc, string item, string detail) {
             if (defaultSql != null && SQLLogLevel.Test(EventType.GMCommand))
                 SQLLog(EventType.GMCommand, pc, item, detail);
         }
 
-        private static void SQLLog(EventType type, string src, string dst, string detail)
-        {
-            var time = DateTime.Now;
-            src = defaultSql.CheckSQLString(src);
-            var sql = string.Format(
-                "INSERT INTO `log`(`eventType`,`eventTime`,`src`,`dst`,`detail`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
-                type, defaultSql.ToSQLDateTime(time), defaultSql.CheckSQLString(src), defaultSql.CheckSQLString(dst),
-                defaultSql.CheckSQLString(detail));
-            try
-            {
-                defaultSql.SQLExecuteNonQuery(sql);
+        private static void SQLLog(EventType type, string src, string dst, string detail) {
+            try {
+                ShowInfo(string.Format(
+                    "INSERT INTO `log`(`eventType`,`eventTime`,`src`,`dst`,`detail`) VALUES ('{0}','{1}','{2}','{3}','{4}');",
+                    type, defaultSql.ToSqlDateTime(DateTime.Now), defaultSql.CheckSqlString(src),
+                    defaultSql.CheckSqlString(dst),
+                    defaultSql.CheckSqlString(detail)));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 ShowError(ex);
             }
         }
 
-        public enum LogContent
-        {
+        public enum LogContent {
             Info = 1,
             Warning = 2,
             Error = 4,
@@ -175,10 +154,8 @@ namespace SagaLib
             }
         }*/
 
-        public void WriteLog(string p)
-        {
-            try
-            {
+        public void WriteLog(string p) {
+            try {
                 // path = GetLogFile();
                 // var file = new FileStream(path, FileMode.Append);
                 // var sw = new StreamWriter(file);
@@ -188,16 +165,13 @@ namespace SagaLib
                 // sw.Close();
                 _logger.Information(final);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 ShowError(ex);
             }
         }
 
-        public void WriteLog(string prefix, string p)
-        {
-            try
-            {
+        public void WriteLog(string prefix, string p) {
+            try {
                 // path = GetLogFile();
                 p = $"{prefix}->{p}";
                 // var file = new FileStream(path, FileMode.Append);
@@ -208,14 +182,12 @@ namespace SagaLib
                 // sw.Close();
                 _logger.Information(final);
             }
-            catch (Exception exception)
-            {
+            catch (Exception exception) {
                 ShowError(exception, null);
             }
         }
 
-        public static void ShowInfo(Exception ex, Logger log)
-        {
+        public static void ShowInfo(Exception ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
@@ -225,8 +197,7 @@ namespace SagaLib
             // if (log != null) log.WriteLog(ex.Message);
         }
 
-        public static void ShowInfo(string ex)
-        {
+        public static void ShowInfo(string ex) {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
@@ -235,8 +206,7 @@ namespace SagaLib
             // _logger.Debug(ex);
         }
 
-        public static void ShowInfo(string ex, Logger log)
-        {
+        public static void ShowInfo(string ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
@@ -246,32 +216,27 @@ namespace SagaLib
             // if (log != null) log.WriteLog(ex);
         }
 
-        public static void ShowSQL(Exception ex)
-        {
+        public static void ShowSQL(Exception ex) {
             LoggerIntern.EnqueueMsg(Level.SQL, ex.ToString(), DefaultLogger);
         }
 
-        public static void ShowSQL(string ex)
-        {
+        public static void ShowSQL(string ex) {
             LoggerIntern.EnqueueMsg(Level.SQL, ex, DefaultLogger);
         }
 
-        public static void ShowWarning(Exception ex)
-        {
+        public static void ShowWarning(Exception ex) {
             // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
             //     return;
             ShowWarning(ex, defaultlogger);
         }
 
-        public static void ShowWarning(string ex)
-        {
+        public static void ShowWarning(string ex) {
             // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
             //     return;
             ShowWarning(ex, defaultlogger);
         }
 
-        public static void ShowDebug(Exception ex, Logger log)
-        {
+        public static void ShowDebug(Exception ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
@@ -283,8 +248,7 @@ namespace SagaLib
             //     log.WriteLog("[Debug]" + ex.Message + "\r\n" + ex.StackTrace);
         }
 
-        public static void ShowDebug(string ex, Logger log)
-        {
+        public static void ShowDebug(string ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.Debug) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Cyan;
@@ -302,8 +266,7 @@ namespace SagaLib
             // if (log != null) log.WriteLog("[Debug]" + txt);
         }
 
-        public static void ShowSQL(Exception ex, Logger log)
-        {
+        public static void ShowSQL(Exception ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
@@ -315,8 +278,7 @@ namespace SagaLib
             //     log.WriteLog("[SQL]" + ex.Message + "\r\n" + FilterSQL(ex.StackTrace));
         }
 
-        private static string FilterSQL(string input)
-        {
+        private static string FilterSQL(string input) {
             var tmp = input.Split('\n');
             var tmp2 = "";
             foreach (var i in tmp)
@@ -325,8 +287,7 @@ namespace SagaLib
             return tmp2;
         }
 
-        public static void ShowSQL(string ex, Logger log)
-        {
+        public static void ShowSQL(string ex, Logger log) {
             // if ((defaultlogger.LogLevel | LogContent.SQL) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Magenta;
@@ -338,38 +299,31 @@ namespace SagaLib
             //     log.WriteLog("[SQL]" + ex);
         }
 
-        public static void ShowWarning(Exception ex, Logger log)
-        {
+        public static void ShowWarning(Exception ex, Logger log) {
             ShowError(ex, log);
         }
 
-        public static void ShowWarning(string ex, Logger log)
-        {
+        public static void ShowWarning(string ex, Logger log) {
             _logger.Warning(ex);
         }
 
-        public static void ShowError(Exception ex, Logger log)
-        {
+        public static void ShowError(Exception ex, Logger log) {
             ShowError(ex);
         }
 
-        public static void ShowError(string ex, Logger log)
-        {
+        public static void ShowError(string ex, Logger log) {
             ShowError(ex);
         }
 
-        public static void ShowError(string ex)
-        {
+        public static void ShowError(string ex) {
             _logger.Error(ex);
         }
 
-        public static void ShowError(Exception ex)
-        {
+        public static void ShowError(Exception ex) {
             _logger.Error(ex, ex.Message);
         }
 
-        public string GetLogFile()
-        {
+        public string GetLogFile() {
             // Read in from XML here if needed.
             if (!Directory.Exists("Log"))
                 Directory.CreateDirectory("Log");
@@ -379,13 +333,11 @@ namespace SagaLib
                    filename;
         }
 
-        public string GetDate()
-        {
+        public string GetDate() {
             return DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToLongTimeString();
         }
 
-        public static void ProgressBarShow(uint progressPos, uint progressTotal, string label)
-        {
+        public static void ProgressBarShow(uint progressPos, uint progressTotal, string label) {
             ////Console.ForegroundColor = ConsoleColor.Green;
             _logger.Debug("\r[Info]");
             ////Console.ResetColor();
@@ -401,8 +353,7 @@ namespace SagaLib
             ////Console.ResetColor();
         }
 
-        public static void ProgressBarHide(string label)
-        {
+        public static void ProgressBarHide(string label) {
             //char[] buffer = new char[80];
             //label.CopyTo(0, buffer, 0, label.Length);
             //_logger.Debug(buffer);

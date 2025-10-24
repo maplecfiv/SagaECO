@@ -186,48 +186,52 @@ namespace SagaDB {
         }
 
         public Account GetUser(string name) {
-            DataRowCollection result = null;
-            name = CheckSQLString(name);
+            Account account = null;
+
             try {
-                result = SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + name + "' LIMIT 1");
+                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == name)
+                    .ToList();
+
+
+                if (result.Count == 0) {
+                    return null;
+                }
+
+                account = new Account();
+                account.AccountID = result[0].AccountId;
+                account.Name = name;
+                account.Password = (string)result[0].Password;
+                account.DeletePassword = (string)result[0].DeletePassword;
+                account.GMLevel = (byte)result[0].GameMasterLevel;
+                account.Bank = (uint)result[0].Bank;
+                account.questNextTime = (DateTime)result[0].QuestResetTime;
+                try {
+                    account.LastIP2 = (string)result[0].LastIp2;
+                }
+                catch (Exception ex) {
+                    Logger.GetLogger().Error(ex, ex.Message);
+                }
+
+                account.Banned = ((byte)result[0].Banned == 1);
             }
             catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
                 return null;
             }
 
-            if (result.Count == 0) {
-                return null;
-            }
 
-            Account account = new Account();
-            account.AccountID = (int)(uint)result[0]["account_id"];
-            account.Name = name;
-            account.Password = (string)result[0]["password"];
-            account.DeletePassword = (string)result[0]["deletepass"];
-            account.GMLevel = (byte)result[0]["gmlevel"];
-            account.Bank = (uint)result[0]["bank"];
-            account.questNextTime = (DateTime)result[0]["questresettime"];
-            try {
-                account.LastIP2 = (string)result[0]["lastip2"];
-            }
-            catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
-            }
-
-            account.Banned = ((byte)result[0]["banned"] == 1);
             return account;
         }
 
         public bool CheckPassword(string user, string password, uint frontword, uint backword) {
             try {
-                DataRowCollection result =
-                    SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + CheckSQLString(user) + "' LIMIT 1");
+                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
+                    .ToList();
                 return (result.Count == 0)
                     ? false
                     : password == Conversions.bytes2HexString(SHA1.Create()
                         .ComputeHash(Encoding.ASCII.GetBytes(string.Format("{0}{1}{2}", frontword,
-                            ((string)result[0]["password"]).ToLower(), backword)))).ToLower();
+                            ((string)result[0].Password).ToLower(), backword)))).ToLower();
             }
             catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
@@ -237,9 +241,10 @@ namespace SagaDB {
 
         public int GetAccountID(string user) {
             try {
-                DataRowCollection result =
-                    SQLExecuteQuery("SELECT * FROM `login` WHERE `username`='" + user + "' LIMIT 1");
-                return (result.Count == 0) ? -1 : (int)result[0]["account_id"];
+                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
+                    .ToList();
+
+                return (result.Count == 0) ? -1 : (int)result[0].AccountId;
             }
             catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
