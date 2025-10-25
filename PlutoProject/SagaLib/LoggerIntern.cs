@@ -1,17 +1,14 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
 
-namespace SagaLib
-{
-    public struct LogData
-    {
+namespace SagaLib {
+    public struct LogData {
         public Level LogLevel;
         public string Text;
         public Serilog.Core.Logger Logger;
     }
 
-    public enum Level
-    {
+    public enum Level {
         Debug,
         Info,
         Warn,
@@ -19,32 +16,26 @@ namespace SagaLib
         SQL
     }
 
-    public class LoggerIntern
-    {
+    public class LoggerIntern {
         private static readonly ConcurrentQueue<LogData> queue = new ConcurrentQueue<LogData>();
         private static Thread thread;
         private static readonly AutoResetEvent waiter = new AutoResetEvent(false);
         public static bool Ready;
 
-        public static void Init()
-        {
-            if (thread == null)
-            {
+        public static void Init() {
+            if (thread == null) {
                 thread = new Thread(MainLoop);
                 thread.Start();
                 Ready = true;
             }
         }
 
-        private static void MainLoop()
-        {
-            while (true)
-            {
+        private static void MainLoop() {
+            while (true) {
                 while (queue.TryDequeue(out var data))
-                    switch (data.LogLevel)
-                    {
+                    switch (data.LogLevel) {
                         case Level.Debug:
-                            data.Logger.Debug(data.Text);
+                            data.Logger.Information(data.Text);
                             break;
                         case Level.Info:
                             data.Logger.Information(data.Text);
@@ -56,7 +47,7 @@ namespace SagaLib
                             data.Logger.Error(data.Text);
                             break;
                         case Level.SQL:
-                            data.Logger.Debug(data.Text);
+                            data.Logger.Information(data.Text);
                             break;
                     }
 
@@ -64,8 +55,7 @@ namespace SagaLib
             }
         }
 
-        public static void EnqueueMsg(Level level, string msg, Serilog.Core.Logger logger)
-        {
+        public static void EnqueueMsg(Level level, string msg, Serilog.Core.Logger logger) {
             var data = new LogData();
             data.LogLevel = level;
             data.Text = msg;

@@ -5,15 +5,12 @@ using System.Linq;
 using System.Reflection;
 using SagaLib;
 
-namespace SagaMap.Manager
-{
-    public class PacketManager : Singleton<PacketManager>
-    {
+namespace SagaMap.Manager {
+    public class PacketManager : Singleton<PacketManager> {
         private string path;
         public List<uint> PacketsID { get; } = new List<uint>();
 
-        public void LoadPacketFiles(string path)
-        {
+        public void LoadPacketFiles(string path) {
             var theList = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t => t.Namespace == "SagaMap.Packets.Server")
                 .ToList();
@@ -29,11 +26,9 @@ namespace SagaMap.Manager
 
             var Packetcount = 0;
             this.path = path;
-            try
-            {
-                foreach (var newAssembly in theList)
-                {
-                    LoadAssembly(newAssembly.Assembly);
+            try {
+                foreach (var newAssembly in theList) {
+                    Packetcount += LoadAssembly(newAssembly.Assembly);
                 }
                 // var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
                 // Assembly newAssembly;
@@ -48,15 +43,15 @@ namespace SagaMap.Manager
                 //         Packetcount += tmp;
                 //     }
                 // }
+
+                Logger.ShowInfo($"{Packetcount} Packet Loaded");
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
             }
         }
 
-        private Assembly CompilePacket(string[] Source, CodeDomProvider Provider)
-        {
+        private Assembly CompilePacket(string[] Source, CodeDomProvider Provider) {
             var parms = new CompilerParameters();
             CompilerResults results;
             parms.CompilerOptions = "/target:library /optimize";
@@ -70,11 +65,9 @@ namespace SagaMap.Manager
             foreach (var i in Configuration.Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
             // Compile
             results = Provider.CompileAssemblyFromFile(parms, Source);
-            if (results.Errors.HasErrors)
-            {
+            if (results.Errors.HasErrors) {
                 foreach (CompilerError error in results.Errors)
-                    if (!error.IsWarning)
-                    {
+                    if (!error.IsWarning) {
                         Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
                         Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
                     }
@@ -85,38 +78,35 @@ namespace SagaMap.Manager
             return results.CompiledAssembly;
         }
 
-        private int LoadAssembly(Assembly newAssembly)
-        {
+        private int LoadAssembly(Assembly newAssembly) {
             var newPackets = newAssembly.GetModules();
             var count = 0;
-            foreach (var newScript in newPackets)
-            {
+            foreach (var newScript in newPackets) {
                 var types = newScript.GetTypes();
-                foreach (var npcType in types)
-                {
-                    try
-                    {
-                        if (npcType.IsAbstract) continue;
-                        if (npcType.GetCustomAttributes(false).Length > 0) continue;
-                        Packet newPacket;
-                        try
-                        {
-                            newPacket = (Packet)Activator.CreateInstance(npcType);
-                        }
-                        catch (Exception exception)
-                        {
-                            Logger.GetLogger().Error(exception, null);
+                foreach (var npcType in types) {
+                    try {
+                        if (npcType.IsAbstract) {
                             continue;
                         }
 
-                        if (!PacketsID.Contains(newPacket.ID) && newPacket.ID != 0) PacketsID.Add(newPacket.ID);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
-                    }
+                        if (npcType.GetCustomAttributes(false).Length > 0) {
+                            continue;
+                        }
 
-                    count++;
+                        Packet newPacket = (Packet)Activator.CreateInstance(npcType);
+                        if (newPacket == null) {
+                            SagaLib.Logger.ShowWarning($"Cannot create new packet for {npcType}");
+                            continue;
+                        }
+
+                        if (!PacketsID.Contains(newPacket.ID) && newPacket.ID != 0) {
+                            PacketsID.Add(newPacket.ID);
+                            count++;
+                        }
+                    }
+                    catch (Exception ex) {
+                        Logger.GetLogger().Warning(ex, ex.Message);
+                    }
                 }
             }
 

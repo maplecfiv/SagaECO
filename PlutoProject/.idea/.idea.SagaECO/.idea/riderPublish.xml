@@ -4,6 +4,8 @@
     <option name="locations">
       <list>
         <option value="$PROJECT_DIR$/SagaValidation/bin/Release/net8.0/publish" />
+        <option value="$PROJECT_DIR$/SagaLogin/bin/Release/net8.0/publish" />
+        <option value="$PROJECT_DIR$/SagaMap/bin/Release/net8.0/publish" />
       </list>
     </option>
   </component>

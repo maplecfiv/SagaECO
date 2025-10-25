@@ -22,27 +22,27 @@ namespace SagaLogin {
 
         public static AccountDB accountDB;
 
-        public static bool StartDatabase() {
-            try {
-                switch (Configuration.Configuration.Instance.DBType) {
-                    case 0:
-                        charDB = new MySqlActorDb();
-                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
-                            Configuration.Configuration.Instance.DBPort,
-                            Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
-                            Configuration.Configuration.Instance.DBPass);
-                        // charDB.Connect();
-                        accountDB.Connect();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-            catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
-                return false;
-            }
-        }
+        // public static bool StartDatabase() {
+        //     try {
+        //         switch (Configuration.Configuration.Instance.DBType) {
+        //             case 0:
+        //                 charDB = new MySqlActorDb();
+        //                 accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
+        //                     Configuration.Configuration.Instance.DBPort,
+        //                     Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
+        //                     Configuration.Configuration.Instance.DBPass);
+        //                 // charDB.Connect();
+        //                 accountDB.Connect();
+        //                 return true;
+        //             default:
+        //                 return false;
+        //         }
+        //     }
+        //     catch (Exception exception) {
+        //         Logger.GetLogger().Error(exception, null);
+        //         return false;
+        //     }
+        // }
 
         public static void EnsureCharDB() {
             var notConnected = false;
@@ -92,56 +92,56 @@ namespace SagaLogin {
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("======================================================================");
+            _logger.Information("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Debug("                     SagaECO Login Server                ");
-            _logger.Debug("         (C)2013-2017 The Pluto ECO Project Development Team              ");
+            _logger.Information("                     SagaECO Login Server                ");
+            _logger.Information("         (C)2013-2017 The Pluto ECO Project Development Team              ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("======================================================================");
+            _logger.Information("======================================================================");
             //Console.ResetColor();
 
             //Console.ForegroundColor = ConsoleColor.White;
             Logger.GetLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaLogin");
+            _logger.Information("SagaLogin");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaLib");
+            _logger.Information("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                          GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
+                                GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaDB");
+            _logger.Information("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                          GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
+                                GlobalInfo.ModifyDate + ")");
 
             Logger.GetLogger().Information("Starting Initialization...", null);
 
-            Configuration.Configuration.Instance.Initialization("./Config/SagaLogin.xml");
+            Configuration.Configuration.Instance.Initialization(
+                $"{ConfigLoader.LoadConfigPath()}/SagaLogin.xml");
 
             //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
             Logger.GetLogger().Information("Initializing VirtualFileSystem...");
-#if FreeVersion1
-            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
-#else
+// #if FreeVersion1
+            // VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
+// #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
-#endif
+// #endif
             ItemFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv",
-                    SearchOption.TopDirectoryOnly),
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv"),
                 Encoding.UTF8);
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
 
-            if (!StartDatabase()) {
-                Logger.GetLogger().Error("cannot connect to dbserver", null);
-                Logger.GetLogger().Error("Shutting down in 20sec.", null);
-                Thread.Sleep(20000);
-                return;
-            }
+            // if (!StartDatabase()) {
+            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
+            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     Thread.Sleep(20000);
+            //     return;
+            // }
 
             LoginClientManager.Instance.Start();
             if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
@@ -154,7 +154,21 @@ namespace SagaLogin {
 
             Global.clientMananger = LoginClientManager.Instance;
 
-            _logger.Debug("Accepting clients.");
+            _logger.Information("Accepting clients.");
+
+
+            while (true) {
+                // keep the connections to the database servers alive
+                // EnsureCharDB();
+                // EnsureAccountDB();
+                // let new clients (max 10) connect
+#if FreeVersion
+                if (LoginClientManager.Instance.Clients.Count < int.Parse("15"))
+#endif
+                LoginClientManager.Instance.NetworkLoop(10);
+
+                System.Threading.Thread.Sleep(10);
+            }
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args) {

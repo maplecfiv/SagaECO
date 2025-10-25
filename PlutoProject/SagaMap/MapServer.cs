@@ -61,26 +61,26 @@ namespace SagaMap {
         public static bool shutingdown;
         public static bool shouldRefreshStatistic = true;
 
-        public static bool StartDatabase() {
-            try {
-                switch (Configuration.Configuration.Instance.DBType) {
-                    case 0:
-                        charDB = new MySqlActorDb();
-                        accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
-                            Configuration.Configuration.Instance.DBPort,
-                            Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
-                            Configuration.Configuration.Instance.DBPass);
-                        accountDB.Connect();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-            catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
-                return false;
-            }
-        }
+        // public static bool StartDatabase() {
+        //     try {
+        //         switch (Configuration.Configuration.Instance.DBType) {
+        //             case 0:
+        //                 charDB = new MySqlActorDb();
+        //                 accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
+        //                     Configuration.Configuration.Instance.DBPort,
+        //                     Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
+        //                     Configuration.Configuration.Instance.DBPass);
+        //                 accountDB.Connect();
+        //                 return true;
+        //             default:
+        //                 return false;
+        //         }
+        //     }
+        //     catch (Exception exception) {
+        //         Logger.GetLogger().Error(exception, null);
+        //         return false;
+        //     }
+        // }
 
         public static void EnsureCharDB() {
         }
@@ -127,55 +127,56 @@ namespace SagaMap {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("======================================================================");
+            _logger.Information("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Debug("                         SagaECO Map Server                ");
-            _logger.Debug("         (C)2013-2017 The Pluto ECO Project Development Team                ");
+            _logger.Information("                         SagaECO Map Server                ");
+            _logger.Information("         (C)2013-2017 The Pluto ECO Project Development Team                ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("======================================================================");
+            _logger.Information("======================================================================");
             //Console.ResetColor();
             //Console.ForegroundColor = ConsoleColor.White;
             Logger.GetLogger().Information("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaMap");
+            _logger.Information("SagaMap");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaLib");
+            _logger.Information("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                          GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
+                                GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("SagaDB");
+            _logger.Information("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(":SVN Rev." + GlobalInfo.Version + "(" +
-                          GlobalInfo.ModifyDate + ")");
+            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
+                                GlobalInfo.ModifyDate + ")");
 
             Logger.GetLogger().Information(LocalManager.Instance.Strings.INITIALIZATION, null);
 
-            Configuration.Configuration.Instance.Initialization("./Config/SagaMap.xml");
+            Configuration.Configuration.Instance.Initialization(
+                $"{ConfigLoader.LoadConfigPath()}/SagaMap.xml");
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug("[Info]");
+            _logger.Information("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("Current Packet Version:[");
+            _logger.Information("Current Packet Version:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(Configuration.Configuration.Instance.Version.ToString());
+            _logger.Information(Configuration.Configuration.Instance.Version.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("]");
+            _logger.Information("]");
 
             // LocalManager.Instance.CurrentLanguage =
             //     (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages),
             //         Configuration.Configuration.Instance.Language);
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug("[Info]");
+            _logger.Information("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("Current Language:[");
+            _logger.Information("Current Language:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Debug(LocalManager.Instance.ToString());
+            _logger.Information(LocalManager.Instance.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Debug("]");
+            _logger.Information("]");
             //Console.ResetColor();
 
             //int item = (int)ContainerType.HEAD_ACCE2;
@@ -183,18 +184,16 @@ namespace SagaMap {
             //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
             Logger.GetLogger().Information("Initializing VirtualFileSystem...");
-#if FreeVersion1
-            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
-#else
+// #if FreeVersion1
+            // VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
+// #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
-#endif
+// #endif
             ItemAdditionFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "Addition*.csv",
-                    SearchOption.TopDirectoryOnly),
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "Addition*.csv"),
                 Encoding.UTF8);
             ItemFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv",
-                    SearchOption.TopDirectoryOnly),
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv"),
                 Encoding.UTF8);
             ItemReleaseFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/equipment_release.csv",
                 Encoding.UTF8);
@@ -208,7 +207,7 @@ namespace SagaMap {
                 Encoding.UTF8);
             ExchangeFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/exchange.csv",
                 Encoding.UTF8);
-            PacketManager.Instance.LoadPacketFiles("./Packers");
+            PacketManager.Instance.LoadPacketFiles(ConfigLoader.LoadPacketPath());
 
             EnhanceTableFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/enhancetable.csv",
                 Encoding.UTF8);
@@ -333,11 +332,11 @@ namespace SagaMap {
                 VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/AnMobAI", "*.xml",
                     SearchOption.AllDirectories),
                 Encoding.UTF8);
-            PartnerAIFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/PartnerAI",
-                    "*.xml",
-                    SearchOption.AllDirectories),
-                Encoding.UTF8);
+            // PartnerAIFactory.Instance.Init(
+            //     VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/PartnerAI",
+            //         "*.xml",
+            //         SearchOption.AllDirectories),
+            // Encoding.UTF8);
             //MobSpawnManager.Instance.LoadAnAI("DB/AnMobAI");
             MobSpawnManager.Instance.LoadSpawn($"{ConfigLoader.LoadDbPath()}/Spawns");
             FictitiousActorsFactory.Instance.LoadActorsList($"{ConfigLoader.LoadDbPath()}/Actors");
@@ -371,15 +370,15 @@ namespace SagaMap {
             //称号的奖励暂时被过滤掉了
             //TitleFactory.Instance.InitB("DB/title_Bounds.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            SkillHandler.Instance.LoadSkill("./Skills");
-            SkillHandler.Instance.Init();
+            // SkillHandler.Instance.LoadSkill("./Skills");
+            // SkillHandler.Instance.Init();
 
             Global.clientMananger = MapClientManager.Instance;
 
             //目前无用
             //DefWarFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/odwar_order_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
-            AtCommand.Instance.LoadCommandLevelSetting("./Config/GMCommand.csv");
+            AtCommand.Instance.LoadCommandLevelSetting($"{ConfigLoader.LoadConfigPath()}/GMCommand.csv");
 
             var login = new LoginSession(); //Make connection to the Login server.
 
@@ -394,18 +393,18 @@ namespace SagaMap {
                 return;
             }
 
-            if (!StartDatabase()) {
-                Logger.GetLogger().Error("cannot connect to dbserver", null);
-                Logger.GetLogger().Error("Shutting down in 20sec.", null);
-                MapClientManager.Instance.Abort();
-                Thread.Sleep(20000);
-                return;
-            }
+            // if (!StartDatabase()) {
+            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
+            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     MapClientManager.Instance.Abort();
+            //     Thread.Sleep(20000);
+            //     return;
+            // }
 
             if (Configuration.Configuration.Instance.SQLLog)
                 Logger.defaultSql = charDB as MySqlActorDb;
 
-            ScriptManager.Instance.LoadScript("./Scripts");
+            ScriptManager.Instance.LoadScript($"{ConfigLoader.LoadScriptPath()}/Scripts");
             ScriptManager.Instance.VariableHolder = charDB.LoadServerVar();
 
             //Starting API
@@ -482,7 +481,8 @@ namespace SagaMap {
                     if (shouldRefreshStatistic && Configuration.Configuration.Instance.OnlineStatistics) {
                         try {
                             string content;
-                            var sr = new StreamReader("Config/OnlineStatisticTemplate.htm", true);
+                            var sr = new StreamReader($"{ConfigLoader.LoadConfigPath()}/OnlineStatisticTemplate.htm",
+                                true);
                             content = sr.ReadToEnd();
                             sr.Close();
                             var header = content.Substring(0, content.IndexOf("<template for one row>"));

@@ -46,7 +46,7 @@ namespace SagaDB {
 
             if (db != null) {
                 if (db.State != ConnectionState.Closed) isconnected = true;
-                else _logger.Debug("SQL Connection error");
+                else _logger.Error("SQL Connection error");
             }
         }
 

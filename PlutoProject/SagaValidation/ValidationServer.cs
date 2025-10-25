@@ -13,25 +13,25 @@ namespace SagaValidation {
 
         public static AccountDB accountDB;
 
-        public static bool StartDatabase() {
-            try {
-                switch (Configuration.Instance.DBType) {
-                    case 0:
-                        charDB = new MySqlActorDb();
-                        accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-                            Configuration.Instance.DBName, Configuration.Instance.DBUser,
-                            Configuration.Instance.DBPass);
-                        accountDB.Connect();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-            catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
-                return false;
-            }
-        }
+        // public static bool StartDatabase() {
+        //     try {
+        //         switch (Configuration.Instance.DBType) {
+        //             case 0:
+        //                 charDB = new MySqlActorDb();
+        //                 accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
+        //                     Configuration.Instance.DBName, Configuration.Instance.DBUser,
+        //                     Configuration.Instance.DBPass);
+        //                 accountDB.Connect();
+        //                 return true;
+        //             default:
+        //                 return false;
+        //         }
+        //     }
+        //     catch (Exception exception) {
+        //         Logger.GetLogger().Error(exception, null);
+        //         return false;
+        //     }
+        // }
 
         static void Main(string[] args) {
             //Console.ForegroundColor = ConsoleColor.Yellow;
@@ -60,15 +60,16 @@ namespace SagaValidation {
 
             Logger.GetLogger().Information("Starting Initialization...", null);
 
-            Configuration.Instance.Initialization("./Config/SagaValidation.xml");
+            Configuration.Instance.Initialization(
+                $"{ConfigLoader.LoadConfigPath()}/SagaValidation.xml");
             //null.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
-            if (!StartDatabase()) {
-                Logger.GetLogger().Error("cannot connect to dbserver", null);
-                Logger.GetLogger().Error("Shutting down in 20sec.", null);
-                System.Threading.Thread.Sleep(20000);
-                return;
-            }
+            // if (!StartDatabase()) {
+            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
+            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     System.Threading.Thread.Sleep(20000);
+            //     return;
+            // }
 
             ValidationClientManager.Instance.Start();
             if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port)) {
@@ -84,6 +85,15 @@ namespace SagaValidation {
                 Configuration.Instance.ClientGameVersion));
 
             Logger.GetLogger().Information("Accepting clients.");
+
+            while (true) {
+                // keep the connections to the database servers alive
+                // EnsureAccountDB();
+                // let new clients (max 10) connect
+
+                ValidationClientManager.Instance.NetworkLoop(10);
+                System.Threading.Thread.Sleep(1);
+            }
         }
 
         public static void EnsureAccountDB() {

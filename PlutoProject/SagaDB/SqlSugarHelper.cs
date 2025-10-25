@@ -1,4 +1,5 @@
 using System;
+using SagaLib;
 using SqlSugar;
 
 namespace SagaDB;
@@ -9,19 +10,17 @@ public class SqlSugarHelper // Cannot be a generic class
     // For fixed multiple databases, you can pass new SqlSugarScope(List<ConnectionConfig>, db => {}). See the documentation on multi-tenancy.
     // For variable multiple databases, refer to the SaaS sub-database documentation.
     // Use singleton pattern
-    public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig()
-        {
-            ConnectionString = "datasource=eco.db", // Connection string
+    public static SqlSugarScope Db = new SqlSugarScope(new ConnectionConfig() {
+            ConnectionString = $"datasource={ConfigLoader.LoadDbPath()}/eco.db", // Connection string
             DbType = DbType.Sqlite, // Database type
             IsAutoCloseConnection = true, // If not set to true, manual close is required
             LanguageType = LanguageType.Default
         },
-        db =>
-        {
+        db => {
+            db.Ado.ExecuteCommand("PRAGMA journal_mode = WAL;");
             // (A) Global effect configuration point, generally used for AOP and program startup configurations, effective for all contexts
             // Debugging SQL event, can be removed
-            db.Aop.OnLogExecuting = (sql, pars) =>
-            {
+            db.Aop.OnLogExecuting = (sql, pars) => {
                 // Recommended to get native SQL, performance is OK for version 5.1.4.63
                 SagaLib.Logger.ShowInfo(UtilMethods.GetNativeSql(sql, pars));
 

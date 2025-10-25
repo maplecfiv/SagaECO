@@ -1137,11 +1137,11 @@ namespace SagaMap {
                             Encoding.UTF8);
 
                         PartnerAIFactory.Instance.Items.Clear();
-                        PartnerAIFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile(
-                                $"{ConfigLoader.LoadDbPath()}/PartnerAI", "*.xml",
-                                SearchOption.AllDirectories),
-                            Encoding.UTF8);
+                        // PartnerAIFactory.Instance.Init(
+                        //     VirtualFileSystemManager.Instance.FileSystem.SearchFile(
+                        //         $"{ConfigLoader.LoadDbPath()}/PartnerAI", "*.xml",
+                        //         SearchOption.AllDirectories),
+                        //     Encoding.UTF8);
                         MobAIFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile(
                                 $"{ConfigLoader.LoadDbPath()}/TTMobAI", "*.xml",
@@ -1154,8 +1154,7 @@ namespace SagaMap {
                         QuestFactory.Instance.Reload();
                         QuestFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile(
-                                $"{ConfigLoader.LoadDbPath()}/Quests/", "QuestDB_*",
-                                SearchOption.TopDirectoryOnly),
+                                $"{ConfigLoader.LoadDbPath()}/Quests/", "QuestDB_*"),
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 任务DB更新完毕");
                         break;
@@ -1189,14 +1188,12 @@ namespace SagaMap {
                         ItemAdditionFactory.Instance.Reload();
                         ItemAdditionFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/",
-                                "Addition*.csv",
-                                SearchOption.TopDirectoryOnly),
+                                "Addition*.csv"),
                             Encoding.UTF8);
                         ItemFactory.Instance.Reload();
                         ItemFactory.Instance.Init(
                             VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/",
-                                "item*.csv",
-                                SearchOption.TopDirectoryOnly),
+                                "item*.csv"),
                             Encoding.UTF8);
                         PartnerFactory.Instance.ClearPartnerEquips();
                         PartnerFactory.Instance.InitPartnerEquipDB($"{ConfigLoader.LoadDbPath()}/partner_equip.csv",

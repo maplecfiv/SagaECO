@@ -94,7 +94,7 @@ namespace GMTool
                 lan_EN.Checked = true;
             }
 
-            LoadConfig("./Config/SagaLogin.xml");
+            LoadConfig($"{SagaLib.ConfigLoader.LoadConfigPath()}/SagaLogin.xml");
             switch (local)
             {
                 case Local.TChinese:
@@ -247,7 +247,7 @@ namespace GMTool
             try
             {
                 VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
-                ItemFactory.Instance.Init("./DB/item.csv", System.Text.Encoding.UTF8);
+                ItemFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/item.csv", System.Text.Encoding.UTF8);
                 switch (local)
                 {
                     case Local.TChinese:
@@ -933,8 +933,8 @@ namespace GMTool
                 try
                 {
                     Log("怪物資料讀取中...");
-                    MobFactory.Instance.Init("./DB/monster.csv", System.Text.Encoding.UTF8);
-                    MobFactory.Instance.InitPet("./DB/pet.csv", System.Text.Encoding.UTF8);
+                    MobFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/monster.csv", System.Text.Encoding.UTF8);
+                    MobFactory.Instance.InitPet($"{ConfigLoader.LoadDbPath()}/pet.csv", System.Text.Encoding.UTF8);
                     Log(string.Format("怪物資料讀取完畢，取得：{0} 筆怪物資料", MobFactory.Instance.Mobs.Count));
                 }
                 catch (Exception)

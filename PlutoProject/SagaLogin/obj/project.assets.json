@@ -575,6 +575,15 @@
           "lib/netcoreapp2.0/_._": {}
         }
       },
+      "Mono.Math.Port/1.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Mono.Math.Port.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Mono.Math.Port.dll": {}
+        }
+      },
       "MySql.Data/9.4.0": {
         "type": "package",
         "dependencies": {
@@ -1686,6 +1695,7 @@
           "Microsoft.Extensions.Options": "6.0.1",
           "Microsoft.Extensions.Primitives": "6.0.1",
           "Microsoft.VisualBasic": "10.3.0",
+          "Mono.Math.Port": "1.0.0",
           "MySql.Data": "9.4.0",
           "Newtonsoft.Json": "13.0.4",
           "Serilog": "4.3.0",
@@ -2574,6 +2584,18 @@
         "ref/wpa81/_._",
         "useSharedDesignerContext.txt",
         "version.txt"
+      ]
+    },
+    "Mono.Math.Port/1.0.0": {
+      "sha512": "TxNXqM3cafG6XLb3UFSM6rYFKmfF5F2ugxP68a28eDCaSvOV7DVEVJT4DvHPTH5GbQCB87OcnJMzBQ6eRojNhw==",
+      "type": "package",
+      "path": "mono.math.port/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/Mono.Math.Port.dll",
+        "mono.math.port.1.0.0.nupkg.sha512",
+        "mono.math.port.nuspec"
       ]
     },
     "MySql.Data/9.4.0": {

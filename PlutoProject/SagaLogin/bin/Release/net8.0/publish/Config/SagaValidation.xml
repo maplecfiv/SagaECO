@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0"?>
 <SagaValidation>
+  <loglevel>0</loglevel>
   <Port>12006</Port>
 
   <!-- address of Mysql server or Path to Save for dat implementation-->

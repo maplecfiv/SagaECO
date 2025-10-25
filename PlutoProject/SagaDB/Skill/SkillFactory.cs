@@ -296,7 +296,7 @@ namespace SagaDB.Skill {
                     var perc = (double)sr.BaseStream.Position / sr.BaseStream.Length;
                     if ((int)(perc * 100) % 3 == 0) {
                         if (print) {
-                            _logger.Debug("*");
+                            _logger.Information("*");
                             print = false;
                         }
                     }

@@ -2,19 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Microsoft.VisualBasic.FileIO;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaLib
-{
-    public enum FactoryType
-    {
+namespace SagaLib {
+    public enum FactoryType {
         NONE,
         CSV,
         XML
     }
 
-    public abstract class Factory<K, T> where K : new() where T : new()
-    {
+    public abstract class Factory<K, T> where K : new() where T : new() {
         protected string databaseName = "";
         private Encoding encoding;
         private bool isFolder;
@@ -30,8 +28,7 @@ namespace SagaLib
         /// <summary>
         ///     Return an instance of
         /// </summary>
-        public static K Instance
-        {
+        public static K Instance {
             get => SingletonHolder.instance;
             set => SingletonHolder.instance = value;
         }
@@ -42,28 +39,23 @@ namespace SagaLib
 
         protected abstract void ParseXML(XmlElement root, XmlElement current, T item);
 
-        public void Reload()
-        {
+        public void Reload() {
             Items.Clear();
             Init(path, encoding, isFolder);
         }
 
-        public void Init(string[] files, Encoding encoding)
-        {
+        public void Init(string[] files, Encoding encoding) {
             var count = 0;
             this.encoding = encoding;
-            switch (FactoryType)
-            {
+            switch (FactoryType) {
                 case FactoryType.CSV:
-                    foreach (var i in files)
-                    {
+                    foreach (var i in files) {
                         count += InitCSV(i, encoding);
                     }
 
                     break;
                 case FactoryType.XML:
-                    foreach (var i in files)
-                    {
+                    foreach (var i in files) {
                         count += InitXML(i, encoding);
                     }
 
@@ -76,18 +68,15 @@ namespace SagaLib
 #endif
         }
 
-        public void Init(string path, Encoding encoding, bool isFolder)
-        {
+        public void Init(string path, Encoding encoding, bool isFolder) {
             string[] files = null;
             var count = 0;
             this.path = path;
             this.encoding = encoding;
             this.isFolder = isFolder;
-            if (isFolder)
-            {
+            if (isFolder) {
                 var pattern = "*.*";
-                switch (FactoryType)
-                {
+                switch (FactoryType) {
                     case FactoryType.CSV:
 
                         pattern = "*.csv";
@@ -100,24 +89,20 @@ namespace SagaLib
 
                 files = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, pattern);
             }
-            else
-            {
+            else {
                 files = new string[1];
                 files[0] = path;
             }
 
-            switch (FactoryType)
-            {
+            switch (FactoryType) {
                 case FactoryType.CSV:
-                    foreach (var i in files)
-                    {
+                    foreach (var i in files) {
                         count += InitCSV(i, encoding);
                     }
 
                     break;
                 case FactoryType.XML:
-                    foreach (var i in files)
-                    {
+                    foreach (var i in files) {
                         count += InitXML(i, encoding);
                     }
 
@@ -129,17 +114,13 @@ namespace SagaLib
             Logger.ProgressBarHide(count + loadedTab);
         }
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             Init(path, encoding, false);
         }
 
-        private XmlElement FindRoot(XmlDocument doc)
-        {
-            foreach (var i in doc.ChildNodes)
-            {
-                if (i.GetType() != typeof(XmlElement))
-                {
+        private XmlElement FindRoot(XmlDocument doc) {
+            foreach (var i in doc.ChildNodes) {
+                if (i.GetType() != typeof(XmlElement)) {
                     continue;
                 }
 
@@ -149,29 +130,23 @@ namespace SagaLib
             return null;
         }
 
-        private void ParseNode(XmlElement ele, T item)
-        {
+        private void ParseNode(XmlElement ele, T item) {
             XmlNodeList list;
             list = ele.ChildNodes;
-            foreach (var j in list)
-            {
+            foreach (var j in list) {
                 XmlElement i;
-                if (j.GetType() != typeof(XmlElement))
-                {
+                if (j.GetType() != typeof(XmlElement)) {
                     continue;
                 }
 
                 i = (XmlElement)j;
-                try
-                {
+                try {
                     ParseXML(ele, i, item);
-                    if (i.ChildNodes.Count != 0)
-                    {
+                    if (i.ChildNodes.Count != 0) {
                         ParseNode(i, item);
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     Logger.GetLogger().Error("Error on parsing:" + path);
                     Logger.GetLogger().Error(ele.InnerXml);
                     Logger.GetLogger().Error(ex, ex.Message);
@@ -179,12 +154,10 @@ namespace SagaLib
             }
         }
 
-        private int InitXML(string path, Encoding encoding)
-        {
+        private int InitXML(string path, Encoding encoding) {
             var xml = new XmlDocument();
             var count = 0;
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 xml.Load(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path));
@@ -192,52 +165,42 @@ namespace SagaLib
                 list = root.ChildNodes;
                 var time = DateTime.Now;
                 var label = loadingTab;
-                if (list.Count > 100)
-                {
+                if (list.Count > 100) {
                     Logger.ProgressBarShow(0, (uint)list.Count, label);
                 }
 
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     var item = new T();
                     XmlElement i;
-                    if (j.GetType() != typeof(XmlElement))
-                    {
+                    if (j.GetType() != typeof(XmlElement)) {
                         continue;
                     }
 
                     i = (XmlElement)j;
-                    try
-                    {
+                    try {
                         ParseXML(root, i, item);
-                        if (i.ChildNodes.Count != 0)
-                        {
+                        if (i.ChildNodes.Count != 0) {
                             ParseNode(i, item);
                         }
                     }
-                    catch (Exception ex)
-                    {
+                    catch (Exception ex) {
                         Logger.GetLogger().Error("Error on parsing:" + path);
                         Logger.GetLogger().Error(GetKey(item).ToString());
                         Logger.GetLogger().Error(ex, ex.Message);
                     }
 
                     var key = GetKey(item);
-                    if (!Items.ContainsKey(key))
-                    {
+                    if (!Items.ContainsKey(key)) {
                         Items.Add(key, item);
                     }
-                    else
-                    {
-                        //Logger.getLogger().Warning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
+                    else {
+                        //Logger.GetLogger().Warning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
                         Items[key] = item;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 10)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 10) {
                         time = DateTime.Now;
-                        if (list.Count > 100)
-                        {
+                        if (list.Count > 100) {
                             Logger.ProgressBarShow((uint)count, (uint)list.Count, label);
                         }
                     }
@@ -245,8 +208,7 @@ namespace SagaLib
                     count++;
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.GetLogger().Error("Error on parsing:" + path);
                 Logger.GetLogger().Error(ex.Message);
             }
@@ -254,11 +216,10 @@ namespace SagaLib
             return count;
         }
 
-        private int InitCSV(string path, Encoding encoding)
-        {
+        private int InitCSV(string path, Encoding encoding) {
             //TODO enable item_transform
-            /*
-            if (path == "./DB/item_transform.csv") return 0;
+
+            if (path == $"{ConfigLoader.LoadDbPath()}/item_transform.csv") return 0;
             var baseStream = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
             var parser = new TextFieldParser(baseStream, encoding);
             parser.HasFieldsEnclosedInQuotes = true;
@@ -271,13 +232,11 @@ namespace SagaLib
             Logger.ProgressBarShow(0, (uint)baseStream.Length, label);
 #endif
             var time = DateTime.Now;
-            while (!parser.EndOfData)
-            {
+            while (!parser.EndOfData) {
                 string line;
                 lines++;
                 string[] paras;
-                try
-                {
+                try {
                     paras = parser.ReadFields();
 
                     var item = new T();
@@ -291,41 +250,41 @@ namespace SagaLib
                     ParseCSV(item, paras);
 
                     var key = GetKey(item);
-                    if (!items.ContainsKey(key)) items.Add(key, item);
-#if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 10)
-                    {
+                    if (!Items.ContainsKey(key)) {
+                        Items.Add(key, item);
+                    }
+
+// #if !Web
+                    if ((DateTime.Now - time).TotalMilliseconds > 10) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)baseStream.Position, (uint)baseStream.Length, label);
                     }
-#endif
+
+// #endif
                     count++;
                 }
-                catch (Exception ex)
-                {
-                    Logger.getLogger().Error(ex, ex.Message);
-                    Logger.getLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" + lines);
+                catch (Exception ex) {
+                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.GetLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" +
+                                             lines);
                 }
             }
 
             parser.Close();
             baseStream.Close();
-            return count;*/
-            return 0;
+            return count;
         }
 
         /// <summary>
         ///     Sealed class to avoid any heritage from this helper class
         /// </summary>
-        private sealed class SingletonHolder
-        {
+        private sealed class SingletonHolder {
             internal static K instance = new K();
 
             /// <summary>
             ///     Explicit static constructor to tell C# compiler not to mark type as beforefieldinit
             /// </summary>
-            static SingletonHolder()
-            {
+            static SingletonHolder() {
             }
         }
     }

@@ -4,22 +4,17 @@ using System.IO;
 using System.Text.RegularExpressions;
 using SagaLib.VirtualFileSytem.LPK;
 
-namespace SagaLib.VirtualFileSytem.IFileSystemImp
-{
-    public class LPKFileSystem : IFileSystem
-    {
+namespace SagaLib.VirtualFileSytem.IFileSystemImp {
+    public class LPKFileSystem : IFileSystem {
         private LpkFile lpk;
 
         //#region IFileSystem Members
 
-        public bool Init(string path)
-        {
-            try
-            {
+        public bool Init(string path) {
+            try {
                 lpk = new LpkFile(new FileStream(path, FileMode.Open, FileAccess.Read));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
                 return false;
             }
@@ -27,30 +22,26 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp
             return true;
         }
 
-        public Stream OpenFile(string path)
-        {
-            path = path.Replace("/", "\\");
+        public Stream OpenFile(string path) {
+            //path = path.Replace("/", "\\");
             if (lpk.Exists(path)) return lpk.OpenFile(path);
 
             throw new IOException("Cannot find file:" + path);
         }
 
-        public string[] SearchFile(string path, string pattern)
-        {
+        public string[] SearchFile(string path, string pattern) {
             return SearchFile(path, pattern, SearchOption.AllDirectories);
         }
 
-        public string[] SearchFile(string path, string pattern, SearchOption option)
-        {
+        public string[] SearchFile(string path, string pattern, SearchOption option) {
             var files = lpk.GetFileNames;
             var result = new List<string>();
             if (path.Substring(path.Length - 1) != "/" && path.Substring(path.Length - 1) != "\\")
                 path = path + "\\";
-            path = path.Replace("/", "\\");
+            //path = path.Replace("/", "\\");
             pattern = pattern.Replace("*", "\\w*");
             foreach (var i in files)
-                if (i.Name.StartsWith(path))
-                {
+                if (i.Name.StartsWith(path)) {
                     var s = i.Name.Replace(path, "");
                     var token = s.Split('\\');
                     if (option == SearchOption.TopDirectoryOnly && token.Length > 1)
@@ -63,8 +54,7 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp
             return result.ToArray();
         }
 
-        public void Close()
-        {
+        public void Close() {
             lpk.Close();
         }
 

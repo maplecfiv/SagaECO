@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading;
 using SagaLib;
 
-namespace SagaMap.WebServer
-{
-    public class WebServer
-    {
+namespace SagaMap.WebServer {
+    public class WebServer {
         private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<WebServer>();
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
@@ -16,8 +14,7 @@ namespace SagaMap.WebServer
         private string stoken = Configuration.Configuration.Instance.APIKey;
         private bool success;
 
-        public WebServer(string[] prefixes, Func<HttpListenerRequest, string> method)
-        {
+        public WebServer(string[] prefixes, Func<HttpListenerRequest, string> method) {
             if (!HttpListener.IsSupported)
                 throw new NotSupportedException(
                     "Cannot Start Server, APIServer requires at lease Windows XP SP2 or Windows Server 2003.");
@@ -36,42 +33,33 @@ namespace SagaMap.WebServer
         }
 
         public WebServer(Func<HttpListenerRequest, string> method, params string[] prefixes)
-            : this(prefixes, method)
-        {
+            : this(prefixes, method) {
         }
 
-        public void Run()
-        {
-            ThreadPool.QueueUserWorkItem(o =>
-            {
-                try
-                {
+        public void Run() {
+            ThreadPool.QueueUserWorkItem(o => {
+                try {
                     while (_listener.IsListening)
-                        ThreadPool.QueueUserWorkItem(c =>
-                        {
+                        ThreadPool.QueueUserWorkItem(c => {
                             var ctx = c as HttpListenerContext;
-                            if (ctx.Request.HttpMethod == "POST")
-                            {
+                            if (ctx.Request.HttpMethod == "POST") {
                                 //Allow POST to connect
                                 Logger.GetLogger()
                                     .Information("Client connected:" + ctx.Request.RemoteEndPoint.Address);
 
                                 //Debug
-                                //_logger.Debug(ctx.Request.Headers.Get("token"));
-                                //_logger.Debug(ctx.Request.Headers.Get("char_id"));
-                                //_logger.Debug(ctx.Request.Headers.Get("item_id"));
-                                //_logger.Debug(ctx.Request.Headers.Get("qty"));
-                                //_logger.Debug(ctx.Request.Headers.Get("action"));
+                                //_logger.Information(ctx.Request.Headers.Get("token"));
+                                //_logger.Information(ctx.Request.Headers.Get("char_id"));
+                                //_logger.Information(ctx.Request.Headers.Get("item_id"));
+                                //_logger.Information(ctx.Request.Headers.Get("qty"));
+                                //_logger.Information(ctx.Request.Headers.Get("action"));
                                 var token = ctx.Request.Headers.Get("token");
 
-                                if (token == Configuration.Configuration.Instance.APIKey)
-                                {
-                                    switch (ctx.Request.Headers.Get("action"))
-                                    {
+                                if (token == Configuration.Configuration.Instance.APIKey) {
+                                    switch (ctx.Request.Headers.Get("action")) {
                                         case "vshop_buy":
                                             if (ctx.Request.Headers.Get("char_id") == null ||
-                                                int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
-                                            {
+                                                int.Parse(ctx.Request.Headers.Get("char_id")) <= 0) {
                                                 Logger.GetLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
@@ -85,8 +73,7 @@ namespace SagaMap.WebServer
                                             break;
                                         case "inv_query":
                                             if (ctx.Request.Headers.Get("char_id") == null ||
-                                                int.Parse(ctx.Request.Headers.Get("char_id")) <= 0)
-                                            {
+                                                int.Parse(ctx.Request.Headers.Get("char_id")) <= 0) {
                                                 Logger.GetLogger().Warning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
@@ -123,26 +110,23 @@ namespace SagaMap.WebServer
                                             break;
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     Logger.GetLogger().Warning("Token access deined.");
                                     //Console.ForegroundColor = ConsoleColor.Red;
-                                    _logger.Debug("Dropped.");
+                                    _logger.Information("Dropped.");
                                     ctx.Response.OutputStream.Close();
                                 }
                             }
-                            else
-                            {
+                            else {
                                 //Not allow to GET
                                 Logger.GetLogger().Warning("Method disallowed from:" + ctx.Request.UserHostAddress);
                                 //Console.ForegroundColor = ConsoleColor.Red;
-                                _logger.Debug("Dropped.");
+                                _logger.Information("Dropped.");
                                 ctx.Response.OutputStream.Close();
                             }
 
 
-                            try
-                            {
+                            try {
                                 string rstr;
                                 if (success)
                                     rstr = "{\"success\":1,\"created_time\":\"" + DateTime.Now + "\"}";
@@ -154,17 +138,14 @@ namespace SagaMap.WebServer
                                 ctx.Response.ContentLength64 = buf.Length;
                                 ctx.Response.OutputStream.Write(buf, 0, buf.Length);
                             }
-                            catch
-                            {
+                            catch {
                             }
-                            finally
-                            {
+                            finally {
                                 ctx.Response.OutputStream.Close();
                             }
                         }, _listener.GetContext());
                 }
-                catch
-                {
+                catch {
                 }
             });
         }

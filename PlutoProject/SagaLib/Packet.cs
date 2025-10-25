@@ -1,7 +1,6 @@
 using System;
 
-namespace SagaLib
-{
+namespace SagaLib {
     /// <summary>
     ///     Defines the base class of a network packet. Packets are send back and forth between the client
     ///     and server. Different types of packets are used for different purposes. The general packet structure
@@ -10,8 +9,7 @@ namespace SagaLib
     ///     The size bytes are unencrypted, but the id bytes and all data following are encrypted.
     /// </summary>
     [Serializable]
-    public class Packet
-    {
+    public class Packet {
         /// <summary>
         ///     The data bytes (note: these include the id bytes and the size bytes)
         /// </summary>
@@ -41,8 +39,7 @@ namespace SagaLib
         ///     Create a new packet with the given length. The data bytes are initialized to all zeroes.
         /// </summary>
         /// <param name="length">Length of the data bytes.</param>
-        public Packet(uint length)
-        {
+        public Packet(uint length) {
             size = length;
             data = new byte[length];
             offset = 4;
@@ -52,35 +49,30 @@ namespace SagaLib
         /// <summary>
         ///     Create a new packet with no data bytes at all. The data array has to be initialized manually.
         /// </summary>
-        public Packet()
-        {
+        public Packet() {
             size = 0;
             offset = 4;
             doNotEncryptBuffer = false;
         }
 
-        public ushort ID
-        {
-            get => GetUShort(0);
-            set => PutUShort(value, 0);
+        public ushort ID {
+            get { return GetUShort(0); }
+            set { PutUShort(value, 0); }
         }
 
         /// <summary>
         ///     确保有足够的缓存区，不够则自动扩充
         /// </summary>
         /// <param name="len">长度</param>
-        protected void EnsureLength(int len)
-        {
+        protected void EnsureLength(int len) {
             var capacity = data.Length;
             var extend = false;
-            while (capacity < len)
-            {
+            while (capacity < len) {
                 capacity += 1;
                 extend = true;
             }
 
-            if (extend)
-            {
+            if (extend) {
                 var buf = new byte[capacity];
                 data.CopyTo(buf, 0);
                 data = buf;
@@ -95,14 +87,11 @@ namespace SagaLib
         /// </summary>
         /// <param name="size">Size to compare with.</param>
         /// <returns>true: size is ok. false: size is not ok.</returns>
-        public virtual bool SizeIsOk(uint size)
-        {
-            if (isStaticSize())
-            {
+        public virtual bool SizeIsOk(uint size) {
+            if (isStaticSize()) {
                 if (size == this.size) return true;
             }
-            else
-            {
+            else {
                 if (size >= this.size) return true;
             }
 
@@ -113,24 +102,21 @@ namespace SagaLib
         ///     Create a new instance of this packet.
         /// </summary>
         /// <returns></returns>
-        public virtual Packet New()
-        {
+        public virtual Packet New() {
             return new Packet();
         }
 
         /// <summary>
         ///     Parse this packet (only used for GetPackets)
         /// </summary>
-        public virtual void Parse(Client client)
-        {
+        public virtual void Parse(Client client) {
         }
 
 
         /// <summary>
         ///     Write the data length to the first 2 bytes of the packet.
         /// </summary>
-        public void SetLength()
-        {
+        public void SetLength() {
             var tLen = (uint)(data.Length - 4);
             var length = BitConverter.GetBytes(tLen);
             data[0] = length[3];
@@ -139,8 +125,7 @@ namespace SagaLib
             data[3] = length[0];
         }
 
-        public virtual bool isStaticSize()
-        {
+        public virtual bool isStaticSize() {
             return true;
         }
 
@@ -149,13 +134,10 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the string.</param>
         /// <returns>String representation.</returns>
-        public string GetString(ushort index)
-        {
+        public string GetString(ushort index) {
             var end = index;
-            while (end < size - 1)
-            {
-                if (data[end] == 0 && data[end + 1] == 0)
-                {
+            while (end < size - 1) {
+                if (data[end] == 0 && data[end + 1] == 0) {
                     if ((end - index) % 2 != 0) end++;
                     break;
                 }
@@ -172,16 +154,13 @@ namespace SagaLib
         ///     Get the Unicode string at the current offset.
         /// </summary>
         /// <returns>String representation.</returns>
-        public string GetString()
-        {
+        public string GetString() {
             return GetString(offset);
         }
 
 
-        public string GetStringFixedSize(ushort index, ushort size)
-        {
-            if (index + size <= data.Length)
-            {
+        public string GetStringFixedSize(ushort index, ushort size) {
+            if (index + size <= data.Length) {
                 offset += size;
                 return Global.Unicode.GetString(data, index, size);
             }
@@ -193,8 +172,7 @@ namespace SagaLib
         ///     Get the Unicode string at the current offset.
         /// </summary>
         /// <returns>String representation.</returns>
-        public string GetStringFixedSize(ushort size)
-        {
+        public string GetStringFixedSize(ushort size) {
             return GetStringFixedSize(offset, size);
         }
 
@@ -204,8 +182,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">要写入的字符串.</param>
         /// <param name="index">偏移.</param>
-        public void PutString(string s, ushort index)
-        {
+        public void PutString(string s, ushort index) {
             var buf = Global.Unicode.GetBytes(s + "\0");
             EnsureLength(index + buf.Length + 1);
             PutByte((byte)buf.Length, index);
@@ -217,8 +194,7 @@ namespace SagaLib
         ///     在当前偏移处写入字符串
         /// </summary>
         /// <param name="s">String to insert.</param>
-        public void PutString(string s)
-        {
+        public void PutString(string s) {
             PutString(s, offset);
         }
 
@@ -228,8 +204,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">要写入的字符串.</param>
         /// <param name="index">偏移.</param>
-        public void PutTSTR(string s, ushort index)
-        {
+        public void PutTSTR(string s, ushort index) {
             var buf = Global.Unicode.GetBytes(s);
             EnsureLength(index + buf.Length + 1);
             PutByte((byte)buf.Length, index);
@@ -241,8 +216,7 @@ namespace SagaLib
         ///     当前偏移位置写入TSTR
         /// </summary>
         /// <param name="s"></param>
-        public void PutTSTR(string s)
-        {
+        public void PutTSTR(string s) {
             PutTSTR(s, offset);
         }
 
@@ -251,8 +225,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the byte.</param>
         /// <returns>Byte at the index.</returns>
-        public byte GetByte(ushort index)
-        {
+        public byte GetByte(ushort index) {
             offset = (ushort)(index + 1);
             return data[index];
         }
@@ -261,8 +234,7 @@ namespace SagaLib
         ///     Get the byte at the current offset.
         /// </summary>
         /// <returns>The byte.</returns>
-        public byte GetByte()
-        {
+        public byte GetByte() {
             return data[offset++];
         }
 
@@ -271,15 +243,13 @@ namespace SagaLib
         /// </summary>
         /// <param name="b">字节</param>
         /// <param name="index">偏移</param>
-        public void PutByte(byte b, ushort index)
-        {
+        public void PutByte(byte b, ushort index) {
             EnsureLength(index + 1);
             data[index] = b;
             offset = (ushort)(index + 1);
         }
 
-        public void PutByte(byte b, int index)
-        {
+        public void PutByte(byte b, int index) {
             EnsureLength(index + 1);
             PutByte(b, (ushort)index);
         }
@@ -288,8 +258,7 @@ namespace SagaLib
         ///     在当前位置写入一个字节
         /// </summary>
         /// <param name="b">Byte to insert.</param>
-        public void PutByte(byte b)
-        {
+        public void PutByte(byte b) {
             EnsureLength(offset + 1);
             data[offset++] = b;
         }
@@ -299,10 +268,9 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">偏移</param>
         /// <returns>The ushort value at the index.</returns>
-        public ushort GetUShort(ushort index)
-        {
+        public ushort GetUShort(ushort index) {
             offset = (ushort)(index + 2);
-            var buf = new byte[2];
+            byte[] buf = new byte[] { 0, 0 };
             buf[0] = data[index + 1];
             buf[1] = data[index];
             return BitConverter.ToUInt16(buf, 0);
@@ -312,8 +280,7 @@ namespace SagaLib
         ///     Get the ushort at the current offset.
         /// </summary>
         /// <returns>The ushort value at the offset.</returns>
-        public ushort GetUShort()
-        {
+        public ushort GetUShort() {
             return GetUShort(offset);
         }
 
@@ -322,8 +289,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">Ushort to insert.</param>
         /// <param name="index">Index to insert at.</param>
-        public void PutUShort(ushort s, ushort index)
-        {
+        public void PutUShort(ushort s, ushort index) {
             EnsureLength(index + 2);
             var buf = new byte[2];
             buf = BitConverter.GetBytes(s);
@@ -332,8 +298,7 @@ namespace SagaLib
             offset = (ushort)(index + 2);
         }
 
-        public void PutUShort(ushort s, int index)
-        {
+        public void PutUShort(ushort s, int index) {
             PutUShort(s, (ushort)index);
         }
 
@@ -341,8 +306,7 @@ namespace SagaLib
         ///     Put the given ushort at the current offset.
         /// </summary>
         /// <param name="s"></param>
-        public void PutUShort(ushort s)
-        {
+        public void PutUShort(ushort s) {
             PutUShort(s, offset);
         }
 
@@ -351,8 +315,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the short.</param>
         /// <returns>The short value at the index.</returns>
-        public short GetShort(ushort index)
-        {
+        public short GetShort(ushort index) {
             offset = (ushort)(index + 2);
             var buf = new byte[2];
             buf[0] = data[index + 1];
@@ -364,8 +327,7 @@ namespace SagaLib
         ///     Get the short at the current offset.
         /// </summary>
         /// <returns>The short value at the offset.</returns>
-        public short GetShort()
-        {
+        public short GetShort() {
             return GetShort(offset);
         }
 
@@ -374,8 +336,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">Short to insert.</param>
         /// <param name="index">Index to insert at.</param>
-        public void PutShort(short s, ushort index)
-        {
+        public void PutShort(short s, ushort index) {
             EnsureLength(index + 2);
             var buf = new byte[2];
             buf = BitConverter.GetBytes(s);
@@ -384,8 +345,7 @@ namespace SagaLib
             offset = (ushort)(index + 2);
         }
 
-        public void PutShort(short s, int index)
-        {
+        public void PutShort(short s, int index) {
             PutShort(s, (ushort)index);
         }
 
@@ -393,8 +353,7 @@ namespace SagaLib
         ///     Put the given short at the current offset.
         /// </summary>
         /// <param name="s">Short to insert.</param>
-        public void PutShort(short s)
-        {
+        public void PutShort(short s) {
             PutShort(s, offset);
         }
 
@@ -404,8 +363,7 @@ namespace SagaLib
         /// <param name="count">Number of bytes to get.</param>
         /// <param name="index">Indec from where to get bytes.</param>
         /// <returns>Byte array.</returns>
-        public byte[] GetBytes(ushort count, ushort index)
-        {
+        public byte[] GetBytes(ushort count, ushort index) {
             offset = (ushort)(index + count);
             var retBytes = new byte[count];
 
@@ -421,8 +379,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="count">Number of bytes to read.</param>
         /// <returns>Byte array.</returns>
-        public byte[] GetBytes(ushort count)
-        {
+        public byte[] GetBytes(ushort count) {
             return GetBytes(count, offset);
         }
 
@@ -431,8 +388,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="bdata">bytes to add to the data array</param>
         /// <param name="index">position to add the bytes to</param>
-        public void PutBytes(byte[] bdata, ushort index)
-        {
+        public void PutBytes(byte[] bdata, ushort index) {
             EnsureLength(index + bdata.Length);
 
             offset = (ushort)(index + bdata.Length);
@@ -442,8 +398,7 @@ namespace SagaLib
                     data[index + i] = bdata[i];
         }
 
-        public void PutBytes(byte[] bdata, int index)
-        {
+        public void PutBytes(byte[] bdata, int index) {
             PutBytes(bdata, (ushort)index);
         }
 
@@ -451,8 +406,7 @@ namespace SagaLib
         ///     Put some given bytes at the current offset in the data array.
         /// </summary>
         /// <param name="bdata">bytes to add to the data array</param>
-        public void PutBytes(byte[] bdata)
-        {
+        public void PutBytes(byte[] bdata) {
             PutBytes(bdata, offset);
         }
 
@@ -461,8 +415,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the int.</param>
         /// <returns>The int value at the index.</returns>
-        public int GetInt(ushort index)
-        {
+        public int GetInt(ushort index) {
             offset = (ushort)(index + 4);
             var buf = new byte[4];
             buf[0] = data[index + 3];
@@ -476,8 +429,7 @@ namespace SagaLib
         ///     Get the int at the current offset.
         /// </summary>
         /// <returns>The int value at the offset.</returns>
-        public int GetInt()
-        {
+        public int GetInt() {
             return GetInt(offset);
         }
 
@@ -486,8 +438,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">Int to insert.</param>
         /// <param name="index">Index to insert at.</param>
-        public void PutInt(int s, ushort index)
-        {
+        public void PutInt(int s, ushort index) {
             EnsureLength(index + 4);
             var buf = new byte[4];
             buf = BitConverter.GetBytes(s);
@@ -500,8 +451,7 @@ namespace SagaLib
         ///     Put the given int at the current offset in the data.
         /// </summary>
         /// <param name="s">Int to insert.</param>
-        public void PutInt(int s)
-        {
+        public void PutInt(int s) {
             PutInt(s, offset);
         }
 
@@ -511,8 +461,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the uint.</param>
         /// <returns>The uint value at the index.</returns>
-        public uint GetUInt(ushort index)
-        {
+        public uint GetUInt(ushort index) {
             offset = (ushort)(index + 4);
             var buf = new byte[4];
             buf[0] = data[index + 3];
@@ -526,8 +475,7 @@ namespace SagaLib
         ///     Get the uint at the current offset.
         /// </summary>
         /// <returns>The uint value at the offset.</returns>
-        public uint GetUInt()
-        {
+        public uint GetUInt() {
             return GetUInt(offset);
         }
 
@@ -536,8 +484,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">uint to insert.</param>
         /// <param name="index">Index to insert at.</param>
-        public void PutUInt(uint s, ushort index)
-        {
+        public void PutUInt(uint s, ushort index) {
             EnsureLength(index + 4);
             var buf = new byte[4];
             buf = BitConverter.GetBytes(s);
@@ -546,8 +493,7 @@ namespace SagaLib
             offset = (ushort)(index + 4);
         }
 
-        public void PutUInt(uint s, int index)
-        {
+        public void PutUInt(uint s, int index) {
             PutUInt(s, (ushort)index);
         }
 
@@ -555,18 +501,15 @@ namespace SagaLib
         ///     Put the given uint at the current offset.
         /// </summary>
         /// <param name="s">uint to insert</param>
-        public void PutUInt(uint s)
-        {
+        public void PutUInt(uint s) {
             PutUInt(s, offset);
         }
 
-        public void PutLong(long s)
-        {
+        public void PutLong(long s) {
             PutLong(s, offset);
         }
 
-        public void PutLong(long s, ushort index)
-        {
+        public void PutLong(long s, ushort index) {
             EnsureLength(index + 8);
             var buf = new byte[8];
             buf = BitConverter.GetBytes(s);
@@ -575,13 +518,11 @@ namespace SagaLib
             offset = (ushort)(index + 8);
         }
 
-        public void PutULong(ulong s)
-        {
+        public void PutULong(ulong s) {
             PutULong(s, offset);
         }
 
-        public void PutULong(ulong s, ushort index)
-        {
+        public void PutULong(ulong s, ushort index) {
             EnsureLength(index + 8);
             var buf = new byte[8];
             buf = BitConverter.GetBytes(s);
@@ -590,13 +531,11 @@ namespace SagaLib
             offset = (ushort)(index + 8);
         }
 
-        public ulong GetULong()
-        {
+        public ulong GetULong() {
             return GetULong(offset);
         }
 
-        public ulong GetULong(ushort index)
-        {
+        public ulong GetULong(ushort index) {
             offset = (ushort)(index + 8);
             var buf = new byte[8];
             buf[0] = data[index + 7];
@@ -610,13 +549,11 @@ namespace SagaLib
             return BitConverter.ToUInt64(buf, 0);
         }
 
-        public long GetLong()
-        {
+        public long GetLong() {
             return GetLong(offset);
         }
 
-        public long GetLong(ushort index)
-        {
+        public long GetLong(ushort index) {
             offset = (ushort)(index + 8);
             var buf = new byte[8];
             buf[0] = data[index + 7];
@@ -635,8 +572,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="index">Index of the float.</param>
         /// <returns>The float value at the index.</returns>
-        public float GetFloat(ushort index)
-        {
+        public float GetFloat(ushort index) {
             offset = (ushort)(index + 4);
             return BitConverter.ToSingle(data, index);
         }
@@ -645,8 +581,7 @@ namespace SagaLib
         ///     Get the  float at the current offset.
         /// </summary>
         /// <returns>The float value at the offset.</returns>
-        public float GetFloat()
-        {
+        public float GetFloat() {
             return GetFloat(offset);
         }
 
@@ -655,8 +590,7 @@ namespace SagaLib
         /// </summary>
         /// <param name="s">Float to insert.</param>
         /// <param name="index">Index to insert at.</param>
-        public void PutFloat(float s, ushort index)
-        {
+        public void PutFloat(float s, ushort index) {
             EnsureLength(index + 4);
             BitConverter.GetBytes(s).CopyTo(data, index);
             offset = (ushort)(index + 4);
@@ -666,16 +600,13 @@ namespace SagaLib
         ///     Put the given float at the current offset in the data.
         /// </summary>
         /// <param name="s">Float to insert.</param>
-        public void PutFloat(float s)
-        {
+        public void PutFloat(float s) {
             PutFloat(s, offset);
         }
 
-        public string DumpData()
-        {
+        public string DumpData() {
             var tmp2 = "";
-            for (var i = 0; i < data.Length; i++)
-            {
+            for (var i = 0; i < data.Length; i++) {
                 tmp2 += string.Format("{0:X2} ", data[i]);
                 if ((i + 1) % 16 == 0 && i != 0) tmp2 += "\r\n";
             }

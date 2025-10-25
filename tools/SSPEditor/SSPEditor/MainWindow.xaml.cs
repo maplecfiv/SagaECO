@@ -497,7 +497,7 @@ namespace SSPEditor
             }
             catch (IOException ex)
             {
-                Console.WriteLine(ex.Message + "无法创建文件");
+                SagaLib.Logger.ShowError(ex, ex.Message + "无法创建文件");
                 return;
             }
             try
@@ -572,7 +572,7 @@ namespace SSPEditor
             }
             catch (IOException ex)
             {
-                Console.WriteLine(ex.Message + "写入失败");
+                SagaLib.Logger.ShowError(ex, ex.Message + "写入失败");
                 return;
             }
         }

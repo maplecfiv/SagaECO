@@ -596,7 +596,7 @@ namespace DBUtility
                 string[] files = System.IO.Directory.GetFiles(FD.SelectedPath, "*.cs", SearchOption.AllDirectories);
                 foreach (string i in files)
                 {
-                    System.IO.StreamReader sr = new StreamReader(i, Encoding.GetEncoding("gb2312"));                    
+                    System.IO.StreamReader sr = new StreamReader(i, Encoding.UTF8);                    
                     string ansi = sr.ReadToEnd();
                     sr.Close();
                     sr = new StreamReader(i, Encoding.UTF8);
