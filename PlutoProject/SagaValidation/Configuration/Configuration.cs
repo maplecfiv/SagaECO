@@ -3,10 +3,8 @@ using System.Text;
 using System.Xml;
 using SagaLib;
 
-namespace SagaValidation
-{
-    public class Configuration : Singleton<Configuration>
-    {
+namespace SagaValidation {
+    public class Configuration : Singleton<Configuration> {
         string dbhost, dbuser, dbpass, dbname;
         int dbport, port, loglevel, dbType;
         string encoding;
@@ -17,92 +15,76 @@ namespace SagaValidation
 
         SagaLib.Version version;
 
-        public string DBHost
-        {
+        public string DBHost {
             get { return dbhost; }
             set { dbhost = value; }
         }
 
-        public string DBUser
-        {
+        public string DBUser {
             get { return dbuser; }
             set { dbuser = value; }
         }
 
-        public string DBPass
-        {
+        public string DBPass {
             get { return dbpass; }
             set { dbpass = value; }
         }
 
-        public string DBName
-        {
+        public string DBName {
             get { return dbname; }
             set { dbname = value; }
         }
 
-        public string Password
-        {
+        public string Password {
             get { return password; }
             set { password = value; }
         }
 
-        public int DBPort
-        {
+        public int DBPort {
             get { return dbport; }
             set { dbport = value; }
         }
 
-        public int Port
-        {
+        public int Port {
             get { return port; }
             set { port = value; }
         }
 
-        public int DBType
-        {
+        public int DBType {
             get { return dbType; }
             set { dbType = value; }
         }
 
-        public string ServerName
-        {
+        public string ServerName {
             get { return servername; }
             set { servername = value; }
         }
 
-        public string ServerIP
-        {
+        public string ServerIP {
             get { return serverip; }
             set { serverip = value; }
         }
 
-        public SagaLib.Version Version
-        {
+        public SagaLib.Version Version {
             get { return version; }
             set { version = value; }
         }
 
-        public string ClientGameVersion
-        {
+        public string ClientGameVersion {
             get { return clientgameversion; }
             set { clientgameversion = value; }
         }
 
-        public bool ServerClose
-        {
+        public bool ServerClose {
             get { return serverclose; }
             set { serverclose = value; }
         }
 
-        public string DBEncoding
-        {
-            get
-            {
-                if (encoding == null)
-                {
+        public string DBEncoding {
+            get {
+                if (encoding == null) {
                     encoding = Encoding.UTF8.EncodingName;
-                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, Logger.CurrentLogger);
+                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, null);
                 }
 
                 return encoding;
@@ -110,32 +92,27 @@ namespace SagaValidation
             set { encoding = value; }
         }
 
-        public int LogLevel
-        {
+        public int LogLevel {
             get { return loglevel; }
             set { loglevel = value; }
         }
 
 
-        public void Initialization(string path)
-        {
-            XmlDocument xml = new XmlDocument();
-            try
-            {
+        public void Initialization(string path) {
+            // XmlDocument xml = new XmlDocument();
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 bool getVersion = false;
                 bool nullClientGameVersion = false;
-                xml.Load(path);
-                root = xml["SagaValidation"];
+                // xml.Load(path);
+                root = ConfigLoader.LoadConfig("SagaValidation");
                 list = root.ChildNodes;
-                foreach (object j in list)
-                {
+                foreach (object j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "dbtype":
                             dbType = int.Parse(i.InnerText);
                             break;
@@ -167,13 +144,11 @@ namespace SagaValidation
                             loglevel = int.Parse(i.InnerText);
                             break;
                         case "version":
-                            try
-                            {
+                            try {
                                 version = (SagaLib.Version)Enum.Parse(typeof(SagaLib.Version), i.InnerText);
                                 getVersion = true;
                             }
-                            catch
-                            {
+                            catch {
                                 Logger.GetLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, version));
                             }
@@ -181,8 +156,7 @@ namespace SagaValidation
                             break;
                         case "clientgameversion":
                             clientgameversion = i.InnerText;
-                            if (clientgameversion == "All" || clientgameversion == "")
-                            {
+                            if (clientgameversion == "All" || clientgameversion == "") {
                                 clientgameversion = "All";
                                 nullClientGameVersion = true;
                             }
@@ -204,8 +178,7 @@ namespace SagaValidation
                     Logger.GetLogger().Warning("ClientGameVersion is undefined, accepting all version.");
                 Logger.GetLogger().Information("Done reading configuration...");
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Logger.GetLogger().Error(ex, ex.Message);
             }
         }

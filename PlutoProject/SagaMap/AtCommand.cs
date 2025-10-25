@@ -675,7 +675,7 @@ namespace SagaMap {
                 var args = command.Split(' ');
                 if (args.Length == 1) {
                     var Level = uint.Parse(args[0]);
-                    Logger.CurrentLogger.LogLevel = (Logger.LogContent)Level;
+                    //null.LogLevel = (Logger.LogContent)Level;
                 }
             }
             catch (Exception ex) {
@@ -1122,7 +1122,7 @@ namespace SagaMap {
                     case "shopdb":
                         ProcessSettingAnnounce(client, "[系统] 商店DB更新中…");
                         ShopFactory.Instance.Reload();
-                        ShopFactory.Instance.Init("DB/ShopDB.xml",
+                        ShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/ShopDB.xml",
                             Encoding.UTF8);
                         GC.Collect();
                         ProcessSettingAnnounce(client, "[系统] 商店DB更新完毕");
@@ -1130,19 +1130,21 @@ namespace SagaMap {
                     case "monster":
                         ProcessSettingAnnounce(client, "[系统] 怪物DB更新中…");
                         MobFactory.Instance.Mobs.Clear();
-                        MobFactory.Instance.Init("./DB/monster.csv",
+                        MobFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/monster.csv",
                             Encoding.UTF8);
                         MobAIFactory.Instance.Items.Clear();
-                        MobAIFactory.Instance.Init("DB/MobAI.xml",
+                        MobAIFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MobAI.xml",
                             Encoding.UTF8);
 
                         PartnerAIFactory.Instance.Items.Clear();
                         PartnerAIFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile(
+                                $"{ConfigLoader.LoadDbPath()}/PartnerAI", "*.xml",
                                 SearchOption.AllDirectories),
                             Encoding.UTF8);
                         MobAIFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile(
+                                $"{ConfigLoader.LoadDbPath()}/TTMobAI", "*.xml",
                                 SearchOption.AllDirectories),
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 怪物DB更新完毕");
@@ -1151,7 +1153,8 @@ namespace SagaMap {
                         ProcessSettingAnnounce(client, "[系统] 任务DB更新中…");
                         QuestFactory.Instance.Reload();
                         QuestFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Quests/", "QuestDB_*",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile(
+                                $"{ConfigLoader.LoadDbPath()}/Quests/", "QuestDB_*",
                                 SearchOption.TopDirectoryOnly),
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 任务DB更新完毕");
@@ -1160,7 +1163,8 @@ namespace SagaMap {
                         ProcessSettingAnnounce(client, "[系统] 宝箱DB更新中…");
                         TreasureFactory.Instance.Reload();
                         TreasureFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure/", "*.*",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile(
+                                $"{ConfigLoader.LoadDbPath()}/Treasure/", "*.*",
                                 SearchOption.AllDirectories),
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 宝箱DB更新完毕");
@@ -1184,19 +1188,21 @@ namespace SagaMap {
                         ProcessSettingAnnounce(client, "[系统] 物品DB更新中…");
                         ItemAdditionFactory.Instance.Reload();
                         ItemAdditionFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/",
+                                "Addition*.csv",
                                 SearchOption.TopDirectoryOnly),
                             Encoding.UTF8);
                         ItemFactory.Instance.Reload();
                         ItemFactory.Instance.Init(
-                            VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
+                            VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/",
+                                "item*.csv",
                                 SearchOption.TopDirectoryOnly),
                             Encoding.UTF8);
                         PartnerFactory.Instance.ClearPartnerEquips();
-                        PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_equip.csv",
+                        PartnerFactory.Instance.InitPartnerEquipDB($"{ConfigLoader.LoadDbPath()}/partner_equip.csv",
                             Encoding.UTF8);
                         //SagaDB.Marionette.MarionetteFactory.Instance.Reload();
-                        //SagaDB.Marionette.MarionetteFactory.Instance.Init("DB/marionette.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+                        //SagaDB.Marionette.MarionetteFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/marionette.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
                         //添加活动木偶资料读取
                         ProcessSettingAnnounce(client, "[系统] 物品DB更新完毕");
                         break;
@@ -1208,35 +1214,35 @@ namespace SagaMap {
                         IrisGachaFactory.Instance.IrisExchangeInfo.Clear();
                         IrisGachaFactory.Instance.IrisGacha.Clear();
                         IrisDrawRateFactory.Instance.DrawRate.Clear();
-                        IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv",
+                        IrisAbilityFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/iris_ability_vector_info.csv",
                             Encoding.UTF8);
-                        IrisCardFactory.Instance.Init("DB/iris_card.csv",
+                        IrisCardFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/iris_card.csv",
                             Encoding.UTF8);
-                        IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv",
+                        IrisGachaFactory.Instance.InitBlack($"{ConfigLoader.LoadDbPath()}/iris_gacha_blank.csv",
                             Encoding.UTF8);
-                        IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
+                        IrisGachaFactory.Instance.InitWindow($"{ConfigLoader.LoadDbPath()}/iris_gacha_window.csv",
                             Encoding.UTF8);
-                        IrisDrawRateFactory.Instance.Init("DB/IrisDrawRate.csv",
+                        IrisDrawRateFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/IrisDrawRate.csv",
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] IRIS DB更新完毕");
                         break;
                     case "kuji":
                         KujiListFactory.Instance.KujiList.Clear();
                         KujiListFactory.Instance.NewKujilist.Clear();
-                        KujiListFactory.Instance.InitXML("DB/KujiList.xml",
+                        KujiListFactory.Instance.InitXML($"{ConfigLoader.LoadDbPath()}/KujiList.xml",
                             Encoding.UTF8);
                         break;
                     case "exchange":
                         ProcessSettingAnnounce(client, "[系统] 染色系统DB更新中…");
                         ExchangeFactory.Instance.ExchangeItems.Clear();
-                        ExchangeFactory.Instance.Init("DB/exchange.csv",
+                        ExchangeFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/exchange.csv",
                             Encoding.UTF8);
                         ProcessSettingAnnounce(client, "[系统] 染色系统DB更新完毕");
                         break;
                     case "skillssp":
                         ProcessSettingAnnounce(client, "[系统] 技能DB更新中...");
                         SkillFactory.Instance.items.Clear();
-                        SkillFactory.Instance.InitSSP("DB/effect.ssp", Encoding.Unicode);
+                        SkillFactory.Instance.InitSSP($"{ConfigLoader.LoadDbPath()}/effect.ssp", Encoding.Unicode);
                         ProcessSettingAnnounce(client, "[系统] 技能DB更新完成");
                         break;
                     case "skilldb":

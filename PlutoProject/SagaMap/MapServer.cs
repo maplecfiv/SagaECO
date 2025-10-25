@@ -180,190 +180,192 @@ namespace SagaMap {
 
             //int item = (int)ContainerType.HEAD_ACCE2;
 
-            Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
+            //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
             Logger.GetLogger().Information("Initializing VirtualFileSystem...");
 #if FreeVersion1
-            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, "./DB/DB.lpk");
+            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
 #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
 #endif
             ItemAdditionFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "Addition*.csv",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "Addition*.csv",
                     SearchOption.TopDirectoryOnly),
                 Encoding.UTF8);
             ItemFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv",
                     SearchOption.TopDirectoryOnly),
                 Encoding.UTF8);
-            ItemReleaseFactory.Instance.Init("DB/equipment_release.csv",
+            ItemReleaseFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/equipment_release.csv",
                 Encoding.UTF8);
-            FurnitureFactory.Instance.Init("DB/furniture.csv",
+            FurnitureFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/furniture.csv",
                 Encoding.UTF8);
-            HairFactory.Instance.Init("DB/hair_info.csv",
+            HairFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/hair_info.csv",
                 Encoding.UTF8);
-            FaceFactory.Instance.Init("DB/face_info.csv",
+            FaceFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/face_info.csv",
                 Encoding.UTF8);
-            ItemExchangeListFactory.Instance.Init("DB/exchange_list.csv",
+            ItemExchangeListFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/exchange_list.csv",
                 Encoding.UTF8);
-            ExchangeFactory.Instance.Init("DB/exchange.csv",
+            ExchangeFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/exchange.csv",
                 Encoding.UTF8);
             PacketManager.Instance.LoadPacketFiles("./Packers");
 
-            EnhanceTableFactory.Instance.Init("DB/enhancetable.csv",
+            EnhanceTableFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/enhancetable.csv",
                 Encoding.UTF8);
-            MasterEnhanceMaterialFactory.Instance.Init("DB/MasterEnhanceMaterial.csv",
-                Encoding.UTF8);
-
-            IrisAbilityFactory.Instance.Init("DB/iris_ability_vector_info.csv",
-                Encoding.UTF8);
-            IrisCardFactory.Instance.Init("DB/iris_card.csv",
-                Encoding.UTF8);
-            IrisGachaFactory.Instance.InitBlack("DB/iris_gacha_blank.csv",
-                Encoding.UTF8);
-            IrisGachaFactory.Instance.InitWindow("DB/iris_gacha_window.csv",
-                Encoding.UTF8);
-            IrisDrawRateFactory.Instance.Init("DB/IrisDrawRate.csv",
+            MasterEnhanceMaterialFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MasterEnhanceMaterial.csv",
                 Encoding.UTF8);
 
-            ModelFactory.Instance.Init("DB/demic_chip_model.csv",
+            IrisAbilityFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/iris_ability_vector_info.csv",
                 Encoding.UTF8);
-            ChipFactory.Instance.Init("DB/demic_chip.csv",
+            IrisCardFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/iris_card.csv",
+                Encoding.UTF8);
+            IrisGachaFactory.Instance.InitBlack($"{ConfigLoader.LoadDbPath()}/iris_gacha_blank.csv",
+                Encoding.UTF8);
+            IrisGachaFactory.Instance.InitWindow($"{ConfigLoader.LoadDbPath()}/iris_gacha_window.csv",
+                Encoding.UTF8);
+            IrisDrawRateFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/IrisDrawRate.csv",
                 Encoding.UTF8);
 
-            SyntheseFactory.Instance.Init("DB/synthe1.csv",
+            ModelFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/demic_chip_model.csv",
+                Encoding.UTF8);
+            ChipFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/demic_chip.csv",
+                Encoding.UTF8);
+
+            SyntheseFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/synthe1.csv",
                 Encoding.UTF8);
             TreasureFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/Treasure", "*.xml",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/Treasure",
+                    "*.xml",
                     SearchOption.AllDirectories), null);
-            FishFactory.Instance.Init("DB/FishList.xml",
+            FishFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/FishList.xml",
                 Encoding.UTF8);
-            DropGroupFactory.Instance.Init("DB/monsterdrop.csv",
+            DropGroupFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/monsterdrop.csv",
                 Encoding.UTF8);
-            MobFactory.Instance.Init("DB/monster.csv",
+            MobFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/monster.csv",
                 Encoding.UTF8);
-            MobFactory.Instance.InitPet("DB/pet.csv",
+            MobFactory.Instance.InitPet($"{ConfigLoader.LoadDbPath()}/pet.csv",
                 Encoding.UTF8);
-            MobFactory.Instance.InitPartner("DB/partner_info.csv",
+            MobFactory.Instance.InitPartner($"{ConfigLoader.LoadDbPath()}/partner_info.csv",
                 Encoding.UTF8);
-            MobFactory.Instance.InitPetLimit("DB/pet_limit.csv",
+            MobFactory.Instance.InitPetLimit($"{ConfigLoader.LoadDbPath()}/pet_limit.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerDB("DB/partner_info.csv",
+            PartnerFactory.Instance.InitPartnerDB($"{ConfigLoader.LoadDbPath()}/partner_info.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerRankDB("DB/partner_base_rank.csv",
+            PartnerFactory.Instance.InitPartnerRankDB($"{ConfigLoader.LoadDbPath()}/partner_base_rank.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerFoodDB("DB/partner_food.csv",
+            PartnerFactory.Instance.InitPartnerFoodDB($"{ConfigLoader.LoadDbPath()}/partner_food.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerEquipDB("DB/partner_equip.csv",
+            PartnerFactory.Instance.InitPartnerEquipDB($"{ConfigLoader.LoadDbPath()}/partner_equip.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerTalksInfo("DB/partner_talks_db.csv",
+            PartnerFactory.Instance.InitPartnerTalksInfo($"{ConfigLoader.LoadDbPath()}/partner_talks_db.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerMotions("DB/partner_motion_together.csv",
+            PartnerFactory.Instance.InitPartnerMotions($"{ConfigLoader.LoadDbPath()}/partner_motion_together.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitActCubeDB("DB/partner_actcube.csv",
+            PartnerFactory.Instance.InitActCubeDB($"{ConfigLoader.LoadDbPath()}/partner_actcube.csv",
                 Encoding.UTF8);
-            PartnerFactory.Instance.InitPartnerPicts("DB/monsterpict.csv",
-                Encoding.UTF8);
-
-
-            MarionetteFactory.Instance.Init("DB/marionette.csv",
+            PartnerFactory.Instance.InitPartnerPicts($"{ConfigLoader.LoadDbPath()}/monsterpict.csv",
                 Encoding.UTF8);
 
-            SkillFactory.Instance.InitSSP("DB/effect.ssp", Encoding.Unicode);
-            SkillFactory.Instance.LoadSkillList("DB/SkillList.xml");
+
+            MarionetteFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/marionette.csv",
+                Encoding.UTF8);
+
+            SkillFactory.Instance.InitSSP($"{ConfigLoader.LoadDbPath()}/effect.ssp", Encoding.Unicode);
+            SkillFactory.Instance.LoadSkillList($"{ConfigLoader.LoadDbPath()}/SkillList.xml");
             //SkillFactory.Instance.LoadSkillList2("DB/SkillDB");
 
-            RingFameTable.Instance.Init("DB/RingFame.xml",
+            RingFameTable.Instance.Init($"{ConfigLoader.LoadDbPath()}/RingFame.xml",
                 Encoding.UTF8);
 
-            QuestFactory.Instance.Init("DB/Quests", null, true);
+            QuestFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/Quests", null, true);
 
-            NPCFactory.Instance.Init("DB/npc.csv",
+            NPCFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/npc.csv",
                 Encoding.UTF8);
-            ShopFactory.Instance.Init("DB/ShopDB.xml",
+            ShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/ShopDB.xml",
                 Encoding.UTF8);
-            ECOShopFactory.Instance.Init("DB/ECOShop.xml",
+            ECOShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/ECOShop.xml",
                 Encoding.UTF8);
-            ChipShopFactory.Instance.Init("DB/ChipShop.xml",
+            ChipShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/ChipShop.xml",
                 Encoding.UTF8);
-            NCShopFactory.Instance.Init("DB/NCShop.xml",
+            NCShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/NCShop.xml",
                 Encoding.UTF8);
-            GShopFactory.Instance.Init("DB/GShop.xml",
+            GShopFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/GShop.xml",
                 Encoding.UTF8);
-            KujiListFactory.Instance.InitXML("DB/KujiList.xml",
+            KujiListFactory.Instance.InitXML($"{ConfigLoader.LoadDbPath()}/KujiList.xml",
                 Encoding.UTF8);
             KujiListFactory.Instance.BuildNotInKujiItemsList();
             //KujiListFactory.Instance.InitEventKujiList("DB/EventKujiList.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
-            KujiListFactory.Instance.InitTransformList("DB/item_transform.csv",
+            KujiListFactory.Instance.InitTransformList($"{ConfigLoader.LoadDbPath()}/item_transform.csv",
                 Encoding.UTF8);
 
             //加载副职信息
-            DualJobInfoFactory.Instance.Init("DB/dualjob_info.csv",
+            DualJobInfoFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/dualjob_info.csv",
                 Encoding.UTF8);
-            DualJobSkillFactory.Instance.Init("DB/dualjob_skill_learn.csv",
+            DualJobSkillFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/dualjob_skill_learn.csv",
                 Encoding.UTF8);
 
-            MapInfoFactory.Instance.Init("DB/MapInfo.zip");
-            MapNameFactory.Instance.Init("DB/mapname.csv",
+            MapInfoFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MapInfo.zip");
+            MapNameFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/mapname.csv",
                 Encoding.UTF8);
-            MapInfoFactory.Instance.LoadMapFish("DB/CanFish.xml");
-            MapInfoFactory.Instance.LoadFlags("DB/MapFlags.xml");
-            MapInfoFactory.Instance.LoadGatherInterval("DB/pick_interval.csv",
+            MapInfoFactory.Instance.LoadMapFish($"{ConfigLoader.LoadDbPath()}/CanFish.xml");
+            MapInfoFactory.Instance.LoadFlags($"{ConfigLoader.LoadDbPath()}/MapFlags.xml");
+            MapInfoFactory.Instance.LoadGatherInterval($"{ConfigLoader.LoadDbPath()}/pick_interval.csv",
                 Encoding.UTF8);
-            MapInfoFactory.Instance.LoadMapObjects("DB/MapObjects.dat");
+            MapInfoFactory.Instance.LoadMapObjects($"{ConfigLoader.LoadDbPath()}/MapObjects.dat");
             MapInfoFactory.Instance.ApplyMapObject();
             MapInfoFactory.Instance.MapObjects.Clear();
 
             MapManager.Instance.MapInfos = MapInfoFactory.Instance.MapInfo;
             MapManager.Instance.LoadMaps();
 
-            DungeonMapsFactory.Instance.Init("DB/Dungeon/DungeonMaps.xml",
+            DungeonMapsFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/Dungeon/DungeonMaps.xml",
                 Encoding.UTF8);
-            DungeonFactory.Instance.Init("DB/Dungeon/Dungeons.xml",
+            DungeonFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/Dungeon/Dungeons.xml",
                 Encoding.UTF8);
 
-            MobAIFactory.Instance.Init("DB/MobAI.xml",
+            MobAIFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MobAI.xml",
                 Encoding.UTF8);
             MobAIFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/TTMobAI", "*.xml",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/TTMobAI", "*.xml",
                     SearchOption.AllDirectories),
                 Encoding.UTF8);
             MobAIFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/AnMobAI", "*.xml",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/AnMobAI", "*.xml",
                     SearchOption.AllDirectories),
                 Encoding.UTF8);
             PartnerAIFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/PartnerAI", "*.xml",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile($"{ConfigLoader.LoadDbPath()}/PartnerAI",
+                    "*.xml",
                     SearchOption.AllDirectories),
                 Encoding.UTF8);
             //MobSpawnManager.Instance.LoadAnAI("DB/AnMobAI");
-            MobSpawnManager.Instance.LoadSpawn("DB/Spawns");
-            FictitiousActorsFactory.Instance.LoadActorsList("DB/Actors");
+            MobSpawnManager.Instance.LoadSpawn($"{ConfigLoader.LoadDbPath()}/Spawns");
+            FictitiousActorsFactory.Instance.LoadActorsList($"{ConfigLoader.LoadDbPath()}/Actors");
             //SagaDB.FictitiousActors.FictitiousActorsFactory.Instance.LoadShopLists("DB/GolemShop");
             FictitiousActorsManager.Instance.regionFictitiousActors();
-            TheaterFactory.Instance.Init("DB/TheaterSchedule.xml",
+            TheaterFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/TheaterSchedule.xml",
                 Encoding.UTF8);
-            ODWarFactory.Instance.Init("DB/ODWar.xml",
+            ODWarFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/ODWar.xml",
                 Encoding.UTF8);
             Theater.Instance.Activate();
             //Tasks.System.AutoRunSystemScript runscript = new Tasks.System.AutoRunSystemScript(3235125);
             //runscript.Activate();
 
-            AnotherFactory.Instance.Init("DB/another_page.csv",
+            AnotherFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/another_page.csv",
                 Encoding.UTF8);
             //意义不明暂时关闭
-            //PlayerTitleFactory.Instance.Init("DB/playertitle.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            //PlayerTitleFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/playertitle.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
             //KujiListFactory.Instance.InitZeroCPList("DB/CP0List.csv", Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             //title db
-            TitleFactory.Instance.Init("DB/title_info.csv",
+            TitleFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/title_info.csv",
                 Encoding.UTF8);
 
             //Experience Reward table for tamaire
-            TamaireExpRewardFactory.Instance.Init("DB/tamairereward.csv",
+            TamaireExpRewardFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/tamairereward.csv",
                 Encoding.UTF8);
             //Status table for tamaire
-            TamaireStatusFactory.Instance.Init("DB/soul_status_param.csv",
+            TamaireStatusFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/soul_status_param.csv",
                 Encoding.UTF8);
 
             //称号的奖励暂时被过滤掉了
@@ -375,7 +377,7 @@ namespace SagaMap {
             Global.clientMananger = MapClientManager.Instance;
 
             //目前无用
-            //DefWarFactory.Instance.Init("DB/odwar_order_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
+            //DefWarFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/odwar_order_info.csv", System.Text.Encoding.GetEncoding(Configuration.Instance.DBEncoding));
 
             AtCommand.Instance.LoadCommandLevelSetting("./Config/GMCommand.csv");
 
@@ -448,7 +450,7 @@ namespace SagaMap {
             //关攻防
             //Tasks.System.ODWar.Instance.Activate();
 
-            Configuration.Configuration.Instance.InitAnnounce("./DB/Announce.csv");
+            Configuration.Configuration.Instance.InitAnnounce($"{ConfigLoader.LoadDbPath()}/Announce.csv");
             //OD War related
 
             //蓝莓活动，记得关！！
@@ -465,7 +467,7 @@ namespace SagaMap {
 
             //Experience table
             //SagaMap.Manager.ExperienceManager.Instance.LoadTable("DB/exp.xml");
-            PCExperienceFactory.Instance.Init("DB/EXP.csv",
+            PCExperienceFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/EXP.csv",
                 Encoding.UTF8);
 
             //CustomMapManager.Instance.CreateFF();
@@ -526,8 +528,6 @@ namespace SagaMap {
                     }
 
                     // keep the connections to the database servers alive
-                    EnsureCharDB();
-                    EnsureAccountDB();
                     // let new clients (max 10) connect
 #if FreeVersion
                 if (MapClientManager.Instance.OnlinePlayer.Count < int.Parse("15"))

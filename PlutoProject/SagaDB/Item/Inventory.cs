@@ -464,7 +464,7 @@ namespace SagaDB.Item
                             item.BaseData.itemType != ItemType.CARD && item.BaseData.itemType != ItemType.THROW)
                         {
                             Logger.ShowDebug("Container:" + container + " must be empty before adding item!",
-                                Logger.CurrentLogger);
+                                null);
                         }
                         else
                         {
@@ -509,7 +509,7 @@ namespace SagaDB.Item
                         if (item.BaseData.itemType != ItemType.BULLET && item.BaseData.itemType != ItemType.ARROW)
                         {
                             Logger.ShowDebug("Container:" + container + " must be empty before adding item!",
-                                Logger.CurrentLogger);
+                                null);
                         }
                         else
                         {
@@ -778,17 +778,17 @@ namespace SagaDB.Item
                 case ContainerType.SOCKS:
                 case ContainerType.UPPER_BODY:
                 case ContainerType.EFFECT:
-                {
-                    var slotE = (EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString());
-                    if (Equipments[slotE].Stack > 1)
                     {
-                        Equipments[slotE].Stack--;
-                        return InventoryDeleteResult.STACK_UPDATED;
-                    }
+                        var slotE = (EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString());
+                        if (Equipments[slotE].Stack > 1)
+                        {
+                            Equipments[slotE].Stack--;
+                            return InventoryDeleteResult.STACK_UPDATED;
+                        }
 
-                    Equipments.Remove(slotE);
-                    return InventoryDeleteResult.ALL_DELETED;
-                }
+                        Equipments.Remove(slotE);
+                        return InventoryDeleteResult.ALL_DELETED;
+                    }
                 case ContainerType.BACK2:
                 case ContainerType.CHEST_ACCE2:
                 case ContainerType.FACE2:
@@ -802,19 +802,19 @@ namespace SagaDB.Item
                 case ContainerType.SHOES2:
                 case ContainerType.SOCKS2:
                 case ContainerType.UPPER_BODY2:
-                {
-                    var name = container.ToString();
-                    name = name.Substring(0, name.Length - 1);
-                    var slotE = (EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name);
-                    if (Parts[slotE].Stack > 1)
                     {
-                        Parts[slotE].Stack--;
-                        return InventoryDeleteResult.STACK_UPDATED;
-                    }
+                        var name = container.ToString();
+                        name = name.Substring(0, name.Length - 1);
+                        var slotE = (EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name);
+                        if (Parts[slotE].Stack > 1)
+                        {
+                            Parts[slotE].Stack--;
+                            return InventoryDeleteResult.STACK_UPDATED;
+                        }
 
-                    Parts.Remove(slotE);
-                    return InventoryDeleteResult.ALL_DELETED;
-                }
+                        Parts.Remove(slotE);
+                        return InventoryDeleteResult.ALL_DELETED;
+                    }
             }
 
             return InventoryDeleteResult.ALL_DELETED;
@@ -836,7 +836,7 @@ namespace SagaDB.Item
             {
                 List<Item> list;
                 if (src == dst)
-                    //Logger.ShowDebug("Source container is equal to Destination container! Transfer aborted!", Logger.CurrentLogger);
+                    //Logger.ShowDebug("Source container is equal to Destination container! Transfer aborted!", null);
                     return false;
                 switch (src)
                 {
@@ -963,17 +963,17 @@ namespace SagaDB.Item
                 case ContainerType.SOCKS:
                 case ContainerType.UPPER_BODY:
                 case ContainerType.EFFECT:
-                {
-                    Item item;
-                    var newList = new List<Item>();
-                    if (Equipments.ContainsKey((EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString())))
                     {
-                        item = Equipments[(EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString())];
-                        newList.Add(item);
-                    }
+                        Item item;
+                        var newList = new List<Item>();
+                        if (Equipments.ContainsKey((EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString())))
+                        {
+                            item = Equipments[(EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), container.ToString())];
+                            newList.Add(item);
+                        }
 
-                    return newList;
-                }
+                        return newList;
+                    }
                 case ContainerType.BACK2:
                 case ContainerType.CHEST_ACCE2:
                 case ContainerType.FACE2:
@@ -987,19 +987,19 @@ namespace SagaDB.Item
                 case ContainerType.SHOES2:
                 case ContainerType.SOCKS2:
                 case ContainerType.UPPER_BODY2:
-                {
-                    Item item;
-                    var newList = new List<Item>();
-                    var name = container.ToString();
-                    name = name.Substring(0, name.Length - 1);
-                    if (Parts.ContainsKey((EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name)))
                     {
-                        item = Parts[(EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name)];
-                        newList.Add(item);
-                    }
+                        Item item;
+                        var newList = new List<Item>();
+                        var name = container.ToString();
+                        name = name.Substring(0, name.Length - 1);
+                        if (Parts.ContainsKey((EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name)))
+                        {
+                            item = Parts[(EnumEquipSlot)Enum.Parse(typeof(EnumEquipSlot), name)];
+                            newList.Add(item);
+                        }
 
-                    return newList;
-                }
+                        return newList;
+                    }
                 default:
                     return new List<Item>();
             }
@@ -1196,9 +1196,9 @@ namespace SagaDB.Item
 
             var res = 0;
             foreach (var i in chips)
-            foreach (var j in i.Chips)
-                if (j.ChipID == chipID)
-                    res++;
+                foreach (var j in i.Chips)
+                    if (j.ChipID == chipID)
+                        res++;
 
             return res;
         }

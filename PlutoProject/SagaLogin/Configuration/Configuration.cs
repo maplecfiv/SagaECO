@@ -59,7 +59,7 @@ namespace SagaLogin.Configuration
                 if (encoding == null)
                 {
                     encoding = Encoding.UTF8.EncodingName;
-                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, Logger.CurrentLogger);
+                    Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, null);
                 }
 
                 return encoding;
@@ -71,14 +71,14 @@ namespace SagaLogin.Configuration
 
         public void Initialization(string path)
         {
-            var xml = new XmlDocument();
+            // var xml = new XmlDocument();
             try
             {
                 XmlElement root;
                 XmlNodeList list;
                 var getVersion = false;
-                xml.Load(path);
-                root = xml["SagaLogin"];
+                // xml.Load(path);
+                root = ConfigLoader.LoadConfig("SagaLogin");
                 list = root.ChildNodes;
                 foreach (var j in list)
                 {

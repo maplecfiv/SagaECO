@@ -124,7 +124,8 @@ namespace SagaLib {
         }
 
         public static Logger defaultlogger;
-        public static Logger CurrentLogger = defaultlogger;
+
+        //public static Logger CurrentLogger = defaultlogger;
         public static Serilog.Core.Logger DefaultLogger = null;
         private readonly string filename;
 
@@ -191,7 +192,7 @@ namespace SagaLib {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug($"[Info] {ex.Message}\r\n {ex.StackTrace}");
+            _logger.Information($"[Info] {ex.Message}\r\n {ex.StackTrace}");
             ////Console.ResetColor();
             // _logger.Debug(ex.Message + "\r\n" + ex.StackTrace);
             // if (log != null) log.WriteLog(ex.Message);
@@ -201,7 +202,7 @@ namespace SagaLib {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug($"[Info] {ex}");
+            _logger.Information($"[Info] {ex}");
             ////Console.ResetColor();
             // _logger.Debug(ex);
         }
@@ -210,7 +211,7 @@ namespace SagaLib {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
             ////Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Debug($"[Info] {ex}");
+            _logger.Information($"[Info] {ex}");
             ////Console.ResetColor();
             // _logger.Debug(ex);
             // if (log != null) log.WriteLog(ex);

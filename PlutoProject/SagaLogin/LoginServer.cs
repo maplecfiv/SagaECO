@@ -121,16 +121,16 @@ namespace SagaLogin {
 
             Configuration.Configuration.Instance.Initialization("./Config/SagaLogin.xml");
 
-            Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
+            //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
             Logger.GetLogger().Information("Initializing VirtualFileSystem...");
 #if FreeVersion1
-            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, "./DB/DB.lpk");
+            VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
 #else
             VirtualFileSystemManager.Instance.Init(FileSystems.Real, ".");
 #endif
             ItemFactory.Instance.Init(
-                VirtualFileSystemManager.Instance.FileSystem.SearchFile("DB/", "item*.csv",
+                VirtualFileSystemManager.Instance.FileSystem.SearchFile(ConfigLoader.LoadDbPath(), "item*.csv",
                     SearchOption.TopDirectoryOnly),
                 Encoding.UTF8);
 
@@ -155,19 +155,6 @@ namespace SagaLogin {
             Global.clientMananger = LoginClientManager.Instance;
 
             _logger.Debug("Accepting clients.");
-
-            while (true) {
-                // keep the connections to the database servers alive
-                EnsureCharDB();
-                EnsureAccountDB();
-                // let new clients (max 10) connect
-#if FreeVersion
-                if (LoginClientManager.Instance.Clients.Count < int.Parse("15"))
-#endif
-                LoginClientManager.Instance.NetworkLoop(10);
-
-                Thread.Sleep(10);
-            }
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args) {

@@ -216,7 +216,7 @@ namespace SagaMap.Manager
         {
             if (Maps.ContainsKey(mapID)) return Maps[mapID];
 
-            Logger.ShowDebug("Requesting unknown mapID:" + mapID, Logger.CurrentLogger);
+            Logger.ShowDebug("Requesting unknown mapID:" + mapID, null);
             return null;
         }
     }

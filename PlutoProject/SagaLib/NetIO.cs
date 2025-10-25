@@ -670,7 +670,7 @@ namespace SagaLib
                 else
                 {
                     Logger.ShowDebug(string.Format("Unknown Packet:0x{0:X4}\r\n       Data:{1}", p.ID, DumpData(p)),
-                        Logger.CurrentLogger);
+                        null);
                 }
             }
 

@@ -256,7 +256,7 @@ namespace SagaMap.Configuration
             {
                 if (encoding == null)
                 {
-                    Logger.ShowDebug("DB Encoding not set, set to default value: UTF-8", Logger.CurrentLogger);
+                    Logger.ShowDebug("DB Encoding not set, set to default value: UTF-8", null);
                     encoding = "utf-8";
                 }
 
@@ -402,38 +402,39 @@ namespace SagaMap.Configuration
                 switch (i)
                 {
                     case RateOverrideType.GMLv:
-                    {
-                        var maxValue = 0;
-                        foreach (var j in rateOverride[i].Keys)
-                            if (j > maxValue && j <= pc.Account.GMLevel)
-                                maxValue = j;
-                        if (maxValue > 0)
-                            gmlv = rateOverride[i][maxValue];
-                    }
+                        {
+                            var maxValue = 0;
+                            foreach (var j in rateOverride[i].Keys)
+                                if (j > maxValue && j <= pc.Account.GMLevel)
+                                    maxValue = j;
+                            if (maxValue > 0)
+                                gmlv = rateOverride[i][maxValue];
+                        }
                         break;
                     case RateOverrideType.CLevel:
-                    {
-                        var maxValue = 0;
-                        foreach (var j in rateOverride[i].Keys)
-                            if (j > maxValue && j <= pc.Level)
-                                maxValue = j;
-                        if (maxValue > 0)
-                            clv = rateOverride[i][maxValue];
-                    }
+                        {
+                            var maxValue = 0;
+                            foreach (var j in rateOverride[i].Keys)
+                                if (j > maxValue && j <= pc.Level)
+                                    maxValue = j;
+                            if (maxValue > 0)
+                                clv = rateOverride[i][maxValue];
+                        }
                         break;
                 }
         }
 #if Text
         private void InitXML(string path)
         {
-            var xml = new XmlDocument();
+            // var xml = new XmlDocument();
             var getVersion = false;
             try
             {
                 XmlElement root;
                 XmlNodeList list;
-                xml.Load(path);
-                root = xml["SagaMap"];
+                // xml.Load(path);
+                // root = xml["SagaMap"];
+                root = ConfigLoader.LoadConfig("SagaMap");
                 list = root.ChildNodes;
                 foreach (var j in list)
                 {
@@ -532,36 +533,71 @@ namespace SagaMap.Configuration
                             MaxLevelDifferenceForExp = int.Parse(i.InnerText);
                             break;
                         case "rateoverride":
-                        {
-                            var type = i.Attributes["type"].Value;
-                            var value = int.Parse(i.Attributes["value"].Value);
-                            var rType = RateOverrideType.GMLv;
-                            switch (type.ToLower())
                             {
-                                case "gmlv":
-                                    rType = RateOverrideType.GMLv;
-                                    break;
-                                case "clv":
-                                    rType = RateOverrideType.CLevel;
-                                    break;
-                            }
+                                var type = i.Attributes["type"].Value;
+                                var value = int.Parse(i.Attributes["value"].Value);
+                                var rType = RateOverrideType.GMLv;
+                                switch (type.ToLower())
+                                {
+                                    case "gmlv":
+                                        rType = RateOverrideType.GMLv;
+                                        break;
+                                    case "clv":
+                                        rType = RateOverrideType.CLevel;
+                                        break;
+                                }
 
-                            Dictionary<int, RateOverrideItem> list2;
-                            if (rateOverride.ContainsKey(rType))
-                            {
-                                list2 = rateOverride[rType];
-                            }
-                            else
-                            {
-                                list2 = new Dictionary<int, RateOverrideItem>();
-                                rateOverride.Add(rType, list2);
-                            }
+                                Dictionary<int, RateOverrideItem> list2;
+                                if (rateOverride.ContainsKey(rType))
+                                {
+                                    list2 = rateOverride[rType];
+                                }
+                                else
+                                {
+                                    list2 = new Dictionary<int, RateOverrideItem>();
+                                    rateOverride.Add(rType, list2);
+                                }
 
-                            if (!list2.ContainsKey(value))
+                                if (!list2.ContainsKey(value))
+                                {
+                                    var item = new RateOverrideItem();
+                                    item.Type = rType;
+                                    item.Value = value;
+                                    var maps = i.ChildNodes;
+                                    foreach (var l in maps)
+                                    {
+                                        XmlElement k;
+                                        if (l.GetType() != typeof(XmlElement)) continue;
+                                        k = (XmlElement)l;
+                                        switch (k.Name.ToLower())
+                                        {
+                                            case "exprate":
+                                                item.ExpRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                            case "questrate":
+                                                item.QuestRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                            case "questgoldrate":
+                                                item.QuestGoldRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                            case "stampdroprate":
+                                                item.StampDropRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                            case "globaldroprate":
+                                                item.GlobalDropRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                            case "specialdroprate":
+                                                item.SpecialDropRate = int.Parse(k.InnerText) / 100f;
+                                                break;
+                                        }
+                                    }
+
+                                    list2.Add(value, item);
+                                }
+                            }
+                            break;
+                        case "hostedmaps":
                             {
-                                var item = new RateOverrideItem();
-                                item.Type = rType;
-                                item.Value = value;
                                 var maps = i.ChildNodes;
                                 foreach (var l in maps)
                                 {
@@ -570,47 +606,12 @@ namespace SagaMap.Configuration
                                     k = (XmlElement)l;
                                     switch (k.Name.ToLower())
                                     {
-                                        case "exprate":
-                                            item.ExpRate = int.Parse(k.InnerText) / 100f;
-                                            break;
-                                        case "questrate":
-                                            item.QuestRate = int.Parse(k.InnerText) / 100f;
-                                            break;
-                                        case "questgoldrate":
-                                            item.QuestGoldRate = int.Parse(k.InnerText) / 100f;
-                                            break;
-                                        case "stampdroprate":
-                                            item.StampDropRate = int.Parse(k.InnerText) / 100f;
-                                            break;
-                                        case "globaldroprate":
-                                            item.GlobalDropRate = int.Parse(k.InnerText) / 100f;
-                                            break;
-                                        case "specialdroprate":
-                                            item.SpecialDropRate = int.Parse(k.InnerText) / 100f;
+                                        case "mapid":
+                                            HostedMaps.Add(uint.Parse(k.InnerText));
                                             break;
                                     }
                                 }
-
-                                list2.Add(value, item);
                             }
-                        }
-                            break;
-                        case "hostedmaps":
-                        {
-                            var maps = i.ChildNodes;
-                            foreach (var l in maps)
-                            {
-                                XmlElement k;
-                                if (l.GetType() != typeof(XmlElement)) continue;
-                                k = (XmlElement)l;
-                                switch (k.Name.ToLower())
-                                {
-                                    case "mapid":
-                                        HostedMaps.Add(uint.Parse(k.InnerText));
-                                        break;
-                                }
-                            }
-                        }
                             break;
                         case "scriptreference":
                             var dlls = i.ChildNodes;

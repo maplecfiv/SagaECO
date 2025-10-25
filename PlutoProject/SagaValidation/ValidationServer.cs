@@ -61,7 +61,7 @@ namespace SagaValidation {
             Logger.GetLogger().Information("Starting Initialization...", null);
 
             Configuration.Instance.Initialization("./Config/SagaValidation.xml");
-            Logger.CurrentLogger.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
+            //null.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
             if (!StartDatabase()) {
                 Logger.GetLogger().Error("cannot connect to dbserver", null);
@@ -84,15 +84,6 @@ namespace SagaValidation {
                 Configuration.Instance.ClientGameVersion));
 
             Logger.GetLogger().Information("Accepting clients.");
-
-            while (true) {
-                // keep the connections to the database servers alive
-                EnsureAccountDB();
-                // let new clients (max 10) connect
-
-                ValidationClientManager.Instance.NetworkLoop(10);
-                System.Threading.Thread.Sleep(1);
-            }
         }
 
         public static void EnsureAccountDB() {
