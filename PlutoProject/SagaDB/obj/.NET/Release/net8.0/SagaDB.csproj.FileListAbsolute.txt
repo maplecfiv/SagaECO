@@ -1,10 +1,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/SagaDB.deps.json
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/SagaDB.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/SagaDB.pdb
-/home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/ICSharpCode.SharpZipLib.dll
-/home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/MySql.Data.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/SagaLib.dll
-/home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/BigInteger.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/bin/.NET/Release/net8.0/SagaLib.pdb
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/.NET/Release/net8.0/SagaDB.csproj.AssemblyReference.cache
 /home/maple/projects/SagaECO/PlutoProject/SagaDB/obj/.NET/Release/net8.0/SagaDB.GeneratedMSBuildEditorConfig.editorconfig
