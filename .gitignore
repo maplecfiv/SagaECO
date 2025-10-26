@@ -1,5 +1,5 @@
-PlutoProject/SagaValidation/bin/Release/*
-PlutoProject/SagaMap/bin/Release/*
-PlutoProject/SagaLogin/bin/Release/*
-PlutoProject/SagaLib/bin/Release/*
-PlutoProject/SagaDB/bin/Release/*
+PlutoProject/SagaValidation/bin
+PlutoProject/SagaMap/bin
+PlutoProject/SagaLogin/bin
+PlutoProject/SagaLib/bin
+PlutoProject/SagaDB/bin
