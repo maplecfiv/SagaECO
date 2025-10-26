@@ -8,14 +8,11 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.NewSkill.Traveler
-{
-    public class ThunderFall : ISkill
-    {
+namespace SagaMap.Skill.NewSkill.Traveler {
+    public class ThunderFall : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly float factor = 1.0f;
@@ -24,8 +21,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
             private readonly SkillArg skill;
             private int count;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -37,8 +33,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                     Global.PosY16to8(caster.Y, map.Height), args.x, args.y);
             }
 
-            public List<Point> GetStraightPath(byte fromx, byte fromy, byte tox, byte toy)
-            {
+            public List<Point> GetStraightPath(byte fromx, byte fromy, byte tox, byte toy) {
                 var path = new List<Point>();
                 if (fromx == tox && fromy == toy)
                     return path;
@@ -48,29 +43,24 @@ namespace SagaMap.Skill.NewSkill.Traveler
                 int x = fromx;
                 int y = fromy;
                 sbyte addx, addy;
-                if (Math.Abs(toy - fromy) <= Math.Abs(tox - fromx))
-                {
-                    if (tox == fromx)
-                    {
+                if (Math.Abs(toy - fromy) <= Math.Abs(tox - fromx)) {
+                    if (tox == fromx) {
                         if (fromy < toy)
-                            for (var i = fromy + 1; i <= toy; i++)
-                            {
+                            for (var i = fromy + 1; i <= toy; i++) {
                                 var t = new Point();
                                 t.x = fromx;
                                 t.y = (byte)i;
                                 path.Add(t);
                             }
                         else
-                            for (var i = fromy - 1; i <= toy; i--)
-                            {
+                            for (var i = fromy - 1; i <= toy; i--) {
                                 var t = new Point();
                                 t.x = fromx;
                                 t.y = (byte)i;
                                 path.Add(t);
                             }
                     }
-                    else
-                    {
+                    else {
                         k = Math.Abs((double)(toy - fromy) / (tox - fromx));
                         if (toy < fromy)
                             addy = -1;
@@ -80,8 +70,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                             addx = -1;
                         else
                             addx = 1;
-                        while (Math.Round(nowx) != tox)
-                        {
+                        while (Math.Round(nowx) != tox) {
                             x += addx;
                             if (Math.Round(nowy) != Math.Round(nowy + k * addy))
                                 y += addy;
@@ -95,29 +84,24 @@ namespace SagaMap.Skill.NewSkill.Traveler
                         }
                     }
                 }
-                else
-                {
-                    if (toy == fromy)
-                    {
+                else {
+                    if (toy == fromy) {
                         if (fromx < tox)
-                            for (var i = fromx + 1; i <= tox; i++)
-                            {
+                            for (var i = fromx + 1; i <= tox; i++) {
                                 var t = new Point();
                                 t.x = (byte)i;
                                 t.y = fromy;
                                 path.Add(t);
                             }
                         else
-                            for (var i = fromx - 1; i <= tox; i--)
-                            {
+                            for (var i = fromx - 1; i <= tox; i--) {
                                 var t = new Point();
                                 t.x = (byte)i;
                                 t.y = fromy;
                                 path.Add(t);
                             }
                     }
-                    else
-                    {
+                    else {
                         k = Math.Abs((double)(tox - fromx) / (toy - fromy));
                         if (toy < fromy)
                             addy = -1;
@@ -127,8 +111,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
                             addx = -1;
                         else
                             addx = 1;
-                        while (Math.Round(nowy) != toy)
-                        {
+                        while (Math.Round(nowy) != toy) {
                             y += addy;
                             if (Math.Round(nowx) != Math.Round(nowx + k * addx))
                                 x += addx;
@@ -147,13 +130,10 @@ namespace SagaMap.Skill.NewSkill.Traveler
             }
 
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < path.Count)
-                    {
+                try {
+                    if (count < path.Count) {
                         skill.x = path[count].x;
                         skill.y = path[count].y;
 
@@ -171,22 +151,19 @@ namespace SagaMap.Skill.NewSkill.Traveler
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }
 
-            public class Point
-            {
+            public class Point {
                 public byte x, y;
             }
         }
@@ -195,13 +172,11 @@ namespace SagaMap.Skill.NewSkill.Traveler
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

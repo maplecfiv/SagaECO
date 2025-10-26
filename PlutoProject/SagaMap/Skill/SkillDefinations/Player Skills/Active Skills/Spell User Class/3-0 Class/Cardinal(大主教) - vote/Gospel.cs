@@ -8,17 +8,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote {
     /// <summary>
     ///     ゴスペル
     /// </summary>
-    public class Gospel : ISkill
-    {
+    public class Gospel : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax;
@@ -30,8 +27,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private readonly SkillArg skill;
             private int count;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -44,13 +40,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 DueTime = 0;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(actor, 200, false);
                         var affected = new List<Actor>();
@@ -59,14 +52,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         //施加火属性魔法伤害
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
-                            if (i.type == ActorType.PC)
-                            {
+                            if (i.type == ActorType.PC) {
                                 var pc = (ActorPC)i;
-                                if (!SkillHandler.Instance.CheckValidAttackTarget(caster, pc) && pc.Online)
-                                {
+                                if (!SkillHandler.Instance.CheckValidAttackTarget(caster, pc) && pc.Online) {
                                     affected.Add(pc);
-                                    if (!pc.Status.Additions.ContainsKey("GospelBonus"))
-                                    {
+                                    if (!pc.Status.Additions.ContainsKey("GospelBonus")) {
                                         var gospelBonus = new DefaultBuff(skill.skill, pc, "GospelBonus", lifetime);
                                         gospelBonus.OnAdditionStart += gospelBonus_OnAdditionStart;
                                         gospelBonus.OnAdditionEnd += gospelBonus_OnAdditionEnd;
@@ -82,22 +72,19 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }
 
-            private void gospelBonus_OnAdditionStart(Actor actor, DefaultBuff skill)
-            {
+            private void gospelBonus_OnAdditionStart(Actor actor, DefaultBuff skill) {
                 int level = skill.skill.Level;
                 var max_atk1_add = 30 + 30 * skill.skill.Level;
                 var max_atk2_add = 30 + 30 * skill.skill.Level;
@@ -197,8 +184,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
 
-            private void gospelBonus_OnAdditionEnd(Actor actor, DefaultBuff skill)
-            {
+            private void gospelBonus_OnAdditionEnd(Actor actor, DefaultBuff skill) {
                 actor.Status.hp_skill -= (short)skill.Variable["GospelBonusHP"];
 
                 actor.Status.mp_skill -= (short)skill.Variable["GospelBonusMP"];
@@ -244,8 +230,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 300) ||
@@ -263,10 +248,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //return 0;
         }
 
-        private bool CheckPossible(Actor sActor)
-        {
-            if (sActor.type == ActorType.PC)
-            {
+        private bool CheckPossible(Actor sActor) {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
                 if (SkillHandler.Instance.isEquipmentRight(pc, ItemType.STRINGS) ||
                     pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
@@ -277,8 +260,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             return true;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             if (map.CheckActorSkillIsHeal(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return;

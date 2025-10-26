@@ -6,17 +6,14 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Assassin_刺客____sco
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_1_Class.Assassin_刺客____sco {
     /// <summary>
     ///     毒霧（スキャターポイズン）
     /// </summary>
-    public class ScatterPoison : ISkill
-    {
+    public class ScatterPoison : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly float factor;
@@ -24,8 +21,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             private readonly SkillArg skill;
             private int times, lifetime;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -59,14 +55,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (times > 0 && lifetime > 0)
-                    {
+                try {
+                    if (times > 0 && lifetime > 0) {
                         var affected = map.GetActorsArea(actor, 200, false);
                         var realAffected = new List<Actor>();
                         foreach (var act in affected)
@@ -76,8 +69,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         affected.Clear();
                         var HP_Lost = (uint)(caster.MaxHP * factor);
                         foreach (var act in realAffected)
-                            if (times > 0)
-                            {
+                            if (times > 0) {
                                 //affected.Add(act);
                                 SkillHandler.Instance.FixAttack(caster, act, skill, caster.WeaponElement, HP_Lost);
                                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
@@ -91,15 +83,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         //SkillHandler.Instance.MagicAttack(caster, affected, skill, SkillHandler.DefType.DefIgnoreRight, Elements.Neutral, HP_Lost, 0, true);
                         //SkillHandler.Instance.PhysicalAttack(sActor, affected, skill, SkillHandler.DefType.Def, Elements.Neutral, 0, factor, true);
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
 
                 //解開同步鎖
@@ -111,14 +101,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             if (map.CheckActorSkillInRange(sActor.X, sActor.Y, 300)) return -17;
 
             uint itemID = 10000302; //毒藥
-            if (SkillHandler.Instance.CountItem(sActor, itemID) > 0)
-            {
+            if (SkillHandler.Instance.CountItem(sActor, itemID) > 0) {
                 SkillHandler.Instance.TakeItem(sActor, itemID, 1);
                 return 0;
             }
@@ -126,8 +114,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             return -2;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

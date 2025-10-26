@@ -193,7 +193,7 @@ namespace SagaDB.Skill {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
 
             return total;
@@ -246,7 +246,7 @@ namespace SagaDB.Skill {
                 Logger.GetLogger().Information("Done Loaded Skill Tree...");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -307,8 +307,8 @@ namespace SagaDB.Skill {
                     count++;
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error("Error on parsing skill db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing skill db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
                 }
             }
 
@@ -417,8 +417,8 @@ namespace SagaDB.Skill {
                 br.Close();
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error("技能DB解析错误!\r\n行信息: " + line);
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError("技能DB解析错误!\r\n行信息: " + line);
+                Logger.ShowError(ex);
             }
         }
 
@@ -480,8 +480,8 @@ namespace SagaDB.Skill {
                 }
                 catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing skill db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing skill db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }

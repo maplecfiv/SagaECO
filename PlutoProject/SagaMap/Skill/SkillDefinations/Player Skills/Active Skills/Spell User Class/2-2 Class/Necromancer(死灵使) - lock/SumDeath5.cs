@@ -6,22 +6,19 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Necromancer_死灵使____lock
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.
+    Necromancer_死灵使____lock {
     /// <summary>
     ///     死神召喚（死神召喚）[接續技能]
     /// </summary>
-    public class SumDeath5 : ISkill
-    {
+    public class SumDeath5 : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var factor = 6.0f;
             var rate = 50;
             var lifetime = 1000;
@@ -29,11 +26,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var affected = map.GetActorsArea(dActor, 200, true);
             var realAffected = new List<Actor>();
             foreach (var act in affected)
-                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                {
+                if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act)) {
                     if (SkillHandler.Instance.CanAdditionApply(sActor, act, SkillHandler.DefaultAdditions.Confuse,
-                            rate))
-                    {
+                            rate)) {
                         var skill = new Confuse(args.skill, act, lifetime);
                         SkillHandler.ApplyAddition(act, skill);
                     }
@@ -43,8 +38,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
             SkillHandler.Instance.MagicAttack(sActor, realAffected, args, Elements.Neutral, factor);
             if (sActor.type == ActorType.MOB)
-                try
-                {
+                try {
                     var mob = (ActorMob)sActor;
                     var mobe = (MobEventHandler)mob.e;
                     var Master = mobe.AI.Master;
@@ -52,9 +46,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     mob.ClearTaskAddition();
                     map.DeleteActor(mob);
                 }
-                catch (Exception exception)
-                {
-                    Logger.GetLogger().Error(exception, null);
+                catch (Exception exception) {
+                    Logger.ShowError(exception);
                 }
         }
 

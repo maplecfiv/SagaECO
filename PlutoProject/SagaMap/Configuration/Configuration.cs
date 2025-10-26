@@ -12,16 +12,13 @@ using SagaLib.VirtualFileSytem;
 using SagaMap.Tasks.System;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Configuration
-{
-    public enum RateOverrideType
-    {
+namespace SagaMap.Configuration {
+    public enum RateOverrideType {
         GMLv,
         CLevel
     }
 
-    public class RateOverrideItem
-    {
+    public class RateOverrideItem {
         public RateOverrideType Type { get; set; }
 
         public int Value { get; set; }
@@ -38,14 +35,12 @@ namespace SagaMap.Configuration
 
         public float SpecialDropRate { get; set; } = 1f;
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format("Type:{0} Value:{1}", Type, Value);
         }
     }
 
-    public class Configuration : Singleton<Configuration>
-    {
+    public class Configuration : Singleton<Configuration> {
         private readonly Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>> rateOverride =
             new Dictionary<RateOverrideType, Dictionary<int, RateOverrideItem>>();
 
@@ -86,12 +81,9 @@ namespace SagaMap.Configuration
 
         public bool EnhanceMatsuri { get; set; }
 
-        public int APIPort
-        {
-            get
-            {
-                if (apiport == null || apiport == 0)
-                {
+        public int APIPort {
+            get {
+                if (apiport == null || apiport == 0) {
                     Logger.GetLogger().Warning("PORT ARE NOT SET.USEING DEFAULT PORT (8080).");
                     apiport = 8080;
                 }
@@ -101,12 +93,9 @@ namespace SagaMap.Configuration
             set => apiport = value;
         }
 
-        public string Prefixes
-        {
-            get
-            {
-                if (prefixes == null)
-                {
+        public string Prefixes {
+            get {
+                if (prefixes == null) {
                     Logger.GetLogger().Warning("PREFIXES ARE NOT SET.USEING DEFAULT PREFIXES (localhost).");
                     prefixes = "http://localhost";
                 }
@@ -230,14 +219,12 @@ namespace SagaMap.Configuration
 
         public int QuestSpecialRewardRate { get; set; }
 
-        public string TwitterID
-        {
+        public string TwitterID {
             get => TwitterID;
             set => TwitterID = value;
         }
 
-        public string TwitterPasswd
-        {
+        public string TwitterPasswd {
             get => TwitterPasswd;
             set => TwitterPasswd = value;
         }
@@ -250,12 +237,9 @@ namespace SagaMap.Configuration
 
         public float VolumeRate { get; set; } = 1f;
 
-        public string DBEncoding
-        {
-            get
-            {
-                if (encoding == null)
-                {
+        public string DBEncoding {
+            get {
+                if (encoding == null) {
                     Logger.ShowDebug("DB Encoding not set, set to default value: UTF-8", null);
                     encoding = "utf-8";
                 }
@@ -265,8 +249,7 @@ namespace SagaMap.Configuration
             set => encoding = value;
         }
 
-        public float CalcEXPRateForPC(ActorPC pc)
-        {
+        public float CalcEXPRateForPC(ActorPC pc) {
             var rate = (float)EXPRate / 100;
             /*RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
@@ -277,11 +260,9 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public float CalcStampDropRateForPC(ActorPC pc)
-        {
+        public float CalcStampDropRateForPC(ActorPC pc) {
             var rate = (float)StampDropRate / 100;
-            if (pc != null)
-            {
+            if (pc != null) {
                 RateOverrideItem gmlv, lv;
                 GetRateOverride(pc, out gmlv, out lv);
                 if (gmlv != null)
@@ -293,8 +274,7 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public float CalcQuestRateForPC(ActorPC pc)
-        {
+        public float CalcQuestRateForPC(ActorPC pc) {
             var rate = (float)QuestRate / 100;
             RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
@@ -305,8 +285,7 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public float CalcQuestGoldRateForPC(ActorPC pc)
-        {
+        public float CalcQuestGoldRateForPC(ActorPC pc) {
             var rate = (float)QuestGoldRate / 100;
             RateOverrideItem gmlv, lv;
             GetRateOverride(pc, out gmlv, out lv);
@@ -317,11 +296,9 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public float CalcGlobalDropRateForPC(ActorPC pc)
-        {
+        public float CalcGlobalDropRateForPC(ActorPC pc) {
             var rate = GlobalDropRate;
-            if (pc != null)
-            {
+            if (pc != null) {
                 RateOverrideItem gmlv, lv;
                 GetRateOverride(pc, out gmlv, out lv);
                 if (gmlv != null)
@@ -333,11 +310,9 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public float CalcSpecialDropRateForPC(ActorPC pc)
-        {
+        public float CalcSpecialDropRateForPC(ActorPC pc) {
             var rate = SpecialDropRate;
-            if (pc != null)
-            {
+            if (pc != null) {
                 RateOverrideItem gmlv, lv;
                 GetRateOverride(pc, out gmlv, out lv);
                 if (gmlv != null)
@@ -349,19 +324,16 @@ namespace SagaMap.Configuration
             return rate;
         }
 
-        public void InitAnnounce(string path)
-        {
+        public void InitAnnounce(string path) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path),
                 Encoding.UTF8);
 
             string[] paras;
             byte count = 0;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -375,8 +347,7 @@ namespace SagaMap.Configuration
                     var ta = new TaskAnnounce("公告" + count, Text, DueTime, period);
                     ta.Activate();
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     SagaLib.Logger.ShowError(ex);
                 }
             }
@@ -384,8 +355,7 @@ namespace SagaMap.Configuration
             sr.Close();
         }
 
-        public void Initialization(string path)
-        {
+        public void Initialization(string path) {
             HostedMaps.Clear();
 #if Text
             InitXML(path);
@@ -394,55 +364,47 @@ namespace SagaMap.Configuration
 #endif
         }
 
-        private void GetRateOverride(ActorPC pc, out RateOverrideItem gmlv, out RateOverrideItem clv)
-        {
+        private void GetRateOverride(ActorPC pc, out RateOverrideItem gmlv, out RateOverrideItem clv) {
             gmlv = null;
             clv = null;
             foreach (var i in rateOverride.Keys)
-                switch (i)
-                {
-                    case RateOverrideType.GMLv:
-                        {
-                            var maxValue = 0;
-                            foreach (var j in rateOverride[i].Keys)
-                                if (j > maxValue && j <= pc.Account.GMLevel)
-                                    maxValue = j;
-                            if (maxValue > 0)
-                                gmlv = rateOverride[i][maxValue];
-                        }
+                switch (i) {
+                    case RateOverrideType.GMLv: {
+                        var maxValue = 0;
+                        foreach (var j in rateOverride[i].Keys)
+                            if (j > maxValue && j <= pc.Account.GMLevel)
+                                maxValue = j;
+                        if (maxValue > 0)
+                            gmlv = rateOverride[i][maxValue];
+                    }
                         break;
-                    case RateOverrideType.CLevel:
-                        {
-                            var maxValue = 0;
-                            foreach (var j in rateOverride[i].Keys)
-                                if (j > maxValue && j <= pc.Level)
-                                    maxValue = j;
-                            if (maxValue > 0)
-                                clv = rateOverride[i][maxValue];
-                        }
+                    case RateOverrideType.CLevel: {
+                        var maxValue = 0;
+                        foreach (var j in rateOverride[i].Keys)
+                            if (j > maxValue && j <= pc.Level)
+                                maxValue = j;
+                        if (maxValue > 0)
+                            clv = rateOverride[i][maxValue];
+                    }
                         break;
                 }
         }
 #if Text
-        private void InitXML(string path)
-        {
+        private void InitXML(string path) {
             // var xml = new XmlDocument();
             var getVersion = false;
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 // xml.Load(path);
                 // root = xml["SagaMap"];
                 root = ConfigLoader.LoadConfig("SagaMap");
                 list = root.ChildNodes;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "host":
                             Host = i.InnerText;
                             break;
@@ -511,8 +473,7 @@ namespace SagaMap.Configuration
                             break;
                         case "motd":
                             var msg = i.InnerText.Split('\n');
-                            foreach (var k in msg)
-                            {
+                            foreach (var k in msg) {
                                 var tmp = k.Replace("\r", "").Replace(" ", "");
                                 if (tmp != "")
                                     Motd.Add(tmp);
@@ -521,8 +482,7 @@ namespace SagaMap.Configuration
                             break;
                         case "monitoraccounts":
                             var account = i.InnerText.Split('\n');
-                            foreach (var k in account)
-                            {
+                            foreach (var k in account) {
                                 var tmp = k.Replace("\r", "").Replace(" ", "");
                                 if (tmp != "")
                                     MonitorAccounts.Add(tmp);
@@ -532,96 +492,84 @@ namespace SagaMap.Configuration
                         case "maxlvdiffforexp":
                             MaxLevelDifferenceForExp = int.Parse(i.InnerText);
                             break;
-                        case "rateoverride":
-                            {
-                                var type = i.Attributes["type"].Value;
-                                var value = int.Parse(i.Attributes["value"].Value);
-                                var rType = RateOverrideType.GMLv;
-                                switch (type.ToLower())
-                                {
-                                    case "gmlv":
-                                        rType = RateOverrideType.GMLv;
-                                        break;
-                                    case "clv":
-                                        rType = RateOverrideType.CLevel;
-                                        break;
-                                }
-
-                                Dictionary<int, RateOverrideItem> list2;
-                                if (rateOverride.ContainsKey(rType))
-                                {
-                                    list2 = rateOverride[rType];
-                                }
-                                else
-                                {
-                                    list2 = new Dictionary<int, RateOverrideItem>();
-                                    rateOverride.Add(rType, list2);
-                                }
-
-                                if (!list2.ContainsKey(value))
-                                {
-                                    var item = new RateOverrideItem();
-                                    item.Type = rType;
-                                    item.Value = value;
-                                    var maps = i.ChildNodes;
-                                    foreach (var l in maps)
-                                    {
-                                        XmlElement k;
-                                        if (l.GetType() != typeof(XmlElement)) continue;
-                                        k = (XmlElement)l;
-                                        switch (k.Name.ToLower())
-                                        {
-                                            case "exprate":
-                                                item.ExpRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                            case "questrate":
-                                                item.QuestRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                            case "questgoldrate":
-                                                item.QuestGoldRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                            case "stampdroprate":
-                                                item.StampDropRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                            case "globaldroprate":
-                                                item.GlobalDropRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                            case "specialdroprate":
-                                                item.SpecialDropRate = int.Parse(k.InnerText) / 100f;
-                                                break;
-                                        }
-                                    }
-
-                                    list2.Add(value, item);
-                                }
+                        case "rateoverride": {
+                            var type = i.Attributes["type"].Value;
+                            var value = int.Parse(i.Attributes["value"].Value);
+                            var rType = RateOverrideType.GMLv;
+                            switch (type.ToLower()) {
+                                case "gmlv":
+                                    rType = RateOverrideType.GMLv;
+                                    break;
+                                case "clv":
+                                    rType = RateOverrideType.CLevel;
+                                    break;
                             }
-                            break;
-                        case "hostedmaps":
-                            {
+
+                            Dictionary<int, RateOverrideItem> list2;
+                            if (rateOverride.ContainsKey(rType)) {
+                                list2 = rateOverride[rType];
+                            }
+                            else {
+                                list2 = new Dictionary<int, RateOverrideItem>();
+                                rateOverride.Add(rType, list2);
+                            }
+
+                            if (!list2.ContainsKey(value)) {
+                                var item = new RateOverrideItem();
+                                item.Type = rType;
+                                item.Value = value;
                                 var maps = i.ChildNodes;
-                                foreach (var l in maps)
-                                {
+                                foreach (var l in maps) {
                                     XmlElement k;
                                     if (l.GetType() != typeof(XmlElement)) continue;
                                     k = (XmlElement)l;
-                                    switch (k.Name.ToLower())
-                                    {
-                                        case "mapid":
-                                            HostedMaps.Add(uint.Parse(k.InnerText));
+                                    switch (k.Name.ToLower()) {
+                                        case "exprate":
+                                            item.ExpRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "questrate":
+                                            item.QuestRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "questgoldrate":
+                                            item.QuestGoldRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "stampdroprate":
+                                            item.StampDropRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "globaldroprate":
+                                            item.GlobalDropRate = int.Parse(k.InnerText) / 100f;
+                                            break;
+                                        case "specialdroprate":
+                                            item.SpecialDropRate = int.Parse(k.InnerText) / 100f;
                                             break;
                                     }
                                 }
+
+                                list2.Add(value, item);
                             }
+                        }
                             break;
-                        case "scriptreference":
-                            var dlls = i.ChildNodes;
-                            foreach (var l in dlls)
-                            {
+                        case "hostedmaps": {
+                            var maps = i.ChildNodes;
+                            foreach (var l in maps) {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
                                 k = (XmlElement)l;
-                                switch (k.Name.ToLower())
-                                {
+                                switch (k.Name.ToLower()) {
+                                    case "mapid":
+                                        HostedMaps.Add(uint.Parse(k.InnerText));
+                                        break;
+                                }
+                            }
+                        }
+                            break;
+                        case "scriptreference":
+                            var dlls = i.ChildNodes;
+                            foreach (var l in dlls) {
+                                XmlElement k;
+                                if (l.GetType() != typeof(XmlElement)) continue;
+                                k = (XmlElement)l;
+                                switch (k.Name.ToLower()) {
                                     case "assembly":
                                         ScriptReference.Add(k.InnerText);
                                         break;
@@ -651,13 +599,11 @@ namespace SagaMap.Configuration
                             WarehouseLimit = int.Parse(i.InnerText);
                             break;
                         case "version":
-                            try
-                            {
+                            try {
                                 Version = (Version)Enum.Parse(typeof(Version), i.InnerText);
                                 getVersion = true;
                             }
-                            catch
-                            {
+                            catch {
                                 Logger.GetLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
                             }
@@ -798,20 +744,17 @@ namespace SagaMap.Configuration
                         Version));
                 Logger.GetLogger().Information("Done reading configuration...");
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
         //#else
-        private void InitDat(string path)
-        {
+        private void InitDat(string path) {
             var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
             var br = new BinaryReader(fs);
             var magic = br.ReadInt32();
-            if (magic == 0x12345678)
-            {
+            if (magic == 0x12345678) {
                 br.ReadInt32();
                 var len = br.ReadByte();
                 Host = Global.Unicode.GetString(br.ReadBytes(len));
@@ -863,24 +806,21 @@ namespace SagaMap.Configuration
                 AtkMastery = br.ReadBoolean();
 
                 var count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     len = br.ReadByte();
                     var txt = Global.Unicode.GetString(br.ReadBytes(len));
                     Motd.Add(txt);
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     len = br.ReadByte();
                     var txt = Global.Unicode.GetString(br.ReadBytes(len));
                     ScriptReference.Add(txt);
                 }
 
                 count = br.ReadInt32();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var mapID = br.ReadUInt32();
                     HostedMaps.Add(mapID);
                 }

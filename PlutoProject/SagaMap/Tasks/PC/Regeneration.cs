@@ -4,24 +4,19 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Tasks.PC
-{
-    public class Regeneration : MultiRunTask
-    {
+namespace SagaMap.Tasks.PC {
+    public class Regeneration : MultiRunTask {
         private readonly MapClient client;
 
-        public Regeneration(MapClient client)
-        {
+        public Regeneration(MapClient client) {
             DueTime = 5000;
             Period = 5000;
             this.client = client;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 if (client.Character.Mode == PlayerMode.KNIGHT_EAST) //除夕活动
                 {
                     Deactivate();
@@ -44,9 +39,8 @@ namespace SagaMap.Tasks.PC
                         true);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
                 client.Character.Tasks.Remove("Regeneration");
             }

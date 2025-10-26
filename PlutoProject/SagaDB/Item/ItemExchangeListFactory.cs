@@ -5,23 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class ItemExchangeListFactory : Singleton<ItemExchangeListFactory>
-    {
+namespace SagaDB.Item {
+    public class ItemExchangeListFactory : Singleton<ItemExchangeListFactory> {
         public Dictionary<uint, ItemExchangeList> ExchangeList = new Dictionary<uint, ItemExchangeList>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -33,9 +28,8 @@ namespace SagaDB.Item
                     if (!ExchangeList.ContainsKey(exl.ItemID))
                         ExchangeList.Add(exl.ItemID, exl);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 

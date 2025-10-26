@@ -44,7 +44,7 @@ namespace SagaMap.Network.LoginServer {
             var times = 5;
             do {
                 if (times < 0) {
-                    Logger.GetLogger().Error("Cannot connect to the loginserver,please check the configuration!", null);
+                    Logger.ShowError("Cannot connect to the loginserver,please check the configuration!", null);
                     return;
                 }
 
@@ -54,8 +54,8 @@ namespace SagaMap.Network.LoginServer {
                     Connected = true;
                 }
                 catch (Exception e) {
-                    Logger.GetLogger().Error("Failed... Trying again in 5sec", null);
-                    Logger.GetLogger().Error(e.ToString(), null);
+                    Logger.ShowError("Failed... Trying again in 5sec", null);
+                    Logger.ShowError(e.ToString(), null);
                     Thread.Sleep(5000);
                     Connected = false;
                 }
@@ -66,10 +66,10 @@ namespace SagaMap.Network.LoginServer {
             Logger.GetLogger().Information("Successfully connected to the loginserver", null);
             state = SESSION_STATE.CONNECTED;
             try {
-                NetIo = new NetIO(sock, commandTable, this);
+                NetIo = new NetIo(sock, commandTable, this);
                 if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                     NetIo.FirstLevelLength = 2;
-                NetIo.SetMode(NetIO.Mode.Client);
+                NetIo.SetMode(NetIo.Mode.Client);
                 var p = new Packet(8);
                 p.data[7] = 0x10;
                 NetIo.SendPacket(p, true, true);
@@ -128,7 +128,7 @@ namespace SagaMap.Network.LoginServer {
                 state = SESSION_STATE.IDENTIFIED;
             }
             else {
-                Logger.GetLogger().Error("FATAL: Request Rejected from loginserver,terminating");
+                Logger.ShowError("FATAL: Request Rejected from loginserver,terminating");
                 state = SESSION_STATE.REJECTED;
             }
         }

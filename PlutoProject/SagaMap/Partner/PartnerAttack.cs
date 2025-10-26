@@ -5,15 +5,12 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Skill;
 
-namespace SagaMap.Partner
-{
-    public class PartnerAttack : MultiRunTask
-    {
+namespace SagaMap.Partner {
+    public class PartnerAttack : MultiRunTask {
         private readonly PartnerAI partnerai;
         public Actor dActor;
 
-        public PartnerAttack(PartnerAI partnerai, Actor dActor)
-        {
+        public PartnerAttack(PartnerAI partnerai, Actor dActor) {
             Name = "搭档普攻线程";
             DueTime = 0;
             this.partnerai = partnerai;
@@ -21,8 +18,7 @@ namespace SagaMap.Partner
             this.dActor = dActor;
         }
 
-        private int calcDelay(Actor actor)
-        {
+        private int calcDelay(Actor actor) {
             var aspd = 0;
             uint delay = 0;
             var partner = (ActorPartner)partnerai.Partner;
@@ -31,20 +27,16 @@ namespace SagaMap.Partner
             return (int)delay;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 if (!partnerai.CanAttack)
                     return;
-                if (dActor == null || partnerai.Partner == null)
-                {
+                if (dActor == null || partnerai.Partner == null) {
                     if (Activated) Deactivate();
                     return;
                 }
 
-                if (partnerai.Partner.HP == 0 || dActor.HP == 0 || partnerai.Partner.Tasks.ContainsKey("AutoCast"))
-                {
+                if (partnerai.Partner.HP == 0 || dActor.HP == 0 || partnerai.Partner.Tasks.ContainsKey("AutoCast")) {
                     if (partnerai.Hate.ContainsKey(dActor.ActorID)) partnerai.Hate.Remove(dActor.ActorID);
                     if (Activated) Deactivate();
                     return;
@@ -52,14 +44,12 @@ namespace SagaMap.Partner
 
                 var partner = (ActorPartner)partnerai.Partner;
                 if (DateTime.Now < partner.TTime["攻击僵直"]) return;
-                if (partner.Owner.ActorID == dActor.ActorID)
-                {
+                if (partner.Owner.ActorID == dActor.ActorID) {
                     if (Activated) Deactivate();
                     return;
                 }
 
-                if (partnerai.Master != null)
-                {
+                if (partnerai.Master != null) {
                     if (dActor.ActorID == partnerai.Master.ActorID)
                         return;
                     if (dActor.type == ActorType.MOB)
@@ -79,20 +69,17 @@ namespace SagaMap.Partner
                 //    }
                 //}
                 //目前对于parter的几个排除攻击对象进行处理
-                if (dActor.type == ActorType.PC)
-                {
+                if (dActor.type == ActorType.PC) {
                     if (Activated) Deactivate();
                     return;
                 }
 
-                if (dActor.type == ActorType.PARTNER)
-                {
+                if (dActor.type == ActorType.PARTNER) {
                     if (Activated) Deactivate();
                     return;
                 }
 
-                if (dActor.type == ActorType.PET)
-                {
+                if (dActor.type == ActorType.PET) {
                     if (Activated) Deactivate();
                     return;
                 }
@@ -103,10 +90,9 @@ namespace SagaMap.Partner
                 Period = calcDelay(partnerai.Partner);
                 partner.TTime["攻击僵直"] = DateTime.Now + new TimeSpan(0, 0, 0, 0, Period - 500);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 Deactivate();
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
     }

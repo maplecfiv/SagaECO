@@ -77,7 +77,7 @@ namespace SagaMap {
         //         }
         //     }
         //     catch (Exception exception) {
-        //         Logger.GetLogger().Error(exception, null);
+        //         Logger.ShowError(exception);
         //         return false;
         //     }
         // }
@@ -97,7 +97,7 @@ namespace SagaMap {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected()) {
-                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.ShowError("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
@@ -387,15 +387,15 @@ namespace SagaMap {
                 Thread.Sleep(1000);
 
             if (login.state == LoginSession.SESSION_STATE.REJECTED) {
-                Logger.GetLogger().Error("Shutting down in 20sec.", null);
+                Logger.ShowError("Shutting down in 20sec.", null);
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
                 return;
             }
 
             // if (!StartDatabase()) {
-            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
-            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     Logger.ShowError("cannot connect to dbserver", null);
+            //     Logger.ShowError("Shutting down in 20sec.", null);
             //     MapClientManager.Instance.Abort();
             //     Thread.Sleep(20000);
             //     return;
@@ -417,7 +417,7 @@ namespace SagaMap {
 
             MapClientManager.Instance.Start();
             if (!MapClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
-                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
+                Logger.ShowError("cannot listen on port: " + Configuration.Configuration.Instance.Port);
                 Logger.GetLogger().Information("Shutting down in 20sec.");
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
@@ -521,7 +521,7 @@ namespace SagaMap {
                             sw.Close();
                         }
                         catch (Exception ex) {
-                            Logger.GetLogger().Error(ex, ex.Message);
+                            Logger.ShowError(ex);
                         }
 
                         shouldRefreshStatistic = false;
@@ -537,7 +537,7 @@ namespace SagaMap {
                     Thread.Sleep(1);
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                 }
         }
 
@@ -594,7 +594,7 @@ namespace SagaMap {
                                     foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
                                 }
                                 catch (Exception exception) {
-                                    Logger.GetLogger().Error(exception, null);
+                                    Logger.ShowError(exception);
                                 }
                             }
 
@@ -611,7 +611,7 @@ namespace SagaMap {
                                     client.NetIo.Disconnect();
                                 }
                                 catch (Exception exception) {
-                                    Logger.GetLogger().Error(exception, null);
+                                    Logger.ShowError(exception);
                                 }
 
                             break;
@@ -633,7 +633,7 @@ namespace SagaMap {
                                     i.NetIo.Disconnect();
                                 }
                                 catch (Exception exception) {
-                                    Logger.GetLogger().Error(exception, null);
+                                    Logger.ShowError(exception);
                                 }
 
                             Logger.GetLogger().Information("Saving golem's data.....", null);
@@ -685,7 +685,7 @@ namespace SagaMap {
                                     }
                                 }
                                 catch (Exception exception) {
-                                    Logger.GetLogger().Error(exception, null);
+                                    Logger.ShowError(exception);
                                 }
 
                             break;
@@ -734,7 +734,7 @@ namespace SagaMap {
                     i.NetIo.Disconnect();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
 
@@ -759,10 +759,10 @@ namespace SagaMap {
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
             var ex = e.ExceptionObject as Exception;
             shutingdown = true;
-            Logger.GetLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.GetLogger().Error("Error Message:" + ex);
-            Logger.GetLogger().Error("Call Stack:" + ex.StackTrace);
-            Logger.GetLogger().Error("Trying to save all player's data");
+            Logger.ShowError("Fatal: An unhandled exception is thrown, terminating...");
+            Logger.ShowError("Error Message:" + ex);
+            Logger.ShowError("Call Stack:" + ex.StackTrace);
+            Logger.ShowError("Trying to save all player's data");
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
 
             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
@@ -773,10 +773,10 @@ namespace SagaMap {
                     i.NetIo.Disconnect();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
-            Logger.GetLogger().Error("Trying to clear golem actor");
+            Logger.ShowError("Trying to clear golem actor");
 
             var maps = MapManager.Instance.Maps.Values.ToArray();
             foreach (var i in maps) {

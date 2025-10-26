@@ -3,23 +3,17 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.Additions
-{
-    public class Poison : DefaultBuff
-    {
+namespace SagaMap.Skill.Additions {
+    public class Poison : DefaultBuff {
         public Poison(SagaDB.Skill.Skill skill, Actor actor, int lifetime)
             : base(skill, actor, "Poison", (int)(lifetime * (1f - actor.AbnormalStatus[AbnormalStatus.Poisen] / 100)),
-                2000)
-        {
-            if (SkillHandler.Instance.isBossMob(actor))
-            {
-                if (!actor.Status.Additions.ContainsKey("BOSSPoison免疫"))
-                {
+                2000) {
+            if (SkillHandler.Instance.isBossMob(actor)) {
+                if (!actor.Status.Additions.ContainsKey("BOSSPoison免疫")) {
                     var BOSSPoison免疫 = new DefaultBuff(skill, actor, "BOSSPoison免疫", 60000);
                     SkillHandler.ApplyAddition(actor, BOSSPoison免疫);
                 }
-                else
-                {
+                else {
                     Enabled = false;
                 }
             }
@@ -29,8 +23,7 @@ namespace SagaMap.Skill.Additions
             OnUpdate += TimerUpdate;
         }
 
-        private void StartEvent(Actor actor, DefaultBuff skill)
-        {
+        private void StartEvent(Actor actor, DefaultBuff skill) {
             //最大攻擊
             var max_atk1_add = actor.Status.max_atk_bs / 2;
             if (skill.Variable.ContainsKey("Poison_max_atk1"))
@@ -96,8 +89,7 @@ namespace SagaMap.Skill.Additions
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
-        private void EndEvent(Actor actor, DefaultBuff skill)
-        {
+        private void EndEvent(Actor actor, DefaultBuff skill) {
             //最大攻擊
             actor.Status.max_atk1_skill += (short)skill.Variable["Poison_max_atk1"];
 
@@ -131,13 +123,10 @@ namespace SagaMap.Skill.Additions
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, false);
         }
 
-        private void TimerUpdate(Actor actor, DefaultBuff skill)
-        {
+        private void TimerUpdate(Actor actor, DefaultBuff skill) {
             //测试去除技能同步锁ClientManager.EnterCriticalArea();
-            try
-            {
-                if (actor.HP > 0 && !actor.Buff.Dead)
-                {
+            try {
+                if (actor.HP > 0 && !actor.Buff.Dead) {
                     MapManager.Instance.GetMap(actor.MapID);
                     var amount = (int)(actor.MaxHP / 100) * 5;
                     if (amount < 1)
@@ -150,9 +139,8 @@ namespace SagaMap.Skill.Additions
                     //map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, actor, true);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
             //测试去除技能同步锁ClientManager.LeaveCriticalArea();
         }

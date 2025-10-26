@@ -5,17 +5,14 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen {
     /// <summary>
     ///     月蝕（ホーリーキャンセレーション）
     /// </summary>
-    public class CancelLightCircle : ISkill
-    {
+    public class CancelLightCircle : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Map map;
             private readonly byte[,] olight = new byte[3, 3];
@@ -25,8 +22,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             private Actor sActor;
             private int times;
 
-            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level)
-            {
+            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level) {
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
@@ -37,39 +33,33 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0)
-                    {
+                try {
+                    if (lifetime > 0) {
                         if (times == 0)
                             for (var x = (byte)(skill.x - 1); x < skill.x + 1; x++)
-                            for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
-                            {
-                                olight[x - skill.x + 1, y - skill.y + 1] = map.Info.holy[x, y];
-                                map.Info.holy[x, y] = 0;
-                            }
+                                for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++) {
+                                    olight[x - skill.x + 1, y - skill.y + 1] = map.Info.holy[x, y];
+                                    map.Info.holy[x, y] = 0;
+                                }
 
                         times++;
                         lifetime -= Period;
                     }
-                    else
-                    {
+                    else {
                         for (var x = (byte)(skill.x - 1); x < skill.x + 1; x++)
-                        for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
-                            map.Info.holy[x, y] = olight[x - skill.x + 1, y - skill.y + 1];
+                            for (var y = (byte)(skill.y - 1); y < skill.y + 1; y++)
+                                map.Info.holy[x, y] = olight[x - skill.x + 1, y - skill.y + 1];
 
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -80,16 +70,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 100)) return -17;
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //建立設置型技能實體
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

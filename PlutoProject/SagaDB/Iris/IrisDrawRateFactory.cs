@@ -5,24 +5,19 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Iris
-{
-    public class IrisDrawRateFactory : Singleton<IrisDrawRateFactory>
-    {
+namespace SagaDB.Iris {
+    public class IrisDrawRateFactory : Singleton<IrisDrawRateFactory> {
         public Dictionary<string, IrisDrawRate> DrawRate = new Dictionary<string, IrisDrawRate>();
 
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -43,9 +38,8 @@ namespace SagaDB.Iris
                     else
                         DrawRate[gachakey] = drawrate;
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }

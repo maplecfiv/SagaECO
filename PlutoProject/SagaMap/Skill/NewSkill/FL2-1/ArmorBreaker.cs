@@ -4,29 +4,23 @@ using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.NewSkill.FL2_1
-{
-    public class ArmorBreaker : ISkill
-    {
+namespace SagaMap.Skill.NewSkill.FL2_1 {
+    public class ArmorBreaker : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             float factor = 0;
             args.type = ATTACK_TYPE.BLOW;
             factor = 1.4f;
             SkillHandler.Instance.PhysicalAttack(sActor, dActor, args, sActor.WeaponElement, factor);
-            if ((args.flag[0] & AttackFlag.HP_DAMAGE) != 0)
-            {
+            if ((args.flag[0] & AttackFlag.HP_DAMAGE) != 0) {
                 var rate = 100;
                 var lifetime = 0;
-                switch (level)
-                {
+                switch (level) {
                     case 1:
                         rate = 100;
                         lifetime = 10000;
@@ -50,9 +44,8 @@ namespace SagaMap.Skill.NewSkill.FL2_1
                 }
 
                 lifetime = SkillHandler.Instance.AdditionApply(sActor, dActor, rate, lifetime);
-                if (lifetime > 0)
-                {
-                    Logger.GetLogger().Error(dActor.Status.def_add_skill.ToString());
+                if (lifetime > 0) {
+                    Logger.ShowError(dActor.Status.def_add_skill.ToString());
                     var skill = new DefaultBuff(args.skill, dActor, "ArmorBreaker", lifetime);
                     skill.OnAdditionStart += StartEventHandler;
                     skill.OnAdditionEnd += EndEventHandler;
@@ -61,8 +54,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
             }
         }
 
-        private void StartEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void StartEventHandler(Actor actor, DefaultBuff skill) {
             int level = skill.skill.Level;
 
             var def_add = -(10 * level);
@@ -75,8 +67,7 @@ namespace SagaMap.Skill.NewSkill.FL2_1
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
         }
 
-        private void EndEventHandler(Actor actor, DefaultBuff skill)
-        {
+        private void EndEventHandler(Actor actor, DefaultBuff skill) {
             actor.Status.def_add_skill -= (short)skill.Variable["ArmorBreaker"];
             actor.Buff.DefDown = false;
             MapManager.Instance.GetMap(actor.MapID)

@@ -3,10 +3,8 @@ using System.Net.Sockets;
 using SagaDB;
 using SagaLib;
 
-namespace SagaValidation.Network.Client
-{
-    public partial class ValidationClient : SagaLib.Client
-    {
+namespace SagaValidation.Network.Client {
+    public partial class ValidationClient : SagaLib.Client {
         private string client_Version;
 
         private uint frontWord, backWord;
@@ -15,8 +13,7 @@ namespace SagaValidation.Network.Client
 
         //public Account account;
 
-        public enum SESSION_STATE
-        {
+        public enum SESSION_STATE {
             LOGIN,
             MAP,
             REDIRECTING,
@@ -25,20 +22,17 @@ namespace SagaValidation.Network.Client
 
         public SESSION_STATE state;
 
-        public ValidationClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
-        {
-            NetIo = new NetIO(mSock, mCommandTable, this);
+        public ValidationClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable) {
+            NetIo = new NetIo(mSock, mCommandTable, this);
             NetIo.FirstLevelLength = 2;
-            NetIo.SetMode(NetIO.Mode.Server);
+            NetIo.SetMode(NetIo.Mode.Server);
             if (NetIo.sock.Connected) OnConnect();
         }
 
-        public override void OnConnect()
-        {
+        public override void OnConnect() {
         }
 
-        public void OnLogin(Packets.Client.CSMG_LOGIN p)
-        {
+        public void OnLogin(Packets.Client.CSMG_LOGIN p) {
             p.GetContent();
 
             //Establish TCP ACK Flag at first handshake
@@ -48,10 +42,8 @@ namespace SagaValidation.Network.Client
 
             Account tmp = ValidationServer.accountDB.GetUser(p.UserName.Replace("\\", "").Replace("'", "\\'"));
 
-            if (Configuration.Instance.ServerClose == true)
-            {
-                if (tmp.GMLevel <= 200)
-                {
+            if (Configuration.Instance.ServerClose == true) {
+                if (tmp.GMLevel <= 200) {
                     Packets.Server.SSMG_LOGIN_ACK p1 = new Packets.Server.SSMG_LOGIN_ACK();
                     p1.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
                     NetIo.SendPacket(p1);
@@ -61,8 +53,7 @@ namespace SagaValidation.Network.Client
             }
 
 
-            if (ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord))
-            {
+            if (ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord)) {
                 //Prepare Account Information 
 
 
@@ -73,8 +64,7 @@ namespace SagaValidation.Network.Client
                 this.NetIo.SendPacket(p1);
                 */
                 //Check if Account Banned
-                if (tmp.Banned)
-                {
+                if (tmp.Banned) {
                     Packets.Server.SSMG_LOGIN_ACK p2 = new Packets.Server.SSMG_LOGIN_ACK();
                     p2.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
                     NetIo.SendPacket(p2);
@@ -83,8 +73,7 @@ namespace SagaValidation.Network.Client
                     //TCP Connection terminated.
                 }
             }
-            else
-            {
+            else {
                 Packets.Server.SSMG_LOGIN_ACK p1 = new Packets.Server.SSMG_LOGIN_ACK();
                 p1.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
                 NetIo.SendPacket(p1);
@@ -94,8 +83,7 @@ namespace SagaValidation.Network.Client
             }
         }
 
-        public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p)
-        {
+        public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p) {
             Logger.GetLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
             client_Version = p.GetVersion();
 
@@ -118,14 +106,12 @@ namespace SagaValidation.Network.Client
             NetIo.SendPacket(p2);
         }
 
-        public void OnPing(Packets.Client.CSMG_PING p)
-        {
+        public void OnPing(Packets.Client.CSMG_PING p) {
             Packets.Server.SSMG_PONG p1 = new Packets.Server.SSMG_PONG();
             NetIo.SendPacket(p1);
         }
 
-        public void OnUnknownList(Packets.Client.CSMG_UNKNOWN_LIST p)
-        {
+        public void OnUnknownList(Packets.Client.CSMG_UNKNOWN_LIST p) {
             Packets.Server.SSMG_UNKNOWN_RETURN p1 = new Packets.Server.SSMG_UNKNOWN_RETURN();
             NetIo.SendPacket(p1);
         }

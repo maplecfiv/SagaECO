@@ -9,14 +9,11 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Scripting;
 
-namespace SagaMap.Manager
-{
-    public class ScriptManager : Singleton<ScriptManager>
-    {
+namespace SagaMap.Manager {
+    public class ScriptManager : Singleton<ScriptManager> {
         private string path;
 
-        public ScriptManager()
-        {
+        public ScriptManager() {
             Events = new Dictionary<uint, Event>();
         }
 
@@ -26,38 +23,31 @@ namespace SagaMap.Manager
 
         public Dictionary<string, MultiRunTask> Timers { get; } = new Dictionary<string, MultiRunTask>();
 
-        public void ReloadScript()
-        {
+        public void ReloadScript() {
             ClientManager.NoCheckDeadLock = true;
-            try
-            {
+            try {
                 Events.Clear();
                 LoadScript(path);
             }
-            catch
-            {
+            catch {
             }
 
             ClientManager.NoCheckDeadLock = false;
         }
 
-        public void LoadScript(string path)
-        {
+        public void LoadScript(string path) {
             Logger.GetLogger().Information("Loading uncompiled scripts");
             var dic = new Dictionary<string, string> { { "CompilerVersion", "v4.0" } };
             var provider = new CSharpCodeProvider(dic);
             var eventcount = 0;
             this.path = path;
-            try
-            {
+            try {
                 var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
                 Assembly newAssembly;
                 int tmp;
-                if (files.Length > 0)
-                {
+                if (files.Length > 0) {
                     newAssembly = CompileScript(files, provider);
-                    if (newAssembly != null)
-                    {
+                    if (newAssembly != null) {
                         tmp = LoadAssembly(newAssembly);
                         Logger.GetLogger().Information(string.Format("Containing {0} Events", tmp));
                         eventcount += tmp;
@@ -66,11 +56,9 @@ namespace SagaMap.Manager
 
                 Logger.GetLogger().Information("Loading compiled scripts....");
                 files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
-                foreach (var i in files)
-                {
+                foreach (var i in files) {
                     newAssembly = Assembly.LoadFile(Path.GetFullPath(i));
-                    if (newAssembly != null)
-                    {
+                    if (newAssembly != null) {
                         tmp = LoadAssembly(newAssembly);
                         Logger.GetLogger().Information(string.Format("Loading {1}, Containing {0} Events", tmp, i));
                         eventcount += tmp;
@@ -92,17 +80,15 @@ namespace SagaMap.Manager
                 if (!Events.ContainsKey(0xF1000001))
                     Events.Add(0xF1000001, new WestFortField());
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
 
 
             Logger.GetLogger().Information(string.Format("Totally {0} Events Added", eventcount));
         }
 
-        private Assembly CompileScript(string[] Source, CSharpCodeProvider Provider)
-        {
+        private Assembly CompileScript(string[] Source, CSharpCodeProvider Provider) {
             //ICodeCompiler compiler = Provider.;
             var parms = new CompilerParameters();
             CompilerResults results;
@@ -125,13 +111,11 @@ namespace SagaMap.Manager
             foreach (var i in Configuration.Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
             // Compile
             results = Provider.CompileAssemblyFromFile(parms, Source);
-            if (results.Errors.HasErrors)
-            {
+            if (results.Errors.HasErrors) {
                 foreach (CompilerError error in results.Errors)
-                    if (!error.IsWarning)
-                    {
-                        Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
-                        Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
+                    if (!error.IsWarning) {
+                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
+                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -141,44 +125,35 @@ namespace SagaMap.Manager
             return results.CompiledAssembly;
         }
 
-        private int LoadAssembly(Assembly newAssembly)
-        {
+        private int LoadAssembly(Assembly newAssembly) {
             var newScripts = newAssembly.GetModules();
             var count = 0;
-            foreach (var newScript in newScripts)
-            {
+            foreach (var newScript in newScripts) {
                 var types = newScript.GetTypes();
-                foreach (var npcType in types)
-                {
-                    try
-                    {
+                foreach (var npcType in types) {
+                    try {
                         if (npcType.IsAbstract) continue;
                         if (npcType.GetCustomAttributes(false).Length > 0) continue;
                         Event newEvent;
-                        try
-                        {
+                        try {
                             newEvent = (Event)Activator.CreateInstance(npcType);
                         }
-                        catch (Exception exception)
-                        {
-                            Logger.GetLogger().Error(exception, null);
+                        catch (Exception exception) {
+                            Logger.ShowError(exception);
                             continue;
                         }
 
-                        if (!Events.ContainsKey(newEvent.EventID) && newEvent.EventID != 0)
-                        {
+                        if (!Events.ContainsKey(newEvent.EventID) && newEvent.EventID != 0) {
                             Events.Add(newEvent.EventID, newEvent);
                         }
-                        else
-                        {
+                        else {
                             if (newEvent.EventID != 0)
                                 Logger.GetLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     newEvent.EventID, npcType.FullName));
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
 
                     count++;
@@ -188,8 +163,7 @@ namespace SagaMap.Manager
             return count;
         }
 
-        public uint GetFreeIDSince(uint since, int max)
-        {
+        public uint GetFreeIDSince(uint since, int max) {
             for (var i = since; i < since + max; i++)
                 if (!Events.ContainsKey(i))
                     return i;

@@ -9,17 +9,14 @@ using SagaMap.Partner;
 using SagaMap.Scripting;
 using SagaMap.Tasks.Partner;
 
-namespace SagaMap.ActorEventHandlers
-{
-    public class PartnerEventHandler : ActorEventHandler
-    {
+namespace SagaMap.ActorEventHandlers {
+    public class PartnerEventHandler : ActorEventHandler {
         private readonly ActorPartner partner;
         public PartnerAI AI;
         private PartnerCallback currentCall;
         private ActorPC currentPC;
 
-        public PartnerEventHandler(ActorPartner partner)
-        {
+        public PartnerEventHandler(ActorPartner partner) {
             this.partner = partner;
             AI = new PartnerAI(partner);
         }
@@ -33,20 +30,16 @@ namespace SagaMap.ActorEventHandlers
 
         //#region ActorEventHandler Members
 
-        public void OnActorSkillCancel(Actor sActor)
-        {
+        public void OnActorSkillCancel(Actor sActor) {
         }
 
-        public void OnActorReturning(Actor sActor)
-        {
+        public void OnActorReturning(Actor sActor) {
         }
 
-        public void OnActorPaperChange(ActorPC aActor)
-        {
+        public void OnActorPaperChange(ActorPC aActor) {
         }
 
-        public void OnActorAppears(Actor aActor)
-        {
+        public void OnActorAppears(Actor aActor) {
             if (!partner.VisibleActors.Contains(aActor.ActorID))
                 partner.VisibleActors.Add(aActor.ActorID);
             if (aActor.ActorID == partner.Owner.ActorID && partner.type != ActorType.SHADOW)
@@ -54,24 +47,19 @@ namespace SagaMap.ActorEventHandlers
                     AI.Hate.Add(aActor.ActorID, 1);
         }
 
-        public void OnPlayerShopChange(Actor aActor)
-        {
+        public void OnPlayerShopChange(Actor aActor) {
         }
 
-        public void OnPlayerShopChangeClose(Actor aActor)
-        {
+        public void OnPlayerShopChangeClose(Actor aActor) {
         }
 
-        public void OnActorChangeEquip(Actor sActor, MapEventArgs args)
-        {
+        public void OnActorChangeEquip(Actor sActor, MapEventArgs args) {
         }
 
-        public void OnActorChat(Actor cActor, MapEventArgs args)
-        {
+        public void OnActorChat(Actor cActor, MapEventArgs args) {
         }
 
-        public void OnActorDisappears(Actor dActor)
-        {
+        public void OnActorDisappears(Actor dActor) {
             if (partner.VisibleActors.Contains(dActor.ActorID))
                 partner.VisibleActors.Remove(dActor.ActorID);
             if (dActor.type == ActorType.PC && dActor.ActorID != partner.Owner.ActorID)
@@ -79,121 +67,94 @@ namespace SagaMap.ActorEventHandlers
                     AI.Hate.Remove(dActor.ActorID);
         }
 
-        public void OnActorSkillUse(Actor sActor, MapEventArgs args)
-        {
+        public void OnActorSkillUse(Actor sActor, MapEventArgs args) {
             var arg = (SkillArg)args;
-            try
-            {
+            try {
                 AI.OnSeenSkillUse(arg);
             }
-            catch
-            {
+            catch {
             }
 
-            try
-            {
-                if (SkillUsing != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
+            try {
+                if (SkillUsing != null) {
+                    if (AI.lastAttacker != null) {
                         if (AI.lastAttacker.type == ActorType.PC)
                             RunCallback(SkillUsing, (ActorPC)AI.lastAttacker);
                         else
                             RunCallback(SkillUsing, null);
                     }
-                    else
-                    {
+                    else {
                         RunCallback(SkillUsing, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
-        {
+        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed) {
         }
 
-        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed, MoveType moveType)
-        {
+        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed, MoveType moveType) {
         }
 
-        public void OnActorStopsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
-        {
-            try
-            {
-                if (Moving != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
+        public void OnActorStopsMoving(Actor mActor, short[] pos, ushort dir, ushort speed) {
+            try {
+                if (Moving != null) {
+                    if (AI.lastAttacker != null) {
                         if (AI.lastAttacker.type == ActorType.PC)
                             RunCallback(Moving, (ActorPC)AI.lastAttacker);
                         else
                             RunCallback(Moving, null);
                     }
-                    else
-                    {
+                    else {
                         RunCallback(Moving, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnCreate(bool success)
-        {
+        public void OnCreate(bool success) {
         }
 
 
-        public void OnActorChangeEmotion(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorChangeEmotion(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorChangeMotion(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorChangeMotion(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorChangeWaitType(Actor aActor)
-        {
+        public void OnActorChangeWaitType(Actor aActor) {
         }
 
-        public void OnDelete()
-        {
+        public void OnDelete() {
             partner.VisibleActors.Clear();
             AI.Pause();
         }
 
 
-        public void OnCharInfoUpdate(Actor aActor)
-        {
+        public void OnCharInfoUpdate(Actor aActor) {
         }
 
 
-        public void OnPlayerSizeChange(Actor aActor)
-        {
+        public void OnPlayerSizeChange(Actor aActor) {
         }
 
-        public void OnDie()
-        {
+        public void OnDie() {
             OnDie(true);
         }
 
-        public void OnDie(bool loot)
-        {
+        public void OnDie(bool loot) {
             partner.Buff.Dead = true;
             partner.ClearTaskAddition();
-            if (partner.type != ActorType.SHADOW)
-            {
+            if (partner.type != ActorType.SHADOW) {
                 var eh = (PCEventHandler)partner.Owner.e;
                 eh.Client.DeletePartner();
-                if (partner.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
-                {
+                if (partner.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET)) {
                     var p = new CSMG_ITEM_MOVE();
                     p.data = new byte[11];
                     var item = partner.Owner.Inventory.Equipments[EnumEquipSlot.PET];
@@ -211,222 +172,174 @@ namespace SagaMap.ActorEventHandlers
                     eh.Client.OnItemMove(p);
                 }
             }
-            else
-            {
+            else {
                 partner.Owner.Slave.Remove(partner);
                 AI.Pause();
                 var task = new DeleteCorpse(partner);
                 partner.Tasks.Add("DeleteCorpse", task);
                 task.Activate();
-                if (partner.Tasks.ContainsKey("Shadow"))
-                {
+                if (partner.Tasks.ContainsKey("Shadow")) {
                     partner.Tasks["Shadow"].Deactivate();
                     partner.Tasks.Remove("Shadow");
                 }
             }
         }
 
-        public void OnKick()
-        {
+        public void OnKick() {
             throw new NotImplementedException();
         }
 
-        public void OnMapLoaded()
-        {
+        public void OnMapLoaded() {
             throw new NotImplementedException();
         }
 
-        public void OnReSpawn()
-        {
+        public void OnReSpawn() {
             throw new NotImplementedException();
         }
 
-        public void OnSendMessage(string from, string message)
-        {
+        public void OnSendMessage(string from, string message) {
             throw new NotImplementedException();
         }
 
-        public void OnSendWhisper(string name, string message, byte flag)
-        {
+        public void OnSendWhisper(string name, string message, byte flag) {
             throw new NotImplementedException();
         }
 
-        public void OnTeleport(short x, short y)
-        {
+        public void OnTeleport(short x, short y) {
             throw new NotImplementedException();
         }
 
-        public void OnAttack(Actor aActor, MapEventArgs args)
-        {
+        public void OnAttack(Actor aActor, MapEventArgs args) {
             var arg = (SkillArg)args;
             AI.OnSeenSkillUse(arg);
-            try
-            {
-                if (Attacking != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
+            try {
+                if (Attacking != null) {
+                    if (AI.lastAttacker != null) {
                         if (AI.lastAttacker.type == ActorType.PC)
                             RunCallback(Attacking, (ActorPC)AI.lastAttacker);
                         else
                             RunCallback(Attacking, null);
                     }
-                    else
-                    {
+                    else {
                         RunCallback(Attacking, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnHPMPSPUpdate(Actor sActor)
-        {
-            if (Defending != null)
-            {
-                if (AI.lastAttacker != null)
-                {
+        public void OnHPMPSPUpdate(Actor sActor) {
+            if (Defending != null) {
+                if (AI.lastAttacker != null) {
                     if (AI.lastAttacker.type == ActorType.PC)
                         RunCallback(Defending, (ActorPC)AI.lastAttacker);
                     else
                         RunCallback(Defending, null);
                 }
-                else
-                {
+                else {
                     RunCallback(Defending, null);
                 }
             }
         }
 
-        public void OnPlayerChangeStatus(ActorPC aActor)
-        {
+        public void OnPlayerChangeStatus(ActorPC aActor) {
         }
 
-        public void OnActorChangeBuff(Actor sActor)
-        {
+        public void OnActorChangeBuff(Actor sActor) {
         }
 
-        public void OnLevelUp(Actor sActor, MapEventArgs args)
-        {
+        public void OnLevelUp(Actor sActor, MapEventArgs args) {
         }
 
-        public void OnPlayerMode(Actor aActor)
-        {
+        public void OnPlayerMode(Actor aActor) {
         }
 
-        public void OnShowEffect(Actor aActor, MapEventArgs args)
-        {
+        public void OnShowEffect(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorPossession(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorPossession(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorPartyUpdate(ActorPC aActor)
-        {
+        public void OnActorPartyUpdate(ActorPC aActor) {
         }
 
-        public void OnActorSpeedChange(Actor mActor)
-        {
+        public void OnActorSpeedChange(Actor mActor) {
         }
 
-        public void OnSignUpdate(Actor aActor)
-        {
+        public void OnSignUpdate(Actor aActor) {
         }
 
-        public void PropertyUpdate(UpdateEvent arg, int para)
-        {
-            switch (arg)
-            {
+        public void PropertyUpdate(UpdateEvent arg, int para) {
+            switch (arg) {
                 case UpdateEvent.SPEED:
                     AI.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SPEED_UPDATE, null, partner, true);
                     break;
             }
         }
 
-        public void PropertyRead(UpdateEvent arg)
-        {
+        public void PropertyRead(UpdateEvent arg) {
         }
 
-        public void OnActorRingUpdate(ActorPC aActor)
-        {
+        public void OnActorRingUpdate(ActorPC aActor) {
         }
 
-        public void OnActorWRPRankingUpdate(ActorPC aActor)
-        {
+        public void OnActorWRPRankingUpdate(ActorPC aActor) {
         }
 
-        public void OnActorChangeAttackType(ActorPC aActor)
-        {
+        public void OnActorChangeAttackType(ActorPC aActor) {
         }
 
-        public void OnActorFurnitureSit(ActorPC aActor)
-        {
+        public void OnActorFurnitureSit(ActorPC aActor) {
         }
 
-        private void RunCallback(PartnerCallback callback, ActorPC pc)
-        {
+        private void RunCallback(PartnerCallback callback, ActorPC pc) {
             currentCall = callback;
             currentPC = pc;
             var th = new Thread(Run);
             th.Start();
         }
 
-        private void Run()
-        {
+        private void Run() {
             ClientManager.EnterCriticalArea();
-            try
-            {
-                if (currentCall != null)
-                {
-                    if (currentPC != null)
-                    {
+            try {
+                if (currentCall != null) {
+                    if (currentPC != null) {
                         currentCall.Invoke(this, currentPC);
                     }
-                    else
-                    {
+                    else {
                         if (AI.map.Creator != null)
                             currentCall.Invoke(this, AI.map.Creator);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
 
             ClientManager.LeaveCriticalArea();
         }
 
-        public void OnActorFurnitureList(object obj)
-        {
+        public void OnActorFurnitureList(object obj) {
         }
 
-        public void OnUpdate(Actor aActor)
-        {
-            try
-            {
-                if (Updating != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
+        public void OnUpdate(Actor aActor) {
+            try {
+                if (Updating != null) {
+                    if (AI.lastAttacker != null) {
                         if (AI.lastAttacker.type == ActorType.PC)
                             RunCallback(Updating, (ActorPC)AI.lastAttacker);
                         else
                             RunCallback(Updating, null);
                     }
-                    else
-                    {
+                    else {
                         RunCallback(Updating, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 

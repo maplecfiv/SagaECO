@@ -7,17 +7,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Sage_贤者____wiz {
     /// <summary>
     ///     最終審判（ラストインクエスト）
     /// </summary>
-    public class LastInQuest : ISkill
-    {
+    public class LastInQuest : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax;
@@ -27,8 +24,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private readonly SkillArg skill;
             private int count;
 
-            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -41,14 +37,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 dActor = theDActor;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(dActor, 300, true);
                         var affected = new List<Actor>();
@@ -57,8 +50,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         //施加魔法伤害
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 var Stiff = new Stiff(skill.skill, i, 1000); //Mob can not move as soon as attacked.
                                 SkillHandler.ApplyAddition(i, Stiff);
                                 affected.Add(i);
@@ -70,16 +62,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -90,8 +80,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map == null)
                 return -17;
@@ -102,8 +91,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

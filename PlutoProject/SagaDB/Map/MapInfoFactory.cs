@@ -9,65 +9,54 @@ using SagaDB.Marionette;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Map
-{
-    public class MapInfoFactory : Singleton<MapInfoFactory>
-    {
+namespace SagaDB.Map {
+    public class MapInfoFactory : Singleton<MapInfoFactory> {
         public Dictionary<uint, MapInfo> mapInfos = new Dictionary<uint, MapInfo>();
 
         public Dictionary<uint, MapInfo> MapInfo => mapInfos;
 
         public Dictionary<string, List<MapObject>> MapObjects { get; private set; }
 
-        public void LoadMapObjects(string path)
-        {
+        public void LoadMapObjects(string path) {
             var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
 #pragma warning disable SYSLIB0011
             var bf = new BinaryFormatter();
             MapObjects = (Dictionary<string, List<MapObject>>)bf.Deserialize(fs);
         }
 
-        public void ApplyMapObject()
-        {
+        public void ApplyMapObject() {
             if (MapObjects != null)
-                foreach (var i in MapObjects.Keys)
-                {
+                foreach (var i in MapObjects.Keys) {
                     var id = uint.Parse(i);
-                    if (mapInfos.ContainsKey(id))
-                    {
+                    if (mapInfos.ContainsKey(id)) {
                         var info = mapInfos[id];
-                        foreach (var j in MapObjects[i])
-                        {
+                        foreach (var j in MapObjects[i]) {
                             if (j.Name.IndexOf("kadoukyo") != -1)
                                 continue;
                             if (j.Name.IndexOf("hasi") != -1)
                                 continue;
                             var matrix = j.PositionMatrix;
                             for (var k = 0; k < j.Width; k++)
-                            for (var l = 0; l < j.Height; l++)
-                            {
-                                var x = j.X + matrix[k, l][0];
-                                var y = j.Y + matrix[k, l][1];
-                                if (x < info.width && y < info.height && x >= 0 && y >= 0)
-                                    info.walkable[x, y] = 0;
-                            }
+                                for (var l = 0; l < j.Height; l++) {
+                                    var x = j.X + matrix[k, l][0];
+                                    var y = j.Y + matrix[k, l][1];
+                                    if (x < info.width && y < info.height && x >= 0 && y >= 0)
+                                        info.walkable[x, y] = 0;
+                                }
                         }
                     }
                 }
         }
 
-        public void LoadGatherInterval(string path, Encoding encoding)
-        {
+        public void LoadGatherInterval(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             Logger.GetLogger().Information("Loading Gather database...");
             var count = 0;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     MapInfo info = null;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -82,8 +71,7 @@ namespace SagaDB.Map
                         info = mapInfos[mapID];
                     if (info == null)
                         continue;
-                    for (var i = 0; i < 8; i++)
-                    {
+                    for (var i = 0; i < 8; i++) {
                         var min = int.Parse(paras[1 + i]);
                         if (min > 0)
                             info.gatherInterval.Add((GatherType)i, min);
@@ -91,10 +79,9 @@ namespace SagaDB.Map
 
                     count++;
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error("Error on parsing gather db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError("Error on parsing gather db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
                 }
             }
 
@@ -102,35 +89,29 @@ namespace SagaDB.Map
             sr.Close();
         }
 
-        public void LoadMapFish(string path)
-        {
+        public void LoadMapFish(string path) {
             var xml = new XmlDocument();
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 xml.Load(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path));
                 root = xml["ECOFish"];
                 list = root.ChildNodes;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "map":
                             var list2 = i.ChildNodes;
                             uint mapid = 0;
                             byte fishtype = 0;
                             byte xS = 0, yS = 0, xE = 0, yE = 0;
-                            foreach (var l in list2)
-                            {
+                            foreach (var l in list2) {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
                                 k = (XmlElement)l;
-                                switch (k.Name.ToLower())
-                                {
+                                switch (k.Name.ToLower()) {
                                     case "mapid":
                                         mapid = uint.Parse(k.InnerText);
                                         break;
@@ -155,36 +136,31 @@ namespace SagaDB.Map
                             var info = mapInfos[mapid];
                             info.id = mapid;
                             for (int infoX = xS; infoX < xE; infoX++)
-                            for (int infoY = yS; infoY < yE; infoY++)
-                                info.canfish[infoX, infoY] = fishtype;
+                                for (int infoY = yS; infoY < yE; infoY++)
+                                    info.canfish[infoX, infoY] = fishtype;
 
                             break;
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void LoadFlags(string path)
-        {
+        public void LoadFlags(string path) {
             var xml = new XmlDocument();
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 xml.Load(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path));
                 root = xml["MapFlags"];
                 list = root.ChildNodes;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "map":
                             var mapid = uint.Parse(i.Attributes[0].InnerText);
                             if (mapInfos.ContainsKey(mapid))
@@ -193,19 +169,16 @@ namespace SagaDB.Map
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void Init(string path)
-        {
+        public void Init(string path) {
             Init(path, true);
         }
 
-        public void Init(string path, bool fullinfo)
-        {
+        public void Init(string path, bool fullinfo) {
             var stream = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
             var file = new ZipFile(stream);
             var total = (int)file.Count;
@@ -221,13 +194,11 @@ namespace SagaDB.Map
             entry = zs.GetNextEntry();
             var buf = new byte[2048];
             var count = 0;
-            while (entry != null)
-            {
+            while (entry != null) {
                 var ms = new MemoryStream((int)entry.Size);
                 BinaryReader br;
                 int size;
-                while (true)
-                {
+                while (true) {
                     size = zs.Read(buf, 0, 2048);
                     if (size > 0)
                         ms.Write(buf, 0, size);
@@ -247,8 +218,7 @@ namespace SagaDB.Map
 
                 fullinfo = true;
 
-                if (fullinfo)
-                {
+                if (fullinfo) {
                     byte fire, wind, water, earth, holy, dark, neutral;
                     info.canfish = new uint[info.width, info.height];
                     info.walkable = new byte[info.width, info.height];
@@ -279,42 +249,38 @@ namespace SagaDB.Map
                     unknow2 = br.ReadByte();
                     //ms.Position += 2;
                     for (var i = 0; i < info.height; i++)
-                    for (var j = 0; j < info.width; j++)
-                    {
-                        var eventid = br.ReadUInt32();
-                        if (eventid != 0)
-                        {
-                            if (!info.events.ContainsKey(eventid))
-                            {
-                                info.events.Add(eventid, new byte[2] { (byte)j, (byte)i });
-                            }
-                            else
-                            {
-                                var tmp = new byte[info.events[eventid].Length + 2];
-                                info.events[eventid].CopyTo(tmp, 0);
-                                tmp[tmp.Length - 2] = (byte)j;
-                                tmp[tmp.Length - 1] = (byte)i;
-                                info.events[eventid] = tmp;
+                        for (var j = 0; j < info.width; j++) {
+                            var eventid = br.ReadUInt32();
+                            if (eventid != 0) {
+                                if (!info.events.ContainsKey(eventid)) {
+                                    info.events.Add(eventid, new byte[2] { (byte)j, (byte)i });
+                                }
+                                else {
+                                    var tmp = new byte[info.events[eventid].Length + 2];
+                                    info.events[eventid].CopyTo(tmp, 0);
+                                    tmp[tmp.Length - 2] = (byte)j;
+                                    tmp[tmp.Length - 1] = (byte)i;
+                                    info.events[eventid] = tmp;
+                                }
+
+                                info.canfish[j, i] = eventid;
                             }
 
-                            info.canfish[j, i] = eventid;
+                            info.holy[j, i] = (byte)(br.ReadByte() + holy);
+                            info.dark[j, i] = (byte)(br.ReadByte() + dark);
+                            info.neutral[j, i] = (byte)(br.ReadByte() + neutral);
+                            info.fire[j, i] = (byte)(br.ReadByte() + fire);
+                            info.wind[j, i] = (byte)(br.ReadByte() + wind);
+                            info.water[j, i] = (byte)(br.ReadByte() + water);
+                            info.earth[j, i] = (byte)(br.ReadByte() + earth);
+                            info.unknown[j, i] = br.ReadInt16();
+                            //ms.Position += 2;
+                            info.walkable[j, i] = br.ReadByte();
+                            //ms.Position += 3;
+                            info.unknown14[j, i] = br.ReadByte();
+                            info.unknown15[j, i] = br.ReadByte();
+                            info.unknown16[j, i] = br.ReadByte();
                         }
-
-                        info.holy[j, i] = (byte)(br.ReadByte() + holy);
-                        info.dark[j, i] = (byte)(br.ReadByte() + dark);
-                        info.neutral[j, i] = (byte)(br.ReadByte() + neutral);
-                        info.fire[j, i] = (byte)(br.ReadByte() + fire);
-                        info.wind[j, i] = (byte)(br.ReadByte() + wind);
-                        info.water[j, i] = (byte)(br.ReadByte() + water);
-                        info.earth[j, i] = (byte)(br.ReadByte() + earth);
-                        info.unknown[j, i] = br.ReadInt16();
-                        //ms.Position += 2;
-                        info.walkable[j, i] = br.ReadByte();
-                        //ms.Position += 3;
-                        info.unknown14[j, i] = br.ReadByte();
-                        info.unknown15[j, i] = br.ReadByte();
-                        info.unknown16[j, i] = br.ReadByte();
-                    }
                 }
 
                 mapInfos.Add(info.id, info);
@@ -322,8 +288,7 @@ namespace SagaDB.Map
                 entry = zs.GetNextEntry();
                 count++;
 #if !Web
-                if ((DateTime.Now - time).TotalMilliseconds > 40)
-                {
+                if ((DateTime.Now - time).TotalMilliseconds > 40) {
                     time = DateTime.Now;
                     Logger.ProgressBarShow((uint)count, (uint)total, label);
                 }

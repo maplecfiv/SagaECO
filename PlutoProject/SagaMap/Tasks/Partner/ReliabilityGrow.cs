@@ -3,29 +3,23 @@ using SagaDB.Actor;
 using SagaLib;
 using SagaLib.Tasks;
 
-namespace SagaMap.Tasks.Partner
-{
-    public class ReliabilityGrow : MultiRunTask
-    {
+namespace SagaMap.Tasks.Partner {
+    public class ReliabilityGrow : MultiRunTask {
         private ActorPartner partner;
 
-        public ReliabilityGrow(ActorPartner partner)
-        {
+        public ReliabilityGrow(ActorPartner partner) {
             DueTime = 60 * 1000;
             Period = 60 * 1000;
             this.partner = partner;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 //Manager.ExperienceManager.Instance.ApplyPartnerReliabilityEXP(partner, 60);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 Deactivate();
             }
 

@@ -2314,7 +2314,7 @@ namespace SagaMap.Skill {
                         SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res);
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
                 }
                 else {
@@ -3007,7 +3007,7 @@ namespace SagaMap.Skill {
                                         "受到了 " + -damage + " 点" + "恢复效果");
                                 }
                                 catch (Exception ex) {
-                                    Logger.GetLogger().Error(ex, ex.Message);
+                                    Logger.ShowError(ex);
                                 }
                             }
 
@@ -3068,7 +3068,7 @@ namespace SagaMap.Skill {
                                 "造成了 " + damage + " 点" + s);
                         }
                         catch (Exception ex) {
-                            Logger.GetLogger().Error(ex, ex.Message);
+                            Logger.ShowError(ex);
                         }
 
                         //伤害结算之前附加中毒效果,如果有涂毒而且目标没中毒的话
@@ -4349,7 +4349,7 @@ namespace SagaMap.Skill {
                             SendAttackMessage(3, sActor, "你的 " + y + " 对 " + target.Name + "", "被 " + res);
                         }
                         catch (Exception ex) {
-                            Logger.GetLogger().Error(ex, ex.Message);
+                            Logger.ShowError(ex);
                         }
                     }
                     else {
@@ -4789,7 +4789,7 @@ namespace SagaMap.Skill {
                                         "受到了 " + -damage + " 点" + "治疗效果");
                                 }
                                 catch (Exception ex) {
-                                    Logger.GetLogger().Error(ex, ex.Message);
+                                    Logger.ShowError(ex);
                                 }
                             }
                         //吸血效果上
@@ -4816,7 +4816,7 @@ namespace SagaMap.Skill {
                                 "造成了 " + (damage >= 0 ? damage.ToString() : (-damage).ToString()) + " 点" + s);
                         }
                         catch (Exception ex) {
-                            Logger.GetLogger().Error(ex, ex.Message);
+                            Logger.ShowError(ex);
                         }
 
                         arg.hp[index + counter] = damage;
@@ -6284,7 +6284,7 @@ namespace SagaMap.Skill {
                 return d;
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
                 return 0;
             }
         }
@@ -6317,7 +6317,7 @@ namespace SagaMap.Skill {
                 RemoveAddition(sActor, "Relement");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -6854,7 +6854,7 @@ namespace SagaMap.Skill {
                 return damage;
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
                 res = AttackResult.Miss;
                 return 0;
             }
@@ -6995,7 +6995,7 @@ namespace SagaMap.Skill {
                     }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
                 return false;
             }
 
@@ -9344,7 +9344,7 @@ namespace SagaMap.Skill {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
 
             Logger.GetLogger().Information(string.Format("外置技能加載數：{0}", skillcount));
@@ -9373,8 +9373,8 @@ namespace SagaMap.Skill {
             if (results.Errors.HasErrors) {
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning) {
-                        Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
-                        Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
+                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;
@@ -9410,7 +9410,7 @@ namespace SagaMap.Skill {
                         }
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
 
                     count++;

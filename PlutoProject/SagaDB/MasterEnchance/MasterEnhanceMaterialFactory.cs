@@ -5,21 +5,15 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.MasterEnchance
-{
-    public class MasterEnhanceMaterialFactory : Singleton<MasterEnhanceMaterialFactory>
-    {
+namespace SagaDB.MasterEnchance {
+    public class MasterEnhanceMaterialFactory : Singleton<MasterEnhanceMaterialFactory> {
         public Dictionary<uint, MasterEnhanceMaterial> Items = new Dictionary<uint, MasterEnhanceMaterial>();
 
-        public void Init(string path, Encoding encoding)
-        {
-            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
-            {
-                while (!sr.EndOfStream)
-                {
+        public void Init(string path, Encoding encoding) {
+            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding)) {
+                while (!sr.EndOfStream) {
                     var line = sr.ReadLine();
-                    try
-                    {
+                    try {
                         if (line == "")
                             continue;
                         if (line.Substring(0, 1) == "#")
@@ -33,9 +27,8 @@ namespace SagaDB.MasterEnchance
                         tmp.MaxValue = short.Parse(paras[4]);
                         Items.Add(tmp.ID, tmp);
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
                 }
             }

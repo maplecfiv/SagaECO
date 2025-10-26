@@ -1,8 +1,10 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Serilog;
+using Serilog.Context;
 
 namespace SagaLib {
     public class Logger {
@@ -184,7 +186,7 @@ namespace SagaLib {
                 _logger.Information(final);
             }
             catch (Exception exception) {
-                ShowError(exception, null);
+                ShowError(exception);
             }
         }
 
@@ -228,7 +230,7 @@ namespace SagaLib {
         public static void ShowWarning(Exception ex) {
             // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
             //     return;
-            ShowWarning(ex, defaultlogger);
+            ShowWarning(ex);
         }
 
         public static void ShowWarning(string ex) {
@@ -301,7 +303,7 @@ namespace SagaLib {
         }
 
         public static void ShowWarning(Exception ex, Logger log) {
-            ShowError(ex, log);
+            _logger.Warning(ex.Message);
         }
 
         public static void ShowWarning(string ex, Logger log) {
@@ -316,11 +318,21 @@ namespace SagaLib {
             ShowError(ex);
         }
 
-        public static void ShowError(string ex) {
+        public static void ShowError(string ex, [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            LogContext.PushProperty("MemberName", memberName);
+            LogContext.PushProperty("FilePath", sourceFilePath);
+            LogContext.PushProperty("LineNumber", sourceLineNumber);
             _logger.Error(ex);
         }
 
-        public static void ShowError(Exception ex) {
+        public static void ShowError(Exception ex, [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            LogContext.PushProperty("MemberName", memberName);
+            LogContext.PushProperty("FilePath", sourceFilePath);
+            LogContext.PushProperty("LineNumber", sourceLineNumber);
             _logger.Error(ex, ex.Message);
         }
 

@@ -30,12 +30,9 @@ using SagaLogin.Packets.Server.Tool;
 using SagaLogin.Packets.Server.WRP;
 using Version = SagaLib.Version;
 
-namespace SagaLogin.Network.Client
-{
-    public class LoginClient : SagaLib.Client
-    {
-        public enum SESSION_STATE
-        {
+namespace SagaLogin.Network.Client {
+    public class LoginClient : SagaLib.Client {
+        public enum SESSION_STATE {
             LOGIN,
             MAP,
             REDIRECTING,
@@ -60,17 +57,15 @@ namespace SagaLogin.Network.Client
         private MapServer server;
         public SESSION_STATE state;
 
-        public LoginClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable)
-        {
-            NetIo = new NetIO(mSock, mCommandTable, this);
+        public LoginClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable) {
+            NetIo = new NetIo(mSock, mCommandTable, this);
             if (Configuration.Configuration.Instance.Version >= Version.Saga11)
                 NetIo.FirstLevelLength = 2;
-            NetIo.SetMode(NetIO.Mode.Server);
+            NetIo.SetMode(NetIo.Mode.Server);
             if (NetIo.sock.Connected) OnConnect();
         }
 
-        public void OnGetGiftsRequest(TOOL_GIFTS p)
-        {
+        public void OnGetGiftsRequest(TOOL_GIFTS p) {
             if (account.GMLevel < 250) return;
             var Type = p.type;
             var Title = p.Title;
@@ -79,13 +74,11 @@ namespace SagaLogin.Network.Client
             var GiftIDs = p.GiftIDs;
             var Days = p.Days;
 
-            try
-            {
+            try {
                 var Gifts = new Dictionary<uint, ushort>();
                 GiftIDs = GiftIDs.Replace("\r\n", "@");
                 var paras = GiftIDs.Split('@');
-                for (var i = 0; i < paras.Length; i++)
-                {
+                for (var i = 0; i < paras.Length; i++) {
                     var pa = paras[i].Split(',');
                     Gifts.Add(uint.Parse(pa[0]), ushort.Parse(pa[1]));
                 }
@@ -96,29 +89,24 @@ namespace SagaLogin.Network.Client
                     AcccountIDs = AcccountIDs.Replace(",", "@");
                     paras = AcccountIDs.Split('@');
 
-                    for (var i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++) {
                         var ID = uint.Parse(paras[i]);
                         Recipients.Add(ID.ToString(), ID);
                     }
                 }
-                else if (Type == 5)
-                {
+                else if (Type == 5) {
                     AcccountIDs = AcccountIDs.Replace(",", "@");
                     paras = AcccountIDs.Split('@');
-                    for (var i = 0; i < paras.Length; i++)
-                    {
+                    for (var i = 0; i < paras.Length; i++) {
                         var Accounts = LoginServer.accountDB.GetAllAccount();
                         var a = new Account();
                         foreach (var item in Accounts)
-                            if (item.Name == paras[i])
-                            {
+                            if (item.Name == paras[i]) {
                                 a = item;
                                 break;
                             }
 
-                        if (a != null)
-                        {
+                        if (a != null) {
                             var ID = (uint)a.AccountID;
                             Recipients.Add(ID.ToString(), ID);
                         }
@@ -129,25 +117,19 @@ namespace SagaLogin.Network.Client
                 {
                     var aids = LoginClientManager.Instance.FindAllOnlineAccounts();
                     var sd = new Dictionary<string, DateTime>();
-                    foreach (var item in aids)
-                    {
+                    foreach (var item in aids) {
                         var ID = (uint)item.account.AccountID;
-                        if (Type == 2)
-                        {
+                        if (Type == 2) {
                             Recipients.Add(ID.ToString(), ID);
                         }
-                        else if (Type == 12)
-                        {
-                            if (Recipients.ContainsKey(item.account.LastIP))
-                            {
-                                if (sd[item.account.LastIP] < item.account.lastLoginTime)
-                                {
+                        else if (Type == 12) {
+                            if (Recipients.ContainsKey(item.account.LastIP)) {
+                                if (sd[item.account.LastIP] < item.account.lastLoginTime) {
                                     Recipients[item.account.LastIP] = ID;
                                     sd[item.account.LastIP] = item.account.lastLoginTime;
                                 }
                             }
-                            else
-                            {
+                            else {
                                 Recipients.Add(item.account.LastIP, ID);
                                 sd.Add(item.account.LastIP, item.account.lastLoginTime);
                             }
@@ -158,25 +140,19 @@ namespace SagaLogin.Network.Client
                 {
                     var Accounts = LoginServer.accountDB.GetAllAccount();
                     var sd = new Dictionary<string, DateTime>();
-                    foreach (var item in Accounts)
-                    {
+                    foreach (var item in Accounts) {
                         var ID = (uint)item.AccountID;
-                        if (Type == 3)
-                        {
+                        if (Type == 3) {
                             Recipients.Add(ID.ToString(), ID);
                         }
-                        else if (Type == 13)
-                        {
-                            if (Recipients.ContainsKey(item.LastIP))
-                            {
-                                if (sd[item.LastIP] < item.lastLoginTime)
-                                {
+                        else if (Type == 13) {
+                            if (Recipients.ContainsKey(item.LastIP)) {
+                                if (sd[item.LastIP] < item.lastLoginTime) {
                                     Recipients[item.LastIP] = ID;
                                     sd[item.LastIP] = item.lastLoginTime;
                                 }
                             }
-                            else
-                            {
+                            else {
                                 Recipients.Add(item.LastIP, ID);
                                 sd.Add(item.LastIP, item.lastLoginTime);
                             }
@@ -189,25 +165,19 @@ namespace SagaLogin.Network.Client
                     var Accounts = LoginServer.accountDB.GetAllAccount();
                     var sd = new Dictionary<string, DateTime>();
                     foreach (var item in Accounts)
-                        if ((DateTime.Now - item.lastLoginTime).Days <= day)
-                        {
+                        if ((DateTime.Now - item.lastLoginTime).Days <= day) {
                             var ID = (uint)item.AccountID;
-                            if (Type == 4)
-                            {
+                            if (Type == 4) {
                                 Recipients.Add(ID.ToString(), ID);
                             }
-                            else if (Type == 14)
-                            {
-                                if (Recipients.ContainsKey(item.LastIP))
-                                {
-                                    if (sd[item.LastIP] < item.lastLoginTime)
-                                    {
+                            else if (Type == 14) {
+                                if (Recipients.ContainsKey(item.LastIP)) {
+                                    if (sd[item.LastIP] < item.lastLoginTime) {
                                         Recipients[item.LastIP] = ID;
                                         sd[item.LastIP] = item.lastLoginTime;
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     Recipients.Add(item.LastIP, ID);
                                     sd.Add(item.LastIP, item.lastLoginTime);
                                 }
@@ -215,8 +185,7 @@ namespace SagaLogin.Network.Client
                         }
                 }
 
-                foreach (var item in Recipients.Values)
-                {
+                foreach (var item in Recipients.Values) {
                     var gift = new Gift();
                     gift.AccountID = item;
                     gift.Date = DateTime.Now;
@@ -240,8 +209,7 @@ namespace SagaLogin.Network.Client
                 logtext += "\r\n-物品：";
                 foreach (var item in Gifts.Keys)
                     logtext += "\r\n   -ID:" + item + "   -Stack:" + Gifts[item];
-                if (Type == 1)
-                {
+                if (Type == 1) {
                     logtext += "\r\n-接收者ID:\r\n   ";
                     foreach (var item in Recipients.Values)
                         logtext += item + ",";
@@ -250,23 +218,20 @@ namespace SagaLogin.Network.Client
                 logtext += "\r\n=======================================================\r\n";
                 Logger.GetLogger().Information(logtext);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 SendResult(1, "礼物处理失败！" + ex.Message);
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
-        public void SendResult(byte type, string text)
-        {
+        public void SendResult(byte type, string text) {
             var p = new SSMG_TOOL_RESULT();
             p.type = type;
             p.Text = text;
             NetIo.SendPacket(p);
         }
 
-        public void AddGift(Gift gift)
-        {
+        public void AddGift(Gift gift) {
             var ID = LoginServer.charDB.AddNewGift(gift);
             var client = LoginClientManager.Instance.FindClientAccountID(gift.AccountID);
             gift.MailID = ID;
@@ -274,48 +239,41 @@ namespace SagaLogin.Network.Client
                 client.SendSingleGift(gift);
         }
 
-        public void SendSingMail(Mail mail)
-        {
+        public void SendSingMail(Mail mail) {
             if (selectedChar == null) return;
             var p = new SSMG_MAIL();
             p.mail = mail;
             NetIo.SendPacket(p);
         }
 
-        public void SendMails()
-        {
+        public void SendMails() {
             if (selectedChar == null) return;
             if (selectedChar.Mails != null && selectedChar.Mails.Count >= 1)
-                for (var i = 0; i < selectedChar.Mails.Count; i++)
-                {
+                for (var i = 0; i < selectedChar.Mails.Count; i++) {
                     var p = new SSMG_MAIL();
                     p.mail = selectedChar.Mails[i];
                     NetIo.SendPacket(p);
                 }
         }
 
-        public void SendSingleGift(Gift gift)
-        {
+        public void SendSingleGift(Gift gift) {
             if (selectedChar == null) return;
             var p = new SSMG_GIFT();
             p.mails = gift;
             NetIo.SendPacket(p);
         }
 
-        public void SendGifts()
-        {
+        public void SendGifts() {
             if (selectedChar == null) return;
             LoginServer.charDB.GetGifts(selectedChar);
-            for (var i = 0; i < selectedChar.Gifts.Count; i++)
-            {
+            for (var i = 0; i < selectedChar.Gifts.Count; i++) {
                 var p = new SSMG_GIFT();
                 p.mails = selectedChar.Gifts[i];
                 NetIo.SendPacket(p);
             }
         }
 
-        public void OnTamaireListRequest(CSMG_TAMAIRE_LIST_REQUEST p)
-        {
+        public void OnTamaireListRequest(CSMG_TAMAIRE_LIST_REQUEST p) {
             var p1 = new SSMG_TAMAIRE_LIST();
             int a;
             var data = GetLendings(p.JobType, false, false, p.minlevel, p.maxlevel, p.page, out a);
@@ -324,8 +282,7 @@ namespace SagaLogin.Network.Client
         }
 
         public List<TamaireLending> GetLendings(byte jobtype, bool isFriendOnly, bool isRingOnly, byte minlevel,
-            byte maxlevel, int page, out int maxPage)
-        {
+            byte maxlevel, int page, out int maxPage) {
             var items = LoginServer.charDB.GetTamaireLendings();
             var query = from lending in items
                 where lending.Baselv >= minlevel && lending.Baselv <= maxlevel
@@ -360,8 +317,7 @@ namespace SagaLogin.Network.Client
             return rentals;
         }
 
-        public void OnSendVersion(CSMG_SEND_VERSION p)
-        {
+        public void OnSendVersion(CSMG_SEND_VERSION p) {
             Logger.GetLogger().Information("Client(Version:" + p.GetVersion() + ") is trying to connect...");
             client_Version = p.GetVersion();
 
@@ -387,35 +343,29 @@ namespace SagaLogin.Network.Client
             NetIo.SendPacket(pn);
         }
 
-        public void OnSendGUID(CSMG_SEND_GUID p)
-        {
+        public void OnSendGUID(CSMG_SEND_GUID p) {
             var p1 = new SSMG_LOGIN_ALLOWED();
             NetIo.SendPacket(p1);
         }
 
-        public void OnPing(CSMG_PING p)
-        {
+        public void OnPing(CSMG_PING p) {
             var p1 = new SSMG_PONG();
             NetIo.SendPacket(p1);
         }
 
-        public void OnLogin(CSMG_LOGIN p)
-        {
+        public void OnLogin(CSMG_LOGIN p) {
             p.GetContent();
-            if (MapServerManager.Instance.MapServers.Count == 0)
-            {
+            if (MapServerManager.Instance.MapServers.Count == 0) {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
                 NetIo.SendPacket(p1);
                 return;
             }
 
-            if (LoginServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord))
-            {
+            if (LoginServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord)) {
                 var tmp = LoginServer.accountDB.GetUser(p.UserName);
 
-                if (LoginClientManager.Instance.FindClientAccount(p.UserName) != null && tmp.GMLevel == 0)
-                {
+                if (LoginClientManager.Instance.FindClientAccount(p.UserName) != null && tmp.GMLevel == 0) {
                     LoginClientManager.Instance.FindClientAccount(p.UserName).NetIo.Disconnect();
                     var p2 = new SSMG_LOGIN_ACK();
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_ALREADY;
@@ -424,8 +374,7 @@ namespace SagaLogin.Network.Client
                 }
 
                 account = tmp;
-                if (account.Banned)
-                {
+                if (account.Banned) {
                     var p2 = new SSMG_LOGIN_ACK();
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
                     NetIo.SendPacket(p2);
@@ -444,19 +393,15 @@ namespace SagaLogin.Network.Client
 
                 account.Characters = new List<ActorPC>();
                 var maxtime = DateTime.Now;
-                for (var i = 0; i < charIDs.Length; i++)
-                {
+                for (var i = 0; i < charIDs.Length; i++) {
                     var pc = LoginServer.charDB.GetChar(charIDs[i], false);
                     if (pc.QuestNextResetTime > maxtime)
                         maxtime = pc.QuestNextResetTime;
-                    if (pc.QuestNextResetTime < DateTime.Now)
-                    {
-                        if ((DateTime.Now - pc.QuestNextResetTime).TotalDays > 1000)
-                        {
+                    if (pc.QuestNextResetTime < DateTime.Now) {
+                        if ((DateTime.Now - pc.QuestNextResetTime).TotalDays > 1000) {
                             pc.QuestNextResetTime = DateTime.Now + new TimeSpan(1, 0, 0, 0);
                         }
-                        else
-                        {
+                        else {
                             var days = (int)(DateTime.Now - pc.QuestNextResetTime).TotalDays;
                             pc.QuestRemaining += (ushort)((days + 1) * 5);
                             if (pc.QuestRemaining > 500)
@@ -468,8 +413,7 @@ namespace SagaLogin.Network.Client
                 }
 
                 var names = "";
-                foreach (var item in account.Characters)
-                {
+                foreach (var item in account.Characters) {
                     item.QuestNextResetTime = maxtime;
                     names += item.Name + ",";
                 }
@@ -478,18 +422,15 @@ namespace SagaLogin.Network.Client
                 LoginServer.accountDB.WriteUser(account);
                 SendCharData();
             }
-            else
-            {
+            else {
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
                 NetIo.SendPacket(p1);
             }
         }
 
-        private bool checkHairStyle(CSMG_CHAR_CREATE p)
-        {
-            if (p.Gender == PC_GENDER.FEMALE)
-            {
+        private bool checkHairStyle(CSMG_CHAR_CREATE p) {
+            if (p.Gender == PC_GENDER.FEMALE) {
                 if (p.HairStyle > 9 && p.HairStyle != 14)
                     return false;
                 return true;
@@ -500,24 +441,20 @@ namespace SagaLogin.Network.Client
             return true;
         }
 
-        private bool checkHairColor(CSMG_CHAR_CREATE p)
-        {
-            if (p.Race == PC_RACE.DOMINION)
-            {
+        private bool checkHairColor(CSMG_CHAR_CREATE p) {
+            if (p.Race == PC_RACE.DOMINION) {
                 if (p.HairColor >= 70 && p.HairColor <= 72)
                     return true;
                 return false;
             }
 
-            if (p.Race == PC_RACE.EMIL)
-            {
+            if (p.Race == PC_RACE.EMIL) {
                 if (p.HairColor >= 50 && p.HairColor <= 52)
                     return true;
                 return false;
             }
 
-            if (p.Race == PC_RACE.TITANIA)
-            {
+            if (p.Race == PC_RACE.TITANIA) {
                 if (p.HairColor == 7 || p.HairColor == 60 || p.HairColor == 61 || p.HairColor == 62)
                     return true;
                 return false;
@@ -526,35 +463,29 @@ namespace SagaLogin.Network.Client
             return true;
         }
 
-        public void OnCharCreate(CSMG_CHAR_CREATE p)
-        {
+        public void OnCharCreate(CSMG_CHAR_CREATE p) {
             var p1 = new SSMG_CHAR_CREATE_ACK();
 
             if (p.Race != PC_RACE.DEM)
-                if (!checkHairColor(p) || !checkHairStyle(p))
-                {
+                if (!checkHairColor(p) || !checkHairStyle(p)) {
                     account.Banned = true;
                     NetIo.Disconnect();
                     LoginServer.accountDB.WriteUser(account);
                     return;
                 }
 
-            if (LoginServer.charDB.CharExists(p.Name))
-            {
+            if (LoginServer.charDB.CharExists(p.Name)) {
                 p1.CreateResult = SSMG_CHAR_CREATE_ACK.Result.GAME_SMSG_CHRCREATE_E_NAME_CONFLICT;
             }
-            else
-            {
+            else {
                 var slot =
                     from a in account.Characters
                     where a.Slot == p.Slot
                     select a;
-                if (slot.Count() != 0)
-                {
+                if (slot.Count() != 0) {
                     p1.CreateResult = SSMG_CHAR_CREATE_ACK.Result.GAME_SMSG_CHRCREATE_E_ALREADY_SLOT;
                 }
-                else
-                {
+                else {
                     var pc = new ActorPC();
                     pc.Name = p.Name;
                     pc.Face = p.Face;
@@ -607,8 +538,7 @@ namespace SagaLogin.Network.Client
 
                     List<StartItem> lists;
                     lists = Configuration.Configuration.Instance.StartItem[pc.Race][pc.Gender];
-                    foreach (var i in lists)
-                    {
+                    foreach (var i in lists) {
                         var item = ItemFactory.Instance.GetItem(i.ItemID);
                         item.Stack = i.Count;
                         pc.Inventory.AddItem(i.Slot, item);
@@ -625,22 +555,19 @@ namespace SagaLogin.Network.Client
             SendCharData();
         }
 
-        public void OnCharDelete(CSMG_CHAR_DELETE p)
-        {
+        public void OnCharDelete(CSMG_CHAR_DELETE p) {
             var p1 = new SSMG_CHAR_DELETE_ACK();
             var chr =
                 from c in account.Characters
                 where c.Slot == p.Slot
                 select c;
             var pc = chr.First();
-            if (account.DeletePassword.ToLower() == p.DeletePassword.ToLower())
-            {
+            if (account.DeletePassword.ToLower() == p.DeletePassword.ToLower()) {
                 LoginServer.charDB.DeleteChar(pc);
                 account.Characters.Remove(pc);
                 p1.DeleteResult = SSMG_CHAR_DELETE_ACK.Result.OK;
             }
-            else
-            {
+            else {
                 p1.DeleteResult = SSMG_CHAR_DELETE_ACK.Result.WRONG_DELETE_PASSWORD;
             }
 
@@ -648,8 +575,7 @@ namespace SagaLogin.Network.Client
             SendCharData();
         }
 
-        public void OnCharSelect(CSMG_CHAR_SELECT p)
-        {
+        public void OnCharSelect(CSMG_CHAR_SELECT p) {
             var p1 = new SSMG_CHAR_SELECT_ACK();
             var chr =
                 from c in account.Characters
@@ -662,28 +588,23 @@ namespace SagaLogin.Network.Client
             NetIo.SendPacket(p1);
         }
 
-        public void OnRequestMapServer(CSMG_REQUEST_MAP_SERVER p)
-        {
+        public void OnRequestMapServer(CSMG_REQUEST_MAP_SERVER p) {
             var p1 = new SSMG_SEND_TO_MAP_SERVER();
 
-            if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID))
-            {
+            if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID)) {
                 var server = MapServerManager.Instance.MapServers[selectedChar.MapID];
                 p1.ServerID = 1;
                 p1.IP = server.IP;
                 p1.Port = server.port;
             }
-            else
-            {
-                if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID / 1000 * 1000))
-                {
+            else {
+                if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID / 1000 * 1000)) {
                     var server = MapServerManager.Instance.MapServers[selectedChar.MapID / 1000 * 1000];
                     p1.ServerID = 1;
                     p1.IP = server.IP;
                     p1.Port = server.port;
                 }
-                else
-                {
+                else {
                     Logger.GetLogger().Warning("No map server registered for mapID:" + selectedChar.MapID);
                     p1.ServerID = 255;
                     p1.IP = "127.0.0.001";
@@ -694,8 +615,7 @@ namespace SagaLogin.Network.Client
             NetIo.SendPacket(p1);
         }
 
-        public void OnCharStatus(CSMG_CHAR_STATUS p)
-        {
+        public void OnCharStatus(CSMG_CHAR_STATUS p) {
             var args = "00 2b";
             var buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
             var ps1 = new Packet();
@@ -717,8 +637,7 @@ namespace SagaLogin.Network.Client
             SendMails();
         }
 
-        private void SendCharData()
-        {
+        private void SendCharData() {
             var p2 = new SSMG_CHAR_DATA();
             p2.Chars = account.Characters;
             NetIo.SendPacket(p2);
@@ -729,106 +648,87 @@ namespace SagaLogin.Network.Client
             NetIo.SendPacket(p3);
         }
 
-        public void OnNya(CSMG_NYASHIELD_VERSION p)
-        {
-            if (p.ver != 1)
-            {
+        public void OnNya(CSMG_NYASHIELD_VERSION p) {
+            if (p.ver != 1) {
                 var p1 = new SSMG_NYA_WRONG_VERSION();
                 NetIo.SendPacket(p1);
             }
         }
 
-        private void SendSystemMessages(string message, short type)
-        {
+        private void SendSystemMessages(string message, short type) {
             var p = new SSMG_CHAT_SYSTEM_MESSAGE();
             p.Type = (SSMG_CHAT_SYSTEM_MESSAGE.MessageType)type;
             p.Content = message;
             NetIo.SendPacket(p);
         }
 
-        private void SendWelcomeMessages()
-        {
+        private void SendWelcomeMessages() {
             SendSystemMessages("------------------------------------------------------", 0);
             foreach (var motd in Configuration.Configuration.Instance.Motd)
                 SendSystemMessages(motd, 0);
             SendSystemMessages("------------------------------------------------------", 0);
         }
 
-        public void OnRingEmblemNew(CSMG_RING_EMBLEM_NEW p)
-        {
+        public void OnRingEmblemNew(CSMG_RING_EMBLEM_NEW p) {
             var result = LoginServer.charDB.GetRingEmblem(p.RingID, new DateTime(1970, 1, 1));
             SendRingEmblem(p.RingID, result.Data, result.NeedUpdate, result.NewTime);
         }
 
-        public void OnRingEmblem(CSMG_RING_EMBLEM p)
-        {
+        public void OnRingEmblem(CSMG_RING_EMBLEM p) {
             var result = LoginServer.charDB.GetRingEmblem(p.RingID, p.UpdateTime);
             SendRingEmblem(p.RingID, result.Data, result.NeedUpdate, result.NewTime);
         }
 
-        private void SendRingEmblem(uint ringid, byte[] data, bool needUpdate, DateTime newDate)
-        {
+        private void SendRingEmblem(uint ringid, byte[] data, bool needUpdate, DateTime newDate) {
             var p = new SSMG_RING_EMBLEM();
             if (needUpdate)
                 p.Result = 0;
             else
                 p.Result = 1;
             p.RingID = ringid;
-            if (data != null)
-            {
+            if (data != null) {
                 p.Result2 = 0;
                 if (needUpdate)
                     p.Data = data;
                 p.UpdateTime = newDate;
             }
-            else
-            {
+            else {
                 p.Result2 = 1;
             }
 
             NetIo.SendPacket(p);
         }
 
-        public override string ToString()
-        {
-            try
-            {
+        public override string ToString() {
+            try {
                 if (NetIo != null) return NetIo.sock.RemoteEndPoint.ToString();
                 return "LoginClient";
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return "LoginClient";
             }
         }
 
-        public override void OnConnect()
-        {
+        public override void OnConnect() {
         }
 
-        public override void OnDisconnect()
-        {
-            if (currentStatus != CharStatus.OFFLINE)
-            {
-                if (IsMapServer)
-                {
+        public override void OnDisconnect() {
+            if (currentStatus != CharStatus.OFFLINE) {
+                if (IsMapServer) {
                     Logger.GetLogger().Warning("A map server has just disconnected...");
                     foreach (var i in server.HostedMaps)
                         if (MapServerManager.Instance.MapServers.ContainsKey(i))
                             MapServerManager.Instance.MapServers.Remove(i);
                 }
-                else
-                {
+                else {
                     currentStatus = CharStatus.OFFLINE;
                     currentMap = 0;
-                    try
-                    {
+                    try {
                         SendStatusToFriends();
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
 
                     if (account != null)
@@ -840,15 +740,13 @@ namespace SagaLogin.Network.Client
                 LoginClientManager.Instance.Clients.Remove(this);
         }
 
-        public void OnWRPRequest(CSMG_WRP_REQUEST p)
-        {
+        public void OnWRPRequest(CSMG_WRP_REQUEST p) {
             var p1 = new SSMG_WRP_LIST();
             p1.RankingList = LoginServer.charDB.GetWRPRanking();
             NetIo.SendPacket(p1);
         }
 
-        public void OnFriendDelete(CSMG_FRIEND_DELETE p)
-        {
+        public void OnFriendDelete(CSMG_FRIEND_DELETE p) {
             if (selectedChar == null)
                 return;
             LoginServer.charDB.DeleteFriend(selectedChar.CharID, p.CharID);
@@ -857,21 +755,17 @@ namespace SagaLogin.Network.Client
             p1.CharID = p.CharID;
             NetIo.SendPacket(p1);
             var client = LoginClientManager.Instance.FindClient(p.CharID);
-            if (client != null)
-            {
+            if (client != null) {
                 p1 = new SSMG_FRIEND_DELETE();
                 p1.CharID = selectedChar.CharID;
                 client.NetIo.SendPacket(p1);
             }
         }
 
-        public void OnFriendAdd(CSMG_FRIEND_ADD p)
-        {
+        public void OnFriendAdd(CSMG_FRIEND_ADD p) {
             var client = LoginClientManager.Instance.FindClient(p.CharID);
-            if (client != null)
-            {
-                if (!LoginServer.charDB.IsFriend(selectedChar.CharID, client.selectedChar.CharID))
-                {
+            if (client != null) {
+                if (!LoginServer.charDB.IsFriend(selectedChar.CharID, client.selectedChar.CharID)) {
                     friendTarget = client;
                     client.friendTarget = this;
                     var p1 = new SSMG_FRIEND_ADD();
@@ -879,23 +773,20 @@ namespace SagaLogin.Network.Client
                     p1.Name = selectedChar.Name;
                     client.NetIo.SendPacket(p1);
                 }
-                else
-                {
+                else {
                     var p1 = new SSMG_FRIEND_ADD_FAILED();
                     p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.TARGET_REFUSED;
                     NetIo.SendPacket(p1);
                 }
             }
-            else
-            {
+            else {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.CANNOT_FIND_TARGET;
                 NetIo.SendPacket(p1);
             }
         }
 
-        private int CheckFriendRegist(LoginClient client)
-        {
+        private int CheckFriendRegist(LoginClient client) {
             if (client == null)
                 return -1; //相手が見付かりません
             if (LoginServer.charDB.IsFriend(selectedChar.CharID, client.selectedChar.CharID))
@@ -906,18 +797,15 @@ namespace SagaLogin.Network.Client
             return 0;
         }
 
-        public void OnFriendAddReply(CSMG_FRIEND_ADD_REPLY p)
-        {
-            if (friendTarget == null)
-            {
+        public void OnFriendAddReply(CSMG_FRIEND_ADD_REPLY p) {
+            if (friendTarget == null) {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.CANNOT_FIND_TARGET;
                 NetIo.SendPacket(p1);
                 return;
             }
 
-            if (p.Reply == 1)
-            {
+            if (p.Reply == 1) {
                 var p1 = new SSMG_FRIEND_ADD_OK();
                 p1.CharID = friendTarget.selectedChar.CharID;
                 NetIo.SendPacket(p1);
@@ -929,8 +817,7 @@ namespace SagaLogin.Network.Client
                 friendTarget.SendFriendAdd(this);
                 LoginServer.charDB.AddFriend(friendTarget.selectedChar, selectedChar.CharID);
             }
-            else
-            {
+            else {
                 var p1 = new SSMG_FRIEND_ADD_FAILED();
                 p1.AddResult = SSMG_FRIEND_ADD_FAILED.Result.TARGET_REFUSED;
                 friendTarget.NetIo.SendPacket(p1);
@@ -939,38 +826,32 @@ namespace SagaLogin.Network.Client
             friendTarget = null;
         }
 
-        public void OnFriendMapUpdate(CSMG_FRIEND_MAP_UPDATE p)
-        {
+        public void OnFriendMapUpdate(CSMG_FRIEND_MAP_UPDATE p) {
             if (selectedChar == null) return;
             var friendlist = LoginServer.charDB.GetFriendList2(selectedChar);
             currentMap = p.MapID;
-            foreach (var i in friendlist)
-            {
+            foreach (var i in friendlist) {
                 var client = LoginClientManager.Instance.FindClient(i);
                 var p1 = new SSMG_FRIEND_MAP_UPDATE();
                 p1.CharID = selectedChar.CharID;
-                if (client != null)
-                {
+                if (client != null) {
                     p1.MapID = currentMap;
                     client.NetIo.SendPacket(p1);
                 }
             }
         }
 
-        public void OnFriendDetailUpdate(CSMG_FRIEND_DETAIL_UPDATE p)
-        {
+        public void OnFriendDetailUpdate(CSMG_FRIEND_DETAIL_UPDATE p) {
             if (selectedChar == null) return;
             var friendlist = LoginServer.charDB.GetFriendList2(selectedChar);
             job = p.Job;
             lv = p.Level;
             joblv = p.Level;
-            foreach (var i in friendlist)
-            {
+            foreach (var i in friendlist) {
                 var client = LoginClientManager.Instance.FindClient(i);
                 var p1 = new SSMG_FRIEND_DETAIL_UPDATE();
                 p1.CharID = selectedChar.CharID;
-                if (client != null)
-                {
+                if (client != null) {
                     p1.Job = job;
                     p1.Level = lv;
                     p1.JobLevel = joblv;
@@ -979,8 +860,7 @@ namespace SagaLogin.Network.Client
             }
         }
 
-        public void SendFriendAdd(LoginClient client)
-        {
+        public void SendFriendAdd(LoginClient client) {
             var p = new SSMG_FRIEND_CHAR_INFO();
             p.ActorPC = client.selectedChar;
             p.MapID = client.currentMap;
@@ -989,17 +869,14 @@ namespace SagaLogin.Network.Client
             NetIo.SendPacket(p);
         }
 
-        public void SendFriendList()
-        {
+        public void SendFriendList() {
             if (selectedChar == null) return;
             var friendlist = LoginServer.charDB.GetFriendList(selectedChar);
-            foreach (var i in friendlist)
-            {
+            foreach (var i in friendlist) {
                 var client = LoginClientManager.Instance.FindClient(i);
                 var p = new SSMG_FRIEND_CHAR_INFO();
                 p.ActorPC = i;
-                if (client != null)
-                {
+                if (client != null) {
                     p.MapID = client.currentMap;
                     p.Status = client.currentStatus;
                 }
@@ -1009,19 +886,16 @@ namespace SagaLogin.Network.Client
             }
         }
 
-        public void SendStatusToFriends()
-        {
+        public void SendStatusToFriends() {
             if (selectedChar == null) return;
             var friendlist = LoginServer.charDB.GetFriendList2(selectedChar);
-            foreach (var i in friendlist)
-            {
+            foreach (var i in friendlist) {
                 var client = LoginClientManager.Instance.FindClient(i);
                 var p1 = new SSMG_FRIEND_STATUS_UPDATE();
                 var p2 = new SSMG_FRIEND_DETAIL_UPDATE();
                 p1.CharID = selectedChar.CharID;
                 p2.CharID = selectedChar.CharID;
-                if (client != null)
-                {
+                if (client != null) {
                     p1.Status = currentStatus;
                     p2.Job = selectedChar.Job;
                     p2.Level = selectedChar.Level;
@@ -1032,19 +906,16 @@ namespace SagaLogin.Network.Client
             }
         }
 
-        public void OnChatWhisper(CSMG_CHAT_WHISPER p)
-        {
+        public void OnChatWhisper(CSMG_CHAT_WHISPER p) {
             if (selectedChar == null) return;
             var client = LoginClientManager.Instance.FindClient(p.Receiver);
-            if (client != null)
-            {
+            if (client != null) {
                 var p1 = new SSMG_CHAT_WHISPER();
                 p1.Sender = selectedChar.Name;
                 p1.Content = p.Content;
                 client.NetIo.SendPacket(p1);
             }
-            else
-            {
+            else {
                 var p1 = new SSMG_CHAT_WHISPER_FAILED();
                 p1.Receiver = p.Receiver;
                 p1.Result = 0xFFFFFFFF;
@@ -1052,8 +923,7 @@ namespace SagaLogin.Network.Client
             }
         }
 
-        public void OnInternMapRequestConfig(INTERN_LOGIN_REQUEST_CONFIG p)
-        {
+        public void OnInternMapRequestConfig(INTERN_LOGIN_REQUEST_CONFIG p) {
             Configuration.Configuration.Instance.Version = p.Version;
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
             p1.AuthOK = server.Password == Configuration.Configuration.Instance.Password;
@@ -1064,25 +934,20 @@ namespace SagaLogin.Network.Client
                 server.port));
         }
 
-        public void OnInternMapRegister(INTERN_LOGIN_REGISTER p)
-        {
+        public void OnInternMapRegister(INTERN_LOGIN_REGISTER p) {
             var server = p.MapServer;
             IsMapServer = true;
-            if (this.server == null)
-            {
+            if (this.server == null) {
                 this.server = server;
-                if (server.Password != Configuration.Configuration.Instance.Password)
-                {
+                if (server.Password != Configuration.Configuration.Instance.Password) {
                     Logger.GetLogger().Warning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
                         server.Password));
                     return;
                 }
             }
-            else
-            {
-                if (server.Password != Configuration.Configuration.Instance.Password)
-                {
+            else {
+                if (server.Password != Configuration.Configuration.Instance.Password) {
                     Logger.GetLogger().Warning(string.Format(
                         "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
                         server.Password));
@@ -1096,13 +961,11 @@ namespace SagaLogin.Network.Client
 
             var count = 0;
             foreach (var i in server.HostedMaps)
-                if (!MapServerManager.Instance.MapServers.ContainsKey(i))
-                {
+                if (!MapServerManager.Instance.MapServers.ContainsKey(i)) {
                     MapServerManager.Instance.MapServers.Add(i, this.server);
                     count++;
                 }
-                else
-                {
+                else {
                     //Logger.getLogger().Warning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
                 }
 

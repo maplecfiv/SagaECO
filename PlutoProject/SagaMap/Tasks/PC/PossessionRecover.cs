@@ -3,26 +3,20 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Tasks.PC
-{
-    public class PossessionRecover : MultiRunTask
-    {
+namespace SagaMap.Tasks.PC {
+    public class PossessionRecover : MultiRunTask {
         private readonly MapClient client;
 
-        public PossessionRecover(MapClient client)
-        {
+        public PossessionRecover(MapClient client) {
             DueTime = 10000;
             Period = 10000;
             this.client = client;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
-                if (client.Character.PossessionTarget == 0)
-                {
+            try {
+                if (client.Character.PossessionTarget == 0) {
                     client.Character.Tasks.Remove("PossessionRecover");
                     Deactivate();
                     ClientManager.LeaveCriticalArea();
@@ -53,9 +47,8 @@ namespace SagaMap.Tasks.PC
                 client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, client.Character,
                     true);
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 client.Character.Tasks.Remove("PossessionRecover");
                 Deactivate();
             }

@@ -7,11 +7,9 @@ using SagaDB.Iris;
 using SagaDB.Partner;
 using SagaLib;
 
-namespace SagaDB.Item
-{
+namespace SagaDB.Item {
     [Serializable]
-    public class Item
-    {
+    public class Item {
         /// <summary>
         ///     道具版本
         /// </summary>
@@ -101,90 +99,75 @@ namespace SagaDB.Item
         private ushort stack;
         private short str, dex, intel, vit, agi, mag, luk, cha;
 
-        public Item()
-        {
+        public Item() {
         }
 
-        public Item(ItemData baseData)
-        {
+        public Item(ItemData baseData) {
             ItemID = baseData.id;
             maxdurability = baseData.durability;
             //出错备份Element = baseData.element;
         }
 
-        public Item(Stream InputStream)
-        {
+        public Item(Stream InputStream) {
             FromStream(InputStream);
         }
 
-        public uint Refine_Sharp
-        {
+        public uint Refine_Sharp {
             get => refine_sharp;
             set => refine_sharp = value;
         }
 
-        public uint Refine_Enchanted
-        {
+        public uint Refine_Enchanted {
             get => refine_enchanted;
             set => refine_enchanted = value;
         }
 
-        public uint Refine_Vitality
-        {
+        public uint Refine_Vitality {
             get => refine_vitality;
             set => refine_vitality = value;
         }
 
-        public uint Refine_Regeneration
-        {
+        public uint Refine_Regeneration {
             get => refine_regeneration;
             set => refine_regeneration = value;
         }
 
-        public uint Refine_Hit
-        {
+        public uint Refine_Hit {
             get => refine_def;
             set => refine_def = value;
         }
 
-        public uint Refine_Mhit
-        {
+        public uint Refine_Mhit {
             get => refine_mdef;
             set => refine_mdef = value;
         }
 
-        public uint Refine_Lucky
-        {
+        public uint Refine_Lucky {
             get => refine_lucky;
             set => refine_lucky = value;
         }
 
-        public uint Refine_Dexterity
-        {
+        public uint Refine_Dexterity {
             get => refine_dexterity;
             set => refine_dexterity = value;
         }
 
-        public uint Refine_ATKrate
-        {
+        public uint Refine_ATKrate {
             get => refine_ATKrate;
             set => refine_ATKrate = value;
         }
 
-        public uint Refine_MATKrate
-        {
+        public uint Refine_MATKrate {
             get => refine_MATKrate;
             set => refine_MATKrate = value;
         }
 
-        public uint Refine_Def
-        {
+        public uint Refine_Def {
             get => refine_def;
             set => refine_def = value;
         }
 
-        public uint Refine_Mdef
-        {
+        public uint Refine_Mdef {
             get => refine_mdef;
             set => refine_mdef = value;
         }
@@ -192,8 +175,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     生命强化次数
         /// </summary>
-        public byte LifeEnhance
-        {
+        public byte LifeEnhance {
             get => lifeenhance;
             set => lifeenhance = value;
         }
@@ -201,8 +183,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     力量强化次数
         /// </summary>
-        public byte PowerEnhance
-        {
+        public byte PowerEnhance {
             get => powerenhance;
             set => powerenhance = value;
         }
@@ -210,8 +191,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     致命强化次数
         /// </summary>
-        public byte CritEnhance
-        {
+        public byte CritEnhance {
             get => critenhance;
             set => critenhance = value;
         }
@@ -219,8 +199,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     魔力强化次数
         /// </summary>
-        public byte MagEnhance
-        {
+        public byte MagEnhance {
             get => magenhance;
             set => magenhance = value;
         }
@@ -228,8 +207,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HP
         /// </summary>
-        public short HP
-        {
+        public short HP {
             get => hp;
             set => hp = value;
         }
@@ -237,8 +215,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的MP
         /// </summary>
-        public short MP
-        {
+        public short MP {
             get => mp;
             set => mp = value;
         }
@@ -246,8 +223,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的SP
         /// </summary>
-        public short SP
-        {
+        public short SP {
             get => sp;
             set => sp = value;
         }
@@ -255,8 +231,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的负重
         /// </summary>
-        public short WeightUp
-        {
+        public short WeightUp {
             get => weightUp;
             set => weightUp = value;
         }
@@ -264,8 +239,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的体积
         /// </summary>
-        public short VolumeUp
-        {
+        public short VolumeUp {
             get => volumeUp;
             set => volumeUp = value;
         }
@@ -273,8 +247,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的速度
         /// </summary>
-        public short SpeedUp
-        {
+        public short SpeedUp {
             get => speedUp;
             set => speedUp = value;
         }
@@ -282,8 +255,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Str
         /// </summary>
-        public short Str
-        {
+        public short Str {
             get => str;
             set => str = value;
         }
@@ -291,8 +263,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Dex
         /// </summary>
-        public short Dex
-        {
+        public short Dex {
             get => dex;
             set => dex = value;
         }
@@ -300,8 +271,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Int
         /// </summary>
-        public short Int
-        {
+        public short Int {
             get => intel;
             set => intel = value;
         }
@@ -309,8 +279,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Vit
         /// </summary>
-        public short Vit
-        {
+        public short Vit {
             get => vit;
             set => vit = value;
         }
@@ -318,8 +287,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Agi
         /// </summary>
-        public short Agi
-        {
+        public short Agi {
             get => agi;
             set => agi = value;
         }
@@ -327,8 +295,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Mag
         /// </summary>
-        public short Mag
-        {
+        public short Mag {
             get => mag;
             set => mag = value;
         }
@@ -336,8 +303,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Mag
         /// </summary>
-        public short Luk
-        {
+        public short Luk {
             get => luk;
             set => luk = value;
         }
@@ -345,8 +311,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Mag
         /// </summary>
-        public short Cha
-        {
+        public short Cha {
             get => cha;
             set => cha = value;
         }
@@ -354,8 +319,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Atk1
         /// </summary>
-        public short Atk1
-        {
+        public short Atk1 {
             get => atk1;
             set => atk1 = value;
         }
@@ -363,8 +327,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Atk2
         /// </summary>
-        public short Atk2
-        {
+        public short Atk2 {
             get => atk2;
             set => atk2 = value;
         }
@@ -372,8 +335,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Atk3
         /// </summary>
-        public short Atk3
-        {
+        public short Atk3 {
             get => atk3;
             set => atk3 = value;
         }
@@ -381,8 +343,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的MAtk
         /// </summary>
-        public short MAtk
-        {
+        public short MAtk {
             get => matk;
             set => matk = value;
         }
@@ -390,8 +351,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的Def
         /// </summary>
-        public short Def
-        {
+        public short Def {
             get => def;
             set => def = value;
         }
@@ -399,8 +359,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的MDef
         /// </summary>
-        public short MDef
-        {
+        public short MDef {
             get => mdef;
             set => mdef = value;
         }
@@ -408,8 +367,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HitMelee
         /// </summary>
-        public short HitMelee
-        {
+        public short HitMelee {
             get => hitMelee;
             set => hitMelee = value;
         }
@@ -417,8 +375,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HitMagic
         /// </summary>
-        public short HitMagic
-        {
+        public short HitMagic {
             get => hitMagic;
             set => hitMagic = value;
         }
@@ -426,8 +383,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HitRanged
         /// </summary>
-        public short HitRanged
-        {
+        public short HitRanged {
             get => hitRanged;
             set => hitRanged = value;
         }
@@ -435,8 +391,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的AvoidMelee
         /// </summary>
-        public short AvoidMelee
-        {
+        public short AvoidMelee {
             get => avoidMelee;
             set => avoidMelee = value;
         }
@@ -444,8 +399,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的AvoidMagic
         /// </summary>
-        public short AvoidMagic
-        {
+        public short AvoidMagic {
             get => avoidMagic;
             set => avoidMagic = value;
         }
@@ -453,8 +407,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的AvoidRanged
         /// </summary>
-        public short AvoidRanged
-        {
+        public short AvoidRanged {
             get => avoidRanged;
             set => avoidRanged = value;
         }
@@ -462,8 +415,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HitCritical
         /// </summary>
-        public short HitCritical
-        {
+        public short HitCritical {
             get => hitCritical;
             set => hitCritical = value;
         }
@@ -471,8 +423,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的AvoidCritical
         /// </summary>
-        public short AvoidCritical
-        {
+        public short AvoidCritical {
             get => avoidCritical;
             set => avoidCritical = value;
         }
@@ -480,8 +431,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的HPRecover 宠物相关 待检查
         /// </summary>
-        public short HPRecover
-        {
+        public short HPRecover {
             get => hpRecover;
             set => hpRecover = value;
         }
@@ -489,8 +439,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的MPRecover 宠物相关 待检查 暂时不要使用
         /// </summary>
-        public short MPRecover
-        {
+        public short MPRecover {
             get => mpRecover;
             set => mpRecover = value;
         }
@@ -498,8 +447,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的SPRecover 宠物相关 待检查 暂时不要使用
         /// </summary>
-        public short SPRecover
-        {
+        public short SPRecover {
             get => spRecover;
             set => spRecover = value;
         }
@@ -507,8 +455,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的ASPD 宠物相关 待检查
         /// </summary>
-        public short ASPD
-        {
+        public short ASPD {
             get => aspd;
             set => aspd = value;
         }
@@ -516,8 +463,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化装备提升的CSPD 宠物相关 待检查
         /// </summary>
-        public short CSPD
-        {
+        public short CSPD {
             get => cspd;
             set => cspd = value;
         }
@@ -525,8 +471,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     道具详细情报显示的名字
         /// </summary>
-        public string Name
-        {
+        public string Name {
             get => name;
             set => name = value;
         }
@@ -534,8 +479,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     是否是旧版本道具
         /// </summary>
-        public bool Old
-        {
+        public bool Old {
             get => old;
             set => old = value;
         }
@@ -543,8 +487,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     是否已经潜在强化
         /// </summary>
-        public bool Potential
-        {
+        public bool Potential {
             get => potential;
             set => potential = value;
         }
@@ -552,8 +495,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     是否已经性能解放
         /// </summary>
-        public bool Release
-        {
+        public bool Release {
             get => release;
             set => release = value;
         }
@@ -561,8 +503,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     Partner等级
         /// </summary>
-        public byte PartnerLevel
-        {
+        public byte PartnerLevel {
             get => partnerLevel;
             set => partnerLevel = value;
         }
@@ -570,8 +511,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     Partner转生标志 0=未转生 1=已转生
         /// </summary>
-        public byte PartnerRebirth
-        {
+        public byte PartnerRebirth {
             get => partnerRebirth;
             set => partnerRebirth = value;
         }
@@ -580,8 +520,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     是否是出租道具
         /// </summary>
-        public bool Rental
-        {
+        public bool Rental {
             get => rental;
             set => rental = value;
         }
@@ -589,45 +528,37 @@ namespace SagaDB.Item
         /// <summary>
         ///     出租道具到期时间
         /// </summary>
-        public DateTime RentalTime
-        {
+        public DateTime RentalTime {
             get => rentalTime;
             set => rentalTime = value;
         }
 
-        public uint PictID
-        {
+        public uint PictID {
             get => pict_id;
             set => pict_id = value;
         }
 
         public uint ItemID { get; private set; }
 
-        public uint DBID
-        {
+        public uint DBID {
             get => db_id;
             set => db_id = value;
         }
 
-        public ushort maxDurability
-        {
+        public ushort maxDurability {
             get => maxdurability;
             set => maxdurability = value;
         }
 
-        public uint Slot
-        {
+        public uint Slot {
             get => slot;
             set => slot = value;
         }
 
-        public ItemData BaseData
-        {
-            get
-            {
+        public ItemData BaseData {
+            get {
                 ItemData baseData = null;
-                if (baseData == null)
-                {
+                if (baseData == null) {
                     if (ItemFactory.Instance.Items.ContainsKey(ItemID))
                         baseData = ItemFactory.Instance.Items[ItemID];
                     else
@@ -641,8 +572,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     数量
         /// </summary>
-        public ushort Stack
-        {
+        public ushort Stack {
             get => stack;
             set => stack = value;
         }
@@ -650,8 +580,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     染色
         /// </summary>
-        public byte Dye
-        {
+        public byte Dye {
             get => dye;
             set => dye = value;
         }
@@ -659,8 +588,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     持久
         /// </summary>
-        public ushort Durability
-        {
+        public ushort Durability {
             get => durability;
             set => durability = value;
         }
@@ -668,8 +596,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     凭依在此道具上的Actor
         /// </summary>
-        public ActorPC PossessionedActor
-        {
+        public ActorPC PossessionedActor {
             get => possessionedActor;
             set => possessionedActor = value;
         }
@@ -677,8 +604,7 @@ namespace SagaDB.Item
         /// <summary>
         ///     此道具被凭依前的主人
         /// </summary>
-        public ActorPC PossessionOwner
-        {
+        public ActorPC PossessionOwner {
             get => possessionOwner;
             set => possessionOwner = value;
         }
@@ -686,10 +612,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     装备当前插槽
         /// </summary>
-        public byte CurrentSlot
-        {
-            get
-            {
+        public byte CurrentSlot {
+            get {
                 if (currentSlot == 0 && currentSlot != BaseData.currentSlot)
                     currentSlot = BaseData.currentSlot;
                 return currentSlot;
@@ -700,10 +624,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     装备最大插槽
         /// </summary>
-        public byte MaxSlot
-        {
-            get
-            {
+        public byte MaxSlot {
+            get {
                 if (maxSlot == 0 && maxSlot != BaseData.maxSlot)
                     maxSlot = BaseData.maxSlot;
                 return maxSlot;
@@ -714,10 +636,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     已经插入的卡
         /// </summary>
-        public List<IrisCard> Cards
-        {
-            get
-            {
+        public List<IrisCard> Cards {
+            get {
                 if (cards == null)
                     cards = new List<IrisCard>();
                 return cards;
@@ -727,22 +647,18 @@ namespace SagaDB.Item
         /// <summary>
         ///     装备强化次数
         /// </summary>
-        public ushort Refine
-        {
+        public ushort Refine {
             get => refine;
             set => refine = value;
         }
 
-        public bool Identified
-        {
-            get
-            {
+        public bool Identified {
+            get {
                 if (identified == 0)
                     return false;
                 return true;
             }
-            set
-            {
+            set {
                 if (value)
                     identified = 1;
                 else
@@ -750,8 +666,7 @@ namespace SagaDB.Item
             }
         }
 
-        public bool Locked
-        {
+        public bool Locked {
             get => locked;
             set => locked = value;
         }
@@ -759,14 +674,12 @@ namespace SagaDB.Item
         /// <summary>
         ///     觉醒状态
         /// </summary>
-        public bool ChangeMode
-        {
+        public bool ChangeMode {
             get => changeMode;
             set => changeMode = value;
         }
 
-        public bool ChangeMode2
-        {
+        public bool ChangeMode2 {
             get => changeMode2;
             set => changeMode2 = value;
         }
@@ -774,10 +687,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     强化类型
         /// </summary>
-        public Dictionary<RefineType, ushort> RefineType
-        {
-            get
-            {
+        public Dictionary<RefineType, ushort> RefineType {
+            get {
                 if (refineType == null)
                     refineType = new Dictionary<RefineType, ushort>();
                 if (!refineType.ContainsKey(0))
@@ -809,10 +720,8 @@ namespace SagaDB.Item
             set => refineType = value;
         }
 
-        public bool Stackable
-        {
-            get
-            {
+        public bool Stackable {
+            get {
                 if (BaseData.stock)
                     return true;
                 return false;
@@ -822,10 +731,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查是否是装备 这样的判定太蛋疼了 有空我要改掉！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
         /// </summary>
-        public bool IsEquipt
-        {
-            get
-            {
+        public bool IsEquipt {
+            get {
                 var type = (int)BaseData.itemType;
                 if (type >= (int)ItemType.ACCESORY_HEAD && type <= (int)ItemType.PET_NEKOMATA)
                     return true;
@@ -842,10 +749,8 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查是否是DEM部件
         /// </summary>
-        public bool IsParts
-        {
-            get
-            {
+        public bool IsParts {
+            get {
                 var type = (int)BaseData.itemType;
                 if (type >= (int)ItemType.PARTS_HEAD && type <= (int)ItemType.PARTS_LONGRANGE)
                     return true;
@@ -856,12 +761,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查一个道具是否是武器
         /// </summary>
-        public bool IsWeapon
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool IsWeapon {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.AXE:
                     case ItemType.BOOK:
                     case ItemType.HAMMER:
@@ -891,12 +793,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查武器是否需要弹药（是否是弓箭枪械类）
         /// </summary>
-        public bool NeedAmmo
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool NeedAmmo {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.BOW:
                     case ItemType.DUALGUN:
                     case ItemType.GUN:
@@ -911,12 +810,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查是否是弹药(不含card和throw)
         /// </summary>
-        public bool IsAmmo
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool IsAmmo {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.ARROW:
                     case ItemType.BULLET:
                         return true;
@@ -929,12 +825,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查道具是否是衣服
         /// </summary>
-        public bool IsArmor
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool IsArmor {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.ONEPIECE:
                     case ItemType.COSTUME:
                     case ItemType.BODYSUIT:
@@ -951,12 +844,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查道具是否是宠物
         /// </summary>
-        public bool IsPet
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool IsPet {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.PET:
                     case ItemType.PET_NEKOMATA:
                     case ItemType.RIDE_PET:
@@ -973,12 +863,9 @@ namespace SagaDB.Item
         /// <summary>
         ///     检查道具是否是partner
         /// </summary>
-        public bool IsPartner
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public bool IsPartner {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.PARTNER:
                     case ItemType.RIDE_PARTNER:
                         return true;
@@ -991,15 +878,12 @@ namespace SagaDB.Item
         /// <summary>
         ///     取得该装备需要的装备槽
         /// </summary>
-        public List<EnumEquipSlot> EquipSlot
-        {
-            get
-            {
+        public List<EnumEquipSlot> EquipSlot {
+            get {
                 var slots = new List<EnumEquipSlot>();
                 if (!IsEquipt && !IsParts)
                     Logger.ShowDebug("Cannot equip a non equipment item!", Logger.defaultlogger);
-                switch (BaseData.itemType)
-                {
+                switch (BaseData.itemType) {
                     //head&face
                     case ItemType.ACCESORY_HEAD:
                         slots.Add(EnumEquipSlot.HEAD_ACCE);
@@ -1073,13 +957,11 @@ namespace SagaDB.Item
                     case ItemType.THROW:
                     case ItemType.ROPE:
                     case ItemType.HAMMER:
-                        if (BaseData.doubleHand)
-                        {
+                        if (BaseData.doubleHand) {
                             slots.Add(EnumEquipSlot.RIGHT_HAND);
                             slots.Add(EnumEquipSlot.LEFT_HAND);
                         }
-                        else
-                        {
+                        else {
                             slots.Add(EnumEquipSlot.RIGHT_HAND);
                         }
 
@@ -1176,15 +1058,12 @@ namespace SagaDB.Item
         /// <summary>
         ///     取得该Partner装备需要的装备槽
         /// </summary>
-        public List<EnumPartnerEquipSlot> PartnerEquipSlot
-        {
-            get
-            {
+        public List<EnumPartnerEquipSlot> PartnerEquipSlot {
+            get {
                 var slots = new List<EnumPartnerEquipSlot>();
                 if (BaseData.itemType != ItemType.UNION_WEAPON && BaseData.itemType != ItemType.UNION_COSTUME)
                     Logger.ShowDebug("Cannot equip partner a non partner equipment item!", Logger.defaultlogger);
-                switch (BaseData.itemType)
-                {
+                switch (BaseData.itemType) {
                     //head&face
                     case ItemType.UNION_WEAPON:
                         slots.Add(EnumPartnerEquipSlot.WEAPON);
@@ -1198,12 +1077,9 @@ namespace SagaDB.Item
             }
         }
 
-        public ATTACK_TYPE AttackType
-        {
-            get
-            {
-                switch (BaseData.itemType)
-                {
+        public ATTACK_TYPE AttackType {
+            get {
+                switch (BaseData.itemType) {
                     case ItemType.SWORD:
                     case ItemType.CARD:
                     case ItemType.SHORT_SWORD:
@@ -1237,14 +1113,12 @@ namespace SagaDB.Item
             }
         }
 
-        public uint ActorPartnerID
-        {
+        public uint ActorPartnerID {
             get => actorpartnerid;
             set => actorpartnerid = value;
         }
 
-        public void ToStream(Stream ms)
-        {
+        public void ToStream(Stream ms) {
             var bw = new BinaryWriter(ms);
             //Version
             bw.Write(Version);
@@ -1379,14 +1253,11 @@ namespace SagaDB.Item
             //    bw.Write((short)0);
         }
 
-        public void FromStream(Stream InputStream)
-        {
-            try
-            {
+        public void FromStream(Stream InputStream) {
+            try {
                 var br = new BinaryReader(InputStream);
                 var item_version = br.ReadUInt16();
-                if (item_version >= 1)
-                {
+                if (item_version >= 1) {
                     ItemID = br.ReadUInt32();
                     durability = br.ReadUInt16();
                     stack = br.ReadUInt16();
@@ -1429,12 +1300,10 @@ namespace SagaDB.Item
                     slot = br.ReadUInt32();
                 }
 
-                if (item_version >= 2)
-                {
+                if (item_version >= 2) {
                     currentSlot = br.ReadByte();
                     int count = br.ReadByte();
-                    for (var i = 0; i < count; i++)
-                    {
+                    for (var i = 0; i < count; i++) {
                         var id = br.ReadUInt32();
                         if (IrisCardFactory.Instance.Items.ContainsKey(id))
                             cards.Add(IrisCardFactory.Instance.Items[id]);
@@ -1443,14 +1312,12 @@ namespace SagaDB.Item
                     locked = br.ReadBoolean();
                 }
 
-                if (item_version >= 3)
-                {
+                if (item_version >= 3) {
                     rental = br.ReadBoolean();
                     rentalTime = DateTime.FromBinary(br.ReadInt64());
                 }
 
-                if (item_version >= 4)
-                {
+                if (item_version >= 4) {
                     changeMode = br.ReadBoolean();
                     changeMode2 = br.ReadBoolean();
                 }
@@ -1458,8 +1325,7 @@ namespace SagaDB.Item
                 if (item_version >= 5)
                     for (var i = 0; i < 12; i++)
                         RefineType[(RefineType)i] = (ushort)br.ReadInt16();
-                if (item_version >= 6)
-                {
+                if (item_version >= 6) {
                     refine_sharp = br.ReadUInt32();
                     refine_enchanted = br.ReadUInt32();
                     refine_vitality = br.ReadUInt32();
@@ -1472,15 +1338,13 @@ namespace SagaDB.Item
                     refine_mdef = br.ReadUInt32();
                 }
 
-                if (item_version >= 7)
-                {
+                if (item_version >= 7) {
                     refine_hit = br.ReadUInt32();
                     refine_mhit = br.ReadUInt32();
                     actorpartnerid = br.ReadUInt32();
                 }
 
-                if (item_version >= 8)
-                {
+                if (item_version >= 8) {
                     name = br.ReadString();
                     partnerLevel = br.ReadByte();
                     partnerRebirth = br.ReadByte();
@@ -1491,8 +1355,7 @@ namespace SagaDB.Item
 
                 if (item_version >= 9) maxDurability = br.ReadUInt16();
 
-                if (item_version >= 10)
-                {
+                if (item_version >= 10) {
                     lifeenhance = br.ReadByte();
                     powerenhance = br.ReadByte();
                     critenhance = br.ReadByte();
@@ -1512,14 +1375,12 @@ namespace SagaDB.Item
                 //    Element[Elements.Wind] = br.ReadInt16();
                 //}
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             agi = 0;
             atk1 = 0;
             atk2 = 0;
@@ -1579,8 +1440,7 @@ namespace SagaDB.Item
             dye = 0;
         }
 
-        public Item Clone()
-        {
+        public Item Clone() {
             var item = new Item();
             item.ItemID = ItemID;
             item.db_id = db_id;
@@ -1683,8 +1543,7 @@ namespace SagaDB.Item
         ///     装备所有插的卡的能力向量
         ///     <param name="deck">是否是牌面</param>
         /// </summary>
-        public List<AbilityVector> AbilityVectors(bool deck)
-        {
+        public List<AbilityVector> AbilityVectors(bool deck) {
             var list = new List<AbilityVector>();
             var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
@@ -1692,9 +1551,9 @@ namespace SagaDB.Item
             else
                 cards = this.cards;
             foreach (var i in cards)
-            foreach (var j in i.Abilities.Keys)
-                if (!list.Contains(j))
-                    list.Add(j);
+                foreach (var j in i.Abilities.Keys)
+                    if (!list.Contains(j))
+                        list.Add(j);
 
             return list;
         }
@@ -1705,8 +1564,7 @@ namespace SagaDB.Item
         /// <param name="deck">是否是牌面</param>
         /// <param name="lv">是否是取得向量等级信息而非值信息</param>
         /// <returns></returns>
-        public Dictionary<AbilityVector, int> VectorValues(bool deck, bool lv)
-        {
+        public Dictionary<AbilityVector, int> VectorValues(bool deck, bool lv) {
             var list = new Dictionary<AbilityVector, int>();
             var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
@@ -1715,18 +1573,16 @@ namespace SagaDB.Item
                 cards = this.cards;
 
             foreach (var i in cards)
-            foreach (var j in i.Abilities.Keys)
-                if (!list.ContainsKey(j))
-                    list.Add(j, i.Abilities[j]);
-                else
-                    list[j] += i.Abilities[j];
+                foreach (var j in i.Abilities.Keys)
+                    if (!list.ContainsKey(j))
+                        list.Add(j, i.Abilities[j]);
+                    else
+                        list[j] += i.Abilities[j];
 
-            if (lv)
-            {
+            if (lv) {
                 var lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //new settings
                 var keys = list.Keys.ToArray();
-                foreach (var i in keys)
-                {
+                foreach (var i in keys) {
                     var value = list[i];
                     var level = 0;
                     foreach (var j in lvs)
@@ -1746,17 +1602,14 @@ namespace SagaDB.Item
         /// </summary>
         /// <param name="deck"></param>
         /// <returns></returns>
-        public Dictionary<ReleaseAbility, int> ReleaseAbilities(bool deck)
-        {
+        public Dictionary<ReleaseAbility, int> ReleaseAbilities(bool deck) {
             return ReleaseAbilities(VectorValues(deck, true));
         }
 
-        public static Dictionary<ReleaseAbility, int> ReleaseAbilities(Dictionary<AbilityVector, int> vectors)
-        {
+        public static Dictionary<ReleaseAbility, int> ReleaseAbilities(Dictionary<AbilityVector, int> vectors) {
             var list = new Dictionary<ReleaseAbility, int>();
 
-            foreach (var i in vectors.Keys)
-            {
+            foreach (var i in vectors.Keys) {
                 var ability = i.ReleaseAbilities[(byte)vectors[i]];
                 foreach (var j in ability.Keys)
                     if (list.ContainsKey(j))
@@ -1773,8 +1626,7 @@ namespace SagaDB.Item
         /// </summary>
         /// <param name="deck">是否是牌面</param>
         /// <returns></returns>
-        public Dictionary<Elements, int> IrisElements(bool deck)
-        {
+        public Dictionary<Elements, int> IrisElements(bool deck) {
             var list = new Dictionary<Elements, int>();
             var cards = new List<IrisCard>();
             if (deck && this.cards.Count > 0)
@@ -1790,17 +1642,16 @@ namespace SagaDB.Item
             list.Add(Elements.Dark, 0);
 
             foreach (var i in cards)
-            foreach (var j in i.Elements.Keys)
-                if (!list.ContainsKey(j))
-                    list.Add(j, i.Elements[j]);
-                else
-                    list[j] += i.Elements[j];
+                foreach (var j in i.Elements.Keys)
+                    if (!list.ContainsKey(j))
+                        list.Add(j, i.Elements[j]);
+                    else
+                        list[j] += i.Elements[j];
 
             return list;
         }
 
-        public static Dictionary<Elements, int> ElementsZero()
-        {
+        public static Dictionary<Elements, int> ElementsZero() {
             var list = new Dictionary<Elements, int>();
             list.Add(Elements.Neutral, 0);
             list.Add(Elements.Fire, 0);
@@ -1812,8 +1663,7 @@ namespace SagaDB.Item
             return list;
         }
 
-        public class ItemData
-        {
+        public class ItemData {
             public Dictionary<AbnormalStatus, short> abnormalStatus = new Dictionary<AbnormalStatus, short>();
             public ushort activateSkill, possibleSkill, passiveSkill, possessionSkill, possessionPassiveSkill;
             public ActiveType activeType;
@@ -1869,14 +1719,12 @@ namespace SagaDB.Item
             public short str, dex, intel, vit, agi, mag, luk, cha;
             public TargetType target;
 
-            public override string ToString()
-            {
+            public override string ToString() {
                 return name;
             }
         }
 
-        public class EnItem
-        {
+        public class EnItem {
             public short aspd, cspd;
             public short atk1, atk2, atk3, matk, def, mdef;
             public short hp, mp, sp, weightUp, volumeUp, speedUp;

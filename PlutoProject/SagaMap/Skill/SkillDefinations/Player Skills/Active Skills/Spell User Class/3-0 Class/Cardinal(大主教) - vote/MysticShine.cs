@@ -7,17 +7,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.Cardinal_大主教____vote {
     /// <summary>
     ///     ミスティックシャイン
     /// </summary>
-    public class MysticShine : ISkill
-    {
+    public class MysticShine : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
 
@@ -29,8 +26,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private int count;
             //int TotalLv = 0;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -39,8 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 DueTime = 0;
                 factor = 1.0f + 0.5f * level;
 
-                switch (level)
-                {
+                switch (level) {
                     case 1:
                         countMax = 60;
                         break;
@@ -60,14 +55,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
 
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(actor, 400, false);
                         var affected = new List<Actor>();
@@ -89,8 +81,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
                                 affected.Add(i);
 
-                        foreach (var item in affected)
-                        {
+                        foreach (var item in affected) {
                             //BOSS 退後無效
                             if (SkillHandler.Instance.isBossMob(item))
                                 continue;
@@ -102,16 +93,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -122,8 +111,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (pc.Status.Additions.ContainsKey("HerosProtection"))
                 return -30;
@@ -131,8 +119,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             int[] lifetime = { 0, 15000, 2000, 25000, 30000, 35000 };
             var skill = new DefaultBuff(args.skill, sActor, "HerosProtection", lifetime[level]);
             SkillHandler.ApplyAddition(sActor, skill);

@@ -5,14 +5,11 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.DEMIC
-{
-    public class ModelFactory : Singleton<ModelFactory>
-    {
+namespace SagaDB.DEMIC {
+    public class ModelFactory : Singleton<ModelFactory> {
         public Dictionary<uint, Model> Models { get; } = new Dictionary<uint, Model>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -23,12 +20,10 @@ namespace SagaDB.DEMIC
             uint currentID = 0;
             var y = 0;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -38,8 +33,7 @@ namespace SagaDB.DEMIC
                         if (paras[i] == "" || paras[i].ToLower() == "null")
                             paras[i] = "0";
 
-                    if (paras[0] == "model")
-                    {
+                    if (paras[0] == "model") {
                         modelBegin = true;
                         var model = new Model();
                         model.ID = uint.Parse(paras[1]);
@@ -50,15 +44,12 @@ namespace SagaDB.DEMIC
                         continue;
                     }
 
-                    if (modelBegin)
-                    {
+                    if (modelBegin) {
                         var model = Models[currentID];
-                        for (var i = 0; i < paras.Length; i++)
-                        {
+                        for (var i = 0; i < paras.Length; i++) {
                             if (paras[i] != "0")
                                 model.Cells.Add(new[] { (byte)i, (byte)y });
-                            if (byte.Parse(paras[i]) > 100)
-                            {
+                            if (byte.Parse(paras[i]) > 100) {
                                 model.CenterX = (byte)i;
                                 model.CenterY = (byte)y;
                             }
@@ -67,11 +58,10 @@ namespace SagaDB.DEMIC
                         y++;
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing mob db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing mob db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }

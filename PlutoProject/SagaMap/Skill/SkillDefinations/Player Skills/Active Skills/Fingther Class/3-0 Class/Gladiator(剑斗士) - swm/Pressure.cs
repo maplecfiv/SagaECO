@@ -7,17 +7,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Gladiator_剑斗士____swm {
     /// <summary>
     ///     プレッシャー
     /// </summary>
-    public class Pressure : ISkill
-    {
+    public class Pressure : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax;
@@ -27,8 +24,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             private readonly SkillArg skill;
             private int count;
 
-            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -40,14 +36,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 dActor = theDActor;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(dActor, 200, true);
                         var affected = new List<Actor>();
@@ -56,8 +49,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         //施加魔法伤害
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 var skill2 = new DefaultBuff(skill.skill, i, "Pressure", 5000);
                                 skill2.OnAdditionStart += StartEventHandler;
                                 skill2.OnAdditionEnd += EndEventHandler;
@@ -70,23 +62,20 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
 
-            private void StartEventHandler(Actor actor, DefaultBuff skill)
-            {
+            private void StartEventHandler(Actor actor, DefaultBuff skill) {
                 int level = skill.skill.Level;
                 float[] value = { 0, 0.03f, 0.06f, 0.09f, 0.12f, 0.15f };
                 float[] speedless = { 0, 180, 210, 240, 270, 300 };
@@ -110,8 +99,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
 
-            private void EndEventHandler(Actor actor, DefaultBuff skill)
-            {
+            private void EndEventHandler(Actor actor, DefaultBuff skill) {
                 actor.Status.aspd_skill += (short)skill.Variable["PRESSURE_ASPD"];
                 actor.Status.cspd_skill += (short)skill.Variable["PRESSURE_CSPD"];
                 actor.Status.speed_skill += (short)skill.Variable["PRESSURE_SPEED"];
@@ -125,13 +113,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

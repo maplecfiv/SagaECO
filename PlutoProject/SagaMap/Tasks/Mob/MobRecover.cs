@@ -4,31 +4,25 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Mob
-{
-    public class MobRecover : MultiRunTask
-    {
+namespace SagaMap.Tasks.Mob {
+    public class MobRecover : MultiRunTask {
         private readonly ActorMob mob;
         private byte count;
 
-        public MobRecover(ActorMob mob)
-        {
+        public MobRecover(ActorMob mob) {
             DueTime = 1000;
             Period = 1000;
             this.mob = mob;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             //
-            try
-            {
+            try {
                 ClientManager.EnterCriticalArea();
                 var hpadd = 0;
                 hpadd = mob.BaseData.resilience;
                 mob.HP += (uint)hpadd;
-                if (mob.HP > mob.MaxHP)
-                {
+                if (mob.HP > mob.MaxHP) {
                     mob.HP = mob.MaxHP;
                     count = 0;
                 }
@@ -41,9 +35,8 @@ namespace SagaMap.Tasks.Mob
                 if (count >= 100)
                     Deactivate();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 mob.Tasks.Remove("MobRecover");
                 Deactivate();
             }

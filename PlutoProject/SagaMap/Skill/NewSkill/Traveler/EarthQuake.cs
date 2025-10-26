@@ -8,14 +8,11 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations;
 
-namespace SagaMap.Skill.NewSkill.Traveler
-{
-    public class EarthQuake : ISkill
-    {
+namespace SagaMap.Skill.NewSkill.Traveler {
+    public class EarthQuake : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly float factor = 1.0f;
@@ -25,8 +22,7 @@ namespace SagaMap.Skill.NewSkill.Traveler
             private readonly byte y;
             private int count;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -42,49 +38,44 @@ namespace SagaMap.Skill.NewSkill.Traveler
             }
 
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < 15)
-                    {
+                try {
+                    if (count < 15) {
                         for (var j = -count; j <= count; j++)
-                        for (var k = -count; k <= count; k++)
-                            if (j * j + k * k <= count * count
-                                && j * j + k * k > (count - 1) * (count - 1)
-                                && (j + k) % 2 == 0) //多了会卡
-                            {
-                                var s = skill.Clone();
-                                s.x = (byte)(x + j);
-                                s.y = (byte)(y + k);
-                                var actors = map.GetRoundAreaActors(Global.PosX8to16(s.x, map.Width),
-                                    Global.PosY8to16(s.y, map.Height), 300);
-                                var affected = new List<Actor>();
-                                s.affectedActors.Clear();
-                                foreach (var i in actors)
-                                    if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                                        affected.Add(i);
+                            for (var k = -count; k <= count; k++)
+                                if (j * j + k * k <= count * count
+                                    && j * j + k * k > (count - 1) * (count - 1)
+                                    && (j + k) % 2 == 0) //多了会卡
+                                {
+                                    var s = skill.Clone();
+                                    s.x = (byte)(x + j);
+                                    s.y = (byte)(y + k);
+                                    var actors = map.GetRoundAreaActors(Global.PosX8to16(s.x, map.Width),
+                                        Global.PosY8to16(s.y, map.Height), 300);
+                                    var affected = new List<Actor>();
+                                    s.affectedActors.Clear();
+                                    foreach (var i in actors)
+                                        if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
+                                            affected.Add(i);
 
-                                SkillHandler.Instance.MagicAttack(caster, affected, s, Elements.Earth, factor);
+                                    SkillHandler.Instance.MagicAttack(caster, affected, s, Elements.Earth, factor);
 
-                                //广播技能效果
-                                map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, s, actor, false);
-                            }
+                                    //广播技能效果
+                                    map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, s, actor, false);
+                                }
 
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
 
                 //解开同步锁
@@ -96,13 +87,11 @@ namespace SagaMap.Skill.NewSkill.Traveler
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

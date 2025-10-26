@@ -6,10 +6,8 @@ using System.Xml;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class KujiListFactory : Singleton<KujiListFactory>
-    {
+namespace SagaDB.Item {
+    public class KujiListFactory : Singleton<KujiListFactory> {
         public List<uint> AllItemsInKuji = new List<uint>();
         public List<uint> EventKujiList = new List<uint>();
         public List<uint> InKujiAccesuryList = new List<uint>();
@@ -33,55 +31,46 @@ namespace SagaDB.Item
         public List<uint> ZeroPriceList = new List<uint>();
         public Dictionary<uint, List<Kuji>> KujiList { get; } = new Dictionary<uint, List<Kuji>>();
 
-        public void InitTransformList(string path, Encoding encoding)
-        {
+        public void InitTransformList(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             string[] paras;
             uint TID = 0;
             ItemTransform it;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
                     paras = line.Split(',');
                     if (paras.Length <= 0) continue;
                     if (paras[0] == "") continue;
-                    if (paras[0] == "TRANSFORM")
-                    {
+                    if (paras[0] == "TRANSFORM") {
                         it = new ItemTransform();
                         it.product = uint.Parse(paras[2]);
                         TID = uint.Parse(paras[1]);
                         ItemTransformList.Add(TID, it);
                     }
-                    else
-                    {
+                    else {
                         ItemTransformList[TID].Stuffs.Add(uint.Parse(paras[0]));
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 
             sr.Close();
         }
 
-        public void InitEventKujiList(string path, Encoding encoding)
-        {
+        public void InitEventKujiList(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -90,35 +79,31 @@ namespace SagaDB.Item
                     if (!EventKujiList.Contains(id))
                         EventKujiList.Add(id);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 
             sr.Close();
         }
 
-        public void BuildNotInKujiItemsList()
-        {
+        public void BuildNotInKujiItemsList() {
             foreach (var item in KujiList)
-            foreach (var i in item.Value)
-                if (!AllItemsInKuji.Contains(i.itemid))
-                    AllItemsInKuji.Add(i.itemid);
+                foreach (var i in item.Value)
+                    if (!AllItemsInKuji.Contains(i.itemid))
+                        AllItemsInKuji.Add(i.itemid);
 
             //foreach (var item in ExchangeFactory.Instance.ExchangeItems)
             //{
             //    foreach (var i in item.Value)
             //        if (!AllItemsInKuji.Contains(i)) AllItemsInKuji.Add(i);
             //}
-            foreach (var item in ItemFactory.Instance.Items)
-            {
+            foreach (var item in ItemFactory.Instance.Items) {
                 var ty = item.Value.itemType;
                 if (item.Key > 80000000) continue;
                 if (ty == ItemType.SOCKS || ty == ItemType.SHOES || ty == ItemType.SLACKS || ty == ItemType.OVERALLS ||
                     ty == ItemType.HALFBOOTS
-                    || ty == ItemType.ARMOR_LOWER || ty == ItemType.BOOTS || ty == ItemType.LONGBOOTS)
-                {
+                    || ty == ItemType.ARMOR_LOWER || ty == ItemType.BOOTS || ty == ItemType.LONGBOOTS) {
                     if (!NotInKujiSocksList.Contains(item.Key) && !AllItemsInKuji.Contains(item.Key))
                         NotInKujiSocksList.Add(item.Key);
                     else
@@ -131,8 +116,7 @@ namespace SagaDB.Item
                     ty == ItemType.ACCESORY_FINGER || ty == ItemType.SHORT_SWORD || ty == ItemType.RAPIER ||
                     ty == ItemType.STRINGS || ty == ItemType.BOOK || ty == ItemType.DUALGUN || ty == ItemType.RIFLE ||
                     ty == ItemType.THROW || ty == ItemType.ROPE ||
-                    ty == ItemType.CARD || ty == ItemType.SHIELD)
-                {
+                    ty == ItemType.CARD || ty == ItemType.SHIELD) {
                     if (!NotInKujiWeaponsList.Contains(item.Key) && !AllItemsInKuji.Contains(item.Key))
                         NotInKujiWeaponsList.Add(item.Key);
                     else
@@ -142,8 +126,7 @@ namespace SagaDB.Item
                 if (ty == ItemType.ARROW || ty == ItemType.ARMOR_UPPER || ty == ItemType.ARMOR_LOWER ||
                     ty == ItemType.ONEPIECE || ty == ItemType.COSTUME || ty == ItemType.BODYSUIT ||
                     ty == ItemType.WEDDING || ty == ItemType.OVERALLS || ty == ItemType.FACEBODYSUIT ||
-                    ty == ItemType.SLACKS)
-                {
+                    ty == ItemType.SLACKS) {
                     if (!NotInKujiClothesList.Contains(item.Key) && !AllItemsInKuji.Contains(item.Key))
                         NotInKujiClothesList.Add(item.Key);
                     else
@@ -152,8 +135,7 @@ namespace SagaDB.Item
 
                 if (ty == ItemType.ACCESORY_NECK || ty == ItemType.BACKPACK || ty == ItemType.ACCESORY_FINGER ||
                     ty == ItemType.HELM || ty == ItemType.JOINT_SYMBOL
-                    || ty == ItemType.ACCESORY_FACE)
-                {
+                    || ty == ItemType.ACCESORY_FACE) {
                     if (!NotInKujiAccesuryList.Contains(item.Key) && !AllItemsInKuji.Contains(item.Key))
                         NotInKujiAccesuryList.Add(item.Key);
                     else
@@ -167,16 +149,13 @@ namespace SagaDB.Item
             }
         }
 
-        public void InitZeroCPList(string path, Encoding encoding)
-        {
+        public void InitZeroCPList(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -184,28 +163,24 @@ namespace SagaDB.Item
                     if (!ZeroPriceList.Contains(id))
                         ZeroPriceList.Add(id);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 
             sr.Close();
         }
 
-        public void InitXML(string path, Encoding encoding)
-        {
+        public void InitXML(string path, Encoding encoding) {
             var xml = new XmlDocument();
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 xml.Load(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path));
                 root = xml["KujiDB"];
                 list = root.ChildNodes;
 
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
@@ -217,8 +192,7 @@ namespace SagaDB.Item
 
                     var newkujis = new Dictionary<int, List<uint>>();
 
-                    foreach (var j2 in items)
-                    {
+                    foreach (var j2 in items) {
                         XmlElement i2;
                         if (j2.GetType() != typeof(XmlElement)) continue;
                         i2 = (XmlElement)j2;
@@ -241,22 +215,19 @@ namespace SagaDB.Item
                     KujiList.Add(KujiID, kujis);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        private int GetKujiRate(int rank)
-        {
+        private int GetKujiRate(int rank) {
             var rates = new int[10] { 3, 17, 80, 100, 160, 200, 260, 280, 300, 600 };
             if (rank > 10) rank = 10;
             if (rank < 1) rank = 1;
             return rates[rank - 1];
         }
 
-        public class ItemTransform
-        {
+        public class ItemTransform {
             public uint product;
             public List<uint> Stuffs = new List<uint>();
         }

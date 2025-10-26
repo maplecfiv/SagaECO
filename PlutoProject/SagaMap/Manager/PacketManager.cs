@@ -47,7 +47,7 @@ namespace SagaMap.Manager {
                 Logger.ShowInfo($"{Packetcount} Packet Loaded");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -68,8 +68,8 @@ namespace SagaMap.Manager {
             if (results.Errors.HasErrors) {
                 foreach (CompilerError error in results.Errors)
                     if (!error.IsWarning) {
-                        Logger.GetLogger().Error("Compile Error:" + error.ErrorText, null);
-                        Logger.GetLogger().Error("File:" + error.FileName + ":" + error.Line, null);
+                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
+                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
                     }
 
                 return null;

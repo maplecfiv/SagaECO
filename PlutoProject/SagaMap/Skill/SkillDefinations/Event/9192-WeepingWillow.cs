@@ -6,17 +6,14 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Event
-{
+namespace SagaMap.Skill.SkillDefinations.Event {
     /// <summary>
     ///     呼～ん～だ～？
     /// </summary>
-    public class WeepingWillow1 : ISkill
-    {
+    public class WeepingWillow1 : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Map map;
             private readonly Actor sActor;
@@ -24,8 +21,7 @@ namespace SagaMap.Skill.SkillDefinations.Event
             private float factor;
             private int lifetime;
 
-            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level)
-            {
+            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level) {
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
@@ -36,14 +32,11 @@ namespace SagaMap.Skill.SkillDefinations.Event
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0)
-                    {
+                try {
+                    if (lifetime > 0) {
                         lifetime -= Period;
                         uint HP_Recovery = 100;
                         var affected = map.GetActorsArea(actor, 200, false);
@@ -60,15 +53,13 @@ namespace SagaMap.Skill.SkillDefinations.Event
                         SkillHandler.Instance.FixAttack(sActor, realAffected, skill, Elements.Holy, -HP_Recovery);
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -79,13 +70,11 @@ namespace SagaMap.Skill.SkillDefinations.Event
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //建立設置型技能實體
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

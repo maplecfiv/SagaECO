@@ -5,23 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class ExchangeFactory : Singleton<ExchangeFactory>
-    {
+namespace SagaDB.Item {
+    public class ExchangeFactory : Singleton<ExchangeFactory> {
         public Dictionary<uint, Exchange> ExchangeItems = new Dictionary<uint, Exchange>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -36,12 +31,10 @@ namespace SagaDB.Item
                     var itemnames = new string[15];
 
                     for (var i = 2; i < 18; i++)
-                        if (paras[i + 1] != "0")
-                        {
+                        if (paras[i + 1] != "0") {
                             uint id = 0;
                             uint.TryParse(paras[i + 1], out id);
-                            if (id != 0)
-                            {
+                            if (id != 0) {
                                 itemids[i + 1 - 3] = id;
                                 itemnames[i + 1 - 3] = paras[18 + i + 1];
                             }
@@ -53,9 +46,8 @@ namespace SagaDB.Item
                     if (!ExchangeItems.ContainsKey(ex.OriItemID))
                         ExchangeItems.Add(ex.OriItemID, ex);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 

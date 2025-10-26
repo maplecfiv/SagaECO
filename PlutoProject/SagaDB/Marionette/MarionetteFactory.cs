@@ -6,35 +6,28 @@ using SagaDB.Mob;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Marionette
-{
-    public class MarionetteFactory : Singleton<MarionetteFactory>
-    {
+namespace SagaDB.Marionette {
+    public class MarionetteFactory : Singleton<MarionetteFactory> {
         public Dictionary<uint, Marionette> Items = new Dictionary<uint, Marionette>();
 
-        public Marionette this[uint index]
-        {
-            get
-            {
+        public Marionette this[uint index] {
+            get {
                 if (Items.ContainsKey(index))
                     return Items[index];
                 return null;
             }
         }
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             Logger.GetLogger().Information("Loading marionette database...");
             //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     Marionette mob;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -97,10 +90,9 @@ namespace SagaDB.Marionette
                     Items.Add(mob.ID, mob);
                     count++;
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error("Error on parsing marionette db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError("Error on parsing marionette db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
                 }
             }
 

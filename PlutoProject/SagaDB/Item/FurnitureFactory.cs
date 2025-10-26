@@ -2,42 +2,34 @@ using System;
 using System.Xml;
 using SagaLib;
 
-namespace SagaDB.Item
-{
-    public class FurnitureFactory : Factory<FurnitureFactory, Furniture>
-    {
-        public FurnitureFactory()
-        {
+namespace SagaDB.Item {
+    public class FurnitureFactory : Factory<FurnitureFactory, Furniture> {
+        public FurnitureFactory() {
             loadingTab = "Loading furniture database";
             loadedTab = " furnitures loaded.";
             databaseName = "furniture";
             FactoryType = FactoryType.CSV;
         }
 
-        protected override void ParseXML(XmlElement root, XmlElement current, Furniture item)
-        {
+        protected override void ParseXML(XmlElement root, XmlElement current, Furniture item) {
             throw new NotImplementedException();
         }
 
-        protected override uint GetKey(Furniture item)
-        {
+        protected override uint GetKey(Furniture item) {
             return item.ItemID;
         }
 
-        public Furniture GetFurniture(uint id)
-        {
-            if (Items.ContainsKey(id))
-            {
+        public Furniture GetFurniture(uint id) {
+            if (Items.ContainsKey(id)) {
                 var f = Items[id];
                 return f;
             }
 
-            Logger.GetLogger().Error("No Furniture Found! (" + id + ")");
+            Logger.ShowError("No Furniture Found! (" + id + ")");
             return null;
         }
 
-        protected override void ParseCSV(Furniture item, string[] paras)
-        {
+        protected override void ParseCSV(Furniture item, string[] paras) {
             item.ItemID = uint.Parse(paras[0]);
             if (paras[1] == null || paras[1] == "0" || paras[1] == "")
                 item.Name = "_";

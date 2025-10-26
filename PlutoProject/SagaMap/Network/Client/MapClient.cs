@@ -143,8 +143,8 @@ namespace SagaMap.Network.Client {
         public SESSION_STATE state;
 
         public MapClient(Socket mSock, Dictionary<ushort, Packet> mCommandTable) {
-            NetIo = new NetIO(mSock, mCommandTable, this);
-            NetIo.SetMode(NetIO.Mode.Server);
+            NetIo = new NetIo(mSock, mCommandTable, this);
+            NetIo.SetMode(NetIo.Mode.Server);
             NetIo.FirstLevelLength = 2;
             if (NetIo.sock.Connected) OnConnect();
         }
@@ -178,7 +178,7 @@ namespace SagaMap.Network.Client {
                 return "MapClient";
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
                 return "MapClient";
             }
         }
@@ -430,7 +430,7 @@ namespace SagaMap.Network.Client {
                 OnPProtectCreatedOut(null);
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -1240,7 +1240,7 @@ namespace SagaMap.Network.Client {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -2858,7 +2858,7 @@ namespace SagaMap.Network.Client {
                 NetIo.SendPacket(p2);
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -5073,7 +5073,7 @@ namespace SagaMap.Network.Client {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -5848,7 +5848,7 @@ namespace SagaMap.Network.Client {
                 SendSystemMessage("PARTNER AI系統尚未實裝。");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -6422,7 +6422,7 @@ namespace SagaMap.Network.Client {
                     main.Start();
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                 }
             }
         }
@@ -6453,7 +6453,7 @@ namespace SagaMap.Network.Client {
             }
 
             catch (Exception ex) {
-                Logger.GetLogger().Error(main.Name + " Thread " + ex);
+                Logger.ShowError(main.Name + " Thread " + ex);
             }
         }
 
@@ -10100,7 +10100,7 @@ namespace SagaMap.Network.Client {
                         NetIo.SendPacket(p3);
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
         }
 
@@ -10520,7 +10520,7 @@ namespace SagaMap.Network.Client {
                 }
             }
             catch (Exception ex1) {
-                Logger.GetLogger().Error(ex1, ex1.Message);
+                Logger.ShowError(ex1);
             }
 
 

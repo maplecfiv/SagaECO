@@ -8,14 +8,11 @@ using SagaDB.Item;
 using SagaLib;
 using Version = SagaLib.Version;
 
-namespace SagaLogin.Configuration
-{
-    public class Configuration : Singleton<Configuration>
-    {
+namespace SagaLogin.Configuration {
+    public class Configuration : Singleton<Configuration> {
         private string encoding;
 
-        public Configuration()
-        {
+        public Configuration() {
             var list = new Dictionary<PC_GENDER, List<StartItem>>();
             StartItem.Add(PC_RACE.EMIL, list);
             list = new Dictionary<PC_GENDER, List<StartItem>>();
@@ -52,12 +49,9 @@ namespace SagaLogin.Configuration
 
         public List<string> Motd { get; } = new List<string>();
 
-        public string DBEncoding
-        {
-            get
-            {
-                if (encoding == null)
-                {
+        public string DBEncoding {
+            get {
+                if (encoding == null) {
                     encoding = Encoding.UTF8.EncodingName;
                     Logger.ShowDebug("DB Encoding not set, set to default value: " + encoding, null);
                 }
@@ -69,24 +63,20 @@ namespace SagaLogin.Configuration
 
         public int LogLevel { get; set; }
 
-        public void Initialization(string path)
-        {
+        public void Initialization(string path) {
             // var xml = new XmlDocument();
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 var getVersion = false;
                 // xml.Load(path);
                 root = ConfigLoader.LoadConfig("SagaLogin");
                 list = root.ChildNodes;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "dbtype":
                             DBType = int.Parse(i.InnerText);
                             break;
@@ -119,8 +109,7 @@ namespace SagaLogin.Configuration
                             break;
                         case "motd":
                             var msg = i.InnerText.Split('\n');
-                            foreach (var k in msg)
-                            {
+                            foreach (var k in msg) {
                                 var tmp = k.Replace("\r", "").Replace(" ", "");
                                 if (tmp != "")
                                     Motd.Add(tmp);
@@ -128,13 +117,11 @@ namespace SagaLogin.Configuration
 
                             break;
                         case "version":
-                            try
-                            {
+                            try {
                                 Version = (Version)Enum.Parse(typeof(Version), i.InnerText);
                                 getVersion = true;
                             }
-                            catch
-                            {
+                            catch {
                                 Logger.GetLogger().Warning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
                             }
@@ -142,8 +129,7 @@ namespace SagaLogin.Configuration
                             break;
                         case "startstatus":
                             var race = PC_RACE.EMIL;
-                            switch (i.Attributes["race"].Value.ToUpper())
-                            {
+                            switch (i.Attributes["race"].Value.ToUpper()) {
                                 case "EMIL":
                                     race = PC_RACE.EMIL;
                                     break;
@@ -160,13 +146,11 @@ namespace SagaLogin.Configuration
 
                             var setting = new StartupSetting();
                             var childs = i.ChildNodes;
-                            foreach (var l in childs)
-                            {
+                            foreach (var l in childs) {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
                                 k = (XmlElement)l;
-                                switch (k.Name.ToLower())
-                                {
+                                switch (k.Name.ToLower()) {
                                     case "str":
                                         setting.Str = ushort.Parse(k.InnerText);
                                         break;
@@ -202,8 +186,7 @@ namespace SagaLogin.Configuration
                         case "startitem":
                             Dictionary<PC_GENDER, List<StartItem>> items = null;
                             var gender = PC_GENDER.FEMALE;
-                            switch (i.Attributes["race"].Value.ToUpper())
-                            {
+                            switch (i.Attributes["race"].Value.ToUpper()) {
                                 case "EMIL":
                                     items = StartItem[PC_RACE.EMIL];
                                     break;
@@ -218,8 +201,7 @@ namespace SagaLogin.Configuration
                                     break;
                             }
 
-                            switch (i.Attributes["gender"].Value.ToUpper())
-                            {
+                            switch (i.Attributes["gender"].Value.ToUpper()) {
                                 case "MALE":
                                     gender = PC_GENDER.MALE;
                                     break;
@@ -231,20 +213,17 @@ namespace SagaLogin.Configuration
                             var list2 = new List<StartItem>();
                             items.Add(gender, list2);
                             var childs2 = i.ChildNodes;
-                            foreach (var o in childs2)
-                            {
+                            foreach (var o in childs2) {
                                 XmlElement p;
                                 if (o.GetType() != typeof(XmlElement)) continue;
                                 p = (XmlElement)o;
                                 var startitem = new StartItem();
                                 var childs3 = p.ChildNodes;
-                                foreach (var n in childs3)
-                                {
+                                foreach (var n in childs3) {
                                     XmlElement m;
                                     if (n.GetType() != typeof(XmlElement)) continue;
                                     m = (XmlElement)n;
-                                    switch (m.Name.ToLower())
-                                    {
+                                    switch (m.Name.ToLower()) {
                                         case "itemid":
                                             startitem.ItemID = uint.Parse(m.InnerText);
                                             break;
@@ -271,9 +250,8 @@ namespace SagaLogin.Configuration
                         Version));
                 Logger.GetLogger().Information("Done reading configuration...");
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
     }

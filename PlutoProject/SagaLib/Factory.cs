@@ -147,9 +147,9 @@ namespace SagaLib {
                     }
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error("Error on parsing:" + path);
-                    Logger.GetLogger().Error(ele.InnerXml);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing:" + path);
+                    Logger.ShowError(ele.InnerXml);
+                    Logger.ShowError(ex);
                 }
             }
         }
@@ -184,9 +184,9 @@ namespace SagaLib {
                         }
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error("Error on parsing:" + path);
-                        Logger.GetLogger().Error(GetKey(item).ToString());
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError("Error on parsing:" + path);
+                        Logger.ShowError(GetKey(item).ToString());
+                        Logger.ShowError(ex);
                     }
 
                     var key = GetKey(item);
@@ -209,8 +209,8 @@ namespace SagaLib {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error("Error on parsing:" + path);
-                Logger.GetLogger().Error(ex.Message);
+                Logger.ShowError("Error on parsing:" + path);
+                Logger.ShowError(ex.Message);
             }
 
             return count;
@@ -264,9 +264,9 @@ namespace SagaLib {
                     count++;
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
-                    Logger.GetLogger().Error("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" +
-                                             lines);
+                    Logger.ShowError(ex);
+                    Logger.ShowError("Error on parsing " + databaseName + " db!\r\n       File:" + path + ":" +
+                                     lines);
                 }
             }
 

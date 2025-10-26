@@ -7,10 +7,8 @@ using SagaDB.Treasure;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Mob
-{
-    public class MobFactory : Singleton<MobFactory>
-    {
+namespace SagaDB.Mob {
+    public class MobFactory : Singleton<MobFactory> {
         private readonly Dictionary<uint, MobData> petLimits = new Dictionary<uint, MobData>();
         private readonly Dictionary<uint, MobData> pets = new Dictionary<uint, MobData>();
         public List<ActorMob> BossList = new List<ActorMob>();
@@ -18,18 +16,15 @@ namespace SagaDB.Mob
 
         public Dictionary<uint, MobData> Mobs { get; } = new Dictionary<uint, MobData>();
 
-        public MobData GetMobData(uint id)
-        {
+        public MobData GetMobData(uint id) {
             return Mobs[id];
         }
 
-        public MobData GetPetData(uint id)
-        {
+        public MobData GetPetData(uint id) {
             return pets[id];
         }
 
-        public MobData GetPetLimit(uint id)
-        {
+        public MobData GetPetLimit(uint id) {
             if (petLimits.ContainsKey(id))
                 return petLimits[id];
             return petLimits[10010003];
@@ -225,8 +220,7 @@ namespace SagaDB.Mob
         //        }
 
 
-        private Race GetMobRace(string typestr)
-        {
+        private Race GetMobRace(string typestr) {
             var race = Race.NONE;
             if (typestr.Contains("HUMAN"))
                 race = Race.HUMAN;
@@ -253,8 +247,7 @@ namespace SagaDB.Mob
             return race;
         }
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -263,12 +256,10 @@ namespace SagaDB.Mob
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     MobData mob;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -342,8 +333,7 @@ namespace SagaDB.Mob
                         //这边把null 引入掉落列表了 并且设定掉落为头发
                         //if (paras[113 + i] != "0")
                         //{
-                        try
-                        {
+                        try {
                             //修复怪物掉落的加载
                             // 一共有7个掉落, 前5个为普通掉落只要击杀都有可能掉落, 后2个为特殊掉落需要怪物知识?.
                             // 掉落设置方式为 :
@@ -353,18 +343,15 @@ namespace SagaDB.Mob
                             // 正常设置为 [P_/E_宝箱组Name] ex: [P_BOMB]
                             var newDrop = new MobData.DropData();
                             var args = paras[113 + i];
-                            if (args == "0")
-                            {
+                            if (args == "0") {
                                 newDrop.Public = false;
                                 newDrop.Party = true;
                                 args = "10000000";
 
-                                if (!uint.TryParse(args, out newDrop.ItemID))
-                                {
+                                if (!uint.TryParse(args, out newDrop.ItemID)) {
                                     newDrop.TreasureGroup = args;
 #if !Web
-                                    if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup))
-                                    {
+                                    if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup)) {
                                         Logger.GetLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
                                                                    " for Monster: " + mob.id);
                                         continue;
@@ -383,8 +370,7 @@ namespace SagaDB.Mob
                                 else
                                     mob.dropItemsSpecial.Add(newDrop);
                             }
-                            else
-                            {
+                            else {
                                 newDrop.Public = args.StartsWith("E_");
                                 newDrop.Party = args.StartsWith("P_");
                                 if (newDrop.Public)
@@ -393,12 +379,10 @@ namespace SagaDB.Mob
                                 if (newDrop.Party)
                                     args = args.Substring(2);
 
-                                if (!uint.TryParse(args, out newDrop.ItemID))
-                                {
+                                if (!uint.TryParse(args, out newDrop.ItemID)) {
                                     newDrop.TreasureGroup = args;
 #if !Web
-                                    if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup))
-                                    {
+                                    if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup)) {
                                         Logger.GetLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
                                                                    " for Monster: " + mob.id);
                                         continue;
@@ -420,14 +404,12 @@ namespace SagaDB.Mob
                                 //    mob.dropItemsSpecial.Add(newDrop);
                             }
                         }
-                        catch (Exception exception)
-                        {
-                            Logger.GetLogger().Error(exception, null);
+                        catch (Exception exception) {
+                            Logger.ShowError(exception);
                         }
 
                     //}
-                    if (paras[120] != "0")
-                    {
+                    if (paras[120] != "0") {
                         var newDrop = new MobData.DropData();
                         newDrop.ItemID = uint.Parse(paras[120]);
                         //暂时开启印章掉落?!
@@ -439,24 +421,22 @@ namespace SagaDB.Mob
                     mob.guideFlag = byte.Parse(paras[122]);
                     mob.guideID = short.Parse(paras[123]);
                     if (Mobs.ContainsKey(mob.id))
-                        Logger.GetLogger().Error("the monster id:" + mob.id + ",[" + Mobs[mob.id].name + "]is exist." +
-                                                 ",monster[" + mob.name + "]doesn't loaded.");
+                        Logger.ShowError("the monster id:" + mob.id + ",[" + Mobs[mob.id].name + "]is exist." +
+                                         ",monster[" + mob.name + "]doesn't loaded.");
                     else
                         Mobs.Add(mob.id, mob);
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                     count++;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing mob db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing mob db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -466,8 +446,7 @@ namespace SagaDB.Mob
             sr.Close();
         }
 
-        public void InitPet(string path, Encoding encoding)
-        {
+        public void InitPet(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -476,12 +455,10 @@ namespace SagaDB.Mob
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     MobData mob;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -495,13 +472,11 @@ namespace SagaDB.Mob
                     mob.id = uint.Parse(paras[0]);
                     mob.name = paras[1];
                     mob.pictid = uint.Parse(paras[2]);
-                    try
-                    {
+                    try {
                         mob.mobType = (MobType)Enum.Parse(typeof(MobType), paras[3]);
                     }
-                    catch (Exception exception)
-                    {
-                        Logger.GetLogger().Error(exception, null);
+                    catch (Exception exception) {
+                        Logger.ShowError(exception);
                         while (paras[3].Substring(paras[3].Length - 1) != "_")
                             paras[3] = paras[3].Substring(0, paras[3].Length - 1);
                         paras[3] = paras[3].Substring(0, paras[3].Length - 1);
@@ -509,8 +484,7 @@ namespace SagaDB.Mob
                     }
 
                     //骑宠的DB和一般的db 结构不再一致了 by 黑白照 2018.06.30
-                    if (mob.mobType.ToString().Contains("RIDE"))
-                    {
+                    if (mob.mobType.ToString().Contains("RIDE")) {
                         mob.mobSize = float.Parse(paras[4]);
                         mob.level = byte.Parse(paras[10]);
                         mob.str = ushort.Parse(paras[11]);
@@ -577,19 +551,17 @@ namespace SagaDB.Mob
 
                     pets.Add(mob.id, mob);
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                     count++;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing pet db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing pet db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -599,8 +571,7 @@ namespace SagaDB.Mob
             sr.Close();
         }
 
-        public void InitPartner(string path, Encoding encoding)
-        {
+        public void InitPartner(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -609,12 +580,10 @@ namespace SagaDB.Mob
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     MobData mob;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -629,13 +598,11 @@ namespace SagaDB.Mob
                     mob.name = paras[1];
                     mob.pictid = uint.Parse(paras[2]);
                     mob.mobSize = float.Parse(paras[3]);
-                    try
-                    {
+                    try {
                         mob.mobType = (MobType)Enum.Parse(typeof(MobType), paras[6]);
                     }
-                    catch (Exception exception)
-                    {
-                        Logger.GetLogger().Error(exception, null);
+                    catch (Exception exception) {
+                        Logger.ShowError(exception);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -683,19 +650,17 @@ namespace SagaDB.Mob
 
                     pets.Add(mob.id, mob);
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                     count++;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing partner db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing partner db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -705,8 +670,7 @@ namespace SagaDB.Mob
             sr.Close();
         }
 
-        public void InitPetLimit(string path, Encoding encoding)
-        {
+        public void InitPetLimit(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -715,12 +679,10 @@ namespace SagaDB.Mob
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     MobData mob;
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
@@ -770,8 +732,7 @@ namespace SagaDB.Mob
 
                     for (var i = 0; i < 7; i++)
                         if (paras[99 + i] != "0")
-                            try
-                            {
+                            try {
                                 var newDrop = new MobData.DropData();
                                 var args = paras[99 + i].Split('|');
                                 args[0] = args[0].Replace("P_", "");
@@ -782,13 +743,11 @@ namespace SagaDB.Mob
                                     newDrop.Rate = 100;
                                 mob.dropItems.Add(newDrop);
                             }
-                            catch (Exception exception)
-                            {
-                                Logger.GetLogger().Error(exception, null);
+                            catch (Exception exception) {
+                                Logger.ShowError(exception);
                             }
 
-                    if (paras[106] != "0")
-                    {
+                    if (paras[106] != "0") {
                         var newDrop = new MobData.DropData();
                         newDrop.ItemID = uint.Parse(paras[106]);
                         newDrop.Rate = int.Parse(paras[107]);
@@ -797,19 +756,17 @@ namespace SagaDB.Mob
 
                     petLimits.Add(mob.id, mob);
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                     count++;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing pet limit db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing pet limit db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }

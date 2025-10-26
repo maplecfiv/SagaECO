@@ -5,42 +5,33 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Packets.Client.Skill;
 
-namespace SagaMap.Tasks.Skill
-{
-    public class AutoCast : MultiRunTask
-    {
+namespace SagaMap.Tasks.Skill {
+    public class AutoCast : MultiRunTask {
         private readonly SkillArg arg;
         private readonly Actor caster;
 
-        public AutoCast(Actor pc, SkillArg arg)
-        {
+        public AutoCast(Actor pc, SkillArg arg) {
             Period = 600000;
             DueTime = 0;
             caster = pc;
             this.arg = arg;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 Deactivate();
                 AutoCastInfo info = null;
-                foreach (var i in arg.autoCast)
-                {
+                foreach (var i in arg.autoCast) {
                     info = i;
                     break;
                 }
 
-                if (info != null)
-                {
+                if (info != null) {
                     arg.x = info.x;
                     arg.y = info.y;
                     arg.autoCast.Remove(info);
-                    switch (caster.type)
-                    {
-                        case ActorType.PC:
-                        {
+                    switch (caster.type) {
+                        case ActorType.PC: {
                             var eh = (PCEventHandler)caster.e;
                             eh.Client.SkillDelay = DateTime.Now;
                             var p1 = new CSMG_SKILL_CAST();
@@ -62,21 +53,18 @@ namespace SagaMap.Tasks.Skill
 
                     DueTime = info.delay;
                 }
-                else
-                {
+                else {
                     caster.Tasks.Remove("AutoCast");
                     caster.Buff.CannotMove = false;
-                    if (caster.type == ActorType.PC)
-                    {
+                    if (caster.type == ActorType.PC) {
                         var eh = (PCEventHandler)caster.e;
                         eh.Client.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, caster,
                             true);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
     }

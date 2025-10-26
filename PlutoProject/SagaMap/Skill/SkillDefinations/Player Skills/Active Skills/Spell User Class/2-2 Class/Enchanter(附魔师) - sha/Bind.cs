@@ -7,25 +7,21 @@ using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Enchanter_附魔师____sha
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Enchanter_附魔师____sha {
     /// <summary>
     ///     大地束縛（バインド）
     /// </summary>
-    public class Bind : ISkill
-    {
+    public class Bind : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly Actor actor;
             private readonly byte level;
             private readonly Map map;
             private readonly SkillArg skill;
             private int lifetime;
 
-            public Activator(Actor _actor, SkillArg _args, byte _level)
-            {
+            public Activator(Actor _actor, SkillArg _args, byte _level) {
                 level = _level;
                 actor = _actor;
                 skill = _args;
@@ -35,17 +31,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 lifetime = 5000 + 5000 * level;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0)
-                    {
+                try {
+                    if (lifetime > 0) {
                         lifetime -= Period;
-                        try
-                        {
+                        try {
                             var actors = map.GetActorsArea(actor, 300, false);
                             //取得有效Actor（即怪物）
                             var rate = 5 + 5 * level;
@@ -53,8 +45,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             foreach (var i in actors)
                                 if (SkillHandler.Instance.CheckValidAttackTarget(actor, i))
                                     if (SkillHandler.Instance.CanAdditionApply(actor, i,
-                                            SkillHandler.DefaultAdditions.鈍足, rate))
-                                    {
+                                            SkillHandler.DefaultAdditions.鈍足, rate)) {
                                         var skill2 = new MoveSpeedDown(skill.skill, i, lifetime);
                                         SkillHandler.ApplyAddition(i, skill2);
                                     }
@@ -62,20 +53,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             //广播技能效果
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         }
-                        catch (Exception ex)
-                        {
-                            Logger.GetLogger().Error(ex, ex.Message);
+                        catch (Exception ex) {
+                            Logger.ShowError(ex);
                         }
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -86,8 +74,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 100))
@@ -100,11 +87,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             return -12;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
-            if (map.Info.earth[args.x, args.y] == 0)
-            {
+            if (map.Info.earth[args.x, args.y] == 0) {
                 MapClient.FromActorPC((ActorPC)sActor).SendSystemMessage("无法在指定的坐标使用");
                 return;
             }

@@ -4,23 +4,18 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Mob
-{
-    public class RespawnAnnounce : MultiRunTask
-    {
+namespace SagaMap.Tasks.Mob {
+    public class RespawnAnnounce : MultiRunTask {
         private readonly ActorMob mob;
 
-        public RespawnAnnounce(ActorMob mob, int delay)
-        {
+        public RespawnAnnounce(ActorMob mob, int delay) {
             DueTime = delay;
             Period = delay;
             this.mob = mob;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 var eh = (MobEventHandler)mob.e;
                 if (eh.AI.Announce != "")
                     foreach (var i in MapClientManager.Instance.OnlinePlayer)
@@ -28,9 +23,8 @@ namespace SagaMap.Tasks.Mob
 
                 Deactivate();
             }
-            catch (Exception exception)
-            {
-                SagaLib.Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                SagaLib.Logger.ShowError(exception);
             }
         }
     }

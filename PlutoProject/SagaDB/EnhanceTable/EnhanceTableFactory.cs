@@ -5,26 +5,21 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.EnhanceTable
-{
-    public class EnhanceTableFactory : Singleton<EnhanceTableFactory>
-    {
+namespace SagaDB.EnhanceTable {
+    public class EnhanceTableFactory : Singleton<EnhanceTableFactory> {
         public Dictionary<int, EnhanceTable> table = new Dictionary<int, EnhanceTable>();
 
         public Dictionary<int, EnhanceTable> Table => table;
 
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -46,9 +41,8 @@ namespace SagaDB.EnhanceTable
 
                     table.Add(tmp.Count, tmp);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 

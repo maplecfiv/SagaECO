@@ -6,12 +6,9 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Scripting
-{
-    public class Timer : MultiRunTask
-    {
-        public Timer(string name, int period, int due)
-        {
+namespace SagaMap.Scripting {
+    public class Timer : MultiRunTask {
+        public Timer(string name, int period, int due) {
             Name = name;
             Period = period;
             DueTime = due;
@@ -34,50 +31,40 @@ namespace SagaMap.Scripting
 
         public event TimerCallback OnTimerCall;
 
-        public override void CallBack()
-        {
-            try
-            {
-                if (NeedScript && AttachedPC != null)
-                {
+        public override void CallBack() {
+            try {
+                if (NeedScript && AttachedPC != null) {
                     if (MapClient.FromActorPC(AttachedPC).scriptThread != null)
                         return;
                     MapClient.FromActorPC(AttachedPC).scriptThread = new Thread(Run);
                     MapClient.FromActorPC(AttachedPC).scriptThread.Start();
                 }
-                else
-                {
-                    if (AttachedPC != null)
-                    {
+                else {
+                    if (AttachedPC != null) {
                         if (OnTimerCall != null)
                             OnTimerCall(this, AttachedPC);
                     }
-                    else
-                    {
+                    else {
                         OnTimerCall(this, null);
                         Deactivate();
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        private void Run()
-        {
+        private void Run() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 if (AttachedPC != null)
                     OnTimerCall(this, AttachedPC);
                 else
                     Deactivate();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
 
             ClientManager.LeaveCriticalArea();

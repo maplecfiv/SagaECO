@@ -8,83 +8,71 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Golem
-{
-    public class GolemTask : MultiRunTask
-    {
+namespace SagaMap.Tasks.Golem {
+    public class GolemTask : MultiRunTask {
         private readonly TimeSpan gatherSpan;
         private readonly ActorGolem golem;
         private int counter;
         private DateTime nextGatherTime = DateTime.Now + new TimeSpan(2, 0, 0, 0);
 
-        public GolemTask(ActorGolem golem)
-        {
+        public GolemTask(ActorGolem golem) {
             DueTime = 60000;
             Period = 60000;
             this.golem = golem;
 
             var map = MapManager.Instance.GetMap(golem.MapID);
-            switch (golem.GolemType)
-            {
+            switch (golem.GolemType) {
                 case GolemType.Plant:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Plant))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Plant)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Plant], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Mineral:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Mineral))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Mineral)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Mineral], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Magic:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Magic))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Magic)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Magic], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.TreasureBox:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Treasurebox))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Treasurebox)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Treasurebox], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Excavation:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Excavation))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Excavation)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Excavation], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Any:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Any))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Any)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Any], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Strange:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Strange))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Strange)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Strange], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
 
                     break;
                 case GolemType.Food:
-                    if (map.Info.gatherInterval.ContainsKey(GatherType.Food))
-                    {
+                    if (map.Info.gatherInterval.ContainsKey(GatherType.Food)) {
                         gatherSpan = new TimeSpan(0, map.Info.gatherInterval[GatherType.Food], 0);
                         nextGatherTime = DateTime.Now + gatherSpan;
                     }
@@ -93,16 +81,12 @@ namespace SagaMap.Tasks.Golem
             }
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             counter++;
-            try
-            {
-                if (counter == 24 * 60)
-                {
+            try {
+                if (counter == 24 * 60) {
                     var map = MapManager.Instance.GetMap(golem.MapID);
-                    if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange)
-                    {
+                    if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange) {
                         var eh = (MobEventHandler)golem.e;
                         golem.e = new NullEventHandler();
                         eh.AI.Pause();
@@ -114,17 +98,13 @@ namespace SagaMap.Tasks.Golem
                     Deactivate();
                 }
 
-                if (nextGatherTime <= DateTime.Now)
-                {
-                    if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange)
-                    {
+                if (nextGatherTime <= DateTime.Now) {
+                    if (golem.GolemType >= GolemType.Plant && golem.GolemType <= GolemType.Strange) {
                         var mario = MarionetteFactory.Instance[golem.Item.BaseData.marionetteID];
-                        if (mario != null)
-                        {
+                        if (mario != null) {
                             TreasureItem item = null;
                             var det = 0;
-                            switch (golem.GolemType)
-                            {
+                            switch (golem.GolemType) {
                                 case GolemType.Plant:
                                     if (!mario.gather[GatherType.Plant])
                                         det = Global.Random.Next(0, 99);
@@ -176,8 +156,7 @@ namespace SagaMap.Tasks.Golem
                             }
 
                             if (item != null)
-                                if (item.ID != 0)
-                                {
+                                if (item.ID != 0) {
                                     var newItem = ItemFactory.Instance.GetItem(item.ID, true); //免鉴定
                                     newItem.Stack = (ushort)item.Count;
                                     if (newItem.Stack > 0)
@@ -194,9 +173,8 @@ namespace SagaMap.Tasks.Golem
                     nextGatherTime += gatherSpan;
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 golem.Tasks.Remove("GolemTask");
                 Deactivate();
             }

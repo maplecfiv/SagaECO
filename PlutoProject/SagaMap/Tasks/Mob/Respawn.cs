@@ -6,24 +6,19 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Mob
-{
-    public class Respawn : MultiRunTask
-    {
+namespace SagaMap.Tasks.Mob {
+    public class Respawn : MultiRunTask {
         private readonly ActorMob mob;
 
-        public Respawn(ActorMob mob, int delay)
-        {
+        public Respawn(ActorMob mob, int delay) {
             DueTime = delay;
             Period = delay;
             this.mob = mob;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 var map_ = MapManager.Instance.GetMap(mob.MapID);
                 int x_new, y_new;
                 var eh = (MobEventHandler)mob.e;
@@ -44,38 +39,32 @@ namespace SagaMap.Tasks.Mob
                     max_y = map_.Height - 1;
 
                 x_new = (byte)Global.Random.Next(min_x, max_x);
-                while (x_new < min_x || x_new > max_x)
-                {
+                while (x_new < min_x || x_new > max_x) {
                     x_new = (byte)Global.Random.Next(min_x, max_x);
                     Thread.Sleep(1);
                 }
 
                 y_new = (byte)Global.Random.Next(min_y, max_y);
-                while (y_new < min_y || y_new > max_y)
-                {
+                while (y_new < min_y || y_new > max_y) {
                     y_new = (byte)Global.Random.Next(min_y, max_y);
                     Thread.Sleep(1);
                 }
 
                 var counter = 0;
-                while (map_.Info.walkable[x_new, y_new] != 2)
-                {
-                    if (counter > 1000)
-                    {
+                while (map_.Info.walkable[x_new, y_new] != 2) {
+                    if (counter > 1000) {
                         ClientManager.LeaveCriticalArea();
                         return;
                     }
 
                     x_new = (byte)Global.Random.Next(min_x, max_x);
-                    while (x_new < min_x || x_new > max_x)
-                    {
+                    while (x_new < min_x || x_new > max_x) {
                         x_new = (byte)Global.Random.Next(min_x, max_x);
                         Thread.Sleep(1);
                     }
 
                     y_new = (byte)Global.Random.Next(min_y, max_y);
-                    while (y_new < min_y || y_new > max_y)
-                    {
+                    while (y_new < min_y || y_new > max_y) {
                         y_new = (byte)Global.Random.Next(min_y, max_y);
                         Thread.Sleep(1);
                     }
@@ -102,9 +91,8 @@ namespace SagaMap.Tasks.Mob
                 ((MobEventHandler)mob.e).AI.Start();
                 Deactivate();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
             }
 

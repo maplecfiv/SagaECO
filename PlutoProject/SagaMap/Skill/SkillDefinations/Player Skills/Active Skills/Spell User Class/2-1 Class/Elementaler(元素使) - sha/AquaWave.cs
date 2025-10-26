@@ -8,22 +8,19 @@ using SagaMap.Manager;
 using SagaMap.Mob;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Elementaler_元素使____sha
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.
+    Elementaler_元素使____sha {
     /// <summary>
     ///     水族網（アクアウェーブ）
     /// </summary>
-    public class AquaWave : ISkill
-    {
+    public class AquaWave : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             ushort[] speed = { 400, 500, 600, 700 };
             var map = MapManager.Instance.GetMap(sActor.MapID);
 
@@ -38,8 +35,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //#region Calc Start and End Pos
 
             var dir = SkillHandler.Instance.GetDirection(sActor);
-            switch (dir)
-            {
+            switch (dir) {
                 case SkillHandler.ActorDirection.East:
                     SkillHandler.Instance.GetRelatedPos(sActor, -1, -1, out SX[0], out SY[0]);
                     SkillHandler.Instance.GetRelatedPos(sActor, -1, 0, out SX[1], out SY[1]);
@@ -109,8 +105,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             //#endregion
 
             //建立海嘯
-            for (var i = 0; i < 3; i++)
-            {
+            for (var i = 0; i < 3; i++) {
                 //创建设置型技能技能体
                 var actor = new ActorSkill(args.skill, sActor);
                 //设定技能体位置            
@@ -124,8 +119,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 //寻路
                 var path = ai.FindPath(SX[i], SY[i], EX[i], EY[i]);
 
-                if (path.Count >= 2)
-                {
+                if (path.Count >= 2) {
                     //根据现有路径推算一步
                     var deltaX = path[path.Count - 1].x - path[path.Count - 2].x;
                     var deltaY = path[path.Count - 1].y - path[path.Count - 2].y;
@@ -137,8 +131,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     path.Add(node);
                 }
 
-                if (path.Count == 1)
-                {
+                if (path.Count == 1) {
                     //根据现有路径推算一步
                     var deltaX = path[path.Count - 1].x - SagaLib.Global.PosX16to8(SX[i], map.Width);
                     var deltaY = path[path.Count - 1].y - SagaLib.Global.PosY16to8(SY[i], map.Height);
@@ -167,8 +160,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly Elements element;
@@ -179,8 +171,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private int count;
             private bool stop;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, List<MapNode> path)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, List<MapNode> path) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -197,28 +188,22 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             /// </summary>
             /// <param name="level">技能等级</param>
             /// <returns>伤害加成</returns>
-            private float CalcFactor(byte level)
-            {
+            private float CalcFactor(byte level) {
                 float[] factors = { 0f, 1.5f, 1.75f, 2.0f };
                 return factors[level];
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (path.Count <= count + 1)
-                    {
+                try {
+                    if (path.Count <= count + 1) {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
-                    else
-                    {
-                        try
-                        {
+                    else {
+                        try {
                             var pos = new short[2];
                             var pos2 = new short[2];
                             pos[0] = SagaLib.Global.PosX8to16(path[count].x, map.Width);
@@ -237,10 +222,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                                     affected.Add(i);
 
                             if (map.GetActorsArea(pos2[0], pos2[1], 50).Count != 0 ||
-                                map.Info.walkable[path[count + 1].x, path[count + 1].y] != 2)
-                            {
-                                if (stop)
-                                {
+                                map.Info.walkable[path[count + 1].x, path[count + 1].y] != 2) {
+                                if (stop) {
                                     Deactivate();
                                     //在指定地图删除技能体（技能效果结束）
                                     map.DeleteActor(actor);
@@ -252,13 +235,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                                 stop = true;
                             }
 
-                            foreach (var i in affected)
-                            {
+                            foreach (var i in affected) {
                                 var addition = new Stiff(skill.skill, i, 400);
                                 SkillHandler.ApplyAddition(i, addition);
                                 map.MoveActor(Map.MOVE_TYPE.START, i, pos2, 500, i.Speed, true);
-                                if (i.type == ActorType.MOB || i.type == ActorType.PET || i.type == ActorType.SHADOW)
-                                {
+                                if (i.type == ActorType.MOB || i.type == ActorType.PET || i.type == ActorType.SHADOW) {
                                     var mob = (MobEventHandler)i.e;
                                     mob.AI.OnPathInterupt();
                                 }
@@ -268,16 +249,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             SkillHandler.Instance.MagicAttack(caster, affected, skill, element, factor);
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         }
-                        catch
-                        {
+                        catch {
                         }
 
                         count++;
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

@@ -39,7 +39,7 @@ namespace SagaLogin {
         //         }
         //     }
         //     catch (Exception exception) {
-        //         Logger.GetLogger().Error(exception, null);
+        //         Logger.ShowError(exception);
         //         return false;
         //     }
         // }
@@ -64,7 +64,7 @@ namespace SagaLogin {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected()) {
-                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.ShowError("Failed.. Trying again in 10sec", null);
                     Thread.Sleep(10000);
                     notConnected = true;
                 }
@@ -137,15 +137,15 @@ namespace SagaLogin {
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
 
             // if (!StartDatabase()) {
-            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
-            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     Logger.ShowError("cannot connect to dbserver", null);
+            //     Logger.ShowError("Shutting down in 20sec.", null);
             //     Thread.Sleep(20000);
             //     return;
             // }
 
             LoginClientManager.Instance.Start();
             if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
-                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Configuration.Instance.Port);
+                Logger.ShowError("cannot listen on port: " + Configuration.Configuration.Instance.Port);
                 Logger.GetLogger().Information("Shutting down in 20sec.");
                 Thread.Sleep(20000);
                 return;
@@ -177,9 +177,9 @@ namespace SagaLogin {
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
             var ex = e.ExceptionObject as Exception;
-            Logger.GetLogger().Error("Fatal: An unhandled exception is thrown, terminating...");
-            Logger.GetLogger().Error("Error Message:" + ex.Message);
-            Logger.GetLogger().Error("Call Stack:" + ex.StackTrace);
+            Logger.ShowError("Fatal: An unhandled exception is thrown, terminating...");
+            Logger.ShowError("Error Message:" + ex.Message);
+            Logger.ShowError("Call Stack:" + ex.StackTrace);
         }
     }
 }

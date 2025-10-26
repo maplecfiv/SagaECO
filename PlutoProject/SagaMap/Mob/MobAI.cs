@@ -139,7 +139,7 @@ namespace SagaMap.Mob {
                 Activated = false;
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -234,7 +234,7 @@ namespace SagaMap.Mob {
                         }
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
 
                 lock (commands) {
@@ -242,8 +242,8 @@ namespace SagaMap.Mob {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
-                Logger.GetLogger().Error(ex.StackTrace, null);
+                Logger.ShowError(ex);
+                Logger.ShowError(ex.StackTrace, null);
             }
             //ClientManager.LeaveCriticalArea();
         }
@@ -487,7 +487,7 @@ namespace SagaMap.Mob {
                 //#endregion
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -571,7 +571,7 @@ namespace SagaMap.Mob {
                         skillCast.Add(skillID, DateTime.Now.AddSeconds(skillList[skillID].CD));
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
 
                     longSkillTime = DateTime.Now.AddSeconds(mode.LongCD);
@@ -916,7 +916,7 @@ namespace SagaMap.Mob {
                 return tmp;
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
                 return null;
             }
         }

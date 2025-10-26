@@ -7,26 +7,21 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
-{
-    internal class BlackHoleOfPP : MobISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋 {
+    internal class BlackHoleOfPP : MobISkill {
         //#region ISkill Members
 
-        public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void BeforeCast(Actor sActor, Actor dActor, SkillArg args, byte level) {
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actors = map.GetActorsArea(sActor, 900, false, true);
             var realAffected = new List<Actor>();
             foreach (var act in actors)
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                     realAffected.Add(act);
-            foreach (var a in realAffected)
-            {
+            foreach (var a in realAffected) {
                 var pos = new short[2]
                     { SagaLib.Global.PosX8to16(args.x, map.Width), SagaLib.Global.PosY8to16(args.y, map.Height) };
                 map.MoveActor(Map.MOVE_TYPE.START, a, pos, 1000, 1000, true, MoveType.QUICKEN);
@@ -48,8 +43,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
             timer.Activate();
         }
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax = 5;
@@ -60,8 +54,7 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
             private readonly byte y;
             private int count;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -72,17 +65,13 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
                 y = args.y;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         count++;
                     }
-                    else
-                    {
+                    else {
                         var actors = map.GetActorsArea(actor, 300, false);
                         var affected = new List<Actor>();
                         skill.affectedActors.Clear();
@@ -98,9 +87,8 @@ namespace SagaMap.Skill.SkillDefinations.COF_Additions.BOSS朋朋
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
 
                 //解开同步锁

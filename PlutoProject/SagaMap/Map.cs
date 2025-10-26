@@ -19,18 +19,14 @@ using SagaMap.Scripting;
 using SagaMap.Tasks.Item;
 using Item = SagaDB.Item.Item;
 
-namespace SagaMap
-{
-    public class Map
-    {
+namespace SagaMap {
+    public class Map {
         public void AddItemDrop(uint itemID, string treasureGroup, Actor ori, bool party, bool Public1, bool Public20,
             ushort count = 1, ushort minCount = 0, ushort maxCount = 0, int rate = 10000, bool roll = false,
-            uint pictID = 0)
-        {
+            uint pictID = 0) {
             Actor owner = null;
             ActorMob MMob = null;
-            if (ori.type == ActorType.MOB)
-            {
+            if (ori.type == ActorType.MOB) {
                 var eh = (MobEventHandler)ori.e;
                 if (eh.AI.firstAttacker != null)
                     owner = eh.AI.firstAttacker;
@@ -40,12 +36,10 @@ namespace SagaMap
             var owners = new List<Actor>();
             var owners2 = new List<Actor>();
             if (owner != null)
-                if (owner.type == ActorType.PC)
-                {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
                     if (pc.Party != null)
-                        foreach (var i in pc.Party.Members.Values)
-                        {
+                        foreach (var i in pc.Party.Members.Values) {
                             if (!i.Online)
                                 continue;
                             if (i.MapID != ori.MapID)
@@ -53,31 +47,25 @@ namespace SagaMap
                             owners2.Add(i);
                         }
 
-                    if (pc.Party != null && party)
-                    {
-                        foreach (var i in pc.Party.Members.Values)
-                        {
+                    if (pc.Party != null && party) {
+                        foreach (var i in pc.Party.Members.Values) {
                             if (!i.Online)
                                 continue;
                             if (i.MapID != ori.MapID)
                                 continue;
-                            if (rate != 10000 && party)
-                            {
+                            if (rate != 10000 && party) {
                                 if (Global.Random.Next(0, 10000) <= rate)
                                     owners.Add(i);
                             }
-                            else
-                            {
+                            else {
                                 owners.Add(i);
                             }
                         }
                     }
-                    else if (Public20)
-                    {
+                    else if (Public20) {
                         var map = MapManager.Instance.GetMap(ori.MapID);
                         var actors = map.GetActorsArea(ori, 3000, false, true);
-                        if (ori.type == ActorType.MOB)
-                        {
+                        if (ori.type == ActorType.MOB) {
                             var mob = (ActorMob)ori;
                             foreach (var ac in actors)
                                 if (((MobEventHandler)mob.e).AI.DamageTable.ContainsKey(ac.ActorID))
@@ -87,16 +75,13 @@ namespace SagaMap
                             //owners2.Add(ac);
                         }
                     }
-                    else if (Public1)
-                    {
+                    else if (Public1) {
                         var map = MapManager.Instance.GetMap(ori.MapID);
                         var actors = map.GetActorsArea(ori, 3000, false, true);
-                        if (ori.type == ActorType.MOB)
-                        {
+                        if (ori.type == ActorType.MOB) {
                             var mob = (ActorMob)ori;
                             foreach (var ac in actors)
-                                if (((MobEventHandler)mob.e).AI.DamageTable.ContainsKey(ac.ActorID))
-                                {
+                                if (((MobEventHandler)mob.e).AI.DamageTable.ContainsKey(ac.ActorID)) {
                                     var damage = ((MobEventHandler)mob.e).AI.DamageTable[ac.ActorID];
                                     if (damage >= 1 /*ori.MaxHP * 0.001f*/ && damage < ori.MaxHP * 0.2f)
                                         if (!owners.Contains(ac))
@@ -104,8 +89,7 @@ namespace SagaMap
                                 }
                         }
                     }
-                    else
-                    {
+                    else {
                         owners.Add(owner);
                     }
 
@@ -114,16 +98,14 @@ namespace SagaMap
                         Item item = null;
                         //List<string> IPs = new List<string>();
                         foreach (var i in owners)
-                            if (i.type == ActorType.PC)
-                            {
+                            if (i.type == ActorType.PC) {
                                 var pcs = (ActorPC)i;
                                 byte countss = 0;
                                 foreach (var x in MapClientManager.Instance.OnlinePlayer)
                                     if (x.Character.Account.MacAddress == pcs.Account.MacAddress &&
                                         pcs.Account.GMLevel < 20)
                                         countss++;
-                                if (countss > 1)
-                                {
+                                if (countss > 1) {
                                     MapClient.FromActorPC((ActorPC)i).SendSystemMessage("系统检测到您有可能多开，因此无法获得野外BOSS奖励。");
                                     continue;
                                 }
@@ -143,12 +125,10 @@ namespace SagaMap
                                 MapClient.FromActorPC((ActorPC)i).AddItem(item, true);
                             }
                     }
-                    else if (party)
-                    {
+                    else if (party) {
                         Item item = null;
                         foreach (var i in owners)
-                            if (i.type == ActorType.PC)
-                            {
+                            if (i.type == ActorType.PC) {
                                 item = ItemFactory.Instance.GetItem(itemID, true);
                                 item.Stack = count;
                                 var arg = new EffectArg();
@@ -167,19 +147,16 @@ namespace SagaMap
                     else //掉率在地上
                     {
                         //List<string> IPs = new List<string>();
-                        foreach (var i in owners)
-                        {
+                        foreach (var i in owners) {
                             Item itemDroped = null;
-                            if (i.type == ActorType.PC)
-                            {
+                            if (i.type == ActorType.PC) {
                                 /*if (IPs.Contains(pcs.Account.LastIP))
                                     continue;
                                 else
                                     IPs.Add(pcs.Account.LastIP);*/
                             }
 
-                            if (itemID != 0)
-                            {
+                            if (itemID != 0) {
                                 itemDroped = ItemFactory.Instance.GetItem(itemID, true);
                                 if (minCount == 0 && maxCount == 0)
                                     itemDroped.Stack = count;
@@ -188,16 +165,13 @@ namespace SagaMap
                             }
 
                             if (itemID == 10020758) itemDroped.PictID = pictID;
-                            if (treasureGroup != null)
-                            {
-                                if (TreasureFactory.Instance.Items.ContainsKey(treasureGroup))
-                                {
+                            if (treasureGroup != null) {
+                                if (TreasureFactory.Instance.Items.ContainsKey(treasureGroup)) {
                                     var item2 = TreasureFactory.Instance.GetRandomItem(treasureGroup);
                                     itemDroped = ItemFactory.Instance.GetItem(item2.ID, true);
                                     itemDroped.Stack = (ushort)item2.Count;
                                 }
-                                else
-                                {
+                                else {
                                     itemDroped = ItemFactory.Instance.GetItem(itemID, true);
                                 }
                             }
@@ -209,18 +183,15 @@ namespace SagaMap
                             actor.Party = party;
                             actor.MapID = ID;
                             short[] pos;
-                            if (party)
-                            {
+                            if (party) {
                                 pos = GetRandomPosAroundActor(ori);
                             }
-                            else if (Public1)
-                            {
+                            else if (Public1) {
                                 pos = new short[2];
                                 pos[0] = MMob.X;
                                 pos[1] = MMob.Y;
                             }
-                            else
-                            {
+                            else {
                                 pos = new short[2];
                                 pos[0] = MMob.X;
                                 pos[1] = MMob.Y;
@@ -233,8 +204,7 @@ namespace SagaMap
                             OnActorVisibilityChange(actor);
 
                             //中秋节活动
-                            if (party)
-                            {
+                            if (party) {
                                 var arg = new EffectArg();
                                 arg.actorID = 0xFFFFFFFF;
                                 arg.effectID = 7116;
@@ -243,8 +213,7 @@ namespace SagaMap
                                 arg.oneTime = false;
                                 SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.SHOW_EFFECT, arg, ori, false);
                             }
-                            else if (Public1)
-                            {
+                            else if (Public1) {
                                 var arg = new EffectArg();
                                 arg.actorID = 0xFFFFFFFF;
                                 arg.effectID = 7116;
@@ -264,13 +233,11 @@ namespace SagaMap
                 }
         }
 
-        internal object RegisterActor()
-        {
+        internal object RegisterActor() {
             throw new NotImplementedException();
         }
 
-        public enum EVENT_TYPE
-        {
+        public enum EVENT_TYPE {
             APPEAR,
             DISAPPEAR,
             MOTION,
@@ -305,14 +272,12 @@ namespace SagaMap
             SKILL_CANCEL
         }
 
-        public enum MOVE_TYPE
-        {
+        public enum MOVE_TYPE {
             START,
             STOP
         }
 
-        public enum TOALL_EVENT_TYPE
-        {
+        public enum TOALL_EVENT_TYPE {
             CHAT
         }
 
@@ -348,8 +313,7 @@ namespace SagaMap
         /* 创建副本地图返回客户端原始的地图ID相关*/
         public bool returnori = false;
 
-        public Map(MapInfo info)
-        {
+        public Map(MapInfo info) {
             ID = info.id;
             Name = info.name;
             Width = info.width;
@@ -381,8 +345,7 @@ namespace SagaMap
         public Dictionary<uint, Actor> Actors { get; }
 
 
-        public short[] GetRandomPos()
-        {
+        public short[] GetRandomPos() {
             var ret = new short[2];
 
             ret[0] = (short)Global.Random.Next(-12700, +12700);
@@ -391,8 +354,7 @@ namespace SagaMap
             return ret;
         }
 
-        public short[] GetRandomPosAroundActor(Actor actor)
-        {
+        public short[] GetRandomPosAroundActor(Actor actor) {
             var ret = new short[2];
 
             ret[0] = (short)Global.Random.Next(actor.X - 100, actor.X + 100);
@@ -401,8 +363,7 @@ namespace SagaMap
             return ret;
         }
 
-        public short[] GetRandomPosAroundActor2(Actor actor)
-        {
+        public short[] GetRandomPosAroundActor2(Actor actor) {
             var ret = new short[2];
 
             ret[0] = (short)Global.Random.Next(actor.X - 600, actor.X + 600);
@@ -411,15 +372,12 @@ namespace SagaMap
             return ret;
         }
 
-        public short[] GetRandomPosAroundPos(short x, short y, int range)
-        {
+        public short[] GetRandomPosAroundPos(short x, short y, int range) {
             var ret = new short[2];
             byte new_x, new_y;
             var count = 0;
-            do
-            {
-                if (count >= 1000)
-                {
+            do {
+                if (count >= 1000) {
                     ret[0] = x;
                     ret[1] = y;
                     return ret;
@@ -439,92 +397,73 @@ namespace SagaMap
             return ret;
         }
 
-        public Actor GetActor(uint id)
-        {
-            try
-            {
+        public Actor GetActor(uint id) {
+            try {
                 return Actors[id];
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return null;
             }
         }
 
-        public ActorPC GetPC(string name)
-        {
-            try
-            {
+        public ActorPC GetPC(string name) {
+            try {
                 return pcByName[name];
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return null;
             }
         }
 
-        public ActorPC GetPC(uint charID)
-        {
-            try
-            {
+        public ActorPC GetPC(uint charID) {
+            try {
                 var chr = from c in pcByName.Values
                     where c.CharID == charID
                     select c;
                 return Enumerable.First<ActorPC>(chr);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return null;
             }
         }
 
-        private uint GetNewActorID(ActorType type)
-        {
+        private uint GetNewActorID(ActorType type) {
             uint newID = 0;
             uint startID = 0;
 
-            if (type == ActorType.PC)
-            {
+            if (type == ActorType.PC) {
                 newID = nextPcId;
                 startID = nextPcId;
             }
-            else
-            {
-                if (type == ActorType.MOB)
-                {
+            else {
+                if (type == ActorType.MOB) {
                     newID = nextMobId;
                     startID = nextMobId;
                 }
-                else if (type == ActorType.PET || type == ActorType.SHADOW || type == ActorType.PARTNER)
-                {
+                else if (type == ActorType.PET || type == ActorType.SHADOW || type == ActorType.PARTNER) {
                     newID = nextPetId;
                     startID = nextPetId;
                 }
-                else if (type == ActorType.EVENT || type == ActorType.FURNITURE)
-                {
+                else if (type == ActorType.EVENT || type == ActorType.FURNITURE) {
                     newID = nextEventId;
                     startID = nextEventId;
                 }
-                else if (type == ActorType.GOLEM)
-                {
+                else if (type == ActorType.GOLEM) {
                     newID = nextGolemId;
                     startID = nextGolemId;
                 }
-                else if (type == ActorType.ANOTHERMOB)
-                {
+                else if (type == ActorType.ANOTHERMOB) {
                     newID = nextAnoMobID;
                     startID = nextAnoMobID;
                 }
-                else if (type == ActorType.SKILL)
-                {
+                else if (type == ActorType.SKILL) {
                     newID = nextSkillID;
                     startID = nextSkillID;
                 }
-                else
-                {
+                else {
                     newID = nextItemId;
                     startID = nextItemId;
                 }
@@ -550,8 +489,7 @@ namespace SagaMap
             if (newID >= uint.MaxValue)
                 newID = 1;
 
-            while (Actors.ContainsKey(newID))
-            {
+            while (Actors.ContainsKey(newID)) {
                 newID++;
 
                 if (newID >= 10000 && type == ActorType.PC)
@@ -598,8 +536,7 @@ namespace SagaMap
             return newID;
         }
 
-        public bool RegisterActor(Actor nActor)
-        {
+        public bool RegisterActor(Actor nActor) {
             // default: no success
             var succes = false;
 
@@ -613,15 +550,13 @@ namespace SagaMap
                 newID = GetNewActorID(nActor.type);
             if (Global.clientMananger != null)
                 ClientManager.LeaveCriticalArea();
-            if (nActor.type == ActorType.ITEM)
-            {
+            if (nActor.type == ActorType.ITEM) {
                 var item = (ActorItem)nActor;
                 if (item.PossessionItem)
                     newID += ID_BORDER2;
             }
 
-            if (newID != 0)
-            {
+            if (newID != 0) {
                 nActor.ActorID = newID;
                 nActor.region = GetRegion(nActor.X, nActor.Y);
 
@@ -634,12 +569,9 @@ namespace SagaMap
                 //DateTime time = DateTime.Now;
                 if (Global.clientMananger != null)
                     ClientManager.EnterCriticalArea();
-                lock (registerlock)
-                {
-                    try
-                    {
-                        while (Actors.ContainsKey(nActor.ActorID))
-                        {
+                lock (registerlock) {
+                    try {
+                        while (Actors.ContainsKey(nActor.ActorID)) {
                             if (nActor.type == ActorType.MOB && ((ActorMob)nActor).AnotherID != 0)
                                 nActor.ActorID = GetNewActorID(ActorType.ANOTHERMOB);
                             else
@@ -650,10 +582,9 @@ namespace SagaMap
 
                         Actors.Add(nActor.ActorID, nActor);
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
-                        Logger.GetLogger().Error("oh,fuck!");
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
+                        Logger.ShowError("oh,fuck!");
                     }
                 }
 
@@ -675,8 +606,7 @@ namespace SagaMap
             }
 
             nActor.MapID = ID;
-            if (nActor.type == ActorType.PC)
-            {
+            if (nActor.type == ActorType.PC) {
                 var pc = (ActorPC)nActor;
                 if (Info.Flag.Test(MapFlags.Wrp))
                     pc.Mode = PlayerMode.WRP;
@@ -692,16 +622,14 @@ namespace SagaMap
             return succes;
         }
 
-        public bool RegisterActor(Actor nActor, uint SessionID)
-        {
+        public bool RegisterActor(Actor nActor, uint SessionID) {
             // default: no success
             var succes = false;
 
             // set the actorID and the actor's region on this map
             var newID = SessionID;
 
-            if (newID != 0)
-            {
+            if (newID != 0) {
                 nActor.ActorID = newID;
                 nActor.region = GetRegion(nActor.X, nActor.Y);
                 if (GetRegionPlayerCount(nActor.region) == 0 && nActor.type == ActorType.PC)
@@ -724,23 +652,19 @@ namespace SagaMap
                 succes = true;
             }
 
-            if (nActor.type == ActorType.PC)
-            {
+            if (nActor.type == ActorType.PC) {
                 var eh = (PCEventHandler)nActor.e;
-                if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED)
-                {
+                if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED) {
                     eh.Client.state = MapClient.SESSION_STATE.LOADING;
                 }
-                else
-                {
+                else {
                     MapServer.charDB.SaveChar((ActorPC)nActor, false, false);
                     MapServer.accountDB.WriteUser(((ActorPC)nActor).Account);
                 }
             }
 
             nActor.MapID = ID;
-            if (nActor.type == ActorType.PC)
-            {
+            if (nActor.type == ActorType.PC) {
                 var pc = (ActorPC)nActor;
                 if (Info.Flag.Test(MapFlags.Wrp))
                     pc.Mode = PlayerMode.WRP;
@@ -756,23 +680,19 @@ namespace SagaMap
             return succes;
         }
 
-        public void OnActorVisibilityChange(Actor dActor)
-        {
-            if (dActor.invisble)
-            {
+        public void OnActorVisibilityChange(Actor dActor) {
+            if (dActor.invisble) {
                 dActor.invisble = false;
                 SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.DISAPPEAR, null, dActor, false);
                 dActor.invisble = true;
             }
 
-            else
-            {
+            else {
                 SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.APPEAR, null, dActor, false);
             }
         }
 
-        public void DeleteActor(Actor dActor)
-        {
+        public void DeleteActor(Actor dActor) {
             SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.DISAPPEAR, null, dActor, false);
 
             if (dActor.type == ActorType.PC && pcByName.ContainsKey(dActor.Name))
@@ -780,8 +700,7 @@ namespace SagaMap
             //ClientManager.EnterCriticalArea();
             Actors.Remove(dActor.ActorID);
 
-            if (actorsByRegion.ContainsKey(dActor.region))
-            {
+            if (actorsByRegion.ContainsKey(dActor.region)) {
                 actorsByRegion[dActor.region].Remove(dActor);
                 if (GetRegionPlayerCount(dActor.region) == 0) MobAIToggle(dActor.region, false);
             }
@@ -789,8 +708,7 @@ namespace SagaMap
             //ClientManager.LeaveCriticalArea();
             dActor.e.OnDelete();
             if (IsDungeon)
-                if (DungeonMap.MapType == MapType.End)
-                {
+                if (DungeonMap.MapType == MapType.End) {
                     var count = 0;
                     foreach (var i in Actors.Values)
                         if (i.type == ActorType.MOB)
@@ -799,49 +717,40 @@ namespace SagaMap
                 }
         }
 
-        public void MoveActor(MOVE_TYPE mType, Actor mActor, short[] pos, ushort dir, ushort speed)
-        {
+        public void MoveActor(MOVE_TYPE mType, Actor mActor, short[] pos, ushort dir, ushort speed) {
             MoveActor(mType, mActor, pos, dir, speed, false);
         }
 
-        public void MoveActor(MOVE_TYPE mType, Actor mActor, short[] pos, ushort dir, ushort speed, bool sendToSelf)
-        {
+        public void MoveActor(MOVE_TYPE mType, Actor mActor, short[] pos, ushort dir, ushort speed, bool sendToSelf) {
             MoveActor(mType, mActor, pos, dir, speed, sendToSelf, MoveType.RUN);
         }
 
         // make sure only 1 thread at a time is executing this method
         public void MoveActor(MOVE_TYPE mType, Actor mActor, short[] pos, ushort dir, ushort speed, bool sendToSelf,
-            MoveType moveType)
-        {
+            MoveType moveType) {
             //if (moveCounter >= 50)
             //    Logger.ShowDebug("Recurssion over 50 times!", Logger.defaultlogger);
             //Debug.Assert(moveCounter < 50, "Recurssion over 50 times!");
             //moveCounter++;
-            try
-            {
+            try {
                 var knockBack = false;
-                if (mActor.Status != null)
-                {
-                    if (mActor.Status.Additions.ContainsKey("Meditatioon"))
-                    {
+                if (mActor.Status != null) {
+                    if (mActor.Status.Additions.ContainsKey("Meditatioon")) {
                         mActor.Status.Additions["Meditatioon"].AdditionEnd();
                         mActor.Status.Additions.Remove("Meditatioon");
                     }
 
-                    if (mActor.Status.Additions.ContainsKey("Hiding"))
-                    {
+                    if (mActor.Status.Additions.ContainsKey("Hiding")) {
                         mActor.Status.Additions["Hiding"].AdditionEnd();
                         mActor.Status.Additions.Remove("Hiding");
                     }
 
-                    if (mActor.Status.Additions.ContainsKey("fish"))
-                    {
+                    if (mActor.Status.Additions.ContainsKey("fish")) {
                         mActor.Status.Additions["fish"].AdditionEnd();
                         mActor.Status.Additions.Remove("fish");
                     }
 
-                    if (mActor.Status.Additions.ContainsKey("IAmTree"))
-                    {
+                    if (mActor.Status.Additions.ContainsKey("IAmTree")) {
                         mActor.Status.Additions["IAmTree"].AdditionEnd();
                         mActor.Status.Additions.Remove("IAmTree");
                     }
@@ -849,19 +758,16 @@ namespace SagaMap
 
                 // check wheter the destination is in range, if not kick the client
                 if ( /*!this.MoveStepIsInRange(mActor, pos) ||*/ mActor.HP == 0 && mActor.type != ActorType.GOLEM &&
-                                                                 mActor.type != ActorType.SKILL)
-                {
+                                                                 mActor.type != ActorType.SKILL) {
                     pos = new short[2] { mActor.X, mActor.Y };
                     dir = 600;
                     knockBack = true;
                     sendToSelf = true;
                 }
 
-                if (mActor.type == ActorType.PC)
-                {
+                if (mActor.type == ActorType.PC) {
                     var pc = (ActorPC)mActor;
-                    if (pc.CInt["WaitEventID"] != 0)
-                    {
+                    if (pc.CInt["WaitEventID"] != 0) {
                         MapClient.FromActorPC(pc).EventActivate((uint)pc.CInt["WaitEventID"]);
                         pc.CInt["WaitEventID"] = 0;
                     }
@@ -872,22 +778,18 @@ namespace SagaMap
                     pc.MotionLoop = false;
                 }
 
-                if (mActor.type == ActorType.PC && !knockBack)
-                {
+                if (mActor.type == ActorType.PC && !knockBack) {
                     var pc = (ActorPC)mActor;
                     var possessioned = pc.PossesionedActors;
-                    foreach (var i in possessioned)
-                    {
+                    foreach (var i in possessioned) {
                         if (i == pc) continue;
                         if (i.MapID == mActor.MapID)
                             MoveActor(mType, i, pos, dir, speed);
                     }
 
-                    if (pc.Online)
-                    {
+                    if (pc.Online) {
                         var client = MapClient.FromActorPC(pc);
-                        if ((DateTime.Now - client.moveStamp).TotalSeconds >= 2)
-                        {
+                        if ((DateTime.Now - client.moveStamp).TotalSeconds >= 2) {
                             if (client.Character.Party != null)
                                 PartyManager.Instance.UpdateMemberPosition(client.Character.Party, client.Character);
                             client.moveStamp = DateTime.Now;
@@ -900,87 +802,74 @@ namespace SagaMap
                 //or are going "to see" mActor, or are still seeing mActor
                 if (!knockBack)
                     for (short deltaY = -1; deltaY <= 1; deltaY++)
-                    for (short deltaX = -1; deltaX <= 1; deltaX++)
-                    {
-                        var region = (uint)(mActor.region + deltaX * 10000 + deltaY);
-                        if (!actorsByRegion.ContainsKey(region)) continue;
+                        for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                            var region = (uint)(mActor.region + deltaX * 10000 + deltaY);
+                            if (!actorsByRegion.ContainsKey(region)) continue;
 
-                        //ClientManager.EnterCriticalArea();
-                        var list = actorsByRegion[region].ToArray();
+                            //ClientManager.EnterCriticalArea();
+                            var list = actorsByRegion[region].ToArray();
 
-                        //ClientManager.LeaveCriticalArea();
-                        foreach (var actor in list)
-                        {
-                            if (actor.ActorID == mActor.ActorID && !sendToSelf) continue;
-                            if (!actorsByRegion[region].Contains(actor))
-                                continue;
-                            if (actor.Status == null)
-                            {
-                                DeleteActor(actor);
-                                continue;
-                            }
+                            //ClientManager.LeaveCriticalArea();
+                            foreach (var actor in list) {
+                                if (actor.ActorID == mActor.ActorID && !sendToSelf) continue;
+                                if (!actorsByRegion[region].Contains(actor))
+                                    continue;
+                                if (actor.Status == null) {
+                                    DeleteActor(actor);
+                                    continue;
+                                }
 
-                            // A) INFORM OTHER ACTORS
-                            //actor "could" see mActor at its "from" position
-                            if (ACanSeeB(actor, mActor))
-                            {
-                                //actor will still be able to see mActor
-                                if (ACanSeeB(actor, mActor, pos[0], pos[1]))
-                                {
-                                    if (mType == MOVE_TYPE.START)
-                                    {
+                                // A) INFORM OTHER ACTORS
+                                //actor "could" see mActor at its "from" position
+                                if (ACanSeeB(actor, mActor)) {
+                                    //actor will still be able to see mActor
+                                    if (ACanSeeB(actor, mActor, pos[0], pos[1])) {
+                                        if (mType == MOVE_TYPE.START) {
+                                            if (moveType != MoveType.RUN)
+                                                actor.e.OnActorStartsMoving(mActor, pos, dir, speed, moveType);
+                                            else
+                                                actor.e.OnActorStartsMoving(mActor, pos, dir, speed);
+                                        }
+                                        else {
+                                            actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
+                                        }
+                                    }
+                                    //actor won't be able to see mActor anymore
+                                    else {
+                                        actor.e.OnActorDisappears(mActor);
+                                    }
+                                }
+                                //actor "could not" see mActor, but will be able to see him now
+                                else if (ACanSeeB(actor, mActor, pos[0], pos[1])) {
+                                    actor.e.OnActorAppears(mActor);
+
+                                    //send move / move stop
+                                    if (mType == MOVE_TYPE.START) {
                                         if (moveType != MoveType.RUN)
                                             actor.e.OnActorStartsMoving(mActor, pos, dir, speed, moveType);
                                         else
                                             actor.e.OnActorStartsMoving(mActor, pos, dir, speed);
                                     }
-                                    else
-                                    {
+                                    else {
                                         actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
                                     }
                                 }
-                                //actor won't be able to see mActor anymore
-                                else
-                                {
-                                    actor.e.OnActorDisappears(mActor);
-                                }
-                            }
-                            //actor "could not" see mActor, but will be able to see him now
-                            else if (ACanSeeB(actor, mActor, pos[0], pos[1]))
-                            {
-                                actor.e.OnActorAppears(mActor);
 
-                                //send move / move stop
-                                if (mType == MOVE_TYPE.START)
-                                {
-                                    if (moveType != MoveType.RUN)
-                                        actor.e.OnActorStartsMoving(mActor, pos, dir, speed, moveType);
-                                    else
-                                        actor.e.OnActorStartsMoving(mActor, pos, dir, speed);
+                                // B) INFORM mActor
+                                //mActor "could" see actor on its "from" position
+                                if (ACanSeeB(mActor, actor)) {
+                                    //mActor won't be able to see actor anymore
+                                    if (!ACanSeeB(mActor, pos[0], pos[1], actor)) mActor.e.OnActorDisappears(actor);
+                                    //mAactor will still be able to see actor
                                 }
-                                else
-                                {
-                                    actor.e.OnActorStopsMoving(mActor, pos, dir, speed);
+
+                                else if (ACanSeeB(mActor, pos[0], pos[1], actor)) {
+                                    //mActor "could not" see actor, but will be able to see him now
+                                    //send pcinfo
+                                    mActor.e.OnActorAppears(actor);
                                 }
-                            }
-
-                            // B) INFORM mActor
-                            //mActor "could" see actor on its "from" position
-                            if (ACanSeeB(mActor, actor))
-                            {
-                                //mActor won't be able to see actor anymore
-                                if (!ACanSeeB(mActor, pos[0], pos[1], actor)) mActor.e.OnActorDisappears(actor);
-                                //mAactor will still be able to see actor
-                            }
-
-                            else if (ACanSeeB(mActor, pos[0], pos[1], actor))
-                            {
-                                //mActor "could not" see actor, but will be able to see him now
-                                //send pcinfo
-                                mActor.e.OnActorAppears(actor);
                             }
                         }
-                    }
                 else
                     mActor.e.OnActorStopsMoving(mActor, pos, dir, speed);
 
@@ -995,8 +884,7 @@ namespace SagaMap
 
                 //update the region of the actor
                 var newRegion = GetRegion(pos[0], pos[1]);
-                if (mActor.region != newRegion)
-                {
+                if (mActor.region != newRegion) {
                     actorsByRegion[mActor.region].Remove(mActor);
                     //turn off all the ai if the old region has no player on it
                     if (GetRegionPlayerCount(mActor.region) == 0) MobAIToggle(mActor.region, false);
@@ -1011,25 +899,21 @@ namespace SagaMap
                 }
             }
 
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
             //moveCounter--;
         }
 
-        public int GetRegionPlayerCount(uint region)
-        {
+        public int GetRegionPlayerCount(uint region) {
             List<Actor> actors;
             var count = 0;
             if (!actorsByRegion.ContainsKey(region)) return 0;
             actors = actorsByRegion[region];
             var removelist = new List<int>();
-            for (var i = 0; i < actors.Count; i++)
-            {
+            for (var i = 0; i < actors.Count; i++) {
                 Actor actor;
-                if (actors[i] == null)
-                {
+                if (actors[i] == null) {
                     removelist.Add(i);
                     continue;
                 }
@@ -1042,8 +926,7 @@ namespace SagaMap
             return count;
         }
 
-        public void MobAIToggle(uint region, bool toggle)
-        {
+        public void MobAIToggle(uint region, bool toggle) {
             /*
             List<Actor> actors;
             if (!this.actorsByRegion.ContainsKey(region)) return;
@@ -1071,10 +954,8 @@ namespace SagaMap
             }*/
         }
 
-        public bool MoveStepIsInRange(Actor mActor, short[] to)
-        {
-            if (mActor.type == ActorType.PC)
-            {
+        public bool MoveStepIsInRange(Actor mActor, short[] to) {
+            if (mActor.type == ActorType.PC) {
                 var pc = (ActorPC)mActor;
                 var client = MapClient.FromActorPC(pc);
                 if (client.AI != null)
@@ -1104,8 +985,7 @@ namespace SagaMap
         }
 
 
-        public uint GetRegion(float x, float y)
-        {
+        public uint GetRegion(float x, float y) {
             var REGION_DIAMETER = Global.MAX_SIGHT_RANGE * 2;
 
             // best case we should now load the size of the map from a config file, however that's not
@@ -1158,14 +1038,12 @@ namespace SagaMap
             var nx = false;
             var ny = false;
             // make x,y positive
-            if (x < 0)
-            {
+            if (x < 0) {
                 x = x - 2 * x;
                 nx = true;
             }
 
-            if (y < 0)
-            {
+            if (y < 0) {
                 y = y - 2 * y;
                 ny = true;
             }
@@ -1188,8 +1066,7 @@ namespace SagaMap
             return ux * 10000 + uy;
         }
 
-        public bool ACanSeeB(Actor A, Actor B)
-        {
+        public bool ACanSeeB(Actor A, Actor B) {
             if (A == null || B == null)
                 return false;
             if (B.invisble) return false;
@@ -1198,8 +1075,7 @@ namespace SagaMap
             return true;
         }
 
-        public bool ACanSeeB(Actor A, Actor B, float bx, float by)
-        {
+        public bool ACanSeeB(Actor A, Actor B, float bx, float by) {
             if (A == null || B == null)
                 return false;
             if (B.invisble) return false;
@@ -1208,8 +1084,7 @@ namespace SagaMap
             return true;
         }
 
-        public bool ACanSeeB(Actor A, float ax, float ay, Actor B)
-        {
+        public bool ACanSeeB(Actor A, float ax, float ay, Actor B) {
             if (A == null || B == null)
                 return false;
             if (B.invisble) return false;
@@ -1218,8 +1093,7 @@ namespace SagaMap
             return true;
         }
 
-        public bool ACanSeeB(Actor A, Actor B, float sightrange)
-        {
+        public bool ACanSeeB(Actor A, Actor B, float sightrange) {
             if (A == null || B == null)
                 return false;
             if (B.invisble) return false;
@@ -1228,99 +1102,83 @@ namespace SagaMap
             return true;
         }
 
-        public void SendVisibleActorsToActor(Actor jActor)
-        {
+        public void SendVisibleActorsToActor(Actor jActor) {
             //search all actors which can be seen by jActor and tell jActor about them
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-            for (short deltaX = -1; deltaX <= 1; deltaX++)
-            {
-                var region = (uint)(jActor.region + deltaX * 10000 + deltaY);
-                if (!actorsByRegion.ContainsKey(region)) continue;
-                var list = actorsByRegion[region].ToArray();
-                var listAF = new List<Actor>();
-                foreach (var actor in list)
-                    try
-                    {
-                        if (actor.ActorID == jActor.ActorID) continue;
-                        if (actor.Status == null)
-                        {
-                            DeleteActor(actor);
-                            continue;
+                for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                    var region = (uint)(jActor.region + deltaX * 10000 + deltaY);
+                    if (!actorsByRegion.ContainsKey(region)) continue;
+                    var list = actorsByRegion[region].ToArray();
+                    var listAF = new List<Actor>();
+                    foreach (var actor in list)
+                        try {
+                            if (actor.ActorID == jActor.ActorID) continue;
+                            if (actor.Status == null) {
+                                DeleteActor(actor);
+                                continue;
+                            }
+
+                            //check wheter jActor can see actor, if yes: inform jActor
+                            if (ACanSeeB(jActor, actor)) {
+                                if (actor.type == ActorType.FURNITURE &&
+                                    ItemFactory.Instance.GetItem(((ActorFurniture)actor).ItemID).BaseData.itemType !=
+                                    ItemType.FF_CASTLE && ID > 90001000)
+                                    listAF.Add(actor);
+                                else
+                                    jActor.e.OnActorAppears(actor);
+                            }
+                        }
+                        catch (Exception ex) {
+                            Logger.ShowError(ex);
                         }
 
-                        //check wheter jActor can see actor, if yes: inform jActor
-                        if (ACanSeeB(jActor, actor))
-                        {
-                            if (actor.type == ActorType.FURNITURE &&
-                                ItemFactory.Instance.GetItem(((ActorFurniture)actor).ItemID).BaseData.itemType !=
-                                ItemType.FF_CASTLE && ID > 90001000)
-                                listAF.Add(actor);
-                            else
-                                jActor.e.OnActorAppears(actor);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
-                    }
+                    if (listAF.Count > 0) {
+                        var afs = new List<ActorFurniture>();
+                        var index = 0;
+                        foreach (var i in listAF) {
+                            if (index >= 40) {
+                                jActor.e.OnActorFurnitureList(afs);
+                                afs.Clear();
+                                index = 0;
+                            }
 
-                if (listAF.Count > 0)
-                {
-                    var afs = new List<ActorFurniture>();
-                    var index = 0;
-                    foreach (var i in listAF)
-                    {
-                        if (index >= 40)
-                        {
+                            afs.Add((ActorFurniture)i);
+                            index++;
+                        }
+
+                        if (afs.Count > 0)
                             jActor.e.OnActorFurnitureList(afs);
-                            afs.Clear();
-                            index = 0;
-                        }
-
-                        afs.Add((ActorFurniture)i);
-                        index++;
                     }
-
-                    if (afs.Count > 0)
-                        jActor.e.OnActorFurnitureList(afs);
                 }
-            }
         }
 
-        public void TeleportActor(Actor sActor, short x, short y)
-        {
-            if (sActor.Status.Additions.ContainsKey("Meditatioon"))
-            {
+        public void TeleportActor(Actor sActor, short x, short y) {
+            if (sActor.Status.Additions.ContainsKey("Meditatioon")) {
                 sActor.Status.Additions["Meditatioon"].AdditionEnd();
                 sActor.Status.Additions.Remove("Meditatioon");
             }
 
-            if (sActor.Status.Additions.ContainsKey("Hiding"))
-            {
+            if (sActor.Status.Additions.ContainsKey("Hiding")) {
                 sActor.Status.Additions["Hiding"].AdditionEnd();
                 sActor.Status.Additions.Remove("Hiding");
             }
 
-            if (sActor.Status.Additions.ContainsKey("fish"))
-            {
+            if (sActor.Status.Additions.ContainsKey("fish")) {
                 sActor.Status.Additions["fish"].AdditionEnd();
                 sActor.Status.Additions.Remove("fish");
             }
 
-            if (sActor.Status.Additions.ContainsKey("Cloaking"))
-            {
+            if (sActor.Status.Additions.ContainsKey("Cloaking")) {
                 sActor.Status.Additions["Cloaking"].AdditionEnd();
                 sActor.Status.Additions.Remove("Cloaking");
             }
 
-            if (sActor.Status.Additions.ContainsKey("IAmTree"))
-            {
+            if (sActor.Status.Additions.ContainsKey("IAmTree")) {
                 sActor.Status.Additions["IAmTree"].AdditionEnd();
                 sActor.Status.Additions.Remove("IAmTree");
             }
 
-            if (sActor.Status.Additions.ContainsKey("Invisible"))
-            {
+            if (sActor.Status.Additions.ContainsKey("Invisible")) {
                 sActor.Status.Additions["Invisible"].AdditionEnd();
                 sActor.Status.Additions.Remove("Invisible");
             }
@@ -1343,12 +1201,10 @@ namespace SagaMap
             actorsByRegion[sActor.region].Add(sActor);
 
             sActor.e.OnTeleport(x, y);
-            if (sActor.type != ActorType.PC)
-            {
+            if (sActor.type != ActorType.PC) {
                 SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.APPEAR, null, sActor, false);
             }
-            else
-            {
+            else {
                 var pos = new short[2];
                 pos[0] = x;
                 pos[1] = y;
@@ -1359,172 +1215,161 @@ namespace SagaMap
         }
 
         public void SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE etype, MapEventArgs args, Actor sActor,
-            bool sendToSourceActor)
-        {
-            try
-            {
+            bool sendToSourceActor) {
+            try {
                 for (short deltaY = -1; deltaY <= 1; deltaY++)
-                for (short deltaX = -1; deltaX <= 1; deltaX++)
-                {
-                    var region = (uint)(sActor.region + deltaX * 10000 + deltaY);
-                    if (!actorsByRegion.ContainsKey(region)) continue;
-                    var actors = actorsByRegion[region].ToArray();
-                    foreach (var actor in actors)
-                        try
-                        {
-                            if (!sendToSourceActor && actor.ActorID == sActor.ActorID) continue;
-                            if (actor.Status == null)
-                            {
-                                if (etype != EVENT_TYPE.DISAPPEAR)
-                                    DeleteActor(actor);
-                                continue;
-                            }
-
-                            if (ACanSeeB(actor, sActor))
-                                switch (etype)
-                                {
-                                    case EVENT_TYPE.PLAYERSHOP_CHANGE:
-                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                            actor.e.OnPlayerShopChange(sActor);
-                                        break;
-                                    case EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE:
-                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                            actor.e.OnPlayerShopChangeClose(sActor);
-                                        break;
-
-                                    case EVENT_TYPE.PLAYER_SIZE_UPDATE:
-                                        actor.e.OnPlayerSizeChange(sActor);
-                                        break;
-
-
-                                    case EVENT_TYPE.CHAR_INFO_UPDATE:
-                                        actor.e.OnCharInfoUpdate(sActor);
-                                        break;
-
-                                    case EVENT_TYPE.CHANGE_STATUS:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-
-                                        actor.e.OnPlayerChangeStatus((ActorPC)sActor);
-                                        break;
-
-                                    case EVENT_TYPE.APPEAR:
-                                        actor.e.OnActorAppears(sActor);
-                                        break;
-
-                                    case EVENT_TYPE.DISAPPEAR:
-                                        actor.e.OnActorDisappears(sActor);
-                                        break;
-
-                                    case EVENT_TYPE.EMOTION:
-                                        actor.e.OnActorChangeEmotion(sActor, args);
-                                        break;
-
-                                    case EVENT_TYPE.MOTION:
-                                        actor.e.OnActorChangeMotion(sActor, args);
-                                        break;
-
-                                    case EVENT_TYPE.WAITTYPE:
-                                        actor.e.OnActorChangeWaitType(sActor);
-                                        break;
-
-                                    case EVENT_TYPE.CHAT:
-                                        actor.e.OnActorChat(sActor, args);
-                                        break;
-
-                                    case EVENT_TYPE.SKILL:
-                                        actor.e.OnActorSkillUse(sActor, args);
-                                        break;
-
-                                    case EVENT_TYPE.CHANGE_EQUIP:
-                                        actor.e.OnActorChangeEquip(sActor, args);
-                                        break;
-                                    case EVENT_TYPE.ATTACK:
-                                        actor.e.OnAttack(sActor, args);
-                                        break;
-                                    case EVENT_TYPE.HPMPSP_UPDATE:
-                                        actor.e.OnHPMPSPUpdate(sActor);
-                                        break;
-                                    case EVENT_TYPE.BUFF_CHANGE:
-                                        actor.e.OnActorChangeBuff(sActor);
-                                        break;
-                                    case EVENT_TYPE.LEVEL_UP:
-                                        actor.e.OnLevelUp(sActor, args);
-                                        break;
-                                    case EVENT_TYPE.PLAYER_MODE:
-                                        actor.e.OnPlayerMode(sActor);
-                                        break;
-                                    case EVENT_TYPE.SHOW_EFFECT:
-                                        actor.e.OnShowEffect(sActor, args);
-                                        break;
-                                    case EVENT_TYPE.POSSESSION:
-                                        actor.e.OnActorPossession(sActor, args);
-                                        break;
-                                    case EVENT_TYPE.PARTY_NAME_UPDATE:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorPartyUpdate((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.SPEED_UPDATE:
-                                        actor.e.OnActorSpeedChange(sActor);
-                                        break;
-                                    case EVENT_TYPE.SIGN_UPDATE:
-                                        if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
-                                            actor.e.OnSignUpdate(sActor);
-                                        break;
-                                    case EVENT_TYPE.RING_NAME_UPDATE:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorRingUpdate((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.WRP_RANKING_UPDATE:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorWRPRankingUpdate((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.ATTACK_TYPE_CHANGE:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorChangeAttackType((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.FURNITURE_SIT:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorFurnitureSit((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.PAPER_CHANGE:
-                                        if (sActor.type != ActorType.PC)
-                                            break;
-                                        actor.e.OnActorPaperChange((ActorPC)sActor);
-                                        break;
-                                    case EVENT_TYPE.SKILL_CANCEL:
-                                        actor.e.OnActorSkillCancel(sActor);
-                                        break;
+                    for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                        var region = (uint)(sActor.region + deltaX * 10000 + deltaY);
+                        if (!actorsByRegion.ContainsKey(region)) continue;
+                        var actors = actorsByRegion[region].ToArray();
+                        foreach (var actor in actors)
+                            try {
+                                if (!sendToSourceActor && actor.ActorID == sActor.ActorID) continue;
+                                if (actor.Status == null) {
+                                    if (etype != EVENT_TYPE.DISAPPEAR)
+                                        DeleteActor(actor);
+                                    continue;
                                 }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.GetLogger().Error(ex, ex.Message);
-                        }
-                }
+
+                                if (ACanSeeB(actor, sActor))
+                                    switch (etype) {
+                                        case EVENT_TYPE.PLAYERSHOP_CHANGE:
+                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                                actor.e.OnPlayerShopChange(sActor);
+                                            break;
+                                        case EVENT_TYPE.PLAYERSHOP_CHANGE_CLOSE:
+                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                                actor.e.OnPlayerShopChangeClose(sActor);
+                                            break;
+
+                                        case EVENT_TYPE.PLAYER_SIZE_UPDATE:
+                                            actor.e.OnPlayerSizeChange(sActor);
+                                            break;
+
+
+                                        case EVENT_TYPE.CHAR_INFO_UPDATE:
+                                            actor.e.OnCharInfoUpdate(sActor);
+                                            break;
+
+                                        case EVENT_TYPE.CHANGE_STATUS:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+
+                                            actor.e.OnPlayerChangeStatus((ActorPC)sActor);
+                                            break;
+
+                                        case EVENT_TYPE.APPEAR:
+                                            actor.e.OnActorAppears(sActor);
+                                            break;
+
+                                        case EVENT_TYPE.DISAPPEAR:
+                                            actor.e.OnActorDisappears(sActor);
+                                            break;
+
+                                        case EVENT_TYPE.EMOTION:
+                                            actor.e.OnActorChangeEmotion(sActor, args);
+                                            break;
+
+                                        case EVENT_TYPE.MOTION:
+                                            actor.e.OnActorChangeMotion(sActor, args);
+                                            break;
+
+                                        case EVENT_TYPE.WAITTYPE:
+                                            actor.e.OnActorChangeWaitType(sActor);
+                                            break;
+
+                                        case EVENT_TYPE.CHAT:
+                                            actor.e.OnActorChat(sActor, args);
+                                            break;
+
+                                        case EVENT_TYPE.SKILL:
+                                            actor.e.OnActorSkillUse(sActor, args);
+                                            break;
+
+                                        case EVENT_TYPE.CHANGE_EQUIP:
+                                            actor.e.OnActorChangeEquip(sActor, args);
+                                            break;
+                                        case EVENT_TYPE.ATTACK:
+                                            actor.e.OnAttack(sActor, args);
+                                            break;
+                                        case EVENT_TYPE.HPMPSP_UPDATE:
+                                            actor.e.OnHPMPSPUpdate(sActor);
+                                            break;
+                                        case EVENT_TYPE.BUFF_CHANGE:
+                                            actor.e.OnActorChangeBuff(sActor);
+                                            break;
+                                        case EVENT_TYPE.LEVEL_UP:
+                                            actor.e.OnLevelUp(sActor, args);
+                                            break;
+                                        case EVENT_TYPE.PLAYER_MODE:
+                                            actor.e.OnPlayerMode(sActor);
+                                            break;
+                                        case EVENT_TYPE.SHOW_EFFECT:
+                                            actor.e.OnShowEffect(sActor, args);
+                                            break;
+                                        case EVENT_TYPE.POSSESSION:
+                                            actor.e.OnActorPossession(sActor, args);
+                                            break;
+                                        case EVENT_TYPE.PARTY_NAME_UPDATE:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorPartyUpdate((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.SPEED_UPDATE:
+                                            actor.e.OnActorSpeedChange(sActor);
+                                            break;
+                                        case EVENT_TYPE.SIGN_UPDATE:
+                                            if (sActor.type == ActorType.PC || sActor.type == ActorType.EVENT)
+                                                actor.e.OnSignUpdate(sActor);
+                                            break;
+                                        case EVENT_TYPE.RING_NAME_UPDATE:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorRingUpdate((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.WRP_RANKING_UPDATE:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorWRPRankingUpdate((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.ATTACK_TYPE_CHANGE:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorChangeAttackType((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.FURNITURE_SIT:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorFurnitureSit((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.PAPER_CHANGE:
+                                            if (sActor.type != ActorType.PC)
+                                                break;
+                                            actor.e.OnActorPaperChange((ActorPC)sActor);
+                                            break;
+                                        case EVENT_TYPE.SKILL_CANCEL:
+                                            actor.e.OnActorSkillCancel(sActor);
+                                            break;
+                                    }
+                            }
+                            catch (Exception ex) {
+                                Logger.ShowError(ex);
+                            }
+                    }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
         public void SendEventToAllActors(TOALL_EVENT_TYPE etype, MapEventArgs args, Actor sActor,
-            bool sendToSourceActor)
-        {
-            foreach (var actor in Actors.Values)
-            {
+            bool sendToSourceActor) {
+            foreach (var actor in Actors.Values) {
                 if (sActor != null)
                     if (!sendToSourceActor && actor.ActorID == sActor.ActorID)
                         continue;
 
-                switch (etype)
-                {
+                switch (etype) {
                     case TOALL_EVENT_TYPE.CHAT:
                         actor.e.OnActorChat(sActor, args);
                         break;
@@ -1532,46 +1377,38 @@ namespace SagaMap
             }
         }
 
-        public void SendActorToMap(Actor mActor, Map newMap, short x, short y)
-        {
+        public void SendActorToMap(Actor mActor, Map newMap, short x, short y) {
             SendActorToMap(mActor, newMap, x, y, false);
         }
 
-        public void SendActorToMap(Actor mActor, Map newMap, short x, short y, bool possession)
-        {
+        public void SendActorToMap(Actor mActor, Map newMap, short x, short y, bool possession) {
             // todo: add support for multiple map servers
-            if (mActor.Status.Additions.ContainsKey("Meditatioon"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Meditatioon")) {
                 mActor.Status.Additions["Meditatioon"].AdditionEnd();
                 mActor.Status.Additions.Remove("Meditatioon");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Hiding"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Hiding")) {
                 mActor.Status.Additions["Hiding"].AdditionEnd();
                 mActor.Status.Additions.Remove("Hiding");
             }
 
-            if (mActor.Status.Additions.ContainsKey("fish"))
-            {
+            if (mActor.Status.Additions.ContainsKey("fish")) {
                 mActor.Status.Additions["fish"].AdditionEnd();
                 mActor.Status.Additions.Remove("fish");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Cloaking"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Cloaking")) {
                 mActor.Status.Additions["Cloaking"].AdditionEnd();
                 mActor.Status.Additions.Remove("Cloaking");
             }
 
-            if (mActor.Status.Additions.ContainsKey("IAmTree"))
-            {
+            if (mActor.Status.Additions.ContainsKey("IAmTree")) {
                 mActor.Status.Additions["IAmTree"].AdditionEnd();
                 mActor.Status.Additions.Remove("IAmTree");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Invisible"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Invisible")) {
                 mActor.Status.Additions["Invisible"].AdditionEnd();
                 mActor.Status.Additions.Remove("Invisible");
             }
@@ -1579,14 +1416,12 @@ namespace SagaMap
             if (mActor.HP == 0)
                 return;
             //send also the possessioned actors to the same map
-            if (mActor.type == ActorType.PC)
-            {
+            if (mActor.type == ActorType.PC) {
                 var pc = (ActorPC)mActor;
                 if (pc.PossessionTarget != 0 && !possession)
                     return;
                 var possessioned = pc.PossesionedActors;
-                foreach (var i in possessioned)
-                {
+                foreach (var i in possessioned) {
                     if (i == pc) continue;
                     SendActorToMap(i, newMap, x, y);
                 }
@@ -1594,8 +1429,7 @@ namespace SagaMap
 
             // obtain the new map
             var mapid = (byte)newMap.ID;
-            if (mapid == mActor.MapID)
-            {
+            if (mapid == mActor.MapID) {
                 TeleportActor(mActor, x, y);
                 return;
             }
@@ -1610,12 +1444,10 @@ namespace SagaMap
             mActor.Buff.Dead = false;
 
             // register the actor in the new map
-            if (mActor.type != ActorType.PC)
-            {
+            if (mActor.type != ActorType.PC) {
                 newMap.RegisterActor(mActor);
             }
-            else
-            {
+            else {
                 ((ActorPC)mActor).Motion = MotionType.STAND;
                 newMap.RegisterActor(mActor, mActor.ActorID);
                 var client = MapClient.FromActorPC((ActorPC)mActor);
@@ -1623,46 +1455,38 @@ namespace SagaMap
             }
         }
 
-        public void SendActorToMap(Actor mActor, uint mapid, short x, short y)
-        {
+        public void SendActorToMap(Actor mActor, uint mapid, short x, short y) {
             SendActorToMap(mActor, mapid, x, y, false);
         }
 
-        public void SendActorToMap(Actor mActor, uint mapid, short x, short y, bool possession)
-        {
+        public void SendActorToMap(Actor mActor, uint mapid, short x, short y, bool possession) {
             // todo: add support for multiple map servers
-            if (mActor.Status.Additions.ContainsKey("Meditatioon"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Meditatioon")) {
                 mActor.Status.Additions["Meditatioon"].AdditionEnd();
                 mActor.Status.Additions.Remove("Meditatioon");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Hiding"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Hiding")) {
                 mActor.Status.Additions["Hiding"].AdditionEnd();
                 mActor.Status.Additions.Remove("Hiding");
             }
 
-            if (mActor.Status.Additions.ContainsKey("fish"))
-            {
+            if (mActor.Status.Additions.ContainsKey("fish")) {
                 mActor.Status.Additions["fish"].AdditionEnd();
                 mActor.Status.Additions.Remove("fish");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Cloaking"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Cloaking")) {
                 mActor.Status.Additions["Cloaking"].AdditionEnd();
                 mActor.Status.Additions.Remove("Cloaking");
             }
 
-            if (mActor.Status.Additions.ContainsKey("IAmTree"))
-            {
+            if (mActor.Status.Additions.ContainsKey("IAmTree")) {
                 mActor.Status.Additions["IAmTree"].AdditionEnd();
                 mActor.Status.Additions.Remove("IAmTree");
             }
 
-            if (mActor.Status.Additions.ContainsKey("Invisible"))
-            {
+            if (mActor.Status.Additions.ContainsKey("Invisible")) {
                 mActor.Status.Additions["Invisible"].AdditionEnd();
                 mActor.Status.Additions.Remove("Invisible");
             }
@@ -1670,14 +1494,12 @@ namespace SagaMap
             if (mActor.HP == 0)
                 return;
 
-            if (mActor.type == ActorType.PC)
-            {
+            if (mActor.type == ActorType.PC) {
                 var pc = (ActorPC)mActor;
                 if (pc.PossessionTarget != 0 && !possession)
                     return;
                 var possessioned = pc.PossesionedActors;
-                foreach (var i in possessioned)
-                {
+                foreach (var i in possessioned) {
                     if (i == pc) continue;
                     SendActorToMap(i, mapid, x, y, true);
                 }
@@ -1685,8 +1507,7 @@ namespace SagaMap
 
             // obtain the new map
             Map newMap;
-            if (mapid == mActor.MapID)
-            {
+            if (mapid == mActor.MapID) {
                 TeleportActor(mActor, x, y);
                 return;
             }
@@ -1696,8 +1517,7 @@ namespace SagaMap
                 return;
             // delete the actor from this map
             DeleteActor(mActor);
-            if (x == 0f && y == 0f)
-            {
+            if (x == 0f && y == 0f) {
                 var pos = newMap.GetRandomPos();
                 x = pos[0];
                 y = pos[1];
@@ -1710,12 +1530,10 @@ namespace SagaMap
             mActor.Buff.Dead = false;
 
             // register the actor in the new map
-            if (mActor.type != ActorType.PC)
-            {
+            if (mActor.type != ActorType.PC) {
                 newMap.RegisterActor(mActor);
             }
-            else
-            {
+            else {
                 ((ActorPC)mActor).Motion = MotionType.STAND;
                 newMap.RegisterActor(mActor, mActor.ActorID);
                 var client = MapClient.FromActorPC((ActorPC)mActor);
@@ -1723,8 +1541,7 @@ namespace SagaMap
             }
         }
 
-        private void SendActorToActor(Actor mActor, Actor tActor)
-        {
+        private void SendActorToActor(Actor mActor, Actor tActor) {
             if (mActor.MapID == tActor.MapID)
                 TeleportActor(mActor, tActor.X, tActor.Y);
             else
@@ -1737,24 +1554,20 @@ namespace SagaMap
         /// <param name="sActor">目标1</param>
         /// <param name="dActor">目标2</param>
         /// <returns></returns>
-        public static short Distance(Actor sActor, Actor dActor)
-        {
+        public static short Distance(Actor sActor, Actor dActor) {
             return (short)Math.Sqrt((dActor.X - sActor.X) * (dActor.X - sActor.X) +
                                     (dActor.Y - sActor.Y) * (dActor.Y - sActor.Y));
         }
 
-        public void Announce(string text)
-        {
+        public void Announce(string text) {
             var list = Actors.Values.ToList();
             foreach (var i in list)
                 if (i.type == ActorType.PC)
                     MapClient.FromActorPC((ActorPC)i).SendAnnounce(text);
         }
 
-        public void FindFreeCoord(short x, short y, out short x2, out short y2, params Actor[] excludes)
-        {
-            if (GetActorsArea(x, y, 8, excludes).Count == 0)
-            {
+        public void FindFreeCoord(short x, short y, out short x2, out short y2, params Actor[] excludes) {
+            if (GetActorsArea(x, y, 8, excludes).Count == 0) {
                 x2 = x;
                 y2 = y;
                 return;
@@ -1763,13 +1576,12 @@ namespace SagaMap
             var X = (short)Global.Random.Next(-100, 100);
             var Y = (short)Global.Random.Next(-100, 100);
             for (var i = X; i < 200; i += 100)
-            for (var j = Y; j < 200; j += 100)
-                if (GetActorsArea((short)(x + i), (short)(y + j), 8, excludes).Count == 0)
-                {
-                    x2 = (short)(x + i);
-                    y2 = (short)(y + j);
-                    return;
-                }
+                for (var j = Y; j < 200; j += 100)
+                    if (GetActorsArea((short)(x + i), (short)(y + j), 8, excludes).Count == 0) {
+                        x2 = (short)(x + i);
+                        y2 = (short)(y + j);
+                        return;
+                    }
 
             x2 = x;
             y2 = y;
@@ -1784,8 +1596,7 @@ namespace SagaMap
         /// <param name="y2">目标点Y</param>
         /// 都是actor坐标 不是地图坐标！！！
         /// <returns></returns>
-        public ushort CalcDir(short x, short y, short x2, short y2)
-        {
+        public ushort CalcDir(short x, short y, short x2, short y2) {
             var vecX = (short)(x2 - x);
             var vecY = (short)(y2 - y);
             //注意注意：actor坐标y和地图方向是反的！反的！反的！
@@ -1795,43 +1606,38 @@ namespace SagaMap
         }
 
         //换算成平面直角坐标系的角度..
-        public ushort DirChange(ushort dir)
-        {
+        public ushort DirChange(ushort dir) {
             var d = 270 - dir;
             if (d < 0)
                 d += 360;
             return (ushort)d;
         }
 
-        public List<Actor> GetActorsArea(Actor sActor, short range, bool includeSourceActor)
-        {
+        public List<Actor> GetActorsArea(Actor sActor, short range, bool includeSourceActor) {
             return GetActorsArea(sActor, range, includeSourceActor, true);
         }
 
-        public List<Actor> GetActorsArea(Actor sActor, short range, bool includeSourceActor, bool includeInvisibleActor)
-        {
+        public List<Actor> GetActorsArea(Actor sActor, short range, bool includeSourceActor,
+            bool includeInvisibleActor) {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-            for (short deltaX = -1; deltaX <= 1; deltaX++)
-            {
-                var region = (uint)(GetRegion(sActor.X, sActor.Y) + deltaX * 1000000 + deltaY);
-                if (!actorsByRegion.ContainsKey(region)) continue;
+                for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                    var region = (uint)(GetRegion(sActor.X, sActor.Y) + deltaX * 1000000 + deltaY);
+                    if (!actorsByRegion.ContainsKey(region)) continue;
 
-                var list = actorsByRegion[region].ToArray();
-                foreach (var actor in list)
-                {
-                    if (!includeSourceActor && actor.ActorID == sActor.ActorID) continue;
-                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
+                    var list = actorsByRegion[region].ToArray();
+                    foreach (var actor in list) {
+                        if (!includeSourceActor && actor.ActorID == sActor.ActorID) continue;
+                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                    if (ACanSeeB(actor, sActor, range)) actors.Add(actor);
+                        if (ACanSeeB(actor, sActor, range)) actors.Add(actor);
+                    }
                 }
-            }
 
             return actors;
         }
 
-        public Actor GetRandomAreaActor(Actor sActor, short range)
-        {
+        public Actor GetRandomAreaActor(Actor sActor, short range) {
             var actors = GetActorsArea(sActor, range, false, false);
             if (actors.Count == 0) return null;
             var num = Global.Random.Next(0, actors.Count - 1);
@@ -1839,22 +1645,19 @@ namespace SagaMap
         }
 
         //获得路程长度
-        public double GetLengthD(short x, short y, short x2, short y2)
-        {
+        public double GetLengthD(short x, short y, short x2, short y2) {
             return Math.Sqrt((x2 - x) * (x2 - x) + (y2 - y) * (y2 - y));
         }
 
         //计算三角形面积，其他函数用
-        public double TriangleArea(double a, double b, double c)
-        {
+        public double TriangleArea(double a, double b, double c) {
             var p = (a + b + c) / 2;
             return Math.Sqrt(p * Math.Abs(p - a) * Math.Abs(p - b) * Math.Abs(p - c));
         }
 
         //获取任意矩形内角色列表
         public List<Actor> GetRectAreaActors(short x1, short y1, short x2, short y2, short x3, short y3, short x4,
-            short y4, bool includeInvisibleActor = false)
-        {
+            short y4, bool includeInvisibleActor = false) {
             var actors = new List<Actor>();
             var list = Actors.Values.ToArray();
             var a = GetLengthD(x1, y1, x2, y2);
@@ -1866,8 +1669,7 @@ namespace SagaMap
             var area = TriangleArea(a, b, ab) + TriangleArea(c, d, ab);
             double e, f, g, h;
 
-            foreach (var actor in list)
-            {
+            foreach (var actor in list) {
                 if (actor == null)
                     continue;
                 if (!includeInvisibleActor && actor.Buff.Transparent) continue;
@@ -1885,100 +1687,89 @@ namespace SagaMap
         }
 
         //真·圆形判定
-        public List<Actor> GetRoundAreaActors(short x, short y, short range, bool includeInvisibleActor = false)
-        {
+        public List<Actor> GetRoundAreaActors(short x, short y, short range, bool includeInvisibleActor = false) {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-            for (short deltaX = -1; deltaX <= 1; deltaX++)
-            {
-                var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
-                if (!actorsByRegion.ContainsKey(region)) continue;
+                for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                    var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
+                    if (!actorsByRegion.ContainsKey(region)) continue;
 
-                var list = actorsByRegion[region].ToArray();
-                foreach (var actor in list)
-                {
-                    if (actor == null)
-                        continue;
-                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
+                    var list = actorsByRegion[region].ToArray();
+                    foreach (var actor in list) {
+                        if (actor == null)
+                            continue;
+                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                    if ((actor.X - x) * (actor.X - x) + (actor.Y - y) * (actor.Y - y) <= range * range)
-                        actors.Add(actor);
+                        if ((actor.X - x) * (actor.X - x) + (actor.Y - y) * (actor.Y - y) <= range * range)
+                            actors.Add(actor);
+                    }
                 }
-            }
 
             return actors;
         }
 
-        public List<Actor> GetActorsArea(short x, short y, short range, params Actor[] excludes)
-        {
+        public List<Actor> GetActorsArea(short x, short y, short range, params Actor[] excludes) {
             return GetActorsArea(x, y, range, true, excludes);
         }
 
         public List<Actor> GetActorsArea(short x, short y, short range, bool includeInvisibleActor,
-            params Actor[] excludes)
-        {
+            params Actor[] excludes) {
             var actors = new List<Actor>();
             for (short deltaY = -1; deltaY <= 1; deltaY++)
-            for (short deltaX = -1; deltaX <= 1; deltaX++)
-            {
-                var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
-                if (!actorsByRegion.ContainsKey(region)) continue;
+                for (short deltaX = -1; deltaX <= 1; deltaX++) {
+                    var region = (uint)(GetRegion(x, y) + deltaX * 1000000 + deltaY);
+                    if (!actorsByRegion.ContainsKey(region)) continue;
 
-                var list = actorsByRegion[region].ToArray();
-                foreach (var actor in list)
-                {
-                    var skip = false;
-                    if (excludes != null)
-                        foreach (var j in excludes)
-                            if (actor == j)
-                                skip = true;
+                    var list = actorsByRegion[region].ToArray();
+                    foreach (var actor in list) {
+                        var skip = false;
+                        if (excludes != null)
+                            foreach (var j in excludes)
+                                if (actor == j)
+                                    skip = true;
 
-                    if (actor == null)
-                        continue;
-                    if (skip) continue;
-                    if (!includeInvisibleActor && actor.Buff.Transparent) continue;
+                        if (actor == null)
+                            continue;
+                        if (skip) continue;
+                        if (!includeInvisibleActor && actor.Buff.Transparent) continue;
 
-                    if (actor.X >= x - range && actor.X <= x + range && actor.Y >= y - range && actor.Y <= y + range)
-                        actors.Add(actor);
+                        if (actor.X >= x - range && actor.X <= x + range && actor.Y >= y - range &&
+                            actor.Y <= y + range)
+                            actors.Add(actor);
+                    }
                 }
-            }
 
             return actors;
         }
 
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, byte x, byte y, int range, int count, int delay,
-            ActorMob.MobInfo mobinfo, AIMode Ai)
-        {
+            ActorMob.MobInfo mobinfo, AIMode Ai) {
             return SpawnCustomMob(MobID, MapID, 0, 0, 0, 0, x, y, range, count, delay, mobinfo, Ai, null, 0);
         }
 
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, byte x, byte y, int range, int count, int delay,
-            ActorMob.MobInfo mobinfo, AIMode Ai, MobCallback Event, byte Callbacktype)
-        {
+            ActorMob.MobInfo mobinfo, AIMode Ai, MobCallback Event, byte Callbacktype) {
             return SpawnCustomMob(MobID, MapID, 0, 0, 0, 0, x, y, range, count, delay, mobinfo, Ai, Event,
                 Callbacktype);
         }
 
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, uint PictID, uint AnotherID, byte AnotherCamp,
             byte x, byte y, int range, int count, int delay, ActorMob.MobInfo mobinfo, AIMode Ai, MobCallback Event,
-            byte Callbacktype)
-        {
+            byte Callbacktype) {
             return SpawnCustomMob(MobID, MapID, PictID, 0, AnotherID, AnotherCamp, x, y, range, count, delay, mobinfo,
                 Ai, Event, Callbacktype);
         }
 
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, uint PictID, uint RideID, uint AnotherID,
             byte AnotherCamp, byte x, byte y, int range, int count, int delay, ActorMob.MobInfo mobinfo, AIMode Ai,
-            MobCallback Event, byte Callbacktype)
-        {
+            MobCallback Event, byte Callbacktype) {
             return SpawnCustomMob(MobID, MapID, PictID, RideID, AnotherID, AnotherCamp, x, y, range, count, delay,
                 mobinfo, Ai, Event, Callbacktype, false);
         }
 
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, uint PictID, uint RideID, uint AnotherID,
             byte AnotherCamp, byte x, byte y, int range, int count, int delay, ActorMob.MobInfo mobinfo, AIMode Ai,
-            MobCallback Event, byte Callbacktype, bool noreturn)
-        {
+            MobCallback Event, byte Callbacktype, bool noreturn) {
             return SpawnCustomMob(MobID, MapID, PictID, RideID, AnotherID, AnotherCamp, x, y, range, count, delay,
                 mobinfo, Ai, Event, Callbacktype, false, false);
         }
@@ -1999,14 +1790,11 @@ namespace SagaMap
         /// <returns></returns>
         public List<ActorMob> SpawnCustomMob(uint MobID, uint MapID, uint PictID, uint RideID, uint AnotherID,
             byte AnotherCamp, byte x, byte y, int range, int count, int delay, ActorMob.MobInfo mobinfo, AIMode Ai,
-            MobCallback Event, byte Callbacktype, bool noreturn, bool NoAIForNPC)
-        {
-            try
-            {
+            MobCallback Event, byte Callbacktype, bool noreturn, bool NoAIForNPC) {
+            try {
                 //Map map = MapManager.Instance.GetMap(MapID);
                 var mobs = new List<ActorMob>();
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     if (ID == 10054001)
                         AnotherID = 0;
                     var mob = new ActorMob(MobID, mobinfo);
@@ -2035,19 +1823,16 @@ namespace SagaMap
                     y_new = (byte)Global.Random.Next(min_y, max_y);
 
                     var counter = 0;
-                    try
-                    {
-                        while (Info.walkable[x_new, y_new] != 2)
-                        {
+                    try {
+                        while (Info.walkable[x_new, y_new] != 2) {
                             if (counter > 1000 || range == 0) break;
                             x_new = (byte)Global.Random.Next(min_x, max_x);
                             y_new = (byte)Global.Random.Next(min_y, max_y);
                             counter++;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
 
                     if (counter > 1000)
@@ -2073,8 +1858,7 @@ namespace SagaMap
                     OnActorVisibilityChange(mob);
 
                     if (Event != null)
-                        switch (Callbacktype)
-                        {
+                        switch (Callbacktype) {
                             case 1:
                                 eh.Dying += Event;
                                 break;
@@ -2110,15 +1894,13 @@ namespace SagaMap
 
                 return mobs;
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 return null;
             }
         }
 
-        public ActorMob SpawnMob(uint mobID, short x, short y, short moveRange, Actor master)
-        {
+        public ActorMob SpawnMob(uint mobID, short x, short y, short moveRange, Actor master) {
             var mob = new ActorMob(mobID);
             mob.MapID = ID;
             mob.X = x;
@@ -2146,11 +1928,9 @@ namespace SagaMap
         }
 
 
-        public bool CheckActorSkillInRange(short x, short y, short range)
-        {
+        public bool CheckActorSkillInRange(short x, short y, short range) {
             var actors = GetActorsArea(x, y, range);
-            foreach (var i in actors)
-            {
+            foreach (var i in actors) {
                 if (i.type != ActorType.SKILL)
                     continue;
                 if (CheckActorSkillIsHeal(x, y, range))
@@ -2168,11 +1948,9 @@ namespace SagaMap
         /// <summary>
         ///     检测是否为演奏系技能（未完成）
         /// </summary>
-        public bool CheckActorSkillIsMusic(short x, short y, short range)
-        {
+        public bool CheckActorSkillIsMusic(short x, short y, short range) {
             var actors = GetActorsArea(x, y, range);
-            foreach (var i in actors)
-            {
+            foreach (var i in actors) {
                 if (i.type != ActorType.SKILL)
                     continue;
                 var skill = (ActorSkill)i;
@@ -2194,11 +1972,9 @@ namespace SagaMap
         /// <summary>
         ///     检测是否为恢复系技能
         /// </summary>
-        public bool CheckActorSkillIsHeal(short x, short y, short range)
-        {
+        public bool CheckActorSkillIsHeal(short x, short y, short range) {
             var actors = GetActorsArea(x, y, range);
-            foreach (var i in actors)
-            {
+            foreach (var i in actors) {
                 if (i.type != ActorType.SKILL)
                     continue;
                 var skill = (ActorSkill)i;
@@ -2211,8 +1987,7 @@ namespace SagaMap
             return false;
         }
 
-        public int CountActorType(ActorType type)
-        {
+        public int CountActorType(ActorType type) {
             var actors = Actors.Values.ToList();
             var count = 0;
             foreach (var i in actors)
@@ -2221,16 +1996,14 @@ namespace SagaMap
             return count;
         }
 
-        public void SendEffect(Actor actor, uint effect)
-        {
+        public void SendEffect(Actor actor, uint effect) {
             var arg = new EffectArg();
             arg.actorID = actor.ActorID;
             arg.effectID = effect;
             SendEventToAllActorsWhoCanSeeActor(EVENT_TYPE.SHOW_EFFECT, arg, actor, true);
         }
 
-        public void SendEffect(Actor actor, byte x, byte y, uint effectID)
-        {
+        public void SendEffect(Actor actor, byte x, byte y, uint effectID) {
             var arg = new EffectArg();
             arg.effectID = effectID;
             arg.actorID = 0xFFFFFFFF;
@@ -2240,8 +2013,7 @@ namespace SagaMap
         }
 
 
-        public void DefWarChange(DefWar text)
-        {
+        public void DefWarChange(DefWar text) {
             var list = Actors.Values.ToList();
             foreach (var i in list)
                 if (i.type == ActorType.PC && ((ActorPC)i).DefWarShow)
@@ -2249,8 +2021,7 @@ namespace SagaMap
         }
 
 
-        public void DefWarResult(byte r1, byte r2, int exp, int jobexp, int cp, byte u = 0)
-        {
+        public void DefWarResult(byte r1, byte r2, int exp, int jobexp, int cp, byte u = 0) {
             //*
             var list = Actors.Values.ToList();
             foreach (var i in list)
@@ -2260,16 +2031,14 @@ namespace SagaMap
         }
 
 
-        public void DefWarState(byte rate)
-        {
+        public void DefWarState(byte rate) {
             var list = Actors.Values.ToList();
             foreach (var i in list)
                 if (i.type == ActorType.PC)
                     MapClient.FromActorPC((ActorPC)i).SendDefWarState(rate);
         }
 
-        public void DefWarStates(Dictionary<uint, byte> l)
-        {
+        public void DefWarStates(Dictionary<uint, byte> l) {
             var list = Actors.Values.ToList();
             foreach (var i in list)
                 if (i.type == ActorType.PC)
@@ -2296,15 +2065,12 @@ namespace SagaMap
 
         public uint ResurrectionLimit { get; set; }
 
-        public void OnDestrory()
-        {
+        public void OnDestrory() {
             var pcs = new List<Actor>();
             var items = new List<Actor>();
             var other = new List<Actor>();
-            if (MobSpawnManager.Instance.Spawns.ContainsKey(ID))
-            {
-                foreach (var mob in MobSpawnManager.Instance.Spawns[ID])
-                {
+            if (MobSpawnManager.Instance.Spawns.ContainsKey(ID)) {
+                foreach (var mob in MobSpawnManager.Instance.Spawns[ID]) {
                     var eh = (MobEventHandler)mob.e;
                     AIThread.Instance.RemoveAI(eh.AI);
                     //Mob.NewAIThread.Instance.RemoveAI(eh.NewAI);
@@ -2317,8 +2083,7 @@ namespace SagaMap
             }
 
             foreach (var mob in Actors.Values)
-                if (mob.type == ActorType.MOB)
-                {
+                if (mob.type == ActorType.MOB) {
                     var eh = (MobEventHandler)mob.e;
                     AIThread.Instance.RemoveAI(eh.AI);
                     foreach (var i in mob.Tasks.Values) i.Deactivate();
@@ -2331,30 +2096,25 @@ namespace SagaMap
                 else if (i.type == ActorType.ITEM)
                     items.Add(i);
                 else if (i.type == ActorType.GOLEM)
-                    try
-                    {
+                    try {
                         var golem = (ActorGolem)i;
                         MapServer.charDB.SaveChar(golem.Owner, false);
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
                 else
                     other.Add(i);
 
-            foreach (var i in other)
-            {
+            foreach (var i in other) {
                 i.ClearTaskAddition();
                 DeleteActor(i);
             }
 
             var map = MapManager.Instance.GetMap(ClientExitMap);
-            foreach (var i in items)
-            {
+            foreach (var i in items) {
                 var item = (ActorItem)i;
-                if (item.Item.PossessionedActor != null)
-                {
+                if (item.Item.PossessionedActor != null) {
                     var p = new CSMG_POSSESSION_CANCEL();
                     p.PossessionPosition = PossessionPosition.NONE;
                     var eh = (PCEventHandler)item.Item.PossessionedActor.e;
@@ -2366,8 +2126,7 @@ namespace SagaMap
                     eh.Client.map.SendActorToMap((Actor)posActor, (uint)ClientExitMap,
                         Global.PosX8to16(ClientExitX, map.Width),
                         Global.PosY8to16(ClientExitY, map.Height));
-                    if (!posActor.Online)
-                    {
+                    if (!posActor.Online) {
                         MapServer.charDB.SaveChar(posActor, false, false);
                         MapServer.accountDB.WriteUser(posActor.Account);
                         MapManager.Instance.GetMap(posActor.MapID).DeleteActor(posActor);
@@ -2384,16 +2143,13 @@ namespace SagaMap
                 DeleteActor(i);
             }
 
-            foreach (var i in pcs)
-            {
+            foreach (var i in pcs) {
                 i.Speed = Configuration.Configuration.Instance.Speed;
-                try
-                {
+                try {
                     SendActorToMap(i, (uint)ClientExitMap, Global.PosX8to16(ClientExitX, map.Width),
                         Global.PosY8to16(ClientExitY, map.Height));
                 }
-                catch
-                {
+                catch {
                 }
             }
         }

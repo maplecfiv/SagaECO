@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 
 namespace SagaLib {
-    public class NetIO {
+    public class NetIo {
         public delegate void PacketEventArg(Packet p);
 
         public enum Mode {
@@ -61,7 +61,7 @@ namespace SagaLib {
         /// <param name="sock"></param>
         /// <param name="commandTable"></param>
         /// <param name="client"></param>
-        public NetIO(Socket sock, Dictionary<ushort, Packet> commandTable, Client client) {
+        public NetIo(Socket sock, Dictionary<ushort, Packet> commandTable, Client client) {
             this.sock = sock;
             stream = new NetworkStream(sock);
             this.commandTable = commandTable;
@@ -105,16 +105,17 @@ namespace SagaLib {
             if (sock.Connected) {
                 client.OnConnect();
                 try {
+                    SagaLib.Logger.ShowInfo($"read [{0}-{0 + 4}] from {buffer}");
                     stream.BeginRead(buffer, 0, 4, callbackSize, null);
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                     try //this could crash the gateway somehow,so better ignore the Exception
                     {
                         Disconnect();
                     }
                     catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
+                        Logger.ShowError(exception);
                     }
 
                     Logger.GetLogger().Warning("Invalid packet head from:" + sock.RemoteEndPoint, null);
@@ -130,26 +131,21 @@ namespace SagaLib {
         /// </summary>
         /// <param name="mode">需要设定的模式</param>
         public void SetMode(Mode mode) {
-            byte[] data;
-            switch (mode) {
-                case Mode.Server:
-                    try {
+            try {
+                byte[] data;
+                switch (mode) {
+                    case Mode.Server:
+
                         data = new byte[8];
 
                         keyAlreadyReceived = 8;
 
+                        SagaLib.Logger.ShowInfo($"read [{0}-{0 + 8}] from {data}");
                         stream.BeginRead(data, 0, 8, callbackKeyExchange, data);
-                    }
-                    catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
-                        ClientManager.EnterCriticalArea();
-                        Disconnect();
-                        ClientManager.LeaveCriticalArea();
-                    }
 
-                    break;
-                case Mode.Client:
-                    try {
+                        break;
+                    case Mode.Client:
+
                         data = new byte[529];
                         int size;
                         if (sock.Available < 529)
@@ -158,62 +154,56 @@ namespace SagaLib {
                             size = 529;
 
                         keyAlreadyReceived = size;
+                        SagaLib.Logger.ShowInfo($"read [{0}-{0 + size}] from {data}");
                         stream.BeginRead(data, 0, size, callbackKeyExchange, data);
-                    }
-                    catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
-                        ClientManager.EnterCriticalArea();
-                        Disconnect();
-                        ClientManager.LeaveCriticalArea();
-                    }
 
-                    break;
+                        break;
+                }
+            }
+            catch (Exception exception) {
+                Logger.ShowError(exception);
+                ClientManager.EnterCriticalArea();
+                Disconnect();
+                ClientManager.LeaveCriticalArea();
             }
         }
 
         private void ReceiveKeyExchange(IAsyncResult ar) {
+            if (Disconnected) {
+                SagaLib.Logger.ShowInfo($"Connection already disconnected");
+                return;
+            }
+
             try {
-                if (Disconnected) return;
                 if (!sock.Connected) {
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                    return;
+                    throw new Exception($"Socket lost");
                 }
 
-                try {
-                    stream.EndRead(ar);
-                }
-                catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                    return;
-                }
+                stream.EndRead(ar);
 
                 var raw = (byte[])ar.AsyncState;
 
-                if (keyAlreadyReceived < raw.Length) {
-                    var left = raw.Length - keyAlreadyReceived;
-                    if (left > 1024)
-                        left = 1024;
-                    if (left > sock.Available) left = sock.Available;
-                    try {
-                        stream.BeginRead(raw, keyAlreadyReceived, left, callbackKeyExchange, raw);
-                    }
-                    catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
-                        //Logger.getLogger().Error(ex, ex.Message);
-                        ClientManager.EnterCriticalArea();
-                        Disconnect();
-                        ClientManager.LeaveCriticalArea();
-                        return;
-                    }
-
-                    keyAlreadyReceived += left;
-                    return;
+                if (raw == null) {
+                    throw new Exception($"null raw received.");
                 }
+
+                // if (keyAlreadyReceived < raw.Length) {
+                //     var left = raw.Length - keyAlreadyReceived;
+                //     Logger.ShowInfo(($"{left} remaining"));
+                //     left = left > 1024 ? 1024 : left;
+                //     Logger.ShowInfo(($"limited to {left} "));
+                //     left = left > sock.Available ? sock.Available : left;
+                //     Logger.ShowInfo(($"limited to {left} as available is {sock.Available}"));
+                //     SagaLib.Logger.ShowInfo(
+                //         $"read [{keyAlreadyReceived}-{keyAlreadyReceived + left}] from {raw}, length: {raw.Length}, available: {sock.Available}");
+                //     stream.BeginRead(raw, keyAlreadyReceived, left, callbackKeyExchange, raw);
+                //
+                //     keyAlreadyReceived += left;
+                //     Logger.ShowInfo(($"{left} length data read, total received {keyAlreadyReceived}"));
+                //     if ((keyAlreadyReceived + left) != 0) {
+                //         return;
+                //     }
+                // }
 
                 if (raw.Length == 8) {
                     var p1 = new Packet(529);
@@ -227,23 +217,13 @@ namespace SagaLib {
                     bufstring = Conversions.bytes2HexString(Crypt.GetKeyExchangeBytes());
                     p1.PutBytes(Encoding.ASCII.GetBytes(bufstring), 273);
                     SendPacket(p1, true, true);
-                    try {
-                        var data = new byte[260];
-                        int size;
-                        if (sock.Available < 260)
-                            size = sock.Available;
-                        else
-                            size = 260;
+                    var data = new byte[260];
+                    int size = sock.Available < data.Length ? sock.Available : data.Length;
 
-                        keyAlreadyReceived = size;
-                        stream.BeginRead(data, 0, size, callbackKeyExchange, data);
-                    }
-                    catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
-                        ClientManager.EnterCriticalArea();
-                        Disconnect();
-                        ClientManager.LeaveCriticalArea();
-                    }
+                    keyAlreadyReceived = size;
+
+                    SagaLib.Logger.ShowInfo($"read [{0}-{0 + size}] from {raw}");
+                    stream.BeginRead(data, 0, size, callbackKeyExchange, data);
                 }
                 else if (raw.Length == 260) {
                     var p1 = new Packet();
@@ -267,9 +247,11 @@ namespace SagaLib {
                 }
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
+                ClientManager.EnterCriticalArea();
                 Disconnect();
-                //Logger.getLogger().Error(ex, ex.Message);
+                ClientManager.LeaveCriticalArea();
+                return;
             }
         }
 
@@ -285,7 +267,7 @@ namespace SagaLib {
                         client.OnDisconnect();
                 }
                 catch (Exception e) {
-                    Logger.GetLogger().Error(e, e.Message);
+                    Logger.ShowError(e);
                 }
 
                 disconnecting = true;
@@ -293,30 +275,30 @@ namespace SagaLib {
                     Logger.GetLogger().Information(sock.RemoteEndPoint + " disconnected", null);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
                 try {
                     stream.Close();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
                 try {
                     sock.Close();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             }
             catch (Exception e) {
-                Logger.GetLogger().Error(e, e.Message);
+                Logger.ShowError(e);
                 try {
                     stream.Close();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
                 //try { sock.Disconnect(true); }
@@ -324,7 +306,7 @@ namespace SagaLib {
                     sock.Close();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
                 //Logger.getLogger().Information(sock.RemoteEndPoint.ToString() + " disconnected", null);
             }
@@ -354,16 +336,7 @@ namespace SagaLib {
                     return;
                 }*/
 
-                try {
-                    stream.EndRead(ar);
-                }
-                catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                    return;
-                }
+                stream.EndRead(ar);
 
                 Array.Reverse(buffer);
                 var size = BitConverter.ToUInt32(buffer, 0) + 4;
@@ -404,19 +377,15 @@ namespace SagaLib {
                 // Receive the data from the packet and call the receivedata function
                 // The packet is stored in AsyncState
                 //_logger.Debug("New packet with size " + p.size);
-                try {
-                    stream.BeginRead(data, 4, (int)size, callbackData, data);
-                }
-                catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                }
+                SagaLib.Logger.ShowInfo($"read [{size}-{size + 4}] from {data}");
+                stream.BeginRead(data, 4, (int)size, callbackData, data);
             }
 
             catch (Exception e) {
-                Logger.GetLogger().Error(e, e.Message);
+                Logger.ShowError(e);
+                ClientManager.EnterCriticalArea();
+                Disconnect();
+                ClientManager.LeaveCriticalArea();
             }
         }
 
@@ -426,7 +395,10 @@ namespace SagaLib {
         /// <param name="ar"></param>
         private void ReceiveData(IAsyncResult ar) {
             try {
-                if (Disconnected) return;
+                if (Disconnected) {
+                    return;
+                }
+
                 /*if (!sock.Connected)
                 {
                     ClientManager.EnterCriticalArea();
@@ -434,16 +406,7 @@ namespace SagaLib {
                     ClientManager.LeaveCriticalArea();
                     return;
                 }*/
-                try {
-                    stream.EndRead(ar);
-                }
-                catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                    return;
-                }
+                stream.EndRead(ar);
 
                 var raw = (byte[])ar.AsyncState;
                 if (alreadyReceived < lastSize && lastSize > 0) {
@@ -468,15 +431,9 @@ namespace SagaLib {
 
                     if (left > sock.Available) left = sock.Available;
                     alreadyReceived += left;
-                    try {
-                        stream.BeginRead(raw, 4 + alreadyReceived - left, left, callbackData, raw);
-                    }
-                    catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
-                        ClientManager.EnterCriticalArea();
-                        Disconnect();
-                        ClientManager.LeaveCriticalArea();
-                    }
+                    SagaLib.Logger.ShowInfo(
+                        $"read [{4 + alreadyReceived - left}-{4 + alreadyReceived + left}] from {raw}");
+                    stream.BeginRead(raw, 4 + alreadyReceived - left, left, callbackData, raw);
 
                     return;
                 }
@@ -529,18 +486,14 @@ namespace SagaLib {
                         ProcessPacket(p2);
                     }
 
-                try {
-                    stream.BeginRead(buffer, 0, 4, callbackSize, null);
-                }
-                catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
-                    ClientManager.EnterCriticalArea();
-                    Disconnect();
-                    ClientManager.LeaveCriticalArea();
-                }
+                SagaLib.Logger.ShowInfo($"read [{0}-{0 + 4}] from {buffer}");
+                stream.BeginRead(buffer, 0, 4, callbackSize, null);
             }
             catch (Exception e) {
-                Logger.GetLogger().Error(e, e.Message);
+                Logger.ShowError(e);
+                ClientManager.EnterCriticalArea();
+                Disconnect();
+                ClientManager.LeaveCriticalArea();
             }
         }
 
@@ -564,7 +517,7 @@ namespace SagaLib {
                     p1.Parse(client);
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                 }
 
                 ClientManager.LeaveCriticalArea();
@@ -581,7 +534,7 @@ namespace SagaLib {
                         p1.Parse(client);
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
 
                     ClientManager.LeaveCriticalArea();
@@ -664,7 +617,7 @@ namespace SagaLib {
             }
             catch (Exception ex) {
                 if (client != null) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                     Disconnect();
                     client = null;
                 }
@@ -676,7 +629,8 @@ namespace SagaLib {
             try {
                 stream.EndWrite(ar);
             }
-            catch {
+            catch (Exception e) {
+                SagaLib.Logger.ShowError((e));
             }
         }
 

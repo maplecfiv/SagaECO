@@ -81,7 +81,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/item6.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/item7.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/item_transform.csv
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/Kujilist.xml
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/KujiList.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/MapFlags.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/MapInfo.zip
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/mapname.csv

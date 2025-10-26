@@ -5,38 +5,30 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Tasks.PC
-{
-    public class Recover : MultiRunTask
-    {
+namespace SagaMap.Tasks.PC {
+    public class Recover : MultiRunTask {
         private readonly MapClient client;
 
-        public Recover(MapClient client)
-        {
+        public Recover(MapClient client) {
             DueTime = 3000;
             Period = 3000;
             this.client = client;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             //ClientManager.EnterCriticalArea();
-            try
-            {
-                if (client != null)
-                {
+            try {
+                if (client != null) {
                     var pc = client.Character;
                     if (pc == null) return;
-                    if ((DateTime.Now - pc.TTime["上次自然回复时间"]).TotalSeconds < 3)
-                    {
+                    if ((DateTime.Now - pc.TTime["上次自然回复时间"]).TotalSeconds < 3) {
                         Deactivate();
                         client.Character.Tasks.Remove("Recover");
                         return;
                     }
 
                     if (client.Character.Tasks.ContainsKey("Recover"))
-                        if (client.Character.Tasks["Recover"] != this)
-                        {
+                        if (client.Character.Tasks["Recover"] != this) {
                             Deactivate();
                             return;
                         }
@@ -46,8 +38,8 @@ namespace SagaMap.Tasks.PC
                     var s = DateTime.Now;
                     BuffChecker(pc);
                     if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.GetLogger().Error("玩家" + client.Character.Name + "BUFF检测耗时：" +
-                                                 (DateTime.Now - s).TotalMilliseconds);
+                        Logger.ShowError("玩家" + client.Character.Name + "BUFF检测耗时：" +
+                                         (DateTime.Now - s).TotalMilliseconds);
                     if (pc.MapID == 91000999 && pc.FurnitureID != 0 && pc.FurnitureID != 255)
                         client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.FURNITURE_SIT, null, pc, true);
                     if (pc.Mode == PlayerMode.KNIGHT_EAST) //除夕活动
@@ -56,43 +48,37 @@ namespace SagaMap.Tasks.PC
                         client.Character.Tasks.Remove("Recover");
                     }
 
-                    if (pc.HP > 0 && pc.Buff.Dead)
-                    {
+                    if (pc.HP > 0 && pc.Buff.Dead) {
                         pc.Buff.Dead = false;
                         pc.Buff.TurningPurple = false;
                     }
 
-                    if (pc.HP > 0 && !pc.Buff.TurningPurple && !pc.Buff.Dead)
-                    {
+                    if (pc.HP > 0 && !pc.Buff.TurningPurple && !pc.Buff.Dead) {
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         client.Character.Tasks.Remove("Recover");
                     }
 
                     if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.GetLogger().Error("玩家" + client.Character.Name + "自然恢复总耗时：" +
-                                                 (DateTime.Now - s).TotalMilliseconds);
+                        Logger.ShowError("玩家" + client.Character.Name + "自然恢复总耗时：" +
+                                         (DateTime.Now - s).TotalMilliseconds);
                 }
 
-                else
-                {
+                else {
                     Deactivate();
                     client.Character.Tasks.Remove("Recover");
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
                 client.Character.Tasks.Remove("Recover");
             }
             //ClientManager.LeaveCriticalArea();
         }
 
-        private List<int> MapList(ActorPC pc)
-        {
+        private List<int> MapList(ActorPC pc) {
             var maps = new List<int>();
             maps.Add(pc.TInt["S20090000"]);
             maps.Add(pc.TInt["S20091000"]);
@@ -110,8 +96,7 @@ namespace SagaMap.Tasks.PC
             return maps;
         }
 
-        private void BuffChecker(ActorPC pc)
-        {
+        private void BuffChecker(ActorPC pc) {
             //if (pc.Buff.单枪匹马)
             //{
             //    List<int> maps = MapList(pc);

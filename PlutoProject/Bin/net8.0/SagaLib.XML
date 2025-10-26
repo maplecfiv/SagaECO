@@ -357,23 +357,23 @@
                 Convert milliseconds into task delay time
             </summary>
         </member>
-        <member name="F:SagaLib.NetIO.commandTable">
+        <member name="F:SagaLib.NetIo.commandTable">
             <summary>
                 Command table contains the commands that need to be called when a
                 packet is received. Key will be the packet type
             </summary>
         </member>
-        <member name="F:SagaLib.NetIO.client">
+        <member name="F:SagaLib.NetIo.client">
             <summary>
                 绑定的客户端
             </summary>
         </member>
-        <member name="F:SagaLib.NetIO.Crypt">
+        <member name="F:SagaLib.NetIo.Crypt">
             <summary>
                 加密算法实例
             </summary>
         </member>
-        <member name="M:SagaLib.NetIO.#ctor(System.Net.Sockets.Socket,System.Collections.Generic.Dictionary{System.UInt16,SagaLib.Packet},SagaLib.Client)">
+        <member name="M:SagaLib.NetIo.#ctor(System.Net.Sockets.Socket,System.Collections.Generic.Dictionary{System.UInt16,SagaLib.Packet},SagaLib.Client)">
             <summary>
                 是新的连接
             </summary>
@@ -381,50 +381,50 @@
             <param name="commandTable"></param>
             <param name="client"></param>
         </member>
-        <member name="P:SagaLib.NetIO.Disconnected">
+        <member name="P:SagaLib.NetIo.Disconnected">
             <summary>
                 已断开的
             </summary>
         </member>
-        <member name="P:SagaLib.NetIO.FirstLevelLength">
+        <member name="P:SagaLib.NetIo.FirstLevelLength">
             <summary>
                 封包头的长度
             </summary>
         </member>
-        <member name="P:SagaLib.NetIO.UpStreamBand">
+        <member name="P:SagaLib.NetIo.UpStreamBand">
             <summary>
                 当前平均使用的上行带宽，以字节为单位
             </summary>
         </member>
-        <member name="P:SagaLib.NetIO.DownStreamBand">
+        <member name="P:SagaLib.NetIo.DownStreamBand">
             <summary>
                 当前平均使用的下行带宽，以字节为单位
             </summary>
         </member>
-        <member name="M:SagaLib.NetIO.SetMode(SagaLib.NetIO.Mode)">
+        <member name="M:SagaLib.NetIo.SetMode(SagaLib.NetIo.Mode)">
             <summary>
                 设置当前网络层模式，客户端或服务器端
             </summary>
             <param name="mode">需要设定的模式</param>
         </member>
-        <member name="M:SagaLib.NetIO.Disconnect">
+        <member name="M:SagaLib.NetIo.Disconnect">
             <summary>
                 断开连接
             </summary>
         </member>
-        <member name="M:SagaLib.NetIO.ReceiveData(System.IAsyncResult)">
+        <member name="M:SagaLib.NetIo.ReceiveData(System.IAsyncResult)">
             <summary>
                 分析封包
             </summary>
             <param name="ar"></param>
         </member>
-        <member name="M:SagaLib.NetIO.ProcessPacket(SagaLib.Packet)">
+        <member name="M:SagaLib.NetIo.ProcessPacket(SagaLib.Packet)">
             <summary>
                 当拆分完封包后呼叫，调用此方法后将自动根据封包分派函数交由事先指定的处理函数处理该封包
             </summary>
             <param name="p">需要处理的封包</param>
         </member>
-        <member name="M:SagaLib.NetIO.SendPacket(SagaLib.Packet,System.Boolean,System.Boolean)">
+        <member name="M:SagaLib.NetIo.SendPacket(SagaLib.Packet,System.Boolean,System.Boolean)">
             <summary>
                 发送封包
             </summary>

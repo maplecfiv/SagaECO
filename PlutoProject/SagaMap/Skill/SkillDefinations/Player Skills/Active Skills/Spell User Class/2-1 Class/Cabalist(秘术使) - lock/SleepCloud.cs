@@ -6,17 +6,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_1_Class.Cabalist_秘术使____lock {
     /// <summary>
     ///     睡眠霧氣（スリープクラウド）
     /// </summary>
-    public class SleepCloud : ISkill
-    {
+    public class SleepCloud : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Map map;
             private readonly int rate;
@@ -25,8 +22,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private readonly int times;
             private int count;
 
-            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level)
-            {
+            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level) {
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
@@ -37,35 +33,29 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < times)
-                    {
+                try {
+                    if (count < times) {
                         var affected = map.GetActorsArea(actor, 150, false);
                         foreach (var act in affected)
                             if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
                                 if (SkillHandler.Instance.CanAdditionApply(sActor, act,
-                                        SkillHandler.DefaultAdditions.Sleep, rate))
-                                {
+                                        SkillHandler.DefaultAdditions.Sleep, rate)) {
                                     var s = new Sleep(skill.skill, act, 5000);
                                     SkillHandler.ApplyAddition(act, s);
                                 }
 
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -76,13 +66,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //建立設置型技能實體
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

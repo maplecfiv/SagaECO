@@ -12,49 +12,41 @@ using SagaMap.Manager;
 using SagaMap.Network.Client;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.PC
-{
-    public class StatusFactory : Singleton<StatusFactory>
-    {
+namespace SagaMap.PC {
+    public class StatusFactory : Singleton<StatusFactory> {
         /// <summary>
         ///     获取强化奖励数值
         /// </summary>
         /// <param name="item">道具本身</param>
         /// <param name="Type">0: 生命 1: ATK DEF MATK 2: MDEF 3: 爆击相关</param>
         /// <returns></returns>
-        public short GetEnhanceBonus(Item item, int Type)
-        {
+        public short GetEnhanceBonus(Item item, int Type) {
             short value = 0;
-            var hps = new short[31]
-            {
+            var hps = new short[31] {
                 0,
                 100, 20, 70, 30, 80, 40, 90, 50, 100, 150,
                 150, 60, 110, 70, 200, 200, 120, 80, 130, 250,
                 250, 90, 140, 100, 250, 250, 150, 110, 160, 400
             };
-            var atk_def_matk = new short[31]
-            {
+            var atk_def_matk = new short[31] {
                 0,
                 10, 3, 5, 3, 6, 3, 7, 3, 8, 13,
                 13, 3, 9, 3, 15, 15, 10, 3, 11, 20,
                 20, 3, 12, 3, 22, 22, 13, 3, 14, 25
             };
-            var mdef = new short[31]
-            {
+            var mdef = new short[31] {
                 0,
                 10, 2, 5, 2, 6, 3, 6, 3, 6, 15,
                 15, 4, 7, 4, 10, 10, 7, 4, 7, 15,
                 15, 5, 8, 5, 15, 15, 8, 5, 8, 25
             };
-            var cris = new short[31]
-            {
+            var cris = new short[31] {
                 0,
                 5, 1, 3, 2, 4, 3, 4, 3, 5, 9,
                 5, 1, 2, 3, 4, 5, 1, 2, 3, 4,
                 5, 1, 2, 3, 4, 5, 1, 2, 3, 5
             };
-            switch (Type)
-            {
+            switch (Type) {
                 case 0:
                     for (var i = 0; i <= item.LifeEnhance; i++)
                         value += hps[i];
@@ -76,7 +68,7 @@ namespace SagaMap.PC
                         value += atk_def_matk[i];
                     break;
                 default:
-                    Logger.GetLogger().Error("未知的附魔类型");
+                    Logger.ShowError("未知的附魔类型");
                     value = 0;
                     break;
             }
@@ -84,12 +76,10 @@ namespace SagaMap.PC
             return value;
         }
 
-        private void CalcPlayerTitleBouns(ActorPC pc)
-        {
+        private void CalcPlayerTitleBouns(ActorPC pc) {
             var TitleID = (uint)pc.AInt["称号_战斗"];
             if (MapClient.FromActorPC(pc).CheckTitle((int)TitleID))
-                if (TitleID != 0 && TitleFactory.Instance.Items.ContainsKey(TitleID))
-                {
+                if (TitleID != 0 && TitleFactory.Instance.Items.ContainsKey(TitleID)) {
                     var item = TitleFactory.Instance.Items[TitleID];
                     pc.Status.hp_tit = (short)item.hp;
                     pc.Status.mp_tit = (short)item.mp;
@@ -158,8 +148,7 @@ namespace SagaMap.PC
             MapClient.FromActorPC(pc).SendCharInfoUpdate();
         }
 
-        private void CalcTamaireBonus(ActorPC pc)
-        {
+        private void CalcTamaireBonus(ActorPC pc) {
             pc.Status.hp_tamaire = pc.TamaireRental.hp;
             pc.Status.mp_tamaire = pc.TamaireRental.mp;
             pc.Status.sp_tamaire = pc.TamaireRental.sp;
@@ -182,16 +171,13 @@ namespace SagaMap.PC
             MapClient.FromActorPC(pc).SendCharInfoUpdate();
         }
 
-        private void CalcAnotherPaperBonus(ActorPC pc)
-        {
-            if (pc.UsingPaperID != 0 && pc.AnotherPapers.ContainsKey(pc.UsingPaperID))
-            {
+        private void CalcAnotherPaperBonus(ActorPC pc) {
+            if (pc.UsingPaperID != 0 && pc.AnotherPapers.ContainsKey(pc.UsingPaperID)) {
                 var paper = pc.AnotherPapers[pc.UsingPaperID];
                 var rate = 1;
                 if (pc.Buff.Unknow13)
                     rate = 2;
-                if (AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID].ContainsKey(paper.lv))
-                {
+                if (AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID].ContainsKey(paper.lv)) {
                     var paperstatus = AnotherFactory.Instance.AnotherPapers[pc.UsingPaperID][paper.lv];
                     pc.Status.str_anthor = (short)(paperstatus.str * rate);
                     pc.Status.mag_anthor = (short)(paperstatus.mag * rate);
@@ -245,8 +231,7 @@ namespace SagaMap.PC
             pc.Status.avoid_ranged_anthor = 0;
         }
 
-        private void CalcEquipBonus(ActorPC pc)
-        {
+        private void CalcEquipBonus(ActorPC pc) {
             pc.Status.ClearItem();
             pc.ClearIrisAbilities();
 
@@ -264,8 +249,7 @@ namespace SagaMap.PC
                 equips = pc.Inventory.Equipments;
             else
                 equips = pc.Inventory.Parts;
-            foreach (var j in equips.Keys)
-            {
+            foreach (var j in equips.Keys) {
                 if (equips[j] == null)
                     continue;
                 var i = equips[j];
@@ -280,8 +264,7 @@ namespace SagaMap.PC
                 //去掉左手武器判定
                 if ((j != EnumEquipSlot.PET || i.BaseData.itemType == ItemType.BACK_DEMON)
                     && !(j == EnumEquipSlot.LEFT_HAND && i.EquipSlot.Contains(EnumEquipSlot.RIGHT_HAND) &&
-                         i.EquipSlot.Count == 1))
-                {
+                         i.EquipSlot.Count == 1)) {
                     //int weapon_atk1_add = 0, weapon_atk2_add = 0, weapon_atk3_add = 0, weapon_matk_add = 0;
                     //float rate = pc.Status.weapon_rate;
 
@@ -357,8 +340,7 @@ namespace SagaMap.PC
                 }
 
                 if (i.BaseData.weightUp != 0)
-                    switch (j)
-                    {
+                    switch (j) {
                         case EnumEquipSlot.PET:
                             pc.Inventory.MaxPayload[ContainerType.BODY] =
                                 (uint)(pc.Inventory.MaxPayload[ContainerType.BODY] + i.BaseData.weightUp + i.WeightUp);
@@ -380,17 +362,14 @@ namespace SagaMap.PC
                             break;
                     }
 
-                if (i.BaseData.volumeUp != 0)
-                {
+                if (i.BaseData.volumeUp != 0) {
                     var rate = 0f;
-                    if (pc.Status.Additions.ContainsKey("Packing"))
-                    {
+                    if (pc.Status.Additions.ContainsKey("Packing")) {
                         var skill = (DefaultPassiveSkill)pc.Status.Additions["Packing"];
                         rate = (float)skill["Packing"] / 100;
                     }
 
-                    switch (j)
-                    {
+                    switch (j) {
                         case EnumEquipSlot.PET:
                             pc.Inventory.MaxVolume[ContainerType.BODY] =
                                 (uint)(pc.Inventory.MaxVolume[ContainerType.BODY] +
@@ -426,8 +405,7 @@ namespace SagaMap.PC
             CalcDemicChips(pc);
         }
 
-        public void AddItemAddition(ActorPC pc, Item item)
-        {
+        public void AddItemAddition(ActorPC pc, Item item) {
             var add = item.BaseData.ItemAddition;
             if (add == null)
                 return;
@@ -436,13 +414,10 @@ namespace SagaMap.PC
                 return;
 
             var lst = add.BonusList.Where(x => x.EffectType == 0).ToList();
-            foreach (var bonus in lst)
-            {
-                if (bonus.BonusType == 0)
-                {
+            foreach (var bonus in lst) {
+                if (bonus.BonusType == 0) {
                     var b = bonus.Attribute.Substring(1).ToLower();
-                    switch (b)
-                    {
+                    switch (b) {
                         case "str":
                             pc.Status.str_item += (short)bonus.Values1;
                             break;
@@ -510,11 +485,9 @@ namespace SagaMap.PC
                     }
                 }
 
-                if (bonus.BonusType == 1)
-                {
+                if (bonus.BonusType == 1) {
                     var b = bonus.Attribute.Substring(1).ToLower();
-                    switch (b)
-                    {
+                    switch (b) {
                         case "skillatk":
                             if (pc.Status.SkillRate.ContainsKey((uint)bonus.Values1))
                                 pc.Status.SkillRate[(uint)bonus.Values1] += bonus.Values2;
@@ -561,8 +534,7 @@ namespace SagaMap.PC
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="item"></param>
-        private void ApplyIrisCardAbilities(ActorPC pc, Item item)
-        {
+        private void ApplyIrisCardAbilities(ActorPC pc, Item item) {
             if (!item.Locked)
                 return;
 
@@ -578,8 +550,7 @@ namespace SagaMap.PC
             //#endregion
 
             var elements = item.IrisElements(false);
-            if (item.IsArmor || item.IsWeapon)
-            {
+            if (item.IsArmor || item.IsWeapon) {
                 if (item.IsWeapon)
                     foreach (var i in elements.Keys)
                         pc.Status.attackelements_iris[i] += elements[i];
@@ -594,14 +565,12 @@ namespace SagaMap.PC
         ///     Calculate item's card ability levels on PC and basic(original) RAs
         /// </summary>
         /// <param name="pc"></param>
-        private void ApplyIrisRes(ActorPC pc)
-        {
+        private void ApplyIrisRes(ActorPC pc) {
             //#region Iris Card Ability Level Calculation
 
             var lvs = new int[10] { 1, 30, 80, 150, 250, 370, 510, 660, 820, 999 }; //old/original settings
             //int[] lvs = new int[10] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; new settings
-            foreach (var i in pc.IrisAbilityValues.Keys)
-            {
+            foreach (var i in pc.IrisAbilityValues.Keys) {
                 var lv = 0;
                 foreach (var item in lvs)
                     if (pc.IrisAbilityValues[i] >= item)
@@ -615,11 +584,9 @@ namespace SagaMap.PC
 
             var releaseabilities = UIStatusModRAs(pc, pc.IrisAbilityLevels);
 
-            foreach (var i in releaseabilities.Keys)
-            {
+            foreach (var i in releaseabilities.Keys) {
                 var value = releaseabilities[i];
-                switch (i)
-                {
+                switch (i) {
                     case ReleaseAbility.EXP_HUMAN:
                         break;
                     case ReleaseAbility.EXP_BIRD:
@@ -1059,8 +1026,7 @@ namespace SagaMap.PC
         /// </summary>
         /// <param name="irislevels"></param>
         /// <returns></returns>
-        private Dictionary<ReleaseAbility, int> UIStatusModRAs(ActorPC pc, Dictionary<AbilityVector, int> irislevels)
-        {
+        private Dictionary<ReleaseAbility, int> UIStatusModRAs(ActorPC pc, Dictionary<AbilityVector, int> irislevels) {
             var list = new Dictionary<ReleaseAbility, int>();
             var genderlist = new Dictionary<PC_GENDER, ushort>();
             genderlist.Add(PC_GENDER.FEMALE, 0);
@@ -1080,8 +1046,7 @@ namespace SagaMap.PC
             racelist.Add(PC_RACE.NONE, 0);
 
             if (pc.Party != null)
-                foreach (var j in pc.Party.Members.Values)
-                {
+                foreach (var j in pc.Party.Members.Values) {
                     if (genderlist.ContainsKey(j.Gender))
                         genderlist[j.Gender]++;
                     else
@@ -1096,8 +1061,7 @@ namespace SagaMap.PC
                         racelist.Add(j.Race, 1);
                 }
 
-            foreach (var i in irislevels.Keys)
-            {
+            foreach (var i in irislevels.Keys) {
                 var RAstate = false;
                 if (i.ID < 1000) //原版能力
                 {
@@ -1113,8 +1077,7 @@ namespace SagaMap.PC
                     else //多人队伍条件
                     {
                         if (pc.Party != null)
-                            switch (i.ID)
-                            {
+                            switch (i.ID) {
                                 case 1101:
                                     if (pc.Party.Members.Count == 2 && genderlist[PC_GENDER.FEMALE] == 1)
                                         RAstate = true;
@@ -1147,8 +1110,7 @@ namespace SagaMap.PC
                     }
                 }
 
-                if (RAstate)
-                {
+                if (RAstate) {
                     var ability = i.ReleaseAbilities[(byte)irislevels[i]];
                     foreach (var j in ability.Keys)
                         if (list.ContainsKey(j))
@@ -1162,8 +1124,7 @@ namespace SagaMap.PC
             return list;
         }
 
-        private void CalcDemicChips(ActorPC pc)
-        {
+        private void CalcDemicChips(ActorPC pc) {
             Dictionary<byte, DEMICPanel> chips;
             if (pc.InDominionWorld)
                 chips = pc.Inventory.DominionDemicChips;
@@ -1174,25 +1135,21 @@ namespace SagaMap.PC
             //#region CalcChips
 
             foreach (var i in chips.Keys)
-                foreach (var j in chips[i].Chips)
-                {
+                foreach (var j in chips[i].Chips) {
                     byte x1 = 255, y1 = 255, x2 = 255, y2 = 255;
-                    if (chips[i].EngageTask1 != 255)
-                    {
+                    if (chips[i].EngageTask1 != 255) {
                         x1 = (byte)(chips[i].EngageTask1 % 9);
                         y1 = (byte)(chips[i].EngageTask1 / 9);
                     }
 
-                    if (chips[i].EngageTask2 != 255)
-                    {
+                    if (chips[i].EngageTask2 != 255) {
                         x2 = (byte)(chips[i].EngageTask2 % 9);
                         y2 = (byte)(chips[i].EngageTask2 / 9);
                     }
 
                     var nearEngage = j.IsNear(x1, y1) || j.IsNear(x2, y2);
 
-                    if (j.Data.type < 20)
-                    {
+                    if (j.Data.type < 20) {
                         var rate = 1;
                         if (nearEngage)
                             rate = 2;
@@ -1203,8 +1160,7 @@ namespace SagaMap.PC
                         pc.Status.m_int_chip += (short)(rate * j.Data.intel);
                         pc.Status.m_mag_chip += (short)(rate * j.Data.mag);
                     }
-                    else if (j.Data.type < 30)
-                    {
+                    else if (j.Data.type < 30) {
                         var level = 1;
                         if (nearEngage)
                             level = 2;
@@ -1223,8 +1179,7 @@ namespace SagaMap.PC
                         else if (j.Data.skill3 != 0)
                             skills.Add(j.Data.skill3, level);
                     }
-                    else
-                    {
+                    else {
                         Chip next = null;
                         if (ChipFactory.Instance.ByChipID.ContainsKey(j.Data.engageTaskChip) && nearEngage)
                             next = new Chip(ChipFactory.Instance.ByChipID[j.Data.engageTaskChip]);
@@ -1244,24 +1199,20 @@ namespace SagaMap.PC
 
             //#endregion
 
-            foreach (var i in skills.Keys)
-            {
+            foreach (var i in skills.Keys) {
                 var level = 0;
                 if (pc.Form != DEM_FORM.MACHINA_FORM)
                     level = 0;
                 else
                     level = skills[i];
-                if (pc.Skills.ContainsKey(i))
-                {
-                    if (pc.Skills[i].Level != level)
-                    {
+                if (pc.Skills.ContainsKey(i)) {
+                    if (pc.Skills[i].Level != level) {
                         pc.Skills[i].Level = (byte)level;
                         if (pc.Skills[i].Level > pc.Skills[i].MaxLevel)
                             pc.Skills[i].Level = pc.Skills[i].MaxLevel;
                     }
                 }
-                else
-                {
+                else {
                     var skill = SkillFactory.Instance.GetSkill(i, 1);
                     skill.Level = (byte)level;
                     if (skill.Level > skill.MaxLevel)
@@ -1272,8 +1223,7 @@ namespace SagaMap.PC
             }
         }
 
-        public void CalcStatus(ActorPC pc)
-        {
+        public void CalcStatus(ActorPC pc) {
             //bool blocked = ClientManager.Blocked;
             //if (!blocked)
             //    ClientManager.EnterCriticalArea();
@@ -1290,14 +1240,12 @@ namespace SagaMap.PC
             //    ClientManager.LeaveCriticalArea();    
         }
 
-        public void CalcStatusOnSkillEffect(ActorPC pc)
-        {
+        public void CalcStatusOnSkillEffect(ActorPC pc) {
             CalcHPMPSP(pc);
             CalcStats(pc);
         }
 
-        public void CalcRange(ActorPC pc)
-        {
+        public void CalcRange(ActorPC pc) {
             Dictionary<EnumEquipSlot, Item> equips;
 
             if (pc.Form == DEM_FORM.NORMAL_FORM)
@@ -1305,34 +1253,28 @@ namespace SagaMap.PC
             else
                 equips = pc.Inventory.Parts;
 
-            if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-            {
+            if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
                 var item = equips[EnumEquipSlot.RIGHT_HAND];
                 pc.Range = item.BaseData.range;
             }
-            else
-            {
-                if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND))
-                {
+            else {
+                if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND)) {
                     var item = equips[EnumEquipSlot.LEFT_HAND];
                     pc.Range = item.BaseData.range;
                 }
-                else
-                {
+                else {
                     pc.Range = 1;
                 }
             }
         }
 
-        private ushort checkPositive(double num)
-        {
+        private ushort checkPositive(double num) {
             if (num > 0)
                 return (ushort)num;
             return 0;
         }
 
-        private ushort checkHighVitBonus(ActorPC pc)
-        {
+        private ushort checkHighVitBonus(ActorPC pc) {
             var vitcount = pc.Vit + pc.Status.vit_item + pc.Status.vit_chip + pc.Status.vit_rev + pc.Status.vit_mario +
                            pc.Status.vit_skill + pc.Status.vit_iris;
             if (vitcount >= 120 && vitcount < 150)
@@ -1342,8 +1284,7 @@ namespace SagaMap.PC
             return 0;
         }
 
-        private ushort checkHighIntBonus(ActorPC pc)
-        {
+        private ushort checkHighIntBonus(ActorPC pc) {
             var intcount = pc.Int + pc.Status.int_item + pc.Status.int_chip + pc.Status.int_rev + pc.Status.int_mario +
                            pc.Status.int_skill + pc.Status.int_iris;
             if (intcount >= 120 && intcount < 150)
@@ -1357,8 +1298,7 @@ namespace SagaMap.PC
         ///     计算素质属性能力
         /// </summary>
         /// <param name="pc"></param>
-        private void CalcStats(ActorPC pc)
-        {
+        private void CalcStats(ActorPC pc) {
             //获取玩家基础能力
             var pcstr = checkPositive(pc.Str + pc.Status.str_item + pc.Status.str_chip + pc.Status.str_rev +
                                       pc.Status.str_mario + pc.Status.str_skill + pc.Status.str_iris);
@@ -1372,8 +1312,7 @@ namespace SagaMap.PC
                                       pc.Status.agi_mario + pc.Status.agi_skill + pc.Status.agi_iris);
             var pcmag = checkPositive(pc.Mag + pc.Status.mag_item + pc.Status.mag_chip + pc.Status.mag_rev +
                                       pc.Status.mag_mario + pc.Status.mag_skill + pc.Status.mag_iris);
-            if (pc.Status.Additions.ContainsKey("ModeChange"))
-            {
+            if (pc.Status.Additions.ContainsKey("ModeChange")) {
                 //#region 物魔互换模块(基础属性和buff装备分离部分)
 
                 pcstr = checkPositive(pc.Str + pc.Status.mag_item + pc.Status.mag_chip + pc.Status.str_rev +
@@ -1392,8 +1331,7 @@ namespace SagaMap.PC
                 //#endregion
             }
 
-            if (pc.Pet != null && pc.Pet.Ride)
-            {
+            if (pc.Pet != null && pc.Pet.Ride) {
                 pc.Status.min_atk1 = pc.Pet.Status.min_atk1;
                 pc.Status.min_atk2 = pc.Pet.Status.min_atk2;
                 pc.Status.min_atk3 = pc.Pet.Status.min_atk3;
@@ -1416,10 +1354,8 @@ namespace SagaMap.PC
                 pc.Status.avoid_critical = pc.Pet.Status.avoid_critical;
                 pc.Speed = pc.Pet.Speed;
             }
-            else
-            {
-                if (pc.Status.Additions.ContainsKey("ModeChange"))
-                {
+            else {
+                if (pc.Status.Additions.ContainsKey("ModeChange")) {
                     //#region 物魔互换模块(攻击力计算部分)
 
                     //攻击力计算
@@ -1497,8 +1433,7 @@ namespace SagaMap.PC
 
                     //#endregion
                 }
-                else
-                {
+                else {
                     //攻击力计算
                     var minatk = (ushort)Math.Floor(pcstr + Math.Pow(Math.Floor((double)(pcstr / 9)), 2));
                     minatk = (ushort)(minatk * CalcATKRate(pc));
@@ -1639,8 +1574,7 @@ namespace SagaMap.PC
                 pc.Status.avoid_critical = (ushort)((pcagi + 8) / 6.0f);
                 //pc.Status.hit_magic = (ushort)((pc.Int + pc.Status.int_item + pc.Status.int_chip + pc.Status.int_rev + pc.Status.int_mario + pc.Status.int_skill) * 0.2f);
                 //calculate the possession spirit status
-                foreach (var i in pc.PossesionedActors)
-                {
+                foreach (var i in pc.PossesionedActors) {
                     if (i == pc)
                         continue;
 
@@ -1688,8 +1622,7 @@ namespace SagaMap.PC
                                 pc.Status.speed_skill);
 
             //爪子和双枪的攻速惩罚
-            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-            {
+            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
                 var item = pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND];
                 if (item.BaseData.itemType == ItemType.DUALGUN || item.BaseData.itemType == ItemType.CLAW)
                     pc.Status.aspd = (short)(pc.Status.aspd * 0.70f);
@@ -1712,23 +1645,19 @@ namespace SagaMap.PC
                     (short)(pc.Status.cspd + pc.Status.speedenchantcspdbonus + pc.Status.communioncspdbonus));
         }
 
-        public ushort RequiredBonusPoint(ushort current)
-        {
+        public ushort RequiredBonusPoint(ushort current) {
             return (ushort)Math.Ceiling((current + 1) / 6.0f);
         }
 
-        public ushort GetTotalBonusPointForStats(ushort start, ushort stat)
-        {
+        public ushort GetTotalBonusPointForStats(ushort start, ushort stat) {
             var points = 0;
             for (var i = start; i < stat; i++) points += RequiredBonusPoint(i);
             return (ushort)points;
         }
 
-        private float CalcATKRate(ActorPC pc)
-        {
+        private float CalcATKRate(ActorPC pc) {
             var ifRanged = false;
-            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-            {
+            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
                 var item = pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND];
                 if (item.BaseData.itemType == ItemType.BOW || item.BaseData.itemType == ItemType.GUN ||
                     item.BaseData.itemType == ItemType.DUALGUN ||
@@ -1745,14 +1674,12 @@ namespace SagaMap.PC
                             pc.Status.int_skill) * 1.5 / 160);
         }
 
-        public void CalcPayV(ActorPC pc)
-        {
+        public void CalcPayV(ActorPC pc) {
             CalcPayl(pc);
             CalcVolume(pc);
         }
 
-        private void CalcVolume(ActorPC pc)
-        {
+        private void CalcVolume(ActorPC pc) {
             //CAPA = floor[ (floor[DEX/5] + floor[INT/10] + 200)×職業係数×スキルパッキングによる倍率 ]
             var VOLU =
                 (uint)((Math.Max(
@@ -1792,8 +1719,7 @@ namespace SagaMap.PC
                 pc.Inventory.MaxVolume[ContainerType.BODY] += 1000;
         }
 
-        private void CalcPayl(ActorPC pc)
-        {
+        private void CalcPayl(ActorPC pc) {
             //PAYL = floor[(X + 400)×種族係数×職業係数]
             //ただし X = floor[STR×2 / 3] + floor[VIT / 3]
             //旧公式废除
@@ -1811,8 +1737,7 @@ namespace SagaMap.PC
             if (pc.Status.payl_iris > 0) PCPAYL += (uint)(PCPAYL * (pc.Status.payl_iris / 100.0f));
             if (pc.Status.payl_add_iris > 0) PCPAYL += (uint)pc.Status.payl_add_iris;
             pc.Inventory.MaxPayload[ContainerType.BODY] = PCPAYL;
-            if (pc.Status.Additions.ContainsKey("GoRiKi"))
-            {
+            if (pc.Status.Additions.ContainsKey("GoRiKi")) {
                 var skill = (DefaultPassiveSkill)pc.Status.Additions["GoRiKi"];
                 pc.Inventory.MaxPayload[ContainerType.BODY] = (uint)(pc.Inventory.MaxPayload[ContainerType.BODY] *
                                                                      (1f + (float)skill["GoRiKi"] / 100));
@@ -1841,10 +1766,8 @@ namespace SagaMap.PC
                 pc.Inventory.MaxPayload[ContainerType.BODY] += 1000;
         }
 
-        private float PayLoadRaceFactor(PC_RACE race)
-        {
-            switch (race)
-            {
+        private float PayLoadRaceFactor(PC_RACE race) {
+            switch (race) {
                 case PC_RACE.EMIL:
                     return 1.3f;
                 case PC_RACE.TITANIA:
@@ -1856,15 +1779,13 @@ namespace SagaMap.PC
             }
         }
 
-        private float PayLoadJobFactor(ActorPC pc)
-        {
+        private float PayLoadJobFactor(ActorPC pc) {
             PC_JOB job;
             if (pc.JobJoint == PC_JOB.NONE)
                 job = pc.Job;
             else
                 job = pc.JobJoint;
-            switch (job)
-            {
+            switch (job) {
                 //□初期：ノービス
                 case PC_JOB.NOVICE:
                     return 0.7f;
@@ -1960,15 +1881,13 @@ namespace SagaMap.PC
             }
         }
 
-        private float VolumeJobFactor(ActorPC pc)
-        {
+        private float VolumeJobFactor(ActorPC pc) {
             PC_JOB job;
             if (pc.JobJoint == PC_JOB.NONE)
                 job = pc.Job;
             else
                 job = pc.JobJoint;
-            switch (job)
-            {
+            switch (job) {
                 //□初期：ノービス
                 case PC_JOB.NOVICE:
                     return 0.85f;
@@ -2064,14 +1983,12 @@ namespace SagaMap.PC
             }
         }
 
-        public void CalcHPMPSP(ActorPC pc)
-        {
+        public void CalcHPMPSP(ActorPC pc) {
             pc.MaxHP = CalcMaxHP(pc);
             pc.MaxMP = CalcMaxMP(pc);
             pc.MaxSP = CalcMaxSP(pc);
             pc.MaxEP = CalcMaxEP(pc);
-            if (pc.Status.Additions.ContainsKey("ModeChange"))
-            {
+            if (pc.Status.Additions.ContainsKey("ModeChange")) {
                 var Maxtmp = pc.MaxMP;
                 pc.MaxMP = pc.MaxSP;
                 pc.MaxSP = Maxtmp;
@@ -2083,16 +2000,14 @@ namespace SagaMap.PC
             if (pc.EP > pc.MaxEP) pc.EP = pc.MaxEP;
         }
 
-        private uint CalcMaxEP(ActorPC pc)
-        {
+        private uint CalcMaxEP(ActorPC pc) {
             if (pc.Ring == null)
                 return 30;
             return Math.Min((uint)(30 + pc.Ring.MemberCount * 2), 110);
             //return 100;
         }
 
-        private uint CalcMaxHP(ActorPC pc)
-        {
+        private uint CalcMaxHP(ActorPC pc) {
             short possession = 0;
             var lv = pc.Level;
             if (pc.Pet != null)
@@ -2100,8 +2015,7 @@ namespace SagaMap.PC
                     if (pc.Pet.MaxHP != 0)
                         return pc.Pet.MaxHP;
 
-            foreach (var i in pc.PossesionedActors)
-            {
+            foreach (var i in pc.PossesionedActors) {
                 if (i == pc) continue;
                 if (i.Status == null)
                     continue;
@@ -2121,8 +2035,7 @@ namespace SagaMap.PC
             return Math.Min(basehp, 70000);
         }
 
-        private uint CalcMaxMP(ActorPC pc)
-        {
+        private uint CalcMaxMP(ActorPC pc) {
             short possession = 0;
             byte lv = 0;
             MapManager.Instance.GetMap(pc.MapID);
@@ -2132,8 +2045,7 @@ namespace SagaMap.PC
                     if (pc.Pet.MaxMP != 0)
                         return pc.Pet.MaxMP;
 
-            foreach (var i in pc.PossesionedActors)
-            {
+            foreach (var i in pc.PossesionedActors) {
                 if (i == pc) continue;
                 if (i.Status == null)
                     continue;
@@ -2153,8 +2065,7 @@ namespace SagaMap.PC
             return Math.Min(basemp, 40000);
         }
 
-        private uint CalcMaxSP(ActorPC pc)
-        {
+        private uint CalcMaxSP(ActorPC pc) {
             short possession = 0;
             byte lv = 0;
             MapManager.Instance.GetMap(pc.MapID);
@@ -2164,8 +2075,7 @@ namespace SagaMap.PC
                     if (pc.Pet.MaxSP != 0)
                         return pc.Pet.MaxSP;
 
-            foreach (var i in pc.PossesionedActors)
-            {
+            foreach (var i in pc.PossesionedActors) {
                 if (i == pc) continue;
                 possession += i.Status.sp_possession;
             }
@@ -2186,16 +2096,14 @@ namespace SagaMap.PC
             return Math.Min(basesp, 40000);
         }
 
-        private float HPJobFactor(ActorPC pc)
-        {
+        private float HPJobFactor(ActorPC pc) {
             PC_JOB job;
             if (pc.JobJoint == PC_JOB.NONE)
                 job = pc.Job;
             else
                 job = pc.JobJoint;
 
-            switch (job)
-            {
+            switch (job) {
                 //1次職
                 case PC_JOB.NOVICE:
                     return 1.00f;
@@ -2342,16 +2250,14 @@ namespace SagaMap.PC
             }
         }
 
-        private float MPJobFactor(ActorPC pc)
-        {
+        private float MPJobFactor(ActorPC pc) {
             PC_JOB job;
             if (pc.JobJoint == PC_JOB.NONE)
                 job = pc.Job;
             else
                 job = pc.JobJoint;
 
-            switch (job)
-            {
+            switch (job) {
                 //1次職
                 case PC_JOB.NOVICE:
                     return 1.00f;
@@ -2498,15 +2404,13 @@ namespace SagaMap.PC
             }
         }
 
-        private float SPJobFactor(ActorPC pc)
-        {
+        private float SPJobFactor(ActorPC pc) {
             PC_JOB job;
             if (pc.JobJoint == PC_JOB.NONE)
                 job = pc.Job;
             else
                 job = pc.JobJoint;
-            switch (job)
-            {
+            switch (job) {
                 //1次職
                 case PC_JOB.NOVICE:
                     return 1.00f;
@@ -2653,10 +2557,8 @@ namespace SagaMap.PC
             }
         }
 
-        private void CalcStatsRev(ActorPC pc)
-        {
-            if (pc.JobJoint == PC_JOB.NONE)
-            {
+        private void CalcStatsRev(ActorPC pc) {
+            if (pc.JobJoint == PC_JOB.NONE) {
                 byte joblv1 = 0;
                 byte joblv2x = 0;
                 byte joblv2t = 0;
@@ -2667,8 +2569,7 @@ namespace SagaMap.PC
                 joblv2t = pc.JobLevel2T;
                 joblv3 = pc.JobLevel3;
 
-                switch (pc.Job)
-                {
+                switch (pc.Job) {
                     case PC_JOB.NOVICE:
                         pc.Status.str_rev = (ushort)(joblv1 * 0.07f);
                         pc.Status.dex_rev = (ushort)(joblv1 * 0.07f);
@@ -3067,10 +2968,8 @@ namespace SagaMap.PC
                         break;
                 }
             }
-            else
-            {
-                switch (pc.JobJoint)
-                {
+            else {
+                switch (pc.JobJoint) {
                     case PC_JOB.BREEDER:
                         pc.Status.str_rev = (ushort)(3 + (pc.JointJobLevel + 3) * 0.143);
                         pc.Status.dex_rev = (ushort)(6 + (pc.JointJobLevel + 1) * 0.25);
@@ -3091,8 +2990,7 @@ namespace SagaMap.PC
             }
         }
 
-        private void CalcMarionetteBonus(ActorPC pc)
-        {
+        private void CalcMarionetteBonus(ActorPC pc) {
         }
     }
 }

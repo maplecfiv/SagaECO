@@ -395,7 +395,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
                 client.SendSystemMessage("参数错误（注意结尾不要有多余的空格！）");
                 client.SendSystemMessage("\"!variable 类型[a/c/t/as/cs/ts] 变量名\"—显示自己的对应变量名");
                 client.SendSystemMessage("\"!variable 类型 变量名 变量值\"—修改自己对应的变量值");
@@ -516,7 +516,7 @@ namespace SagaMap {
                 client.NetIo.SendPacket(p);
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -565,7 +565,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -583,7 +583,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -651,7 +651,7 @@ namespace SagaMap {
                 client.NetIo.SendPacket(p);
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -666,7 +666,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -679,7 +679,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -730,7 +730,7 @@ namespace SagaMap {
                 client.SendSystemMessage("错误！请按照!golem mapid x y eventid pictid 名字 ShopType(0为收购 1为贩卖) 店名 AIMODE格式输入。");
                 client.SendSystemMessage("例如!golem 10054001 152 203 66000001 16470000 清姬2 1 收购木材啦！ 0");
                 client.SendSystemMessage("或者使用!golem actorID来进行删除石像。actorID使用!who3查看。");
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -812,7 +812,7 @@ namespace SagaMap {
                 Logger.GetLogger().Information(string.Format("{0} GMCommand Setting Loaded.", count));
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(cmd + "," + ex);
+                Logger.ShowError(cmd + "," + ex);
             }
         }
 
@@ -848,7 +848,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception e) {
-                Logger.GetLogger().Error(e, e.Message);
+                Logger.ShowError(e);
             }
 
             return false;
@@ -1032,7 +1032,7 @@ namespace SagaMap {
                         true);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -1094,7 +1094,7 @@ namespace SagaMap {
                 client.SendPlayerInfo();
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -1104,7 +1104,7 @@ namespace SagaMap {
                 client.EventActivate(Event);
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -1339,7 +1339,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -1374,7 +1374,7 @@ namespace SagaMap {
                     client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -1396,7 +1396,7 @@ namespace SagaMap {
                     client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             }
         }
@@ -1413,7 +1413,7 @@ namespace SagaMap {
                     tClient.NetIo.Disconnect();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -1435,7 +1435,7 @@ namespace SagaMap {
                     client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             }
         }
@@ -1458,7 +1458,7 @@ namespace SagaMap {
                     client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             }
         }
@@ -1624,7 +1624,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -1659,7 +1659,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -1691,7 +1691,7 @@ namespace SagaMap {
                 client.SendSystemMessage("----------------------------------------------------");
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -2064,7 +2064,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
                 //SagaLib.ClientManager.EnterCriticalArea();
             }
@@ -2244,7 +2244,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex.Message);
+                    Logger.ShowError(ex.Message);
                 }
             //SagaLib.ClientManager.EnterCriticalArea();
         }
@@ -2300,7 +2300,7 @@ namespace SagaMap {
                     ranged = int.Parse(args);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
 
             try {
@@ -2396,7 +2396,7 @@ namespace SagaMap {
                 }
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
                 client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_WARP_ERROR);
             }
         }
@@ -2427,7 +2427,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                     client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_WARP_ERROR);
                 }
         }
@@ -2450,7 +2450,7 @@ namespace SagaMap {
                     client.SendCharInfoUpdate();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                     client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_HAIR_ERROR);
                 }
         }
@@ -2465,7 +2465,7 @@ namespace SagaMap {
                     client.SendCharInfoUpdate();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2489,7 +2489,7 @@ namespace SagaMap {
                     client.SendPlayerLevel();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2539,7 +2539,7 @@ namespace SagaMap {
                     client.SendPlayerLevel();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2644,7 +2644,7 @@ namespace SagaMap {
                         }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2721,7 +2721,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2735,7 +2735,7 @@ namespace SagaMap {
                     client.SendPlayerSizeUpdate();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2747,7 +2747,7 @@ namespace SagaMap {
                 client.SendSystemMessage("----------------------------------------");
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -2761,7 +2761,7 @@ namespace SagaMap {
                     client.SendGoldUpdate();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2782,7 +2782,7 @@ namespace SagaMap {
                     client.Character.CP = shopp;
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2823,7 +2823,7 @@ namespace SagaMap {
                     client.SendPlayerInfo();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             }
         }
@@ -2929,7 +2929,7 @@ namespace SagaMap {
                     foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(args);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2943,7 +2943,7 @@ namespace SagaMap {
                             i.SendAnnounce(args);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -2986,7 +2986,7 @@ namespace SagaMap {
                 if (mobs.Count < 1) client.SendSystemMessage("当前没有BOSS等待重生。");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
 
@@ -3057,7 +3057,7 @@ namespace SagaMap {
                                        tClient.Character.Name);
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -3134,7 +3134,7 @@ namespace SagaMap {
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
             // }
             // else
@@ -3187,11 +3187,11 @@ namespace SagaMap {
                         }
                     }
                     catch (Exception exception) {
-                        Logger.GetLogger().Error(exception, null);
+                        Logger.ShowError(exception);
                     }
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -3476,7 +3476,7 @@ namespace SagaMap {
                     client.NetIo.Disconnect();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 
@@ -3548,7 +3548,7 @@ namespace SagaMap {
                     foreach (var i in MapClientManager.Instance.OnlinePlayer) i.NetIo.Disconnect();
                 }
                 catch (Exception exception) {
-                    Logger.GetLogger().Error(exception, null);
+                    Logger.ShowError(exception);
                 }
         }
 

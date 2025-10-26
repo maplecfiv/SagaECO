@@ -3,32 +3,26 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Tasks.PC
-{
-    public class Marionette : MultiRunTask
-    {
+namespace SagaMap.Tasks.PC {
+    public class Marionette : MultiRunTask {
         private readonly MapClient client;
 
-        public Marionette(MapClient client, int duration)
-        {
+        public Marionette(MapClient client, int duration) {
             DueTime = duration * 1000;
             Period = duration * 1000;
             this.client = client;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 client.MarionetteDeactivate();
                 if (client.Character.Tasks.ContainsKey("Marionette"))
                     client.Character.Tasks.Remove("Marionette");
                 Deactivate();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
             }
 

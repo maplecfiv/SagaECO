@@ -5,23 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class PlayerTitleFactory : Singleton<PlayerTitleFactory>
-    {
+namespace SagaDB.Item {
+    public class PlayerTitleFactory : Singleton<PlayerTitleFactory> {
         public Dictionary<uint, PlayerTitle> PlayerTitles { get; } = new Dictionary<uint, PlayerTitle>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -58,9 +53,8 @@ namespace SagaDB.Item
                     if (!PlayerTitles.ContainsKey(item.id))
                         PlayerTitles.Add(item.id, item);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 

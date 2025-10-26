@@ -34,7 +34,7 @@ namespace SagaDB {
 
         public bool CreateChar(ActorPC aChar, int accountId) {
             if (aChar == null) {
-                SagaLib.Logger.GetLogger().Error("aChar is null");
+                SagaLib.Logger.ShowError("aChar is null");
                 return false;
             }
 
@@ -72,7 +72,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
                 return false;
             }
         }
@@ -106,7 +106,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
                 return 0;
             }
         }
@@ -162,7 +162,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -207,7 +207,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -258,7 +258,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -307,7 +307,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -544,7 +544,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -583,7 +583,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -744,7 +744,7 @@ namespace SagaDB {
                 GetMosterGuide(pc);
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
 
             return pc;
@@ -872,7 +872,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -999,7 +999,7 @@ namespace SagaDB {
                     .ExecuteCommand();
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
             finally {
                 ms.Close();
@@ -1119,7 +1119,7 @@ namespace SagaDB {
                 }
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
                 return;
             }
         }
@@ -1188,7 +1188,7 @@ namespace SagaDB {
                 return buf;
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
                 return new uint[0];
             }
         }
@@ -1603,7 +1603,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
 
             return isSuccess;
@@ -1625,7 +1625,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
 
             return isSuccess;
@@ -1949,7 +1949,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2209,7 +2209,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2503,7 +2503,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2523,7 +2523,7 @@ namespace SagaDB {
                 }
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2615,7 +2615,7 @@ namespace SagaDB {
             }
             catch (Exception ex) {
                 SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2639,7 +2639,7 @@ namespace SagaDB {
                     pc.JobLV_CARDINAL = (byte)result[0].JobLevel;
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2652,7 +2652,7 @@ namespace SagaDB {
                 }
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 
@@ -2743,7 +2743,7 @@ namespace SagaDB {
                     pc.Inventory.WareHouse.Add(WarehousePlace.Tonka, new List<Item.Item>());
             }
             catch (Exception ex) {
-                SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+                SagaLib.Logger.ShowError(ex);
             }
         }
 

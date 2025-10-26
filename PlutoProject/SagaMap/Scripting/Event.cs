@@ -48,8 +48,7 @@ using SagaMap.PC;
 using SagaMap.Skill;
 using SagaMap.Tasks.Mob;
 
-namespace SagaMap.Scripting
-{
+namespace SagaMap.Scripting {
     public delegate void MobAttackCallback(MobEventHandler eh, ActorPC pc);
 
     public delegate void MobCallback(MobEventHandler eh, ActorPC pc);
@@ -58,10 +57,8 @@ namespace SagaMap.Scripting
 
     public delegate void TimerCallback(Timer timer, ActorPC pc);
 
-    public abstract class Event
-    {
-        protected void OpenPprotectListOpen(ActorPC pc)
-        {
+    public abstract class Event {
+        protected void OpenPprotectListOpen(ActorPC pc) {
             var client = GetMapClient(pc);
 
             var p = new SSMG_PPROTECT_INITI();
@@ -75,8 +72,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">触发该事件的玩家类</param>
         public abstract void OnEvent(ActorPC pc);
 
-        public virtual void OnTransportSource(ActorPC pc)
-        {
+        public virtual void OnTransportSource(ActorPC pc) {
             Say(pc, 131, questTransportSource, "");
             if (pc.Quest.Detail.ObjectID1 != 0)
                 GiveItem(pc, pc.Quest.Detail.ObjectID1, (ushort)pc.Quest.Detail.Count1);
@@ -88,8 +84,7 @@ namespace SagaMap.Scripting
             PlaySound(pc, 2030, false, 100, 50);
         }
 
-        public virtual void OnTransportDest(ActorPC pc)
-        {
+        public virtual void OnTransportDest(ActorPC pc) {
             if (pc.Quest.Detail.ObjectID1 != 0)
                 if (CountItem(pc, pc.Quest.Detail.ObjectID1) < pc.Quest.Detail.Count1)
                     pc.Quest.CurrentCount3 = 1;
@@ -99,8 +94,7 @@ namespace SagaMap.Scripting
             if (pc.Quest.Detail.ObjectID3 != 0)
                 if (CountItem(pc, pc.Quest.Detail.ObjectID3) < pc.Quest.Detail.Count3)
                     pc.Quest.CurrentCount3 = 1;
-            if (pc.Quest.CurrentCount3 == 0)
-            {
+            if (pc.Quest.CurrentCount3 == 0) {
                 Say(pc, 131, questTransportDest, "");
                 if (pc.Quest.Detail.ObjectID1 != 0)
                     TakeItem(pc, pc.Quest.Detail.ObjectID1, (ushort)pc.Quest.Detail.Count1);
@@ -110,8 +104,7 @@ namespace SagaMap.Scripting
                     TakeItem(pc, pc.Quest.Detail.ObjectID3, (ushort)pc.Quest.Detail.Count3);
                 Say(pc, 131, LocalManager.Instance.Strings.QUEST_TRANSPORT_GIVE, " ");
                 PlaySound(pc, 2040, false, 100, 50);
-                if (!string.IsNullOrEmpty(pc.Quest.Detail.QuestCounterName))
-                {
+                if (!string.IsNullOrEmpty(pc.Quest.Detail.QuestCounterName)) {
                     if (pc.CInt.ContainsKey(pc.Quest.Detail.QuestCounterName))
                         pc.CInt[pc.Quest.Detail.QuestCounterName]++;
                     else
@@ -120,20 +113,16 @@ namespace SagaMap.Scripting
             }
         }
 
-        public virtual void OnTransportCompleteSrc(ActorPC pc)
-        {
+        public virtual void OnTransportCompleteSrc(ActorPC pc) {
             Say(pc, 131, questTransportCompleteSrc, "");
         }
 
-        public virtual void OnTransportCompleteDest(ActorPC pc)
-        {
+        public virtual void OnTransportCompleteDest(ActorPC pc) {
             Say(pc, 131, questTransportCompleteDest, "");
         }
 
-        public static string GetItemNameByType(ItemType type)
-        {
-            switch (type)
-            {
+        public static string GetItemNameByType(ItemType type) {
+            switch (type) {
                 case ItemType.FOOD:
                     return LocalManager.Instance.Strings.ITEM_UNIDENTIFIED_FOOD;
                 case ItemType.PETFOOD:
@@ -374,14 +363,12 @@ namespace SagaMap.Scripting
         /// </summary>
         public uint EventID { get; set; }
 
-        private MapClient GetMapClient(ActorPC pc)
-        {
+        private MapClient GetMapClient(ActorPC pc) {
             var eh = (PCEventHandler)pc.e;
             return eh.Client;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             if (NPCFactory.Instance.Items.ContainsKey(EventID))
                 return NPCFactory.Instance.Items[EventID].Name + "(" + EventID + ")";
 
@@ -391,10 +378,8 @@ namespace SagaMap.Scripting
         /// <summary>
         ///     取得当前服务器的在线玩家
         /// </summary>
-        protected List<ActorPC> OnlinePlayers
-        {
-            get
-            {
+        protected List<ActorPC> OnlinePlayers {
+            get {
                 var list = new List<ActorPC>();
                 foreach (var i in MapClientManager.Instance.Clients)
                     if (i.Character.Online)
@@ -408,8 +393,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="max">最大</param>
         /// <returns>随机数</returns>
-        protected int Random(int max)
-        {
+        protected int Random(int max) {
             return Global.Random.Next(max);
         }
 
@@ -419,8 +403,7 @@ namespace SagaMap.Scripting
         /// <param name="min">最小</param>
         /// <param name="max">最大</param>
         /// <returns>随机数</returns>
-        protected int Random(int min, int max)
-        {
+        protected int Random(int min, int max) {
             return Global.Random.Next(min, max);
         }
 
@@ -428,8 +411,7 @@ namespace SagaMap.Scripting
         ///     打开石像收购页面
         /// </summary>
         /// <param name="pc"></param>
-        protected void OpenGolemBuy(ActorPC pc, ActorGolem golem)
-        {
+        protected void OpenGolemBuy(ActorPC pc, ActorGolem golem) {
             var ActorID = golem.ActorID;
             var client = MapClient.FromActorPC(pc);
 
@@ -443,8 +425,7 @@ namespace SagaMap.Scripting
             client.NetIo.SendPacket(p3);
         }
 
-        protected void OpenGolemSell(ActorPC pc, ActorGolem golem)
-        {
+        protected void OpenGolemSell(ActorPC pc, ActorGolem golem) {
             var ActorID = golem.ActorID;
             var client = MapClient.FromActorPC(pc);
 
@@ -454,8 +435,7 @@ namespace SagaMap.Scripting
             var p2 = new SSMG_GOLEM_SHOP_HEADER();
             p2.ActorID = ActorID;
             client.NetIo.SendPacket(p2);
-            foreach (var i in golem.SellShop.Keys)
-            {
+            foreach (var i in golem.SellShop.Keys) {
                 var item = ItemFactory.Instance.GetItem(golem.SellShop[i].ItemID);
                 if (item == null)
                     continue;
@@ -478,12 +458,10 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="ID">称号ID</param>
         /// <param name="value">进度提升数量</param>
-        protected void TitleProccess(ActorPC pc, uint ID, uint value)
-        {
+        protected void TitleProccess(ActorPC pc, uint ID, uint value) {
             var client = MapClient.FromActorPC(pc);
             if (client.CheckTitle((int)ID)) return;
-            if (TitleFactory.Instance.Items.ContainsKey(ID))
-            {
+            if (TitleFactory.Instance.Items.ContainsKey(ID)) {
                 var name = "称号" + ID + "完成度";
                 pc.AInt[name] += (int)value;
                 /*
@@ -498,11 +476,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="ID">称号ID</param>
-        protected void UnlockTitle(ActorPC pc, uint ID)
-        {
+        protected void UnlockTitle(ActorPC pc, uint ID) {
             var client = MapClient.FromActorPC(pc);
-            if (TitleFactory.Instance.Items.ContainsKey(ID) && !client.CheckTitle((int)ID))
-            {
+            if (TitleFactory.Instance.Items.ContainsKey(ID) && !client.CheckTitle((int)ID)) {
                 var t = TitleFactory.Instance.Items[ID];
                 client.SetTitle((int)ID, true);
                 client.SendSystemMessage("恭喜你！解锁了『" + t.name + "』称号！");
@@ -515,11 +491,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="ID">称号ID</param>
-        protected void LockTitle(ActorPC pc, uint ID)
-        {
+        protected void LockTitle(ActorPC pc, uint ID) {
             var client = MapClient.FromActorPC(pc);
-            if (TitleFactory.Instance.Items.ContainsKey(ID) && client.CheckTitle((int)ID))
-            {
+            if (TitleFactory.Instance.Items.ContainsKey(ID) && client.CheckTitle((int)ID)) {
                 client.SetTitle((int)ID, false);
             }
         }
@@ -529,8 +503,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="VoiceID">語音ID</param>
-        protected void SendAAAVoice(ActorPC pc, ushort VoiceID)
-        {
+        protected void SendAAAVoice(ActorPC pc, ushort VoiceID) {
             var p = new SSMG_AAA_VOICE();
             p.VoiceID = VoiceID;
             var client = GetMapClient(pc);
@@ -543,8 +516,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="VoiceID">語音ID</param>
         /// <param name="loop">重覆</param>
-        protected void SendNPCVoice(ActorPC pc, ushort VoiceID, bool loop)
-        {
+        protected void SendNPCVoice(ActorPC pc, ushort VoiceID, bool loop) {
             var p = new SSMG_NPC_VOICE_PLAY();
             p.VoiceID = VoiceID;
             p.Loop = Convert.ToByte(loop);
@@ -557,8 +529,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="VoiceID">語音ID</param>
-        protected void StopNPCVoice(ActorPC pc, ushort VoiceID)
-        {
+        protected void StopNPCVoice(ActorPC pc, ushort VoiceID) {
             var p = new SSMG_NPC_VOICE_STOP();
             p.VoiceID = VoiceID;
             var client = GetMapClient(pc);
@@ -570,23 +541,20 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="ID">对话框ID</param>
-        protected void ShowDialog(ActorPC pc, ushort ID)
-        {
+        protected void ShowDialog(ActorPC pc, ushort ID) {
             var p = new SSMG_ANO_DIALOG_BOX();
             p.DID = ID;
             var client = GetMapClient(pc);
             client.NetIo.SendPacket(p);
         }
 
-        protected void ChangeMessageBox(ActorPC pc)
-        {
+        protected void ChangeMessageBox(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_MESSAGE_GALMODE();
             client.NetIo.SendPacket(p);
         }
 
-        protected void ChangeMessageBox(ActorPC pc, bool mode, UIType UItype, int x, int y)
-        {
+        protected void ChangeMessageBox(ActorPC pc, bool mode, UIType UItype, int x, int y) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_MESSAGE_GALMODE();
             if (mode)
@@ -601,8 +569,7 @@ namespace SagaMap.Scripting
         ///     打开卡片扭蛋界面
         /// </summary>
         /// <param name="pc"></param>
-        protected void OpenIrisGacha(ActorPC pc)
-        {
+        protected void OpenIrisGacha(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_IRIS_GACHA_UI_OPEN();
             client.NetIo.SendPacket(p);
@@ -622,8 +589,7 @@ namespace SagaMap.Scripting
         /// <param name="pc"></param>
         /// <param name="StampCountm">章数，最多10</param>
         /// <param name="type">1为显示，2为盖</param>
-        protected void DailyStamp(ActorPC pc, uint StampCountm, byte type)
-        {
+        protected void DailyStamp(ActorPC pc, uint StampCountm, byte type) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_DAILY_STAMP();
             p.StampCount = (byte)StampCountm;
@@ -631,8 +597,7 @@ namespace SagaMap.Scripting
             client.NetIo.SendPacket(p);
         }
 
-        protected string ItemRelease(ActorPC pc, SagaDB.Item.Item item)
-        {
+        protected string ItemRelease(ActorPC pc, SagaDB.Item.Item item) {
             if (item.Release)
                 return "该物品性能已解放";
 
@@ -650,8 +615,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="type">2为显示全部介绍，其他参数未知</param>
-        protected void ShowHairPreview(ActorPC pc, int type)
-        {
+        protected void ShowHairPreview(ActorPC pc, int type) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOW_HAIR_PREVIEW();
             p.type = 2;
@@ -662,15 +626,13 @@ namespace SagaMap.Scripting
         ///     面對玩家
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void FaceToPC(ActorPC pc)
-        {
+        protected void FaceToPC(ActorPC pc) {
         }
 
         /// <summary>
         ///     立刻保存系統變量
         /// </summary>
-        protected void SaveServerSvar()
-        {
+        protected void SaveServerSvar() {
             MapServer.charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
         }
 
@@ -678,8 +640,7 @@ namespace SagaMap.Scripting
         ///     隱藏周圍玩家
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void HidePlayer(ActorPC pc)
-        {
+        protected void HidePlayer(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_HIDE_PLAYERS();
             p.unknown1 = 0x02;
@@ -702,8 +663,7 @@ namespace SagaMap.Scripting
         /// <param name="y">Y</param>
         /// <param name="dir">方向</param>
         /// <param name="PictID">模型ID</param>
-        protected void ShowPict(ActorPC pc, uint NpcID, byte x, byte y, byte dir, uint PictID)
-        {
+        protected void ShowPict(ActorPC pc, uint NpcID, byte x, byte y, byte dir, uint PictID) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = NpcID;
@@ -723,8 +683,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="NpcID">NPCID</param>
-        protected void ShowPictCancel(ActorPC pc, uint NpcID)
-        {
+        protected void ShowPictCancel(ActorPC pc, uint NpcID) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_CANCEL();
             p.NPCID = NpcID;
@@ -740,8 +699,7 @@ namespace SagaMap.Scripting
         /// <param name="Z">前后位置</param>
         /// <param name="Xdir">左右方向</param>
         /// <param name="Ydir">上下方向</param>
-        protected void LockCamera(ActorPC pc, short X, short Y, short Z, short Xdir, short Ydir)
-        {
+        protected void LockCamera(ActorPC pc, short X, short Y, short Z, short Xdir, short Ydir) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_LOCK_CAMERA();
             p.X = X;
@@ -757,8 +715,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="toggle">開/關</param>
-        protected void SSMode(ActorPC pc, bool toggle)
-        {
+        protected void SSMode(ActorPC pc, bool toggle) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SS_MODE();
             p.Toggle = Convert.ToUInt16(toggle);
@@ -779,8 +736,7 @@ namespace SagaMap.Scripting
         /// <param name="y">y</param>
         /// <param name="speed">移动速度</param>
         /// <param name="dir">方向</param>
-        protected void MovePC(ActorPC pc, byte x, byte y, ushort speed, ushort dir, MoveType movetype)
-        {
+        protected void MovePC(ActorPC pc, byte x, byte y, ushort speed, ushort dir, MoveType movetype) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             var pos = new short[2];
             pos[0] = Global.PosX8to16(x, map.Width);
@@ -794,8 +750,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">pc</param>
         /// <param name="MotionID">动作ID</param>
         /// <param name="loop">是否循环</param>
-        protected void MotionPC(ActorPC pc, uint MotionID, byte Loop)
-        {
+        protected void MotionPC(ActorPC pc, uint MotionID, byte Loop) {
             var client = GetMapClient(pc);
             client.SendMotion((MotionType)MotionID, Loop);
         }
@@ -806,8 +761,7 @@ namespace SagaMap.Scripting
         /// <param name="actor">对象</param>
         /// <param name="Millisecond">毫秒</param>
         /// <param name="message">说话内容</param>
-        protected void SetTimingSpeak(Actor actor, int Millisecond, string message)
-        {
+        protected void SetTimingSpeak(Actor actor, int Millisecond, string message) {
             var ts = new TimingSpeak(actor, Millisecond, message);
             actor.Tasks.Add(actor.ActorID + message + Global.Random.Next(0, 90001000), ts);
             ts.Activate();
@@ -819,8 +773,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="EventID">事件ID</param>
         /// <param name="MapID">触发的地图ID </param>
-        protected void SetOnDieEvent(ActorPC pc, int EventID, int MapID)
-        {
+        protected void SetOnDieEvent(ActorPC pc, int EventID, int MapID) {
             pc.TInt["死亡事件ID"] = EventID;
             pc.TInt["死亡事件地图ID"] = MapID;
         }
@@ -830,8 +783,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="EventID">事件ID</param>
-        protected void SetNextMoveEvent(ActorPC pc, uint EventID)
-        {
+        protected void SetNextMoveEvent(ActorPC pc, uint EventID) {
             pc.CInt["NextMoveEventID"] = (int)EventID;
         }
         /// <summary>
@@ -920,8 +872,7 @@ namespace SagaMap.Scripting
         ///     给玩家打开recycle活动界面(可用,但不知道用在哪)
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void OpenRecycle(ActorPC pc)
-        {
+        protected void OpenRecycle(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_ACTIVITY_RECYCLE_WINDOW();
             p.Percent = (ushort)SInt["Recycle_Percent"];
@@ -933,8 +884,7 @@ namespace SagaMap.Scripting
         ///     打开玩家的外观设置见面(失效)
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void OpenChangePCForm(ActorPC pc)
-        {
+        protected void OpenChangePCForm(ActorPC pc) {
             var client = GetMapClient(pc);
             var p1 = new SSMG_TEST_EVOLVE_OPEN();
             client.NetIo.SendPacket(p1);
@@ -949,8 +899,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="FFMaster">飞空城主人</param>
-        protected void EnterFFGarden(ActorPC pc, ActorPC FFMaster)
-        {
+        protected void EnterFFGarden(ActorPC pc, ActorPC FFMaster) {
             /*if (pc.FFGarden == null)
             {
                 return;
@@ -999,11 +948,9 @@ namespace SagaMap.Scripting
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
         /// <example>Warp(pc, 10024000, 150,130);</example>
-        protected void Warp(ActorPC pc, uint mapID, byte x, byte y)
-        {
+        protected void Warp(ActorPC pc, uint mapID, byte x, byte y) {
             var client = GetMapClient(pc);
-            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
-            {
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID)) {
                 var newMap = MapManager.Instance.GetMap(mapID);
                 if (client.Character.Marionette != null)
                     client.MarionetteDeactivate();
@@ -1020,11 +967,9 @@ namespace SagaMap.Scripting
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
         /// <example>Warp(pc, 10024000, 150,130);</example>
-        protected void Warp(ActorPC pc, uint mapID, short x, short y)
-        {
+        protected void Warp(ActorPC pc, uint mapID, short x, short y) {
             var client = GetMapClient(pc);
-            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
-            {
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID)) {
                 if (client.Character.Marionette != null)
                     client.MarionetteDeactivate();
                 client.Map.SendActorToMap(pc, mapID, x, y);
@@ -1037,8 +982,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="motion">NPC动作</param>
         /// <param name="message">消息内容</param>
-        protected void Say(ActorPC pc, ushort motion, string message)
-        {
+        protected void Say(ActorPC pc, ushort motion, string message) {
             if (NPCFactory.Instance.Items.ContainsKey(EventID))
                 Say(pc, motion, message, NPCFactory.Instance.Items[EventID].Name);
             else
@@ -1056,8 +1000,7 @@ namespace SagaMap.Scripting
         ///     Say(pc, 65535, "跟前輩學了很多東西$R;" +
         ///     "$R您要一起學嗎？$R;", "初階冒險者");
         /// </example>
-        protected void Say(ActorPC pc, ushort motion, string message, string title)
-        {
+        protected void Say(ActorPC pc, ushort motion, string message, string title) {
             Say(pc, EventID, motion, message, title);
         }
 
@@ -1066,8 +1009,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="type">0=隱藏,1=顯示</param>
-        protected void DailyStampIcon(ActorPC pc, int type)
-        {
+        protected void DailyStampIcon(ActorPC pc, int type) {
             var client = GetMapClient(pc);
 
             var ds = new SSMG_PLAYER_SHOW_DAILYSTAMP();
@@ -1080,8 +1022,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="type">1=蓋章,2=顯示已蓋印章</param>
-        protected void StampADailyStamp(ActorPC pc, int type)
-        {
+        protected void StampADailyStamp(ActorPC pc, int type) {
             var client = GetMapClient(pc);
 
 
@@ -1098,8 +1039,7 @@ namespace SagaMap.Scripting
         /// <param name="npcID">NPC ID</param>
         /// <param name="motion">动作</param>
         /// <param name="message">信息</param>
-        protected void Say(ActorPC pc, uint npcID, ushort motion, string message)
-        {
+        protected void Say(ActorPC pc, uint npcID, ushort motion, string message) {
             if (NPCFactory.Instance.Items.ContainsKey(npcID))
                 Say(pc, npcID, motion, message, NPCFactory.Instance.Items[npcID].Name);
             else
@@ -1114,13 +1054,11 @@ namespace SagaMap.Scripting
         /// <param name="motion">NPC动作</param>
         /// <param name="message">消息内容</param>
         /// <param name="title">消息标题</param>
-        protected void Say(ActorPC pc, uint npcID, ushort motion, string message, string title)
-        {
+        protected void Say(ActorPC pc, uint npcID, ushort motion, string message, string title) {
             var client = GetMapClient(pc);
             client.SendNPCMessageStart();
             var messages = message.Split(';');
-            foreach (var i in messages)
-            {
+            foreach (var i in messages) {
                 if (i == "") continue;
                 client.SendNPCMessage(npcID, i, motion, title);
             }
@@ -1133,8 +1071,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="wait">延迟事件，单位为毫秒</param>
-        protected void Wait(ActorPC pc, uint wait)
-        {
+        protected void Wait(ActorPC pc, uint wait) {
             var client = GetMapClient(pc);
             client.SendNPCWait(wait);
         }
@@ -1147,8 +1084,7 @@ namespace SagaMap.Scripting
         /// <param name="confirm">确认信息，可以为空字符串</param>
         /// <param name="options">选项</param>
         /// <returns>玩家选择的结果，第一个选项为1</returns>
-        public int Select(ActorPC pc, string title, string confirm, params string[] options)
-        {
+        public int Select(ActorPC pc, string title, string confirm, params string[] options) {
             return Select(pc, title, confirm, false, options);
         }
 
@@ -1161,8 +1097,7 @@ namespace SagaMap.Scripting
         /// <param name="canCancel">是否可取消</param>
         /// <param name="options">选项</param>
         /// <returns>玩家选择的结果，第一个选项为1</returns>
-        public int Select(ActorPC pc, string title, string confirm, bool canCancel, params string[] options)
-        {
+        public int Select(ActorPC pc, string title, string confirm, bool canCancel, params string[] options) {
             var p = new SSMG_NPC_SELECT();
             p.SetSelect(title, confirm, options, canCancel);
             var client = GetMapClient(pc);
@@ -1184,8 +1119,7 @@ namespace SagaMap.Scripting
         ///     添加道具到商店
         /// </summary>
         /// <param name="goods">道具ID</param>
-        protected void AddGoods(params uint[] goods)
-        {
+        protected void AddGoods(params uint[] goods) {
             foreach (var i in goods)
                 if (Goods.Count == 12)
                     Logger.GetLogger().Warning(ToString() + ":Maximal shop items(12) reached, skiping");
@@ -1198,8 +1132,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">pc</param>
         /// <param name="Goods">商品</param>
-        protected void OpenShopByList(ActorPC pc, params uint[] Goods)
-        {
+        protected void OpenShopByList(ActorPC pc, params uint[] Goods) {
             OpenShopByList(pc, 1000, ShopType.None, Goods);
         }
 
@@ -1210,15 +1143,13 @@ namespace SagaMap.Scripting
         /// <param name="rate">价格倍率(1000为原价，500为50%)</param>
         /// <param name="type">交易货币类型</param>
         /// <param name="Goods">商品</param>
-        protected void OpenShopByList(ActorPC pc, uint rate, ShopType type, params uint[] Goods)
-        {
+        protected void OpenShopByList(ActorPC pc, uint rate, ShopType type, params uint[] Goods) {
             var client = GetMapClient(pc);
             var items = Goods.ToList();
             var p = new SSMG_NPC_SHOP_BUY(items.Count);
             p.Rate = rate;
             p.Goods = items;
-            switch (type)
-            {
+            switch (type) {
                 case ShopType.None:
                     p.Gold = (uint)pc.Gold;
                     p.Bank = pc.Account.Bank;
@@ -1259,15 +1190,13 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="shopID">商店ID</param>
-        protected void OpenShopBuy(ActorPC pc, uint shopID)
-        {
+        protected void OpenShopBuy(ActorPC pc, uint shopID) {
             var client = GetMapClient(pc);
             var shop = ShopFactory.Instance.Items[shopID];
             var p = new SSMG_NPC_SHOP_BUY(shop.Goods.Count);
             p.Rate = shop.SellRate * 5;
             p.Goods = shop.Goods;
-            switch (shop.ShopType)
-            {
+            switch (shop.ShopType) {
                 case ShopType.None:
                     p.Gold = (uint)pc.Gold;
                     p.Bank = pc.Account.Bank;
@@ -1301,8 +1230,7 @@ namespace SagaMap.Scripting
         ///     打开购买窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void OpenShopBuy(ActorPC pc)
-        {
+        protected void OpenShopBuy(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOP_BUY(Goods.Count);
             p.Rate = (uint)(100 + pc.Status.buy_rate);
@@ -1324,8 +1252,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="shopID"></param>
-        protected void OpenShopSell(ActorPC pc, uint shopID)
-        {
+        protected void OpenShopSell(ActorPC pc, uint shopID) {
             var p = new SSMG_NPC_SHOP_SELL();
             var shop = ShopFactory.Instance.Items[shopID];
             var client = GetMapClient(pc);
@@ -1352,8 +1279,7 @@ namespace SagaMap.Scripting
         ///     打开贩卖窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void OpenShopSell(ActorPC pc)
-        {
+        protected void OpenShopSell(ActorPC pc) {
             var p = new SSMG_NPC_SHOP_SELL();
             var client = GetMapClient(pc);
             p.Rate = (uint)(10 + pc.Status.sell_rate);
@@ -1377,8 +1303,7 @@ namespace SagaMap.Scripting
         /// <param name="loop">是否循环播放</param>
         /// <param name="volume">音量，100为满</param>
         /// <param name="balance">声道平衡，0为左，50为中间，100为右</param>
-        protected void PlaySound(ActorPC pc, uint soundID, bool loop, uint volume, byte balance)
-        {
+        protected void PlaySound(ActorPC pc, uint soundID, bool loop, uint volume, byte balance) {
             var client = GetMapClient(pc);
             byte ifloop;
             if (loop)
@@ -1396,8 +1321,7 @@ namespace SagaMap.Scripting
         /// <param name="loop"></param>
         /// <param name="volume"></param>
         /// <param name="balance"></param>
-        protected void ChangeBGM(ActorPC pc, uint soundID, bool loop, uint volume, byte balance)
-        {
+        protected void ChangeBGM(ActorPC pc, uint soundID, bool loop, uint volume, byte balance) {
             var client = GetMapClient(pc);
             byte ifloop;
             if (loop)
@@ -1412,8 +1336,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, uint effectID)
-        {
+        protected void ShowEffect(ActorPC pc, uint effectID) {
             ShowEffect(pc, pc, effectID);
         }
 
@@ -1423,8 +1346,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="target">NPCID</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, uint target, uint effectID)
-        {
+        protected void ShowEffect(ActorPC pc, uint target, uint effectID) {
             var arg = new EffectArg();
             arg.effectID = effectID;
             arg.actorID = target;
@@ -1438,8 +1360,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="target">NPCID</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, uint target, ushort height, uint effectID, bool oneTime)
-        {
+        protected void ShowEffect(ActorPC pc, uint target, ushort height, uint effectID, bool oneTime) {
             var arg = new EffectArg();
             arg.effectID = effectID;
             arg.actorID = target;
@@ -1456,8 +1377,7 @@ namespace SagaMap.Scripting
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, byte x, byte y, uint effectID)
-        {
+        protected void ShowEffect(ActorPC pc, byte x, byte y, uint effectID) {
             var arg = new EffectArg();
             arg.effectID = effectID;
             arg.actorID = 0xFFFFFFFF;
@@ -1475,8 +1395,7 @@ namespace SagaMap.Scripting
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, byte x, byte y, ushort height, uint effectID, bool oneTime)
-        {
+        protected void ShowEffect(ActorPC pc, byte x, byte y, ushort height, uint effectID, bool oneTime) {
             var arg = new EffectArg();
             arg.effectID = effectID;
             arg.actorID = 0xFFFFFFFF;
@@ -1495,8 +1414,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="target">对象</param>
         /// <param name="effectID">特效ID</param>
-        protected void ShowEffect(ActorPC pc, Actor target, uint effectID)
-        {
+        protected void ShowEffect(ActorPC pc, Actor target, uint effectID) {
             ShowEffect(pc, target.ActorID, effectID);
         }
 
@@ -1505,13 +1423,11 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="eventID"></param>
-        protected void StartEvent(ActorPC pc, uint eventID)
-        {
+        protected void StartEvent(ActorPC pc, uint eventID) {
             var client = GetMapClient(pc);
 
 
-            if (client.scriptThread != null)
-            {
+            if (client.scriptThread != null) {
                 ClientManager.RemoveThread(client.scriptThread.Name);
                 client.scriptThread = null;
                 client.currentEvent = null;
@@ -1526,10 +1442,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">地图ID</param>
         /// <returns></returns>
-        protected string GetMapName(uint mapID)
-        {
-            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID))
-            {
+        protected string GetMapName(uint mapID) {
+            if (Configuration.Configuration.Instance.HostedMaps.Contains(mapID)) {
                 var newMap = MapManager.Instance.GetMap(mapID);
                 return newMap.Name;
             }
@@ -1544,8 +1458,7 @@ namespace SagaMap.Scripting
         /// <param name="mapID">地图ID</param>
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
-        protected void SetHomePoint(ActorPC pc, uint mapID, byte x, byte y)
-        {
+        protected void SetHomePoint(ActorPC pc, uint mapID, byte x, byte y) {
             pc.SaveMap = mapID;
             pc.SaveX = x;
             pc.SaveY = y;
@@ -1557,8 +1470,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="itemID">道具ID</param>
         /// <returns></returns>
-        protected int CountItem(ActorPC pc, uint itemID)
-        {
+        protected int CountItem(ActorPC pc, uint itemID) {
             var item = pc.Inventory.GetItem(itemID, Inventory.SearchType.ITEM_ID);
             if (item != null) return item.Stack;
 
@@ -1570,11 +1482,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="ID">道具ID</param>
         /// <returns>道具清单</returns>
-        protected List<SagaDB.Item.Item> GetItem(ActorPC pc, uint ID)
-        {
+        protected List<SagaDB.Item.Item> GetItem(ActorPC pc, uint ID) {
             var result = new List<SagaDB.Item.Item>();
-            for (var i = 2; i < 6; i++)
-            {
+            for (var i = 2; i < 6; i++) {
                 var list = pc.Inventory.Items[(ContainerType)i];
                 var query = from it in list
                     where it.ItemID == ID
@@ -1590,8 +1500,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="item">道具</param>
-        protected void GiveItem(ActorPC pc, SagaDB.Item.Item item)
-        {
+        protected void GiveItem(ActorPC pc, SagaDB.Item.Item item) {
             var client = GetMapClient(pc);
             Logger.LogItemGet(Logger.EventType.ItemNPCGet, pc.Name + "(" + pc.CharID + ")",
                 item.BaseData.name + "(" + item.ItemID + ")",
@@ -1605,8 +1514,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="itemID">道具ID</param>
         /// <param name="count">个数</param>
-        protected void GiveItem(ActorPC pc, uint itemID, ushort count)
-        {
+        protected void GiveItem(ActorPC pc, uint itemID, ushort count) {
             GiveItem(pc, itemID, count, true, 0);
         }
 
@@ -1617,8 +1525,7 @@ namespace SagaMap.Scripting
         /// <param name="itemID">道具ID</param>
         /// <param name="count">数量</param>
         /// <param name="rentalMinutes">租凭分钟</param>
-        protected void GiveItem(ActorPC pc, uint itemID, ushort count, int rentalMinutes)
-        {
+        protected void GiveItem(ActorPC pc, uint itemID, ushort count, int rentalMinutes) {
             GiveItem(pc, itemID, count, true, 0, rentalMinutes);
         }
 
@@ -1629,8 +1536,7 @@ namespace SagaMap.Scripting
         /// <param name="itemID">道具ID</param>
         /// <param name="count">个数</param>
         /// <param name="identified">是否鉴定</param>
-        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified)
-        {
+        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified) {
             GiveItem(pc, itemID, count, identified, 0);
         }
 
@@ -1643,8 +1549,7 @@ namespace SagaMap.Scripting
         /// <param name="count">个数</param>
         /// <param name="identified">是否鉴定</param>
         /// <param name="pictID">外观ID或者画板包含的怪物ID</param>
-        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified, uint pictID)
-        {
+        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified, uint pictID) {
             GiveItem(pc, itemID, count, identified, pictID, 0);
         }
 
@@ -1656,27 +1561,23 @@ namespace SagaMap.Scripting
         /// <param name="count">个数</param>
         /// <param name="identified">是否鉴定</param>
         /// <param name="pictID">外观ID或者画板包含的怪物ID</param>
-        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified, uint pictID, int rentalMinutes)
-        {
+        protected void GiveItem(ActorPC pc, uint itemID, ushort count, bool identified, uint pictID,
+            int rentalMinutes) {
             var client = GetMapClient(pc);
             var item = ItemFactory.Instance.GetItem(itemID);
             item.PictID = pictID;
-            if (rentalMinutes > 0)
-            {
+            if (rentalMinutes > 0) {
                 item.Rental = true;
                 item.RentalTime = DateTime.Now + new TimeSpan(0, rentalMinutes, 0);
             }
 
-            if (item.Stackable)
-            {
+            if (item.Stackable) {
                 item.Stack = count;
                 item.Identified = true; //免鉴定
                 client.AddItem(item, true);
             }
-            else
-            {
-                for (var i = 0; i < count; i++)
-                {
+            else {
+                for (var i = 0; i < count; i++) {
                     item.Stack = 1;
                     item.Identified = true; //免鉴定
                     client.AddItem(item, true);
@@ -1695,8 +1596,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <returns></returns>
-        protected int ItemFreeSlotCount(ActorPC pc)
-        {
+        protected int ItemFreeSlotCount(ActorPC pc) {
             var count = 0;
             count += GetItemCount(pc, ContainerType.BODY);
             count += GetItemCount(pc, ContainerType.BACK_BAG);
@@ -1713,15 +1613,12 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="container">哪一個道具欄</param>
         /// <returns></returns>
-        protected int GetItemCount(ActorPC pc, ContainerType container)
-        {
-            try
-            {
+        protected int GetItemCount(ActorPC pc, ContainerType container) {
+            try {
                 return pc.Inventory.Items[container].Count();
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return 0;
             }
         }
@@ -1732,8 +1629,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="itemID">道具ID</param>
         /// <param name="count">个数</param>
-        protected SagaDB.Item.Item TakeItem(ActorPC pc, uint itemID, ushort count)
-        {
+        protected SagaDB.Item.Item TakeItem(ActorPC pc, uint itemID, ushort count) {
             var client = GetMapClient(pc);
             Logger.LogItemLost(Logger.EventType.ItemNPCLost, pc.Name + "(" + pc.CharID + ")", "(" + itemID + ")",
                 string.Format("ScriptTake Count:{0}", count), true);
@@ -1746,8 +1642,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="slotID">道具SlotID</param>
         /// <param name="count">个数</param>
-        protected void TakeItemBySlot(ActorPC pc, uint slotID, ushort count)
-        {
+        protected void TakeItemBySlot(ActorPC pc, uint slotID, ushort count) {
             var client = GetMapClient(pc);
             client.DeleteItem(slotID, count, true);
         }
@@ -1758,11 +1653,9 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="eqSlot">装备部位</param>
         /// <returns>是否成功拿走道具</returns>
-        protected bool TakeEquipment(ActorPC pc, EnumEquipSlot eqSlot)
-        {
+        protected bool TakeEquipment(ActorPC pc, EnumEquipSlot eqSlot) {
             var client = GetMapClient(pc);
-            try
-            {
+            try {
                 var item = pc.Inventory.Equipments[eqSlot];
                 var slot = item.Slot;
                 pc.Inventory.DeleteItem(slot, 1);
@@ -1786,9 +1679,8 @@ namespace SagaMap.Scripting
                     1));
                 return true;
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 return false;
             }
         }
@@ -1798,10 +1690,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="eqSlot">装备部位</param>
-        protected void RemoveEquipment(ActorPC pc, EnumEquipSlot eqSlot)
-        {
-            if (pc.Inventory.Equipments.ContainsKey(eqSlot))
-            {
+        protected void RemoveEquipment(ActorPC pc, EnumEquipSlot eqSlot) {
+            if (pc.Inventory.Equipments.ContainsKey(eqSlot)) {
                 var client = GetMapClient(pc);
                 var item = pc.Inventory.Equipments[eqSlot];
                 item = pc.Inventory.Equipments[item.EquipSlot[0]];
@@ -1819,8 +1709,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="id">活动木偶ID</param>
-        protected void ActivateMarionette(ActorPC pc, uint id)
-        {
+        protected void ActivateMarionette(ActorPC pc, uint id) {
             var client = GetMapClient(pc);
             client.MarionetteActivate(id, false, true);
         }
@@ -1829,8 +1718,7 @@ namespace SagaMap.Scripting
         ///     让某特定对象（玩家，怪物）的HP/MP/SP全满
         /// </summary>
         /// <param name="actor">对象</param>
-        protected void Heal(Actor actor)
-        {
+        protected void Heal(Actor actor) {
             var client = GetMapClient(CurrentPC);
             actor.HP = actor.MaxHP;
             actor.MP = actor.MaxMP;
@@ -1844,13 +1732,10 @@ namespace SagaMap.Scripting
         /// <param name="creator">创造者</param>
         /// <param name="mapID">地图ID</param>
         /// <returns></returns>
-        protected bool CheckMapInstance(ActorPC creator, uint mapID)
-        {
+        protected bool CheckMapInstance(ActorPC creator, uint mapID) {
             var map = MapManager.Instance.GetMap(mapID);
-            if (map != null)
-            {
-                if (map.IsMapInstance)
-                {
+            if (map != null) {
+                if (map.IsMapInstance) {
                     if (map.Creator.CharID == creator.CharID)
                         return true;
                     return false;
@@ -1870,8 +1755,7 @@ namespace SagaMap.Scripting
         /// <param name="exitX">玩家退出时返回的X坐标</param>
         /// <param name="exitY">玩家退出时返回的Y坐标</param>
         /// <returns>新建地图副本的ID</returns>
-        protected int CreateMapInstance(int template, uint exitMap, byte exitX, byte exitY)
-        {
+        protected int CreateMapInstance(int template, uint exitMap, byte exitX, byte exitY) {
             return CreateMapInstance(template, exitMap, exitX, exitY, false);
         }
 
@@ -1884,8 +1768,7 @@ namespace SagaMap.Scripting
         /// <param name="exitY">玩家退出时返回的Y坐标</param>
         /// <param name="autoDispose">是否在玩家登出的时候自动删除</param>
         /// <returns>新建地图副本的ID</returns>
-        protected int CreateMapInstance(int template, uint exitMap, byte exitX, byte exitY, bool autoDispose)
-        {
+        protected int CreateMapInstance(int template, uint exitMap, byte exitX, byte exitY, bool autoDispose) {
             return (int)MapManager.Instance.CreateMapInstance(CurrentPC, (uint)template, exitMap, exitX, exitY,
                 autoDispose);
         }
@@ -1902,8 +1785,7 @@ namespace SagaMap.Scripting
         /// <param name="returnori">是否返回原地图ID而不是副本地图的ID（影响小地图和NPC可见）</param>
         /// <returns></returns>
         protected int CreateMapInstance(int template, uint exitMap, byte exitX, byte exitY, bool autoDispose,
-            uint ResurrectionLimit, bool returnori)
-        {
+            uint ResurrectionLimit, bool returnori) {
             return (int)MapManager.Instance.CreateMapInstance(CurrentPC, (uint)template, exitMap, exitX, exitY,
                 autoDispose, ResurrectionLimit, returnori);
         }
@@ -1913,8 +1795,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="id">地图ID</param>
         /// <returns></returns>
-        protected bool DeleteMapInstance(int id)
-        {
+        protected bool DeleteMapInstance(int id) {
             return MapManager.Instance.DeleteMapInstance((uint)id);
         }
 
@@ -1923,8 +1804,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">地图ID</param>
         /// <param name="spawnFile">刷怪文件</param>
-        protected void LoadSpawnFile(int mapID, string spawnFile)
-        {
+        protected void LoadSpawnFile(int mapID, string spawnFile) {
             MobSpawnManager.Instance.LoadOne(spawnFile, (uint)mapID);
         }
 
@@ -1933,8 +1813,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="job">职业</param>
-        protected void ChangePlayerJob(ActorPC pc, PC_JOB job)
-        {
+        protected void ChangePlayerJob(ActorPC pc, PC_JOB job) {
             MapServer.charDB.SaveSkill(pc);
             pc.Skills.Clear();
             pc.Skills2.Clear();
@@ -1962,8 +1841,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="skillID">技能ID</param>
-        protected void LearnSkill(ActorPC pc, uint skillID, bool ignoreSkillList = false)
-        {
+        protected void LearnSkill(ActorPC pc, uint skillID, bool ignoreSkillList = false) {
             var skill = SkillFactory.Instance.GetSkill(skillID, 1);
             //if (skillID == 1603 || skillID == 1604 || skillID == 1606 || skillID == 1607)
             //{
@@ -1979,29 +1857,25 @@ namespace SagaMap.Scripting
             else
                 jobLV = 1;
             if (skill == null) return;
-            if (pc.Job == pc.JobBasic)
-            {
+            if (pc.Job == pc.JobBasic) {
                 if (pc.JobLevel1 < jobLV)
                     return;
                 if (!pc.Skills.ContainsKey(skillID)) pc.Skills.Add(skillID, skill);
             }
 
-            if (pc.Job == pc.Job2X)
-            {
+            if (pc.Job == pc.Job2X) {
                 if (pc.JobLevel2X < jobLV)
                     return;
                 if (!pc.Skills2.ContainsKey(skillID)) pc.Skills2.Add(skillID, skill);
             }
 
-            if (pc.Job == pc.Job2T)
-            {
+            if (pc.Job == pc.Job2T) {
                 if (pc.JobLevel2T < jobLV)
                     return;
                 if (!pc.Skills2.ContainsKey(skillID)) pc.Skills2.Add(skillID, skill);
             }
 
-            if (pc.Job == pc.Job3)
-            {
+            if (pc.Job == pc.Job3) {
                 if (pc.JobLevel3 < jobLV)
                     return;
                 if (!pc.Skills3.ContainsKey(skillID)) pc.Skills3.Add(skillID, skill);
@@ -2016,8 +1890,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <returns>玩家交易的道具</returns>
-        protected List<SagaDB.Item.Item> NPCTrade(ActorPC pc)
-        {
+        protected List<SagaDB.Item.Item> NPCTrade(ActorPC pc) {
             var client = GetMapClient(pc);
             client.npcTrade = true;
             var name = "";
@@ -2042,8 +1915,7 @@ namespace SagaMap.Scripting
         /// <param name="itemID">道具ID</param>
         /// <param name="amount">个数</param>
         /// <returns></returns>
-        protected bool CheckInventory(ActorPC pc, uint itemID, int amount)
-        {
+        protected bool CheckInventory(ActorPC pc, uint itemID, int amount) {
             var item = ItemFactory.Instance.Items[itemID];
             var volume = (int)item.volume * amount;
             var weight = (int)item.weight * amount;
@@ -2059,8 +1931,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="val">值</param>
-        protected void SkillPointBonus(ActorPC pc, byte val)
-        {
+        protected void SkillPointBonus(ActorPC pc, byte val) {
             pc.SkillPoint += val;
             GetMapClient(pc).SendPlayerLevel();
         }
@@ -2070,8 +1941,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="val">值</param>
-        protected void SkillPointBonus2T(ActorPC pc, byte val)
-        {
+        protected void SkillPointBonus2T(ActorPC pc, byte val) {
             pc.SkillPoint2T += val;
             GetMapClient(pc).SendPlayerLevel();
         }
@@ -2081,8 +1951,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="val">值</param>
-        protected void SkillPointBonus2X(ActorPC pc, byte val)
-        {
+        protected void SkillPointBonus2X(ActorPC pc, byte val) {
             pc.SkillPoint2X += val;
             GetMapClient(pc).SendPlayerLevel();
         }
@@ -2092,8 +1961,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="level">复活术等级</param>
-        protected void Revive(ActorPC pc, byte level)
-        {
+        protected void Revive(ActorPC pc, byte level) {
             if (level > 0)
                 GetMapClient(pc).SendRevive(level);
         }
@@ -2105,8 +1973,7 @@ namespace SagaMap.Scripting
         /// <param name="count">数量</param>
         /// <param name="identified">是否鉴定</param>
         /// <returns>道具</returns>
-        protected SagaDB.Item.Item CreateItem(uint itemID, ushort count, bool identified)
-        {
+        protected SagaDB.Item.Item CreateItem(uint itemID, ushort count, bool identified) {
             var item = ItemFactory.Instance.GetItem(itemID, true); //免鉴定
             item.Stack = count;
             return item;
@@ -2117,8 +1984,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="itemID">道具ID</param>
         /// <returns>道具列表</returns>
-        protected List<SagaDB.Item.Item> CreateItemList(params uint[] itemID)
-        {
+        protected List<SagaDB.Item.Item> CreateItemList(params uint[] itemID) {
             var list = new List<SagaDB.Item.Item>();
             foreach (var i in itemID) list.Add(CreateItem(itemID[i], 1, true));
             return list;
@@ -2130,8 +1996,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
-        protected void Navigate(ActorPC pc, byte x, byte y)
-        {
+        protected void Navigate(ActorPC pc, byte x, byte y) {
             var p = new SSMG_NPC_NAVIGATION();
             p.X = x;
             p.Y = y;
@@ -2142,14 +2007,12 @@ namespace SagaMap.Scripting
         ///     取消导航箭头
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void NavigateCancel(ActorPC pc)
-        {
+        protected void NavigateCancel(ActorPC pc) {
             var p = new SSMG_NPC_NAVIGATION_CANCEL();
             GetMapClient(pc).NetIo.SendPacket(p);
         }
 
-        public void Synthese(ActorPC pc, ushort skillID, byte skillLv)
-        {
+        public void Synthese(ActorPC pc, ushort skillID, byte skillLv) {
             Synthese(pc, skillID, skillLv, false);
         }
 
@@ -2159,8 +2022,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="skillID">精炼技能</param>
         /// <param name="skillLv">技能等级</param>
-        public void Synthese(ActorPC pc, ushort skillID, byte skillLv, bool noMoney)
-        {
+        public void Synthese(ActorPC pc, ushort skillID, byte skillLv, bool noMoney) {
             var p = new SSMG_NPC_SYNTHESE_NEWINFO();
             p.SkillID = skillID;
             p.SkillLevel = skillLv;
@@ -2200,18 +2062,15 @@ namespace SagaMap.Scripting
             uint mobID = 0;
 
 
-            foreach (var i in client.syntheseItem.Keys)
-            {
+            foreach (var i in client.syntheseItem.Keys) {
                 var result = new Dictionary<uint, List<SyntheseResult>>();
 
                 if (!SyntheseFactory.Instance.Items.ContainsKey(i))
                     continue;
                 var info = SyntheseFactory.Instance.Items[i];
-                foreach (var j in info.Materials)
-                {
+                foreach (var j in info.Materials) {
                     var count = 0;
-                    while (CountItem(pc, j.ID) > 0 && count < j.Count * client.syntheseItem[i])
-                    {
+                    while (CountItem(pc, j.ID) > 0 && count < j.Count * client.syntheseItem[i]) {
                         var tmp = CountItem(pc, j.ID);
                         if (!sketch)
                             sketch = j.ID == 10020758;
@@ -2229,19 +2088,14 @@ namespace SagaMap.Scripting
                     //    TakeItem(pc, j.ID, (ushort)(j.Count * client.syntheseItem[i]));
                 }
 
-                if (complete && (pc.Gold >= info.Gold || noMoney))
-                {
-                    for (uint k = 0; k < client.syntheseItem[i]; k++)
-                    {
+                if (complete && (pc.Gold >= info.Gold || noMoney)) {
+                    for (uint k = 0; k < client.syntheseItem[i]; k++) {
                         var ran = Global.Random.Next(0, info.Products.Sum(x => x.Rate));
                         int baseValue = 0, maxVlaue = 0;
-                        foreach (var j in info.Products)
-                        {
+                        foreach (var j in info.Products) {
                             maxVlaue = baseValue + j.Rate;
-                            if (ran >= baseValue && ran < maxVlaue)
-                            {
-                                if (sketch && mobID != 0)
-                                {
+                            if (ran >= baseValue && ran < maxVlaue) {
+                                if (sketch && mobID != 0) {
                                     //GiveItem(pc, j.ID, (ushort)(j.Count), true, mobID);
                                     var sresult = new SyntheseResult();
                                     sresult.id = j.ID;
@@ -2253,8 +2107,7 @@ namespace SagaMap.Scripting
                                     else
                                         result.Add(j.ID, new List<SyntheseResult> { sresult });
                                 }
-                                else
-                                {
+                                else {
                                     var sresult = new SyntheseResult();
                                     sresult.id = j.ID;
                                     sresult.count = j.Count;
@@ -2286,12 +2139,10 @@ namespace SagaMap.Scripting
             client.NetIo.SendPacket(p2);
         }
 
-        private byte GetfoodlevelBouns(byte level)
-        {
+        private byte GetfoodlevelBouns(byte level) {
             byte c = 0;
             var rate = Global.Random.Next(0, 100);
-            switch (level)
-            {
+            switch (level) {
                 case 1:
                     if (rate < 40)
                         c = 0;
@@ -2347,8 +2198,7 @@ namespace SagaMap.Scripting
             return c;
         }
 
-        private bool HasMaterial(ActorPC pc, SyntheseInfo info)
-        {
+        private bool HasMaterial(ActorPC pc, SyntheseInfo info) {
             foreach (var i in info.Materials)
                 if (CountItem(pc, i.ID) > 0)
                     return true;
@@ -2359,8 +2209,7 @@ namespace SagaMap.Scripting
         ///     向银行存钱
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void BankDeposit(ActorPC pc)
-        {
+        protected void BankDeposit(ActorPC pc) {
             var client = GetMapClient(pc);
             var input = InputBox(pc,
                 string.Format(LocalManager.Instance.Strings.NPC_INPUT_BANK, client.Character.Account.Bank),
@@ -2368,8 +2217,7 @@ namespace SagaMap.Scripting
 
             if (input == "") return;
             var amount = uint.Parse(input);
-            if (pc.Gold < amount)
-            {
+            if (pc.Gold < amount) {
                 Say(pc, 131, LocalManager.Instance.Strings.NPC_BANK_NOT_ENOUGH_GOLD);
                 return;
             }
@@ -2382,8 +2230,7 @@ namespace SagaMap.Scripting
         ///     从银行取钱
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void BankWithdraw(ActorPC pc)
-        {
+        protected void BankWithdraw(ActorPC pc) {
             var client = GetMapClient(pc);
             var input = InputBox(pc,
                 string.Format(LocalManager.Instance.Strings.NPC_INPUT_BANK, client.Character.Account.Bank),
@@ -2391,8 +2238,7 @@ namespace SagaMap.Scripting
 
             if (input == "") return;
             var amount = uint.Parse(input);
-            if (pc.Account.Bank < amount)
-            {
+            if (pc.Account.Bank < amount) {
                 Say(pc, 131, LocalManager.Instance.Strings.NPC_BANK_NOT_ENOUGH_GOLD);
                 return;
             }
@@ -2407,8 +2253,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="type">类型</param>
         /// <returns>输入的内容，取消则为""</returns>
-        public string InputBox(ActorPC pc, string title, InputType type)
-        {
+        public string InputBox(ActorPC pc, string title, InputType type) {
             var client = GetMapClient(pc);
             client.inputContent = "\0";
 
@@ -2432,8 +2277,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="place">地点</param>
-        protected void OpenWareHouse(ActorPC pc, WarehousePlace place)
-        {
+        protected void OpenWareHouse(ActorPC pc, WarehousePlace place) {
             var client = GetMapClient(pc);
             client.currentWarehouse = place;
             PlaySound(pc, 2060, false, 100, 50);
@@ -2452,8 +2296,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="treasureGroup">宝物组</param>
-        protected void GiveRandomTreasure(ActorPC pc, string treasureGroup)
-        {
+        protected void GiveRandomTreasure(ActorPC pc, string treasureGroup) {
             var res = TreasureFactory.Instance.GetRandomItem(treasureGroup);
             //SagaMap.Network.Client.MapClient.FromActorPC(pc).SendSystemMessage("treasureGroup:" + treasureGroup + ",ItemID:" + res.ID);
             bool identified;
@@ -2469,8 +2312,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="treasureGroup">宝物组</param>
         /// <returns>道具</returns>
-        protected SagaDB.Item.Item GetRandomTreasure(string treasureGroup)
-        {
+        protected SagaDB.Item.Item GetRandomTreasure(string treasureGroup) {
             var res = TreasureFactory.Instance.GetRandomItem(treasureGroup);
             bool identified;
             /*if (Global.Random.Next(0, 99) <= 5)
@@ -2488,8 +2330,7 @@ namespace SagaMap.Scripting
         ///     鉴定道具
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void Identify(ActorPC pc)
-        {
+        public void Identify(ActorPC pc) {
             var inv = pc.Inventory.GetContainer(ContainerType.BODY);
             List<SagaDB.Item.Item> list;
             var box =
@@ -2498,19 +2339,16 @@ namespace SagaMap.Scripting
                 select c;
             list = box.ToList();
 
-            if (list.Count > 0)
-            {
+            if (list.Count > 0) {
                 var names = new string[list.Count];
                 var i = 0;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     names[i] = GetItemNameByType(j.BaseData.itemType);
                     i++;
                 }
 
                 var sel = Select(pc, LocalManager.Instance.Strings.ITEM_IDENTIFY, "", true, names);
-                if (sel != 255)
-                {
+                if (sel != 255) {
                     var client = GetMapClient(pc);
                     var item = list[sel - 1];
                     item.Identified = true;
@@ -2520,8 +2358,7 @@ namespace SagaMap.Scripting
                     client.SendSkillDummy(903, 1);
                 }
             }
-            else
-            {
+            else {
                 var client = GetMapClient(pc);
                 client.SendSystemMessage(LocalManager.Instance.Strings.ITEM_IDENTIFY_NO_NEED);
                 client.SendSkillDummy(903, 1);
@@ -2532,8 +2369,7 @@ namespace SagaMap.Scripting
         ///     打开玩家身上的宝物箱
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void OpenTreasureBox(ActorPC pc)
-        {
+        public void OpenTreasureBox(ActorPC pc) {
             OpenTreasureBox(pc, true, true, true);
         }
 
@@ -2541,8 +2377,7 @@ namespace SagaMap.Scripting
         ///     打开玩家身上的宝物箱
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void OpenTreasureBox(ActorPC pc, bool timber, bool treasure, bool container)
-        {
+        public void OpenTreasureBox(ActorPC pc, bool timber, bool treasure, bool container) {
             var inv = pc.Inventory.GetContainer(ContainerType.BODY);
             List<SagaDB.Item.Item> list;
             var box =
@@ -2553,19 +2388,16 @@ namespace SagaMap.Scripting
                 select c;
             list = box.ToList();
 
-            if (list.Count > 0)
-            {
+            if (list.Count > 0) {
                 var names = new string[list.Count];
                 var i = 0;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     names[i] = j.BaseData.name;
                     i++;
                 }
 
                 var sel = Select(pc, LocalManager.Instance.Strings.ITEM_TREASURE_OPEN, "", true, names);
-                if (sel != 255)
-                {
+                if (sel != 255) {
                     var item = list[sel - 1];
                     var num = item.BaseData.id - item.BaseData.iconID;
                     var res = TreasureFactory.Instance.GetRandomItem(string.Concat(item.BaseData.itemType, num));
@@ -2578,8 +2410,7 @@ namespace SagaMap.Scripting
                     GiveItem(pc, res.ID, (ushort)res.Count, identified);
                 }
             }
-            else
-            {
+            else {
                 var client = GetMapClient(pc);
                 client.SendSystemMessage(LocalManager.Instance.Strings.ITEM_TREASURE_NO_NEED);
             }
@@ -2591,8 +2422,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="type">特效类型，Out=渐出，In=渐进</param>
         /// <param name="effect">特效效果，黑或者白</param>
-        protected void Fade(ActorPC pc, FadeType type, FadeEffect effect)
-        {
+        protected void Fade(ActorPC pc, FadeType type, FadeEffect effect) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_FADE();
             p.FadeEffect = effect;
@@ -2605,22 +2435,19 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <returns>转职结果</returns>
-        protected bool JobSwitch(ActorPC pc)
-        {
+        protected bool JobSwitch(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_JOB_SWITCH();
             p.Job = pc.Job;
             var max = 0;
-            if (pc.Job == pc.Job2X)
-            {
+            if (pc.Job == pc.Job2X) {
                 p.Level = pc.JobLevel2T;
                 p.Job = pc.Job2T;
                 p.LevelReduced = (byte)(pc.JobLevel2T - pc.JobLevel2T / 5);
                 p.PossibleReserveSkills = (ushort)(pc.JobLevel2X / 10);
                 max = pc.JobLevel2T / 5;
             }
-            else if (pc.Job == pc.Job2T)
-            {
+            else if (pc.Job == pc.Job2T) {
                 p.Level = pc.JobLevel2X;
                 p.Job = pc.Job2X;
                 p.LevelReduced = (byte)(pc.JobLevel2X - pc.JobLevel2X / 5);
@@ -2631,8 +2458,7 @@ namespace SagaMap.Scripting
             p.LevelItem = Configuration.Configuration.Instance.JobSwitchReduceItem;
             var item = pc.Inventory.GetItem(Configuration.Configuration.Instance.JobSwitchReduceItem,
                 Inventory.SearchType.ITEM_ID);
-            if (item != null)
-            {
+            if (item != null) {
                 if (item.Stack < max)
                     p.ItemCount = item.Stack;
                 else
@@ -2658,8 +2484,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="job">1为1转，2为2转</param>
-        protected void ResetSkill(ActorPC pc, byte job)
-        {
+        protected void ResetSkill(ActorPC pc, byte job) {
             GetMapClient(pc).ResetSkill(job);
             GetMapClient(pc).SendPlayerInfo();
         }
@@ -2668,8 +2493,7 @@ namespace SagaMap.Scripting
         ///     重置属性点
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ResetStatusPoint(ActorPC pc)
-        {
+        protected void ResetStatusPoint(ActorPC pc) {
             GetMapClient(pc).ResetStatusPoint();
         }
 
@@ -2679,8 +2503,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="bbsID">揭示版ID</param>
         /// <param name="cost">发贴费用</param>
-        protected void OpenBBS(ActorPC pc, uint bbsID, uint cost)
-        {
+        protected void OpenBBS(ActorPC pc, uint bbsID, uint cost) {
             var client = GetMapClient(pc);
 
             client.bbsClose = false;
@@ -2705,8 +2528,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">创建者</param>
         /// <param name="name">军团名</param>
         /// <returns>创建成功返回true,如果名字已存在返回false</returns>
-        protected bool CreateRing(ActorPC pc, string name)
-        {
+        protected bool CreateRing(ActorPC pc, string name) {
             MapClient.FromActorPC(pc);
             var ring = RingManager.Instance.CreateRing(pc, name);
             return ring != null;
@@ -2716,8 +2538,7 @@ namespace SagaMap.Scripting
         ///     发送飞空庭制作材料
         /// </summary>
         /// <param name="parts"></param>
-        protected void SendFGardenCreateMaterial(ActorPC pc, BitMask<FGardenParts> parts)
-        {
+        protected void SendFGardenCreateMaterial(ActorPC pc, BitMask<FGardenParts> parts) {
             var p = new SSMG_FG_CREATE_MATERIAL();
             p.Parts = parts;
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
@@ -2727,8 +2548,7 @@ namespace SagaMap.Scripting
         ///     打开飞空庭仓库(目前使用暂时不正常)
         /// </summary>
         /// <param name="pc"></param>
-        protected void OpenFGardenWareHouse(ActorPC pc)
-        {
+        protected void OpenFGardenWareHouse(ActorPC pc) {
             var client = MapClient.FromActorPC(pc);
             client.SendFGardenWareItems();
         }
@@ -2738,8 +2558,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="rope">绳子的Actor</param>
-        protected void EnterFGarden(ActorPC pc, ActorEvent rope)
-        {
+        protected void EnterFGarden(ActorPC pc, ActorEvent rope) {
             if (rope.Caster.FlyingGarden == null) return;
 
             var p = new Packet(10); //unknown packet
@@ -2748,16 +2567,14 @@ namespace SagaMap.Scripting
             p.PutUInt(pc.MapID, 6);
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
 
-            if (rope.Caster.FlyingGarden.MapID == 0)
-            {
+            if (rope.Caster.FlyingGarden.MapID == 0) {
                 var map = MapManager.Instance.GetMap(pc.MapID);
                 rope.Caster.FlyingGarden.MapID = MapManager.Instance.CreateMapInstance(rope.Caster, 70000000, pc.MapID,
                     Global.PosX16to8(pc.X, map.Width), Global.PosY16to8(pc.Y, map.Height));
 
                 //spawn furnitures
                 map = MapManager.Instance.GetMap(rope.Caster.FlyingGarden.MapID);
-                foreach (var i in rope.Caster.FlyingGarden.Furnitures[FurniturePlace.GARDEN])
-                {
+                foreach (var i in rope.Caster.FlyingGarden.Furnitures[FurniturePlace.GARDEN]) {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
                     i.invisble = false;
@@ -2774,8 +2591,7 @@ namespace SagaMap.Scripting
         ///     离开飞空庭，如果不在飞空庭中则什么都不做
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ExitFGarden(ActorPC pc)
-        {
+        protected void ExitFGarden(ActorPC pc) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             pc.Speed = 350;
             if (map.IsMapInstance && map.ID / 10 * 10 == 70000000)
@@ -2786,19 +2602,16 @@ namespace SagaMap.Scripting
         ///     进入飞空庭房间
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void EnterFGRoom(ActorPC pc)
-        {
+        protected void EnterFGRoom(ActorPC pc) {
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
-            if (owner.FlyingGarden.RoomMapID == 0)
-            {
+            if (owner.FlyingGarden.RoomMapID == 0) {
                 owner.FlyingGarden.RoomMapID =
                     MapManager.Instance.CreateMapInstance(owner, 75000000, owner.FlyingGarden.MapID, 6, 7);
                 //spawn furnitures
                 var map = MapManager.Instance.GetMap(owner.FlyingGarden.RoomMapID);
-                foreach (var i in owner.FlyingGarden.Furnitures[FurniturePlace.ROOM])
-                {
+                foreach (var i in owner.FlyingGarden.Furnitures[FurniturePlace.ROOM]) {
                     i.e = new NullEventHandler();
                     map.RegisterActor(i);
                     i.invisble = false;
@@ -2812,8 +2625,7 @@ namespace SagaMap.Scripting
         ///     离开飞空庭房间
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ExitFGRoom(ActorPC pc)
-        {
+        protected void ExitFGRoom(ActorPC pc) {
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
@@ -2825,8 +2637,7 @@ namespace SagaMap.Scripting
         ///     离开飞空城房间
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ExitFFRoom(ActorPC pc)
-        {
+        protected void ExitFFRoom(ActorPC pc) {
             var owner = GetFlyingGardenOwner(pc);
             if (owner == null)
                 return;
@@ -2838,8 +2649,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <returns></returns>
-        protected ActorPC GetFlyingGardenOwner(ActorPC pc)
-        {
+        protected ActorPC GetFlyingGardenOwner(ActorPC pc) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if ((map.IsMapInstance && map.ID / 10 * 10 == 70000000) ||
                 (map.IsMapInstance && map.ID / 10 * 10 == 75000000)) return map.Creator;
@@ -2851,8 +2661,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <returns>如果没有飞空庭或者没有召唤过飞空庭，则返回null</returns>
-        protected ActorEvent GetRopeActor(ActorPC pc)
-        {
+        protected ActorEvent GetRopeActor(ActorPC pc) {
             if (pc.FlyingGarden != null)
                 if (pc.FlyingGarden.RopeActor != null)
                     return pc.FlyingGarden.RopeActor;
@@ -2864,12 +2673,9 @@ namespace SagaMap.Scripting
         ///     收回飞空庭绳子
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ReturnRope(ActorPC pc)
-        {
-            if (pc.FlyingGarden != null)
-            {
-                if (pc.FlyingGarden.RopeActor != null)
-                {
+        protected void ReturnRope(ActorPC pc) {
+            if (pc.FlyingGarden != null) {
+                if (pc.FlyingGarden.RopeActor != null) {
                     var map = MapManager.Instance.GetMap(pc.FlyingGarden.RopeActor.MapID);
                     map.DeleteActor(pc.FlyingGarden.RopeActor);
                     if (ScriptManager.Instance.Events.ContainsKey(pc.FlyingGarden.RopeActor.EventID))
@@ -2877,8 +2683,7 @@ namespace SagaMap.Scripting
                     pc.FlyingGarden.RopeActor = null;
                 }
 
-                if (pc.FlyingGarden.RoomMapID != 0)
-                {
+                if (pc.FlyingGarden.RoomMapID != 0) {
                     var roomMap = MapManager.Instance.GetMap(pc.FlyingGarden.RoomMapID);
                     var gardenMap = MapManager.Instance.GetMap(pc.FlyingGarden.MapID);
                     roomMap.ClientExitMap = gardenMap.ClientExitMap;
@@ -2888,8 +2693,7 @@ namespace SagaMap.Scripting
                     pc.FlyingGarden.RoomMapID = 0;
                 }
 
-                if (pc.FlyingGarden.MapID != 0)
-                {
+                if (pc.FlyingGarden.MapID != 0) {
                     MapManager.Instance.DeleteMapInstance(pc.FlyingGarden.MapID);
                     pc.FlyingGarden.MapID = 0;
                 }
@@ -2903,22 +2707,18 @@ namespace SagaMap.Scripting
         /// <param name="mapID">目的地ID</param>
         /// <param name="x">X坐标</param>
         /// <param name="y">Y坐标</param>
-        public void FGTakeOff(ActorPC pc, uint mapID, byte x, byte y)
-        {
+        public void FGTakeOff(ActorPC pc, uint mapID, byte x, byte y) {
             var owner = GetFlyingGardenOwner(pc);
             if (owner != pc)
                 return;
-            if (owner.FlyingGarden.MapID != 0)
-            {
+            if (owner.FlyingGarden.MapID != 0) {
                 //spawn furnitures
                 var map = MapManager.Instance.GetMap(owner.FlyingGarden.MapID);
                 var list = new List<Actor>();
                 foreach (var i in map.Actors.Values)
-                    if (i.type == ActorType.PC)
-                    {
+                    if (i.type == ActorType.PC) {
                         var pc2 = (ActorPC)i;
-                        if (pc2.Online)
-                        {
+                        if (pc2.Online) {
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
                             p.MapID = owner.FlyingGarden.MapID;
@@ -2927,25 +2727,21 @@ namespace SagaMap.Scripting
                         }
                     }
 
-                foreach (var i in list)
-                {
+                foreach (var i in list) {
                     i.Speed = 350;
                     MapClient.FromActorPC((ActorPC)i).fgTakeOff = true;
                     Warp((ActorPC)i, mapID, x, y);
                 }
             }
 
-            if (owner.FlyingGarden.RoomMapID != 0)
-            {
+            if (owner.FlyingGarden.RoomMapID != 0) {
                 //spawn furnitures
                 var map = MapManager.Instance.GetMap(owner.FlyingGarden.RoomMapID);
                 var list = new List<Actor>();
                 foreach (var i in map.Actors.Values)
-                    if (i.type == ActorType.PC)
-                    {
+                    if (i.type == ActorType.PC) {
                         var pc2 = (ActorPC)i;
-                        if (pc2.Online)
-                        {
+                        if (pc2.Online) {
                             var p = new SSMG_FG_TAKEOFF();
                             p.ActorID = pc2.ActorID;
                             p.MapID = owner.FlyingGarden.MapID;
@@ -2954,8 +2750,7 @@ namespace SagaMap.Scripting
                         }
                     }
 
-                foreach (var i in list)
-                {
+                foreach (var i in list) {
                     i.Speed = 350;
                     MapClient.FromActorPC((ActorPC)i).fgTakeOff = true;
                     Warp((ActorPC)i, mapID, x, y);
@@ -2970,8 +2765,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="type">界面种类</param>
-        protected void ShowUI(ActorPC pc, UIType type)
-        {
+        protected void ShowUI(ActorPC pc, UIType type) {
             var p = new SSMG_NPC_SHOW_UI();
             p.UIType = type;
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
@@ -2983,8 +2777,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="npcID">NPC ID</param>
         /// <param name="motion">动作</param>
-        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion)
-        {
+        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion) {
             var p = new SSMG_CHAT_MOTION();
             p.ActorID = npcID;
             p.Motion = (MotionType)motion;
@@ -3002,8 +2795,7 @@ namespace SagaMap.Scripting
         /// \
         /// <param name="dir">方向 不明 默认0</param>
         protected void FurnitureMotion(ActorPC pc, uint funitureID, ushort startmotion, ushort endmotion,
-            short zcoord = 0, ushort dir = 0)
-        {
+            short zcoord = 0, ushort dir = 0) {
             var p = new SSMG_FG_FURNITURE_MOTION();
             p.ActorID = funitureID;
             p.Motion = startmotion;
@@ -3021,8 +2813,7 @@ namespace SagaMap.Scripting
         /// <param name="motion">动作</param>
         /// <param name="loop">是否重复</param>
         /// <param name="motionspeed">动作速度，09以下为慢速，0为默认，10为1倍速，50为5倍速</param>
-        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed)
-        {
+        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed) {
             var p = new SSMG_CHAT_MOTION();
             p.ActorID = npcID;
             p.Motion = (MotionType)motion;
@@ -3032,8 +2823,7 @@ namespace SagaMap.Scripting
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
-        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed, byte unknown)
-        {
+        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed, byte unknown) {
             var p = new SSMG_CHAT_MOTION();
             p.ActorID = npcID;
             p.Motion = (MotionType)motion;
@@ -3048,8 +2838,7 @@ namespace SagaMap.Scripting
         ///     打开商城NCShop
         /// </summary>
         /// <param name="pc"></param>
-        public void NCShopOpen(ActorPC pc)
-        {
+        public void NCShopOpen(ActorPC pc) {
             if (pc.UsingShopType != PlayerUsingShopType.None)
                 return;
             var client = GetMapClient(pc);
@@ -3062,8 +2851,7 @@ namespace SagaMap.Scripting
             client.vshopClosed = false;
         }
 
-        public void GShopOpen(ActorPC pc)
-        {
+        public void GShopOpen(ActorPC pc) {
             if (pc.UsingShopType != PlayerUsingShopType.None)
                 return;
             var client = GetMapClient(pc);
@@ -3080,8 +2868,7 @@ namespace SagaMap.Scripting
         ///     打开商城ECOShop
         /// </summary>
         /// <param name="pc"></param>
-        public void VShopOpen(ActorPC pc)
-        {
+        public void VShopOpen(ActorPC pc) {
             var client = GetMapClient(pc);
             var p = new SSMG_VSHOP_CATEGORY();
             p.Categories = ECOShopFactory.Instance.Items;
@@ -3096,8 +2883,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="type">石像类型</param>
-        public void SetGolemType(ActorPC pc, GolemType type)
-        {
+        public void SetGolemType(ActorPC pc, GolemType type) {
             if (pc.Golem != null) pc.Golem.GolemType = type;
             var client = GetMapClient(pc);
             var p = new SSMG_GOLEM_SET_TYPE();
@@ -3110,10 +2896,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="name">指定玩家的名稱</param>
-        public void Recall(ActorPC pc, string name)
-        {
-            try
-            {
+        public void Recall(ActorPC pc, string name) {
+            try {
                 var chr =
                     from c in MapClientManager.Instance.OnlinePlayer
                     where c.Character.Name == name
@@ -3127,9 +2911,8 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
             }
         }
 
@@ -3138,10 +2921,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="charID">指定玩家的CharID</param>
-        public void Recall(ActorPC pc, uint charID)
-        {
-            try
-            {
+        public void Recall(ActorPC pc, uint charID) {
+            try {
                 var chr =
                     from c in MapClientManager.Instance.OnlinePlayer
                     where c.Character.CharID == charID
@@ -3155,9 +2936,8 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
             }
         }
 
@@ -3166,10 +2946,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="charID">玩家的CharID</param>
-        public void Jump(ActorPC pc, uint charID)
-        {
-            try
-            {
+        public void Jump(ActorPC pc, uint charID) {
+            try {
                 var chr =
                     from c in MapClientManager.Instance.OnlinePlayer
                     where c.Character.CharID == charID
@@ -3183,9 +2961,8 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
             }
         }
 
@@ -3194,10 +2971,8 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="name">指定玩家的名字</param>
-        public void Jump(ActorPC pc, string name)
-        {
-            try
-            {
+        public void Jump(ActorPC pc, string name) {
+            try {
                 var chr =
                     from c in MapClientManager.Instance.OnlinePlayer
                     where c.Character.Name == name
@@ -3211,9 +2986,8 @@ namespace SagaMap.Scripting
                 n_Mapid = tClient.Character.MapID;
                 client.Map.SendActorToMap(client.Character, n_Mapid, n_X, n_Y);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
             }
         }
 
@@ -3221,13 +2995,10 @@ namespace SagaMap.Scripting
         ///     顯示玩家列表
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void Who2(ActorPC pc)
-        {
-            try
-            {
+        public void Who2(ActorPC pc) {
+            try {
                 var client = MapClient.FromActorPC(pc);
-                foreach (var i in MapClientManager.Instance.OnlinePlayer)
-                {
+                foreach (var i in MapClientManager.Instance.OnlinePlayer) {
                     byte x, y;
 
                     x = Global.PosX16to8(i.Character.X, i.map.Width);
@@ -3239,9 +3010,8 @@ namespace SagaMap.Scripting
                 client.SendSystemMessage(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
                                          MapClientManager.Instance.OnlinePlayer.Count);
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
             }
         }
 
@@ -3249,8 +3019,7 @@ namespace SagaMap.Scripting
         ///     隱藏玩家
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void Hide(ActorPC pc)
-        {
+        public void Hide(ActorPC pc) {
             pc.Buff.Transparent = false;
             MapManager.Instance.GetMap(pc.MapID)
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, pc, true);
@@ -3260,8 +3029,7 @@ namespace SagaMap.Scripting
         ///     顯示玩家
         /// </summary>
         /// <param name="pc">玩家</param>
-        public void Show(ActorPC pc)
-        {
+        public void Show(ActorPC pc) {
             pc.Buff.Transparent = true;
             MapManager.Instance.GetMap(pc.MapID)
                 .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, pc, true);
@@ -3272,8 +3040,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="types">類型</param>
         /// <returns>道具列表</returns>
-        public List<SagaDB.Item.Item.ItemData> GetItemTypeList(params ItemType[] types)
-        {
+        public List<SagaDB.Item.Item.ItemData> GetItemTypeList(params ItemType[] types) {
             var lst = from KeyValuePair<uint, SagaDB.Item.Item.ItemData> i in ItemFactory.Instance.Items
                 where types.Contains(i.Value.itemType)
                 select i.Value;
@@ -3285,8 +3052,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="types">類型</param>
         /// <returns>道具列表</returns>
-        public List<SagaDB.Item.Item> GetItemTypeList(ActorPC pc, params ItemType[] types)
-        {
+        public List<SagaDB.Item.Item> GetItemTypeList(ActorPC pc, params ItemType[] types) {
             var lst = from SagaDB.Item.Item i in pc.Inventory.Items[ContainerType.BODY]
                 where types.Contains(i.BaseData.itemType)
                 select i;
@@ -3302,8 +3068,7 @@ namespace SagaMap.Scripting
         /// <param name="exitX">退出X</param>
         /// <param name="exitY">退出Y</param>
         /// <returns>遗迹的ID</returns>
-        protected uint CreateDungeon(ActorPC pc, uint id, uint exitMap, byte exitX, byte exitY)
-        {
+        protected uint CreateDungeon(ActorPC pc, uint id, uint exitMap, byte exitX, byte exitY) {
             Dungeon.Dungeon dungeon;
             var blocked = ClientManager.Blocked;
             if (blocked)
@@ -3318,18 +3083,14 @@ namespace SagaMap.Scripting
         ///     传送玩家到遗迹
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void WarpToDungeon(ActorPC pc)
-        {
+        protected void WarpToDungeon(ActorPC pc) {
             Dungeon.Dungeon dungeon = null;
             var dungeons = GetPossibleDungeons(pc);
-            if (dungeons.Count > 0)
-            {
-                if (dungeons.Count == 1)
-                {
+            if (dungeons.Count > 0) {
+                if (dungeons.Count == 1) {
                     dungeon = DungeonFactory.Instance.GetDungeon(dungeons[0]);
                 }
-                else
-                {
+                else {
                     var names = new string[dungeons.Count];
                     for (var i = 0; i < dungeons.Count; i++)
                         names[i] = DungeonFactory.Instance.GetDungeon(dungeons[i]).Creator.Name +
@@ -3351,14 +3112,12 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <returns></returns>
-        protected List<uint> GetPossibleDungeons(ActorPC pc)
-        {
+        protected List<uint> GetPossibleDungeons(ActorPC pc) {
             var list = new List<uint>();
             if (pc.DungeonID != 0)
                 list.Add(pc.DungeonID);
             if (pc.Party != null)
-                foreach (var i in pc.Party.Members.Values)
-                {
+                foreach (var i in pc.Party.Members.Values) {
                     if (i == pc)
                         continue;
                     if (i.DungeonID != 0)
@@ -3373,8 +3132,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="npcID">NPCID</param>
-        protected void NPCHide(ActorPC pc, uint npcID)
-        {
+        protected void NPCHide(ActorPC pc, uint npcID) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_CANCEL();
             p.NPCID = npcID;
@@ -3398,8 +3156,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="npcID">NPCID</param>
         /// <param name="dir">NPC方向</param>
-        protected void NPCShow(ActorPC pc, uint npcID, byte dir)
-        {
+        protected void NPCShow(ActorPC pc, uint npcID, byte dir) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = npcID;
@@ -3412,8 +3169,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="npcID">NPCID</param>
-        protected void NPCShow(ActorPC pc, uint npcID)
-        {
+        protected void NPCShow(ActorPC pc, uint npcID) {
             var client = GetMapClient(pc);
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = npcID;
@@ -3437,8 +3193,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="MobID">怪物ID(設定為0時表示變回玩家的樣子)</param>
-        protected void TranceMob(ActorPC pc, uint MobID)
-        {
+        protected void TranceMob(ActorPC pc, uint MobID) {
             SkillHandler.Instance.TranceMob(pc, MobID);
         }
 
@@ -3447,25 +3202,20 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="mapID">影院地图ID</param>
-        protected void ShowTheaterSchedule(ActorPC pc, uint mapID)
-        {
-            if (pc.Online)
-            {
+        protected void ShowTheaterSchedule(ActorPC pc, uint mapID) {
+            if (pc.Online) {
                 var p = new SSMG_THEATER_SCHEDULE_HEADER();
                 p.MapID = mapID;
-                if (TheaterFactory.Instance.Items.ContainsKey(mapID))
-                {
+                if (TheaterFactory.Instance.Items.ContainsKey(mapID)) {
                     var query =
                         from movie in TheaterFactory.Instance.Items[mapID]
                         orderby movie.StartTime
                         select movie;
-                    if (query.Count() > 0)
-                    {
+                    if (query.Count() > 0) {
                         p.Count = query.Count();
                         MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                         var j = 0;
-                        foreach (var i in query.ToList())
-                        {
+                        foreach (var i in query.ToList()) {
                             var p2 = new SSMG_THEATER_SCHEDULE();
                             p2.Index = j;
                             p2.TicketItem = i.Ticket;
@@ -3475,8 +3225,7 @@ namespace SagaMap.Scripting
                             j++;
                         }
                     }
-                    else
-                    {
+                    else {
                         MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                     }
                 }
@@ -3492,8 +3241,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">影院MapID</param>
         /// <returns>电影</returns>
-        protected Movie GetNextMovie(uint mapID)
-        {
+        protected Movie GetNextMovie(uint mapID) {
             return TheaterFactory.Instance.GetNextMovie(mapID);
         }
 
@@ -3502,8 +3250,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">影院MapID</param>
         /// <returns>电影</returns>
-        protected Movie GetCurrentMovie(uint mapID)
-        {
+        protected Movie GetCurrentMovie(uint mapID) {
             return TheaterFactory.Instance.GetCurrentMovie(mapID);
         }
 
@@ -3513,8 +3260,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="genre">印章系列</param>
         /// <param name="slot">印章槽</param>
-        protected bool UseStamp(ActorPC pc, StampGenre genre, StampSlot slot)
-        {
+        protected bool UseStamp(ActorPC pc, StampGenre genre, StampSlot slot) {
             //if (!pc.Stamp[genre].Test(slot))
             {
                 pc.Stamp[genre].SetValue(slot, true);
@@ -3540,8 +3286,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="genre">系列</param>
         /// <returns></returns>
-        protected bool CheckStampGenre(ActorPC pc, StampGenre genre)
-        {
+        protected bool CheckStampGenre(ActorPC pc, StampGenre genre) {
             if (genre != StampGenre.Special)
                 return pc.Stamp[genre].Test(StampSlot.One) && pc.Stamp[genre].Test(StampSlot.Two) &&
                        pc.Stamp[genre].Test(StampSlot.Three) &&
@@ -3563,8 +3308,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="genre">印章系列</param>
-        protected void ClearStampGenre(ActorPC pc, StampGenre genre)
-        {
+        protected void ClearStampGenre(ActorPC pc, StampGenre genre) {
             pc.Stamp[genre].Value = 0;
             MapClient.FromActorPC(pc).SendStamp();
         }
@@ -3575,8 +3319,7 @@ namespace SagaMap.Scripting
         /// <param name="level">等级</param>
         /// <param name="type">等级类别</param>
         /// <returns>所需经验</returns>
-        protected ulong GetExpForLevel(uint level, LevelType type)
-        {
+        protected ulong GetExpForLevel(uint level, LevelType type) {
             return ExperienceManager.Instance.GetExpForLevel(level, type);
         }
 
@@ -3585,8 +3328,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="size">高度</param>
-        protected void ChangePlayerSize(ActorPC pc, uint size)
-        {
+        protected void ChangePlayerSize(ActorPC pc, uint size) {
             pc.Size = size;
             MapClient.FromActorPC(pc).SendPlayerSizeUpdate();
         }
@@ -3596,8 +3338,7 @@ namespace SagaMap.Scripting
             var hairtickets = new List<uint>();
             var res = from hair in HairFactory.Instance.Hairs where CountItem(pc, hair.ItemID) > 0 select hair;
             var hairs = res.ToList();
-            foreach (var i in hairs)
-            {
+            foreach (var i in hairs) {
                 uint couponid;
                 couponid = i.ItemID;
                 if (!hairtickets.Contains(couponid)) hairtickets.Add(couponid);
@@ -3613,20 +3354,17 @@ namespace SagaMap.Scripting
                 where CountItem(pc, hair.ItemID) > 0 && hair.ItemID == id
                 select hair;
             var hairs = res.ToList();
-            foreach (var i in hairs)
-            {
+            foreach (var i in hairs) {
                 var hsl = new HairStyleList();
                 hsl.stylename = i.HairName + "(" + i.WigName + ")";
                 hsl.hairstyle = (ushort)i.HairStyle;
                 hsl.wig = (ushort)i.HairWig;
                 hsl.saybefore = i.NpcBeforeSay;
                 hsl.sayafter = i.NpcAfterSay;
-                if (i.Gender == 2)
-                {
+                if (i.Gender == 2) {
                     hairstyles.Add(hsl);
                 }
-                else
-                {
+                else {
                     if (i.Gender == 1 && pc.Gender == PC_GENDER.FEMALE)
                         hairstyles.Add(hsl);
                     if (i.Gender == 0 && pc.Gender == PC_GENDER.MALE)
@@ -3643,8 +3381,7 @@ namespace SagaMap.Scripting
         /// <param name="equip">装备</param>
         /// <param name="refinenum">本次强化若成功则提升到的目标强化次数</param>
         /// <returns></returns>
-        protected uint EquipEnhanceBasicPreview(SagaDB.Item.Item equip, ushort refinenum)
-        {
+        protected uint EquipEnhanceBasicPreview(SagaDB.Item.Item equip, ushort refinenum) {
             var ups = new uint[25] { 1, 1, 1, 1, 2, 1, 1, 1, 1, 3, 1, 1, 1, 1, 4, 1, 1, 1, 1, 5, 1, 1, 1, 1, 6 };
             if (refinenum > 25)
                 refinenum = 25;
@@ -3658,8 +3395,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="equip"></param>
         /// <returns></returns>
-        protected uint EquipEnhanceRate(SagaDB.Item.Item equip)
-        {
+        protected uint EquipEnhanceRate(SagaDB.Item.Item equip) {
             var rates = new uint[25]
                 { 100, 90, 80, 70, 60, 50, 50, 50, 50, 35, 35, 35, 35, 35, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             return rates[equip.Refine];
@@ -3673,11 +3409,9 @@ namespace SagaMap.Scripting
         /// <param name="btype">物理魔法强化类型</param>
         /// <param name="stype">素质点强化类型</param>
         protected void ApplyEquipEnhanceSuccess(ActorPC pc, SagaDB.Item.Item equip, BasicEnhanceType btype,
-            StatusEnhanceType stype)
-        {
+            StatusEnhanceType stype) {
             equip.Refine++;
-            switch (stype)
-            {
+            switch (stype) {
                 case StatusEnhanceType.STR:
                     equip.Str++;
                     break;
@@ -3699,8 +3433,7 @@ namespace SagaMap.Scripting
             }
 
             short enhance_up = 1;
-            switch (equip.EquipSlot[0])
-            {
+            switch (equip.EquipSlot[0]) {
                 case EnumEquipSlot.RIGHT_HAND: //weapon
                     if (equip.Refine == 5)
                         enhance_up = 2;
@@ -3711,14 +3444,12 @@ namespace SagaMap.Scripting
                     else if (equip.Refine == 20)
                         enhance_up = 5;
                     else if (equip.Refine == 25) enhance_up = 6;
-                    if (btype == BasicEnhanceType.Physics)
-                    {
+                    if (btype == BasicEnhanceType.Physics) {
                         equip.Atk1 = (short)(equip.Atk1 + enhance_up);
                         equip.Atk2 = (short)(equip.Atk2 + enhance_up);
                         equip.Atk3 = (short)(equip.Atk3 + enhance_up);
                     }
-                    else
-                    {
+                    else {
                         equip.MAtk = (short)(equip.MAtk + enhance_up);
                     }
 
@@ -3745,8 +3476,7 @@ namespace SagaMap.Scripting
         /// <param name="btype">物理魔法强化类型</param>
         /// <param name="stype">素质点强化类型</param>
         protected void ApplyEquipEnhanceFail(ActorPC pc, SagaDB.Item.Item equip, BasicEnhanceType btype,
-            StatusEnhanceType stype)
-        {
+            StatusEnhanceType stype) {
             var refine_down = 0;
             if (equip.Refine < 4) return;
 
@@ -3761,8 +3491,7 @@ namespace SagaMap.Scripting
             else if (equip.Refine >= 20 && equip.Refine < 24)
                 refine_down = 5;
             else if (equip.Refine >= 24) refine_down = 6;
-            for (var i = 0; i < refine_down; i++)
-            {
+            for (var i = 0; i < refine_down; i++) {
                 var sbonuslist = new List<StatusEnhanceType>();
                 var bbonuslist = new List<BasicEnhanceType>();
                 var basicenhanceup = EquipEnhanceBasicPreview(equip, equip.Refine);
@@ -3793,12 +3522,10 @@ namespace SagaMap.Scripting
                         bbonuslist.Add(BasicEnhanceType.Magic);
                 }
 
-                if (sbonuslist.Count >= 1 && bbonuslist.Count >= 1)
-                {
+                if (sbonuslist.Count >= 1 && bbonuslist.Count >= 1) {
                     var status_down = sbonuslist[Global.Random.Next(sbonuslist.Count - 1)];
                     var basic_down = bbonuslist[Global.Random.Next(bbonuslist.Count - 1)];
-                    switch (status_down)
-                    {
+                    switch (status_down) {
                         case StatusEnhanceType.STR:
                             equip.Str--;
                             break;
@@ -3819,8 +3546,7 @@ namespace SagaMap.Scripting
                             break;
                     }
 
-                    switch (basic_down)
-                    {
+                    switch (basic_down) {
                         case BasicEnhanceType.Physics:
                             if (equip.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND) //weapon
                             {
@@ -3828,8 +3554,7 @@ namespace SagaMap.Scripting
                                 equip.Atk2 = (short)(equip.Atk2 - basicenhanceup);
                                 equip.Atk3 = (short)(equip.Atk3 - basicenhanceup);
                             }
-                            else
-                            {
+                            else {
                                 equip.Def = (short)(equip.Def - basicenhanceup);
                             }
 
@@ -3856,8 +3581,7 @@ namespace SagaMap.Scripting
         ///     强化装备
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected bool ItemEnhance(ActorPC pc)
-        {
+        protected bool ItemEnhance(ActorPC pc) {
             return ItemEnhance(pc, 200000);
         }
 
@@ -3865,18 +3589,15 @@ namespace SagaMap.Scripting
         ///     强化装备
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected bool ItemEnhance(ActorPC pc, uint price)
-        {
+        protected bool ItemEnhance(ActorPC pc, uint price) {
             var res = from item in pc.Inventory.GetContainer(ContainerType.BODY)
                 where (item.IsArmor || item.IsWeapon || item.BaseData.itemType == ItemType.SHIELD ||
                        item.BaseData.itemType == ItemType.ACCESORY_NECK) && item.Refine < 30
                 select item;
             var items = res.ToList();
 
-            foreach (var itemsitem in res.ToList())
-            {
-                if (itemsitem.IsArmor)
-                {
+            foreach (var itemsitem in res.ToList()) {
+                if (itemsitem.IsArmor) {
                     //生命结晶
                     if (CountItem(pc, 90000043) > 0)
                         if (!items.Exists(x => x.ItemID == 90000043))
@@ -3948,8 +3669,7 @@ namespace SagaMap.Scripting
                             items.AddRange(GetItem(pc, 10087403));
                 }
 
-                if (itemsitem.IsWeapon)
-                {
+                if (itemsitem.IsWeapon) {
                     //力量结晶
                     if (CountItem(pc, 90000044) > 0)
                         if (!items.Exists(x => x.ItemID == 90000044))
@@ -4006,8 +3726,7 @@ namespace SagaMap.Scripting
                             items.AddRange(GetItem(pc, 10087403));
                 }
 
-                if (itemsitem.BaseData.itemType == ItemType.SHIELD)
-                {
+                if (itemsitem.BaseData.itemType == ItemType.SHIELD) {
                     //力量结晶
                     if (CountItem(pc, 90000044) > 0)
                         if (!items.Exists(x => x.ItemID == 90000044))
@@ -4053,8 +3772,7 @@ namespace SagaMap.Scripting
                             items.AddRange(GetItem(pc, 10087403));
                 }
 
-                if (itemsitem.BaseData.itemType == ItemType.ACCESORY_NECK)
-                {
+                if (itemsitem.BaseData.itemType == ItemType.ACCESORY_NECK) {
                     //魔力结晶
                     if (CountItem(pc, 90000045) > 0)
                         if (!items.Exists(x => x.ItemID == 90000045))
@@ -4102,8 +3820,7 @@ namespace SagaMap.Scripting
                         items.AddRange(GetItem(pc, 10087201));
             }
 
-            if (items.Count > 0)
-            {
+            if (items.Count > 0) {
                 if (CountItem(pc, 10060400) > 0)
                     if (!items.Exists(x => x.ItemID == 10060400))
                         items.AddRange(GetItem(pc, 10060400));
@@ -4115,8 +3832,7 @@ namespace SagaMap.Scripting
 
             items = items.OrderBy(x => x.Slot).ToList();
 
-            if (items.Count > 0)
-            {
+            if (items.Count > 0) {
                 var p = new SSMG_ITEM_ENHANCE_LIST();
                 p.Items = items;
                 //p.price = price;
@@ -4133,8 +3849,7 @@ namespace SagaMap.Scripting
                     ClientManager.LeaveCriticalArea();
                 return true;
             }
-            else
-            {
+            else {
                 var blocked = ClientManager.Blocked;
                 if (blocked)
                     ClientManager.LeaveCriticalArea();
@@ -4147,8 +3862,7 @@ namespace SagaMap.Scripting
         ///     召唤潜在强化UI
         /// </summary>
         /// <param name="pc"></param>
-        protected void ItemMasterEnhance(ActorPC pc)
-        {
+        protected void ItemMasterEnhance(ActorPC pc) {
             var client = MapClient.FromActorPC(pc);
             client.SendMasterEnhanceAbleEquiList();
             client.itemMasterEnhance = true;
@@ -4159,8 +3873,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家对象</param>
         /// <param name="exchangetype">交换类型 只允许1或2, 默认1</param>
-        protected void ItemExchange(ActorPC pc, int exchangetype = 1)
-        {
+        protected void ItemExchange(ActorPC pc, int exchangetype = 1) {
             var client = MapClient.FromActorPC(pc);
             var p1 = new SSMG_ITEM_EXCHANGE_WINDOW_OPEN();
             p1.SetWindowType = exchangetype;
@@ -4180,15 +3893,13 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc"></param>
         /// <param name="confirm"></param>
-        protected void ItemFusion(ActorPC pc, string confirm)
-        {
+        protected void ItemFusion(ActorPC pc, string confirm) {
             var sel = 0;
             var rate = Configuration.Configuration.Instance.ItemFusionRate;
             var client = MapClient.FromActorPC(pc);
             SSMG_ITEM_FUSION_RESULT p2;
 
-            do
-            {
+            do {
                 var p = new SSMG_ITEM_FUSION();
                 client.itemFusion = true;
                 client.itemFusionView = 0;
@@ -4201,32 +3912,27 @@ namespace SagaMap.Scripting
                 while (client.itemFusion) Thread.Sleep(500);
                 if (blocked)
                     ClientManager.EnterCriticalArea();
-                if (client.itemFusionEffect != 0 && client.itemFusionView != 0)
-                {
+                if (client.itemFusionEffect != 0 && client.itemFusionView != 0) {
                     var effectItem = pc.Inventory.GetItem(client.itemFusionEffect);
                     var viewItem = pc.Inventory.GetItem(client.itemFusionView);
                     p2 = new SSMG_ITEM_FUSION_RESULT();
-                    if (effectItem != null && viewItem != null)
-                    {
+                    if (effectItem != null && viewItem != null) {
                         var price = effectItem.BaseData.possibleLv * 1000;
                         sel = Select(pc, confirm, ""
                             , LocalManager.Instance.Strings.NPC_ITEM_FUSION_RECHOOSE
                             , LocalManager.Instance.Strings.NPC_ITEM_FUSION_CANCEL
                             , string.Format(LocalManager.Instance.Strings.NPC_ITEM_FUSION_CONFIRM, price, rate));
-                        switch (sel)
-                        {
+                        switch (sel) {
                             case 1:
                             case 2:
                                 p2.Result = SSMG_ITEM_FUSION_RESULT.FusionResult.CANCELED;
                                 break;
                             case 3:
-                                if (pc.Gold >= price)
-                                {
+                                if (pc.Gold >= price) {
                                     var res = checkFusionItem(effectItem, viewItem);
                                     p2.Result = res;
                                     pc.Gold -= price;
-                                    if (Global.Random.Next(0, 99) < rate)
-                                    {
+                                    if (Global.Random.Next(0, 99) < rate) {
                                         effectItem.PictID = viewItem.BaseData.imageID;
                                         TakeItemBySlot(pc, viewItem.Slot, 1);
                                         client.SendItemInfo(effectItem);
@@ -4239,16 +3945,14 @@ namespace SagaMap.Scripting
                                     //        p2.Result = SagaMap.Packets.Server.SSMG_ITEM_FUSION_RESULT.FusionResult.FAILED;
                                     //}
                                 }
-                                else
-                                {
+                                else {
                                     p2.Result = SSMG_ITEM_FUSION_RESULT.FusionResult.NOT_ENOUGH_GOLD;
                                 }
 
                                 break;
                         }
                     }
-                    else
-                    {
+                    else {
                         p2.Result = SSMG_ITEM_FUSION_RESULT.FusionResult.FAILED;
                     }
 
@@ -4258,8 +3962,7 @@ namespace SagaMap.Scripting
             } while (sel == 1 && client.itemFusionEffect != 0 && client.itemFusionView != 0);
         }
 
-        private SSMG_ITEM_FUSION_RESULT.FusionResult checkFusionItem(SagaDB.Item.Item effect, SagaDB.Item.Item view)
-        {
+        private SSMG_ITEM_FUSION_RESULT.FusionResult checkFusionItem(SagaDB.Item.Item effect, SagaDB.Item.Item view) {
             if (effect.BaseData.possibleLv < view.BaseData.possibleLv)
                 return SSMG_ITEM_FUSION_RESULT.FusionResult.LV_TOO_LOW;
             foreach (var i in effect.BaseData.possibleJob.Keys)
@@ -4279,8 +3982,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">pc</param>
         /// <param name="flag">flag</param>
-        protected bool CheckMapFlag(ActorPC pc, MapFlags flag)
-        {
+        protected bool CheckMapFlag(ActorPC pc, MapFlags flag) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             return map.Info.Flag.Test(flag);
         }
@@ -4291,8 +3993,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="npcID">NPCID</param>
         /// <param name="mobID">怪物ID</param>
-        protected void NPCChangeView(ActorPC pc, uint npcID, uint mobID)
-        {
+        protected void NPCChangeView(ActorPC pc, uint npcID, uint mobID) {
             var client = GetMapClient(pc);
             var p1 = new SSMG_NPC_SHOWPICT_VIEW();
             p1.NPCID = npcID;
@@ -4310,8 +4011,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">战场MapID</param>
         /// <returns></returns>
-        protected bool ODWarCanApply(uint mapID)
-        {
+        protected bool ODWarCanApply(uint mapID) {
             return ODWarManager.Instance.CanApply(mapID);
         }
 
@@ -4321,8 +4021,7 @@ namespace SagaMap.Scripting
         /// <param name="mapID">战场MapID</param>
         /// <param name="number">编号</param>
         /// <returns></returns>
-        protected SymbolReviveResult ODWarReviveSymbol(uint mapID, int number)
-        {
+        protected SymbolReviveResult ODWarReviveSymbol(uint mapID, int number) {
             return ODWarManager.Instance.ReviveSymbol(mapID, number);
         }
 
@@ -4331,8 +4030,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">战场MapID</param>
         /// <returns></returns>
-        protected bool ODWarIsDefence(uint mapID)
-        {
+        protected bool ODWarIsDefence(uint mapID) {
             return ODWarManager.Instance.IsDefence(mapID);
         }
 
@@ -4340,12 +4038,10 @@ namespace SagaMap.Scripting
         ///     给武器打洞
         /// </summary>
         /// <param name="pc"></param>
-        protected void ItemAddSlot(ActorPC pc)
-        {
+        protected void ItemAddSlot(ActorPC pc) {
             var items = new List<uint>();
             foreach (var i in pc.Inventory.GetContainer(ContainerType.BODY))
-                if (i.IsEquipt)
-                {
+                if (i.IsEquipt) {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
                         continue;
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
@@ -4355,8 +4051,7 @@ namespace SagaMap.Scripting
                 }
 
             foreach (var i in pc.Inventory.GetContainer(ContainerType.BACK_BAG))
-                if (i.IsEquipt)
-                {
+                if (i.IsEquipt) {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
                         continue;
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
@@ -4366,8 +4061,7 @@ namespace SagaMap.Scripting
                 }
 
             foreach (var i in pc.Inventory.GetContainer(ContainerType.LEFT_BAG))
-                if (i.IsEquipt)
-                {
+                if (i.IsEquipt) {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
                         continue;
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
@@ -4377,8 +4071,7 @@ namespace SagaMap.Scripting
                 }
 
             foreach (var i in pc.Inventory.GetContainer(ContainerType.RIGHT_BAG))
-                if (i.IsEquipt)
-                {
+                if (i.IsEquipt) {
                     if (i.CurrentSlot >= 10 || (i.EquipSlot.Contains(EnumEquipSlot.CHEST_ACCE) && i.CurrentSlot >= 5))
                         continue;
                     if (i.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE ||
@@ -4397,8 +4090,7 @@ namespace SagaMap.Scripting
                 if (pc.Inventory.Equipments[EnumEquipSlot.CHEST_ACCE].CurrentSlot < 5)
                     items.Add(pc.Inventory.Equipments[EnumEquipSlot.CHEST_ACCE].Slot);
 
-            if (items.Count > 0)
-            {
+            if (items.Count > 0) {
                 //思念的结晶
                 if (CountItem(pc, 10073000) > 0)
                     items.Insert(0, GetItem(pc, 10073000)[0].Slot);
@@ -4466,8 +4158,7 @@ namespace SagaMap.Scripting
                 if (blocked)
                     ClientManager.EnterCriticalArea();
             }
-            else
-            {
+            else {
                 var p = new SSMG_IRIS_ADD_SLOT_RESULT();
                 p.Result = 0; // SagaMap.Packets.Server.SSMG_IRIS_ADD_SLOT_RESULT.Results.NO_ITEM;
                 MapClient.FromActorPC(pc).NetIo.SendPacket(p);
@@ -4478,20 +4169,17 @@ namespace SagaMap.Scripting
         ///     卡片组合
         /// </summary>
         /// <param name="pc"></param>
-        protected void IrisCardAssemble(ActorPC pc)
-        {
+        protected void IrisCardAssemble(ActorPC pc) {
             var cards = new List<SagaDB.Item.Item>();
             foreach (var i in pc.Inventory.Items[ContainerType.BODY])
                 if (i.BaseData.itemType == ItemType.IRIS_CARD)
-                    if (IrisCardFactory.Instance.Items.ContainsKey(i.BaseData.id))
-                    {
+                    if (IrisCardFactory.Instance.Items.ContainsKey(i.BaseData.id)) {
                         var card = IrisCardFactory.Instance.Items[i.BaseData.id];
                         if (card.NextCard != 0) cards.Add(i);
                     }
 
             var client = MapClient.FromActorPC(pc);
-            if (cards.Count > 0)
-            {
+            if (cards.Count > 0) {
                 //防爆
                 if (CountItem(pc, 16003600) > 0)
                     if (!cards.Exists(x => x.ItemID == 16003600))
@@ -4539,8 +4227,7 @@ namespace SagaMap.Scripting
                 if (blocked)
                     ClientManager.EnterCriticalArea();
             }
-            else
-            {
+            else {
                 var p = new SSMG_IRIS_CARD_ASSEMBLE_RESULT();
                 p.Result = SSMG_IRIS_CARD_ASSEMBLE_RESULT.Results.NO_ITEM;
                 client.NetIo.SendPacket(p);
@@ -4553,8 +4240,7 @@ namespace SagaMap.Scripting
         /// <param name="mapID">地图ID</param>
         /// <param name="flag">要检查的标识</param>
         /// <returns>结果</returns>
-        protected bool CheckMapFlag(uint mapID, MapFlags flag)
-        {
+        protected bool CheckMapFlag(uint mapID, MapFlags flag) {
             var map = MapManager.Instance.GetMap(mapID);
             if (map == null)
                 return false;
@@ -4568,8 +4254,7 @@ namespace SagaMap.Scripting
         /// <param name="period">再启动间隔</param>
         /// <param name="autoDispose">是否随着玩家下线自动销毁</param>
         /// <returns>添加的计时器</returns>
-        protected Timer AddTimer(string name, int period, ActorPC pc, bool autoDispose = false)
-        {
+        protected Timer AddTimer(string name, int period, ActorPC pc, bool autoDispose = false) {
             return AddTimer(name, period, 500, pc, true, autoDispose);
         }
 
@@ -4582,8 +4267,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">挂钩的玩家</param>
         /// <param name="needScript">是否需要用脚本</param>
         /// <returns>添加的计时器</returns>
-        protected Timer AddTimer(string name, int period, int dueTime, ActorPC pc, bool needScript)
-        {
+        protected Timer AddTimer(string name, int period, int dueTime, ActorPC pc, bool needScript) {
             return AddTimer(name, period, dueTime, pc, needScript, true);
         }
 
@@ -4598,8 +4282,7 @@ namespace SagaMap.Scripting
         /// <param name="autoDispose">是否随着玩家下线自动销毁</param>
         /// <returns>添加的计时器</returns>
         protected Timer AddTimer(string name, int period, int dueTime, ActorPC pc, bool needScript,
-            bool autoDispose = false)
-        {
+            bool autoDispose = false) {
             var timer = new Timer(name, period, dueTime);
             timer.AttachedPC = pc;
             timer.NeedScript = needScript;
@@ -4608,19 +4291,16 @@ namespace SagaMap.Scripting
                 timerName = string.Format("{0}:{1}({2})", name, pc.Name, pc.CharID);
             else
                 timerName = name + DateTime.Today;
-            if (ScriptManager.Instance.Timers.ContainsKey(timerName))
-            {
+            if (ScriptManager.Instance.Timers.ContainsKey(timerName)) {
                 ScriptManager.Instance.Timers[timerName].Deactivate();
                 ScriptManager.Instance.Timers[timerName] = null;
                 ScriptManager.Instance.Timers[timerName] = timer;
             }
-            else
-            {
+            else {
                 ScriptManager.Instance.Timers.Add(timerName, timer);
             }
 
-            if (autoDispose && pc != null)
-            {
+            if (autoDispose && pc != null) {
                 if (pc.Tasks.ContainsKey(timerName))
                     pc.Tasks[timerName].Deactivate();
                 pc.Tasks[timerName] = timer;
@@ -4635,11 +4315,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="name">名字</param>
         /// <param name="pc">绑定的玩家</param>
-        protected void DeleteTimer(string name, ActorPC pc)
-        {
+        protected void DeleteTimer(string name, ActorPC pc) {
             var timerName = string.Format("{0}:{1}({2})", name, pc.Name, pc.CharID);
-            if (ScriptManager.Instance.Timers.ContainsKey(timerName))
-            {
+            if (ScriptManager.Instance.Timers.ContainsKey(timerName)) {
                 ScriptManager.Instance.Timers[timerName].Deactivate();
                 ScriptManager.Instance.Timers.Remove(timerName);
             }
@@ -4650,8 +4328,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="name">名字</param>
         /// <param name="pc">绑定的玩家</param>
-        protected Timer GetTimer(string name, ActorPC pc)
-        {
+        protected Timer GetTimer(string name, ActorPC pc) {
             var timerName = string.Format("{0}:{1}({2})", name, pc.Name, pc.CharID);
             if (ScriptManager.Instance.Timers.ContainsKey(timerName))
                 return (Timer)ScriptManager.Instance.Timers[timerName];
@@ -4664,8 +4341,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="path">图片路径</param>
         /// <param name="title">标题</param>
-        protected void ShowPicture(ActorPC pc, string path, string title)
-        {
+        protected void ShowPicture(ActorPC pc, string path, string title) {
             var p = new SSMG_NPC_SHOW_PIC();
             p.Path = path;
             p.Title = title;
@@ -4677,8 +4353,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="weather">天气</param>
-        protected void FGardenChangeWeather(ActorPC pc, byte weather)
-        {
+        protected void FGardenChangeWeather(ActorPC pc, byte weather) {
             var p = new SSMG_FG_CHANGE_WEATHER();
             p.Weather = weather;
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
@@ -4689,8 +4364,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="sky">天空</param>
-        protected void FGardenChangeSky(ActorPC pc, byte sky)
-        {
+        protected void FGardenChangeSky(ActorPC pc, byte sky) {
             var p = new SSMG_FG_CHANGE_SKY();
             p.Sky = sky;
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
@@ -4700,8 +4374,7 @@ namespace SagaMap.Scripting
         ///     发送全服公告
         /// </summary>
         /// <param name="text">文字</param>
-        protected void Announce(string text)
-        {
+        protected void Announce(string text) {
             MapClientManager.Instance.Announce(text);
         }
 
@@ -4710,8 +4383,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="text">文字</param>
-        protected void Announce(ActorPC pc, string text)
-        {
+        protected void Announce(ActorPC pc, string text) {
             MapClient.FromActorPC(pc).SendAnnounce(text);
         }
 
@@ -4720,11 +4392,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapID">地图ID</param>
         /// <param name="text">文字</param>
-        protected void Announce(uint mapID, string text)
-        {
+        protected void Announce(uint mapID, string text) {
             var map = MapManager.Instance.GetMap(mapID);
-            if (map != null)
-            {
+            if (map != null) {
                 var actors = map.Actors.Values.ToArray();
                 foreach (var i in actors)
                     if (i.type == ActorType.PC)
@@ -4742,8 +4412,7 @@ namespace SagaMap.Scripting
         /// <param name="Event">事件处理器</param>
         /// <param name="Callbacktype">事件类型 1、死亡时 2、使用技能时 3、移动结束时 4、攻击时 5、血量变化时</param>
         /// <returns></returns>
-        protected ActorMob SpawnMob(uint mapID, byte x, byte y, uint mobID, MobCallback Event, byte Callbacktype)
-        {
+        protected ActorMob SpawnMob(uint mapID, byte x, byte y, uint mobID, MobCallback Event, byte Callbacktype) {
             return SpawnMob(mapID, x, y, mobID, 1, Event, Callbacktype)[0];
         }
 
@@ -4755,8 +4424,7 @@ namespace SagaMap.Scripting
         /// <param name="y"></param>
         /// <param name="mobID">怪物ID</param>
         /// <param name="count">数量</param>
-        protected List<ActorMob> SpawnMob(uint mapID, byte x, byte y, uint mobID, int count)
-        {
+        protected List<ActorMob> SpawnMob(uint mapID, byte x, byte y, uint mobID, int count) {
             return SpawnMob(mapID, x, y, mobID, count, null, 0);
         }
 
@@ -4769,8 +4437,7 @@ namespace SagaMap.Scripting
         /// <param name="mobID">怪物ID</param>
         /// <param name="count">数量</param>
         /// <param name="Event">事件处理器</param>
-        protected List<ActorMob> SpawnMob(uint mapID, byte x, byte y, uint mobID, int count, MobCallback Event)
-        {
+        protected List<ActorMob> SpawnMob(uint mapID, byte x, byte y, uint mobID, int count, MobCallback Event) {
             return SpawnMob(mapID, x, y, mobID, count, Event, 1);
         }
 
@@ -4785,18 +4452,15 @@ namespace SagaMap.Scripting
         /// <param name="Event">事件处理器</param>
         /// <param name="Callbacktype">事件类型 1、死亡时 2、使用技能时 3、移动结束时 4、攻击时 5、血量变化时</param>
         protected List<ActorMob> SpawnMob(uint mapID, byte x, byte y, uint mobID, int count, MobCallback Event,
-            byte Callbacktype)
-        {
+            byte Callbacktype) {
             var map = MapManager.Instance.GetMap(mapID);
             var mobs = new List<ActorMob>();
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var mob = map.SpawnMob(mobID, Global.PosX8to16(x, map.Width), Global.PosY8to16(y, map.Height), 1000,
                     null);
                 var eh = (MobEventHandler)mob.e;
                 if (Event != null)
-                    switch (Callbacktype)
-                    {
+                    switch (Callbacktype) {
                         case 1:
                             eh.Dying += Event;
                             break;
@@ -4825,8 +4489,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="amount">恢复数量</param>
-        protected void PetRecover(ActorPC pc, int amount)
-        {
+        protected void PetRecover(ActorPC pc, int amount) {
             var it =
                 from c in pc.Inventory.GetContainer(ContainerType.BODY)
                 where (c.BaseData.itemType == ItemType.PET || c.BaseData.itemType == ItemType.PET_NEKOMATA ||
@@ -4850,14 +4513,12 @@ namespace SagaMap.Scripting
             if (blocked)
                 ClientManager.EnterCriticalArea();
 
-            if (client.selectedPet != uint.MaxValue)
-            {
+            if (client.selectedPet != uint.MaxValue) {
                 var item = pc.Inventory.GetItem(client.selectedPet);
                 if (item != null)
                     if (item.BaseData.itemType == ItemType.PET || item.BaseData.itemType == ItemType.PET_NEKOMATA ||
                         item.BaseData.itemType == ItemType.RIDE_PET || item.BaseData.itemType == ItemType.PARTNER ||
-                        item.BaseData.itemType == ItemType.RIDE_PARTNER)
-                    {
+                        item.BaseData.itemType == ItemType.RIDE_PARTNER) {
                         item.Durability += (ushort)amount;
                         if (item.Durability > item.BaseData.durability)
                             item.Durability = item.BaseData.durability;
@@ -4870,8 +4531,7 @@ namespace SagaMap.Scripting
         ///     打开DEM 的CL购买窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void DEMCL(ActorPC pc)
-        {
+        protected void DEMCL(ActorPC pc) {
             if (pc.Race != PC_RACE.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
@@ -4893,8 +4553,7 @@ namespace SagaMap.Scripting
         ///     打开DEM身体改造窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void DEMParts(ActorPC pc)
-        {
+        protected void DEMParts(ActorPC pc) {
             if (pc.Race != PC_RACE.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
@@ -4915,8 +4574,7 @@ namespace SagaMap.Scripting
         ///     打开ＤＥＭＩＣ窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void DEMIC(ActorPC pc)
-        {
+        protected void DEMIC(ActorPC pc) {
             if (pc.Race != PC_RACE.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
@@ -4924,8 +4582,7 @@ namespace SagaMap.Scripting
             var p = new SSMG_DEM_DEMIC_HEADER();
             p.CL = pc.CL;
             client.NetIo.SendPacket(p);
-            foreach (var i in pc.Inventory.DemicChips.Keys)
-            {
+            foreach (var i in pc.Inventory.DemicChips.Keys) {
                 var p2 = new SSMG_DEM_DEMIC_DATA();
                 p2.Page = i;
                 p2.Chips = pc.Inventory.GetChipList(i, false);
@@ -4952,8 +4609,7 @@ namespace SagaMap.Scripting
         /// <param name="y"></param>
         /// <param name="dir">方向</param>
         /// <param name="type">移动方式</param>
-        protected void NPCMove(ActorPC pc, uint npcID, short x, short y, short dir, MoveType type)
-        {
+        protected void NPCMove(ActorPC pc, uint npcID, short x, short y, short dir, MoveType type) {
             var p1 = new SSMG_ACTOR_MOVE();
             p1.ActorID = npcID;
             p1.X = x;
@@ -4977,8 +4633,7 @@ namespace SagaMap.Scripting
         /// <param name="motion">初始动作</param>
         /// <param name="motionspeed">动作的运行速度（10就是100%的正常速度）</param>
         protected void CreateNpcPict(ActorPC pc, uint npcID, uint pictID, byte x, byte y, byte dir, ushort speed,
-            byte type, ushort motion, ushort motionspeed)
-        {
+            byte type, ushort motion, ushort motionspeed) {
             var p = new SSMG_NPC_SHOWPICT_LOCATION();
             p.NPCID = npcID;
             p.X = x;
@@ -5018,8 +4673,7 @@ namespace SagaMap.Scripting
         /// <param name="motionSpeed">表情速度</param>
         /// <param name="ShowType">表情速度</param>
         protected void NPCMove(ActorPC pc, uint npcID, byte x, byte y, ushort speed, byte type, ushort motion,
-            ushort motionSpeed)
-        {
+            ushort motionSpeed) {
             NPCMove(pc, npcID, x, y, speed, 0, type, motion, motionSpeed, 0);
         }
 
@@ -5037,8 +4691,7 @@ namespace SagaMap.Scripting
         /// <param name="motionSpeed">表情速度</param>
         /// <param name="ShowType">设0为移动，设18为瞬移</param>
         protected void NPCMove(ActorPC pc, uint npcID, byte x, byte y, ushort speed, byte dir, byte type, ushort motion,
-            ushort motionSpeed, ushort ShowType)
-        {
+            ushort motionSpeed, ushort ShowType) {
             var p1 = new SSMG_NPC_MOVE();
             p1.NPCID = npcID;
             p1.X = x;
@@ -5056,8 +4709,7 @@ namespace SagaMap.Scripting
         ///     打开芯片购买窗口
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void DEMChipShop(ActorPC pc)
-        {
+        protected void DEMChipShop(ActorPC pc) {
             var client = MapClient.FromActorPC(pc);
             var p = new SSMG_DEM_CHIP_SHOP_CATEGORY();
             p.Categories = ChipShopFactory.Instance.GetCategoryFromLv(pc.Level);
@@ -5081,16 +4733,13 @@ namespace SagaMap.Scripting
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="eventID">传送门触发的EventID</param>
-        protected void ShowPortal(ActorPC pc, byte x, byte y, uint eventID)
-        {
+        protected void ShowPortal(ActorPC pc, byte x, byte y, uint eventID) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             var actors = map.Actors.Values.ToArray();
             foreach (var i in actors)
-                if (i.type == ActorType.PC)
-                {
+                if (i.type == ActorType.PC) {
                     var j = (ActorPC)i;
-                    if (j.Online)
-                    {
+                    if (j.Online) {
                         var client = MapClient.FromActorPC(j);
                         var p1 = new SSMG_NPC_SET_EVENT_AREA();
                         p1.StartX = x;
@@ -5112,16 +4761,13 @@ namespace SagaMap.Scripting
         /// <param name="y"></param>
         /// <param name="eventID">传送门触发的EventID</param>
         /// <param name="effectID">传送门的特效</param>
-        protected void ShowPortal(ActorPC pc, byte x, byte y, uint eventID, uint effectID)
-        {
+        protected void ShowPortal(ActorPC pc, byte x, byte y, uint eventID, uint effectID) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             var actors = map.Actors.Values.ToArray();
             foreach (var i in actors)
-                if (i.type == ActorType.PC)
-                {
+                if (i.type == ActorType.PC) {
                     var j = (ActorPC)i;
-                    if (j.Online)
-                    {
+                    if (j.Online) {
                         var client = MapClient.FromActorPC(j);
                         var p1 = new SSMG_NPC_SET_EVENT_AREA();
                         p1.StartX = x;
@@ -5140,11 +4786,9 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="pictID">宠物外观ID,值为0的时候还原</param>
-        protected void PetShowReplace(ActorPC pc, uint pictID)
-        {
+        protected void PetShowReplace(ActorPC pc, uint pictID) {
             MapClient.FromActorPC(pc);
-            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
-            {
+            if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET)) {
                 pc.Inventory.Equipments[EnumEquipSlot.PET].PictID = pictID;
 
 
@@ -5167,8 +4811,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="job">职业</param>
-        protected void ChangePlayerJobTo3(ActorPC pc, PC_JOB job)
-        {
+        protected void ChangePlayerJobTo3(ActorPC pc, PC_JOB job) {
             if ((byte)job % 10 != 7)
                 return;
             pc.Job = job;
@@ -5196,8 +4839,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapid">地图ID</param>
         /// <param name="dwID">任务ID</param>
-        protected void DefWarAdd(uint mapid, uint dwID)
-        {
+        protected void DefWarAdd(uint mapid, uint dwID) {
             var dw = new DefWar(dwID);
             DefWarManager.Instance.AddDefWar(mapid, dw);
         }
@@ -5210,8 +4852,7 @@ namespace SagaMap.Scripting
         /// <param name="dwn">任务序列号</param>
         /// <param name="r1">任务结果1</param>
         /// <param name="r2">任务结果2</param>
-        protected void DefWarSet(uint mapid, uint dwid, byte dwn, byte r1, byte r2)
-        {
+        protected void DefWarSet(uint mapid, uint dwid, byte dwn, byte r1, byte r2) {
             DefWarManager.Instance.SetDefWar(mapid, dwid, dwn, r1, r2);
         }
 
@@ -5225,8 +4866,7 @@ namespace SagaMap.Scripting
         /// <param name="jobexp">职业经验</param>
         /// <param name="cp">CP</param>
         /// <param name="u">不明</param>
-        protected void DefWarResult(uint mapid, byte r1, byte r2, int exp, int jobexp, int cp, byte u = 0)
-        {
+        protected void DefWarResult(uint mapid, byte r1, byte r2, int exp, int jobexp, int cp, byte u = 0) {
             DefWarManager.Instance.DefWarResult(mapid, r1, r2, exp, jobexp, cp, u);
         }
 
@@ -5235,8 +4875,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="mapid"></param>
         /// <param name="rate"></param>
-        protected void DefWarState(uint mapid, byte rate)
-        {
+        protected void DefWarState(uint mapid, byte rate) {
             DefWarManager.Instance.DefWarState(mapid, rate);
         }
 
@@ -5244,24 +4883,21 @@ namespace SagaMap.Scripting
         ///     广播多个地图结果
         /// </summary>
         /// <param name="list">Dictionary列表,key为地图ID,内容为%进度</param>
-        protected void DefWarStates(Dictionary<uint, byte> list)
-        {
+        protected void DefWarStates(Dictionary<uint, byte> list) {
             DefWarManager.Instance.DefWarStates(list);
         }
 
         /// <summary>
         ///     清除一个地图任务
         /// </summary>
-        protected void DefWarMapClear(uint mapid)
-        {
+        protected void DefWarMapClear(uint mapid) {
             DefWarManager.Instance.MapClear(mapid);
         }
 
         /// <summary>
         ///     清除全部地图任务
         /// </summary>
-        protected void DefWarAllClear()
-        {
+        protected void DefWarAllClear() {
             DefWarManager.Instance.AllClear();
         }
 
@@ -5269,8 +4905,7 @@ namespace SagaMap.Scripting
         ///     新增心憑依登錄
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void CreateTamaireLending(ActorPC pc, string comment)
-        {
+        protected void CreateTamaireLending(ActorPC pc, string comment) {
             GetMapClient(pc);
             var lending = new TamaireLending();
             lending.Lender = pc.CharID;
@@ -5280,8 +4915,7 @@ namespace SagaMap.Scripting
 
             if (pc.Race == PC_RACE.DEM)
                 lending.JobType = 0x04;
-            switch (pc.JobType)
-            {
+            switch (pc.JobType) {
                 case JobType.FIGHTER:
                     lending.JobType = 0x00;
                     break;
@@ -5300,20 +4934,17 @@ namespace SagaMap.Scripting
             TamaireLendingManager.Instance.ProcessLendingPost(lending);
         }
 
-        protected void GiveEXP(ActorPC pc, uint cexp, uint jexp)
-        {
+        protected void GiveEXP(ActorPC pc, uint cexp, uint jexp) {
             ExperienceManager.Instance.ApplyExp(pc, cexp, jexp, 1.0f);
         }
 
-        protected void OpenTamaireListUI(ActorPC pc)
-        {
+        protected void OpenTamaireListUI(ActorPC pc) {
             var client = GetMapClient(pc);
             client.OpenTamaireListUI();
         }
 
 
-        protected void OpenDualJobUI(ActorPC pc, bool ChangeDualJob = false)
-        {
+        protected void OpenDualJobUI(ActorPC pc, bool ChangeDualJob = false) {
             var client = GetMapClient(pc);
             client.OpenDualJobChangeUI(pc, ChangeDualJob);
 
@@ -5328,8 +4959,7 @@ namespace SagaMap.Scripting
                 ClientManager.EnterCriticalArea();
         }
 
-        private class SyntheseResult
-        {
+        private class SyntheseResult {
             public int count;
             public uint id;
             public uint mobid;
@@ -5339,8 +4969,7 @@ namespace SagaMap.Scripting
         /// <summary>
         ///     发型相关
         /// </summary>
-        public class HairStyleList
-        {
+        public class HairStyleList {
             public ushort hairstyle;
             public string sayafter;
             public string saybefore;
@@ -5348,10 +4977,8 @@ namespace SagaMap.Scripting
             public ushort wig;
         }
 
-        public void CompleteQuest(ActorPC pc)
-        {
-            if (pc.Quest.Status == QuestStatus.COMPLETED)
-            {
+        public void CompleteQuest(ActorPC pc) {
+            if (pc.Quest.Status == QuestStatus.COMPLETED) {
                 var client = GetMapClient(pc);
 
                 if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
@@ -5362,12 +4989,10 @@ namespace SagaMap.Scripting
 
                 Say(pc, 131, LocalManager.Instance.Strings.QUEST_REWARDED);
                 PlaySound(pc, 4006, false, 100, 50);
-                if (pc.Level < pc.Quest.Detail.MinLevel + 5)
-                {
+                if (pc.Level < pc.Quest.Detail.MinLevel + 5) {
                     expfactor = 1.0f;
                 }
-                else
-                {
+                else {
                     if (pc.Level < pc.Quest.Detail.MinLevel + 10)
                         expfactor = 0.6f;
                     else
@@ -5390,8 +5015,7 @@ namespace SagaMap.Scripting
                 //灰色任务无法获得声望?
                 if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
                     pc.Fame += pc.Quest.Detail.Fame;
-                if (pc.Ring != null)
-                {
+                if (pc.Ring != null) {
                     pc.Ring.Fame += pc.Quest.Detail.Fame;
                     RingManager.Instance.UpdateRingInfo(pc.Ring, SSMG_RING_INFO.Reason.UPDATED);
                 }
@@ -5410,29 +5034,23 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="groupID">NPC的任务组ID</param>
-        protected void HandleQuest(ActorPC pc, uint groupID)
-        {
+        protected void HandleQuest(ActorPC pc, uint groupID) {
             var client = GetMapClient(pc);
             int ExcessItemID1, ExcessItemID2, ExcessItemID3, ExcessItemCount1, ExcessItemCount2, ExcessItemCount3;
-            if (pc.Quest != null)
-            {
-                if (pc.Quest.Status == QuestStatus.OPEN)
-                {
-                    if (pc.Quest.QuestType == QuestType.GATHER && CountItem(pc, pc.Quest.Detail.ObjectID1) > 0)
-                    {
+            if (pc.Quest != null) {
+                if (pc.Quest.Status == QuestStatus.OPEN) {
+                    if (pc.Quest.QuestType == QuestType.GATHER && CountItem(pc, pc.Quest.Detail.ObjectID1) > 0) {
                         if (pc.Quest.QuestType == QuestType.GATHER)
                             Say(pc, 131, transport);
                         var item = NPCTrade(pc);
-                        foreach (var i in item)
-                        {
+                        foreach (var i in item) {
                             var ids = new List<uint>
                                 { pc.Quest.Detail.ObjectID1, pc.Quest.Detail.ObjectID2, pc.Quest.Detail.ObjectID3 };
                             if (!ids.Contains(i.ItemID))
                                 GiveItem(pc, i.ItemID, i.Stack);
                             if (i.ItemID == pc.Quest.Detail.ObjectID1)
                                 pc.Quest.CurrentCount1 += i.Stack;
-                            if (pc.Quest.CurrentCount1 > pc.Quest.Detail.Count1)
-                            {
+                            if (pc.Quest.CurrentCount1 > pc.Quest.Detail.Count1) {
                                 ExcessItemCount1 = pc.Quest.CurrentCount1 - pc.Quest.Detail.Count1;
                                 ExcessItemID1 = (int)pc.Quest.Detail.ObjectID1;
                                 pc.Quest.CurrentCount1 = pc.Quest.Detail.Count1;
@@ -5442,8 +5060,7 @@ namespace SagaMap.Scripting
 
                             if (i.ItemID == pc.Quest.Detail.ObjectID2)
                                 pc.Quest.CurrentCount2 += i.Stack;
-                            if (pc.Quest.CurrentCount2 > pc.Quest.Detail.Count2)
-                            {
+                            if (pc.Quest.CurrentCount2 > pc.Quest.Detail.Count2) {
                                 ExcessItemCount2 = pc.Quest.CurrentCount2 - pc.Quest.Detail.Count2;
                                 ExcessItemID2 = (int)pc.Quest.Detail.ObjectID2;
                                 pc.Quest.CurrentCount2 = pc.Quest.Detail.Count2;
@@ -5453,8 +5070,7 @@ namespace SagaMap.Scripting
 
                             if (i.ItemID == pc.Quest.Detail.ObjectID3)
                                 pc.Quest.CurrentCount3 += i.Stack;
-                            if (pc.Quest.CurrentCount3 > pc.Quest.Detail.Count3)
-                            {
+                            if (pc.Quest.CurrentCount3 > pc.Quest.Detail.Count3) {
                                 ExcessItemCount3 = pc.Quest.CurrentCount3 - pc.Quest.Detail.Count3;
                                 ExcessItemID3 = (int)pc.Quest.Detail.ObjectID3;
                                 pc.Quest.CurrentCount3 = pc.Quest.Detail.Count3;
@@ -5465,13 +5081,11 @@ namespace SagaMap.Scripting
 
                         client.SendQuestCount();
                     }
-                    else
-                    {
+                    else {
                         Say(pc, 131, alreadyHasQuest);
                         if (Select(pc, LocalManager.Instance.Strings.QUEST_HOW_TO_DO, "",
                                 LocalManager.Instance.Strings.QUEST_NOT_CANCEL,
-                                LocalManager.Instance.Strings.QUEST_CANCEL) == 2)
-                        {
+                                LocalManager.Instance.Strings.QUEST_CANCEL) == 2) {
                             if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
                                 DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
                             Say(pc, 131, questCanceled);
@@ -5488,8 +5102,7 @@ namespace SagaMap.Scripting
                     }
                 }
 
-                if (pc.Quest.Status == QuestStatus.COMPLETED)
-                {
+                if (pc.Quest.Status == QuestStatus.COMPLETED) {
                     if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
                         DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
 
@@ -5498,12 +5111,10 @@ namespace SagaMap.Scripting
 
                     Say(pc, 131, LocalManager.Instance.Strings.QUEST_REWARDED);
                     PlaySound(pc, 4006, false, 100, 50);
-                    if (pc.Level < pc.Quest.Detail.MinLevel + 5)
-                    {
+                    if (pc.Level < pc.Quest.Detail.MinLevel + 5) {
                         expfactor = 1.0f;
                     }
-                    else
-                    {
+                    else {
                         if (pc.Level < pc.Quest.Detail.MinLevel + 10)
                             expfactor = 0.6f;
                         else
@@ -5527,8 +5138,7 @@ namespace SagaMap.Scripting
                     //灰色任务无法获得声望?
                     if (pc.Quest.Difficulty(pc) != QuestDifficulty.TOO_EASY)
                         pc.Fame += pc.Quest.Detail.Fame;
-                    if (pc.Ring != null)
-                    {
+                    if (pc.Ring != null) {
                         pc.Ring.Fame += pc.Quest.Detail.Fame;
                         RingManager.Instance.UpdateRingInfo(pc.Ring, SSMG_RING_INFO.Reason.UPDATED);
                     }
@@ -5540,8 +5150,7 @@ namespace SagaMap.Scripting
                     client.SendQuestDelete();
                     client.SendPlayerInfo();
                 }
-                else if (pc.Quest.Status == QuestStatus.FAILED)
-                {
+                else if (pc.Quest.Status == QuestStatus.FAILED) {
                     if (pc.Quest.Detail.DungeonID != 0 && pc.DungeonID != 0)
                         DungeonFactory.Instance.GetDungeon(pc.DungeonID).Destory(DestroyType.QuestCancel);
                     Say(pc, 131, questFailed);
@@ -5553,34 +5162,26 @@ namespace SagaMap.Scripting
                     client.SendQuestDelete();
                 }
             }
-            else
-            {
-                if (pc.QuestRemaining < leastQuestPoint)
-                {
+            else {
+                if (pc.QuestRemaining < leastQuestPoint) {
                     Say(pc, 131, notEnoughQuestPoint);
                 }
-                else
-                {
+                else {
                     var quest = SendQuestList(pc, groupID);
-                    if (quest != null)
-                    {
-                        if (pc.QuestRemaining < quest.Detail.RequiredQuestPoint)
-                        {
+                    if (quest != null) {
+                        if (pc.QuestRemaining < quest.Detail.RequiredQuestPoint) {
                             Say(pc, 131, notEnoughQuestPoint);
                         }
-                        else
-                        {
+                        else {
                             var difficulty = quest.Difficulty(pc);
-                            if (difficulty == QuestDifficulty.TOO_EASY || difficulty == QuestDifficulty.TOO_HARD)
-                            {
+                            if (difficulty == QuestDifficulty.TOO_EASY || difficulty == QuestDifficulty.TOO_HARD) {
                                 if (difficulty == QuestDifficulty.TOO_EASY)
                                     Say(pc, 131, questTooEasy);
                                 else
                                     Say(pc, 131, questTooHard);
                                 if (Select(pc, LocalManager.Instance.Strings.QUEST_IF_TAKE_QUEST, "",
                                         LocalManager.Instance.Strings.QUEST_TAKE,
-                                        LocalManager.Instance.Strings.QUEST_NOT_TAKE) == 1)
-                                {
+                                        LocalManager.Instance.Strings.QUEST_NOT_TAKE) == 1) {
                                     if (quest.QuestType != QuestType.GATHER)
                                         Say(pc, 131, gotNormalQuest);
                                     else
@@ -5590,10 +5191,8 @@ namespace SagaMap.Scripting
                                     client.SendQuestPoints();
                                 }
                             }
-                            else
-                            {
-                                if (CanTakeQuest(pc, quest))
-                                {
+                            else {
+                                if (CanTakeQuest(pc, quest)) {
                                     if (quest.QuestType != QuestType.GATHER)
                                         Say(pc, 131, gotNormalQuest);
                                     else
@@ -5615,8 +5214,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
-        public virtual bool CanTakeQuest(ActorPC pc, Quest quest)
-        {
+        public virtual bool CanTakeQuest(ActorPC pc, Quest quest) {
             return true;
         }
 
@@ -5625,8 +5223,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
-        public virtual void OnQuestUpdate(ActorPC pc, Quest quest)
-        {
+        public virtual void OnQuestUpdate(ActorPC pc, Quest quest) {
         }
 
 
@@ -5636,8 +5233,7 @@ namespace SagaMap.Scripting
         /// <param name="pc">玩家</param>
         /// <param name="groupID">任务组ID</param>
         /// <returns>玩家选择的任务</returns>
-        private Quest SendQuestList(ActorPC pc, uint groupID)
-        {
+        private Quest SendQuestList(ActorPC pc, uint groupID) {
             byte lv = 1;
             MapManager.Instance.GetMap(pc.MapID);
             lv = pc.Level;
@@ -5658,8 +5254,7 @@ namespace SagaMap.Scripting
             while (client.questID == 0) Thread.Sleep(500);
             ClientManager.EnterCriticalArea();
 
-            if (QuestFactory.Instance.Items.ContainsKey(client.questID))
-            {
+            if (QuestFactory.Instance.Items.ContainsKey(client.questID)) {
                 if (!list.Contains(QuestFactory.Instance.Items[client.questID])) return null;
 
                 return new Quest(client.questID);
@@ -5673,8 +5268,7 @@ namespace SagaMap.Scripting
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <param name="quest">任务</param>
-        private void QuestActivate(ActorPC pc, Quest quest)
-        {
+        private void QuestActivate(ActorPC pc, Quest quest) {
             quest.Status = QuestStatus.OPEN;
             if (quest.Detail.TimeLimit >= 0)
                 quest.EndTime = DateTime.Now + new TimeSpan(0, quest.Detail.TimeLimit, 0);

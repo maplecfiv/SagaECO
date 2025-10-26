@@ -6,31 +6,25 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Dungeon;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Dungeon
-{
-    public class Dungeon : MultiRunTask
-    {
+namespace SagaMap.Tasks.Dungeon {
+    public class Dungeon : MultiRunTask {
         private readonly SagaMap.Dungeon.Dungeon dungeon;
         public int counter;
         public int lifeTime;
 
-        public Dungeon(SagaMap.Dungeon.Dungeon dungeon, int lifeTime)
-        {
+        public Dungeon(SagaMap.Dungeon.Dungeon dungeon, int lifeTime) {
             Period = 1000;
             DueTime = 1000;
             this.dungeon = dungeon;
             this.lifeTime = lifeTime;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 counter++;
                 var rest = lifeTime - counter;
 
-                if (rest == 0)
-                {
+                if (rest == 0) {
                     Deactivate();
                     dungeon.Destory(DestroyType.TimeOver);
                     return;
@@ -50,8 +44,7 @@ namespace SagaMap.Tasks.Dungeon
                     rest == 40 ||
                     rest == 30 ||
                     rest == 20 ||
-                    rest <= 15)
-                {
+                    rest <= 15) {
                     var time = "";
                     if (rest >= 3600)
                         time = rest / 3600 + LocalManager.Instance.Strings.ITD_HOUR;
@@ -61,18 +54,16 @@ namespace SagaMap.Tasks.Dungeon
                         time = rest + LocalManager.Instance.Strings.ITD_SECOND;
                     var announce = string.Format(LocalManager.Instance.Strings.ITD_CRASHING, time);
                     foreach (var i in dungeon.Maps)
-                    foreach (var j in i.Map.Actors.Values)
-                        if (j.type == ActorType.PC)
-                            if (((ActorPC)j).Online)
-                            {
-                                var eh = (PCEventHandler)j.e;
-                                eh.Client.SendAnnounce(announce);
-                            }
+                        foreach (var j in i.Map.Actors.Values)
+                            if (j.type == ActorType.PC)
+                                if (((ActorPC)j).Online) {
+                                    var eh = (PCEventHandler)j.e;
+                                    eh.Client.SendAnnounce(announce);
+                                }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
     }

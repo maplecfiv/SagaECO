@@ -3,17 +3,13 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Mob;
 
-namespace SagaMap.Tasks.Mob
-{
-    public class SkillCast : MultiRunTask
-    {
+namespace SagaMap.Tasks.Mob {
+    public class SkillCast : MultiRunTask {
         private readonly MobAI client;
         private readonly SkillArg skill;
 
-        public SkillCast(MobAI ai, SkillArg skill)
-        {
-            if (skill.argType == SkillArg.ArgType.Cast)
-            {
+        public SkillCast(MobAI ai, SkillArg skill) {
+            if (skill.argType == SkillArg.ArgType.Cast) {
                 DueTime = (int)skill.delay;
                 Period = (int)skill.delay;
             }
@@ -22,10 +18,8 @@ namespace SagaMap.Tasks.Mob
             this.skill = skill;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 ClientManager.EnterCriticalArea();
                 client.Mob.Tasks.Remove("SkillCast");
                 if (skill.argType == SkillArg.ArgType.Cast)
@@ -34,9 +28,8 @@ namespace SagaMap.Tasks.Mob
                 Deactivate();
                 ClientManager.LeaveCriticalArea();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
             }
         }

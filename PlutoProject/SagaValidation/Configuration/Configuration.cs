@@ -179,7 +179,7 @@ namespace SagaValidation {
                 Logger.GetLogger().Information("Done reading configuration...");
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
             }
         }
     }

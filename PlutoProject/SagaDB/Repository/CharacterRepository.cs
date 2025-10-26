@@ -99,7 +99,7 @@ public class CharacterRepository {
         }
         catch (Exception ex) {
             SqlSugarHelper.Db.RollbackTran();
-            SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            SagaLib.Logger.ShowError(ex);
             return false;
         }
     }
@@ -167,7 +167,7 @@ public class CharacterRepository {
             return charID;
         }
         catch (Exception ex) {
-            SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            SagaLib.Logger.ShowError(ex);
             return 0;
         }
     }
@@ -186,7 +186,7 @@ public class CharacterRepository {
         }
         catch (Exception ex) {
             SqlSugarHelper.Db.RollbackTran();
-            SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            SagaLib.Logger.ShowError(ex);
             return false;
         }
     }

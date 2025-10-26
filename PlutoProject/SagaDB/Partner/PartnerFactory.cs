@@ -8,10 +8,8 @@ using SagaDB.Item;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Partner
-{
-    public class PartnerFactory : Singleton<PartnerFactory>
-    {
+namespace SagaDB.Partner {
+    public class PartnerFactory : Singleton<PartnerFactory> {
         private readonly Dictionary<uint, ActCubeData> actcubes_db_itemID = new Dictionary<uint, ActCubeData>();
         private readonly Dictionary<uint, TalkInfo> actcubes_talks_db = new Dictionary<uint, TalkInfo>();
 
@@ -32,19 +30,16 @@ namespace SagaDB.Partner
         public List<uint> RankSSSPets = new List<uint>();
         public Dictionary<uint, PartnerData> Partners { get; } = new Dictionary<uint, PartnerData>();
 
-        public void ClearPartnerEquips()
-        {
+        public void ClearPartnerEquips() {
             partnerequips_db.Clear();
         }
 
-        public List<PartnerMotion> GetPartnerMotion(uint itemid)
-        {
+        public List<PartnerMotion> GetPartnerMotion(uint itemid) {
             if (!partner_motion_info.ContainsKey(itemid)) return null;
             return partner_motion_info[itemid];
         }
 
-        public TalkInfo GetPartnerTalks(uint parterid)
-        {
+        public TalkInfo GetPartnerTalks(uint parterid) {
             if (!actcubes_talks_db.ContainsKey(parterid)) return null;
             return actcubes_talks_db[parterid];
         }
@@ -59,28 +54,23 @@ namespace SagaDB.Partner
             return Partners[partnerid];
         }
 
-        public PartnerFood GetPartnerFood(uint itemid)
-        {
+        public PartnerFood GetPartnerFood(uint itemid) {
             return partnerfoods_db[itemid];
         }
 
-        public PartnerEquipment GetPartnerEquip(uint itemid)
-        {
+        public PartnerEquipment GetPartnerEquip(uint itemid) {
             return partnerequips_db[itemid];
         }
 
-        public ActCubeData GetCubeItemID(uint itemid)
-        {
+        public ActCubeData GetCubeItemID(uint itemid) {
             return actcubes_db_itemID[itemid];
         }
 
-        public ActCubeData GetCubeUniqueID(ushort uniqueid)
-        {
+        public ActCubeData GetCubeUniqueID(ushort uniqueid) {
             return actcubes_db_uniqueID[uniqueid];
         }
 
-        public void InitPartnerInfo(string path, Encoding encoding)
-        {
+        public void InitPartnerInfo(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -89,12 +79,10 @@ namespace SagaDB.Partner
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -108,17 +96,15 @@ namespace SagaDB.Partner
                     partner.pictid = uint.Parse(paras[2]);
                     partner.partnerSize = float.Parse(paras[3]);
                     partner.motionsetnumber = ushort.Parse(paras[4]);
-                    try
-                    {
+                    try {
                         var typeinfo = paras[6].Split('_').ToList();
                         partner.partnertypeid = ushort.Parse(typeinfo[typeinfo.Count - 1]);
                         typeinfo.RemoveAt(typeinfo.Count - 1);
                         var type = string.Join<string>("_", typeinfo);
                         partner.partnertype = (PartnerType)Enum.Parse(typeof(PartnerType), type);
                     }
-                    catch (Exception exception)
-                    {
-                        Logger.GetLogger().Error(exception, null);
+                    catch (Exception exception) {
+                        Logger.ShowError(exception);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -136,29 +122,25 @@ namespace SagaDB.Partner
                     partner.isrange = toBool(paras[11]);
                     partner.range = 1; //float.Parse(paras[12]);
 
-                    if (partners_info.ContainsKey(partner.id))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerID:" + partner.id + ",[" + partners_info[partner.id].name +
-                                                 "]的已存在" + ",让[" + partner.name + "]没有被添加到Info。");
+                    if (partners_info.ContainsKey(partner.id)) {
+                        Logger.ShowError("重复的PartnerID:" + partner.id + ",[" + partners_info[partner.id].name +
+                                         "]的已存在" + ",让[" + partner.name + "]没有被添加到Info。");
                     }
-                    else
-                    {
+                    else {
                         partners_info.Add(partner.id, partner);
                         count++;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing Partner Info!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing Partner Info!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -168,20 +150,17 @@ namespace SagaDB.Partner
             sr.Close();
         }
 
-        public void InitPartnerRankDB(string path, Encoding encoding)
-        {
+        public void InitPartnerRankDB(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 #if !Web
             var label = "Loading partner Rank database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
 #endif
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -191,23 +170,20 @@ namespace SagaDB.Partner
                     if (Partners.ContainsKey(id))
                         Partners[id].base_rank = baserank;
                     else
-                        Logger.GetLogger().Error("不存在ID为" + id + "的伙伴，设置初始RANK失败。");
+                        Logger.ShowError("不存在ID为" + id + "的伙伴，设置初始RANK失败。");
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 
             foreach (var item in ItemFactory.Instance.Items.Values)
                 if (item.petID != 0)
-                    if (Partners.ContainsKey(item.petID) && item.itemType == ItemType.PARTNER)
-                    {
+                    if (Partners.ContainsKey(item.petID) && item.itemType == ItemType.PARTNER) {
                         var baserank = Partners[item.petID].base_rank;
                         var itemid2 = item.id;
 
-                        switch (baserank)
-                        {
+                        switch (baserank) {
                             case 61:
                                 if (!RankBPets.Contains(itemid2))
                                     RankBPets.Add(itemid2);
@@ -232,18 +208,15 @@ namespace SagaDB.Partner
                     }
         }
 
-        public void InitPartnerTalksInfo(string path, Encoding encoding)
-        {
+        public void InitPartnerTalksInfo(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading Talks database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -293,25 +266,21 @@ namespace SagaDB.Partner
                     else
                         actcubes_talks_db[id] = ti;
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }
 
-        public void InitPartnerPicts(string path, Encoding encoding)
-        {
+        public void InitPartnerPicts(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading PartnerPict database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -319,25 +288,21 @@ namespace SagaDB.Partner
                     var pictid = uint.Parse(paras[0]);
                     if (!PartnerPictList.Contains(pictid)) PartnerPictList.Add(pictid);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }
 
-        public void InitPartnerMotions(string path, Encoding encoding)
-        {
+        public void InitPartnerMotions(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var label = "Loading Talks database";
             Logger.ProgressBarShow(0, (uint)sr.BaseStream.Length, label);
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -351,15 +316,13 @@ namespace SagaDB.Partner
                         partner_motion_info.Add(itemid, new List<PartnerMotion>());
                     partner_motion_info[itemid].Add(pm);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }
 
-        public void InitPartnerDB(string path, Encoding encoding)
-        {
+        public void InitPartnerDB(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -368,12 +331,10 @@ namespace SagaDB.Partner
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -387,17 +348,15 @@ namespace SagaDB.Partner
                     partner.pictid = uint.Parse(paras[2]);
                     partner.partnerSize = float.Parse(paras[3]);
                     partner.motionsetnumber = ushort.Parse(paras[4]);
-                    try
-                    {
+                    try {
                         var typeinfo = paras[6].Split('_').ToList();
                         partner.partnertypeid = ushort.Parse(typeinfo[typeinfo.Count - 1]);
                         typeinfo.RemoveAt(typeinfo.Count - 1);
                         var type = string.Join<string>("_", typeinfo);
                         partner.partnertype = (PartnerType)Enum.Parse(typeof(PartnerType), type);
                     }
-                    catch (Exception exception)
-                    {
-                        Logger.GetLogger().Error(exception, null);
+                    catch (Exception exception) {
+                        Logger.ShowError(exception);
                         while (paras[6].Substring(paras[6].Length - 1) != "_")
                             paras[6] = paras[6].Substring(0, paras[6].Length - 1);
                         paras[6] = paras[6].Substring(0, paras[6].Length - 1);
@@ -498,30 +457,26 @@ namespace SagaDB.Partner
 
                     partner.aiMode = 0;
 
-                    if (Partners.ContainsKey(partner.id))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerID:" + partner.id + ",[" + Partners[partner.id].name +
-                                                 "]的已存在" +
-                                                 ",让[" + partner.name + "]没有被添加到DB。");
+                    if (Partners.ContainsKey(partner.id)) {
+                        Logger.ShowError("重复的PartnerID:" + partner.id + ",[" + Partners[partner.id].name +
+                                         "]的已存在" +
+                                         ",让[" + partner.name + "]没有被添加到DB。");
                     }
-                    else
-                    {
+                    else {
                         Partners.Add(partner.id, partner);
                         count++;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing Partner DB!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing Partner DB!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -531,8 +486,7 @@ namespace SagaDB.Partner
             sr.Close();
         }
 
-        public void InitPartnerFoodDB(string path, Encoding encoding)
-        {
+        public void InitPartnerFoodDB(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -541,12 +495,10 @@ namespace SagaDB.Partner
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -563,28 +515,24 @@ namespace SagaDB.Partner
                     food.rankexp = uint.Parse(paras[5]);
                     food.reliabilityuprate = ushort.Parse(paras[6]);
 
-                    if (partnerfoods_db.ContainsKey(food.itemID))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerFoodID:" + food.itemID + ",已存在,没有被添加到DB。");
+                    if (partnerfoods_db.ContainsKey(food.itemID)) {
+                        Logger.ShowError("重复的PartnerFoodID:" + food.itemID + ",已存在,没有被添加到DB。");
                     }
-                    else
-                    {
+                    else {
                         partnerfoods_db.Add(food.itemID, food);
                         count++;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing Partner Food DB!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing Partner Food DB!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -594,8 +542,7 @@ namespace SagaDB.Partner
             sr.Close();
         }
 
-        public void InitPartnerEquipDB(string path, Encoding encoding)
-        {
+        public void InitPartnerEquipDB(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 #if !Web
@@ -604,12 +551,10 @@ namespace SagaDB.Partner
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -662,28 +607,24 @@ namespace SagaDB.Partner
                     equip.partnerrank = byte.Parse(paras[36]); //[37]is attacktype null
                     equip.systemID = byte.Parse(paras[38]);
 
-                    if (partnerequips_db.ContainsKey(equip.itemID))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerEquipID:" + equip.itemID + ",已存在,没有被添加到DB。");
+                    if (partnerequips_db.ContainsKey(equip.itemID)) {
+                        Logger.ShowError("重复的PartnerEquipID:" + equip.itemID + ",已存在,没有被添加到DB。");
                     }
-                    else
-                    {
+                    else {
                         partnerequips_db.Add(equip.itemID, equip);
                         count++;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing Partner Equip DB!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing Partner Equip DB!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -693,8 +634,7 @@ namespace SagaDB.Partner
             sr.Close();
         }
 
-        public void InitActCubeDB(string path, Encoding encoding)
-        {
+        public void InitActCubeDB(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count_itemID = 0;
             var count_uniqueID = 0;
@@ -704,12 +644,10 @@ namespace SagaDB.Partner
 #endif
             var time = DateTime.Now;
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -731,38 +669,32 @@ namespace SagaDB.Partner
                     cube.parameter2 = int.Parse(paras[23]);
                     cube.parameter3 = int.Parse(paras[24]); //[25] is unknown
 
-                    if (actcubes_db_itemID.ContainsKey(cube.itemID))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerCubeItemID:" + cube.itemID + ",已存在,没有被添加到DB。");
+                    if (actcubes_db_itemID.ContainsKey(cube.itemID)) {
+                        Logger.ShowError("重复的PartnerCubeItemID:" + cube.itemID + ",已存在,没有被添加到DB。");
                     }
-                    else
-                    {
+                    else {
                         actcubes_db_itemID.Add(cube.itemID, cube);
                         count_itemID++;
                     }
 
-                    if (actcubes_db_uniqueID.ContainsKey(cube.uniqueID))
-                    {
-                        Logger.GetLogger().Error("重复的PartnerCubeUniqueID:" + cube.uniqueID + ",已存在,没有被添加到DB。");
+                    if (actcubes_db_uniqueID.ContainsKey(cube.uniqueID)) {
+                        Logger.ShowError("重复的PartnerCubeUniqueID:" + cube.uniqueID + ",已存在,没有被添加到DB。");
                     }
-                    else
-                    {
+                    else {
                         actcubes_db_uniqueID.Add(cube.uniqueID, cube);
                         count_uniqueID++;
                     }
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
 #endif
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing Partner Cube DB!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing Partner Cube DB!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
             }
@@ -772,8 +704,7 @@ namespace SagaDB.Partner
             sr.Close();
         }
 
-        private bool toBool(string input)
-        {
+        private bool toBool(string input) {
             if (input == "1") return true;
             return false;
         }

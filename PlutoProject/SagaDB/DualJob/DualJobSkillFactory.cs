@@ -5,24 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.DualJob
-{
-    public class DualJobSkillFactory : Singleton<DualJobSkillFactory>
-    {
+namespace SagaDB.DualJob {
+    public class DualJobSkillFactory : Singleton<DualJobSkillFactory> {
         public Dictionary<ushort, List<DualJobSkill>> items = new Dictionary<ushort, List<DualJobSkill>>();
 
-        public void Init(string path, Encoding encoding)
-        {
-            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
-            {
+        public void Init(string path, Encoding encoding) {
+            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding)) {
                 string[] paras;
-                while (!sr.EndOfStream)
-                {
+                while (!sr.EndOfStream) {
                     string line;
                     line = sr.ReadLine();
 
-                    try
-                    {
+                    try {
                         if (line == "") continue;
                         if (line.Substring(0, 1) == "#") continue;
 
@@ -37,21 +31,18 @@ namespace SagaDB.DualJob
                         item.SkillJobID = byte.Parse(paras[3]);
                         for (var i = 4; i <= 13; i++) item.LearnSkillLevel.Add(byte.Parse(paras[i]));
 
-                        if (items.ContainsKey(item.DualJobID))
-                        {
+                        if (items.ContainsKey(item.DualJobID)) {
                             if (items[item.DualJobID] == null)
                                 items[item.DualJobID] = new List<DualJobSkill>();
 
                             items[item.DualJobID].Add(item);
                         }
-                        else
-                        {
+                        else {
                             items.Add(item.DualJobID, new List<DualJobSkill> { item });
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
                 }
 

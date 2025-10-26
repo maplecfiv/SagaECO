@@ -28,7 +28,7 @@ namespace SagaValidation {
         //         }
         //     }
         //     catch (Exception exception) {
-        //         Logger.GetLogger().Error(exception, null);
+        //         Logger.ShowError(exception);
         //         return false;
         //     }
         // }
@@ -65,15 +65,15 @@ namespace SagaValidation {
             //null.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
             // if (!StartDatabase()) {
-            //     Logger.GetLogger().Error("cannot connect to dbserver", null);
-            //     Logger.GetLogger().Error("Shutting down in 20sec.", null);
+            //     Logger.ShowError("cannot connect to dbserver", null);
+            //     Logger.ShowError("Shutting down in 20sec.", null);
             //     System.Threading.Thread.Sleep(20000);
             //     return;
             // }
 
             ValidationClientManager.Instance.Start();
             if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port)) {
-                Logger.GetLogger().Error("cannot listen on port: " + Configuration.Instance.Port);
+                Logger.ShowError("cannot listen on port: " + Configuration.Instance.Port);
                 Logger.GetLogger().Information("Shutting down in 20sec.");
                 System.Threading.Thread.Sleep(20000);
                 return;
@@ -111,7 +111,7 @@ namespace SagaValidation {
                 Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected()) {
-                    Logger.GetLogger().Error("Failed.. Trying again in 10sec", null);
+                    Logger.ShowError("Failed.. Trying again in 10sec", null);
                     System.Threading.Thread.Sleep(10000);
                     connected = false;
                     continue;

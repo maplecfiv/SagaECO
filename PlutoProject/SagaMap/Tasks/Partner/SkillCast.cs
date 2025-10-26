@@ -3,17 +3,13 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Partner;
 
-namespace SagaMap.Tasks.Partner
-{
-    public class SkillCast : MultiRunTask
-    {
+namespace SagaMap.Tasks.Partner {
+    public class SkillCast : MultiRunTask {
         private readonly PartnerAI client;
         private readonly SkillArg skill;
 
-        public SkillCast(PartnerAI ai, SkillArg skill)
-        {
-            if (skill.argType == SkillArg.ArgType.Cast)
-            {
+        public SkillCast(PartnerAI ai, SkillArg skill) {
+            if (skill.argType == SkillArg.ArgType.Cast) {
                 DueTime = (int)skill.delay;
                 Period = (int)skill.delay;
             }
@@ -22,10 +18,8 @@ namespace SagaMap.Tasks.Partner
             this.skill = skill;
         }
 
-        public override void CallBack()
-        {
-            try
-            {
+        public override void CallBack() {
+            try {
                 ClientManager.EnterCriticalArea();
                 client.Partner.Tasks.Remove("SkillCast");
                 if (skill.argType == SkillArg.ArgType.Cast)
@@ -33,9 +27,8 @@ namespace SagaMap.Tasks.Partner
                 Deactivate();
                 ClientManager.LeaveCriticalArea();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 Deactivate();
             }
         }

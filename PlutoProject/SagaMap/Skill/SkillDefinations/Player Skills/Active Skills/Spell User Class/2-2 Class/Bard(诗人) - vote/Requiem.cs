@@ -7,17 +7,14 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Bard_诗人____vote
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._2_2_Class.Bard_诗人____vote {
     /// <summary>
     ///     安魂曲演奏（レクイエム）
     /// </summary>
-    public class Requiem : ISkill
-    {
+    public class Requiem : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Map map;
             private readonly Actor sActor;
@@ -26,8 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private float factor;
             private int lifetime;
 
-            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level)
-            {
+            public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level) {
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
@@ -41,31 +37,25 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 map = MapManager.Instance.GetMap(actor.MapID);
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0 && counts > 0)
-                    {
+                try {
+                    if (lifetime > 0 && counts > 0) {
                         var factor = 0.37f + 0.43f * skill.skill.Level;
                         var map = MapManager.Instance.GetMap(sActor.MapID);
                         var affected = map.GetActorsArea(sActor, 200, false);
                         var realAffected = new List<Actor>();
                         foreach (var act in affected)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(sActor, act)) {
                                 if (act.type == ActorType.MOB &&
-                                    (act as ActorMob).BaseData.mobType.ToString().StartsWith("UNDEAD"))
-                                {
+                                    (act as ActorMob).BaseData.mobType.ToString().StartsWith("UNDEAD")) {
                                     realAffected.Add(act);
                                     counts--;
                                     if (counts == 0) break;
                                 }
 
-                                if (act.type == ActorType.PC && (act as ActorPC).Buff.Undead)
-                                {
+                                if (act.type == ActorType.PC && (act as ActorPC).Buff.Undead) {
                                     realAffected.Add(act);
                                     counts--;
                                     if (counts == 0) break;
@@ -75,16 +65,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         SkillHandler.Instance.MagicAttack(sActor, realAffected, skill, Elements.Holy, factor);
                         lifetime -= Period;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -95,15 +83,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             if (SkillHandler.Instance.isEquipmentRight(sActor, ItemType.STRINGS) ||
                 sActor.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0) return 0;
             return -5;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //建立設置型技能實體
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

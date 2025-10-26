@@ -3,27 +3,21 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Tasks.PC
-{
-    public class CityRecover : MultiRunTask
-    {
+namespace SagaMap.Tasks.PC {
+    public class CityRecover : MultiRunTask {
         private readonly MapClient client;
 
-        public CityRecover(MapClient client)
-        {
+        public CityRecover(MapClient client) {
             DueTime = 5000;
             Period = 5000;
             this.client = client;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 if (client.Character.HP < client.Character.MaxHP || client.Character.MP < client.Character.MaxMP ||
-                    client.Character.SP < client.Character.MaxSP)
-                {
+                    client.Character.SP < client.Character.MaxSP) {
                     client.Character.HP += (uint)(client.Character.MaxHP * (100 + (client.Character.Vit +
                         client.Character.Status.vit_item +
                         client.Character.Status.vit_rev) / 3) / 2000);
@@ -44,9 +38,8 @@ namespace SagaMap.Tasks.PC
                         true);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
                 client.Character.Tasks.Remove("CityRecover");
                 Deactivate();
             }

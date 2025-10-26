@@ -6,17 +6,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Harvest_收获者____far {
     /// <summary>
     ///     プラントエッジ
     /// </summary>
-    public class PlantField : ISkill
-    {
+    public class PlantField : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
 
@@ -37,8 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             private readonly SkillArg skill;
             private int count, lifetime;
 
-            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -60,13 +56,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 DueTime = 0;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(actor, 200, false);
                         //List<Actor> affected = new List<Actor>();
@@ -76,11 +69,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         skill.affectedActors.Clear();
                         foreach (var i in actors)
                             if (i is ActorMob)
-                                if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                                {
+                                if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                     if (SkillHandler.Instance.CanAdditionApply(caster, i,
-                                            SkillHandler.DefaultAdditions.Stone, 20 * this.skill.skill.Level))
-                                    {
+                                            SkillHandler.DefaultAdditions.Stone, 20 * this.skill.skill.Level)) {
                                         var skill = new Stone(this.skill.skill, i, 750 + 250 * this.skill.skill.Level);
                                         SkillHandler.ApplyAddition(i, skill);
                                     }
@@ -101,16 +92,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }
@@ -134,16 +123,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             if (map.CheckActorSkillInRange(SagaLib.Global.PosX8to16(args.x, map.Width),
                     SagaLib.Global.PosY8to16(args.y, map.Height), 300)) return -17;
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

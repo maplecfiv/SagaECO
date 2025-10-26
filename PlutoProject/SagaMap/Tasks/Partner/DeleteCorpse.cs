@@ -4,31 +4,25 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Manager;
 
-namespace SagaMap.Tasks.Partner
-{
-    public class DeleteCorpse : MultiRunTask
-    {
+namespace SagaMap.Tasks.Partner {
+    public class DeleteCorpse : MultiRunTask {
         private readonly ActorPartner npc;
 
-        public DeleteCorpse(ActorPartner partner)
-        {
+        public DeleteCorpse(ActorPartner partner) {
             DueTime = 5000;
             Period = 5000;
             npc = partner;
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             ClientManager.EnterCriticalArea();
-            try
-            {
+            try {
                 npc.Tasks.Remove("DeleteCorpse");
                 MapManager.Instance.GetMap(npc.MapID).DeleteActor(npc);
                 Deactivate();
             }
-            catch (Exception exception)
-            {
-                Logger.GetLogger().Error(exception, null);
+            catch (Exception exception) {
+                Logger.ShowError(exception);
                 Deactivate();
             }
 

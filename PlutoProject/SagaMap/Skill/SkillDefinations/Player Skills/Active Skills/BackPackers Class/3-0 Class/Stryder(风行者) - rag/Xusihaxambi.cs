@@ -8,26 +8,20 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Stryder_风行者____rag
-{
-    public class Xusihaxambi : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers_Class._3_0_Class.Stryder_风行者____rag {
+    public class Xusihaxambi : ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             if (CheckPossible(pc))
                 return 0;
             return -5;
         }
 
-        private bool CheckPossible(Actor sActor)
-        {
-            if (sActor.type == ActorType.PC)
-            {
+        private bool CheckPossible(Actor sActor) {
+            if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
-                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                {
+                if (pc.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
                     if (pc.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND].BaseData.itemType == ItemType.ROPE ||
                         pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2).Count > 0)
                         return true;
@@ -40,8 +34,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             return true;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
@@ -68,8 +61,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
 
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly int countMax;
@@ -79,8 +71,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
             private readonly SkillArg skill;
             private int count;
 
-            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, Actor theDActor, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -92,14 +83,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                 dActor = theDActor;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         //取得设置型技能，技能体周围7x7范围的怪（范围300，300代表3格，以自己为中心的3格范围就是7x7）
                         var actors = map.GetActorsArea(caster, 200, true);
                         var affected = new List<Actor>();
@@ -108,11 +96,9 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         //skill.type = ATTACK_TYPE.BLOW;
 
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 if (SkillHandler.Instance.CanAdditionApply(caster, i,
-                                        SkillHandler.DefaultAdditions.Stun, 10 * skill.skill.Level))
-                                {
+                                        SkillHandler.DefaultAdditions.Stun, 10 * skill.skill.Level)) {
                                     var skill2 = new Stun(null, i, 6000 - 1000 * skill.skill.Level);
                                     SkillHandler.ApplyAddition(dActor, skill2);
                                 }
@@ -128,16 +114,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.BackPackers
                         //skill.affectedActors.Clear();
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();

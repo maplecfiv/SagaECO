@@ -6,14 +6,11 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Shaman_精灵使_
-{
-    internal class FireWall : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Shaman_精灵使_ {
+    internal class FireWall : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly List<ActorSkill> actorSkill = new List<ActorSkill>();
             private readonly Actor caster;
             private readonly int[] count = new int[5];
@@ -26,8 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private int flag;
 
 
-            public Activator(Actor caster, SkillArg args, byte level, int flag, List<ActorSkill> actorSkill)
-            {
+            public Activator(Actor caster, SkillArg args, byte level, int flag, List<ActorSkill> actorSkill) {
                 this.caster = caster;
                 this.actorSkill = actorSkill;
                 skill = args.Clone();
@@ -37,8 +33,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.flag = flag;
 
 
-                switch (level)
-                {
+                switch (level) {
                     case 1:
                         factor = 0.25f;
                         countMax = 4;
@@ -63,33 +58,25 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
 
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
                 var pos = new short[2];
                 var ii = 0;
                 var affected = new List<Actor>();
                 var affectedCheck = new List<Actor>();
-                try
-                {
-                    if (DateTime.Now <= timeMax)
-                    {
-                        foreach (var i in actorSkill)
-                        {
+                try {
+                    if (DateTime.Now <= timeMax) {
+                        foreach (var i in actorSkill) {
                             affectedCheck.Clear();
                             skill.affectedActors.Clear();
-                            if (count[ii] <= countMax - 1)
-                            {
+                            if (count[ii] <= countMax - 1) {
                                 affected = map.GetActorsArea(i, 50, false);
-                                foreach (var j in affected)
-                                {
+                                foreach (var j in affected) {
                                     if (!SkillHandler.Instance.CheckValidAttackTarget(caster, i)) continue;
-                                    if (!affectedCheck.Contains(j))
-                                    {
+                                    if (!affectedCheck.Contains(j)) {
                                         affectedCheck.Add(j);
                                         count[ii] = count[ii] + 1;
-                                        if (j.LastX != 0 && j.LastY != 0)
-                                        {
+                                        if (j.LastX != 0 && j.LastY != 0) {
                                             pos[0] = j.LastX;
                                             pos[1] = j.LastY;
                                             map.MoveActor(Map.MOVE_TYPE.START, j, pos, 500, 500);
@@ -104,8 +91,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                                 map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actorSkill[0],
                                     false);
                             }
-                            else
-                            {
+                            else {
                                 if (destroyFlag[ii] == false)
                                     map.DeleteActor(i);
                                 destroyFlag[ii] = true;
@@ -114,16 +100,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             ii += 1;
                         }
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         foreach (Actor i in actorSkill)
                             map.DeleteActor(i);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
@@ -133,13 +117,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var map = MapManager.Instance.GetMap(sActor.MapID);
             var actorSkill = new List<ActorSkill>();
             var deltaX = 0;
@@ -153,8 +135,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             var pos = new Dictionary<int, int[]>();
             var n = 0;
             var flag = 0;
-            for (var i = 0; i <= 4; i++)
-            {
+            for (var i = 0; i <= 4; i++) {
                 var actorT = new ActorSkill(args.skill, sActor);
                 actorSkill.Add(actorT);
                 actorSkill[i].e = new NullEventHandler();
@@ -165,14 +146,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 pos.Add(i, posT);
             }
 
-            if (deltaX != 0 || deltaY != 0)
-            {
-                if (Math.Abs(deltaX) != Math.Abs(deltaY))
-                {
+            if (deltaX != 0 || deltaY != 0) {
+                if (Math.Abs(deltaX) != Math.Abs(deltaY)) {
                     actorSkill.Remove(actorSkill[actorSkill.Count - 1]);
                     actorSkill.Remove(actorSkill[actorSkill.Count - 1]);
-                    if (Math.Abs(deltaY) > Math.Abs(deltaX))
-                    {
+                    if (Math.Abs(deltaY) > Math.Abs(deltaX)) {
                         pos[0][0] = argX;
                         pos[0][1] = argY;
                         pos[1][0] = argX + 1;
@@ -184,8 +162,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                         else
                             flag = 2;
                     }
-                    else
-                    {
+                    else {
                         pos[0][0] = argX;
                         pos[0][1] = argY;
                         pos[1][0] = argX;
@@ -198,26 +175,22 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             flag = 4;
                     }
                 }
-                else
-                {
-                    if (deltaX * deltaY < 0)
-                    {
+                else {
+                    if (deltaX * deltaY < 0) {
                         pos[0][0] = argX;
                         pos[0][1] = argY;
                         pos[1][0] = argX + 1;
                         pos[1][1] = argY + 1;
                         pos[2][0] = argX - 1;
                         pos[2][1] = argY - 1;
-                        if (argX > 0)
-                        {
+                        if (argX > 0) {
                             pos[3][0] = argX;
                             pos[3][1] = argY + 1;
                             pos[4][0] = argX - 1;
                             pos[4][1] = argY;
                             flag = 5;
                         }
-                        else
-                        {
+                        else {
                             pos[3][0] = argX;
                             pos[3][1] = argY - 1;
                             pos[4][0] = argX + 1;
@@ -225,24 +198,21 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                             flag = 6;
                         }
                     }
-                    else
-                    {
+                    else {
                         pos[0][0] = argX;
                         pos[0][1] = argY;
                         pos[1][0] = argX + 1;
                         pos[1][1] = argY - 1;
                         pos[2][0] = argX - 1;
                         pos[2][1] = argY + 1;
-                        if (argX > 0)
-                        {
+                        if (argX > 0) {
                             pos[3][0] = argX;
                             pos[3][1] = argY - 1;
                             pos[4][0] = argX - 1;
                             pos[4][1] = argY;
                             flag = 7;
                         }
-                        else
-                        {
+                        else {
                             pos[3][0] = argX;
                             pos[3][1] = argY + 1;
                             pos[4][0] = argX + 1;
@@ -252,8 +222,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     }
                 }
             }
-            else
-            {
+            else {
                 pos[0][0] = argX;
                 pos[0][1] = argY;
                 pos[1][0] = argX;
@@ -263,10 +232,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 flag = 9;
             }
 
-            foreach (var i in actorSkill)
-            {
-                if (pos[n][0] != 0 && pos[n][1] != 0)
-                {
+            foreach (var i in actorSkill) {
+                if (pos[n][0] != 0 && pos[n][1] != 0) {
                     i.X = SagaLib.Global.PosX8to16((byte)pos[n][0], map.Width);
                     i.Y = SagaLib.Global.PosY8to16((byte)pos[n][1], map.Height);
                     map.RegisterActor(i);

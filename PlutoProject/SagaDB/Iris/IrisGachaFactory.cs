@@ -5,24 +5,19 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Iris
-{
-    public class IrisGachaFactory : Singleton<IrisGachaFactory>
-    {
+namespace SagaDB.Iris {
+    public class IrisGachaFactory : Singleton<IrisGachaFactory> {
         public Dictionary<uint, IrisExchangeInfo> IrisExchangeInfo = new Dictionary<uint, IrisExchangeInfo>();
         public Dictionary<string, IrisGacha> IrisGacha = new Dictionary<string, IrisGacha>();
 
-        public void InitBlack(string path, Encoding encoding)
-        {
+        public void InitBlack(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -32,24 +27,20 @@ namespace SagaDB.Iris
                     item.Count = uint.Parse(paras[1]);
                     if (!IrisExchangeInfo.ContainsKey(item.ItemID)) IrisExchangeInfo.Add(item.ItemID, item);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }
 
-        public void InitWindow(string path, Encoding encoding)
-        {
+        public void InitWindow(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -66,9 +57,8 @@ namespace SagaDB.Iris
                     if (!IrisGacha.ContainsKey(gachakey))
                         IrisGacha.Add(gachakey, gacha);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
         }

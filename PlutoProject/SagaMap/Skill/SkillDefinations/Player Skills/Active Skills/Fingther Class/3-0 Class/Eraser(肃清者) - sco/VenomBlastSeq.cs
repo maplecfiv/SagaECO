@@ -129,7 +129,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     map.DeleteActor(actor);
                 }
                 catch (Exception ex) {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //ClientManager.LeaveCriticalArea();

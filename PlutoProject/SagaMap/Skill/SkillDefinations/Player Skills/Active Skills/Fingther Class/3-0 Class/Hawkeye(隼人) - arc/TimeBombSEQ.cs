@@ -6,17 +6,14 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._3_0_Class.Hawkeye_隼人____arc {
     /// <summary>
     ///     ヴェノムブラスト [后续技能]
     /// </summary>
-    public class TimeBombSEQ : ISkill
-    {
+    public class TimeBombSEQ : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly Actor dActor;
@@ -27,8 +24,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             //float[] factors = new float[] { 0f, 0.02f, 0.04f, 0.01f, 0.04f, 0.05f, 100f };//治疗量=(使用者的)百分比比例
             private readonly float factor;
 
-            public Activator(Actor caster, ActorSkill actor, Actor dActor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, Actor dActor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 this.dActor = dActor;
@@ -40,12 +36,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 DueTime = 1000;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //ClientManager.EnterCriticalArea();
-                try
-                {
+                try {
                     //Map map = Manager.MapManager.Instance.GetMap(actor.MapID);
                     //List<Actor> affected = map.GetActorsArea(actor, 50, true);
                     //List<Actor> realAffected = new List<Actor>();
@@ -64,23 +58,20 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                     //在指定地图删除技能体（技能效果结束）
                     map.DeleteActor(actor);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //ClientManager.LeaveCriticalArea();
             }
 
-            private void StartEventHandler(Actor actor, DefaultBuff skill)
-            {
+            private void StartEventHandler(Actor actor, DefaultBuff skill) {
                 actor.Buff.NoRegen = true;
                 MapManager.Instance.GetMap(actor.MapID)
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
             }
 
-            private void EndEventHandler(Actor actor, DefaultBuff skill)
-            {
+            private void EndEventHandler(Actor actor, DefaultBuff skill) {
                 actor.Buff.NoRegen = false;
                 MapManager.Instance.GetMap(actor.MapID)
                     .SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.BUFF_CHANGE, null, actor, true);
@@ -93,14 +84,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         private Actor RealdActor;
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(dActor.MapID);

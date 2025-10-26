@@ -5,24 +5,19 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Item
-{
-    public class AnotherFactory : Singleton<AnotherFactory>
-    {
+namespace SagaDB.Item {
+    public class AnotherFactory : Singleton<AnotherFactory> {
         public Dictionary<uint, Dictionary<byte, Another>> AnotherPapers { get; } =
             new Dictionary<uint, Dictionary<byte, Another>>();
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
 
             string[] paras;
-            while (!sr.EndOfStream)
-            {
+            while (!sr.EndOfStream) {
                 string line;
                 line = sr.ReadLine();
-                try
-                {
+                try {
                     if (line == "") continue;
                     if (line.Substring(0, 1) == "#")
                         continue;
@@ -43,8 +38,7 @@ namespace SagaDB.Item
                     paper.requestItem2 = uint.Parse(paras[22]);
                     paper.awakeSkillID = uint.Parse(paras[23]);
                     paper.awakeSkillMaxLV = byte.Parse(paras[24]);
-                    for (var i = 0; i < 5; i++)
-                    {
+                    for (var i = 0; i < 5; i++) {
                         var skillid = uint.Parse(paras[25 + i * 2]);
                         var skillMaxLV = byte.Parse(paras[26 + i * 2]);
                         if (!paper.skills.ContainsKey(skillid))
@@ -75,17 +69,15 @@ namespace SagaDB.Item
                         AnotherPapers.Add(paper.id, new Dictionary<byte, Another>());
                     AnotherPapers[paper.id].Add(paper.lv, paper);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
             }
 
             sr.Close();
         }
 
-        public byte GetPaperLv(ulong value)
-        {
+        public byte GetPaperLv(ulong value) {
             byte lv = 0;
             if (value >= 0xff) lv = 1;
             if (value >= 0xffff) lv = 2;
@@ -95,15 +87,13 @@ namespace SagaDB.Item
             return lv;
         }
 
-        public ulong GetPaperValue(byte paperID, byte lv, uint ItemID)
-        {
+        public ulong GetPaperValue(byte paperID, byte lv, uint ItemID) {
             ulong value = 0;
             if (!AnotherPapers.ContainsKey(paperID)) return 0;
             if (!AnotherPapers[paperID].ContainsKey(lv)) return 0;
             if (!AnotherPapers[paperID][lv].paperItems1.Contains(ItemID)) return 0;
             var index = AnotherPapers[paperID][lv].paperItems1.IndexOf(ItemID);
-            switch (index)
-            {
+            switch (index) {
                 case 0:
                     value = 0x1;
                     break;

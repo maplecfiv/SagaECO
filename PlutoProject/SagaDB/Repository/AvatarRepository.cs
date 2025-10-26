@@ -39,7 +39,7 @@ public class AvatarRepository {
         }
         catch (Exception ex) {
             SqlSugarHelper.Db.RollbackTran();
-            SagaLib.Logger.GetLogger().Error(ex, ex.Message);
+            SagaLib.Logger.ShowError(ex);
             return false;
         }
     }

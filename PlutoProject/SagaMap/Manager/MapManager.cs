@@ -5,69 +5,58 @@ using SagaDB.Map;
 using SagaDB.Ring;
 using SagaLib;
 
-namespace SagaMap.Manager
-{
-    public sealed class MapManager : Singleton<MapManager>
-    {
+namespace SagaMap.Manager {
+    public sealed class MapManager : Singleton<MapManager> {
         public int InstanceMapLifeHour = 4;
         private Dictionary<uint, MapInfo> mapInfo;
 
-        public MapManager()
-        {
+        public MapManager() {
             Maps = new Dictionary<uint, Map>();
             mapInfo = new Dictionary<uint, MapInfo>();
         }
 
         public Dictionary<uint, Map> Maps { get; }
 
-        public Dictionary<uint, MapInfo> MapInfos
-        {
+        public Dictionary<uint, MapInfo> MapInfos {
             set => mapInfo = value;
         }
 
-        public string GetMapName(uint mapID)
-        {
+        public string GetMapName(uint mapID) {
             if (mapInfo.ContainsKey(mapID))
                 return mapInfo[mapID].name;
             return "MAP_NAME_NOT_FOUND";
         }
 
-        public uint GetMapId(string mapName)
-        {
+        public uint GetMapId(string mapName) {
             foreach (var kv in mapInfo)
                 if (kv.Value.name.ToLower() == mapName.ToLower()) //make the map name case insensitive
                     return kv.Key;
             return 0xFFFFFFFF;
         }
 
-        public void LoadMaps()
-        {
+        public void LoadMaps() {
             foreach (var mapID in Configuration.Configuration.Instance.HostedMaps)
                 if (mapInfo.ContainsKey(mapID))
                     if (!AddMap(new Map(mapInfo[mapID])))
-                        Logger.GetLogger().Error("Cannot load map " + mapID, null);
+                        Logger.ShowError("Cannot load map " + mapID, null);
         }
 
-        public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY)
-        {
+        public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY) {
             return CreateMapInstance(creator, template, exitMap, exitX, exitY, false);
         }
 
         public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY,
-            bool autoDispose)
-        {
+            bool autoDispose) {
             return CreateMapInstance(creator, template, exitMap, exitX, exitY, false, 999);
         }
 
         public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY,
-            bool autoDispose, uint ResurrectionLimit)
-        {
+            bool autoDispose, uint ResurrectionLimit) {
             return CreateMapInstance(creator, template, exitMap, exitX, exitY, false, 999, false);
         }
 
         public uint CreateMapInstance(ActorPC creator, uint template, uint exitMap, byte exitX, byte exitY,
-            bool autoDispose, uint ResurrectionLimit, bool returnori)
-        {
+            bool autoDispose, uint ResurrectionLimit, bool returnori) {
             if (!Maps.ContainsKey(template))
                 return 0;
             var templateMap = Maps[template];
@@ -83,20 +72,16 @@ namespace SagaMap.Manager
                 }
             }
             else*/
-            if (template == 70000000 || template == 75000000)
-            {
+            if (template == 70000000 || template == 75000000) {
                 for (var i = (int)(template % 1000) + 1; i < 999; i++)
-                    if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i)))
-                    {
+                    if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i))) {
                         newMap.ID = (uint)(template / 1000 * 1000 + template % 1000 + i);
                         break;
                     }
             }
-            else
-            {
+            else {
                 for (var i = (int)(template % 1000) + 1; i < 999; i++)
-                    if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i)))
-                    {
+                    if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i))) {
                         newMap.ID = (uint)(template / 1000 * 1000 + template % 1000 + i);
                         Logger.GetLogger().Information(newMap.ID + "副本创建者：" + creator.Name);
                         break;
@@ -117,15 +102,14 @@ namespace SagaMap.Manager
             return newMap.ID;
         }
 
-        public uint CreateMapInstance(Ring ring, uint template, uint exitMap, byte exitX, byte exitY, bool autoDispose)
-        {
+        public uint CreateMapInstance(Ring ring, uint template, uint exitMap, byte exitX, byte exitY,
+            bool autoDispose) {
             if (!Maps.ContainsKey(template))
                 return 0;
             var templateMap = Maps[template];
             var newMap = new Map(templateMap.Info);
             for (var i = (int)(template % 1000) + 1; i < 999; i++)
-                if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i)))
-                {
+                if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i))) {
                     newMap.ID = (uint)(template / 1000 * 1000 + template % 1000 + i);
                     break;
                 }
@@ -141,8 +125,7 @@ namespace SagaMap.Manager
             return newMap.ID;
         }
 
-        public void CreateFFInstanceOfSer()
-        {
+        public void CreateFFInstanceOfSer() {
             var templateMap = Maps[90001000];
             var newMap = new Map(templateMap.Info);
             newMap.ID = 90001999;
@@ -165,10 +148,8 @@ namespace SagaMap.Manager
             Maps.Add(newMap.ID, newMap);
         }
 
-        public void DisposeMapInstanceOnLogout(uint charID)
-        {
-            try
-            {
+        public void DisposeMapInstanceOnLogout(uint charID) {
+            try {
                 var keys = new uint[Maps.Count];
                 Maps.Keys.CopyTo(keys, 0);
                 foreach (var i in keys)
@@ -185,14 +166,12 @@ namespace SagaMap.Manager
                             else if (maps[i].Creator.CharID == charID)
                                 DeleteMapInstance(i);*/
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public bool DeleteMapInstance(uint id)
-        {
+        public bool DeleteMapInstance(uint id) {
             if (!Maps.ContainsKey(id))
                 return false;
             var map = Maps[id];
@@ -202,8 +181,7 @@ namespace SagaMap.Manager
             return true;
         }
 
-        public bool AddMap(Map addMap)
-        {
+        public bool AddMap(Map addMap) {
             foreach (var map in Maps.Values)
                 if (addMap.ID == map.ID)
                     return false;
@@ -212,8 +190,7 @@ namespace SagaMap.Manager
             return true;
         }
 
-        public Map GetMap(uint mapID)
-        {
+        public Map GetMap(uint mapID) {
             if (Maps.ContainsKey(mapID)) return Maps[mapID];
 
             Logger.ShowDebug("Requesting unknown mapID:" + mapID, null);

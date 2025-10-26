@@ -5,24 +5,18 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.DualJob
-{
-    public class DualJobInfoFactory : Singleton<DualJobInfoFactory>
-    {
+namespace SagaDB.DualJob {
+    public class DualJobInfoFactory : Singleton<DualJobInfoFactory> {
         public Dictionary<byte, DualJobInfo> items = new Dictionary<byte, DualJobInfo>();
 
-        public void Init(string path, Encoding encoding)
-        {
-            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding))
-            {
+        public void Init(string path, Encoding encoding) {
+            using (var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding)) {
                 string[] paras;
-                while (!sr.EndOfStream)
-                {
+                while (!sr.EndOfStream) {
                     string line;
                     line = sr.ReadLine();
 
-                    try
-                    {
+                    try {
                         if (line == "") continue;
                         if (line.Substring(0, 1) == "#") continue;
 
@@ -41,9 +35,8 @@ namespace SagaDB.DualJob
                         else
                             items[item.DualJobID] = item;
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.GetLogger().Error(ex, ex.Message);
+                    catch (Exception ex) {
+                        Logger.ShowError(ex);
                     }
                 }
 

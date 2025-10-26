@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using SagaLib;
 using SagaLib.Tasks;
 
-namespace SagaDB.Actor
-{
+namespace SagaDB.Actor {
     [Serializable]
-    public class Actor
-    {
+    public class Actor {
         private byte _MuSoUCount;
         private byte _SwordACount;
 
@@ -85,16 +83,13 @@ namespace SagaDB.Actor
         /// </summary>
         public List<uint> ZenOutLst = new List<uint>();
 
-        public Elements ShieldElement
-        {
-            get
-            {
+        public Elements ShieldElement {
+            get {
                 var ele = SagaLib.Elements.Neutral;
                 var atkvalue = 0;
                 foreach (var item in Elements)
                     if (atkvalue < item.Value + Status.elements_item[item.Key] + Status.elements_skill[item.Key] +
-                        Status.elements_iris[item.Key])
-                    {
+                        Status.elements_iris[item.Key]) {
                         ele = item.Key;
                         atkvalue = item.Value + Status.elements_item[item.Key] + Status.elements_skill[item.Key] +
                                    Status.elements_iris[item.Key];
@@ -104,16 +99,13 @@ namespace SagaDB.Actor
             }
         }
 
-        public Elements WeaponElement
-        {
-            get
-            {
+        public Elements WeaponElement {
+            get {
                 var ele = SagaLib.Elements.Neutral;
                 var atkvalue = 0;
                 foreach (var item in AttackElements)
                     if (atkvalue < item.Value + Status.attackElements_item[item.Key] +
-                        Status.attackElements_skill[item.Key] + Status.attackelements_iris[item.Key])
-                    {
+                        Status.attackElements_skill[item.Key] + Status.attackelements_iris[item.Key]) {
                         ele = item.Key;
                         atkvalue = item.Value + Status.attackElements_item[item.Key] +
                                    Status.attackElements_skill[item.Key] + Status.attackelements_iris[item.Key];
@@ -138,20 +130,17 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Actor的名称
         /// </summary>
-        public string Name
-        {
+        public string Name {
             get => name;
             set => name = value;
         }
 
-        public short LastX
-        {
+        public short LastX {
             get => lastX;
             set => lastX = value;
         }
 
-        public short LastY
-        {
+        public short LastY {
             get => lastY;
             set => lastY = value;
         }
@@ -159,8 +148,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     此Actor在服务器存在的唯一标识ID
         /// </summary>
-        public uint ActorID
-        {
+        public uint ActorID {
             get => id;
             set => id = value;
         }
@@ -168,8 +156,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Actor所在地图ID
         /// </summary>
-        public uint MapID
-        {
+        public uint MapID {
             get => mapID;
             set => mapID = value;
         }
@@ -177,8 +164,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     等级
         /// </summary>
-        public virtual byte Level
-        {
+        public virtual byte Level {
             get => 0;
             set { }
         }
@@ -186,8 +172,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     X坐标
         /// </summary>
-        public byte X2
-        {
+        public byte X2 {
             get => x2;
             set => x2 = value;
         }
@@ -195,8 +180,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Y坐标
         /// </summary>
-        public byte Y2
-        {
+        public byte Y2 {
             get => y2;
             set => y2 = value;
         }
@@ -204,8 +188,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     X坐标
         /// </summary>
-        public short X
-        {
+        public short X {
             get => x;
             set => x = value;
         }
@@ -213,8 +196,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Y坐标
         /// </summary>
-        public short Y
-        {
+        public short Y {
             get => y;
             set => y = value;
         }
@@ -222,8 +204,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     面向方向，0－360
         /// </summary>
-        public ushort Dir
-        {
+        public ushort Dir {
             get => dir;
             set => dir = value;
         }
@@ -231,8 +212,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     最终移动速度，请避免在技能和其他效果中直接对pc或者mob对象赋值（伪actor没有问题），如需要请赋值_item _iris _skill
         /// </summary>
-        public ushort Speed
-        {
+        public ushort Speed {
             //似乎是移动速度判定
 
             //#region 试图的解锁，失败
@@ -279,8 +259,7 @@ namespace SagaDB.Actor
 
             //#endregion
 
-            get
-            {
+            get {
                 //if(this.type == ActorType.MOB)
                 //{
                 //    if (this.speed + this.Status.speed_item + this.Status.speed_iris + this.Status.speed_skill >= 0)
@@ -298,8 +277,7 @@ namespace SagaDB.Actor
                     return 0;
                 }*/ //暂时锁值，因为容易卡速度
             }
-            set
-            {
+            set {
                 speed = (short)value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.SPEED, 0);
             }
@@ -308,14 +286,12 @@ namespace SagaDB.Actor
         /// <summary>
         ///     圣印标记（0为不触发，1为触发）
         /// </summary>
-        public byte IsSeals
-        {
+        public byte IsSeals {
             get => isseals;
             set => isseals = value;
         }
 
-        public byte IsHomicidal
-        {
+        public byte IsHomicidal {
             get => ishomicidal;
             set => ishomicidal = value;
         }
@@ -323,8 +299,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     冰棍层数
         /// </summary>
-        public byte Plies
-        {
+        public byte Plies {
             get => plies;
             set => plies = value;
         }
@@ -332,8 +307,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     圣印层数
         /// </summary>
-        public byte Seals
-        {
+        public byte Seals {
             get => seals;
             set => seals = value;
         }
@@ -341,8 +315,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     殺意层数
         /// </summary>
-        public byte Homicidal
-        {
+        public byte Homicidal {
             get => homicidal;
             set => homicidal = value;
         }
@@ -350,14 +323,12 @@ namespace SagaDB.Actor
         /// <summary>
         ///     减速层数
         /// </summary>
-        public byte SpeedCut
-        {
+        public byte SpeedCut {
             get => speedcut;
             set => speedcut = value;
         }
 
-        public byte AttackRhythm
-        {
+        public byte AttackRhythm {
             get => attackRhythm;
             set => attackRhythm = value;
         }
@@ -365,8 +336,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     暗刻状态
         /// </summary>
-        public byte Darks
-        {
+        public byte Darks {
             get => darks;
             set => darks = value;
         }
@@ -374,8 +344,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     烈刃标记
         /// </summary>
-        public byte HotBladeMark
-        {
+        public byte HotBladeMark {
             get => hotblademark;
             set => hotblademark = value;
         }
@@ -383,8 +352,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     烈刃层数
         /// </summary>
-        public byte HotBlade
-        {
+        public byte HotBlade {
             get => hotblade;
             set => hotblade = value;
         }
@@ -392,8 +360,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     无双斩击HIT数
         /// </summary>
-        public byte MuSoUCount
-        {
+        public byte MuSoUCount {
             get => _MuSoUCount;
             set => _MuSoUCount = value;
         }
@@ -401,8 +368,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     利剑连袭HIT数
         /// </summary>
-        public byte SwordACount
-        {
+        public byte SwordACount {
             get => _SwordACount;
             set => _SwordACount = value;
         }
@@ -410,8 +376,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     杀戮标记计数器
         /// </summary>
-        public int KillingMarkCounter
-        {
+        public int KillingMarkCounter {
             get => killingmarkcounter;
             set => killingmarkcounter = value;
         }
@@ -419,8 +384,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     是否零件使用的杀戮标记
         /// </summary>
-        public bool KillingMarkSoulUse
-        {
+        public bool KillingMarkSoulUse {
             get => killingmarksouluse;
             set => killingmarksouluse = value;
         }
@@ -428,8 +392,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     护盾值（受伤优先扣除）
         /// </summary>
-        public uint SHIELDHP
-        {
+        public uint SHIELDHP {
             get => shieldhp;
             set => shieldhp = value;
         }
@@ -437,8 +400,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     生命
         /// </summary>
-        public uint HP
-        {
+        public uint HP {
             get => hp;
             set => hp = value;
         }
@@ -446,8 +408,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     魔法
         /// </summary>
-        public uint MP
-        {
+        public uint MP {
             get => mp;
             set => mp = value;
         }
@@ -455,8 +416,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     体力
         /// </summary>
-        public uint SP
-        {
+        public uint SP {
             get => sp;
             set => sp = value;
         }
@@ -464,8 +424,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     最大生命
         /// </summary>
-        public uint MaxHP
-        {
+        public uint MaxHP {
             get => max_hp;
             set => max_hp = value;
         }
@@ -473,8 +432,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     最大魔法
         /// </summary>
-        public uint MaxMP
-        {
+        public uint MaxMP {
             get => max_mp;
             set => max_mp = value;
         }
@@ -482,20 +440,17 @@ namespace SagaDB.Actor
         /// <summary>
         ///     最大体力
         /// </summary>
-        public uint MaxSP
-        {
+        public uint MaxSP {
             get => max_sp;
             set => max_sp = value;
         }
 
-        public uint EP
-        {
+        public uint EP {
             get => ep;
             set => ep = value;
         }
 
-        public uint MaxEP
-        {
+        public uint MaxEP {
             get => max_ep;
             set => max_ep = value;
         }
@@ -503,12 +458,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     所有属性相关
         /// </summary>
-        public Status Status
-        {
-            get
-            {
-                if (status == null && !noNewStatus)
-                {
+        public Status Status {
+            get {
+                if (status == null && !noNewStatus) {
                     status = new Status(this);
                     noNewStatus = true;
                 }
@@ -521,8 +473,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     射程
         /// </summary>
-        public uint Range
-        {
+        public uint Range {
             get => range;
             set => range = value;
         }
@@ -546,12 +497,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     防御元素属性值
         /// </summary>
-        public Dictionary<Elements, int> Elements
-        {
-            get
-            {
-                if (elements.Count == 0)
-                {
+        public Dictionary<Elements, int> Elements {
+            get {
+                if (elements.Count == 0) {
                     elements.Add(SagaLib.Elements.Neutral, 0);
                     elements.Add(SagaLib.Elements.Fire, 0);
                     elements.Add(SagaLib.Elements.Water, 0);
@@ -568,12 +516,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     攻击元素属性值
         /// </summary>
-        public Dictionary<Elements, int> AttackElements
-        {
-            get
-            {
-                if (attackElements.Count == 0)
-                {
+        public Dictionary<Elements, int> AttackElements {
+            get {
+                if (attackElements.Count == 0) {
                     attackElements.Add(SagaLib.Elements.Neutral, 0);
                     attackElements.Add(SagaLib.Elements.Fire, 0);
                     attackElements.Add(SagaLib.Elements.Water, 0);
@@ -587,12 +532,9 @@ namespace SagaDB.Actor
             }
         }
 
-        public Dictionary<AbnormalStatus, short> AbnormalStatus
-        {
-            get
-            {
-                if (abnormalStatus.Count == 0)
-                {
+        public Dictionary<AbnormalStatus, short> AbnormalStatus {
+            get {
+                if (abnormalStatus.Count == 0) {
                     abnormalStatus.Add(SagaLib.AbnormalStatus.Confused, 0);
                     abnormalStatus.Add(SagaLib.AbnormalStatus.Frosen, 0);
                     abnormalStatus.Add(SagaLib.AbnormalStatus.Paralyse, 0);
@@ -617,27 +559,22 @@ namespace SagaDB.Actor
         /// <summary>
         ///     清除该Actor所有任务以及状态
         /// </summary>
-        public void ClearTaskAddition()
-        {
+        public void ClearTaskAddition() {
             foreach (var i in Tasks.Values)
-                try
-                {
+                try {
                     i.Deactivate();
                 }
-                catch (Exception exception)
-                {
-                    Logger.GetLogger().Error(exception, null);
+                catch (Exception exception) {
+                    Logger.ShowError(exception);
                 }
 
             var additionlist = new Addition[Status.Additions.Count];
             Status.Additions.Values.CopyTo(additionlist, 0);
             foreach (var i in additionlist)
-                try
-                {
+                try {
                     if (i.Activated) i.AdditionEnd();
                 }
-                catch
-                {
+                catch {
                 }
 
             Status.Additions.Clear();

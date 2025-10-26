@@ -9,32 +9,26 @@ using SagaMap.Mob;
 using SagaMap.Network.Client;
 using SagaMap.Skill;
 
-namespace SagaMap.Tasks.System
-{
-    public class 南牢列车 : MultiRunTask
-    {
+namespace SagaMap.Tasks.System {
+    public class 南牢列车 : MultiRunTask {
         private static 南牢列车 instance;
 
         private uint ss = 0;
 
-        public 南牢列车()
-        {
+        public 南牢列车() {
             Period = 2000;
             DueTime = 0;
         }
 
-        public static 南牢列车 Instance
-        {
-            get
-            {
+        public static 南牢列车 Instance {
+            get {
                 if (instance == null)
                     instance = new 南牢列车();
                 return instance;
             }
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             //Period = Global.Random.Next(1500, 2000);
             //DateTime now = DateTime.Now;
 
@@ -70,8 +64,7 @@ namespace SagaMap.Tasks.System
             create(map2, 213, 58, 213, 79);
         }
 
-        private void create(Map map, byte x1, byte y1, byte x2, byte y2)
-        {
+        private void create(Map map, byte x1, byte y1, byte x2, byte y2) {
             var skill = SkillFactory.Instance.GetSkill(8477, 1);
             var actor = new ActorSkill(skill, null);
             actor.Name = "列车";
@@ -89,8 +82,7 @@ namespace SagaMap.Tasks.System
             timer.Activate();
         }
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly Map map;
             private readonly int maxcount = 1000;
             private readonly ActorSkill skill;
@@ -98,8 +90,7 @@ namespace SagaMap.Tasks.System
             private readonly byte y;
             private int count;
 
-            public Activator(ActorSkill skill, Map map, byte x2, byte y2)
-            {
+            public Activator(ActorSkill skill, Map map, byte x2, byte y2) {
                 Period = 45;
                 this.skill = skill;
                 this.map = map;
@@ -107,17 +98,13 @@ namespace SagaMap.Tasks.System
                 y = y2;
             }
 
-            public override void CallBack()
-            {
-                try
-                {
-                    if (count % 2 == 0)
-                    {
+            public override void CallBack() {
+                try {
+                    if (count % 2 == 0) {
                         var actors = map.GetRoundAreaActors(skill.X, skill.Y, 50);
                         foreach (var j in actors)
                             if (j != null)
-                                if (j.type == ActorType.PC && j.HP > 0)
-                                {
+                                if (j.type == ActorType.PC && j.HP > 0) {
                                     var damage = 3000;
 
                                     SkillHandler.Instance.CauseDamage(j, j, damage);
@@ -145,17 +132,15 @@ namespace SagaMap.Tasks.System
 
                     count++;
                     if ((Global.PosX16to8(skill.X, map.Width) == x && Global.PosY16to8(skill.Y, map.Height) == y) ||
-                        count >= maxcount)
-                    {
+                        count >= maxcount) {
                         map.DeleteActor(skill);
                         Deactivate();
                     }
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     map.DeleteActor(skill);
                     Deactivate();
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError(ex);
                 }
             }
         }

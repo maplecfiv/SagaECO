@@ -5,21 +5,17 @@ using System.Text;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 
-namespace SagaDB.Mob
-{
-    public class DropGroupFactory : Singleton<DropGroupFactory>
-    {
+namespace SagaDB.Mob {
+    public class DropGroupFactory : Singleton<DropGroupFactory> {
         private readonly Dictionary<ushort, string[]> Dropgroup = new Dictionary<ushort, string[]>();
 
-        public string[] GetDropRate(ushort groupid)
-        {
+        public string[] GetDropRate(ushort groupid) {
             if (Dropgroup.ContainsKey(groupid))
                 return Dropgroup[groupid];
             return new[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "什么也不掉" };
         }
 
-        public void Init(string path, Encoding encoding)
-        {
+        public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
             var count = 0;
 
@@ -32,8 +28,7 @@ namespace SagaDB.Mob
             var line = "";
 
             while (!sr.EndOfStream)
-                try
-                {
+                try {
                     line = sr.ReadLine();
                     if (line == "")
                         continue;
@@ -49,13 +44,12 @@ namespace SagaDB.Mob
                     var data = new string[paras.Length - 1];
                     for (var i = 1; i < paras.Length; i++) data[i - 1] = paras[i];
                     if (Dropgroup.ContainsKey(ushort.Parse(paras[0])))
-                        Logger.GetLogger().Error("the group id:" + paras[0] + "is exist, skip it");
+                        Logger.ShowError("the group id:" + paras[0] + "is exist, skip it");
                     else
                         Dropgroup.Add(ushort.Parse(paras[0]), data);
 
 #if !Web
-                    if ((DateTime.Now - time).TotalMilliseconds > 40)
-                    {
+                    if ((DateTime.Now - time).TotalMilliseconds > 40) {
                         time = DateTime.Now;
                         Logger.ProgressBarShow((uint)sr.BaseStream.Position, (uint)sr.BaseStream.Length, label);
                     }
@@ -63,11 +57,10 @@ namespace SagaDB.Mob
 
                     count++;
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
 #if !Web
-                    Logger.GetLogger().Error("Error on parsing dropgroup db!\r\nat line:" + line);
-                    Logger.GetLogger().Error(ex, ex.Message);
+                    Logger.ShowError("Error on parsing dropgroup db!\r\nat line:" + line);
+                    Logger.ShowError(ex);
 #endif
                 }
 #if !Web

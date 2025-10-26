@@ -6,19 +6,16 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.SkillDefinations.Global.Active;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.ForceMaster_原力导师____wiz
-{
-    internal class ShockWave : Groove, ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._3_0_Class.
+    ForceMaster_原力导师____wiz {
+    internal class ShockWave : Groove, ISkill {
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);
             //设定技能体位置            
@@ -44,8 +41,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         //#endregion
     }
 
-    internal class ActivatorA : MultiRunTask
-    {
+    internal class ActivatorA : MultiRunTask {
         private readonly Actor AimActor;
         private readonly SkillArg Arg;
         private readonly int countMax = 3;
@@ -57,8 +53,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
         private int count;
         private bool stop = false;
 
-        public ActivatorA(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level)
-        {
+        public ActivatorA(ActorSkill actor, Actor dActor, Actor sActor, SkillArg args, byte level) {
             DueTime = 100;
             Period = 1000;
             AimActor = dActor;
@@ -66,8 +61,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             SkillBody = actor;
             this.sActor = sActor;
             map = MapManager.Instance.GetMap(AimActor.MapID);
-            switch (level)
-            {
+            switch (level) {
                 case 1:
                     factor = 0.25f;
                     countMax = 4;
@@ -96,14 +90,12 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             }
         }
 
-        public override void CallBack()
-        {
+        public override void CallBack() {
             //测试去除技能同步锁
             //ClientManager.EnterCriticalArea();
             var DistanceA = Map.Distance(SkillBody, AimActor);
             var Diss = new short[] { 550, 650, 750, 850, 950 };
-            if (count <= countMax)
-            {
+            if (count <= countMax) {
                 if (DistanceA <= Diss[Arg.skill.Level - 1]) //If mob is out the range that FireBolt can cast, skip out.
                 {
                     var actor = new ActorSkill(Arg.skill, SkillBody);
@@ -130,8 +122,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     pos2[1] = AimActor.Y;
                     map.MoveActor(Map.MOVE_TYPE.START, actor, pos2, 0, 1000, true, MoveType.BATTLE_MOTION);
                     if (AimActor.type == ActorType.MOB || AimActor.type == ActorType.PET ||
-                        AimActor.type == ActorType.SHADOW)
-                    {
+                        AimActor.type == ActorType.SHADOW) {
                         var mob = (MobEventHandler)AimActor.e;
                         mob.AI.OnPathInterupt();
                     }
@@ -159,16 +150,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 count++;
                 map.GetActorsArea(AimActor, 50, false);
             }
-            else
-            {
+            else {
                 map.DeleteActor(SkillBody);
                 Deactivate();
             }
             //测试去除技能同步锁ClientManager.LeaveCriticalArea();
         }
 
-        private class ActivatorC : MultiRunTask
-        {
+        private class ActivatorC : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly int countMax = 0;
             private readonly Map map;
@@ -176,8 +165,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
             private int count, lifetime = 0;
             private SkillArg skill;
 
-            public ActivatorC(Actor caster, ActorSkill actor, SkillArg args, byte level)
-            {
+            public ActivatorC(Actor caster, ActorSkill actor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 skill = args.Clone();
@@ -186,27 +174,22 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 DueTime = 800;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问ClientManager.EnterCriticalArea();
-                try
-                {
+                try {
                     map.GetActorsArea(actor, 50, false);
-                    if (count < countMax)
-                    {
+                    if (count < countMax) {
                         //广播技能效果
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁ClientManager.LeaveCriticalArea();
             }

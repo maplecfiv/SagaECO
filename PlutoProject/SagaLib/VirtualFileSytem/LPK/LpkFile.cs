@@ -6,8 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SagaLib.VirtualFileSytem.LPK.LZMA;
 
-namespace SagaLib.VirtualFileSytem.LPK
-{
+namespace SagaLib.VirtualFileSytem.LPK {
     /* LPK 文件格式 1.0
      * struct
      * {
@@ -20,31 +19,27 @@ namespace SagaLib.VirtualFileSytem.LPK
      * }
      */
 
-    public class LpkFile
-    {
+    public class LpkFile {
         private static readonly byte[] key = Encoding.ASCII.GetBytes("1234567890123456");
         private readonly Rijndael aes = Rijndael.Create();
         private readonly Stream fileStream;
         private readonly Dictionary<string, int> hashTable;
         private int hashSize, hashOffset;
 
-        public LpkFile(Stream stream)
-        {
+        public LpkFile(Stream stream) {
             fileStream = stream;
             aes.Mode = CipherMode.ECB;
             aes.KeySize = 128;
             aes.Padding = PaddingMode.None;
 
-            if (stream.Length != 0)
-            {
+            if (stream.Length != 0) {
                 var sr = new BinaryReader(stream);
 #pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 var magic = sr.ReadInt32();
                 //检查幻数
                 if (magic != 0x004B504C) throw new Exception("This is not a LPK Archive");
-                try
-                {
+                try {
                     //哈希表偏移
                     hashOffset = sr.ReadInt32();
                     stream.Position = hashOffset;
@@ -55,16 +50,14 @@ namespace SagaLib.VirtualFileSytem.LPK
                     hashTable = (Dictionary<string, int>)bf.Deserialize(
                         new MemoryStream(Decrypt(sr.ReadBytes(hashSize))));
                 }
-                catch (Exception ex)
-                {
+                catch (Exception ex) {
                     throw new Exception("This Archive is corrupted and cannot be opened", ex);
                 }
 
                 if (hashTable == null) throw new Exception("This Archive is corrupted and cannot be opened");
             }
             //新建哈希表
-            else
-            {
+            else {
                 hashTable = new Dictionary<string, int>();
                 var bw = new BinaryWriter(stream);
                 bw.Write(0x004B504C);
@@ -91,10 +84,8 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// <summary>
         ///     总大小
         /// </summary>
-        public long TotalSize
-        {
-            get
-            {
+        public long TotalSize {
+            get {
                 long size = 0;
                 foreach (var i in GetFileNames) size += i.UncompressedSize;
                 return size;
@@ -104,20 +95,16 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// <summary>
         ///     总压缩后大小
         /// </summary>
-        public long TotalCompressedSize
-        {
-            get
-            {
+        public long TotalCompressedSize {
+            get {
                 long size = 0;
                 foreach (var i in GetFileNames) size += i.FileSize;
                 return size;
             }
         }
 
-        internal byte[] HashBuffer
-        {
-            get
-            {
+        internal byte[] HashBuffer {
+            get {
 #pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();
                 var ms = new MemoryStream();
@@ -135,21 +122,17 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// </summary>
         /// <param name="name">文件名</param>
         /// <returns>元信息</returns>
-        public LpkFileInfo GetInfo(string name)
-        {
+        public LpkFileInfo GetInfo(string name) {
             fileStream.Position = hashTable[name];
             var info = new LpkFileInfo(fileStream);
             info.Name = name;
             return info;
         }
 
-        private List<LpkFileInfo> GetInfos()
-        {
-            if (hashTable != null)
-            {
+        private List<LpkFileInfo> GetInfos() {
+            if (hashTable != null) {
                 var list = new List<LpkFileInfo>();
-                foreach (var i in hashTable.Keys)
-                {
+                foreach (var i in hashTable.Keys) {
                     fileStream.Position = hashTable[i];
                     var info = new LpkFileInfo(fileStream);
                     info.Name = i;
@@ -167,13 +150,11 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        public bool Exists(string fileName)
-        {
+        public bool Exists(string fileName) {
             return hashTable.ContainsKey(fileName);
         }
 
-        public void Close()
-        {
+        public void Close() {
             fileStream.Flush();
             fileStream.Close();
         }
@@ -183,8 +164,7 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <param name="inStream">要添加的文件的流</param>
-        public void AddFile(string fileName, Stream inStream)
-        {
+        public void AddFile(string fileName, Stream inStream) {
             AddFile(fileName, inStream, null);
         }
 
@@ -194,10 +174,8 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// <param name="fileName">文件名</param>
         /// <param name="inStream">要添加的文件的流</param>
         /// <param name="progress">压缩进度回调对象</param>
-        public void AddFile(string fileName, Stream inStream, ICodeProgress progress)
-        {
-            lock (hashTable)
-            {
+        public void AddFile(string fileName, Stream inStream, ICodeProgress progress) {
+            lock (hashTable) {
                 //元信息备份缓存
                 var metaBackup = new byte[LpkFileInfo.Size * hashTable.Count];
                 uint crc;
@@ -243,20 +221,17 @@ namespace SagaLib.VirtualFileSytem.LPK
                 var files = new string[hashTable.Count];
                 hashTable.Keys.CopyTo(files, 0);
 
-                foreach (var i in files)
-                {
+                foreach (var i in files) {
                     LpkFileInfo info;
 
-                    if (i != fileName)
-                    {
+                    if (i != fileName) {
                         //修正文件元数据偏移
                         hashTable[i] += hashOffset - oldHashOffset + (newHashSize - hashSize);
                         fileStream.Position = hashTable[i];
                         info = new LpkFileInfo(fileStream);
                         info.HeaderOffset = (uint)hashTable[i];
                     }
-                    else
-                    {
+                    else {
                         //计算新文件元数据偏移
                         hashTable[i] = 4 + hashOffset + newHashSize + (hashTable.Count - 1) * LpkFileInfo.Size;
                         info = new LpkFileInfo();
@@ -287,8 +262,7 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <returns></returns>
-        public MemoryStream OpenFile(string fileName)
-        {
+        public MemoryStream OpenFile(string fileName) {
             return OpenFile(fileName, null);
         }
 
@@ -298,21 +272,17 @@ namespace SagaLib.VirtualFileSytem.LPK
         /// <param name="fileName">文件名</param>
         /// <param name="progress">解压进度回调对象</param>
         /// <returns></returns>
-        public MemoryStream OpenFile(string fileName, ICodeProgress progress)
-        {
-            lock (hashTable)
-            {
+        public MemoryStream OpenFile(string fileName, ICodeProgress progress) {
+            lock (hashTable) {
                 var ms = new MemoryStream();
                 fileStream.Position = hashTable[fileName];
                 var fileInfo = new LpkFileInfo(fileStream);
                 fileStream.Position = fileInfo.DataOffset;
-                try
-                {
+                try {
                     LzmaHelper.Decompress(fileStream, ms, fileInfo.FileSize, fileInfo.UncompressedSize, progress);
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                     throw new Exception(string.Format("File:{1} CRC({0:X}) error, file open failed!", fileInfo.CRC,
                         fileName));
                 }
@@ -327,14 +297,12 @@ namespace SagaLib.VirtualFileSytem.LPK
             }
         }
 
-        internal byte[] Encrypt(byte[] buff)
-        {
+        internal byte[] Encrypt(byte[] buff) {
             var output = new byte[buff.Length];
             var left = buff.Length % 1024;
             var crypt = aes.CreateEncryptor(key, new byte[16]);
             var buf = new byte[1024];
-            for (var i = 0; i < buff.Length / 1024; i++)
-            {
+            for (var i = 0; i < buff.Length / 1024; i++) {
                 Array.Copy(buff, i * 1024, buf, 0, 1024);
                 crypt.TransformBlock(buf, 0, 1024, buf, 0);
                 Array.Copy(buf, 0, output, i * 1024, 1024);
@@ -344,14 +312,12 @@ namespace SagaLib.VirtualFileSytem.LPK
             return output;
         }
 
-        internal byte[] Decrypt(byte[] buff)
-        {
+        internal byte[] Decrypt(byte[] buff) {
             var output = new byte[buff.Length];
             var left = buff.Length % 1024;
             var crypt = aes.CreateDecryptor(key, new byte[16]);
             var buf = new byte[1024];
-            for (var i = 0; i < buff.Length / 1024; i++)
-            {
+            for (var i = 0; i < buff.Length / 1024; i++) {
                 Array.Copy(buff, i * 1024, buf, 0, 1024);
                 crypt.TransformBlock(buf, 0, 1024, buf, 0);
                 Array.Copy(buf, 0, output, i * 1024, 1024);

@@ -33,7 +33,7 @@ namespace SagaMap.Process {
                 foreach (var i in MapClientManager.Instance.OnlinePlayer) i.SendAnnounce(msg);
             }
             catch (Exception exception) {
-                Logger.GetLogger().Error(exception, null);
+                Logger.ShowError(exception);
             }
         }
 
@@ -147,7 +147,7 @@ namespace SagaMap.Process {
             var pc = charDB.GetChar(charid);
 
             if (pc == null) {
-                Logger.GetLogger().Error("NO SUCH CHARID" + charid);
+                Logger.ShowError("NO SUCH CHARID" + charid);
                 return false;
             }
 
@@ -161,7 +161,7 @@ namespace SagaMap.Process {
                     SaveOfflineItem(charid, itemid, qty);
                 }
                 catch {
-                    Logger.GetLogger().Error("ERROR ON SAVE OFFLINE APIITEM");
+                    Logger.ShowError("ERROR ON SAVE OFFLINE APIITEM");
                 }
 
                 Logger.GetLogger()

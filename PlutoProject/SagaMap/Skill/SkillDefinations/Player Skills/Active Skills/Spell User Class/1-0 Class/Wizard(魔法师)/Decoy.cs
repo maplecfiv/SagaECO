@@ -6,20 +6,16 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Mob;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Wizard_魔法师_
-{
-    public class Decoy : ISkill
-    {
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_Class._1_0_Class.Wizard_魔法师_ {
+    public class Decoy : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorShadow actor;
             private readonly Actor castor;
             private readonly Map map;
 
-            public Activator(Actor castor, ActorShadow actor, int lifetime)
-            {
+            public Activator(Actor castor, ActorShadow actor, int lifetime) {
                 map = MapManager.Instance.GetMap(actor.MapID);
                 Period = lifetime;
                 DueTime = lifetime;
@@ -27,12 +23,10 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                 this.castor = castor;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
+                try {
                     var eh = (PetEventHandler)actor.e;
                     eh.AI.Pause();
                     map.DeleteActor(actor);
@@ -40,9 +34,8 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
                     actor.Tasks.Remove("Shadow");
                     Deactivate();
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -53,17 +46,13 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Spell_User_
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
-            if (sActor.type == ActorType.PC)
-            {
-                if (sActor.Slave.Count >= 3)
-                {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
+            if (sActor.type == ActorType.PC) {
+                if (sActor.Slave.Count >= 3) {
                     var eh2 = (PetEventHandler)sActor.Slave[0].e;
                     eh2.AI.Pause();
                     eh2.AI.map.DeleteActor(eh2.AI.Mob);

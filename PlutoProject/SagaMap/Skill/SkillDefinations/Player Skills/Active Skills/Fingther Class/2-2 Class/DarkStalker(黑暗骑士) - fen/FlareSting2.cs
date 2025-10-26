@@ -4,17 +4,14 @@ using SagaLib;
 using SagaLib.Tasks;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen
-{
+namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Class._2_2_Class.DarkStalker_黑暗骑士____fen {
     /// <summary>
     ///     火光蟲（フレアスティング）[接續技能]
     /// </summary>
-    public class FlareSting2 : ISkill
-    {
+    public class FlareSting2 : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly Actor dActor;
             private readonly float factor;
             private readonly Map map;
@@ -22,8 +19,7 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
             private readonly SkillArg skill;
             private int lifetime;
 
-            public Activator(Actor _sActor, Actor _dActor, SkillArg _args, byte level)
-            {
+            public Activator(Actor _sActor, Actor _dActor, SkillArg _args, byte level) {
                 sActor = _sActor;
                 dActor = _dActor;
                 skill = _args.Clone();
@@ -38,22 +34,17 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                 factor = appFactors[level];
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0)
-                    {
+                try {
+                    if (lifetime > 0) {
                         var HP_Lost = (uint)(dActor.MaxHP * factor);
-                        if (dActor.HP > HP_Lost)
-                        {
+                        if (dActor.HP > HP_Lost) {
                             dActor.HP -= HP_Lost;
                             map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.HPMPSP_UPDATE, null, dActor, true);
                         }
-                        else
-                        {
+                        else {
                             dActor.HP = 0;
                             SkillHandler.Instance.MagicAttack(sActor, dActor, skill, Elements.Dark, 1f);
                             lifetime = 0;
@@ -62,16 +53,14 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, dActor, false);
                         lifetime -= Period;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         ////在指定地图删除技能体（技能效果结束）
                         //map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
@@ -82,13 +71,11 @@ namespace SagaMap.Skill.SkillDefinations.Player_Skills.Active_Skills.Fingther_Cl
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             ////建立設置型技能實體
             //ActorSkill actor = new ActorSkill(args.skill, sActor);
             //Map map = Manager.MapManager.Instance.GetMap(sActor.MapID);

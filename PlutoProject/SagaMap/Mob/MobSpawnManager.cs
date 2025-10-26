@@ -8,45 +8,37 @@ using SagaLib.VirtualFileSytem;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Mob
-{
-    public class MobSpawnManager : Singleton<MobSpawnManager>
-    {
+namespace SagaMap.Mob {
+    public class MobSpawnManager : Singleton<MobSpawnManager> {
         private string path;
 
         public Dictionary<uint, List<ActorMob>> Spawns { get; } = new Dictionary<uint, List<ActorMob>>();
 
-        public int LoadOne(string f, uint setMap)
-        {
+        public int LoadOne(string f, uint setMap) {
             return LoadOne(f, setMap, true, true);
         }
 
-        public void Reload()
-        {
+        public void Reload() {
             Spawns.Clear();
             Spawns.Clear();
             LoadSpawn(path);
         }
 
-        public int LoadOne(string f, uint setMap, bool loadDelay, bool loadNoDelay)
-        {
+        public int LoadOne(string f, uint setMap, bool loadDelay, bool loadNoDelay) {
             var total = 0;
             var xml = new XmlDocument();
-            try
-            {
+            try {
                 XmlElement root;
                 XmlNodeList list;
                 var fs = VirtualFileSystemManager.Instance.FileSystem.OpenFile(f);
                 xml.Load(fs);
                 root = xml["Spawns"];
                 list = root.ChildNodes;
-                foreach (var j in list)
-                {
+                foreach (var j in list) {
                     XmlElement i;
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
-                    switch (i.Name.ToLower())
-                    {
+                    switch (i.Name.ToLower()) {
                         case "spawn":
                             var list2 = i.ChildNodes;
                             uint map = 0, mobid = 0;
@@ -59,14 +51,12 @@ namespace SagaMap.Mob
                             var attr = i.GetAttribute("rate");
                             if (attr != "")
                                 rate = int.Parse(attr);
-                            foreach (var l in list2)
-                            {
+                            foreach (var l in list2) {
                                 XmlElement k;
                                 if (l.GetType() != typeof(XmlElement)) continue;
                                 k = (XmlElement)l;
 
-                                switch (k.Name.ToLower())
-                                {
+                                switch (k.Name.ToLower()) {
                                     case "id":
                                         mobid = uint.Parse(k.InnerText);
                                         break;
@@ -110,8 +100,7 @@ namespace SagaMap.Mob
                                 continue;
                             if (!Configuration.Configuration.Instance.HostedMaps.Contains(map))
                                 continue;
-                            for (var count = 0; count < amount; count++)
-                            {
+                            for (var count = 0; count < amount; count++) {
                                 if (!MobFactory.Instance.Mobs.ContainsKey(mobid))
                                     break;
                                 var mob = new ActorMob(mobid);
@@ -141,10 +130,8 @@ namespace SagaMap.Mob
                                 y_new = (byte)Global.Random.Next(min_y, max_y);
 
                                 var counter = 0;
-                                try
-                                {
-                                    while (map_.Info.walkable[x_new, y_new] != 2)
-                                    {
+                                try {
+                                    while (map_.Info.walkable[x_new, y_new] != 2) {
                                         if (counter > 1000 || range == 0)
                                             //Logger.getLogger().Warning(string.Format("Cannot find free place for mob:{0} map:{1}[{2},{3}]", mobid, map, x, y), Logger.defaultlogger);
                                             break;
@@ -153,9 +140,8 @@ namespace SagaMap.Mob
                                         counter++;
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    Logger.GetLogger().Error(ex, ex.Message);
+                                catch (Exception ex) {
+                                    Logger.ShowError(ex);
                                 }
 
                                 if (counter > 1000)
@@ -183,12 +169,10 @@ namespace SagaMap.Mob
                                 map_.OnActorVisibilityChange(mob);
 
                                 List<ActorMob> lists = null;
-                                if (Spawns.ContainsKey(map))
-                                {
+                                if (Spawns.ContainsKey(map)) {
                                     lists = Spawns[map];
                                 }
-                                else
-                                {
+                                else {
                                     lists = new List<ActorMob>();
                                     Spawns.Add(map, lists);
                                 }
@@ -203,31 +187,27 @@ namespace SagaMap.Mob
 
                 fs.Close();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
 
             return total;
         }
 
-        public int LoadAI(string f)
-        {
+        public int LoadAI(string f) {
             var total = 0;
 
             return total;
         }
 
-        public void LoadSpawn(string path)
-        {
+        public void LoadSpawn(string path) {
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadOne(f, 0);
             Logger.GetLogger().Information(total + " mobs spawned...");
         }
 
-        public void LoadAnAI(string path)
-        {
+        public void LoadAnAI(string path) {
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadAI(f);

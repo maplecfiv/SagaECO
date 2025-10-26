@@ -11,17 +11,14 @@ using SagaMap.Skill;
 using SagaMap.Skill.Additions;
 using SagaMap.Tasks.Mob;
 
-namespace SagaMap.ActorEventHandlers
-{
-    public class MobEventHandler : ActorEventHandler
-    {
+namespace SagaMap.ActorEventHandlers {
+    public class MobEventHandler : ActorEventHandler {
         public MobAI AI;
         private MobCallback currentCall;
         private ActorPC currentPC;
         public ActorMob mob;
 
-        public MobEventHandler(ActorMob mob)
-        {
+        public MobEventHandler(ActorMob mob) {
             this.mob = mob;
             AI = new MobAI(mob);
         }
@@ -37,12 +34,10 @@ namespace SagaMap.ActorEventHandlers
 
         //#region ActorEventHandler Members
 
-        public void OnActorSkillCancel(Actor sActor)
-        {
+        public void OnActorSkillCancel(Actor sActor) {
         }
 
-        public void OnActorAppears(Actor aActor)
-        {
+        public void OnActorAppears(Actor aActor) {
             if (!mob.VisibleActors.Contains(aActor.ActorID))
                 mob.VisibleActors.Add(aActor.ActorID);
             if (aActor.type == ActorType.PC)
@@ -53,24 +48,19 @@ namespace SagaMap.ActorEventHandlers
                     AI.Hate.Add(aActor.ActorID, mob.MaxHP);
         }
 
-        public void OnPlayerShopChange(Actor aActor)
-        {
+        public void OnPlayerShopChange(Actor aActor) {
         }
 
-        public void OnPlayerShopChangeClose(Actor aActor)
-        {
+        public void OnPlayerShopChangeClose(Actor aActor) {
         }
 
-        public void OnActorChangeEquip(Actor sActor, MapEventArgs args)
-        {
+        public void OnActorChangeEquip(Actor sActor, MapEventArgs args) {
         }
 
-        public void OnActorChat(Actor cActor, MapEventArgs args)
-        {
+        public void OnActorChat(Actor cActor, MapEventArgs args) {
         }
 
-        public void OnActorDisappears(Actor dActor)
-        {
+        public void OnActorDisappears(Actor dActor) {
             if (mob.VisibleActors.Contains(dActor.ActorID))
                 mob.VisibleActors.Remove(dActor.ActorID);
             if (dActor.type == ActorType.PC)
@@ -78,24 +68,19 @@ namespace SagaMap.ActorEventHandlers
                     AI.Hate.Remove(dActor.ActorID);
         }
 
-        public void OnActorReturning(Actor sActor)
-        {
-            try
-            {
-                if (Returning != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
-                        if (AI.lastAttacker.type == ActorType.PC)
-                        {
+        public void OnActorReturning(Actor sActor) {
+            try {
+                if (Returning != null) {
+                    if (AI.lastAttacker != null) {
+                        if (AI.lastAttacker.type == ActorType.PC) {
                             RunCallback(Returning, (ActorPC)AI.lastAttacker);
                             return;
                         }
 
                         if (AI.lastAttacker.type == ActorType.SHADOW)
                             if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                                {
+                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type ==
+                                    ActorType.PC) {
                                     var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                     RunCallback(Returning, pc);
                                     return;
@@ -105,39 +90,31 @@ namespace SagaMap.ActorEventHandlers
                     RunCallback(Returning, null);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnActorSkillUse(Actor sActor, MapEventArgs args)
-        {
+        public void OnActorSkillUse(Actor sActor, MapEventArgs args) {
             var arg = (SkillArg)args;
-            try
-            {
+            try {
                 AI.OnSeenSkillUse(arg);
             }
-            catch
-            {
+            catch {
             }
 
-            try
-            {
-                if (SkillUsing != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
-                        if (AI.lastAttacker.type == ActorType.PC)
-                        {
+            try {
+                if (SkillUsing != null) {
+                    if (AI.lastAttacker != null) {
+                        if (AI.lastAttacker.type == ActorType.PC) {
                             RunCallback(SkillUsing, (ActorPC)AI.lastAttacker);
                             return;
                         }
 
                         if (AI.lastAttacker.type == ActorType.SHADOW)
                             if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                                {
+                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type ==
+                                    ActorType.PC) {
                                     var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                     RunCallback(SkillUsing, pc);
                                     return;
@@ -147,149 +124,116 @@ namespace SagaMap.ActorEventHandlers
                     RunCallback(SkillUsing, null);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
-        {
+        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed) {
         }
 
-        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed, MoveType moveType)
-        {
+        public void OnActorStartsMoving(Actor mActor, short[] pos, ushort dir, ushort speed, MoveType moveType) {
         }
 
-        public void OnActorStopsMoving(Actor mActor, short[] pos, ushort dir, ushort speed)
-        {
-            try
-            {
-                if (Moving != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
-                        if (AI.lastAttacker.type == ActorType.PC)
-                        {
+        public void OnActorStopsMoving(Actor mActor, short[] pos, ushort dir, ushort speed) {
+            try {
+                if (Moving != null) {
+                    if (AI.lastAttacker != null) {
+                        if (AI.lastAttacker.type == ActorType.PC) {
                             RunCallback(Moving, (ActorPC)AI.lastAttacker);
                         }
-                        else if (AI.lastAttacker.type == ActorType.SHADOW)
-                        {
-                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                            {
-                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                                {
+                        else if (AI.lastAttacker.type == ActorType.SHADOW) {
+                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null) {
+                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type ==
+                                    ActorType.PC) {
                                     var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                     RunCallback(Moving, pc);
                                 }
-                                else
-                                {
+                                else {
                                     RunCallback(Moving, null);
                                 }
                             }
-                            else
-                            {
+                            else {
                                 RunCallback(Moving, null);
                             }
                         }
-                        else
-                        {
+                        else {
                             RunCallback(Moving, null);
                         }
                     }
-                    else
-                    {
+                    else {
                         RunCallback(Moving, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnCreate(bool success)
-        {
+        public void OnCreate(bool success) {
         }
 
 
-        public void OnActorChangeEmotion(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorChangeEmotion(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorChangeMotion(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorChangeMotion(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorChangeWaitType(Actor aActor)
-        {
+        public void OnActorChangeWaitType(Actor aActor) {
         }
 
-        public void OnDelete()
-        {
+        public void OnDelete() {
             AI.Pause();
         }
 
 
-        public void OnCharInfoUpdate(Actor aActor)
-        {
+        public void OnCharInfoUpdate(Actor aActor) {
         }
 
 
-        public void OnPlayerSizeChange(Actor aActor)
-        {
+        public void OnPlayerSizeChange(Actor aActor) {
         }
 
-        private bool checkDropSpecial()
-        {
-            if (AI.firstAttacker != null)
-            {
-                if (AI.firstAttacker.Status != null)
-                {
+        private bool checkDropSpecial() {
+            if (AI.firstAttacker != null) {
+                if (AI.firstAttacker.Status != null) {
                     foreach (var i in AI.firstAttacker.Status.Additions.Values)
-                        if (i.GetType() == typeof(Knowledge))
-                        {
+                        if (i.GetType() == typeof(Knowledge)) {
                             var know = (Knowledge)i;
                             if (know.MobTypes.Contains(mob.BaseData.mobType))
                                 return true;
                         }
                 }
-                else
-                {
+                else {
                     return false;
                 }
             }
-            else
-            {
+            else {
                 return false;
             }
 
             return false;
         }
 
-        public void OnDie()
-        {
+        public void OnDie() {
             OnDie(true);
         }
 
-        public void OnDie(bool loot)
-        {
+        public void OnDie(bool loot) {
             if (mob.Buff.Dead) return;
             mob.Buff.Dead = true;
-            try
-            {
+            try {
                 if (mob.Owner != null)
                     mob.Owner.Slave.Remove(mob);
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
 
             if (AI.firstAttacker != null)
-                if (AI.firstAttacker.type == ActorType.GOLEM)
-                {
+                if (AI.firstAttacker.type == ActorType.GOLEM) {
                     var golem = (ActorGolem)AI.firstAttacker;
                     var ehs = (MobEventHandler)golem.e;
                     var skills = new OtherAddition(null, golem, "石像击杀怪物CD", Global.Random.Next(10000, 45000));
@@ -298,8 +242,7 @@ namespace SagaMap.ActorEventHandlers
                     SkillHandler.ApplyAddition(golem, skills);
                 }
 
-            if (mob.Status.Additions.ContainsKey("Rebone"))
-            {
+            if (mob.Status.Additions.ContainsKey("Rebone")) {
                 mob.Buff.Dead = false;
 
                 mob.HP = mob.MaxHP;
@@ -312,57 +255,43 @@ namespace SagaMap.ActorEventHandlers
                 AI.Hate.Clear();
                 AI.firstAttacker = null;
             }
-            else
-            {
-                try
-                {
-                    if (Dying != null)
-                    {
-                        if (AI.lastAttacker != null)
-                        {
-                            if (AI.lastAttacker.type == ActorType.PC)
-                            {
+            else {
+                try {
+                    if (Dying != null) {
+                        if (AI.lastAttacker != null) {
+                            if (AI.lastAttacker.type == ActorType.PC) {
                                 RunCallback(Dying, (ActorPC)AI.lastAttacker);
                             }
-                            else if (AI.lastAttacker.type == ActorType.SHADOW)
-                            {
-                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                                {
+                            else if (AI.lastAttacker.type == ActorType.SHADOW) {
+                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null) {
                                     if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type ==
-                                        ActorType.PC)
-                                    {
+                                        ActorType.PC) {
                                         var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                         RunCallback(Dying, pc);
                                     }
-                                    else
-                                    {
+                                    else {
                                         RunCallback(Dying, null);
                                     }
                                 }
-                                else
-                                {
+                                else {
                                     RunCallback(Dying, null);
                                 }
                             }
-                            else
-                            {
+                            else {
                                 RunCallback(Dying, null);
                             }
                         }
-                        else
-                        {
+                        else {
                             RunCallback(Dying, null);
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
 
                 AI.Pause();
-                if (loot)
-                {
+                if (loot) {
                     //分配经验
                     ExperienceManager.Instance.ProcessMobExp(mob);
                     //drops
@@ -370,8 +299,7 @@ namespace SagaMap.ActorEventHandlers
 
                     //boss掉心
                     if (Configuration.Configuration.Instance.ActiveSpecialLoot)
-                        if (mob.BaseData.mobType.ToString().Contains("BOSS") && AI.SpawnDelay >= 1800000)
-                        {
+                        if (mob.BaseData.mobType.ToString().Contains("BOSS") && AI.SpawnDelay >= 1800000) {
                             if (Global.Random.Next(0, 10000) <=
                                 Configuration.Configuration.Instance.BossSpecialLootRate)
                                 for (var i = 0; i < Configuration.Configuration.Instance.BossSpecialLootNum; i++)
@@ -381,8 +309,7 @@ namespace SagaMap.ActorEventHandlers
                         }
                         else if (Global.Random.Next(0, 10000) <=
                                  Configuration.Configuration.Instance.NomalMobSpecialLootRate &&
-                                 ((MobEventHandler)mob.e).AI.SpawnDelay != 0)
-                        {
+                                 ((MobEventHandler)mob.e).AI.SpawnDelay != 0) {
                             for (var i = 0; i < Configuration.Configuration.Instance.NomalMobSpecialLootNum; i++)
                                 AI.map.AddItemDrop(Configuration.Configuration.Instance.NomalMobSpecialLootID, null,
                                     mob, false,
@@ -395,8 +322,7 @@ namespace SagaMap.ActorEventHandlers
                     var stamp = false;
                     var special = false;
                     ActorPC owner = null;
-                    if (mob.type == ActorType.MOB)
-                    {
+                    if (mob.type == ActorType.MOB) {
                         MapManager.Instance.GetMap(mob.MapID).GetActorsArea(mob, 12700, false)
                             .Where(x => x.type == ActorType.PC && (x as ActorPC).Online).ToList();
                         var eh = (MobEventHandler)mob.e;
@@ -407,8 +333,7 @@ namespace SagaMap.ActorEventHandlers
                     //印章因为目前掉率全都是0,所以取了最小的万分之一
                     if (mob.BaseData.stampDrop != null)
                         if (Global.Random.Next(0, 9999) <= mob.BaseData.stampDrop.Rate *
-                            Configuration.Configuration.Instance.CalcStampDropRateForPC(owner))
-                        {
+                            Configuration.Configuration.Instance.CalcStampDropRateForPC(owner)) {
                             AI.map.AddItemDrop(mob.BaseData.stampDrop.ItemID, null, mob, false, false, false);
                             stamp = true;
                         }
@@ -416,29 +341,24 @@ namespace SagaMap.ActorEventHandlers
                     //dropDeterminator = this.mob.BaseData.dropItems.Sum(x => x.Rate) + this.mob.BaseData.dropItemsSpecial.Sum(x => x.Rate);
                     //特殊掉落(知识掉落)
                     if ((!stamp || Configuration.Configuration.Instance.MultipleDrop) && checkDropSpecial())
-                        foreach (var i in mob.BaseData.dropItemsSpecial)
-                        {
+                        foreach (var i in mob.BaseData.dropItemsSpecial) {
                             dropDeterminator = Global.Random.Next(0, 9999);
-                            if (!Configuration.Configuration.Instance.MultipleDrop)
-                            {
+                            if (!Configuration.Configuration.Instance.MultipleDrop) {
                                 maxVlaue = baseValue +
                                            (int)(i.Rate *
                                                  Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
                                                  100.0f);
-                                if (dropDeterminator >= baseValue && dropDeterminator < maxVlaue)
-                                {
+                                if (dropDeterminator >= baseValue && dropDeterminator < maxVlaue) {
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
                                     special = true;
                                 }
 
                                 baseValue = maxVlaue;
                             }
-                            else
-                            {
+                            else {
                                 if (dropDeterminator < i.Rate *
                                     Configuration.Configuration.Instance.CalcSpecialDropRateForPC(owner) /
-                                    100.0f)
-                                {
+                                    100.0f) {
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
                                     special = true;
                                 }
@@ -448,12 +368,9 @@ namespace SagaMap.ActorEventHandlers
                     baseValue = 0;
                     maxVlaue = 0;
                     //如果已经掉落印章,并且掉落特殊物品,同时开启了多重掉落
-                    if ((!stamp && !special) || Configuration.Configuration.Instance.MultipleDrop)
-                    {
-                        if (Configuration.Configuration.Instance.MultipleDrop)
-                        {
-                            foreach (var i in mob.BaseData.dropItems)
-                            {
+                    if ((!stamp && !special) || Configuration.Configuration.Instance.MultipleDrop) {
+                        if (Configuration.Configuration.Instance.MultipleDrop) {
+                            foreach (var i in mob.BaseData.dropItems) {
                                 var denominator = mob.BaseData.dropItems.Sum(x => x.Rate);
 
                                 //这里简单的做一个头发的过滤
@@ -465,11 +382,9 @@ namespace SagaMap.ActorEventHandlers
                                     AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public, i.Public20);
                             }
                         }
-                        else
-                        {
+                        else {
                             //如果这个怪物有掉落的话...
-                            if (mob.BaseData.dropItems.Count > 0)
-                            {
+                            if (mob.BaseData.dropItems.Count > 0) {
                                 maxVlaue = baseValue = 0;
                                 var oneshotdrop = false;
                                 var denominator = Global.Random.Next(1, mob.BaseData.dropItems.Sum(x => x.Rate));
@@ -477,23 +392,19 @@ namespace SagaMap.ActorEventHandlers
                                 for (var ix = 0;
                                      ix < (int)Configuration.Configuration.Instance.CalcGlobalDropRateForPC(owner);
                                      ix++)
-                                    foreach (var i in mob.BaseData.dropItems)
-                                    {
+                                    foreach (var i in mob.BaseData.dropItems) {
                                         if (oneshotdrop)
                                             continue;
 
                                         maxVlaue = baseValue + i.Rate;
-                                        if (denominator >= baseValue && denominator < maxVlaue)
-                                        {
+                                        if (denominator >= baseValue && denominator < maxVlaue) {
                                             //这里简单的做一个头发的过滤, 掉了个头发也算是掉东西了.
-                                            if (i.ItemID != 10000000)
-                                            {
+                                            if (i.ItemID != 10000000) {
                                                 AI.map.AddItemDrop(i.ItemID, i.TreasureGroup, mob, i.Party, i.Public,
                                                     i.Public20);
                                                 oneshotdrop = true;
                                             }
-                                            else
-                                            {
+                                            else {
                                                 if (ix == (int)Configuration.Configuration.Instance
                                                         .CalcGlobalDropRateForPC(owner) -
                                                     1)
@@ -514,8 +425,7 @@ namespace SagaMap.ActorEventHandlers
                 mob.Tasks.Add("DeleteCorpse", task);
                 task.Activate();
 
-                if (AI.SpawnDelay != 0)
-                {
+                if (AI.SpawnDelay != 0) {
                     var respawn = new Respawn(mob, AI.SpawnDelay);
                     mob.Tasks.Add("Respawn", respawn);
                     respawn.Activate();
@@ -537,56 +447,45 @@ namespace SagaMap.ActorEventHandlers
             }
         }
 
-        public void OnKick()
-        {
+        public void OnKick() {
             throw new NotImplementedException();
         }
 
-        public void OnMapLoaded()
-        {
+        public void OnMapLoaded() {
             throw new NotImplementedException();
         }
 
-        public void OnReSpawn()
-        {
+        public void OnReSpawn() {
             throw new NotImplementedException();
         }
 
-        public void OnSendMessage(string from, string message)
-        {
+        public void OnSendMessage(string from, string message) {
             throw new NotImplementedException();
         }
 
-        public void OnSendWhisper(string name, string message, byte flag)
-        {
+        public void OnSendWhisper(string name, string message, byte flag) {
             throw new NotImplementedException();
         }
 
-        public void OnTeleport(short x, short y)
-        {
+        public void OnTeleport(short x, short y) {
             throw new NotImplementedException();
         }
 
-        public void OnAttack(Actor aActor, MapEventArgs args)
-        {
+        public void OnAttack(Actor aActor, MapEventArgs args) {
             var arg = (SkillArg)args;
             AI.OnSeenSkillUse(arg);
-            try
-            {
-                if (Attacking != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
-                        if (AI.lastAttacker.type == ActorType.PC)
-                        {
+            try {
+                if (Attacking != null) {
+                    if (AI.lastAttacker != null) {
+                        if (AI.lastAttacker.type == ActorType.PC) {
                             RunCallback(Attacking, (ActorPC)AI.lastAttacker);
                             return;
                         }
 
                         if (AI.lastAttacker.type == ActorType.SHADOW)
                             if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                                {
+                                if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type ==
+                                    ActorType.PC) {
                                     var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                     RunCallback(Attacking, pc);
                                     return;
@@ -596,14 +495,12 @@ namespace SagaMap.ActorEventHandlers
                     RunCallback(Attacking, null);
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnHPMPSPUpdate(Actor sActor)
-        {
+        public void OnHPMPSPUpdate(Actor sActor) {
             /*if (Skill.SkillHandler.Instance.isBossMob(this.mob))
             {
                 if (!this.mob.Tasks.ContainsKey("MobRecover"))
@@ -614,20 +511,16 @@ namespace SagaMap.ActorEventHandlers
                 }
             }*/ //关闭怪物回复线程以节省资源
             if (sActor.HP < sActor.MaxHP * 0.05f) return;
-            if (Defending != null)
-            {
-                if (AI.lastAttacker != null)
-                {
-                    if (AI.lastAttacker.type == ActorType.PC)
-                    {
+            if (Defending != null) {
+                if (AI.lastAttacker != null) {
+                    if (AI.lastAttacker.type == ActorType.PC) {
                         RunCallback(Defending, (ActorPC)AI.lastAttacker);
                         return;
                     }
 
                     if (AI.lastAttacker.type == ActorType.SHADOW)
                         if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                            {
+                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC) {
                                 var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                 RunCallback(Defending, pc);
                                 return;
@@ -637,21 +530,17 @@ namespace SagaMap.ActorEventHandlers
                 RunCallback(Defending, null);
             }
 
-            if (FirstTimeDefending != null && !mob.FirstDefending)
-            {
+            if (FirstTimeDefending != null && !mob.FirstDefending) {
                 mob.FirstDefending = true;
-                if (AI.lastAttacker != null)
-                {
-                    if (AI.lastAttacker.type == ActorType.PC)
-                    {
+                if (AI.lastAttacker != null) {
+                    if (AI.lastAttacker.type == ActorType.PC) {
                         RunCallback(FirstTimeDefending, (ActorPC)AI.lastAttacker);
                         return;
                     }
 
                     if (AI.lastAttacker.type == ActorType.SHADOW)
                         if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master != null)
-                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC)
-                            {
+                            if (((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master.type == ActorType.PC) {
                                 var pc = (ActorPC)((PetEventHandler)((ActorShadow)AI.lastAttacker).e).AI.Master;
                                 RunCallback(FirstTimeDefending, pc);
                                 return;
@@ -662,143 +551,110 @@ namespace SagaMap.ActorEventHandlers
             }
         }
 
-        public void OnPlayerChangeStatus(ActorPC aActor)
-        {
+        public void OnPlayerChangeStatus(ActorPC aActor) {
         }
 
-        public void OnActorChangeBuff(Actor sActor)
-        {
+        public void OnActorChangeBuff(Actor sActor) {
         }
 
-        public void OnLevelUp(Actor sActor, MapEventArgs args)
-        {
+        public void OnLevelUp(Actor sActor, MapEventArgs args) {
         }
 
-        public void OnPlayerMode(Actor aActor)
-        {
+        public void OnPlayerMode(Actor aActor) {
         }
 
-        public void OnShowEffect(Actor aActor, MapEventArgs args)
-        {
+        public void OnShowEffect(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorPossession(Actor aActor, MapEventArgs args)
-        {
+        public void OnActorPossession(Actor aActor, MapEventArgs args) {
         }
 
-        public void OnActorPartyUpdate(ActorPC aActor)
-        {
+        public void OnActorPartyUpdate(ActorPC aActor) {
         }
 
-        public void OnActorSpeedChange(Actor mActor)
-        {
+        public void OnActorSpeedChange(Actor mActor) {
         }
 
-        public void OnSignUpdate(Actor aActor)
-        {
+        public void OnSignUpdate(Actor aActor) {
         }
 
-        public void PropertyUpdate(UpdateEvent arg, int para)
-        {
-            switch (arg)
-            {
+        public void PropertyUpdate(UpdateEvent arg, int para) {
+            switch (arg) {
                 case UpdateEvent.SPEED:
                     AI.map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SPEED_UPDATE, null, mob, true);
                     break;
             }
         }
 
-        public void PropertyRead(UpdateEvent arg)
-        {
+        public void PropertyRead(UpdateEvent arg) {
         }
 
-        public void OnActorRingUpdate(ActorPC aActor)
-        {
+        public void OnActorRingUpdate(ActorPC aActor) {
         }
 
-        public void OnActorWRPRankingUpdate(ActorPC aActor)
-        {
+        public void OnActorWRPRankingUpdate(ActorPC aActor) {
         }
 
-        public void OnActorChangeAttackType(ActorPC aActor)
-        {
+        public void OnActorChangeAttackType(ActorPC aActor) {
         }
 
-        public void OnActorFurnitureSit(ActorPC aActor)
-        {
+        public void OnActorFurnitureSit(ActorPC aActor) {
         }
 
-        public void OnActorFurnitureList(object obj)
-        {
+        public void OnActorFurnitureList(object obj) {
         }
 
-        private void RunCallback(MobCallback callback, ActorPC pc)
-        {
-            try
-            {
+        private void RunCallback(MobCallback callback, ActorPC pc) {
+            try {
                 currentCall = callback;
                 currentPC = pc;
                 var th = new Thread(Run);
                 th.Start();
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
         private DateTime mark = DateTime.Now;
 
-        private void Run()
-        {
-            try
-            {
-                if (currentCall != null)
-                {
-                    if (currentPC != null)
-                    {
+        private void Run() {
+            try {
+                if (currentCall != null) {
+                    if (currentPC != null) {
                         currentCall.Invoke(this, currentPC);
                     }
-                    else
-                    {
+                    else {
                         if (AI.map.Creator != null)
                             currentCall.Invoke(this, AI.map.Creator);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnUpdate(Actor aActor)
-        {
-            try
-            {
-                if (Updating != null)
-                {
-                    if (AI.lastAttacker != null)
-                    {
+        public void OnUpdate(Actor aActor) {
+            try {
+                if (Updating != null) {
+                    if (AI.lastAttacker != null) {
                         if (AI.lastAttacker.type == ActorType.PC)
                             RunCallback(Updating, (ActorPC)AI.lastAttacker);
                         else
                             RunCallback(Updating, null);
                     }
-                    else
-                    {
+                    else {
                         RunCallback(Updating, null);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logger.GetLogger().Error(ex, ex.Message);
+            catch (Exception ex) {
+                Logger.ShowError(ex);
             }
         }
 
-        public void OnActorPaperChange(ActorPC aActor)
-        {
+        public void OnActorPaperChange(ActorPC aActor) {
         }
 
         //#endregion

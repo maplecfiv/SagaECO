@@ -5,17 +5,14 @@ using SagaLib.Tasks;
 using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 
-namespace SagaMap.Skill.SkillDefinations.Global.Active
-{
+namespace SagaMap.Skill.SkillDefinations.Global.Active {
     /// <summary>
     ///     フォートレスサークル
     /// </summary>
-    public class StarLove : ISkill
-    {
+    public class StarLove : ISkill {
         //#region Timer
 
-        private class Activator : MultiRunTask
-        {
+        private class Activator : MultiRunTask {
             private readonly ActorSkill actor;
             private readonly Actor caster;
             private readonly Actor dActor;
@@ -26,8 +23,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             private readonly int countMax = 1;
             private int count, lifetime;
 
-            public Activator(Actor caster, ActorSkill actor, Actor dActor, SkillArg args, byte level)
-            {
+            public Activator(Actor caster, ActorSkill actor, Actor dActor, SkillArg args, byte level) {
                 this.actor = actor;
                 this.caster = caster;
                 this.dActor = dActor;
@@ -41,19 +37,15 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
                 Period = 500;
             }
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步锁，表示之后的代码是线程安全的，也就是，不允许被第二个线程同时访问
                 //ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (count < countMax)
-                    {
+                try {
+                    if (count < countMax) {
                         MapManager.Instance.GetMap(caster.MapID);
                         var actors = MapManager.Instance.GetMap(caster.MapID).GetActorsArea(dActor, 200, true);
                         foreach (var i in actors)
-                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i))
-                            {
+                            if (SkillHandler.Instance.CheckValidAttackTarget(caster, i)) {
                                 var damage1 = SkillHandler.Instance.CalcDamage(true, caster, i, skill,
                                     SkillHandler.DefType.Def, Elements.Neutral, 0, factor);
                                 var damage2 = SkillHandler.Instance.CalcDamage(false, caster, i, skill,
@@ -65,16 +57,14 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
 
                         count++;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解开同步锁
                 //ClientManager.LeaveCriticalArea();
@@ -85,14 +75,12 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC pc, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC pc, Actor dActor, SkillArg args) {
             return 0;
         }
 
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             //创建设置型技能技能体
             var actor = new ActorSkill(args.skill, sActor);
             var map = MapManager.Instance.GetMap(sActor.MapID);

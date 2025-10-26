@@ -6,18 +6,15 @@ using SagaMap.ActorEventHandlers;
 using SagaMap.Manager;
 using SagaMap.Skill.Additions;
 
-namespace SagaMap.Skill.SkillDefinations.Global.Active
-{
+namespace SagaMap.Skill.SkillDefinations.Global.Active {
     /// <summary>
     ///     陷阱的基礎類別
     /// </summary>
-    public class Trap : ISkill
-    {
+    public class Trap : ISkill {
         /// <summary>
         ///     座標跟誰相同
         /// </summary>
-        public enum PosType
-        {
+        public enum PosType {
             sActor,
             args
         }
@@ -28,16 +25,14 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
         public PosType posType;
         public uint Range;
 
-        public Trap(bool OneTimes, uint Range, PosType posType)
-        {
+        public Trap(bool OneTimes, uint Range, PosType posType) {
             LifeTime = 0;
             this.OneTimes = OneTimes;
             this.Range = Range;
             this.posType = posType;
         }
 
-        public Trap(bool OneTimes, PosType posType)
-        {
+        public Trap(bool OneTimes, PosType posType) {
             LifeTime = 0;
             this.OneTimes = OneTimes;
             Range = 100;
@@ -45,22 +40,18 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
         }
 
         public virtual void ProcSkill(Actor sActor, Actor mActor, ActorSkill actor, SkillArg args, Map map, int level,
-            float factor)
-        {
+            float factor) {
         }
 
-        public virtual void BeforeProc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public virtual void BeforeProc(Actor sActor, Actor dActor, SkillArg args, byte level) {
         }
 
-        public virtual void OnTimer(Activator timer)
-        {
+        public virtual void OnTimer(Activator timer) {
         }
 
         //#region Timer
 
-        public class Activator : MultiRunTask
-        {
+        public class Activator : MultiRunTask {
             public delegate void OnTimerHandler(Activator timer);
 
             public delegate void ProcSkillHandler(Actor sActor, Actor mActor, ActorSkill actor, SkillArg args, Map map,
@@ -77,8 +68,7 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             public int State = 0;
 
             public Activator(Actor _sActor, ActorSkill _dActor, SkillArg _args, byte level, int lifetime, bool OneTimes,
-                float factor)
-            {
+                float factor) {
                 sActor = _sActor;
                 actor = _dActor;
                 skill = _args.Clone();
@@ -94,42 +84,34 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             public event ProcSkillHandler ProcSkill;
             public event OnTimerHandler OnTimer;
 
-            public override void CallBack()
-            {
+            public override void CallBack() {
                 //同步鎖，表示之後的代碼是執行緒安全的，也就是，不允許被第二個執行緒同時訪問
                 //测试去除技能同步锁ClientManager.EnterCriticalArea();
-                try
-                {
-                    if (lifetime > 0)
-                    {
+                try {
+                    if (lifetime > 0) {
                         if (OnTimer != null) OnTimer.Invoke(this);
                         lifetime -= Period;
                     }
-                    else
-                    {
+                    else {
                         Deactivate();
                         //在指定地图删除技能体（技能效果结束）
                         map.DeleteActor(actor);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.GetLogger().Error(ex, ex.Message);
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
                 }
                 //解開同步鎖
                 //测试去除技能同步锁ClientManager.LeaveCriticalArea();
             }
 
-            public void ActorMoveEvent(Actor mActor, short[] pos, ushort dir, ushort speed)
-            {
+            public void ActorMoveEvent(Actor mActor, short[] pos, ushort dir, ushort speed) {
                 //ClientManager.EnterCriticalArea();
                 if (SkillHandler.Instance.CheckValidAttackTarget(sActor, mActor))
-                    if (ProcSkill != null)
-                    {
+                    if (ProcSkill != null) {
                         ProcSkill.Invoke(sActor, mActor, actor, skill, map, level, factor);
                         map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.SKILL, skill, actor, false);
-                        if (OneTimes)
-                        {
+                        if (OneTimes) {
                             Deactivate();
                             //在指定地图删除技能体（技能效果结束）
                             map.DeleteActor(actor);
@@ -143,12 +125,10 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
 
         //#region ISkill Members
 
-        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args)
-        {
+        public int TryCast(ActorPC sActor, Actor dActor, SkillArg args) {
             uint itemID = 10021900; //陷阱
             var pc = sActor;
-            if (SkillHandler.Instance.CountItem(pc, itemID) > 0)
-            {
+            if (SkillHandler.Instance.CountItem(pc, itemID) > 0) {
                 SkillHandler.Instance.TakeItem(pc, itemID, 1);
                 return 0;
             }
@@ -156,13 +136,11 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             return 0;
         }
 
-        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level)
-        {
+        public void Proc(Actor sActor, Actor dActor, SkillArg args, byte level) {
             BeforeProc(sActor, dActor, args, level);
             factor = 1f;
             // 陷阱傷害增加（罠ダメージ上昇）
-            if (sActor.Status.Additions.ContainsKey("TrapDamUp"))
-            {
+            if (sActor.Status.Additions.ContainsKey("TrapDamUp")) {
                 var TrapDamUp = (DefaultPassiveSkill)sActor.Status.Additions["TrapDamUp"];
                 factor = 1.10f + 0.02f * TrapDamUp.skill.Level;
             }
@@ -173,14 +151,12 @@ namespace SagaMap.Skill.SkillDefinations.Global.Active
             //建置處理器
             var timer = new Activator(sActor, actor, args, level, LifeTime, OneTimes, factor);
             //設定技能位置
-            if (posType == PosType.sActor)
-            {
+            if (posType == PosType.sActor) {
                 actor.MapID = sActor.MapID;
                 actor.X = sActor.X;
                 actor.Y = sActor.Y;
             }
-            else
-            {
+            else {
                 actor.MapID = sActor.MapID;
                 actor.X = SagaLib.Global.PosX8to16(args.x, map.Width);
                 actor.Y = SagaLib.Global.PosY8to16(args.y, map.Height);

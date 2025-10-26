@@ -15,7 +15,7 @@ namespace SagaLib.VirtualFileSytem.IFileSystemImp {
                 lpk = new LpkFile(new FileStream(path, FileMode.Open, FileAccess.Read));
             }
             catch (Exception ex) {
-                Logger.GetLogger().Error(ex, ex.Message);
+                Logger.ShowError(ex);
                 return false;
             }
 
