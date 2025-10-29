@@ -36,51 +36,54 @@ namespace SagaValidation.Network.Client {
             p.GetContent();
 
             //Establish TCP ACK Flag at first handshake
-            Packets.Server.SSMG_LOGIN_ACK p0 = new Packets.Server.SSMG_LOGIN_ACK();
-            p0.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.OK;
-            NetIo.SendPacket(p0);
+            // Packets.Server.SSMG_LOGIN_ACK p0 = new Packets.Server.SSMG_LOGIN_ACK();
+            // p0.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.OK;
+            // NetIo.SendPacket(p0);
 
-            Account tmp = ValidationServer.accountDB.GetUser(p.UserName.Replace("\\", "").Replace("'", "\\'"));
+            Account tmp = ValidationServer.accountDB.GetUser(p.UserName);
+            //
+            // if (Configuration.Instance.ServerClose == true) {
+            //     if (tmp.GMLevel <= 200) {
+            //         Packets.Server.SSMG_LOGIN_ACK p1 = new Packets.Server.SSMG_LOGIN_ACK();
+            //         p1.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
+            //         NetIo.SendPacket(p1);
+            //         NetIo.Disconnect();
+            //         return;
+            //     }
+            // }
 
-            if (Configuration.Instance.ServerClose == true) {
-                if (tmp.GMLevel <= 200) {
-                    Packets.Server.SSMG_LOGIN_ACK p1 = new Packets.Server.SSMG_LOGIN_ACK();
-                    p1.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                    NetIo.SendPacket(p1);
-                    NetIo.Disconnect();
-                    return;
-                }
+
+            if (!ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord)) {
+                NetIo.SendPacket(new Packets.Server.SSMG_LOGIN_ACK {
+                    LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS
+                });
+                NetIo.Disconnect();
+                return;
             }
+            //Prepare Account Information 
 
 
-            if (ValidationServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord)) {
-                //Prepare Account Information 
-
-
-                //Login ACK should not be here
-                /*
-                Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
-                p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.OK;
-                this.NetIo.SendPacket(p1);
-                */
-                //Check if Account Banned
-                if (tmp.Banned) {
-                    Packets.Server.SSMG_LOGIN_ACK p2 = new Packets.Server.SSMG_LOGIN_ACK();
-                    p2.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
-                    NetIo.SendPacket(p2);
-                    NetIo.Disconnect();
-                    return;
-                    //TCP Connection terminated.
-                }
-            }
-            else {
-                Packets.Server.SSMG_LOGIN_ACK p1 = new Packets.Server.SSMG_LOGIN_ACK();
-                p1.LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
-                NetIo.SendPacket(p1);
+            //Login ACK should not be here
+            /*
+            Packets.Server.SSMG_LOGIN_ACK p1 = new SagaValidation.Packets.Server.SSMG_LOGIN_ACK();
+            p1.LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.OK;
+            this.NetIo.SendPacket(p1);
+            */
+            //Check if Account Banned
+            if (tmp.Banned) {
+                SagaLib.Logger.ShowWarning($"reject banned user {p.UserName}");
+                NetIo.SendPacket(new Packets.Server.SSMG_LOGIN_ACK {
+                    LoginResult = Packets.Server.SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK
+                });
                 NetIo.Disconnect();
                 return;
                 //TCP Connection terminated.
             }
+
+            SagaLib.Logger.ShowWarning($"accept user {p.UserName}");
+            this.NetIo.SendPacket(new SagaValidation.Packets.Server.SSMG_LOGIN_ACK {
+                LoginResult = SagaValidation.Packets.Server.SSMG_LOGIN_ACK.Result.OK
+            });
         }
 
         public void OnSendVersion(Packets.Client.CSMG_SEND_VERSION p) {
@@ -105,6 +108,21 @@ namespace SagaValidation.Network.Client {
             p2.BackWord = backWord;
             NetIo.SendPacket(p2);
         }
+
+        public void OnServerLstSend(Packets.Client.CSMG_SERVERLET_ASK p) {
+            Packets.Server.SSMG_SERVER_LST_STAER p1 = new Packets.Server.SSMG_SERVER_LST_STAER();
+            this.NetIo.SendPacket(p1);
+
+            Packets.Server.SSMG_SERVER_LST_SEND p2 = new Packets.Server.SSMG_SERVER_LST_SEND();
+            p2.SevName = Configuration.Instance.ServerName;
+            p2.SevIP = "T" + Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP + "," +
+                       Configuration.Instance.ServerIP + "," + Configuration.Instance.ServerIP;
+            this.NetIo.SendPacket(p2);
+
+            Packets.Server.SSMG_SERVER_LST_END p3 = new Packets.Server.SSMG_SERVER_LST_END();
+            this.NetIo.SendPacket(p3);
+        }
+
 
         public void OnPing(Packets.Client.CSMG_PING p) {
             Packets.Server.SSMG_PONG p1 = new Packets.Server.SSMG_PONG();

@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using SagaLib;
 
-namespace SagaDB.Actor
-{
-    public class Status
-    {
+namespace SagaDB.Actor {
+    public class Status {
         private readonly Actor owner;
         public Dictionary<byte, int> AddElement = new Dictionary<byte, int>();
 
@@ -454,8 +452,7 @@ namespace SagaDB.Actor
         /// </summary>
         public float weapon_rate = 100;
 
-        public Status(Actor owner)
-        {
+        public Status(Actor owner) {
             this.owner = owner;
             elements_item.Add(Elements.Neutral, 0);
             elements_item.Add(Elements.Fire, 0);
@@ -501,15 +498,11 @@ namespace SagaDB.Actor
             attackElements_skill.Add(Elements.Dark, 0);
         }
 
-        public short str_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short str_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_str_chip;
@@ -523,15 +516,11 @@ namespace SagaDB.Actor
             set => m_str_chip = value;
         }
 
-        public short dex_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short dex_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_dex_chip;
@@ -545,15 +534,11 @@ namespace SagaDB.Actor
             set => m_dex_chip = value;
         }
 
-        public short int_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short int_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_int_chip;
@@ -567,15 +552,11 @@ namespace SagaDB.Actor
             set => m_int_chip = value;
         }
 
-        public short vit_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short vit_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_vit_chip;
@@ -589,15 +570,11 @@ namespace SagaDB.Actor
             set => m_vit_chip = value;
         }
 
-        public short agi_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short agi_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_agi_chip;
@@ -611,15 +588,11 @@ namespace SagaDB.Actor
             set => m_agi_chip = value;
         }
 
-        public short mag_chip
-        {
-            get
-            {
-                if (owner.type == ActorType.PC)
-                {
+        public short mag_chip {
+            get {
+                if (owner.type == ActorType.PC) {
                     var pc = (ActorPC)owner;
-                    if (pc.Race == PC_RACE.DEM)
-                    {
+                    if (pc.Race == SagaLib.PcRace.DEM) {
                         if (pc.Form == DEM_FORM.NORMAL_FORM)
                             return 0;
                         return m_mag_chip;
@@ -636,8 +609,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Clear Item and Iris Card Bonus
         /// </summary>
-        public void ClearItem()
-        {
+        public void ClearItem() {
             //item bonus
             atk1_item = 0;
             atk2_item = 0;

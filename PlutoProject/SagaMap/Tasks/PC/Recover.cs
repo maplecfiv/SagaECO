@@ -17,58 +17,54 @@ namespace SagaMap.Tasks.PC {
 
         public override void CallBack() {
             //ClientManager.EnterCriticalArea();
+            if (client != null) {
+                SagaLib.Logger.ShowWarning($"Deactivate Recover task as client is null");
+                Deactivate();
+                return;
+            }
+
             try {
-                if (client != null) {
-                    var pc = client.Character;
-                    if (pc == null) return;
-                    if ((DateTime.Now - pc.TTime["上次自然回复时间"]).TotalSeconds < 3) {
+                var pc = client.Character;
+                if (pc == null) return;
+                if ((DateTime.Now - pc.TTime["上次自然回复时间"]).TotalSeconds < 3) {
+                    Deactivate();
+                    client.Character.Tasks.Remove("Recover");
+                    return;
+                }
+
+                if (client.Character.Tasks.ContainsKey("Recover"))
+                    if (client.Character.Tasks["Recover"] != this) {
                         Deactivate();
-                        client.Character.Tasks.Remove("Recover");
                         return;
                     }
 
-                    if (client.Character.Tasks.ContainsKey("Recover"))
-                        if (client.Character.Tasks["Recover"] != this) {
-                            Deactivate();
-                            return;
-                        }
-
-                    if (!client.Character.Tasks.ContainsKey("Recover")) client.Character.Tasks.Add("Recover", this);
-                    pc.TTime["上次自然回复时间"] = DateTime.Now;
-                    var s = DateTime.Now;
-                    BuffChecker(pc);
-                    if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.ShowError("玩家" + client.Character.Name + "BUFF检测耗时：" +
-                                         (DateTime.Now - s).TotalMilliseconds);
-                    if (pc.MapID == 91000999 && pc.FurnitureID != 0 && pc.FurnitureID != 255)
-                        client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.FURNITURE_SIT, null, pc, true);
-                    if (pc.Mode == PlayerMode.KNIGHT_EAST) //除夕活动
-                    {
-                        Deactivate();
-                        client.Character.Tasks.Remove("Recover");
-                    }
-
-                    if (pc.HP > 0 && pc.Buff.Dead) {
-                        pc.Buff.Dead = false;
-                        pc.Buff.TurningPurple = false;
-                    }
-
-                    if (pc.HP > 0 && !pc.Buff.TurningPurple && !pc.Buff.Dead) {
-                    }
-                    else {
-                        Deactivate();
-                        client.Character.Tasks.Remove("Recover");
-                    }
-
-                    if ((Logger.defaultlogger.LogLevel | Logger.LogContent.Custom) == Logger.defaultlogger.LogLevel)
-                        Logger.ShowError("玩家" + client.Character.Name + "自然恢复总耗时：" +
-                                         (DateTime.Now - s).TotalMilliseconds);
+                if (!client.Character.Tasks.ContainsKey("Recover")) client.Character.Tasks.Add("Recover", this);
+                pc.TTime["上次自然回复时间"] = DateTime.Now;
+                var s = DateTime.Now;
+                BuffChecker(pc);
+                Logger.ShowError($"玩家 {client.Character.Name} BUFF检测耗时： {(DateTime.Now - s).TotalMilliseconds}");
+                if (pc.MapID == 91000999 && pc.FurnitureID != 0 && pc.FurnitureID != 255)
+                    client.Map.SendEventToAllActorsWhoCanSeeActor(Map.EVENT_TYPE.FURNITURE_SIT, null, pc, true);
+                if (pc.Mode == PlayerMode.KNIGHT_EAST) //除夕活动
+                {
+                    Deactivate();
+                    client.Character.Tasks.Remove("Recover");
                 }
 
+                if (pc.HP > 0 && pc.Buff.Dead) {
+                    pc.Buff.Dead = false;
+                    pc.Buff.TurningPurple = false;
+                }
+
+                if (pc.HP > 0 && !pc.Buff.TurningPurple && !pc.Buff.Dead) {
+                }
                 else {
                     Deactivate();
                     client.Character.Tasks.Remove("Recover");
                 }
+
+                Logger.ShowError("玩家" + client.Character.Name + "自然恢复总耗时：" +
+                                 (DateTime.Now - s).TotalMilliseconds);
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);

@@ -8,7 +8,7 @@ using SagaMap.Packets.Login;
 using Version = SagaLib.Version;
 
 namespace SagaMap.Network.LoginServer {
-    public class LoginSession : SagaLib.Client {
+    /*public class LoginSession : SagaLib.Client {
         private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<LoginSession>();
 
         public enum SESSION_STATE {
@@ -109,9 +109,9 @@ namespace SagaMap.Network.LoginServer {
 
         public void OnGetConfig(INTERN_LOGIN_REQUEST_CONFIG_ANSWER p) {
             if (p.AuthOK) {
-                Configuration.Configuration.Instance.StartupSetting = p.StartupSetting;
+                SagaLib.ConfigLoader.StartupSetting = p.StartupSetting;
                 Logger.GetLogger().Information("Got Configuration from login server:");
-                foreach (var i in Configuration.Configuration.Instance.StartupSetting.Keys) {
+                foreach (var i in SagaLib.ConfigLoader.StartupSetting.Keys) {
                     //Console.ForegroundColor = ConsoleColor.Green;
                     _logger.Information("[Info]");
                     //Console.ForegroundColor = ConsoleColor.Yellow;
@@ -121,7 +121,7 @@ namespace SagaMap.Network.LoginServer {
                     //Console.ForegroundColor = ConsoleColor.Yellow;
                     _logger.Information("]");
                     //Console.ForegroundColor = ConsoleColor.White;
-                    _logger.Information(":\r\n      " + Configuration.Configuration.Instance.StartupSetting[i]);
+                    _logger.Information(":\r\n      " + SagaLib.ConfigLoader.StartupSetting[i]);
                     //Console.ResetColor();
                 }
 
@@ -137,5 +137,5 @@ namespace SagaMap.Network.LoginServer {
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             Connect();
         }
-    }
+    }*/
 }

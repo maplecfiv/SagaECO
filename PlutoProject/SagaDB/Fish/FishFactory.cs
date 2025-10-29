@@ -59,7 +59,7 @@ namespace SagaDB.Fish
                 return null;
             }
 
-            Logger.ShowDebug("Cannot find FishGroup:" + groupName, Logger.defaultlogger);
+            Logger.ShowDebug("Cannot find FishGroup:" + groupName);
             return null;
         }
     }

@@ -128,19 +128,19 @@ namespace SagaScript.M50032000
             ShowEffect(pc, 4023);
             Wait(pc, 1980);
 
-            if (pc.Race == PC_RACE.EMIL)
+            if (pc.Race == SagaLib.PcRace.EMIL)
             {
                 Warp(pc, 30090002, 2, 2);
                 pc.QuestRemaining += 5;
             }
 
-            if (pc.Race == PC_RACE.TITANIA)
+            if (pc.Race == SagaLib.PcRace.TITANIA)
             {
                 Warp(pc, 30140000, 12, 15);
                 pc.QuestRemaining += 5;
             }
 
-            if (pc.Race == PC_RACE.DOMINION)
+            if (pc.Race == SagaLib.PcRace.DOMINION)
             {
                 Warp(pc, 30141000, 11, 17);
                 pc.QuestRemaining += 5;

@@ -10,9 +10,9 @@ public class Character {
 
     public string Name { get; set; }
 
-    public string FirstName { get; set; }
+    [SugarColumn(IsNullable = true)] public string FirstName { get; set; }
 
-    public byte ShowFirstName { get; set; }
+    [SugarColumn(IsNullable = true)] public byte ShowFirstName { get; set; }
 
     public byte Race { get; set; }
 
@@ -156,7 +156,7 @@ public class Character {
 
     public uint Golem { get; set; }
 
-    public byte WaitType { get; set; }
+    [SugarColumn(IsNullable = true)] public byte WaitType { get; set; }
 
     public int AbyssFloor { get; set; }
 

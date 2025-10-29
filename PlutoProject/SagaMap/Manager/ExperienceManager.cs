@@ -12,10 +12,8 @@ using SagaMap.PC;
 using SagaMap.Skill;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Manager
-{
-    public enum LevelType : byte
-    {
+namespace SagaMap.Manager {
+    public enum LevelType : byte {
         CLEVEL = 1,
         JLEVEL = 2,
         JLEVEL2 = 3,
@@ -25,10 +23,8 @@ namespace SagaMap.Manager
         DUALJ = 7
     }
 
-    public sealed class ExperienceManager : Singleton<ExperienceManager>
-    {
-        private readonly short[,] clTable =
-        {
+    public sealed class ExperienceManager : Singleton<ExperienceManager> {
+        private readonly short[,] clTable = {
             { 0, 1 },
             { 82, 3 },
             { 96, 4 },
@@ -85,8 +81,7 @@ namespace SagaMap.Manager
             { 30000, 70 }
         };
 
-        private readonly short[,] clTableDom =
-        {
+        private readonly short[,] clTableDom = {
             { 0, 1 },
             { 82, 3 },
             { 96, 4 },
@@ -142,17 +137,14 @@ namespace SagaMap.Manager
             { 30000, 6 }
         };
 
-        public void ProcessMonsterGuide(uint MobID, ActorPC pc)
-        {
-            if (!pc.MosterGuide.ContainsKey(MobID))
-            {
+        public void ProcessMonsterGuide(uint MobID, ActorPC pc) {
+            if (!pc.MosterGuide.ContainsKey(MobID)) {
                 pc.MosterGuide.Add(MobID, true);
                 MapServer.charDB.SaveMosterGuide(pc, MobID, true);
                 var client = MapClient.FromActorPC(pc);
                 client.OnNewMosterDiscover(MobID);
             }
-            else if (pc.MosterGuide[MobID] == false)
-            {
+            else if (pc.MosterGuide[MobID] == false) {
                 pc.MosterGuide[MobID] = true;
                 MapServer.charDB.SaveMosterGuide(pc, MobID, true);
                 var client = MapClient.FromActorPC(pc);
@@ -176,8 +168,7 @@ namespace SagaMap.Manager
         /// <summary>
         ///     Cummulative experience for partner reliability color, color starts at 0
         /// </summary>
-        public Dictionary<byte, ulong> PartnerReliabilityEXPChart = new Dictionary<byte, ulong>
-        {
+        public Dictionary<byte, ulong> PartnerReliabilityEXPChart = new Dictionary<byte, ulong> {
             { 0, 0 },
             { 1, 55 },
             { 2, 672 },
@@ -300,40 +291,33 @@ namespace SagaMap.Manager
 
         //#region Public methods
 
-        private ulong checkExpGap(uint ori, uint add, byte maxLv, LevelType type)
-        {
+        private ulong checkExpGap(uint ori, uint add, byte maxLv, LevelType type) {
             ulong output = ori + add;
             if (output >= GetExpForLevel((uint)(maxLv + 1), type))
                 output = GetExpForLevel((uint)(maxLv + 1), type) - 1;
             return output;
         }
 
-        private void checkCL(ActorPC pc)
-        {
-            if (pc.Race == PC_RACE.DEM)
-            {
+        private void checkCL(ActorPC pc) {
+            if (pc.Race == SagaLib.PcRace.DEM) {
                 var shouldLv = (byte)((pc.CL - 9) / 4 + 1);
                 if (shouldLv > pc.Level)
                     SendLevelUp(MapClient.FromActorPC(pc), LevelType.CLEVEL, (uint)(shouldLv - pc.Level));
             }
         }
 
-        public short GetEPRequired(ActorPC pc)
-        {
-            if (pc.Race == PC_RACE.DEM) return GetEPRequired(pc.CL, false);
+        public short GetEPRequired(ActorPC pc) {
+            if (pc.Race == SagaLib.PcRace.DEM) return GetEPRequired(pc.CL, false);
             return 0;
         }
 
-        public short GetEPRequired(short cl, bool dominion)
-        {
-            if (dominion)
-            {
+        public short GetEPRequired(short cl, bool dominion) {
+            if (dominion) {
                 for (var i = 0; i < clTableDom.Length; i++)
                     if (cl < clTableDom[i, 0])
                         return clTableDom[i - 1, 1];
             }
-            else
-            {
+            else {
                 for (var i = 0; i < clTableDom.Length; i++)
                     if (cl < clTable[i, 0])
                         return clTable[i - 1, 1];
@@ -342,37 +326,30 @@ namespace SagaMap.Manager
             return 0;
         }
 
-        public void ApplyEP(ActorPC pc, short count)
-        {
+        public void ApplyEP(ActorPC pc, short count) {
             var dominion = MapManager.Instance.GetMap(pc.MapID).Info.Flag.Test(MapFlags.Dominion);
             short cl = 0;
             while (count > 0)
-                if (dominion)
-                {
+                if (dominion) {
                     var max_ep = GetEPRequired((short)(pc.DominionCL + cl), dominion);
-                    if (pc.DominionEPUsed + count >= max_ep)
-                    {
+                    if (pc.DominionEPUsed + count >= max_ep) {
                         cl++;
                         count -= (short)(max_ep - pc.DominionEPUsed);
                         pc.DominionEPUsed = 0;
                     }
-                    else
-                    {
+                    else {
                         pc.DominionEPUsed += count;
                         count = 0;
                     }
                 }
-                else
-                {
+                else {
                     var max_ep = GetEPRequired((short)(pc.CL + cl), dominion);
-                    if (pc.EPUsed + count >= max_ep)
-                    {
+                    if (pc.EPUsed + count >= max_ep) {
                         cl++;
                         count -= (short)(max_ep - pc.EPUsed);
                         pc.EPUsed = 0;
                     }
-                    else
-                    {
+                    else {
                         pc.EPUsed += count;
                         count = 0;
                     }
@@ -382,10 +359,8 @@ namespace SagaMap.Manager
                 ApplyCL(pc, cl);
         }
 
-        public void ApplyCL(ActorPC pc, short count)
-        {
-            if (pc.Race == PC_RACE.DEM)
-            {
+        public void ApplyCL(ActorPC pc, short count) {
+            if (pc.Race == SagaLib.PcRace.DEM) {
                 pc.CL += count;
                 checkCL(pc);
             }
@@ -401,8 +376,7 @@ namespace SagaMap.Manager
         ///     The percentage of the NPC's exp to gain (for instance: the percentage of HP deducted by input
         ///     player)
         /// </param>
-        public void ApplyExp(ActorPC targetPC, uint exp, uint jexp, float percentage)
-        {
+        public void ApplyExp(ActorPC targetPC, uint exp, uint jexp, float percentage) {
             // TODO implement different rates for different exp types
             //percentage *= (float)Config.Instance.EXPRate / 100f;
             //Weapon weapon = WeaponFactory.GetActiveWeapon(targetPC);
@@ -436,13 +410,10 @@ namespace SagaMap.Manager
 
             var map = MapManager.Instance.GetMap(targetPC.MapID);
 
-            if (targetPC.JobJoint == PC_JOB.NONE)
-            {
-                if (map.Info.Flag.Test(MapFlags.Dominion))
-                {
+            if (targetPC.JobJoint == PC_JOB.NONE) {
+                if (map.Info.Flag.Test(MapFlags.Dominion)) {
                     targetPC.DominionCEXP += (ulong)realexp;
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
 
@@ -450,8 +421,7 @@ namespace SagaMap.Manager
                         if (targetPC.DominionJEXP >= GetExpForLevel(51, LevelType.JLEVEL2))
                             targetPC.DominionJEXP = GetExpForLevel(51, LevelType.JLEVEL2) - 1;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
 
@@ -460,93 +430,75 @@ namespace SagaMap.Manager
                             targetPC.DominionJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                     }
                 }
-                else
-                {
-                    if (!targetPC.Rebirth)
-                    {
+                else {
+                    if (!targetPC.Rebirth) {
                         if (targetPC.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                             targetPC.CEXP += (ulong)realexp;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2))
                             targetPC.CEXP += (ulong)realexp;
                     }
 
-                    if (targetPC.DualJobID != 0)
-                    {
+                    if (targetPC.DualJobID != 0) {
                         if (targetPC.PlayerDualJobList[targetPC.DualJobID].DualJobExp <
                             GetExpForLevel(MaxDualJobLevel, LevelType.DUALJ))
                             targetPC.PlayerDualJobList[targetPC.DualJobID].DualJobExp += (ulong)realjobexp;
                     }
-                    else if (targetPC.Job == targetPC.JobBasic)
-                    {
+                    else if (targetPC.Job == targetPC.JobBasic) {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL))
                             targetPC.JEXP += (ulong)realjobexp;
                     }
-                    else if (!targetPC.Rebirth)
-                    {
+                    else if (!targetPC.Rebirth) {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                             targetPC.JEXP += (ulong)realjobexp;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel3, LevelType.JLEVEL3))
                             targetPC.JEXP += (ulong)realjobexp;
                     }
                 }
             }
-            else
-            {
-                if (map.Info.Flag.Test(MapFlags.Dominion))
-                {
+            else {
+                if (map.Info.Flag.Test(MapFlags.Dominion)) {
                     targetPC.DominionCEXP += (ulong)realexp;
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
                     }
                 }
-                else
-                {
+                else {
                     if (targetPC.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                         targetPC.CEXP += (ulong)realexp;
                 }
 
                 targetPC.JointJEXP += (ulong)realjobexp;
-                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                     if (targetPC.JointJEXP >= GetExpForLevel(50, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(50, LevelType.JLEVEL2) - 1;
                 }
-                else
-                {
+                else {
                     if (targetPC.JointJEXP >= GetExpForLevel(31, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                 }
             }
 
-            if (targetPC.Race != PC_RACE.DEM)
-            {
+            if (targetPC.Race != SagaLib.PcRace.DEM) {
                 eh = (PCEventHandler)targetPC.e;
                 if (!targetPC.Rebirth)
                     CheckExp(eh.Client, LevelType.CLEVEL);
                 else
                     CheckExp(eh.Client, LevelType.CLEVEL2);
 
-                if (targetPC.JobJoint == PC_JOB.NONE)
-                {
-                    if (map.Info.Flag.Test(MapFlags.Dominion))
-                    {
+                if (targetPC.JobJoint == PC_JOB.NONE) {
+                    if (map.Info.Flag.Test(MapFlags.Dominion)) {
                         CheckExp(eh.Client, LevelType.JLEVEL2);
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DualJobID != 0)
                             CheckExp(eh.Client, LevelType.DUALJ);
                         else if (targetPC.Job == targetPC.JobBasic)
@@ -557,8 +509,7 @@ namespace SagaMap.Manager
                             CheckExp(eh.Client, LevelType.JLEVEL3);
                     }
                 }
-                else
-                {
+                else {
                     CheckExp(eh.Client, LevelType.JLEVEL2);
                 }
             }
@@ -574,8 +525,7 @@ namespace SagaMap.Manager
         ///     The percentage of the NPC's exp to gain (for instance: the percentage of HP deducted by input
         ///     player)
         /// </param>
-        public void ApplyExp(ActorPC targetPC, ActorMob targetNPC, float percentage)
-        {
+        public void ApplyExp(ActorPC targetPC, ActorMob targetNPC, float percentage) {
             // TODO implement different rates for different exp types
             //percentage *= (float)Config.Instance.EXPRate / 100f;
             //Weapon weapon = WeaponFactory.GetActiveWeapon(targetPC);
@@ -615,18 +565,14 @@ namespace SagaMap.Manager
             var map = MapManager.Instance.GetMap(targetPC.MapID);
 
             //发生严重的跳级BUG，封印-梨 还是不能说没问题了
-            foreach (var i in targetPC.PossesionedActors)
-            {
+            foreach (var i in targetPC.PossesionedActors) {
                 eh = (PCEventHandler)i.e;
                 if (i == targetPC)
                     continue;
-                if (i.JobJoint == PC_JOB.NONE)
-                {
-                    if (map.Info.Flag.Test(MapFlags.Dominion))
-                    {
+                if (i.JobJoint == PC_JOB.NONE) {
+                    if (map.Info.Flag.Test(MapFlags.Dominion)) {
                         i.DominionCEXP += (ulong)(baseExp * 0.1f);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             if (i.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
 
@@ -634,8 +580,7 @@ namespace SagaMap.Manager
                             if (i.DominionJEXP >= GetExpForLevel(50, LevelType.JLEVEL2))
                                 i.DominionJEXP = GetExpForLevel(50, LevelType.JLEVEL2) - 1;
                         }
-                        else
-                        {
+                        else {
                             if (i.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
 
@@ -644,77 +589,61 @@ namespace SagaMap.Manager
                                 i.DominionJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                         }
                     }
-                    else
-                    {
-                        if (!i.Rebirth)
-                        {
+                    else {
+                        if (!i.Rebirth) {
                             if (i.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                                 i.CEXP += (ulong)(baseExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
-                        else if (i.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2))
-                        {
+                        else if (i.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2)) {
                             i.CEXP += (ulong)(baseExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
 
-                        if (i.DualJobID != 0)
-                        {
+                        if (i.DualJobID != 0) {
                             i.PlayerDualJobList[i.DualJobID].DualJobExp +=
                                 (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
-                        else if (i.Job == i.JobBasic)
-                        {
+                        else if (i.Job == i.JobBasic) {
                             if (i.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL))
                                 i.JEXP += (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
-                        else if (!i.Rebirth)
-                        {
+                        else if (!i.Rebirth) {
                             if (i.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                                 i.JEXP += (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
-                        else
-                        {
+                        else {
                             if (i.JEXP < GetExpForLevel(MaxJLevel3, LevelType.JLEVEL3))
                                 i.JEXP += (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
                     }
                 }
-                else
-                {
-                    if (map.Info.Flag.Test(MapFlags.Dominion))
-                    {
+                else {
+                    if (map.Info.Flag.Test(MapFlags.Dominion)) {
                         i.DominionCEXP += (ulong)(baseExp * 0.1f);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             if (i.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
                         }
-                        else
-                        {
+                        else {
                             if (i.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                                 i.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
                         }
                     }
-                    else
-                    {
-                        if (!i.Rebirth)
-                        {
+                    else {
+                        if (!i.Rebirth) {
                             if (i.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                                 i.CEXP += (ulong)(baseExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
-                        else if (i.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2))
-                        {
+                        else if (i.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2)) {
                             i.CEXP += (ulong)(baseExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                         }
                     }
 
                     i.JointJEXP += (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         if (i.JointJEXP >= GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                             i.JointJEXP = GetExpForLevel(MaxJLevel, LevelType.JLEVEL2) - 1;
                     }
-                    else
-                    {
+                    else {
                         if (i.JointJEXP >= GetExpForLevel(31, LevelType.JLEVEL2))
                             i.JointJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                     }
@@ -724,20 +653,16 @@ namespace SagaMap.Manager
                             (ulong)(jobExp * GetPossesionLevelDiffExpFactor(i, targetPC));
                 }
 
-                if (targetPC.Race != PC_RACE.DEM)
-                {
+                if (targetPC.Race != SagaLib.PcRace.DEM) {
                     if (!targetPC.Rebirth)
                         CheckExp(eh.Client, LevelType.CLEVEL);
                     else
                         CheckExp(eh.Client, LevelType.CLEVEL2);
-                    if (i.JobJoint == PC_JOB.NONE)
-                    {
-                        if (map.Info.Flag.Test(MapFlags.Dominion))
-                        {
+                    if (i.JobJoint == PC_JOB.NONE) {
+                        if (map.Info.Flag.Test(MapFlags.Dominion)) {
                             CheckExp(eh.Client, LevelType.JLEVEL2);
                         }
-                        else
-                        {
+                        else {
                             if (i.DualJobID != 0)
                                 CheckExp(eh.Client, LevelType.DUALJ);
                             else if (i.Job == i.JobBasic)
@@ -748,14 +673,12 @@ namespace SagaMap.Manager
                                 CheckExp(eh.Client, LevelType.JLEVEL3);
                         }
                     }
-                    else
-                    {
+                    else {
                         CheckExp(eh.Client, LevelType.JLEVEL2);
                     }
                 }
 
-                if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED)
-                {
+                if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED) {
                     eh.Client.SendEXP();
                     if (targetNPC.BaseData.baseExp != 0 || targetNPC.BaseData.jobExp != 0)
                         eh.Client.SendSystemMessage(string.Format(LocalManager.Instance.Strings.POSSESSION_EXP,
@@ -766,13 +689,10 @@ namespace SagaMap.Manager
                 }
             }
 
-            if (targetPC.JobJoint == PC_JOB.NONE)
-            {
-                if (map.Info.Flag.Test(MapFlags.Dominion))
-                {
+            if (targetPC.JobJoint == PC_JOB.NONE) {
+                if (map.Info.Flag.Test(MapFlags.Dominion)) {
                     targetPC.DominionCEXP += baseExp;
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
 
@@ -780,8 +700,7 @@ namespace SagaMap.Manager
                         if (targetPC.DominionJEXP >= GetExpForLevel(50, LevelType.JLEVEL2))
                             targetPC.DominionJEXP = GetExpForLevel(50, LevelType.JLEVEL2) - 1;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
 
@@ -790,71 +709,57 @@ namespace SagaMap.Manager
                             targetPC.DominionJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                     }
                 }
-                else
-                {
-                    if (!targetPC.Rebirth)
-                    {
+                else {
+                    if (!targetPC.Rebirth) {
                         if (targetPC.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                             targetPC.CEXP += baseExp;
                     }
-                    else if (targetPC.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2))
-                    {
+                    else if (targetPC.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2)) {
                         targetPC.CEXP += baseExp;
                     }
 
-                    if (targetPC.DualJobID != 0)
-                    {
+                    if (targetPC.DualJobID != 0) {
                         if (targetPC.PlayerDualJobList[targetPC.DualJobID].DualJobExp <
                             GetExpForLevel(MaxDualJobLevel, LevelType.DUALJ))
                             targetPC.PlayerDualJobList[targetPC.DualJobID].DualJobExp += jobExp;
                     }
-                    else if (targetPC.Job == targetPC.JobBasic)
-                    {
+                    else if (targetPC.Job == targetPC.JobBasic) {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL))
                             targetPC.JEXP += jobExp;
                     }
-                    else if (!targetPC.Rebirth)
-                    {
+                    else if (!targetPC.Rebirth) {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                             targetPC.JEXP += jobExp;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.JEXP < GetExpForLevel(MaxJLevel3, LevelType.JLEVEL3))
                             targetPC.JEXP += jobExp;
                     }
                 }
             }
-            else
-            {
-                if (map.Info.Flag.Test(MapFlags.Dominion))
-                {
+            else {
+                if (map.Info.Flag.Test(MapFlags.Dominion)) {
                     targetPC.DominionCEXP += baseExp;
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         if (targetPC.DominionCEXP >= GetExpForLevel(51, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(51, LevelType.CLEVEL) - 1;
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DominionCEXP >= GetExpForLevel(31, LevelType.CLEVEL))
                             targetPC.DominionCEXP = GetExpForLevel(31, LevelType.CLEVEL) - 1;
                     }
                 }
-                else
-                {
+                else {
                     if (targetPC.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                         targetPC.CEXP += baseExp;
                 }
 
                 targetPC.JointJEXP += jobExp;
-                if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                     if (targetPC.JointJEXP >= GetExpForLevel(51, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(51, LevelType.JLEVEL2) - 1;
                 }
-                else
-                {
+                else {
                     if (targetPC.JointJEXP >= GetExpForLevel(31, LevelType.JLEVEL2))
                         targetPC.JointJEXP = GetExpForLevel(31, LevelType.JLEVEL2) - 1;
                 }
@@ -864,20 +769,16 @@ namespace SagaMap.Manager
 
             eh = (PCEventHandler)targetPC.e;
             if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED) eh.Client.SendEXP();
-            if (targetPC.Race != PC_RACE.DEM)
-            {
+            if (targetPC.Race != SagaLib.PcRace.DEM) {
                 if (!targetPC.Rebirth)
                     CheckExp(eh.Client, LevelType.CLEVEL);
                 else
                     CheckExp(eh.Client, LevelType.CLEVEL2);
-                if (targetPC.JobJoint == PC_JOB.NONE)
-                {
-                    if (map.Info.Flag.Test(MapFlags.Dominion))
-                    {
+                if (targetPC.JobJoint == PC_JOB.NONE) {
+                    if (map.Info.Flag.Test(MapFlags.Dominion)) {
                         CheckExp(eh.Client, LevelType.JLEVEL2);
                     }
-                    else
-                    {
+                    else {
                         if (targetPC.DualJobID != 0)
                             CheckExp(eh.Client, LevelType.DUALJ);
                         else if (targetPC.Job == targetPC.JobBasic)
@@ -888,35 +789,29 @@ namespace SagaMap.Manager
                             CheckExp(eh.Client, LevelType.JLEVEL3);
                     }
                 }
-                else
-                {
+                else {
                     CheckExp(eh.Client, LevelType.JLEVEL2);
                 }
             }
         }
 
 
-        public void ApplyTamaireExp(uint cexp, uint jexp, ActorPC targetPC)
-        {
+        public void ApplyTamaireExp(uint cexp, uint jexp, ActorPC targetPC) {
             MapClientManager.Instance.FindClient(targetPC.CharID);
             var eh = (PCEventHandler)targetPC.e;
-            if (!targetPC.Rebirth)
-            {
+            if (!targetPC.Rebirth) {
                 if (targetPC.CEXP < GetExpForLevel(MaxCLevel, LevelType.CLEVEL))
                     targetPC.CEXP += cexp;
-                if (targetPC.Job == targetPC.JobBasic)
-                {
+                if (targetPC.Job == targetPC.JobBasic) {
                     if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL))
                         targetPC.JEXP += jexp;
                 }
-                else
-                {
+                else {
                     if (targetPC.JEXP < GetExpForLevel(MaxJLevel, LevelType.JLEVEL2))
                         targetPC.JEXP += jexp;
                 }
             }
-            else
-            {
+            else {
                 if (targetPC.CEXP < GetExpForLevel(MaxCLevel2, LevelType.CLEVEL2))
                     targetPC.CEXP += cexp;
                 if (targetPC.JEXP < GetExpForLevel(MaxJLevel3, LevelType.JLEVEL3))
@@ -928,14 +823,12 @@ namespace SagaMap.Manager
 
             eh.Client.SendEXPMessage(cexp, jexp, 0, SSMG_PLAYER_EXP_MESSAGE.EXP_MESSAGE_TYPE.TamaireGain);
             if (eh.Client.state != MapClient.SESSION_STATE.DISCONNECTED) eh.Client.SendEXP();
-            if (targetPC.Race != PC_RACE.DEM)
-            {
+            if (targetPC.Race != SagaLib.PcRace.DEM) {
                 if (!targetPC.Rebirth)
                     CheckExp(eh.Client, LevelType.CLEVEL);
                 else
                     CheckExp(eh.Client, LevelType.CLEVEL2);
-                if (targetPC.JobJoint == PC_JOB.NONE)
-                {
+                if (targetPC.JobJoint == PC_JOB.NONE) {
                     if (targetPC.Job == targetPC.JobBasic)
                         CheckExp(eh.Client, LevelType.JLEVEL);
                     else if (!targetPC.Rebirth)
@@ -945,15 +838,13 @@ namespace SagaMap.Manager
                     else if (targetPC.Rebirth && targetPC.DualJobID != 0)
                         CheckExp(eh.Client, LevelType.DUALJ);
                 }
-                else
-                {
+                else {
                     CheckExp(eh.Client, LevelType.JLEVEL2);
                 }
             }
         }
 
-        public void ApplyAnotherExp()
-        {
+        public void ApplyAnotherExp() {
         }
 
         /// <summary>
@@ -962,8 +853,7 @@ namespace SagaMap.Manager
         /// </summary>
         /// <param name="client"></param>
         /// <param name="type"></param>
-        public void CheckExp(MapClient client, LevelType type, byte when = 1)
-        {
+        public void CheckExp(MapClient client, LevelType type, byte when = 1) {
             if (client == null)
                 return;
             if (client.state != MapClient.SESSION_STATE.LOADED && when == 1)
@@ -971,8 +861,7 @@ namespace SagaMap.Manager
             if (client.state != MapClient.SESSION_STATE.LOADING && when == 0)
                 return;
             uint lvlDelta = 0;
-            switch (type)
-            {
+            switch (type) {
                 case LevelType.CLEVEL:
                     lvlDelta = GetLevelDelta(client.Character.Level, client.Character.CEXP, LevelType.CLEVEL, true);
                     if (lvlDelta > 0)
@@ -984,25 +873,21 @@ namespace SagaMap.Manager
                         SendLevelUp(client, type, lvlDelta);
                     break;
                 case LevelType.JLEVEL2:
-                    if (client.Character.JobJoint == PC_JOB.NONE)
-                    {
-                        if (client.Character.Job == client.Character.Job2X)
-                        {
+                    if (client.Character.JobJoint == PC_JOB.NONE) {
+                        if (client.Character.Job == client.Character.Job2X) {
                             lvlDelta = GetLevelDelta(client.Character.JobLevel2X, client.Character.JEXP,
                                 LevelType.JLEVEL2, true);
                             if (lvlDelta > 0)
                                 SendLevelUp(client, type, lvlDelta);
                         }
-                        else
-                        {
+                        else {
                             lvlDelta = GetLevelDelta(client.Character.JobLevel2T, client.Character.JEXP,
                                 LevelType.JLEVEL2, true);
                             if (lvlDelta > 0)
                                 SendLevelUp(client, LevelType.JLEVEL2T, lvlDelta);
                         }
                     }
-                    else
-                    {
+                    else {
                         lvlDelta = GetLevelDelta(client.Character.JointJobLevel, client.Character.JointJEXP,
                             LevelType.JLEVEL2, true);
                         if (lvlDelta > 0)
@@ -1016,8 +901,7 @@ namespace SagaMap.Manager
                         SendLevelUp(client, type, lvlDelta);
                     break;
                 case LevelType.JLEVEL3:
-                    if (client.Character.JobLevel3 < 50)
-                    {
+                    if (client.Character.JobLevel3 < 50) {
                         lvlDelta = GetLevelDelta(client.Character.JobLevel3, client.Character.JEXP, LevelType.JLEVEL3,
                             true);
                         if (lvlDelta > 0)
@@ -1026,8 +910,7 @@ namespace SagaMap.Manager
 
                     break;
                 case LevelType.DUALJ:
-                    if (client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobLevel < 110)
-                    {
+                    if (client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobLevel < 110) {
                         lvlDelta = GetLevelDelta(
                             client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobLevel,
                             client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobExp, LevelType.DUALJ,
@@ -1048,15 +931,12 @@ namespace SagaMap.Manager
         /// <returns>
         ///     If a non existing type or level is input, the method returns 0.
         /// </returns>
-        public ulong GetExpForLevel(uint level, LevelType type)
-        {
+        public ulong GetExpForLevel(uint level, LevelType type) {
             //if (this.PCEXPChart.ContainsKey(level))
-            if (PCExperienceFactory.Instance.Items.ContainsKey(level))
-            {
+            if (PCExperienceFactory.Instance.Items.ContainsKey(level)) {
                 //Level levelData = this.PCEXPChart[level];
                 var levelData = PCExperienceFactory.Instance.Items[level];
-                switch (type)
-                {
+                switch (type) {
                     case LevelType.CLEVEL:
                         return levelData.cexp;
                     case LevelType.CLEVEL2:
@@ -1078,8 +958,7 @@ namespace SagaMap.Manager
             return uint.MaxValue;
         }
 
-        private float CalcLevelDiffReduction(int lvDelta)
-        {
+        private float CalcLevelDiffReduction(int lvDelta) {
             if (lvDelta >= 25 && lvDelta < 30)
                 return 0.75f;
             if (lvDelta >= 30 && lvDelta < 35)
@@ -1091,8 +970,7 @@ namespace SagaMap.Manager
             return 1f;
         }
 
-        private float CalcPlayerLevelFactor(byte pclevel)
-        {
+        private float CalcPlayerLevelFactor(byte pclevel) {
             return 1f;
         }
 
@@ -1100,15 +978,13 @@ namespace SagaMap.Manager
         ///     处理怪物死亡的经验分配
         /// </summary>
         /// <param name="mob">怪物</param>
-        public void ProcessMobExp(ActorMob mob)
-        {
+        public void ProcessMobExp(ActorMob mob) {
             var eh = (MobEventHandler)mob.e;
             var damagetable = eh.AI.DamageTable;
             var damageParty = new Dictionary<uint, int>();
             var maxHP = mob.MaxHP;
             //处理伤害表
-            foreach (var i in damagetable.Keys)
-            {
+            foreach (var i in damagetable.Keys) {
                 var actor = eh.AI.map.GetActor(i);
                 if (actor == null)
                     continue;
@@ -1126,8 +1002,7 @@ namespace SagaMap.Manager
                         ApplyExp(pc, mob,
                             CalcPlayerLevelFactor(pc.Level) * damagetable[i] / maxHP * CalcLevelDiffReduction(lvDelta));
                 }
-                else
-                {
+                else {
                     //计算团队总伤害
                     if (damageParty.ContainsKey(pc.Party.ID))
                         damageParty[pc.Party.ID] += damagetable[i];
@@ -1139,13 +1014,11 @@ namespace SagaMap.Manager
             }
 
             //处理团队经验分配
-            foreach (var i in damageParty.Keys)
-            {
+            foreach (var i in damageParty.Keys) {
                 var party = PartyManager.Instance.GetParty(i);
                 var validPC = new List<ActorPC>();
                 //计算有效成员
-                foreach (var pc in party.Members.Values)
-                {
+                foreach (var pc in party.Members.Values) {
                     if (!pc.Online || pc.Buff.Dead)
                         continue;
                     if (pc.MapID != mob.MapID)
@@ -1164,8 +1037,7 @@ namespace SagaMap.Manager
                 else
                     bonus = 1f;
                 //计算团队伤害比重
-                if (damageParty[i] < 0)
-                {
+                if (damageParty[i] < 0) {
                     Logger.GetLogger().Information("fix damage party value low than 0");
                     damageParty[i] = 0;
                 }
@@ -1175,8 +1047,7 @@ namespace SagaMap.Manager
                 uint maxlv = 0;
                 uint minlv = 150;
                 uint totallevel = 0;
-                foreach (var pc in validPC)
-                {
+                foreach (var pc in validPC) {
                     if (pc.Level > maxlv)
                         maxlv = pc.Level;
                     if (pc.Level < minlv)
@@ -1186,8 +1057,7 @@ namespace SagaMap.Manager
 
                 //计算团队经验分配
                 var difference = (uint)Math.Abs(maxlv - minlv);
-                if (bonus < 0)
-                {
+                if (bonus < 0) {
                     Logger.GetLogger().Information("fix bonus low than 0");
                     bonus = 0;
                 }
@@ -1207,8 +1077,7 @@ namespace SagaMap.Manager
                 //现在经验奖励不再除以队伍人数了
                 //bonus = bonus / validPC.Count;
                 //分配经验
-                foreach (var pc in validPC)
-                {
+                foreach (var pc in validPC) {
                     var lvDelta = Math.Abs(pc.Level - mob.BaseData.level);
                     ApplyExp(pc, mob,
                         CalcPlayerLevelFactor(pc.Level) * bonus * CalcLevelDiffReduction(lvDelta) *
@@ -1217,17 +1086,14 @@ namespace SagaMap.Manager
             }
         }
 
-        public void DeathPenalty(ActorPC pc)
-        {
+        public void DeathPenalty(ActorPC pc) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             var client = MapClient.FromActorPC(pc);
             ulong shouldBase = 0;
             ulong shouldJob = 0;
 
-            if (map.Info.Flag.Test(MapFlags.Dominion))
-            {
-                if (pc.Race == PC_RACE.DEM)
-                {
+            if (map.Info.Flag.Test(MapFlags.Dominion)) {
+                if (pc.Race == SagaLib.PcRace.DEM) {
                     pc.DominionCEXP -=
                         (ulong)(pc.DominionCEXP * Configuration.Configuration.Instance.DeathPenaltyBaseDominion);
                     pc.DominionJEXP -=
@@ -1250,32 +1116,28 @@ namespace SagaMap.Manager
                     pc.DominionJEXP -= shouldJob;
                 else
                     pc.DominionJEXP = 0;
-                if (pc.DominionCEXP < GetExpForLevel(pc.DominionLevel, LevelType.CLEVEL))
-                {
+                if (pc.DominionCEXP < GetExpForLevel(pc.DominionLevel, LevelType.CLEVEL)) {
                     var shouldStats = pc.DominionLevel / 3 + 3;
-                    while (pc.DominionStatsPoint < shouldStats)
-                    {
+                    while (pc.DominionStatsPoint < shouldStats) {
                         var statsHad = new List<int>();
-                        if (pc.Str > Configuration.Configuration.Instance.StartupSetting[pc.Race].Str)
+                        if (pc.Str > SagaLib.ConfigLoader.StartupSetting[pc.Race].Str)
                             statsHad.Add(0);
-                        if (pc.Dex > Configuration.Configuration.Instance.StartupSetting[pc.Race].Dex)
+                        if (pc.Dex > SagaLib.ConfigLoader.StartupSetting[pc.Race].Dex)
                             statsHad.Add(1);
-                        if (pc.Int > Configuration.Configuration.Instance.StartupSetting[pc.Race].Int)
+                        if (pc.Int > SagaLib.ConfigLoader.StartupSetting[pc.Race].Int)
                             statsHad.Add(2);
-                        if (pc.Vit > Configuration.Configuration.Instance.StartupSetting[pc.Race].Vit)
+                        if (pc.Vit > SagaLib.ConfigLoader.StartupSetting[pc.Race].Vit)
                             statsHad.Add(3);
-                        if (pc.Agi > Configuration.Configuration.Instance.StartupSetting[pc.Race].Agi)
+                        if (pc.Agi > SagaLib.ConfigLoader.StartupSetting[pc.Race].Agi)
                             statsHad.Add(4);
-                        if (pc.Mag > Configuration.Configuration.Instance.StartupSetting[pc.Race].Mag)
+                        if (pc.Mag > SagaLib.ConfigLoader.StartupSetting[pc.Race].Mag)
                             statsHad.Add(5);
-                        if (statsHad.Count == 0)
-                        {
+                        if (statsHad.Count == 0) {
                             shouldStats = 0;
                             break;
                         }
 
-                        switch (statsHad[Global.Random.Next(0, statsHad.Count - 1)])
-                        {
+                        switch (statsHad[Global.Random.Next(0, statsHad.Count - 1)]) {
                             case 0:
                                 pc.Str--;
                                 pc.DominionStatsPoint += StatusFactory.Instance.RequiredBonusPoint(pc.Str);
@@ -1312,10 +1174,8 @@ namespace SagaMap.Manager
                 client.SendEXP();
                 client.SendPlayerLevel();
             }
-            else
-            {
-                if (pc.Race == PC_RACE.DEM)
-                {
+            else {
+                if (pc.Race == SagaLib.PcRace.DEM) {
                     pc.CEXP -= (ulong)(pc.CEXP * Configuration.Configuration.Instance.DeathPenaltyBaseEmil);
                     pc.JEXP -= (ulong)(pc.JEXP * Configuration.Configuration.Instance.DeathPenaltyJobEmil);
                     return;
@@ -1357,34 +1217,28 @@ namespace SagaMap.Manager
                     pc.JEXP -= shouldJob;
                 else
                     pc.JEXP = 0;
-                if (!pc.Rebirth)
-                {
+                if (!pc.Rebirth) {
                     if (pc.CEXP < GetExpForLevel(pc.Level, LevelType.CLEVEL))
                         pc.CEXP = GetExpForLevel(pc.Level, LevelType.CLEVEL);
                 }
-                else if (pc.CEXP < GetExpForLevel(pc.Level, LevelType.CLEVEL2))
-                {
+                else if (pc.CEXP < GetExpForLevel(pc.Level, LevelType.CLEVEL2)) {
                     pc.CEXP = GetExpForLevel(pc.Level, LevelType.CLEVEL2);
                 }
 
 
-                if (pc.Job == pc.JobBasic)
-                {
+                if (pc.Job == pc.JobBasic) {
                     if (pc.JEXP < GetExpForLevel(pc.JobLevel1, LevelType.JLEVEL))
                         pc.JEXP = GetExpForLevel(pc.JobLevel1, LevelType.JLEVEL);
                 }
-                else if (pc.Job == pc.Job2X)
-                {
+                else if (pc.Job == pc.Job2X) {
                     if (pc.JEXP < GetExpForLevel(pc.JobLevel2X, LevelType.JLEVEL2))
                         pc.JEXP = GetExpForLevel(pc.JobLevel2X, LevelType.JLEVEL2);
                 }
-                else if (pc.Job == pc.Job2T)
-                {
+                else if (pc.Job == pc.Job2T) {
                     if (pc.JEXP < GetExpForLevel(pc.JobLevel2T, LevelType.JLEVEL2))
                         pc.JEXP = GetExpForLevel(pc.JobLevel2T, LevelType.JLEVEL2);
                 }
-                else
-                {
+                else {
                     if (pc.JEXP < GetExpForLevel(pc.JobLevel3, LevelType.JLEVEL3))
                         pc.JEXP = GetExpForLevel(pc.JobLevel3, LevelType.JLEVEL3);
                 }
@@ -1397,8 +1251,7 @@ namespace SagaMap.Manager
                 client.SendSystemMessage(LocalManager.Instance.Strings.DEATH_PENALTY);
         }
 
-        public void ProcessWrp(ActorPC src, ActorPC dst)
-        {
+        public void ProcessWrp(ActorPC src, ActorPC dst) {
             var shouldWrp = 0;
             int srcLv = 1, dstLv = 1;
             MapManager.Instance.GetMap(dst.MapID);
@@ -1408,15 +1261,12 @@ namespace SagaMap.Manager
                 shouldWrp = dstLv - srcLv + 10;
             else
                 shouldWrp = 5;
-            if (src.Party == null)
-            {
+            if (src.Party == null) {
                 src.WRP += shouldWrp;
             }
-            else
-            {
+            else {
                 var validPC = new List<ActorPC>();
-                foreach (var pc in src.Party.Members.Values)
-                {
+                foreach (var pc in src.Party.Members.Values) {
                     if (!pc.Online || pc.Buff.Dead)
                         continue;
                     if (pc.MapID != dst.MapID)
@@ -1440,16 +1290,14 @@ namespace SagaMap.Manager
             WRPRankingManager.Instance.UpdateRanking();
         }
 
-        private int getPartnerMaxLv(ActorPartner partner)
-        {
+        private int getPartnerMaxLv(ActorPartner partner) {
             int maxlv = PartnerLvMax;
             var rank = partner.rank + 1;
             if (rank > 10) rank = 10;
             var i = 1;
             if (partner.rebirth)
                 i = 2;
-            switch (partner.BaseData.base_rank)
-            {
+            switch (partner.BaseData.base_rank) {
                 case 61: //B
                     maxlv = PartnerLvMax + rank * i;
                     break;
@@ -1474,22 +1322,19 @@ namespace SagaMap.Manager
             return maxlv;
         }
 
-        private int getPartnerMaxLv(ActorPC PC)
-        {
+        private int getPartnerMaxLv(ActorPC PC) {
             var partner = PC.Partner;
             return getPartnerMaxLv(partner);
         }
 
-        public void ApplyPartnerLvExp(ActorPC PC, ulong exp)
-        {
+        public void ApplyPartnerLvExp(ActorPC PC, ulong exp) {
             if (!PC.Inventory.Equipments.ContainsKey(EnumEquipSlot.PET))
                 return;
             if (!PC.Inventory.Equipments[EnumEquipSlot.PET].IsPartner)
                 return;
             var partner = PC.Partner;
             if (partner == null) return;
-            if (PC.TInt["PartnerExpUPRate"] > 0 && PC.Status.Additions.ContainsKey("PartnerExpUP"))
-            {
+            if (PC.TInt["PartnerExpUPRate"] > 0 && PC.Status.Additions.ContainsKey("PartnerExpUP")) {
                 var r = PC.TInt["PartnerExpUPRate"] / 100f;
                 exp += (ulong)(exp * r);
             }
@@ -1499,8 +1344,7 @@ namespace SagaMap.Manager
             if (partner.Level >= maxlv) return;
             partner.exp += exp;
             var lvup = GetPartnerSpecDelta(partner.Level, partner.exp, 0, (byte)maxlv);
-            if (lvup > 0)
-            {
+            if (lvup > 0) {
                 partner.perkpoint += lvup;
 
                 partner.Level += lvup;
@@ -1522,8 +1366,7 @@ namespace SagaMap.Manager
             MapClient.FromActorPC(PC).SendSystemMessage("伙伴 " + partner.Name + " 获得了" + exp + "点经验值");
         }
 
-        public void ApplyPartnerFoodEXP(ActorPartner partner, uint foodrankexp)
-        {
+        public void ApplyPartnerFoodEXP(ActorPartner partner, uint foodrankexp) {
             if (partner.rank >= PartnerRankMax) foodrankexp = 0;
             /*partner.rankexp += foodrankexp;
             byte rankup = GetPartnerSpecDelta(partner.rank, partner.rankexp, 1);
@@ -1541,8 +1384,7 @@ namespace SagaMap.Manager
             var maxlv = getPartnerMaxLv(partner);
             partner.exp += foodrankexp;
             var lvup = GetPartnerSpecDelta(partner.Level, partner.exp, 0, (byte)maxlv);
-            if (lvup > 0)
-            {
+            if (lvup > 0) {
                 partner.perkpoint += lvup;
 
                 partner.Level += lvup;
@@ -1558,13 +1400,11 @@ namespace SagaMap.Manager
             MapServer.charDB.SavePartner(partner);
         }
 
-        public void ApplyPartnerReliabilityEXP(ActorPartner partner, uint reliabilityexp)
-        {
+        public void ApplyPartnerReliabilityEXP(ActorPartner partner, uint reliabilityexp) {
             if (partner.reliability >= PartnerReliabilityMax) reliabilityexp = 0;
             partner.reliabilityexp += reliabilityexp;
             var reliabilityup = GetPartnerSpecDelta(partner.reliability, partner.reliabilityexp, 2, 9);
-            if (reliabilityup > 0 && partner.reliability < 9)
-            {
+            if (reliabilityup > 0 && partner.reliability < 9) {
                 partner.reliability += reliabilityup;
                 SkillHandler.Instance.ShowEffectOnActor(partner, 9913);
             }
@@ -1582,16 +1422,12 @@ namespace SagaMap.Manager
         /// <param name="client">The MapClient</param>
         /// <param name="type">The LevelType that gained level(s)</param>
         /// <param name="numLevels">The number of levels gained</param>
-        private void SendLevelUp(MapClient client, LevelType type, uint numLevels)
-        {
+        private void SendLevelUp(MapClient client, LevelType type, uint numLevels) {
             byte lvtype = 0;
-            if (type == LevelType.CLEVEL || type == LevelType.CLEVEL2)
-            {
-                if (client.Character.Level < 110)
-                {
+            if (type == LevelType.CLEVEL || type == LevelType.CLEVEL2) {
+                if (client.Character.Level < 110) {
                     ushort stats = 0;
-                    if (client.Character.Race != PC_RACE.DEM)
-                    {
+                    if (client.Character.Race != SagaLib.PcRace.DEM) {
                         for (var i = 1; i <= numLevels; i++)
                             stats += (ushort)(Math.Ceiling((client.Character.Level + i) / 3.0f) + 2);
 
@@ -1602,39 +1438,31 @@ namespace SagaMap.Manager
                     lvtype = 1;
                 }
             }
-            else
-            {
-                if (client.Character.Race != PC_RACE.DEM)
-                    if (client.Character.JobJoint == PC_JOB.NONE)
-                    {
-                        if (type == LevelType.JLEVEL)
-                        {
+            else {
+                if (client.Character.Race != SagaLib.PcRace.DEM)
+                    if (client.Character.JobJoint == PC_JOB.NONE) {
+                        if (type == LevelType.JLEVEL) {
                             client.Character.JobLevel1 += (byte)numLevels;
                             client.Character.SkillPoint += (byte)numLevels;
                         }
-                        else if (type == LevelType.JLEVEL2)
-                        {
+                        else if (type == LevelType.JLEVEL2) {
                             client.Character.JobLevel2X += (byte)numLevels;
                             client.Character.SkillPoint2X += (byte)numLevels;
                         }
-                        else if (type == LevelType.JLEVEL2T)
-                        {
+                        else if (type == LevelType.JLEVEL2T) {
                             client.Character.JobLevel2T += (byte)numLevels;
                             client.Character.SkillPoint2T += (byte)numLevels;
                         }
-                        else if (type == LevelType.JLEVEL3)
-                        {
+                        else if (type == LevelType.JLEVEL3) {
                             client.Character.JobLevel3 += (byte)numLevels;
                             client.Character.SkillPoint3 += (byte)numLevels;
                         }
-                        else if (type == LevelType.DUALJ)
-                        {
+                        else if (type == LevelType.DUALJ) {
                             if (client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobLevel < 110)
                                 client.Character.PlayerDualJobList[client.Character.DualJobID].DualJobLevel +=
                                     (byte)numLevels;
                         }
-                        else
-                        {
+                        else {
                             client.Character.JointJobLevel += (byte)numLevels;
                         }
                     }
@@ -1662,8 +1490,7 @@ namespace SagaMap.Manager
         /// <param name="exp"></param>
         /// <param name="type"></param>
         /// <param name="allowMultilevel"></param>
-        private uint GetLevelDelta(uint level, ulong exp, LevelType type, bool allowMultilevel)
-        {
+        private uint GetLevelDelta(uint level, ulong exp, LevelType type, bool allowMultilevel) {
             if (level <= GetTypeSpecificMaxLevel(type))
                 currentMax =
                     GetTypeSpecificMaxLevel(type) -
@@ -1676,8 +1503,7 @@ namespace SagaMap.Manager
                  (allowMultilevel ? true : delta < 2) &&
                  delta < currentMax &&
                  exp > GetExpForLevel(level + delta + 1, type);
-                 delta++)
-            {
+                 delta++) {
             }
 
             // Multilevel constraint
@@ -1692,10 +1518,8 @@ namespace SagaMap.Manager
         /// </summary>
         /// <param name="type">The LevelType to get the max level for</param>
         /// <returns>The max level for the input LevelType</returns>
-        private uint GetTypeSpecificMaxLevel(LevelType type)
-        {
-            switch (type)
-            {
+        private uint GetTypeSpecificMaxLevel(LevelType type) {
+            switch (type) {
                 case LevelType.CLEVEL: return MaxCLevel;
                 case LevelType.JLEVEL: return MaxJLevel;
                 case LevelType.JLEVEL2: return MaxJLevel;
@@ -1707,8 +1531,7 @@ namespace SagaMap.Manager
             }
         }
 
-        private float GetPossesionLevelDiffExpFactor(Actor aPossesionor, Actor aPossesioned)
-        {
+        private float GetPossesionLevelDiffExpFactor(Actor aPossesionor, Actor aPossesioned) {
             var result = 1.0f;
             var leveldiff = aPossesionor.Level - aPossesioned.Level;
             if (leveldiff > 100)
@@ -1739,13 +1562,11 @@ namespace SagaMap.Manager
         /// <param name="exp"></param>
         /// <param name="type">0-lv, 1-rank, 2-reliability</param>
         /// <returns></returns>
-        private byte GetPartnerSpecDelta(byte level, ulong exp, byte type, byte maxlv = 30)
-        {
+        private byte GetPartnerSpecDelta(byte level, ulong exp, byte type, byte maxlv = 30) {
             byte max = 0;
             var expchart = new Dictionary<byte, ulong>();
 
-            switch (type)
-            {
+            switch (type) {
                 case 0:
                     max = maxlv;
                     expchart = PartnerLvEXPChart;

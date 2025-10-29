@@ -22,27 +22,27 @@ namespace SagaLogin {
 
         public static AccountDB accountDB;
 
-        // public static bool StartDatabase() {
-        //     try {
-        //         switch (Configuration.Configuration.Instance.DBType) {
-        //             case 0:
-        //                 charDB = new MySqlActorDb();
-        //                 accountDB = new MySQLAccountDB(Configuration.Configuration.Instance.DBHost,
-        //                     Configuration.Configuration.Instance.DBPort,
-        //                     Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
-        //                     Configuration.Configuration.Instance.DBPass);
-        //                 // charDB.Connect();
-        //                 accountDB.Connect();
-        //                 return true;
-        //             default:
-        //                 return false;
-        //         }
-        //     }
-        //     catch (Exception exception) {
-        //         Logger.ShowError(exception);
-        //         return false;
-        //     }
-        // }
+        public static bool StartDatabase() {
+            //     try {
+            //         switch (Configuration.Configuration.Instance.DBType) {
+            //             case 0:
+            charDB = new MySqlActorDb();
+            accountDB = new MySQLAccountDB( /*Configuration.Configuration.Instance.DBHost,
+                Configuration.Configuration.Instance.DBPort,
+                Configuration.Configuration.Instance.DBName, Configuration.Configuration.Instance.DBUser,
+                Configuration.Configuration.Instance.DBPass*/);
+            //                 // charDB.Connect();
+            //                 accountDB.Connect();
+            return true;
+            //             default:
+            //                 return false;
+            //         }
+            //     }
+            //     catch (Exception exception) {
+            //         Logger.ShowError(exception);
+            //         return false;
+            //     }
+        }
 
         public static void EnsureCharDB() {
             var notConnected = false;
@@ -82,6 +82,15 @@ namespace SagaLogin {
 
         // [DllImport("user32.dll ", EntryPoint = "RemoveMenu")]
 
+
+        private static void ThreadShutdownWatcher() {
+            while (!ConfigLoader.ShouldShutdown()) {
+                Thread.Sleep(1000);
+            }
+
+            ShutingDown(null, null);
+        }
+
         private static void Main(string[] args) {
             // var WINDOW_HANDLER = FindWindow(null, fullPath);
             // var CLOSE_MENU = GetSystemMenu((IntPtr)WINDOW_HANDLER, IntPtr.Zero);
@@ -117,6 +126,7 @@ namespace SagaLogin {
             _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
                                 GlobalInfo.ModifyDate + ")");
 
+
             Logger.GetLogger().Information("Starting Initialization...", null);
 
             Configuration.Configuration.Instance.Initialization(
@@ -135,7 +145,7 @@ namespace SagaLogin {
                 Encoding.UTF8);
 
             //MapInfoFactory.Instance.Init("DB/MapInfo.zip", false);
-
+            StartDatabase();
             // if (!StartDatabase()) {
             //     Logger.ShowError("cannot connect to dbserver", null);
             //     Logger.ShowError("Shutting down in 20sec.", null);
@@ -151,11 +161,11 @@ namespace SagaLogin {
                 return;
             }
 
-
             Global.clientMananger = LoginClientManager.Instance;
 
             _logger.Information("Accepting clients.");
 
+            new Thread(ThreadShutdownWatcher).Start();
 
             while (true) {
                 // keep the connections to the database servers alive

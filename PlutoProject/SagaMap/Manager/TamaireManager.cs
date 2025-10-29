@@ -5,24 +5,20 @@ using SagaDB.Tamaire;
 using SagaLib;
 using SagaMap.Network.Client;
 
-namespace SagaMap.Manager
-{
-    public class TamaireLendingManager : Singleton<TamaireLendingManager>
-    {
-        public void ProcessLendingPost(TamaireLending lending)
-        {
+namespace SagaMap.Manager {
+    public class TamaireLendingManager : Singleton<TamaireLendingManager> {
+        public void ProcessLendingPost(TamaireLending lending) {
             var existinglendings =
                 (from lendings in MapServer.charDB.GetTamaireLendings()
-                 where lendings.Lender == lending.Lender
-                 select lendings).ToList();
+                    where lendings.Lender == lending.Lender
+                    select lendings).ToList();
             if (existinglendings.Count() == 0)
                 CreateLending(lending);
             else
                 UpdateLending(lending);
         }
 
-        private void CreateLending(TamaireLending lending)
-        {
+        private void CreateLending(TamaireLending lending) {
             var lender = MapServer.charDB.GetChar(lending.Lender);
             if (lender.TamaireLending != null)
                 UpdateLending(lending);
@@ -30,32 +26,26 @@ namespace SagaMap.Manager
             MapServer.charDB.CreateTamaireLending(lending);
         }
 
-        private void UpdateLending(TamaireLending lending)
-        {
+        private void UpdateLending(TamaireLending lending) {
             var lender = MapServer.charDB.GetChar(lending.Lender);
-            if (lender.TamaireLending != null)
-            {
+            if (lender.TamaireLending != null) {
                 lender.TamaireLending.Comment = lending.Comment;
                 lender.TamaireLending.PostDue = lending.PostDue;
                 lender.TamaireLending.Baselv = lending.Baselv;
                 lender.TamaireLending.JobType = lending.JobType;
                 MapServer.charDB.SaveTamaireLending(lender.TamaireLending);
             }
-            else
-            {
+            else {
                 CreateLending(lending);
             }
         }
 
-        public void DeleteLending(ActorPC lender)
-        {
+        public void DeleteLending(ActorPC lender) {
         }
     }
 
-    public class TamaireRentalManager : Singleton<TamaireRentalManager>
-    {
-        public void CheckRentalExpiry(ActorPC renter)
-        {
+    public class TamaireRentalManager : Singleton<TamaireRentalManager> {
+        public void CheckRentalExpiry(ActorPC renter) {
             if (renter.TamaireRental == null)
                 return;
             if (renter.TamaireRental.CurrentLender == 0)
@@ -64,8 +54,7 @@ namespace SagaMap.Manager
             if (DateTime.Now > renter.TamaireRental.RentDue) TerminateRental(renter, 0);
         }
 
-        public void TerminateRental(ActorPC renter, byte reason)
-        {
+        public void TerminateRental(ActorPC renter, byte reason) {
             if (renter.TamaireRental == null)
                 return;
             if (renter.TamaireRental.CurrentLender == 0)
@@ -75,8 +64,7 @@ namespace SagaMap.Manager
             MapServer.charDB.SaveTamaireRental(renter.TamaireRental);
 
             var currentlender = MapServer.charDB.GetChar(renter.TamaireRental.CurrentLender);
-            if (currentlender.TamaireLending.Renters.Contains(renter.CharID))
-            {
+            if (currentlender.TamaireLending.Renters.Contains(renter.CharID)) {
                 currentlender.TamaireLending.Renters.Remove(renter.CharID);
                 MapServer.charDB.SaveTamaireLending(currentlender.TamaireLending);
             }
@@ -84,10 +72,8 @@ namespace SagaMap.Manager
             MapClient.FromActorPC(renter).OnTamaireRentalTerminate(reason);
         }
 
-        public void ProcessRental(ActorPC renter, ActorPC lender)
-        {
-            if (renter.TamaireRental == null)
-            {
+        public void ProcessRental(ActorPC renter, ActorPC lender) {
+            if (renter.TamaireRental == null) {
                 renter.TamaireRental = new TamaireRental();
                 renter.TamaireRental.Renter = renter.CharID;
                 MapServer.charDB.CreateTamaireRental(renter.TamaireRental);
@@ -107,8 +93,7 @@ namespace SagaMap.Manager
             ProcessRentalStatus(renter, leveldiff, lender.TamaireLending.JobType);
         }
 
-        public float CalcFactor(int leveldiff)
-        {
+        public float CalcFactor(int leveldiff) {
             var factor = 1.0f;
             if (leveldiff < 0)
                 leveldiff = -leveldiff;
@@ -127,14 +112,12 @@ namespace SagaMap.Manager
             return factor;
         }
 
-        public void ProcessRentalStatus(ActorPC renter, int leveldiff, byte jobtype)
-        {
+        public void ProcessRentalStatus(ActorPC renter, int leveldiff, byte jobtype) {
             var factor = CalcFactor(leveldiff);
             var statuslist = TamaireStatusFactory.Instance.Items.Values.ToList();
             var query = from s in statuslist where s.level == renter.Level && s.jobtype == jobtype select s;
             var status = query.ToList()[0];
-            if (status != null)
-            {
+            if (status != null) {
                 renter.TamaireRental.hp = (short)(status.hp * factor);
                 renter.TamaireRental.mp = (short)(status.mp * factor);
                 renter.TamaireRental.sp = (short)(status.sp * factor);
@@ -151,8 +134,7 @@ namespace SagaMap.Manager
                 renter.TamaireRental.aspd = (short)(status.aspd * factor);
                 renter.TamaireRental.cspd = (short)(status.cspd * factor);
             }
-            else
-            {
+            else {
                 renter.TamaireRental.hp = 0;
                 renter.TamaireRental.mp = 0;
                 renter.TamaireRental.sp = 0;
@@ -172,10 +154,8 @@ namespace SagaMap.Manager
         }
     }
 
-    public class TamaireExperienceMagager : Singleton<TamaireExperienceMagager>
-    {
-        public void GiveReward(ActorPC pc)
-        {
+    public class TamaireExperienceMagager : Singleton<TamaireExperienceMagager> {
+        public void GiveReward(ActorPC pc) {
             if (pc.TamaireLending == null)
                 return;
 
@@ -184,21 +164,18 @@ namespace SagaMap.Manager
 
             uint cexp = 0, jexp = 0;
             if (TamaireExpRewardFactory.Instance.Items.ContainsKey(pc.Level))
-                switch (pc.Race)
-                {
-                    case PC_RACE.DEM:
+                switch (pc.Race) {
+                    case SagaLib.PcRace.DEM:
                         cexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].demcexp;
                         jexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].demjexp;
                         break;
                     default:
-                        if (!pc.Rebirth)
-                        {
+                        if (!pc.Rebirth) {
                             cexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].cexp;
                             if (pc.Job != PC_JOB.NOVICE && pc.Job != PC_JOB.NONE)
                                 jexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].jexp;
                         }
-                        else
-                        {
+                        else {
                             cexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].cexp2;
                             jexp = (uint)TamaireExpRewardFactory.Instance.Items[pc.Level].jexp3;
                         }

@@ -1183,7 +1183,7 @@ namespace SagaScript
         {
             byte x, y;
 
-            if (pc.Race == PC_RACE.EMIL &&
+            if (pc.Race == SagaLib.PcRace.EMIL &&
                 pc.Marionette == null)
             {
                 switch (Select(pc, "想去哪呢?", "", "大樓中庭", "2樓", "3樓", "放棄"))

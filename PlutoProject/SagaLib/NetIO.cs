@@ -187,23 +187,22 @@ namespace SagaLib {
                     throw new Exception($"null raw received.");
                 }
 
-                // if (keyAlreadyReceived < raw.Length) {
-                //     var left = raw.Length - keyAlreadyReceived;
-                //     Logger.ShowInfo(($"{left} remaining"));
-                //     left = left > 1024 ? 1024 : left;
-                //     Logger.ShowInfo(($"limited to {left} "));
-                //     left = left > sock.Available ? sock.Available : left;
-                //     Logger.ShowInfo(($"limited to {left} as available is {sock.Available}"));
-                //     SagaLib.Logger.ShowInfo(
-                //         $"read [{keyAlreadyReceived}-{keyAlreadyReceived + left}] from {raw}, length: {raw.Length}, available: {sock.Available}");
-                //     stream.BeginRead(raw, keyAlreadyReceived, left, callbackKeyExchange, raw);
-                //
-                //     keyAlreadyReceived += left;
-                //     Logger.ShowInfo(($"{left} length data read, total received {keyAlreadyReceived}"));
-                //     if ((keyAlreadyReceived + left) != 0) {
-                //         return;
-                //     }
-                // }
+                if (!stream.DataAvailable) {
+                    SagaLib.Logger.ShowInfo("stream data is not available");
+                    // return;
+                }
+
+                if (keyAlreadyReceived < raw.Length) {
+                    var left = raw.Length - keyAlreadyReceived;
+                    if (left > 1024)
+                        left = 1024;
+                    if (left > sock.Available) left = sock.Available;
+                    stream.BeginRead(raw, keyAlreadyReceived, left, callbackKeyExchange, raw);
+
+
+                    keyAlreadyReceived += left;
+                    return;
+                }
 
                 if (raw.Length == 8) {
                     var p1 = new Packet(529);
@@ -229,6 +228,7 @@ namespace SagaLib {
                     var p1 = new Packet();
                     p1.data = raw;
                     var keyBuf = p1.GetBytes(256, 4);
+                    SagaLib.Logger.ShowInfo($"read String from {keyBuf}");
                     Crypt.MakeAESKey(Encoding.ASCII.GetString(keyBuf));
                     StartPacketParsing();
                 }
@@ -441,6 +441,8 @@ namespace SagaLib {
                 var a = new Packet();
                 a.data = raw;
                 raw = Crypt.Decrypt(raw, 8);
+
+                SagaLib.Logger.ShowInfo($"[REC]{Convert.ToHexString(raw)}");
                 var now = DateTime.Now;
 
                 receivedBytes += raw.Length;
@@ -506,44 +508,55 @@ namespace SagaLib {
             ClientManager.AddThread(
                 $"PacketParser({Thread.CurrentThread.ManagedThreadId}),Opcode:0x{p.ID:X4}",
                 Thread.CurrentThread);
-            Packet command;
-            commandTable.TryGetValue(p.ID, out command);
+            commandTable.TryGetValue(p.ID, out var command);
             if (command != null) {
+                SagaLib.Logger.ShowInfo($"process packet {p.ID}");
                 var p1 = command.New();
                 p1.data = p.data;
                 p1.size = (ushort)p.data.Length;
-                ClientManager.EnterCriticalArea();
                 try {
+                    ClientManager.EnterCriticalArea();
+                    if (client == null) {
+                        Logger.ShowWarning($"client is found null during ProcessPacket for 0x{p.ID:X4}");
+                    }
+
                     p1.Parse(client);
                 }
                 catch (Exception ex) {
                     Logger.ShowError(ex);
                 }
+                finally {
+                    ClientManager.LeaveCriticalArea();
+                }
 
-                ClientManager.LeaveCriticalArea();
                 if (OnSendPacket != null)
                     OnReceivePacket(p1);
             }
-            else {
-                if (commandTable.ContainsKey(0xFFFF)) {
-                    var p1 = commandTable[0xFFFF].New();
-                    p1.data = p.data;
-                    p1.size = (ushort)p.data.Length;
+            else if (commandTable.ContainsKey(0xFFFF)) {
+                var p1 = commandTable[0xFFFF].New();
+                SagaLib.Logger.ShowInfo($"process packet {p.GetType().ToString()}");
+                p1.data = p.data;
+                p1.size = (ushort)p.data.Length;
+                try {
                     ClientManager.EnterCriticalArea();
-                    try {
-                        p1.Parse(client);
-                    }
-                    catch (Exception ex) {
-                        Logger.ShowError(ex);
+                    if (client == null) {
+                        Logger.ShowWarning($"client is found null during ProcessPacket for 0xFFFF");
                     }
 
+                    p1.Parse(client);
+                }
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
+                }
+                finally {
                     ClientManager.LeaveCriticalArea();
                 }
-                else {
-                    Logger.ShowDebug(string.Format("Unknown Packet:0x{0:X4}\r\n       Data:{1}", p.ID, DumpData(p)),
-                        null);
-                }
             }
+            else {
+                Logger.ShowWarning(string.Format("Unknown Packet:0x{0:X4}\r\n       Data:{1}", p.ID, DumpData(p)),
+                    null);
+            }
+
 
             ClientManager.RemoveThread(string.Format("PacketParser({0}),Opcode:0x{1:X4}",
                 Thread.CurrentThread.ManagedThreadId, p.ID));
@@ -611,14 +624,15 @@ namespace SagaLib {
             }
 
             try {
-                byte[] data;
-                data = Crypt.Encrypt(p.data, 8);
+                SagaLib.Logger.ShowInfo($"[SEND]{Convert.ToHexString(p.data)}");
+                byte[] data = Crypt.Encrypt(p.data, 8);
                 stream.BeginWrite(data, 0, data.Length, callbackSend, null);
             }
             catch (Exception ex) {
                 if (client != null) {
                     Logger.ShowError(ex);
                     Disconnect();
+                    Logger.ShowWarning($"client being released during SendPacket");
                     client = null;
                 }
             }

@@ -1,25 +1,21 @@
 using SagaLib;
 using SagaValidation.Network.Client;
 
-namespace SagaValidation.Packets.Client
-{
-    public class CSMG_LOGIN : Packet
-    {
+namespace SagaValidation.Packets.Client {
+    public class CSMG_LOGIN : Packet {
         public string UserName;
         public string Password;
-        public CSMG_LOGIN()
-        {
-            size = 55;//JP用 12/4Updateで64Byteに変更された
+
+        public CSMG_LOGIN() {
+            size = 55; //JP用 12/4Updateで64Byteに変更された
             offset = 8;
         }
 
-        public override Packet New()
-        {
+        public override Packet New() {
             return (Packet)new CSMG_LOGIN();
         }
 
-        public void GetContent()
-        {
+        public void GetContent() {
             byte size;
             ushort offset = 2;
             System.Text.Encoding enc = System.Text.Encoding.ASCII;
@@ -30,13 +26,12 @@ namespace SagaValidation.Packets.Client
             size = GetByte(offset);
             offset++;
             Password = enc.GetString(GetBytes((ushort)(size - 1), offset));
+            SagaLib.Logger.ShowInfo($"Get Account Info {UserName} / {Password}");
         }
 
-        public override void Parse(SagaLib.Client client)
-        {
+        public override void Parse(SagaLib.Client client) {
             //((LoginClient)(client)).NewOnLogin(this);
             ((ValidationClient)(client)).OnLogin(this);
         }
-
     }
 }

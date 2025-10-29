@@ -2,10 +2,8 @@ using System;
 using SagaDB.Actor;
 using SagaDB.Npc;
 
-namespace SagaDB.Quests
-{
-    public class QuestInfo
-    {
+namespace SagaDB.Quests {
+    public class QuestInfo {
         /// <summary>
         ///     任务ID
         /// </summary>
@@ -165,40 +163,34 @@ namespace SagaDB.Quests
         /// <summary>
         ///     任务要求的种族
         /// </summary>
-        public PC_RACE Race { get; set; } = PC_RACE.NONE;
+        public SagaLib.PcRace Race { get; set; } = SagaLib.PcRace.NONE;
 
         /// <summary>
         ///     任务要求的性别
         /// </summary>
         public PC_GENDER Gender { get; set; } = PC_GENDER.NONE;
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return Name;
         }
     }
 
-    public class Quest
-    {
-        public Quest(uint id)
-        {
+    public class Quest {
+        public Quest(uint id) {
             Detail = QuestFactory.Instance.Items[id];
         }
 
-        public uint ID
-        {
+        public uint ID {
             get => Detail.ID;
             set => Detail.ID = value;
         }
 
-        public QuestType QuestType
-        {
+        public QuestType QuestType {
             get => Detail.QuestType;
             set => Detail.QuestType = value;
         }
 
-        public string Name
-        {
+        public string Name {
             get => Detail.Name;
             set => Detail.Name = value;
         }
@@ -240,8 +232,7 @@ namespace SagaDB.Quests
         /// </summary>
         /// <param name="pc">玩家</param>
         /// <returns>难度</returns>
-        public QuestDifficulty Difficulty(ActorPC pc)
-        {
+        public QuestDifficulty Difficulty(ActorPC pc) {
             var diff = Detail.MinLevel - pc.Level;
             if (Math.Abs(diff) <= 3)
                 return QuestDifficulty.BEST_FIT;

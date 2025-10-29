@@ -21,7 +21,7 @@ namespace SagaScript.M12002102
                 switch (Select(pc, "洗點", "", "洗屬性點(10等級前可無限洗)", "洗技能點(10等級前可無限洗)", "什麼都不做"))
                 {
                     case 1:
-                        if (pc.Race == PC_RACE.DEM)
+                        if (pc.Race == SagaLib.PcRace.DEM)
                         {
                         Say(pc, 131, "DEM不可以洗點啊$R;");
                         }
@@ -49,7 +49,7 @@ namespace SagaScript.M12002102
                         Say(pc, 131, "回到初始狀態囉$R;");
                         break;
                     case 2:
-                       if (pc.Race == PC_RACE.DEM)
+                       if (pc.Race == SagaLib.PcRace.DEM)
                         {
                         Say(pc, 131, "DEM不可以洗點啊$R;");
                         }

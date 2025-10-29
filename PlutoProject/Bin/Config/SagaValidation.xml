@@ -1,51 +1,51 @@
 ﻿<?xml version="1.0"?>
 <SagaValidation>
-  <loglevel>0</loglevel>
-  <Port>12006</Port>
+    <loglevel>0</loglevel>
+    <Port>12006</Port>
 
-  <!-- address of Mysql server or Path to Save for dat implementation-->
-  <dbhost>127.0.0.1</dbhost>
-  
-  <!-- database name for SQL -->
-  <dbname>sagaeco</dbname>
+    <!-- address of Mysql server or Path to Save for dat implementation-->
+    <dbhost>172.16.160.1</dbhost>
 
-  <!-- port for databaser server(SQL or db4o) -->
-  <dbport>3306</dbport>
+    <!-- database name for SQL -->
+    <dbname>sagaeco</dbname>
 
-  <!-- 
-            Info = 1,
-            Warning = 2,
-            Error = 4,
-            SQL = 8,
-            Debug = 16       
-  -->
-  <LogLevel>31</LogLevel>
+    <!-- port for databaser server(SQL or db4o) -->
+    <dbport>3306</dbport>
 
-  <dbuser>root</dbuser>
-  <dbpass>123456</dbpass>
+    <!-- 
+              Info = 1,
+              Warning = 2,
+              Error = 4,
+              SQL = 8,
+              Debug = 16       
+    -->
+    <LogLevel>31</LogLevel>
 
-  <!-- Password used for verify the connection from mapserver -->
+    <dbuser>root</dbuser>
+    <dbpass>123456</dbpass>
 
-  <Password>saga</Password>
-  <!-- Packet protocoll Version -->
-  <Version>Saga17</Version>
+    <!-- Password used for verify the connection from mapserver -->
 
-  <!-- 设置服务器IP -->
-  <ServerName>SagaECO</ServerName>
-  <ServerIP>127.0.0.1:12000</ServerIP>
+    <Password>saga</Password>
+    <!-- Packet protocoll Version -->
+    <Version>Saga17</Version>
 
-  <!-- 服务器維護狀態 -->
-  <ServerClose>False</ServerClose>
+    <!-- 设置服务器IP -->
+    <ServerName>SagaECO</ServerName>
+    <ServerIP>172.16.160.1:12000</ServerIP>
 
-  <!-- 客戶端指紋 -->
-  <clientgameversion></clientgameversion>
+    <!-- 服务器維護狀態 -->
+    <ServerClose>False</ServerClose>
 
-  <!--
-  MYSQL = 0
-  ACCESS = 1
-  -->  
-  <DBType>0</DBType>
-  
-  <dbEncoding>utf8</dbEncoding>
+    <!-- 客戶端指紋 -->
+    <clientgameversion></clientgameversion>
+
+    <!--
+    MYSQL = 0
+    ACCESS = 1
+    -->
+    <DBType>0</DBType>
+
+    <dbEncoding>utf8</dbEncoding>
 
 </SagaValidation>

@@ -125,7 +125,7 @@ namespace SagaLib {
             Custom = 32
         }
 
-        public static Logger defaultlogger;
+        // public static Logger defaultlogger;
 
         //public static Logger CurrentLogger = defaultlogger;
         public static Serilog.Core.Logger DefaultLogger = null;
@@ -200,6 +200,15 @@ namespace SagaLib {
             // if (log != null) log.WriteLog(ex.Message);
         }
 
+        public static void ShowDebug(string ex) {
+            // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
+            //     return;
+            ////Console.ForegroundColor = ConsoleColor.Green;
+            _logger.Debug($"[Info] {ex}");
+            ////Console.ResetColor();
+            // _logger.Information(ex);
+        }
+
         public static void ShowInfo(string ex) {
             // if ((defaultlogger.LogLevel | LogContent.Info) != defaultlogger.LogLevel)
             //     return;
@@ -233,10 +242,15 @@ namespace SagaLib {
             ShowWarning(ex);
         }
 
-        public static void ShowWarning(string ex) {
+        public static void ShowWarning(string ex, [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            LogContext.PushProperty("MemberName", memberName);
+            LogContext.PushProperty("FilePath", sourceFilePath);
+            LogContext.PushProperty("LineNumber", sourceLineNumber);
             // if ((defaultlogger.LogLevel | LogContent.Warning) != defaultlogger.LogLevel)
             //     return;
-            ShowWarning(ex, defaultlogger);
+            _logger.Warning(ex);
         }
 
         public static void ShowDebug(Exception ex, Logger log) {
@@ -260,7 +274,8 @@ namespace SagaLib {
             var Stacktrace = new StackTrace(1, true);
             var txt = ex;
             foreach (var i in Stacktrace.GetFrames())
-                txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name + " " +
+                txt = txt + "\r\n      at " + i.GetMethod().ReflectedType.FullName + "." + i.GetMethod().Name +
+                      " " +
                       i.GetFileName() + ":" + i.GetFileLineNumber();
             txt = FilterSQL(txt);
             // _logger.Information(txt);
@@ -342,7 +357,8 @@ namespace SagaLib {
                 Directory.CreateDirectory("Log");
 
             return "Log/[" +
-                   string.Format("{0}-{1}-{2}", DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day) + "]" +
+                   string.Format("{0}-{1}-{2}", DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day) +
+                   "]" +
                    filename;
         }
 

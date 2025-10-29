@@ -1,43 +1,28 @@
-﻿namespace SagaDB.Actor
-{
-    public enum PC_RACE
-    {
-        EMIL,
-        TITANIA,
-        DOMINION,
-        DEM,
-        NONE
-    }
-
-    public enum DEM_FORM
-    {
+﻿namespace SagaDB.Actor {
+    public enum DEM_FORM {
         NORMAL_FORM,
         MACHINA_FORM,
         NONE
     }
 
-    public enum PC_GENDER
-    {
+    public enum PC_GENDER {
         MALE,
         FEMALE,
         NONE
     }
 
-    public enum BATTLE_STATUS
-    {
+    public enum BATTLE_STATUS {
         NORMAL,
         BATTLE
     }
 
-    public enum ATTACK_TYPE
-    {
+    public enum ATTACK_TYPE {
         BLOW,
         SLASH,
         STAB
     }
 
-    public enum PC_JOB
-    {
+    public enum PC_JOB {
         NOVICE = 0,
         SWORDMAN = 1,
         BLADEMASTER = 3,
@@ -97,16 +82,14 @@
         NONE
     }
 
-    public enum JobType
-    {
+    public enum JobType {
         NOVICE,
         FIGHTER,
         SPELLUSER,
         BACKPACKER
     }
 
-    public enum ActorType
-    {
+    public enum ActorType {
         PC,
         MOB,
         ITEM,
@@ -121,8 +104,7 @@
         ANOTHERMOB
     }
 
-    public enum UpdateEvent
-    {
+    public enum UpdateEvent {
         GOLD,
         CP,
         EP,
@@ -138,8 +120,7 @@
         QUEST_POINT
     }
 
-    public enum PlayerMode
-    {
+    public enum PlayerMode {
         NORMAL,
         KNIGHT_WAR,
         COLISEUM_MODE,
@@ -152,8 +133,7 @@
         KNIGHT_ROCK
     }
 
-    public enum ActorEventTypes
-    {
+    public enum ActorEventTypes {
         ROPE,
         TENT
     }

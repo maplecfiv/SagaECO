@@ -52,7 +52,7 @@ namespace GMTool
         private string pass = "saga";
         private string database = "sagaeco";
         private int port = 3306;
-        private string host = "127.0.0.1";
+        private string host = "172.16.160.1";
         public DataTable Items;
         private delegate void InvokeUpdateState(string s);
         private delegate void InvokeOnInitFinish();

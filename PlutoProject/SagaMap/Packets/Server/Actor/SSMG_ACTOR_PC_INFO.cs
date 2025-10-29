@@ -6,12 +6,9 @@ using SagaLib;
 using SagaMap.Network.Client;
 using Version = SagaLib.Version;
 
-namespace SagaMap.Packets.Server.Actor
-{
-    public class SSMG_ACTOR_PC_INFO : Packet
-    {
-        public SSMG_ACTOR_PC_INFO()
-        {
+namespace SagaMap.Packets.Server.Actor {
+    public class SSMG_ACTOR_PC_INFO : Packet {
+        public SSMG_ACTOR_PC_INFO() {
             if (Configuration.Configuration.Instance.Version >= Version.Saga17)
                 //this.data = new byte[166];
                 data = new byte[239];
@@ -34,14 +31,11 @@ namespace SagaMap.Packets.Server.Actor
                 ID = 0x020E;
         }
 
-        private ActorShadow SetShadow
-        {
-            set
-            {
+        private ActorShadow SetShadow {
+            set {
                 //#region Old
 
-                if (Configuration.Configuration.Instance.Version < Version.Saga17)
-                {
+                if (Configuration.Configuration.Instance.Version < Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -58,18 +52,15 @@ namespace SagaMap.Packets.Server.Actor
                     PutBytes(buf, 11);
                     offset = (ushort)(11 + size);
 
-                    if (value.Owner.Marionette == null)
-                    {
+                    if (value.Owner.Marionette == null) {
                         PutByte((byte)value.Owner.Race, offset);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             offset++;
                             PutByte((byte)value.Owner.Form, offset);
                         }
 
                         PutByte((byte)value.Owner.Gender, (ushort)(offset + 1));
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                             PutUShort(value.Owner.HairStyle, (ushort)(offset + 2));
                             PutByte(value.Owner.HairColor, (ushort)(offset + 4));
                             PutUShort(value.Owner.Wig, (ushort)(offset + 5));
@@ -79,8 +70,7 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(0, (ushort)(offset + 8)); //unknown
                             offset += 2;
                         }
-                        else
-                        {
+                        else {
                             PutUShort(value.Owner.HairStyle, (ushort)(offset + 2));
                             PutByte(value.Owner.HairColor, (ushort)(offset + 3));
                             PutUShort(value.Owner.Wig, (ushort)(offset + 4));
@@ -88,11 +78,9 @@ namespace SagaMap.Packets.Server.Actor
                             PutUShort(value.Owner.Face, (ushort)(offset + 6));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0xff, offset);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             offset++;
                             PutByte(0xff, offset);
                         }
@@ -106,8 +94,7 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(0xff, (ushort)(offset + 7));
                         PutByte(0xff, (ushort)(offset + 8));
                         PutByte(0xff, (ushort)(offset + 9));
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
@@ -115,11 +102,9 @@ namespace SagaMap.Packets.Server.Actor
                     }
 
                     PutByte(0x0D, (ushort)(offset + 10));
-                    if (value.Owner.Marionette == null)
-                    {
+                    if (value.Owner.Marionette == null) {
                         for (var j = 0; j < 14; j++)
-                            if (value.Owner.Inventory.Equipments.ContainsKey((EnumEquipSlot)j))
-                            {
+                            if (value.Owner.Inventory.Equipments.ContainsKey((EnumEquipSlot)j)) {
                                 var item = value.Owner.Inventory.Equipments[(EnumEquipSlot)j];
                                 if (item.Stack == 0) continue;
                                 if (item.PictID == 0)
@@ -128,40 +113,33 @@ namespace SagaMap.Packets.Server.Actor
                                     PutUInt(item.PictID, (ushort)(offset + 11 + j * 4));
                             }
                     }
-                    else
-                    {
+                    else {
                         PutUInt(value.Owner.Marionette.PictID, (ushort)(offset + 11));
                     }
 
                     //left hand weapon motion
                     PutByte(3, (ushort)(offset + 63));
-                    if (value.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND))
-                    {
-                        if (value.Owner.Marionette == null)
-                        {
+                    if (value.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.LEFT_HAND)) {
+                        if (value.Owner.Marionette == null) {
                             var leftHand = value.Owner.Inventory.Equipments[EnumEquipSlot.LEFT_HAND];
                             PutUShort(leftHand.BaseData.handMotion, (ushort)(offset + 64));
                             PutByte(leftHand.BaseData.handMotion2, (ushort)(offset + 66));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 64));
                     }
 
                     //right hand weapon motion
                     PutByte(3, (ushort)(offset + 67));
-                    if (value.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                    {
-                        if (value.Owner.Marionette == null)
-                        {
+                    if (value.Owner.Inventory.Equipments.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
+                        if (value.Owner.Marionette == null) {
                             var rightHand = value.Owner.Inventory.Equipments[EnumEquipSlot.RIGHT_HAND];
                             PutUShort(rightHand.BaseData.handMotion, (ushort)(offset + 68));
                             PutByte(rightHand.BaseData.handMotion2, (ushort)(offset + 80));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 68));
                     }
 
@@ -189,8 +167,7 @@ namespace SagaMap.Packets.Server.Actor
 
                 //#region Saga17
 
-                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -209,8 +186,7 @@ namespace SagaMap.Packets.Server.Actor
                     offset = (ushort)(11 + size);
 
                     ////////////////玩家外观////////////////
-                    if (value.Owner.Marionette == null)
-                    {
+                    if (value.Owner.Marionette == null) {
                         PutByte((byte)value.Owner.Race, offset);
                         PutByte((byte)value.Owner.Form, offset + 1);
                         PutByte((byte)value.Owner.Gender, offset + 2);
@@ -224,8 +200,7 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(value.Owner.WingStyle, offset + 13);
                         PutByte(value.Owner.WingColor, offset + 14);
                     }
-                    else
-                    {
+                    else {
                         PutByte(0xff, offset);
                         PutByte(0xff, offset + 1);
                         PutByte(0xff, offset + 2);
@@ -251,13 +226,10 @@ namespace SagaMap.Packets.Server.Actor
                         equips = value.Owner.Inventory.Equipments;
                     else
                         equips = value.Owner.Inventory.Parts;
-                    if (value.Owner.Marionette == null)
-                    {
+                    if (value.Owner.Marionette == null) {
                         if (value.Owner.TranceID == 0)
-                            for (var j = 0; j < 14; j++)
-                            {
-                                if (equips.ContainsKey((EnumEquipSlot)j))
-                                {
+                            for (var j = 0; j < 14; j++) {
+                                if (equips.ContainsKey((EnumEquipSlot)j)) {
                                     var item = equips[(EnumEquipSlot)j];
                                     if (item.Stack == 0) continue;
                                     if (item.PictID == 0)
@@ -269,16 +241,14 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutUInt(value.Owner.TranceID, offset + 16);
                     }
-                    else
-                    {
+                    else {
                         PutUInt(value.Owner.Marionette.PictID, offset + 16);
                     }
 
                     ////////////////左手动作////////////////
                     PutByte(3, offset + 72);
                     if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND))
-                        if (value.Owner.Marionette == null && value.Owner.TranceID == 0)
-                        {
+                        if (value.Owner.Marionette == null && value.Owner.TranceID == 0) {
                             var leftHand = equips[EnumEquipSlot.LEFT_HAND];
                             PutUShort(leftHand.BaseData.handMotion, offset + 73);
                             PutByte(leftHand.BaseData.handMotion2, offset + 75);
@@ -287,8 +257,7 @@ namespace SagaMap.Packets.Server.Actor
                     ////////////////右手动作////////////////
                     PutByte(3, offset + 76);
                     if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                        if (value.Owner.Marionette == null && value.Owner.TranceID == 0)
-                        {
+                        if (value.Owner.Marionette == null && value.Owner.TranceID == 0) {
                             var rightHand = equips[EnumEquipSlot.RIGHT_HAND];
                             PutUShort(rightHand.BaseData.handMotion, offset + 77);
                             PutByte(rightHand.BaseData.handMotion2, offset + 79);
@@ -297,8 +266,7 @@ namespace SagaMap.Packets.Server.Actor
                     //////////////////骑乘//////////////////
                     PutByte(3, offset + 80);
                     if (equips.ContainsKey(EnumEquipSlot.PET) && value.Owner.Pet != null)
-                        if (value.Owner.Pet.Ride)
-                        {
+                        if (value.Owner.Pet.Ride) {
                             var pet = equips[EnumEquipSlot.PET];
                             PutUShort(pet.BaseData.handMotion, offset + 81);
                             PutByte(pet.BaseData.handMotion2, offset + 83);
@@ -314,8 +282,7 @@ namespace SagaMap.Packets.Server.Actor
                     offset += 4; //2015年12月10日，对应449版本
 
                     ////////////////队伍信息////////////////
-                    if (value.Owner.Party != null)
-                    {
+                    if (value.Owner.Party != null) {
                         buf = Global.Unicode.GetBytes(value.Owner.Party.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -325,16 +292,14 @@ namespace SagaMap.Packets.Server.Actor
                         offset += (ushort)(buf.Length - 1);
                         PutByte(0, offset + 92);
                     }
-                    else
-                    {
+                    else {
                         PutByte(1, offset + 90);
                         PutByte(1, offset + 92);
                     }
 
                     //UINT UNKNOMW
                     ////////////////军团信息////////////////
-                    if (value.Owner.Ring != null)
-                    {
+                    if (value.Owner.Ring != null) {
                         buf = Global.Unicode.GetBytes(value.Owner.Ring.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -344,8 +309,7 @@ namespace SagaMap.Packets.Server.Actor
                         offset += (ushort)(buf.Length - 1);
                         PutByte(0, offset + 99);
                     }
-                    else
-                    {
+                    else {
                         PutByte(1, offset + 97);
                         PutByte(1, offset + 99);
                     }
@@ -382,10 +346,8 @@ namespace SagaMap.Packets.Server.Actor
             }
         }
 
-        private ActorMob SetMob
-        {
-            set
-            {
+        private ActorMob SetMob {
+            set {
                 byte[] buf, buff;
                 byte size;
                 ushort offset;
@@ -429,8 +391,7 @@ namespace SagaMap.Packets.Server.Actor
                 PutByte(3, offset + 72);
                 PutByte(3, offset + 79);
                 PutByte(3, offset + 86);
-                if (value.RideID != 0 && ItemFactory.Instance.Items.ContainsKey(value.RideID))
-                {
+                if (value.RideID != 0 && ItemFactory.Instance.Items.ContainsKey(value.RideID)) {
                     var pet = ItemFactory.Instance.GetItem(value.RideID);
                     PutByte((byte)pet.BaseData.handMotion, offset + 81);
                     PutByte(pet.BaseData.handMotion2, offset + 83);
@@ -470,15 +431,12 @@ namespace SagaMap.Packets.Server.Actor
             }
         }
 
-        private ActorPC SetPC
-        {
-            set
-            {
+        private ActorPC SetPC {
+            set {
                 //#region Saga14
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
-                    Configuration.Configuration.Instance.Version < Version.Saga14_2)
-                {
+                    Configuration.Configuration.Instance.Version < Version.Saga14_2) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -495,18 +453,15 @@ namespace SagaMap.Packets.Server.Actor
                     PutBytes(buf, 11);
                     offset = (ushort)(11 + size);
 
-                    if (value.Marionette == null && value.TranceID == 0)
-                    {
+                    if (value.Marionette == null && value.TranceID == 0) {
                         PutByte((byte)value.Race, offset);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             offset++;
                             PutByte((byte)value.Form, offset);
                         }
 
                         PutByte((byte)value.Gender, (ushort)(offset + 1));
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                             PutUShort(value.HairStyle, (ushort)(offset + 2));
                             PutByte(value.HairColor, (ushort)(offset + 4));
                             PutUShort(value.Wig, (ushort)(offset + 5));
@@ -519,8 +474,7 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(value.WingColor, (ushort)(offset + 11)); //3轉外觀
                             offset += 2;
                         }
-                        else
-                        {
+                        else {
                             PutUShort(value.HairStyle, (ushort)(offset + 2));
                             PutByte(value.HairColor, (ushort)(offset + 3));
                             PutUShort(value.Wig, (ushort)(offset + 4));
@@ -528,11 +482,9 @@ namespace SagaMap.Packets.Server.Actor
                             PutUShort(value.Face, (ushort)(offset + 6));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0xff, offset);
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             offset++;
                             PutByte(0xff, offset);
                         }
@@ -546,8 +498,7 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(0xff, (ushort)(offset + 7));
                         PutByte(0xff, (ushort)(offset + 8));
                         PutByte(0xff, (ushort)(offset + 9));
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
                             PutByte(0xff, (ushort)(++offset + 9));
@@ -560,13 +511,10 @@ namespace SagaMap.Packets.Server.Actor
                     else
                         equips = value.Inventory.Parts;
                     PutByte(0x0D, (ushort)(offset + 10));
-                    if (value.Marionette == null)
-                    {
-                        if (value.TranceID == 0)
-                        {
+                    if (value.Marionette == null) {
+                        if (value.TranceID == 0) {
                             for (var j = 0; j < 14; j++)
-                                if (equips.ContainsKey((EnumEquipSlot)j))
-                                {
+                                if (equips.ContainsKey((EnumEquipSlot)j)) {
                                     var item = equips[(EnumEquipSlot)j];
                                     if (item.Stack == 0) continue;
                                     if (item.PictID == 0)
@@ -575,38 +523,31 @@ namespace SagaMap.Packets.Server.Actor
                                         PutUInt(item.PictID, (ushort)(offset + 11 + j * 4));
                                 }
                         }
-                        else
-                        {
+                        else {
                             PutUInt(value.TranceID, (ushort)(offset + 11));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutUInt(value.Marionette.PictID, (ushort)(offset + 11));
                     }
 
                     //left hand weapon motion
                     PutByte(3, (ushort)(offset + 63));
-                    if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND))
-                    {
-                        if (value.Marionette == null)
-                        {
+                    if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND)) {
+                        if (value.Marionette == null) {
                             var leftHand = equips[EnumEquipSlot.LEFT_HAND];
                             PutUShort(leftHand.BaseData.handMotion, (ushort)(offset + 64));
                             PutByte(leftHand.BaseData.handMotion2, (ushort)(offset + 65));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 64));
                     }
 
                     //right hand weapon motion
                     PutByte(3, (ushort)(offset + 67));
-                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                    {
-                        if (value.Marionette == null)
-                        {
+                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
+                        if (value.Marionette == null) {
                             var rightHand = equips[EnumEquipSlot.RIGHT_HAND];
                             PutUShort(rightHand.BaseData.handMotion, (ushort)(offset + 68));
                             PutUShort(rightHand.BaseData.handMotion2, (ushort)(offset + 69));
@@ -629,16 +570,14 @@ namespace SagaMap.Packets.Server.Actor
                                 PutByte(9, (ushort)(offset + 70)); //杖
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 68));
                     }
 
                     //riding motion
                     PutByte(3, (ushort)(offset + 71));
                     if (equips.ContainsKey(EnumEquipSlot.PET) && value.Pet != null)
-                        if (value.Pet.Ride)
-                        {
+                        if (value.Pet.Ride) {
                             var pet = equips[EnumEquipSlot.PET];
                             PutUShort(pet.BaseData.handMotion, (ushort)(offset + 72));
                             PutUShort(pet.BaseData.handMotion2, (ushort)(offset + 73));
@@ -650,13 +589,11 @@ namespace SagaMap.Packets.Server.Actor
 
                     //BYTE ride_color;  //乗り物の染色値
                     PutByte(value.BattleStatus, (ushort)(offset + 80));
-                    if (value.Party == null)
-                    {
+                    if (value.Party == null) {
                         PutByte(1, (ushort)(offset + 81)); //party name
                         PutByte(1, (ushort)(offset + 83)); //party name
                     }
-                    else
-                    {
+                    else {
                         buf = Global.Unicode.GetBytes(value.Party.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -670,13 +607,11 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(0, (ushort)(offset + 83)); //party name
                     }
 
-                    if (value.Ring == null)
-                    {
+                    if (value.Ring == null) {
                         PutByte(1, (ushort)(offset + 88)); //Ring name
                         PutByte(1, (ushort)(offset + 90)); //Ring master
                     }
-                    else
-                    {
+                    else {
                         buf = Global.Unicode.GetBytes(value.Ring.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -720,8 +655,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutUShort((ushort)value.Motion, (ushort)(offset + 100));
 
                     PutUInt(0, (ushort)(offset + 102)); //unknown
-                    switch (value.Mode)
-                    {
+                    switch (value.Mode) {
                         case PlayerMode.NORMAL:
                             PutInt(2, (ushort)(offset + 106)); //mode1
                             PutInt(0, (ushort)(offset + 110)); //mode2
@@ -800,8 +734,7 @@ namespace SagaMap.Packets.Server.Actor
                 //#region Saga14_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
-                    Configuration.Configuration.Instance.Version < Version.Saga17)
-                {
+                    Configuration.Configuration.Instance.Version < Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -817,8 +750,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(size, 10);
                     PutBytes(buf, 11);
                     offset = (ushort)(11 + size);
-                    if (value.Marionette == null && value.TranceID == 0)
-                    {
+                    if (value.Marionette == null && value.TranceID == 0) {
                         PutByte((byte)value.Race, offset);
                         offset++;
                         PutByte((byte)value.Form, offset);
@@ -835,12 +767,10 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(value.WingColor, (ushort)(offset + 11)); //3轉外觀
                         offset += 2;
                     }
-                    else
-                    {
+                    else {
                         PutByte(0xff, offset);
 
-                        if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                        {
+                        if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                             offset++;
                             PutByte(0xff, offset);
                         }
@@ -867,13 +797,10 @@ namespace SagaMap.Packets.Server.Actor
                     else
                         equips = value.Inventory.Parts;
                     PutByte(0x0E, (ushort)(offset + 10));
-                    if (value.Marionette == null)
-                    {
-                        if (value.TranceID == 0)
-                        {
+                    if (value.Marionette == null) {
+                        if (value.TranceID == 0) {
                             for (var j = 0; j < 14; j++)
-                                if (equips.ContainsKey((EnumEquipSlot)j))
-                                {
+                                if (equips.ContainsKey((EnumEquipSlot)j)) {
                                     var item = equips[(EnumEquipSlot)j];
                                     if (item.Stack == 0) continue;
                                     if (item.PictID == 0)
@@ -882,52 +809,42 @@ namespace SagaMap.Packets.Server.Actor
                                         PutUInt(item.PictID, (ushort)(offset + 11 + j * 4));
                                 }
                         }
-                        else
-                        {
+                        else {
                             PutUInt(value.TranceID, (ushort)(offset + 11));
                         }
                     }
-                    else
-                    {
+                    else {
                         PutUInt(value.Marionette.PictID, (ushort)(offset + 11));
                     }
 
                     offset += 4;
                     //left hand weapon motion
                     PutByte(3, (ushort)(offset + 63));
-                    if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND))
-                    {
-                        if (value.Marionette == null)
-                        {
+                    if (equips.ContainsKey(EnumEquipSlot.LEFT_HAND)) {
+                        if (value.Marionette == null) {
                             var leftHand = equips[EnumEquipSlot.LEFT_HAND];
                             PutUShort(leftHand.BaseData.handMotion, (ushort)(offset + 64)); //
                             PutUShort(leftHand.BaseData.handMotion2, (ushort)(offset + 65)); //
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 64));
                     }
 
-                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                    {
-                        if (value.Marionette == null)
-                        {
+                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
+                        if (value.Marionette == null) {
                             var rightHand = equips[EnumEquipSlot.RIGHT_HAND];
                             PutUShort(rightHand.BaseData.handMotion, (ushort)(offset + 66)); //
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 64));
                     }
 
                     //right hand weapon motion
                     PutByte(3, (ushort)(offset + 67));
-                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND))
-                    {
-                        if (value.Marionette == null)
-                        {
+                    if (equips.ContainsKey(EnumEquipSlot.RIGHT_HAND)) {
+                        if (value.Marionette == null) {
                             var rightHand = equips[EnumEquipSlot.RIGHT_HAND];
                             PutUShort(rightHand.BaseData.handMotion, (ushort)(offset + 68));
                             PutUShort(rightHand.BaseData.handMotion2, (ushort)(offset + 69));
@@ -950,16 +867,14 @@ namespace SagaMap.Packets.Server.Actor
                                 PutByte(9, (ushort)(offset + 70)); //杖
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(0, (ushort)(offset + 68));
                     }
 
                     //riding motion
                     PutByte(3, (ushort)(offset + 71));
                     if (equips.ContainsKey(EnumEquipSlot.PET) && value.Pet != null)
-                        if (value.Pet.Ride)
-                        {
+                        if (value.Pet.Ride) {
                             var pet = equips[EnumEquipSlot.PET];
                             PutUShort(pet.BaseData.handMotion, (ushort)(offset + 72));
                             PutUShort(pet.BaseData.handMotion2, (ushort)(offset + 73));
@@ -971,13 +886,11 @@ namespace SagaMap.Packets.Server.Actor
 
                     //BYTE ride_color;  //乗り物の染色値
                     PutByte(0, (ushort)(offset + 80));
-                    if (value.Party == null)
-                    {
+                    if (value.Party == null) {
                         PutByte(1, (ushort)(offset + 81)); //party name
                         PutByte(1, (ushort)(offset + 83)); //party name
                     }
-                    else
-                    {
+                    else {
                         buf = Global.Unicode.GetBytes(value.Party.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -991,13 +904,11 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(0, (ushort)(offset + 83)); //party name
                     }
 
-                    if (value.Ring == null)
-                    {
+                    if (value.Ring == null) {
                         PutByte(1, (ushort)(offset + 88)); //Ring name
                         PutByte(1, (ushort)(offset + 90)); //Ring master
                     }
-                    else
-                    {
+                    else {
                         buf = Global.Unicode.GetBytes(value.Ring.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -1027,8 +938,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutUShort((ushort)value.Motion, (ushort)(offset + 100));
 
                     PutUInt(0, (ushort)(offset + 102)); //unknown
-                    switch (value.Mode)
-                    {
+                    switch (value.Mode) {
                         case PlayerMode.NORMAL:
                             PutInt(2, (ushort)(offset + 106)); //mode1
                             PutInt(0, (ushort)(offset + 110)); //mode2
@@ -1095,8 +1005,7 @@ namespace SagaMap.Packets.Server.Actor
 
                 //#region Saga17
 
-                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -1140,9 +1049,9 @@ namespace SagaMap.Packets.Server.Actor
                     //value.appearance.
 
                     if (value.appearance.MarionettePictID == 0 && value.Marionette == null &&
-                        value.IllusionPictID == 0 && value.TranceID == 0)
-                    {
-                        PutByte((byte)(value.appearance.Race == PC_RACE.NONE ? value.Race : value.appearance.Race),
+                        value.IllusionPictID == 0 && value.TranceID == 0) {
+                        PutByte(
+                            (byte)(value.appearance.Race == SagaLib.PcRace.NONE ? value.Race : value.appearance.Race),
                             offset);
                         PutByte((byte)(value.appearance.Form == DEM_FORM.NONE ? value.Form : value.appearance.Form),
                             offset + 1);
@@ -1200,13 +1109,10 @@ namespace SagaMap.Packets.Server.Actor
 
                     appequips = value.appearance.Equips;
 
-                    if (value.Marionette == null && value.appearance.MarionettePictID == 0)
-                    {
+                    if (value.Marionette == null && value.appearance.MarionettePictID == 0) {
                         if (value.TranceID == 0 && value.IllusionPictID == 0)
-                            for (var j = 0; j < 14; j++)
-                            {
-                                if (appequips.ContainsKey((EnumEquipSlot)j) || equips.ContainsKey((EnumEquipSlot)j))
-                                {
+                            for (var j = 0; j < 14; j++) {
+                                if (appequips.ContainsKey((EnumEquipSlot)j) || equips.ContainsKey((EnumEquipSlot)j)) {
                                     //取得外观装备的内容
                                     var item = appequips.ContainsKey((EnumEquipSlot)j)
                                         ? appequips[(EnumEquipSlot)j]
@@ -1232,8 +1138,7 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutUInt(value.IllusionPictID == 0 ? value.TranceID : value.IllusionPictID, offset + 16);
                     }
-                    else
-                    {
+                    else {
                         PutUInt(
                             value.appearance.MarionettePictID == 0
                                 ? value.Marionette.PictID
@@ -1246,8 +1151,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(3, offset + 72);
                     if ((appequips.ContainsKey(EnumEquipSlot.LEFT_HAND) ||
                          equips.ContainsKey(EnumEquipSlot.LEFT_HAND)) &&
-                        value.Marionette == null && value.TranceID == 0)
-                    {
+                        value.Marionette == null && value.TranceID == 0) {
                         var leftHand = appequips.ContainsKey(EnumEquipSlot.LEFT_HAND)
                             ? appequips[EnumEquipSlot.LEFT_HAND]
                             : equips[EnumEquipSlot.LEFT_HAND];
@@ -1256,22 +1160,19 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutByte((byte)leftHand.BaseData.handMotion, offset + 74);
                         offset += 2;
-                        try
-                        {
+                        try {
                             PutUShort(
                                 (byte)(EquipSound)Enum.Parse(typeof(EquipSound), leftHand.BaseData.itemType.ToString()),
                                 offset + 75);
                             //this.PutUShort((ushort)leftHand.BaseData.itemType, offset + 75);
                         }
-                        catch
-                        {
+                        catch {
                             PutUShort(leftHand.BaseData.handMotion2, offset + 75);
                         }
 
                         offset += 1;
                         var it = leftHand.BaseData.itemType;
-                        if (value.TInt["斥候远程模式"] == 1 && value.Job == PC_JOB.HAWKEYE)
-                        {
+                        if (value.TInt["斥候远程模式"] == 1 && value.Job == PC_JOB.HAWKEYE) {
                             byte s = 0;
                             if (it == ItemType.BOW)
                                 s = 0x0A;
@@ -1284,8 +1185,7 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(s, offset + 75);
                         }
                     }
-                    else
-                    {
+                    else {
                         offset += 3;
                     }
 
@@ -1293,8 +1193,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(3, offset + 76);
                     if ((appequips.ContainsKey(EnumEquipSlot.RIGHT_HAND) ||
                          equips.ContainsKey(EnumEquipSlot.RIGHT_HAND)) &&
-                        value.Marionette == null && value.TranceID == 0)
-                    {
+                        value.Marionette == null && value.TranceID == 0) {
                         var rightHand = appequips.ContainsKey(EnumEquipSlot.RIGHT_HAND)
                             ? appequips[EnumEquipSlot.RIGHT_HAND]
                             : equips[EnumEquipSlot.RIGHT_HAND];
@@ -1303,30 +1202,26 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutByte((byte)rightHand.BaseData.handMotion, offset + 78);
                         offset += 2;
-                        try
-                        {
+                        try {
                             PutByte(
                                 (byte)(EquipSound)Enum.Parse(typeof(EquipSound),
                                     rightHand.BaseData.itemType.ToString()), offset + 79);
                             //this.PutUShort((ushort)rightHand.BaseData.itemType, offset + 79);
                         }
-                        catch
-                        {
+                        catch {
                             PutByte(rightHand.BaseData.handMotion2, offset + 79);
                         }
 
                         offset += 1;
                     }
-                    else
-                    {
+                    else {
                         offset += 3;
                     }
 
                     //////////////////骑乘//////////////////
                     PutByte(3, offset + 80);
                     if (equips.ContainsKey(EnumEquipSlot.PET) && value.Pet != null &&
-                        value.Pet.Ride)
-                    {
+                        value.Pet.Ride) {
                         var pet = equips[EnumEquipSlot.PET];
                         if (pet.BaseData.handMotion > 255)
                             PutUShort(pet.BaseData.handMotion, offset + 81);
@@ -1338,8 +1233,7 @@ namespace SagaMap.Packets.Server.Actor
                         PutByte(0xff, offset + 84);
                         offset += 1;
                     }
-                    else
-                    {
+                    else {
                         offset += 3;
                     }
 
@@ -1354,8 +1248,7 @@ namespace SagaMap.Packets.Server.Actor
                     //offset += 5;//2016年11月1日
 
                     ////////////////队伍信息////////////////
-                    if (value.Party != null)
-                    {
+                    if (value.Party != null) {
                         buf = Global.Unicode.GetBytes(value.Party.Name + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -1368,8 +1261,7 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutByte(0, offset + 92);
                     }
-                    else
-                    {
+                    else {
                         PutByte(1, offset + 90);
                         PutByte(1, offset + 92);
                     }
@@ -1377,8 +1269,7 @@ namespace SagaMap.Packets.Server.Actor
                     this.offset -= 2;
                     //UINT UNKNOMW
                     ////////////////军团信息////////////////
-                    if (value.PlayerTitle != "")
-                    {
+                    if (value.PlayerTitle != "") {
                         buf = Global.Unicode.GetBytes(value.PlayerTitle + "\0");
                         buff = new byte[data.Length + buf.Length];
                         data.CopyTo(buff, 0);
@@ -1391,8 +1282,7 @@ namespace SagaMap.Packets.Server.Actor
                         else
                             PutByte(0, offset + 99);
                     }
-                    else
-                    {
+                    else {
                         PutByte(1, offset + 97);
                         PutByte(1, offset + 99);
                     }
@@ -1407,14 +1297,11 @@ namespace SagaMap.Packets.Server.Actor
                     offset += (ushort)(buf.Length - 1);
 
                     /////////////////露天商店////////////////
-                    if (!value.Fictitious)
-                    {
-                        if (MapClient.FromActorPC(value).Shopswitch == 0)
-                        {
+                    if (!value.Fictitious) {
+                        if (MapClient.FromActorPC(value).Shopswitch == 0) {
                             PutByte(1, offset + 102);
                         }
-                        else
-                        {
+                        else {
                             buf = Global.Unicode.GetBytes(MapClient.FromActorPC(value).Shoptitle + "\0");
                             buff = new byte[data.Length + buf.Length];
                             data.CopyTo(buff, 0);
@@ -1425,8 +1312,7 @@ namespace SagaMap.Packets.Server.Actor
                             PutByte(1, offset + 104);
                         }
                     }
-                    else
-                    {
+                    else {
                         PutByte(1, offset + 102);
                     }
 
@@ -1442,8 +1328,7 @@ namespace SagaMap.Packets.Server.Actor
                     //this.PutUInt(0, offset + 111);//unknown
 
                     /////////////////阵容信息////////////////
-                    switch (value.Mode)
-                    {
+                    switch (value.Mode) {
                         case PlayerMode.NORMAL:
                             PutUInt(2, offset + 116);
                             PutUInt(0, offset + 120);
@@ -1528,15 +1413,12 @@ namespace SagaMap.Packets.Server.Actor
         }
 
 
-        private ActorPet SetPet
-        {
-            set
-            {
+        private ActorPet SetPet {
+            set {
                 //#region Saga14
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga9 &&
-                    Configuration.Configuration.Instance.Version < Version.Saga14_2)
-                {
+                    Configuration.Configuration.Instance.Version < Version.Saga14_2) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -1554,8 +1436,7 @@ namespace SagaMap.Packets.Server.Actor
                     offset = (ushort)(11 + size);
 
                     PutByte(0xff, offset);
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         offset++;
                         PutByte(0xff, offset);
                     }
@@ -1569,8 +1450,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(0xff, (ushort)(offset + 7));
                     PutByte(0xff, (ushort)(offset + 8));
                     PutByte(0xff, (ushort)(offset + 9));
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
@@ -1636,8 +1516,7 @@ namespace SagaMap.Packets.Server.Actor
                 //#region Saga14_2
 
                 if (Configuration.Configuration.Instance.Version >= Version.Saga14_2 &&
-                    Configuration.Configuration.Instance.Version < Version.Saga17)
-                {
+                    Configuration.Configuration.Instance.Version < Version.Saga17) {
                     data = new byte[154];
                     this.offset = 2;
                     ID = 0x020E;
@@ -1659,8 +1538,7 @@ namespace SagaMap.Packets.Server.Actor
                     offset = (ushort)(11 + size);
 
                     PutByte(0xff, offset);
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga10)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga10) {
                         offset++;
                         PutByte(0xff, offset);
                     }
@@ -1674,8 +1552,7 @@ namespace SagaMap.Packets.Server.Actor
                     PutByte(0xff, (ushort)(offset + 7));
                     PutByte(0xff, (ushort)(offset + 8));
                     PutByte(0xff, (ushort)(offset + 9));
-                    if (Configuration.Configuration.Instance.Version >= Version.Saga11)
-                    {
+                    if (Configuration.Configuration.Instance.Version >= Version.Saga11) {
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
                         PutByte(0xff, (ushort)(++offset + 9));
@@ -1744,8 +1621,7 @@ namespace SagaMap.Packets.Server.Actor
 
                 //#region Saga17
 
-                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -1850,14 +1726,11 @@ namespace SagaMap.Packets.Server.Actor
             }
         }
 
-        private ActorPartner SetPartner
-        {
-            set
-            {
+        private ActorPartner SetPartner {
+            set {
                 //#region Saga17
 
-                if (Configuration.Configuration.Instance.Version >= Version.Saga17)
-                {
+                if (Configuration.Configuration.Instance.Version >= Version.Saga17) {
                     byte[] buf, buff;
                     byte size;
                     ushort offset;
@@ -1933,10 +1806,8 @@ namespace SagaMap.Packets.Server.Actor
             }
         }
 
-        public SagaDB.Actor.Actor Actor
-        {
-            set
-            {
+        public SagaDB.Actor.Actor Actor {
+            set {
                 if (value.type == ActorType.PC)
                     SetPC = (ActorPC)value;
                 else if (value.type == ActorType.PET)

@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Dm.util;
 using SagaDB.Actor;
 using SagaDB.Config;
+using SagaDB.Item;
 using SagaLib;
 using SagaLib.VirtualFileSytem;
 using SagaMap.Tasks.System;
@@ -52,7 +54,7 @@ namespace SagaMap.Configuration {
 
         //VShop
 
-        private string whitelist = "127.0.0.1";
+        private string whitelist = "172.16.160.1";
 
 
         public int MaxCharacterInMapServer { get; set; } = 2;
@@ -142,8 +144,8 @@ namespace SagaMap.Configuration {
 
         public int RingFameNeededForEmblem { get; private set; } = 300;
 
-        public Dictionary<PC_RACE, StartupSetting> StartupSetting { get; set; } =
-            new Dictionary<PC_RACE, StartupSetting>();
+        public Dictionary<SagaLib.PcRace, StartupSetting> StartupSetting { get; set; } =
+            new Dictionary<SagaLib.PcRace, StartupSetting>();
 
         public List<string> Motd { get; } = new List<string>();
 
@@ -492,6 +494,107 @@ namespace SagaMap.Configuration {
                         case "maxlvdiffforexp":
                             MaxLevelDifferenceForExp = int.Parse(i.InnerText);
                             break;
+
+                        case "startstatus":
+                            var race = i.Attributes["race"].Value;
+                            var races = i.ChildNodes;
+                            StartupSetting startupSetting = new StartupSetting();
+                            foreach (var l in races) {
+                                XmlElement k;
+                                if (l.GetType() != typeof(XmlElement)) continue;
+                                k = (XmlElement)l;
+                                switch (k.Name.ToLower()) {
+                                    case "str":
+                                        startupSetting.Str = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "dex":
+                                        startupSetting.Dex = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "int":
+                                        startupSetting.Int = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "vit":
+                                        startupSetting.Vit = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "agi":
+                                        startupSetting.Agi = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "mag":
+                                        startupSetting.Mag = ushort.Parse(k.InnerText);
+                                        break;
+                                    case "startmap":
+                                        startupSetting.StartMap = uint.Parse(k.InnerText);
+                                        break;
+                                    case "startx":
+                                        startupSetting.X = byte.Parse(k.InnerText);
+                                        break;
+                                    case "starty":
+                                        startupSetting.Y = byte.Parse(k.InnerText);
+                                        break;
+                                }
+                            }
+
+                            switch (race) {
+                                case "DEM":
+                                    StartupSetting.put(SagaLib.PcRace.DEM, startupSetting);
+                                    break;
+                                case "Dominion":
+                                    StartupSetting.put(SagaLib.PcRace.DOMINION, startupSetting);
+                                    break;
+                                case "Titania":
+                                    StartupSetting.put(SagaLib.PcRace.TITANIA, startupSetting);
+                                    break;
+                                case "Emil":
+                                    StartupSetting.put(SagaLib.PcRace.EMIL, startupSetting);
+                                    break;
+                            }
+
+                            break;
+
+                        // case "startitem": {
+                        //     var itemForRace = i.Attributes["race"].Value;
+                        //     var itemForGender = i.Attributes["gender"].Value;
+                        //     foreach (var item in i.ChildNodes) {
+                        //         if (item.GetType() != typeof(XmlElement)) continue;
+                        //         
+                        //
+                        //         StartItem startItem = new StartItem();
+                        //         foreach (var itemDetails in ((XmlElement)item).ChildNodes) {
+                        //             if (itemDetails.GetType() != typeof(XmlElement)) continue;
+                        //             var itemDetailsXml = (XmlElement)itemDetails;
+                        //             switch (itemDetailsXml.Name.ToLower()) {
+                        //                 case "itemid":
+                        //                     startItem.ItemID = ushort.Parse(itemDetailsXml.InnerText);
+                        //                     break;
+                        //                 case "slot":
+                        //                     Enum.TryParse<ContainerType>(itemDetailsXml.InnerText, true,
+                        //                         out startItem.Slot);
+                        //                     break;
+                        //                 case "count":
+                        //                     startItem.Count = byte.Parse(itemDetailsXml.InnerText);
+                        //                     break;
+                        //             }
+                        //         }
+                        //         switch (race) {
+                        //             case "DEM":
+                        //                 StartupSetting.put(SagaLib.PcRace.DEM, startupSetting);
+                        //                 break;
+                        //             case "Dominion":
+                        //                 StartupSetting.put(SagaLib.PcRace.DOMINION, startupSetting);
+                        //                 break;
+                        //             case "Titania":
+                        //                 StartupSetting.put(SagaLib.PcRace.TITANIA, startupSetting);
+                        //                 break;
+                        //             case "Emil":
+                        //                 StartupSetting.put(SagaLib.PcRace.EMIL, startupSetting);
+                        //                 break;
+                        //         }
+                        //     }
+                        //
+                        //     
+                        // }
+                        //
+                        //     break;
                         case "rateoverride": {
                             var type = i.Attributes["type"].Value;
                             var value = int.Parse(i.Attributes["value"].Value);

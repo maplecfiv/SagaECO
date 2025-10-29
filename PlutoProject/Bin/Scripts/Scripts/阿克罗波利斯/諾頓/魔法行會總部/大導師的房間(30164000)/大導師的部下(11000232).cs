@@ -82,7 +82,7 @@ namespace SagaScript.M30164000
 
         void 洗技能點(ActorPC pc)
         {
-            if (pc.Race == PC_RACE.DEM)
+            if (pc.Race == SagaLib.PcRace.DEM)
             {
                 return;
             }
@@ -131,7 +131,7 @@ namespace SagaScript.M30164000
 
         void 系屬性點(ActorPC pc)
         {
-            if (pc.Race == PC_RACE.DEM)
+            if (pc.Race == SagaLib.PcRace.DEM)
             {
                 return;
             }
@@ -172,7 +172,7 @@ namespace SagaScript.M30164000
 
         void 洗一轉技能點(ActorPC pc)
         {
-            if (pc.Race == PC_RACE.DEM)
+            if (pc.Race == SagaLib.PcRace.DEM)
             {
                 return;
             }

@@ -1,44 +1,44 @@
 ﻿<?xml version="1.0"?>
 <SagaValidation>
-  <Port>12006</Port>
+    <Port>12006</Port>
 
-  <!-- address of Mysql server or Path to Save for dat implementation-->
-  <dbhost>127.0.0.1</dbhost>
-  
-  <!-- database name for SQL -->
-  <dbname>cofeco</dbname>
+    <!-- address of Mysql server or Path to Save for dat implementation-->
+    <dbhost>172.16.160.1</dbhost>
 
-  <!-- port for databaser server(SQL or db4o) -->
-  <dbport>3306</dbport>
+    <!-- database name for SQL -->
+    <dbname>cofeco</dbname>
 
-  <!-- 
-            Info = 1,
-            Warning = 2,
-            Error = 4,
-            SQL = 8,
-            Debug = 16       
-  -->
-  <LogLevel>31</LogLevel>
+    <!-- port for databaser server(SQL or db4o) -->
+    <dbport>3306</dbport>
 
-  <dbuser>root</dbuser>
-  <dbpass>root</dbpass>
+    <!-- 
+              Info = 1,
+              Warning = 2,
+              Error = 4,
+              SQL = 8,
+              Debug = 16       
+    -->
+    <LogLevel>31</LogLevel>
 
-  <!-- Password used for verify the connection from mapserver -->
+    <dbuser>root</dbuser>
+    <dbpass>root</dbpass>
 
-  <Password>saga</Password>
-  <!-- Packet protocoll Version -->
-  <Version>Saga17</Version>
+    <!-- Password used for verify the connection from mapserver -->
 
-  <!-- 设置服务器IP -->
-  <ServerName>COF</ServerName>
-  <ServerIP>papapa.otaku.asia:12005</ServerIP>
+    <Password>saga</Password>
+    <!-- Packet protocoll Version -->
+    <Version>Saga17</Version>
 
-  <!--
-  MYSQL = 0
-  ACCESS = 1
-  -->  
-  <DBType>0</DBType>
-  
-  <dbEncoding>gbk</dbEncoding>
+    <!-- 设置服务器IP -->
+    <ServerName>COF</ServerName>
+    <ServerIP>172.16.160.1:12000</ServerIP>
+
+    <!--
+    MYSQL = 0
+    ACCESS = 1
+    -->
+    <DBType>0</DBType>
+
+    <dbEncoding>gbk</dbEncoding>
 
 </SagaValidation>

@@ -65,7 +65,7 @@ namespace SagaScript.M10019100
 
             if (JobBasic_08_mask.Test(JobBasic_08.選擇轉職為魔攻師) &&
                 !JobBasic_08_mask.Test(JobBasic_08.已經從闇之精靈那裡把心染為黑暗) &&
-                pc.Race == PC_RACE.TITANIA)
+                pc.Race == SagaLib.PcRace.TITANIA)
             {
                 魔攻師轉職任務(pc);
                 return;

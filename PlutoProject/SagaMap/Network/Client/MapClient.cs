@@ -232,6 +232,7 @@ namespace SagaMap.Network.Client {
 
                 if (Character == null)
                     return;
+                SqlSugarHelper.Db.BeginTran();
 
                 Character.VisibleActors.Clear();
 
@@ -241,12 +242,9 @@ namespace SagaMap.Network.Client {
                                                MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
-                foreach (SagaDB.Entities.Character i in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>()
-                             .TranLock()
-                             .Where(item => item.CharacterId == Character.CharID).ToList()) {
-                    i.Online = false;
-                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
-                }
+                SqlSugarHelper.Db.Storageable<SagaDB.Entities.Character>(new SagaDB.Entities.Character {
+                    CharacterId = Character.CharID, Online = false
+                }).ExecuteCommand();
 
                 if (Character.HP == 0) {
                     /*this.Character.HP = 1;
@@ -428,8 +426,10 @@ namespace SagaMap.Network.Client {
 
                 //退出副本
                 OnPProtectCreatedOut(null);
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 Logger.ShowError(ex);
             }
         }
@@ -1035,8 +1035,7 @@ namespace SagaMap.Network.Client {
                 thread.Name = string.Format("ScriptThread({0}) of player:{1}", thread.ManagedThreadId, Character.Name);
                 ClientManager.AddThread(thread);
                 if (scriptThread != null) {
-                    Logger.ShowDebug("current script thread != null, currently running:" + currentEventID,
-                        Logger.defaultlogger);
+                    Logger.ShowDebug($"current script thread != null, currently running: {currentEventID}");
                     scriptThread.Abort();
                 }
 
@@ -3006,7 +3005,7 @@ namespace SagaMap.Network.Client {
         }
 
         public void ResetStatusPoint() {
-            var setting = Configuration.Configuration.Instance.StartupSetting[Character.Race];
+            var setting = SagaLib.ConfigLoader.StartupSetting[Character.Race];
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Str, Character.Str);
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Dex, Character.Dex);
             Character.StatsPoint += StatusFactory.Instance.GetTotalBonusPointForStats(setting.Int, Character.Int);
@@ -3195,7 +3194,7 @@ namespace SagaMap.Network.Client {
         public void SendStatus() {
             if (Character.Online) {
                 var p = new SSMG_PLAYER_STATUS();
-                if (Character.Form == DEM_FORM.MACHINA_FORM || Character.Race != PC_RACE.DEM) {
+                if (Character.Form == DEM_FORM.MACHINA_FORM || Character.Race != SagaLib.PcRace.DEM) {
                     p.AgiBase = (ushort)(Character.Agi + Character.Status.m_agi_chip);
                     p.AgiRevide = (short)(Character.Status.agi_rev + Character.Status.agi_item +
                                           Character.Status.agi_mario + Character.Status.agi_skill +
@@ -3383,7 +3382,7 @@ namespace SagaMap.Network.Client {
             if (Character.Online) {
                 var fgMap = MapManager.Instance.GetMap(Character.MapID);
                 if (!fgMap.IsMapInstance)
-                    Logger.ShowDebug(string.Format("MapID:{0} isn't a valid flying garden!"), Logger.defaultlogger);
+                    Logger.ShowDebug(($"MapID:{Character.MapID} isn't a valid flying garden!"));
                 var owner = fgMap.Creator;
                 var p = new SSMG_PLAYER_GOTO_FG();
                 p.MapID = Character.MapID;
@@ -3405,7 +3404,7 @@ namespace SagaMap.Network.Client {
                 }
 
                 if (!fgMap.IsMapInstance)
-                    Logger.ShowDebug(string.Format("MapID:{0} isn't a valid flying garden!"), Logger.defaultlogger);
+                    Logger.ShowDebug(($"MapID:{fgMap.ID} isn't a valid flying garden!"));
                 var p = new SSMG_FF_ENTER();
                 p.MapID = Character.MapID;
                 p.X = Global.PosX16to8(Character.X, map.Width);
@@ -4347,7 +4346,7 @@ namespace SagaMap.Network.Client {
         public bool demParts;
 
         public void SendCL() {
-            if (Character.Race == PC_RACE.DEM && state != SESSION_STATE.AUTHENTIFICATED) {
+            if (Character.Race == SagaLib.PcRace.DEM && state != SESSION_STATE.AUTHENTIFICATED) {
                 var p1 = new SSMG_DEM_COST_LIMIT_UPDATE();
                 p1.Result = 0;
                 p1.CurrentEP = Character.EPUsed;
@@ -4401,7 +4400,7 @@ namespace SagaMap.Network.Client {
         }
 
         public void OnDEMPartsUnequip(CSMG_DEM_PARTS_UNEQUIP p) {
-            if (Character.Race == PC_RACE.DEM && demParts) {
+            if (Character.Race == SagaLib.PcRace.DEM && demParts) {
                 var item = Character.Inventory.GetItem(p.InventoryID);
                 if (item == null) return;
                 var ifUnequip = Character.Inventory.IsContainerParts(Character.Inventory.GetContainerType(item.Slot));
@@ -4496,7 +4495,7 @@ namespace SagaMap.Network.Client {
         }
 
         public void OnDEMPartsEquip(CSMG_DEM_PARTS_EQUIP p) {
-            if (Character.Race == PC_RACE.DEM && demParts) {
+            if (Character.Race == SagaLib.PcRace.DEM && demParts) {
                 var item = Character.Inventory.GetItem(p.InventoryID);
                 if (item == null) return;
                 var result = CheckEquipRequirement(item);
@@ -9396,7 +9395,7 @@ namespace SagaMap.Network.Client {
                     Character.Y = Global.PosY8to16(map.ClientExitY, this.map.Height);
                 }
 
-                if (Character.Race != PC_RACE.DEM) {
+                if (Character.Race != SagaLib.PcRace.DEM) {
                     if (Character.CEXP < ExperienceManager.Instance.GetExpForLevel(Character.Level, LevelType.CLEVEL))
                         Character.CEXP = ExperienceManager.Instance.GetExpForLevel(Character.Level, LevelType.CLEVEL);
                     if (Character.DominionCEXP <
@@ -9433,18 +9432,18 @@ namespace SagaMap.Network.Client {
                     }
                 }
 
-                if (Character.DominionStr < Configuration.Configuration.Instance.StartupSetting[Character.Race].Str)
-                    Character.DominionStr = Configuration.Configuration.Instance.StartupSetting[Character.Race].Str;
-                if (Character.DominionDex < Configuration.Configuration.Instance.StartupSetting[Character.Race].Dex)
-                    Character.DominionDex = Configuration.Configuration.Instance.StartupSetting[Character.Race].Dex;
-                if (Character.DominionInt < Configuration.Configuration.Instance.StartupSetting[Character.Race].Int)
-                    Character.DominionInt = Configuration.Configuration.Instance.StartupSetting[Character.Race].Int;
-                if (Character.DominionVit < Configuration.Configuration.Instance.StartupSetting[Character.Race].Vit)
-                    Character.DominionVit = Configuration.Configuration.Instance.StartupSetting[Character.Race].Vit;
-                if (Character.DominionAgi < Configuration.Configuration.Instance.StartupSetting[Character.Race].Agi)
-                    Character.DominionAgi = Configuration.Configuration.Instance.StartupSetting[Character.Race].Agi;
-                if (Character.DominionMag < Configuration.Configuration.Instance.StartupSetting[Character.Race].Mag)
-                    Character.DominionMag = Configuration.Configuration.Instance.StartupSetting[Character.Race].Mag;
+                if (Character.DominionStr < SagaLib.ConfigLoader.StartupSetting[Character.Race].Str)
+                    Character.DominionStr = SagaLib.ConfigLoader.StartupSetting[Character.Race].Str;
+                if (Character.DominionDex < SagaLib.ConfigLoader.StartupSetting[Character.Race].Dex)
+                    Character.DominionDex = SagaLib.ConfigLoader.StartupSetting[Character.Race].Dex;
+                if (Character.DominionInt < SagaLib.ConfigLoader.StartupSetting[Character.Race].Int)
+                    Character.DominionInt = SagaLib.ConfigLoader.StartupSetting[Character.Race].Int;
+                if (Character.DominionVit < SagaLib.ConfigLoader.StartupSetting[Character.Race].Vit)
+                    Character.DominionVit = SagaLib.ConfigLoader.StartupSetting[Character.Race].Vit;
+                if (Character.DominionAgi < SagaLib.ConfigLoader.StartupSetting[Character.Race].Agi)
+                    Character.DominionAgi = SagaLib.ConfigLoader.StartupSetting[Character.Race].Agi;
+                if (Character.DominionMag < SagaLib.ConfigLoader.StartupSetting[Character.Race].Mag)
+                    Character.DominionMag = SagaLib.ConfigLoader.StartupSetting[Character.Race].Mag;
 
                 Character.WRPRanking = WRPRankingManager.Instance.GetRanking(Character);
 
@@ -9520,11 +9519,10 @@ namespace SagaMap.Network.Client {
                     }
 
                 if (Logger.defaultSql != null) {
-                    foreach (var i in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>().TranLock(DbLockType.Wait)
-                                 .Where(item => item.CharacterId == Character.CharID).ToList()) {
-                        i.Online = true;
-                        SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
-                    }
+                    SqlSugarHelper.Db.Storageable(new SagaDB.Entities.Character {
+                        CharacterId = Character.CharID,
+                        Online = true
+                    }).ExecuteCommand();
                 }
             }
         }
@@ -11213,9 +11211,9 @@ namespace SagaMap.Network.Client {
                     return -27; //憑依失敗 : 騎乗中です
             if (Character.Buff.Dead)
                 return -29; //憑依失敗: 憑依できない状態です
-            if (Character.Race == PC_RACE.DEM)
+            if (Character.Race == SagaLib.PcRace.DEM)
                 return -29; //憑依失敗 : 憑依できない状態です
-            if (targetPC.Race == PC_RACE.DEM && targetPC.Form == DEM_FORM.MACHINA_FORM)
+            if (targetPC.Race == SagaLib.PcRace.DEM && targetPC.Form == DEM_FORM.MACHINA_FORM)
                 return -31; //憑依失敗 : マシナフォームのＤＥＭキャラクターに憑依することはできません
             /*
             if (this.Character.Buff.GetReadyPossession == true || this.Character.PossessionTarget != 0)
@@ -13229,7 +13227,7 @@ namespace SagaMap.Network.Client {
                     if (Character.Pet.Ride)
                         arg.result = -32;
                 if (Character.PossessionTarget != 0 || Character.PossesionedActors.Count > 0) arg.result = -16;
-                if (Character.Race == PC_RACE.DEM) arg.result = -33;
+                if (Character.Race == SagaLib.PcRace.DEM) arg.result = -33;
             }
 
             if (GetPossessionTarget() != null && arg.result == 0) {
@@ -13723,7 +13721,7 @@ namespace SagaMap.Network.Client {
                         return;
                     }
 
-                if (Character.Race == PC_RACE.DEM && Character.Form == DEM_FORM.MACHINA_FORM) {
+                if (Character.Race == SagaLib.PcRace.DEM && Character.Form == DEM_FORM.MACHINA_FORM) {
                     var p1 = new SSMG_ITEM_GET_ERROR();
                     p1.ActorID = item.ActorID;
                     p1.ErrorID = -16;
@@ -13846,7 +13844,7 @@ namespace SagaMap.Network.Client {
                 if (Character.Skills3.ContainsKey(991)) return 0;
             }
 
-            if (!item.IsParts && Character.Race != PC_RACE.DEM) {
+            if (!item.IsParts && Character.Race != SagaLib.PcRace.DEM) {
                 if (Character.JobJoint == PC_JOB.NONE) {
                     if (Character.DualJobID != 0) {
                         var dualjobinfo = DualJobInfoFactory.Instance.items[Character.DualJobID];
@@ -13875,7 +13873,7 @@ namespace SagaMap.Network.Client {
                 }
             }
 
-            if (Character.Race == PC_RACE.DEM && Character.Form == DEM_FORM.MACHINA_FORM) //DEM的机械形态不能装备
+            if (Character.Race == SagaLib.PcRace.DEM && Character.Form == DEM_FORM.MACHINA_FORM) //DEM的机械形态不能装备
                 return -29;
             if (item.BaseData.possibleRebirth)
                 if (!Character.Rebirth || Character.Job != Character.Job3)
@@ -14592,7 +14590,7 @@ namespace SagaMap.Network.Client {
                     return;
                 }
 
-                if (Character.Race == PC_RACE.DEM && Character.Form == DEM_FORM.MACHINA_FORM) {
+                if (Character.Race == SagaLib.PcRace.DEM && Character.Form == DEM_FORM.MACHINA_FORM) {
                     var p1 = new SSMG_ITEM_CONTAINER_CHANGE();
                     p1.InventorySlot = item.Slot;
                     p1.Result = -10;

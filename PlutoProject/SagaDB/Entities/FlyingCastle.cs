@@ -14,5 +14,5 @@ public class FlyingCastle {
 
     public uint Level { get; set; }
 
-    public byte ObMode { get; set; }
+    [SugarColumn(IsNullable = true)] public byte ObMode { get; set; }
 }

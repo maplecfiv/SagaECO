@@ -1315,7 +1315,7 @@ namespace SagaScript
 
             byte x, y;
 
-            if (pc.Race == PC_RACE.EMIL &&
+            if (pc.Race == SagaLib.PcRace.EMIL &&
                 pc.Marionette == null)
             {
                 switch (Select(pc, "想去哪呢?", "", "2楼", "3楼", "4楼", "放弃"))
@@ -1409,7 +1409,7 @@ namespace SagaScript
             BitMask<Job2X_12> Job2X_12_mask = pc.CMask["Job2X_12"];
             byte x, y;
 
-            if (pc.Race == PC_RACE.EMIL &&
+            if (pc.Race == SagaLib.PcRace.EMIL &&
                 pc.Marionette == null)
             {
                 switch (Select(pc, "想去哪呢?", "", "大楼中庭", "3楼", "4楼", "放弃"))
@@ -1503,7 +1503,7 @@ namespace SagaScript
             BitMask<Job2X_12> Job2X_12_mask = pc.CMask["Job2X_12"];
             byte x, y;
 
-            if (pc.Race == PC_RACE.EMIL &&
+            if (pc.Race == SagaLib.PcRace.EMIL &&
                 pc.Marionette == null)
             {
                 switch (Select(pc, "想去哪呢?", "", "大楼中庭", "2楼", "4楼", "放弃"))
@@ -1596,7 +1596,7 @@ namespace SagaScript
         {
             byte x, y;
 
-            if (pc.Race == PC_RACE.EMIL &&
+            if (pc.Race == SagaLib.PcRace.EMIL &&
                 pc.Marionette == null)
             {
                 switch (Select(pc, "想去哪呢?", "", "大楼中庭", "2楼", "3楼", "放棄"))

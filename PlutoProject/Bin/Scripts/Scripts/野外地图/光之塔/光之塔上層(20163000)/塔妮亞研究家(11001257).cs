@@ -36,7 +36,7 @@ namespace SagaScript.M20163000
                     "$R这附近的魔物$R;" +
                     "本来住在泰达尼亚世界…$R;" +
                     "$P怎么会到这个世界来的呢？$R;");
-                if (pc.Race == PC_RACE.TITANIA)//ME.RACE = 1
+                if (pc.Race == SagaLib.PcRace.TITANIA)//ME.RACE = 1
                 {
                     Say(pc, 131, "嗯，其实您也很明白，$R;" +
                         "只是记忆被封印了…$R;" +

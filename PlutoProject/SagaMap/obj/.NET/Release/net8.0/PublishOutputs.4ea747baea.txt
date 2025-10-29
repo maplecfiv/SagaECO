@@ -566,6 +566,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/TTMobAI/熊爹 - 副本.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/TTMobAI/熊爹.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/warp.csv
+/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/doShutdown
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Log/[2025-8-5]SagaLogin.log
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Log/[2025-8-6]SagaLogin.log
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/Microsoft.Bcl.AsyncInterfaces.xml

@@ -59,7 +59,7 @@ namespace SagaDB.Treasure
                 return null;
             }
 
-            Logger.ShowDebug("Cannot find TreasureGroup:" + groupName, Logger.defaultlogger);
+            Logger.ShowDebug("Cannot find TreasureGroup:" + groupName);
             return null;
         }
     }

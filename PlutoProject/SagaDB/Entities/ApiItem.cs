@@ -6,7 +6,9 @@ namespace SagaDB.Entities;
 public class ApiItem {
     [SugarColumn(IsPrimaryKey = true)] public Guid ApiItemId { get; set; }
 
-    public uint CharacterId { get; set; }
+
+    [SugarColumn(IsPrimaryKey = true)] public uint CharacterId { get; set; }
+
     public uint ItemId { get; set; }
     public ushort Qty { get; set; }
 

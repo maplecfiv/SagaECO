@@ -882,7 +882,7 @@ namespace SagaDB.Item {
             get {
                 var slots = new List<EnumEquipSlot>();
                 if (!IsEquipt && !IsParts)
-                    Logger.ShowDebug("Cannot equip a non equipment item!", Logger.defaultlogger);
+                    Logger.ShowDebug("Cannot equip a non equipment item!");
                 switch (BaseData.itemType) {
                     //head&face
                     case ItemType.ACCESORY_HEAD:
@@ -1062,7 +1062,7 @@ namespace SagaDB.Item {
             get {
                 var slots = new List<EnumPartnerEquipSlot>();
                 if (BaseData.itemType != ItemType.UNION_WEAPON && BaseData.itemType != ItemType.UNION_COSTUME)
-                    Logger.ShowDebug("Cannot equip partner a non partner equipment item!", Logger.defaultlogger);
+                    Logger.ShowDebug("Cannot equip partner a non partner equipment item!");
                 switch (BaseData.itemType) {
                     //head&face
                     case ItemType.UNION_WEAPON:
@@ -1701,7 +1701,7 @@ namespace SagaDB.Item {
             public Dictionary<PC_GENDER, bool> possibleGender = new Dictionary<PC_GENDER, bool>();
             public Dictionary<PC_JOB, bool> possibleJob = new Dictionary<PC_JOB, bool>();
             public byte possibleLv;
-            public Dictionary<PC_RACE, bool> possibleRace = new Dictionary<PC_RACE, bool>();
+            public Dictionary<SagaLib.PcRace, bool> possibleRace = new Dictionary<SagaLib.PcRace, bool>();
             public bool possibleRebirth;
 
             public ushort possibleStr,

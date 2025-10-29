@@ -5,21 +5,16 @@ using SagaDB.Actor;
 using SagaDB.Config;
 using SagaLib;
 
-namespace SagaLogin.Packets.Map
-{
-    public class INTERN_LOGIN_REQUEST_CONFIG_ANSWER : Packet
-    {
-        public INTERN_LOGIN_REQUEST_CONFIG_ANSWER()
-        {
+namespace SagaLogin.Packets.Map {
+    public class INTERN_LOGIN_REQUEST_CONFIG_ANSWER : Packet {
+        public INTERN_LOGIN_REQUEST_CONFIG_ANSWER() {
             data = new byte[8];
             offset = 2;
             ID = 0xFFF2;
         }
 
-        public bool AuthOK
-        {
-            set
-            {
+        public bool AuthOK {
+            set {
                 if (value)
                     PutByte(1, 2);
                 else
@@ -27,10 +22,8 @@ namespace SagaLogin.Packets.Map
             }
         }
 
-        public Dictionary<PC_RACE, StartupSetting> StartupSetting
-        {
-            set
-            {
+        public Dictionary<SagaLib.PcRace, StartupSetting> StartupSetting {
+            set {
                 var ms = new MemoryStream();
 #pragma warning disable SYSLIB0011
                 var bf = new BinaryFormatter();

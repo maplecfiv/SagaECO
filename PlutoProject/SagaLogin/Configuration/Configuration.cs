@@ -14,15 +14,16 @@ namespace SagaLogin.Configuration {
 
         public Configuration() {
             var list = new Dictionary<PC_GENDER, List<StartItem>>();
-            StartItem.Add(PC_RACE.EMIL, list);
+            StartItem.Add(SagaLib.PcRace.EMIL, list);
             list = new Dictionary<PC_GENDER, List<StartItem>>();
-            StartItem.Add(PC_RACE.TITANIA, list);
+            StartItem.Add(SagaLib.PcRace.TITANIA, list);
             list = new Dictionary<PC_GENDER, List<StartItem>>();
-            StartItem.Add(PC_RACE.DOMINION, list);
+            StartItem.Add(SagaLib.PcRace.DOMINION, list);
             list = new Dictionary<PC_GENDER, List<StartItem>>();
-            StartItem.Add(PC_RACE.DEM, list);
+            StartItem.Add(SagaLib.PcRace.DEM, list);
         }
 
+        public string Host { get; set; }
         public string DBHost { get; set; }
 
         public string DBUser { get; set; }
@@ -39,11 +40,11 @@ namespace SagaLogin.Configuration {
 
         public int DBType { get; set; }
 
-        public Dictionary<PC_RACE, StartupSetting> StartupSetting { get; set; } =
-            new Dictionary<PC_RACE, StartupSetting>();
+        public Dictionary<SagaLib.PcRace, StartupSetting> StartupSetting { get; set; } =
+            new Dictionary<SagaLib.PcRace, StartupSetting>();
 
-        public Dictionary<PC_RACE, Dictionary<PC_GENDER, List<StartItem>>> StartItem { get; set; } =
-            new Dictionary<PC_RACE, Dictionary<PC_GENDER, List<StartItem>>>();
+        public Dictionary<SagaLib.PcRace, Dictionary<PC_GENDER, List<StartItem>>> StartItem { get; set; } =
+            new Dictionary<SagaLib.PcRace, Dictionary<PC_GENDER, List<StartItem>>>();
 
         public Version Version { get; set; }
 
@@ -77,6 +78,9 @@ namespace SagaLogin.Configuration {
                     if (j.GetType() != typeof(XmlElement)) continue;
                     i = (XmlElement)j;
                     switch (i.Name.ToLower()) {
+                        case "host":
+                            Host = i.InnerText;
+                            break;
                         case "dbtype":
                             DBType = int.Parse(i.InnerText);
                             break;
@@ -128,19 +132,19 @@ namespace SagaLogin.Configuration {
 
                             break;
                         case "startstatus":
-                            var race = PC_RACE.EMIL;
+                            var race = SagaLib.PcRace.EMIL;
                             switch (i.Attributes["race"].Value.ToUpper()) {
                                 case "EMIL":
-                                    race = PC_RACE.EMIL;
+                                    race = SagaLib.PcRace.EMIL;
                                     break;
                                 case "TITANIA":
-                                    race = PC_RACE.TITANIA;
+                                    race = SagaLib.PcRace.TITANIA;
                                     break;
                                 case "DOMINION":
-                                    race = PC_RACE.DOMINION;
+                                    race = SagaLib.PcRace.DOMINION;
                                     break;
                                 case "DEM":
-                                    race = PC_RACE.DEM;
+                                    race = SagaLib.PcRace.DEM;
                                     break;
                             }
 
@@ -188,16 +192,16 @@ namespace SagaLogin.Configuration {
                             var gender = PC_GENDER.FEMALE;
                             switch (i.Attributes["race"].Value.ToUpper()) {
                                 case "EMIL":
-                                    items = StartItem[PC_RACE.EMIL];
+                                    items = StartItem[SagaLib.PcRace.EMIL];
                                     break;
                                 case "TITANIA":
-                                    items = StartItem[PC_RACE.TITANIA];
+                                    items = StartItem[SagaLib.PcRace.TITANIA];
                                     break;
                                 case "DOMINION":
-                                    items = StartItem[PC_RACE.DOMINION];
+                                    items = StartItem[SagaLib.PcRace.DOMINION];
                                     break;
                                 case "DEM":
-                                    items = StartItem[PC_RACE.DEM];
+                                    items = StartItem[SagaLib.PcRace.DEM];
                                     break;
                             }
 

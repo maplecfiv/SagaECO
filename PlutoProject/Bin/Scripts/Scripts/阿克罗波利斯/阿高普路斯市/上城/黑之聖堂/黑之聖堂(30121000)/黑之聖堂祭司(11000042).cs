@@ -133,7 +133,7 @@ namespace SagaScript.M30121000
                     case 1:
                         JobBasic_08_mask.SetValue(JobBasic_08.選擇轉職為魔攻師, true);
 
-                        if (pc.Race == PC_RACE.TITANIA)
+                        if (pc.Race == SagaLib.PcRace.TITANIA)
                         {
                             if (!JobBasic_08_mask.Test(JobBasic_08.已經從闇之精靈那裡把心染為黑暗))
                             {

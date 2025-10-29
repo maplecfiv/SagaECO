@@ -15,7 +15,7 @@ namespace SagaScript
 
         public override void OnEvent(ActorPC pc)
         {
-            if (pc.Race == PC_RACE.DEM)
+            if (pc.Race == SagaLib.PcRace.DEM)
             {
                 if (pc.CStr["EPLQ"] == DateTime.Now.ToString("yyyy-MM-dd") && pc.CInt["EPMT"] == 0)
                 {

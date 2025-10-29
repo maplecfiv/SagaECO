@@ -44,8 +44,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                aChar.CharID = CharacterRepository.createCharacter(aChar, (uint)accountId);
-
+                aChar.CharID = CharacterRepository.CreateCharacter(aChar, (uint)accountId);
 
                 SqlSugarHelper.Db.Insertable<Inventory>(new Inventory {
                     CharacterId = aChar.CharID,
@@ -417,60 +416,68 @@ namespace SagaDB {
                 return;
             }
 
-            uint questid = 0;
-            uint partyid = 0;
-            uint ringid = 0;
-            uint golemid = 0;
-            uint mapid = 0;
-            byte x = 0, y = 0;
-            int count1 = 0, count2 = 0, count3 = 0;
-            var questtime = DateTime.Now;
-            var status = QuestStatus.OPEN;
-            if (aChar.Quest != null) {
-                questid = aChar.Quest.ID;
-                count1 = aChar.Quest.CurrentCount1;
-                count2 = aChar.Quest.CurrentCount2;
-                count3 = aChar.Quest.CurrentCount3;
-                questtime = aChar.Quest.EndTime;
-                status = aChar.Quest.Status;
+            try {
+                SqlSugarHelper.Db.BeginTran();
+                uint questid = 0;
+                uint partyid = 0;
+                uint ringid = 0;
+                uint golemid = 0;
+                uint mapid = 0;
+                byte x = 0, y = 0;
+                int count1 = 0, count2 = 0, count3 = 0;
+                var questtime = DateTime.Now;
+                var status = QuestStatus.OPEN;
+                if (aChar.Quest != null) {
+                    questid = aChar.Quest.ID;
+                    count1 = aChar.Quest.CurrentCount1;
+                    count2 = aChar.Quest.CurrentCount2;
+                    count3 = aChar.Quest.CurrentCount3;
+                    questtime = aChar.Quest.EndTime;
+                    status = aChar.Quest.Status;
+                }
+
+                if (aChar.Party != null)
+                    partyid = aChar.Party.ID;
+                if (aChar.Ring != null)
+                    ringid = aChar.Ring.ID;
+                if (aChar.Golem != null)
+                    golemid = aChar.Golem.ActorID;
+                if (info != null) {
+                    mapid = aChar.MapID;
+                    x = Global.PosX16to8(aChar.X, info.width);
+                    y = Global.PosY16to8(aChar.Y, info.height);
+                }
+                else {
+                    mapid = aChar.SaveMap;
+                    x = aChar.SaveX;
+                    y = aChar.SaveY;
+                }
+
+                CharacterRepository.SaveCharacter(aChar, mapid, x, y, questid, questtime, (byte)status,
+                    count1, count2, count3, partyid, ringid, golemid);
+
+                SaveVar(aChar);
+
+                SavePaper(aChar);
+                SaveFGarden(aChar);
+                //SaveFlyCastle(aChar.Ring);
+                //SaveNavi(aChar);
+                if (itemInfo)
+                    SaveItem(aChar);
+                if (fullinfo) {
+                    SaveSkill(aChar);
+                    SaveDualJobInfo(aChar, true);
+                    //SaveNPCStates(aChar);
+                }
+
+                SaveQuestInfo(aChar);
+                SaveStamps(aChar);
+                SqlSugarHelper.Db.CommitTran();
             }
-
-            if (aChar.Party != null)
-                partyid = aChar.Party.ID;
-            if (aChar.Ring != null)
-                ringid = aChar.Ring.ID;
-            if (aChar.Golem != null)
-                golemid = aChar.Golem.ActorID;
-            if (info != null) {
-                mapid = aChar.MapID;
-                x = Global.PosX16to8(aChar.X, info.width);
-                y = Global.PosY16to8(aChar.Y, info.height);
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
-            else {
-                mapid = aChar.SaveMap;
-                x = aChar.SaveX;
-                y = aChar.SaveY;
-            }
-
-            CharacterRepository.SaveCharacter(aChar, mapid, x, y, questid, questtime, (byte)status,
-                count1, count2, count3, partyid, ringid, golemid);
-
-            SaveVar(aChar);
-
-            SavePaper(aChar);
-            SaveFGarden(aChar);
-            //SaveFlyCastle(aChar.Ring);
-            //SaveNavi(aChar);
-            if (itemInfo)
-                SaveItem(aChar);
-            if (fullinfo) {
-                SaveSkill(aChar);
-                SaveDualJobInfo(aChar, true);
-                //SaveNPCStates(aChar);
-            }
-
-            SaveQuestInfo(aChar);
-            SaveStamps(aChar);
         }
 
         /*
@@ -601,7 +608,7 @@ namespace SagaDB {
                     CharID = charId,
                     Account = null,
                     Name = character.Name,
-                    Race = (PC_RACE)character.Race,
+                    Race = (SagaLib.PcRace)character.Race,
                     UsingPaperID = character.UsingPaperId,
                     PlayerTitleID = character.TitleId,
                     Gender = (PC_GENDER)character.Gender,
@@ -912,7 +919,7 @@ namespace SagaDB {
                     }).ExecuteCommand();
 
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<SettingList>().TranLock(DbLockType.Wait).ToList()) {
+                foreach (var i in SqlSugarHelper.Db.Queryable<SettingList>().TranLock(DbLockType.Error).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
 
@@ -1132,7 +1139,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
                 bool isFound = false;
-                foreach (var npcState in SqlSugarHelper.Db.Queryable<NpcStates>().TranLock(DbLockType.Wait)
+                foreach (var npcState in SqlSugarHelper.Db.Queryable<NpcStates>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == pc.CharID).Where(item => item.NpcId == npcId)
                              .ToList()) {
                     npcState.State = pc.NPCStates[npcId];
@@ -1278,7 +1285,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<Friend>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Friend>().TranLock(DbLockType.Error)
                              .Where(exp.ToExpression()).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -1330,7 +1337,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var _party in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().TranLock(DbLockType.Wait)
+                foreach (var _party in SqlSugarHelper.Db.Queryable<SagaDB.Entities.Party>().TranLock(DbLockType.Error)
                              .Where(item => item.PartyId == party.ID).ToList()) {
                     _party.Name = party.Name;
                     _party.Leader = party.Leader.CharID;
@@ -1447,7 +1454,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Error)
                              .Where(item => item.RingId == ring.ID).ToList()) {
                     _ring.Leader = ring.Leader.CharID;
                     _ring.Name = ring.Name;
@@ -1457,7 +1464,7 @@ namespace SagaDB {
                 }
 
                 if (saveMembers) {
-                    foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
+                    foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Error)
                                  .Where(item => item.RingId == ring.ID).ToList()) {
                         SqlSugarHelper.Db.Deleteable((ringMember));
                     }
@@ -1483,13 +1490,13 @@ namespace SagaDB {
                 SqlSugarHelper.Db.BeginTran();
 
 
-                foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Wait)
+                foreach (var ringMember in SqlSugarHelper.Db.Queryable<RingMember>().TranLock(DbLockType.Error)
                              .Where(item => item.RingId == ring.ID).ToList()) {
                     SqlSugarHelper.Db.Deleteable((ringMember));
                 }
 
 
-                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Error)
                              .Where(item => item.RingId == ring.ID).ToList()) {
                     SqlSugarHelper.Db.Deleteable<Entities.Ring>(_ring).ExecuteCommand();
                 }
@@ -1505,7 +1512,7 @@ namespace SagaDB {
         public void RingEmblemUpdate(Ring.Ring ring, byte[] buf) {
             try {
                 SqlSugarHelper.Db.BeginTran();
-                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                foreach (var _ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Error)
                              .Where(item => item.RingId == ring.ID).ToList()) {
                     _ring.Emblem = buf;
                     _ring.EmblemDate = DateTime.Now.ToUniversalTime();
@@ -1521,7 +1528,7 @@ namespace SagaDB {
         }
 
         public GetRingEmblemResult GetRingEmblem(uint ring_id, DateTime date) {
-            var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+            var result = SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Error)
                 .Where(item => item.RingId == ring_id).ToList();
             if (result.Count == 0) {
                 return new GetRingEmblemResult(null, false, DateTime.Now);
@@ -1592,7 +1599,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Error)
                              .Where(item => item.MailId == gift.MailID)
                              .ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
@@ -1614,7 +1621,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Mails>().TranLock(DbLockType.Error)
                              .Where(item => item.MailId == mail.MailID)
                              .ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
@@ -1638,7 +1645,7 @@ namespace SagaDB {
 
             var list = new List<Gift>();
 
-            foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>().TranLock(DbLockType.Wait)
+            foreach (var i in SqlSugarHelper.Db.Queryable<Gifts>()
                          .Where(item => item.AccountId == pc.Account.AccountID)
                          .ToList()) {
                 var post = new Gift();
@@ -1797,7 +1804,7 @@ namespace SagaDB {
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.FISHERY, new List<ActorFurniture>());
                 ring.FlyingCastle.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Error)
                              .Where(item => item.FlyingCastleId == ring.FlyingCastle.ID).ToList()) {
                     var place = (FurniturePlace)i.Place;
                     var actor = new ActorFurniture();
@@ -1826,7 +1833,7 @@ namespace SagaDB {
             Furnitures.Add(FurniturePlace.FISHERY, new List<ActorFurniture>());
             Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
 
-            foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurnitureCopy>().TranLock(DbLockType.Wait)
+            foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurnitureCopy>().TranLock(DbLockType.Error)
                          .Where(item => item.FlyingCastleId == 3).ToList()) {
                 var place = (FurniturePlace)i.Place;
                 var actor = new ActorFurniture();
@@ -1869,7 +1876,7 @@ namespace SagaDB {
                 SqlSugarHelper.Db.BeginTran();
 
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurnitureCopy>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurnitureCopy>().TranLock(DbLockType.Error)
                              .Where(item => item.FlyingCastleId == 3).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -1969,7 +1976,7 @@ namespace SagaDB {
                 //uint account = GetAccountID(pc);
                 if (ring.FlyingCastle.ID > 0) {
                     foreach (var flyingCastle in SqlSugarHelper.Db.Queryable<Entities.FlyingCastle>()
-                                 .TranLock(DbLockType.Wait)
+                                 .TranLock(DbLockType.Error)
                                  .Where(item => item.FfId == ring.FlyingCastle.ID).ToList()) {
                         flyingCastle.Level = ring.FlyingCastle.Level;
                         flyingCastle.Content = ring.FlyingCastle.Content;
@@ -2037,7 +2044,7 @@ namespace SagaDB {
                 SqlSugarHelper.Db.BeginTran();
 
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Error)
                              .Where(item => item.FlyingCastleId == 99999).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -2086,7 +2093,7 @@ namespace SagaDB {
                 ser.Furnitures.Add(FurniturePlace.FARM, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.FISHERY, new List<ActorFurniture>());
                 ser.Furnitures.Add(FurniturePlace.HOUSE, new List<ActorFurniture>());
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingCastleFurniture>().TranLock(DbLockType.Error)
                              .Where(item => item.FlyingCastleId == 99999).ToList()) {
                     var p = (byte)i.Place;
                     if (p < 5) {
@@ -2147,7 +2154,7 @@ namespace SagaDB {
                 pc.Ring.FlyingCastle.ID = id;
                 pc.Ring.FF_ID = id;
 
-                foreach (var ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Wait)
+                foreach (var ring in SqlSugarHelper.Db.Queryable<Entities.Ring>().TranLock(DbLockType.Error)
                              .Where(item => item.RingId == pc.Ring.ID).ToList()) {
                     ring.FfId = pc.Ring.FF_ID;
                     SqlSugarHelper.Db.Updateable(ring).ExecuteCommand();
@@ -2187,7 +2194,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.LevelLimit>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.LevelLimit>().TranLock(DbLockType.Error)
                              .ToList()) {
                     i.NowLevelLimit = LL.NowLevelLimit;
                     i.NextLevelLimit = LL.NextLevelLimit;
@@ -2236,7 +2243,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                var result = SqlSugarHelper.Db.Queryable<Entities.Stamp>().TranLock(DbLockType.Wait)
+                var result = SqlSugarHelper.Db.Queryable<Entities.Stamp>().TranLock(DbLockType.Error)
                     .Where(item => item.CharacterId == pc.CharID).Where(item => item.StampId == (byte)genre).ToList();
 
                 if (result.Count > 0) {
@@ -2357,7 +2364,7 @@ namespace SagaDB {
 
             try {
                 SqlSugarHelper.Db.BeginTran();
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == tamaireLending.Lender).ToList()) {
                     i.PostDue = tamaireLending.PostDue;
                     i.Comment = tamaireLending.Comment;
@@ -2380,7 +2387,7 @@ namespace SagaDB {
         public void DeleteTamaireLending(TamaireLending tamaireLending) {
             try {
                 SqlSugarHelper.Db.BeginTran();
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireLending>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == tamaireLending.Lender).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -2430,7 +2437,7 @@ namespace SagaDB {
         public void SaveTamaireRental(TamaireRental tamaireRental) {
             try {
                 SqlSugarHelper.Db.BeginTran();
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == tamaireRental.Renter).ToList()) {
                     i.RentDue = tamaireRental.RentDue;
                     i.CurrentLender = tamaireRental.CurrentLender;
@@ -2450,7 +2457,7 @@ namespace SagaDB {
         public void DeleteTamaireRental(TamaireRental tamaireRental) {
             try {
                 SqlSugarHelper.Db.BeginTran();
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.TamaireRental>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == tamaireRental.Renter).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -2487,7 +2494,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var questInfo in SqlSugarHelper.Db.Queryable<Entities.QuestInfo>().TranLock(DbLockType.Wait)
+                foreach (var questInfo in SqlSugarHelper.Db.Queryable<Entities.QuestInfo>().TranLock(DbLockType.Error)
                              .Where(item => item.CharacterId == pc.CharID).ToList()) {
                     SqlSugarHelper.Db.Deleteable(questInfo).ExecuteCommand();
                 }
@@ -2592,7 +2599,7 @@ namespace SagaDB {
                             pc.Inventory.ToBytes().Length);
                     }
 
-                    foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Wait)
+                    foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Error)
                                  .Where(item => item.CharacterId == pc.CharID).ToList()) {
                         inventory.Data = pc.Inventory.ToBytes();
                         SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
@@ -2602,7 +2609,7 @@ namespace SagaDB {
 
                 if (pc.Inventory.WareHouse != null) {
                     if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
-                        foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Wait)
+                        foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Error)
                                      .Where(item => item.AccountId == account).ToList()) {
                             warehouse.Data = pc.Inventory.WareToBytes();
 
@@ -2843,7 +2850,7 @@ namespace SagaDB {
 
                 bool isFound = false;
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.FlyingGarden>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.FlyingGarden>().TranLock(DbLockType.Error)
                              .Where(item => item.AccountId == account).ToList()) {
                     i.Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE];
                     i.Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL];
@@ -2874,7 +2881,7 @@ namespace SagaDB {
                         .FlyingGardenId;
                 }
 
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingGardenFurniture>().TranLock(DbLockType.Wait)
+                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingGardenFurniture>().TranLock(DbLockType.Error)
                              .Where(item => item.FlyingGardenId == pc.FlyingGarden.ID).ToList()) {
                     SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
                 }
@@ -2930,8 +2937,7 @@ namespace SagaDB {
         //#region 副职相关
 
         public void GetDualJobInfo(ActorPC pc) {
-            var result = SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
-                .Where(item => item.CharacterId == pc.CharID).ToList();
+            var result = DualJobRepository.GetDualJobInfo(pc.CharID);
             if (result.Count > 0) {
                 pc.PlayerDualJobList = new Dictionary<byte, PlayerDualJobInfo>();
                 foreach (Entities.DualJob item in result)
@@ -2965,44 +2971,13 @@ namespace SagaDB {
         }
 
         public void SaveDualJobInfo(ActorPC pc, bool allinfo) {
-            var dic = pc.PlayerDualJobList;
-
-
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var dualJob in SqlSugarHelper.Db.Queryable<Entities.DualJob>().TranLock(DbLockType.Wait)
-                             .Where(item => item.CharacterId == pc.CharID).ToList()) {
-                    SqlSugarHelper.Db.Deleteable(dualJob).ExecuteCommand();
-                }
+                DualJobRepository.SaveDualJobInfo(pc);
 
-                foreach (var item in dic.Keys) {
-                    SqlSugarHelper.Db.Insertable(new Entities.DualJob {
-                        CharacterId = pc.CharID,
-                        SeriesId = dic[item].DualJobId,
-                        Level = dic[item].DualJobLevel,
-                        Exp = dic[item].DualJobExp
-                    }).ExecuteCommand();
-                }
-
-                if (!allinfo) {
-                    foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
-                                 .TranLock(DbLockType.Wait)
-                                 .Where(item => item.CharacterId == pc.CharID)
-                                 .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
-                        SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
-                    }
-
-                    foreach (var item in pc.DualJobSkills) {
-                        SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
-                            CharacterId = pc.CharID,
-                            SeriesId = pc.DualJobID,
-                            SkillId = item.ID,
-                            SkillLevel = item.Level
-                        }).ExecuteCommand();
-                    }
-
-                    ;
+                if (allinfo) {
+                    DualJobSkillRepository.SaveDualJobSkillInfo(pc);
                 }
 
                 SqlSugarHelper.Db.CommitTran();
@@ -3015,9 +2990,8 @@ namespace SagaDB {
 
         public void GetDualJobSkill(ActorPC pc) {
             pc.DualJobSkills = new List<Skill.Skill>();
-            foreach (Entities.DualJobSkill item in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
-                         .Where(item => item.CharacterId == pc.CharID)
-                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
+
+            foreach (Entities.DualJobSkill item in DualJobSkillRepository.GetDualJobSkill(pc)) {
                 var id = item.SkillId;
                 var level = item.SkillLevel;
                 var s = SkillFactory.Instance.GetSkill(id, level);
@@ -3028,20 +3002,16 @@ namespace SagaDB {
         }
 
         public void SaveDualJobSkill(ActorPC pc) {
-            foreach (var dualJobSkill in SqlSugarHelper.Db.Queryable<Entities.DualJobSkill>()
-                         .TranLock(DbLockType.Wait)
-                         .Where(item => item.CharacterId == pc.CharID)
-                         .Where(item => item.SeriesId == pc.DualJobID).ToList()) {
-                SqlSugarHelper.Db.Deleteable(dualJobSkill).ExecuteCommand();
-            }
+            try {
+                SqlSugarHelper.Db.BeginTran();
 
-            foreach (var item in pc.DualJobSkills) {
-                SqlSugarHelper.Db.Insertable(new Entities.DualJobSkill {
-                    CharacterId = pc.CharID,
-                    SeriesId = pc.DualJobID,
-                    SkillId = item.ID,
-                    SkillLevel = item.Level
-                }).ExecuteCommand();
+                DualJobSkillRepository.SaveDualJobSkill(pc);
+
+                SqlSugarHelper.Db.CommitTran();
+            }
+            catch (Exception e) {
+                SqlSugarHelper.Db.RollbackTran();
+                SagaLib.Logger.ShowError(e);
             }
         }
     }

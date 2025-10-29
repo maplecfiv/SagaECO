@@ -355,12 +355,6 @@ namespace SagaLogin.Network.Client {
 
         public void OnLogin(CSMG_LOGIN p) {
             p.GetContent();
-            if (MapServerManager.Instance.MapServers.Count == 0) {
-                var p1 = new SSMG_LOGIN_ACK();
-                p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_IPBLOCK;
-                NetIo.SendPacket(p1);
-                return;
-            }
 
             if (LoginServer.accountDB.CheckPassword(p.UserName, p.Password, frontWord, backWord)) {
                 var tmp = LoginServer.accountDB.GetUser(p.UserName);
@@ -368,6 +362,7 @@ namespace SagaLogin.Network.Client {
                 if (LoginClientManager.Instance.FindClientAccount(p.UserName) != null && tmp.GMLevel == 0) {
                     LoginClientManager.Instance.FindClientAccount(p.UserName).NetIo.Disconnect();
                     var p2 = new SSMG_LOGIN_ACK();
+                    SagaLib.Logger.ShowWarning($"reject already login {p.UserName}");
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_ALREADY;
                     NetIo.SendPacket(p2);
                     return;
@@ -375,12 +370,14 @@ namespace SagaLogin.Network.Client {
 
                 account = tmp;
                 if (account.Banned) {
+                    SagaLib.Logger.ShowWarning($"reject banned {p.UserName}");
                     var p2 = new SSMG_LOGIN_ACK();
                     p2.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BFALOCK;
                     NetIo.SendPacket(p2);
                     return;
                 }
 
+                SagaLib.Logger.ShowWarning($"send login success ack");
                 var p1 = new SSMG_LOGIN_ACK();
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.OK;
                 NetIo.SendPacket(p1);
@@ -424,6 +421,7 @@ namespace SagaLogin.Network.Client {
             }
             else {
                 var p1 = new SSMG_LOGIN_ACK();
+                SagaLib.Logger.ShowWarning($"reject incorrect pass {p.UserName}");
                 p1.LoginResult = SSMG_LOGIN_ACK.Result.GAME_SMSG_LOGIN_ERR_BADPASS;
                 NetIo.SendPacket(p1);
             }
@@ -442,19 +440,19 @@ namespace SagaLogin.Network.Client {
         }
 
         private bool checkHairColor(CSMG_CHAR_CREATE p) {
-            if (p.Race == PC_RACE.DOMINION) {
+            if (p.Race == SagaLib.PcRace.DOMINION) {
                 if (p.HairColor >= 70 && p.HairColor <= 72)
                     return true;
                 return false;
             }
 
-            if (p.Race == PC_RACE.EMIL) {
+            if (p.Race == SagaLib.PcRace.EMIL) {
                 if (p.HairColor >= 50 && p.HairColor <= 52)
                     return true;
                 return false;
             }
 
-            if (p.Race == PC_RACE.TITANIA) {
+            if (p.Race == SagaLib.PcRace.TITANIA) {
                 if (p.HairColor == 7 || p.HairColor == 60 || p.HairColor == 61 || p.HairColor == 62)
                     return true;
                 return false;
@@ -466,7 +464,7 @@ namespace SagaLogin.Network.Client {
         public void OnCharCreate(CSMG_CHAR_CREATE p) {
             var p1 = new SSMG_CHAR_CREATE_ACK();
 
-            if (p.Race != PC_RACE.DEM)
+            if (p.Race != SagaLib.PcRace.DEM)
                 if (!checkHairColor(p) || !checkHairStyle(p)) {
                     account.Banned = true;
                     NetIo.Disconnect();
@@ -501,10 +499,10 @@ namespace SagaLogin.Network.Client {
                     pc.JobLevel2X = 1;
                     pc.QuestRemaining = 3;
                     pc.EP = 100;
-                    pc.MapID = Configuration.Configuration.Instance.StartupSetting[pc.Race].StartMap;
+                    pc.MapID = SagaLib.ConfigLoader.StartupSetting[pc.Race].StartMap;
                     //MapInfo info = MapInfoFactory.Instance.MapInfo[pc.MapID];
-                    pc.X2 = Configuration.Configuration.Instance.StartupSetting[pc.Race].X;
-                    pc.Y2 = Configuration.Configuration.Instance.StartupSetting[pc.Race].Y;
+                    pc.X2 = SagaLib.ConfigLoader.StartupSetting[pc.Race].X;
+                    pc.Y2 = SagaLib.ConfigLoader.StartupSetting[pc.Race].Y;
 
                     pc.Dir = 2;
                     pc.HP = 120;
@@ -514,12 +512,12 @@ namespace SagaLogin.Network.Client {
                     pc.SP = 100;
                     pc.MaxSP = 100;
 
-                    pc.Str = Configuration.Configuration.Instance.StartupSetting[pc.Race].Str;
-                    pc.Dex = Configuration.Configuration.Instance.StartupSetting[pc.Race].Dex;
-                    pc.Int = Configuration.Configuration.Instance.StartupSetting[pc.Race].Int;
-                    pc.Vit = Configuration.Configuration.Instance.StartupSetting[pc.Race].Vit;
-                    pc.Agi = Configuration.Configuration.Instance.StartupSetting[pc.Race].Agi;
-                    pc.Mag = Configuration.Configuration.Instance.StartupSetting[pc.Race].Mag;
+                    pc.Str = SagaLib.ConfigLoader.StartupSetting[pc.Race].Str;
+                    pc.Dex = SagaLib.ConfigLoader.StartupSetting[pc.Race].Dex;
+                    pc.Int = SagaLib.ConfigLoader.StartupSetting[pc.Race].Int;
+                    pc.Vit = SagaLib.ConfigLoader.StartupSetting[pc.Race].Vit;
+                    pc.Agi = SagaLib.ConfigLoader.StartupSetting[pc.Race].Agi;
+                    pc.Mag = SagaLib.ConfigLoader.StartupSetting[pc.Race].Mag;
                     pc.SkillPoint = 3;
                     pc.StatsPoint = 2;
                     pc.Gold = 0;
@@ -562,7 +560,11 @@ namespace SagaLogin.Network.Client {
                 where c.Slot == p.Slot
                 select c;
             var pc = chr.First();
-            if (account.DeletePassword.ToLower() == p.DeletePassword.ToLower()) {
+            if (pc == null) {
+                SagaLib.Logger.ShowError($"no character match slot {p.Slot}");
+                p1.DeleteResult = SSMG_CHAR_DELETE_ACK.Result.WRONG_DELETE_PASSWORD;
+            }
+            else if (account.DeletePassword.ToLower() == p.DeletePassword.ToLower()) {
                 LoginServer.charDB.DeleteChar(pc);
                 account.Characters.Remove(pc);
                 p1.DeleteResult = SSMG_CHAR_DELETE_ACK.Result.OK;
@@ -582,6 +584,10 @@ namespace SagaLogin.Network.Client {
                 where c.Slot == p.Slot
                 select c;
             var pc = chr.First();
+            if (pc == null) {
+                SagaLib.Logger.ShowError($"no character match slot {p.Slot}");
+            }
+
             selectedChar = pc;
             selectedChar.Account = account;
             p1.MapID = pc.MapID;
@@ -591,25 +597,37 @@ namespace SagaLogin.Network.Client {
         public void OnRequestMapServer(CSMG_REQUEST_MAP_SERVER p) {
             var p1 = new SSMG_SEND_TO_MAP_SERVER();
 
-            if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID)) {
-                var server = MapServerManager.Instance.MapServers[selectedChar.MapID];
+            var map = (selectedChar != null && selectedChar.MapID.ToString().Length != 0)
+                ? selectedChar.MapID.ToString()
+                : "PORTAL";
+
+            var matchedServer = SqlSugarHelper.Db.Queryable<SagaDB.Entities.Server>()
+                .Where(item => item.Type == map).First();
+
+            if (matchedServer != null) {
                 p1.ServerID = 1;
-                p1.IP = server.IP;
-                p1.Port = server.port;
+                p1.IP = matchedServer.ServerIp;
+                p1.Port = matchedServer.Port;
+                Logger.ShowInfo(
+                    $"Sending character to map server {matchedServer.ServerIp}:{matchedServer.Port} registered for mapID: {map}");
             }
             else {
-                if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID / 1000 * 1000)) {
-                    var server = MapServerManager.Instance.MapServers[selectedChar.MapID / 1000 * 1000];
-                    p1.ServerID = 1;
-                    p1.IP = server.IP;
-                    p1.Port = server.port;
-                }
-                else {
-                    Logger.GetLogger().Warning("No map server registered for mapID:" + selectedChar.MapID);
-                    p1.ServerID = 255;
-                    p1.IP = "127.0.0.001";
-                    p1.Port = 10000;
-                }
+                Logger.ShowWarning($"No map server registered for mapID: {map}");
+                p1.ServerID = 255;
+                p1.IP = Configuration.Configuration.Instance.Host;
+                p1.Port = Configuration.Configuration.Instance.Port;
+                // if (MapServerManager.Instance.MapServers.ContainsKey(selectedChar.MapID / 1000 * 1000)) {
+                //     var server = MapServerManager.Instance.MapServers[selectedChar.MapID / 1000 * 1000];
+                //     p1.ServerID = 1;
+                //     p1.IP = server.IP;
+                //     p1.Port = server.port;
+                // }
+                // else {
+                //     Logger.GetLogger().Warning("No map server registered for mapID:" + selectedChar.MapID);
+                //     p1.ServerID = 255;
+                //     p1.IP = "172.16.160.1";
+                //     p1.Port = 10000;
+                // }
             }
 
             NetIo.SendPacket(p1);
@@ -715,24 +733,17 @@ namespace SagaLogin.Network.Client {
 
         public override void OnDisconnect() {
             if (currentStatus != CharStatus.OFFLINE) {
-                if (IsMapServer) {
-                    Logger.GetLogger().Warning("A map server has just disconnected...");
-                    foreach (var i in server.HostedMaps)
-                        if (MapServerManager.Instance.MapServers.ContainsKey(i))
-                            MapServerManager.Instance.MapServers.Remove(i);
+                currentStatus = CharStatus.OFFLINE;
+                currentMap = 0;
+                try {
+                    SendStatusToFriends();
                 }
-                else {
-                    currentStatus = CharStatus.OFFLINE;
-                    currentMap = 0;
-                    try {
-                        SendStatusToFriends();
-                    }
-                    catch (Exception ex) {
-                        Logger.ShowError(ex);
-                    }
+                catch (Exception ex) {
+                    Logger.ShowError(ex);
+                }
 
-                    if (account != null)
-                        Logger.GetLogger().Information(account.Name + " logged out.");
+                if (account != null) {
+                    Logger.GetLogger().Information(account.Name + " logged out.");
                 }
             }
 
@@ -927,7 +938,7 @@ namespace SagaLogin.Network.Client {
             Configuration.Configuration.Instance.Version = p.Version;
             var p1 = new INTERN_LOGIN_REQUEST_CONFIG_ANSWER();
             p1.AuthOK = server.Password == Configuration.Configuration.Instance.Password;
-            p1.StartupSetting = Configuration.Configuration.Instance.StartupSetting;
+            p1.StartupSetting = SagaLib.ConfigLoader.StartupSetting;
             NetIo.SendPacket(p1);
 
             Logger.GetLogger().Information(string.Format("Mapserver:{0}:{1} is requesting configuration...", server.IP,
@@ -935,42 +946,42 @@ namespace SagaLogin.Network.Client {
         }
 
         public void OnInternMapRegister(INTERN_LOGIN_REGISTER p) {
-            var server = p.MapServer;
-            IsMapServer = true;
-            if (this.server == null) {
-                this.server = server;
-                if (server.Password != Configuration.Configuration.Instance.Password) {
-                    Logger.GetLogger().Warning(string.Format(
-                        "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
-                        server.Password));
-                    return;
-                }
-            }
-            else {
-                if (server.Password != Configuration.Configuration.Instance.Password) {
-                    Logger.GetLogger().Warning(string.Format(
-                        "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
-                        server.Password));
-                    return;
-                }
-
-                foreach (var i in server.HostedMaps)
-                    if (!this.server.HostedMaps.Contains(i))
-                        this.server.HostedMaps.Add(i);
-            }
-
-            var count = 0;
-            foreach (var i in server.HostedMaps)
-                if (!MapServerManager.Instance.MapServers.ContainsKey(i)) {
-                    MapServerManager.Instance.MapServers.Add(i, this.server);
-                    count++;
-                }
-                else {
-                    //Logger.getLogger().Warning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
-                }
-
-            Logger.GetLogger().Information(
-                string.Format("{0} maps registered for MapServer:{1}:{2}...", count, server.IP, server.port));
+            // var server = p.MapServer;
+            // IsMapServer = true;
+            // if (this.server == null) {
+            //     this.server = server;
+            //     if (server.Password != Configuration.Configuration.Instance.Password) {
+            //         Logger.GetLogger().Warning(string.Format(
+            //             "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
+            //             server.Password));
+            //         return;
+            //     }
+            // }
+            // else {
+            //     if (server.Password != Configuration.Configuration.Instance.Password) {
+            //         Logger.GetLogger().Warning(string.Format(
+            //             "Mapserver:{0}:{1} is trying to register maps with wrong password:{2}", server.IP, server.port,
+            //             server.Password));
+            //         return;
+            //     }
+            //
+            //     foreach (var i in server.HostedMaps)
+            //         if (!this.server.HostedMaps.Contains(i))
+            //             this.server.HostedMaps.Add(i);
+            // }
+            //
+            // var count = 0;
+            // foreach (var i in server.HostedMaps)
+            //     if (!MapServerManager.Instance.MapServers.ContainsKey(i)) {
+            //         MapServerManager.Instance.MapServers.Add(i, this.server);
+            //         count++;
+            //     }
+            //     else {
+            //         //Logger.getLogger().Warning(string.Format("MapID:{0} was already hosted by Mapserver:{1}:{2}, skiping...", i, oldserver.IP, oldserver.port));
+            //     }
+            //
+            // Logger.GetLogger().Information(
+            //     string.Format("{0} maps registered for MapServer:{1}:{2}...", count, server.IP, server.port));
         }
     }
 }

@@ -4532,7 +4532,7 @@ namespace SagaMap.Scripting {
         /// </summary>
         /// <param name="pc">玩家</param>
         protected void DEMCL(ActorPC pc) {
-            if (pc.Race != PC_RACE.DEM)
+            if (pc.Race != SagaLib.PcRace.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
             var p = new SSMG_DEM_COST_LIMIT();
@@ -4554,7 +4554,7 @@ namespace SagaMap.Scripting {
         /// </summary>
         /// <param name="pc">玩家</param>
         protected void DEMParts(ActorPC pc) {
-            if (pc.Race != PC_RACE.DEM)
+            if (pc.Race != SagaLib.PcRace.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
             var p = new SSMG_DEM_PARTS();
@@ -4575,7 +4575,7 @@ namespace SagaMap.Scripting {
         /// </summary>
         /// <param name="pc">玩家</param>
         protected void DEMIC(ActorPC pc) {
-            if (pc.Race != PC_RACE.DEM)
+            if (pc.Race != SagaLib.PcRace.DEM)
                 return;
             var client = MapClient.FromActorPC(pc);
             client.demic = true;
@@ -4913,7 +4913,7 @@ namespace SagaMap.Scripting {
             lending.Baselv = pc.Level;
             lending.MaxLendings = 2;
 
-            if (pc.Race == PC_RACE.DEM)
+            if (pc.Race == SagaLib.PcRace.DEM)
                 lending.JobType = 0x04;
             switch (pc.JobType) {
                 case JobType.FIGHTER:
@@ -5242,7 +5242,7 @@ namespace SagaMap.Scripting {
                 where q.GroupID == groupID && ((lv >= q.MinLevel && lv <= q.MaxLevel) || q.MinLevel == 255)
                                            && (pc.Job == q.Job || q.Job == PC_JOB.NONE)
                                            && (pc.JobType == q.JobType || q.JobType == JobType.NOVICE)
-                                           && (pc.Race == q.Race || q.Race == PC_RACE.NONE)
+                                           && (pc.Race == q.Race || q.Race == SagaLib.PcRace.NONE)
                                            && (pc.Gender == q.Gender || q.Gender == PC_GENDER.NONE)
                 select q;
             var list = quests.ToList();

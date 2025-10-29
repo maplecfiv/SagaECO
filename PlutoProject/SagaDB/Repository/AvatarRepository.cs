@@ -14,7 +14,7 @@ public class AvatarRepository {
         try {
             SqlSugarHelper.Db.BeginTran();
 
-            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().TranLock(DbLockType.Wait)
+            var avatars = SqlSugarHelper.Db.Queryable<Avatar>().TranLock(DbLockType.Error)
                 .Where(item => item.AccountId == accountId)
                 .ToList();
 

@@ -89,7 +89,7 @@ namespace SagaLib {
                     if (span.TotalSeconds > 10 && !NoCheckDeadLock && !Debugger.IsAttached) {
                         Logger.ShowError("Deadlock detected");
                         Logger.ShowError("Automatically unlocking....");
-                        Logger.ShowDebug(_blockdetail, Logger.defaultlogger);
+                        Logger.ShowDebug(_blockdetail);
                         //#if Debug
                         Logger.ShowError("Call Stack Before Entered Critical Area:");
                         try {
@@ -263,9 +263,7 @@ namespace SagaLib {
             // Global.clientMananger.waitressHasFinished.Set();
             var sec = (DateTime.Now - _timestamp).Seconds;
             if (sec >= 1) {
-                Logger.ShowDebug(
-                    string.Format("Thread({0}) used unnormal time till unlock({1} sec)", blocker.Name, sec),
-                    Logger.defaultlogger);
+                Logger.ShowDebug($"Thread({blocker.Name}) used unnormal time till unlock({sec} sec)");
             }
 
             _enteredcriarea = false;

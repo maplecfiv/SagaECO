@@ -181,7 +181,7 @@ namespace SagaDB.FictitiousActors {
                                         pc.Name = i2.InnerText;
                                         break;
                                     case "race":
-                                        pc.Race = (PC_RACE)Enum.Parse(typeof(PC_RACE), i2.InnerText);
+                                        pc.Race = (SagaLib.PcRace)Enum.Parse(typeof(SagaLib.PcRace), i2.InnerText);
                                         break;
                                     case "gender":
                                         pc.Gender = (PC_GENDER)Enum.Parse(typeof(PC_GENDER), i2.InnerText);

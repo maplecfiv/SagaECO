@@ -3,38 +3,30 @@ using System.Xml;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaDB.Quests
-{
-    public class QuestFactory : Factory<QuestFactory, QuestInfo>
-    {
-        public QuestFactory()
-        {
+namespace SagaDB.Quests {
+    public class QuestFactory : Factory<QuestFactory, QuestInfo> {
+        public QuestFactory() {
             loadingTab = "Loading Quest database";
             loadedTab = " quests loaded.";
             databaseName = "quest";
             FactoryType = FactoryType.XML;
         }
 
-        protected override uint GetKey(QuestInfo item)
-        {
+        protected override uint GetKey(QuestInfo item) {
             return item.ID;
         }
 
-        protected override void ParseCSV(QuestInfo item, string[] paras)
-        {
+        protected override void ParseCSV(QuestInfo item, string[] paras) {
             throw new NotImplementedException();
         }
 
-        protected override void ParseXML(XmlElement root, XmlElement current, QuestInfo item)
-        {
-            switch (root.Name.ToLower())
-            {
+        protected override void ParseXML(XmlElement root, XmlElement current, QuestInfo item) {
+            switch (root.Name.ToLower()) {
                 case "questdb":
                     item.GroupID = uint.Parse(root.Attributes[0].InnerText);
                     break;
                 case "quest":
-                    switch (current.Name.ToLower())
-                    {
+                    switch (current.Name.ToLower()) {
                         case "id":
                             item.ID = uint.Parse(current.InnerText);
                             break;
@@ -72,7 +64,7 @@ namespace SagaDB.Quests
                             item.Job = (PC_JOB)Enum.Parse(typeof(PC_JOB), current.InnerText);
                             break;
                         case "race":
-                            item.Race = (PC_RACE)Enum.Parse(typeof(PC_RACE), current.InnerText);
+                            item.Race = (SagaLib.PcRace)Enum.Parse(typeof(SagaLib.PcRace), current.InnerText);
                             break;
                         case "gender":
                             item.Gender = (PC_GENDER)Enum.Parse(typeof(PC_GENDER), current.InnerText);

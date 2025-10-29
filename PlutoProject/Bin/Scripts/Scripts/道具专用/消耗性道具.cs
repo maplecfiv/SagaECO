@@ -126,7 +126,7 @@ namespace SagaScript
             //ステータスリセット(洗屬性點)
             Init(10057000, delegate(ActorPC pc)
             {
-                if (pc.Race == PC_RACE.DEM)
+                if (pc.Race == SagaLib.PcRace.DEM)
                 {
                     return;
                 }
@@ -150,7 +150,7 @@ namespace SagaScript
             Init(10057001, delegate(ActorPC pc)
             {
 
-                if (pc.Race == PC_RACE.DEM)
+                if (pc.Race == SagaLib.PcRace.DEM)
                 {
                     return;
                 }

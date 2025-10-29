@@ -824,7 +824,7 @@ namespace SagaMap.Skill {
         public bool CheckDEMRightEquip(Actor sActor, ItemType type) {
             if (sActor.type == ActorType.PC) {
                 var pc = (ActorPC)sActor;
-                if (pc.Race == PC_RACE.DEM) {
+                if (pc.Race == SagaLib.PcRace.DEM) {
                     var EQItems = pc.Inventory.GetContainer(ContainerType.RIGHT_HAND2);
                     if (EQItems.Count > 0)
                         if (EQItems[0].BaseData.itemType == type)

@@ -1038,12 +1038,12 @@ namespace SagaMap.PC {
             joblist.Add(PC_JOB.FORCEMASTER, 0);
             joblist.Add(PC_JOB.CARDINAL, 0);
             joblist.Add(PC_JOB.NOVICE, 0);
-            var racelist = new Dictionary<PC_RACE, ushort>();
-            racelist.Add(PC_RACE.EMIL, 0);
-            racelist.Add(PC_RACE.TITANIA, 0);
-            racelist.Add(PC_RACE.DOMINION, 0);
-            racelist.Add(PC_RACE.DEM, 0);
-            racelist.Add(PC_RACE.NONE, 0);
+            var racelist = new Dictionary<SagaLib.PcRace, ushort>();
+            racelist.Add(SagaLib.PcRace.EMIL, 0);
+            racelist.Add(SagaLib.PcRace.TITANIA, 0);
+            racelist.Add(SagaLib.PcRace.DOMINION, 0);
+            racelist.Add(SagaLib.PcRace.DEM, 0);
+            racelist.Add(SagaLib.PcRace.NONE, 0);
 
             if (pc.Party != null)
                 foreach (var j in pc.Party.Members.Values) {
@@ -1103,8 +1103,8 @@ namespace SagaMap.PC {
                                     break;
                                 case 1901:
                                 case 1902:
-                                    if (racelist[PC_RACE.EMIL] > 0 && racelist[PC_RACE.TITANIA] > 0 &&
-                                        racelist[PC_RACE.DOMINION] > 0) RAstate = true;
+                                    if (racelist[SagaLib.PcRace.EMIL] > 0 && racelist[SagaLib.PcRace.TITANIA] > 0 &&
+                                        racelist[SagaLib.PcRace.DOMINION] > 0) RAstate = true;
                                     break;
                             }
                     }
@@ -1766,13 +1766,13 @@ namespace SagaMap.PC {
                 pc.Inventory.MaxPayload[ContainerType.BODY] += 1000;
         }
 
-        private float PayLoadRaceFactor(PC_RACE race) {
+        private float PayLoadRaceFactor(SagaLib.PcRace race) {
             switch (race) {
-                case PC_RACE.EMIL:
+                case SagaLib.PcRace.EMIL:
                     return 1.3f;
-                case PC_RACE.TITANIA:
+                case SagaLib.PcRace.TITANIA:
                     return 0.9f;
-                case PC_RACE.DOMINION:
+                case SagaLib.PcRace.DOMINION:
                     return 1.1f;
                 default:
                     return 1;

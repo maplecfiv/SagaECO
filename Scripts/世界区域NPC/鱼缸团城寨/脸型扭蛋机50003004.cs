@@ -60,15 +60,15 @@ namespace SagaScript.FF
                             if(pc.Gold > 10000)
                             {
                                 pc.Gold -= 10000;
-                                if(pc.Race == PC_RACE.EMIL)
+                                if(pc.Race == SagaLib.PcRace.EMIL)
                                     pc.TailStyle = (byte)Global.Random.Next(1, 3);
-                                if(pc.Race == PC_RACE.TITANIA)
+                                if(pc.Race == SagaLib.PcRace.TITANIA)
                                 {
                                     pc.TailStyle = (byte)Global.Random.Next(31, 32);
                                     pc.WingStyle = (byte)Global.Random.Next(35, 39);
                                     pc.WingColor = (byte)Global.Random.Next(45, 55);
                                 }
-                                if(pc.Race == PC_RACE.DOMINION)
+                                if(pc.Race == SagaLib.PcRace.DOMINION)
                                 {
                                     pc.TailStyle = (byte)Global.Random.Next(61, 63);
                                     pc.WingStyle = (byte)Global.Random.Next(65, 69);

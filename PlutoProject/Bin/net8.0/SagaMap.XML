@@ -530,11 +530,6 @@
             </summary>
             <param name="type">1，清空变量，2，发送结束封包，3，两个都执行</param>
         </member>
-        <member name="F:SagaMap.Network.LoginServer.LoginSession.state">
-            <summary>
-                The state of this session. Changes from NOT_IDENTIFIED to IDENTIFIED or REJECTED.
-            </summary>
-        </member>
         <member name="M:SagaMap.ODWar.ODWarManager.CanApply(System.UInt32)">
             <summary>
                 是否可以申请城市攻防战

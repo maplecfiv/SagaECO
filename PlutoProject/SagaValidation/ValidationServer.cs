@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using SagaLib;
 using SagaDB;
 using SagaValidation.Manager;
@@ -13,25 +14,26 @@ namespace SagaValidation {
 
         public static AccountDB accountDB;
 
-        // public static bool StartDatabase() {
-        //     try {
-        //         switch (Configuration.Instance.DBType) {
-        //             case 0:
-        //                 charDB = new MySqlActorDb();
-        //                 accountDB = new MySQLAccountDB(Configuration.Instance.DBHost, Configuration.Instance.DBPort,
-        //                     Configuration.Instance.DBName, Configuration.Instance.DBUser,
-        //                     Configuration.Instance.DBPass);
-        //                 accountDB.Connect();
-        //                 return true;
-        //             default:
-        //                 return false;
-        //         }
-        //     }
-        //     catch (Exception exception) {
-        //         Logger.ShowError(exception);
-        //         return false;
-        //     }
-        // }
+        public static bool StartDatabase() {
+            //     try {
+            //         switch (Configuration.Instance.DBType) {
+            //             case 0:
+            charDB = new MySqlActorDb();
+            accountDB = new MySQLAccountDB( /*Configuration.Instance.DBHost, Configuration.Instance.DBPort,
+                Configuration.Instance.DBName, Configuration.Instance.DBUser,
+                Configuration.Instance.DBPass*/);
+            //                 accountDB.Connect();
+            return true;
+            //             default:
+            //                 return false;
+            //         }
+            //     }
+            //     catch (Exception exception) {
+            //         Logger.ShowError(exception);
+            //         return false;
+            //     }
+        }
+
 
         static void Main(string[] args) {
             //Console.ForegroundColor = ConsoleColor.Yellow;
@@ -64,6 +66,7 @@ namespace SagaValidation {
                 $"{ConfigLoader.LoadConfigPath()}/SagaValidation.xml");
             //null.LogLevel = (Logger.LogContent)Configuration.Instance.LogLevel;
 
+            StartDatabase();
             // if (!StartDatabase()) {
             //     Logger.ShowError("cannot connect to dbserver", null);
             //     Logger.ShowError("Shutting down in 20sec.", null);
@@ -86,13 +89,13 @@ namespace SagaValidation {
 
             Logger.GetLogger().Information("Accepting clients.");
 
-            while (true) {
+            while (!ConfigLoader.ShouldShutdown()) {
                 // keep the connections to the database servers alive
                 // EnsureAccountDB();
                 // let new clients (max 10) connect
 
                 ValidationClientManager.Instance.NetworkLoop(10);
-                System.Threading.Thread.Sleep(1);
+                System.Threading.Thread.Sleep(1000);
             }
         }
 

@@ -16,6 +16,10 @@ namespace SagaLib {
         byte[] aesKey;
         Rijndael aes;
 
+        public static string HashPassword(string plain) {
+            return Convert.ToHexString(new SHA1CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(plain)));
+        }
+
         public Encryption() {
             aes = Rijndael.Create();
             aes.Mode = CipherMode.ECB;

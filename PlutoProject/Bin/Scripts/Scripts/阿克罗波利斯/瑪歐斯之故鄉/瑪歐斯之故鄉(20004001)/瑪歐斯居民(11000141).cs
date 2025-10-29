@@ -24,7 +24,7 @@ namespace SagaScript.M20004001
                     "是鱼人打招呼的方式哦$R;");
             Say(pc, 11000141, 131, "哦，$R;" +
                 "人类！$R;");
-            if (pc.Race == PC_RACE.TITANIA)
+            if (pc.Race == SagaLib.PcRace.TITANIA)
             {
                 Say(pc, 11000141, 131, "什么？不是人类？$R;" +
                     "泰达尼亚种族？$R;" +
@@ -32,7 +32,7 @@ namespace SagaScript.M20004001
                     "是泰达尼亚啊！！$R;");
                 return;
             }
-            if (pc.Race == PC_RACE.DOMINION)
+            if (pc.Race == SagaLib.PcRace.DOMINION)
             {
                 Say(pc, 11000141, 131, "什么？不是人类？$R;" +
                     "多米尼翁种族？$R;" +

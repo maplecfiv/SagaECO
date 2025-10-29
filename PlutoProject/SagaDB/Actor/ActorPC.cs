@@ -9,38 +9,32 @@ using SagaDB.Tamaire;
 using SagaLib;
 using SqlSugar;
 
-namespace SagaDB.Actor
-{
+namespace SagaDB.Actor {
     [Serializable]
 
     //#region 商人商店部分..
-    public class PlayerShopItem
-    {
+    public class PlayerShopItem {
         private ushort count;
         private uint inventoryID;
         private uint itemID;
         private ulong price;
 
-        public uint InventoryID
-        {
+        public uint InventoryID {
             get => inventoryID;
             set => inventoryID = value;
         }
 
-        public uint ItemID
-        {
+        public uint ItemID {
             get => itemID;
             set => itemID = value;
         }
 
-        public ushort Count
-        {
+        public ushort Count {
             get => count;
             set => count = value;
         }
 
-        public ulong Price
-        {
+        public ulong Price {
             get => price;
             set => price = value;
         }
@@ -50,8 +44,7 @@ namespace SagaDB.Actor
 
     //#region 幻化外观部分..
 
-    public class Appearance
-    {
+    public class Appearance {
         //null时隐藏（设置为0），不存在时跳过
 
         //其他都是0时不变
@@ -61,7 +54,7 @@ namespace SagaDB.Actor
 
         //-1时不改变
 
-        public PC_RACE Race { get; set; } = PC_RACE.NONE;
+        public SagaLib.PcRace Race { get; set; } = SagaLib.PcRace.NONE;
 
         public PC_GENDER Gender { get; set; } = PC_GENDER.NONE;
 
@@ -85,10 +78,9 @@ namespace SagaDB.Actor
 
         public Dictionary<EnumEquipSlot, Item.Item> Equips { get; set; } = new Dictionary<EnumEquipSlot, Item.Item>();
 
-        public bool Illusion()
-        {
+        public bool Illusion() {
             var result = true;
-            result &= Race == PC_RACE.NONE && Gender == PC_GENDER.NONE && Form == DEM_FORM.NONE;
+            result &= Race == SagaLib.PcRace.NONE && Gender == PC_GENDER.NONE && Form == DEM_FORM.NONE;
             result &= TailStyle == byte.MaxValue && WingStyle == byte.MaxValue && WingColor == byte.MaxValue;
             result &= HairStyle == 0 && HairColor == 0 && Wig == 0 && Face == 0;
             result &= MarionettePictID == 0;
@@ -99,8 +91,7 @@ namespace SagaDB.Actor
 
     //#endregion
 
-    public class DualJob : PlayerDualJobInfo
-    {
+    public class DualJob : PlayerDualJobInfo {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public string RecordId { get; set; }
 
@@ -111,22 +102,19 @@ namespace SagaDB.Actor
     ///     副职基本信息
     /// </summary>
     [Serializable]
-    public class PlayerDualJobInfo
-    {
+    public class PlayerDualJobInfo {
         public ulong DualJobExp { get; set; } = 0;
         public byte DualJobId { get; set; } = 0;
         public byte DualJobLevel { get; set; } = 0;
     }
 
-    public enum PlayerUsingShopType
-    {
+    public enum PlayerUsingShopType {
         None,
         GShop,
         NCShop
     }
 
-    public class ActorPC : Actor, IStats
-    {
+    public class ActorPC : Actor, IStats {
         //Iris system
 
         /// <summary>
@@ -337,8 +325,7 @@ namespace SagaDB.Actor
 
         private int wrp;
 
-        public ActorPC()
-        {
+        public ActorPC() {
             type = ActorType.PC;
             sightRange = Global.MAX_SIGHT_RANGE;
             Speed = 410;
@@ -359,8 +346,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     站姿
         /// </summary>
-        public byte WaitType
-        {
+        public byte WaitType {
             get => (byte)CInt["WaitType"];
             set => CInt["WaitType"] = value;
         }
@@ -368,8 +354,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     伪造ACTOR用装备栏
         /// </summary>
-        public uint[] Equips
-        {
+        public uint[] Equips {
             get => equips;
             set => equips = value;
         }
@@ -387,11 +372,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余3技能点
         /// </summary>
-        public ushort SkillPoint3
-        {
+        public ushort SkillPoint3 {
             get => skillpoint3;
-            set
-            {
+            set {
                 skillpoint3 = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -400,11 +383,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     3职业等级
         /// </summary>
-        public byte JobLevel3
-        {
+        public byte JobLevel3 {
             get => jlv3;
-            set
-            {
+            set {
                 jlv3 = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -424,11 +405,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     尾巴形狀
         /// </summary>
-        public byte TailStyle
-        {
+        public byte TailStyle {
             get => tailStyle;
-            set
-            {
+            set {
                 tailStyle = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -437,11 +416,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     翅膀形狀
         /// </summary>
-        public byte WingStyle
-        {
+        public byte WingStyle {
             get => wingStyle;
-            set
-            {
+            set {
                 wingStyle = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -450,11 +427,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     翅膀顏色
         /// </summary>
-        public byte WingColor
-        {
+        public byte WingColor {
             get => wingColor;
-            set
-            {
+            set {
                 wingColor = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -484,7 +459,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     种族
         /// </summary>
-        public new PC_RACE Race { get; set; }
+        public new SagaLib.PcRace Race { get; set; }
 
         /// <summary>
         ///     性别
@@ -494,11 +469,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     发型
         /// </summary>
-        public ushort HairStyle
-        {
+        public ushort HairStyle {
             get => hairStyle;
-            set
-            {
+            set {
                 hairStyle = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -507,11 +480,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     头发颜色
         /// </summary>
-        public byte HairColor
-        {
+        public byte HairColor {
             get => hairColor;
-            set
-            {
+            set {
                 hairColor = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -520,11 +491,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     假发
         /// </summary>
-        public ushort Wig
-        {
+        public ushort Wig {
             get => wig;
-            set
-            {
+            set {
                 wig = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -533,11 +502,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     脸
         /// </summary>
-        public ushort Face
-        {
+        public ushort Face {
             get => face;
-            set
-            {
+            set {
                 face = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.CHAR_INFO, 0);
             }
@@ -551,11 +518,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     等级
         /// </summary>
-        public override byte Level
-        {
+        public override byte Level {
             get => lv;
-            set
-            {
+            set {
                 lv = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -565,11 +530,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     恶魔界的基础等级
         /// </summary>
-        public byte DominionLevel
-        {
+        public byte DominionLevel {
             get => dlv;
-            set
-            {
+            set {
                 dlv = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -579,11 +542,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     恶魔界的职业等级
         /// </summary>
-        public byte DominionJobLevel
-        {
+        public byte DominionJobLevel {
             get => djlv;
-            set
-            {
+            set {
                 djlv = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -593,11 +554,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     联合职业等级
         /// </summary>
-        public byte JointJobLevel
-        {
+        public byte JointJobLevel {
             get => jjlv;
-            set
-            {
+            set {
                 jjlv = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -607,10 +566,8 @@ namespace SagaDB.Actor
         /// <summary>
         ///     当前职业等级
         /// </summary>
-        public byte CurrentJobLevel
-        {
-            get
-            {
+        public byte CurrentJobLevel {
+            get {
                 if (DualJobID != 0)
                     return PlayerDualJobList[DualJobID].DualJobLevel;
                 if (Job == JobBasic)
@@ -628,11 +585,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     1转职业等级
         /// </summary>
-        public byte JobLevel1
-        {
+        public byte JobLevel1 {
             get => jlv1;
-            set
-            {
+            set {
                 jlv1 = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -642,8 +597,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余任务数
         /// </summary>
-        public ushort QuestRemaining
-        {
+        public ushort QuestRemaining {
             get => (ushort)AInt["剩余任务点数"];
             set => AInt["剩余任务点数"] = value;
             /*if (e != null)
@@ -653,11 +607,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     2-1职业等级
         /// </summary>
-        public byte JobLevel2X
-        {
+        public byte JobLevel2X {
             get => jlv2x;
-            set
-            {
+            set {
                 jlv2x = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -667,11 +619,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     2－2职业等级
         /// </summary>
-        public byte JobLevel2T
-        {
+        public byte JobLevel2T {
             get => jlv2t;
-            set
-            {
+            set {
                 jlv2t = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.LEVEL, 0);
@@ -740,12 +690,9 @@ namespace SagaDB.Actor
         /// </summary>
         public byte Slot { get; set; }
 
-        public bool InDominionWorld
-        {
-            get
-            {
-                if (MapInfoFactory.Instance.MapInfo.ContainsKey(MapID))
-                {
+        public bool InDominionWorld {
+            get {
+                if (MapInfoFactory.Instance.MapInfo.ContainsKey(MapID)) {
                     var map = MapInfoFactory.Instance.MapInfo[MapID];
                     if (map.Flag.Test(MapFlags.Dominion))
                         return true;
@@ -753,8 +700,7 @@ namespace SagaDB.Actor
                 }
 
                 var oriMap = MapID / 1000 * 1000;
-                if (MapInfoFactory.Instance.MapInfo.ContainsKey(oriMap))
-                {
+                if (MapInfoFactory.Instance.MapInfo.ContainsKey(oriMap)) {
                     var map = MapInfoFactory.Instance.MapInfo[oriMap];
                     if (map.Flag.Test(MapFlags.Dominion))
                         return true;
@@ -765,13 +711,10 @@ namespace SagaDB.Actor
             }
         }
 
-        public List<ActorPC> PossesionedActors
-        {
-            get
-            {
+        public List<ActorPC> PossesionedActors {
+            get {
                 var list = new List<ActorPC>();
-                if (Inventory != null)
-                {
+                if (Inventory != null) {
                     if (Inventory.Equipments.ContainsKey(EnumEquipSlot.CHEST_ACCE))
                         if (Inventory.Equipments[EnumEquipSlot.CHEST_ACCE].PossessionedActor != null)
                             if (!list.Contains(Inventory.Equipments[EnumEquipSlot.CHEST_ACCE].PossessionedActor))
@@ -802,12 +745,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     该玩家对应的1转职业
         /// </summary>
-        public PC_JOB JobBasic
-        {
-            get
-            {
-                switch (Job)
-                {
+        public PC_JOB JobBasic {
+            get {
+                switch (Job) {
                     case PC_JOB.SWORDMAN:
                     case PC_JOB.BLADEMASTER:
                     case PC_JOB.BOUNTYHUNTER:
@@ -884,12 +824,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     该玩家对应的2－1职业
         /// </summary>
-        public PC_JOB Job2X
-        {
-            get
-            {
-                switch (Job)
-                {
+        public PC_JOB Job2X {
+            get {
+                switch (Job) {
                     case PC_JOB.SWORDMAN:
                     case PC_JOB.BLADEMASTER:
                     case PC_JOB.BOUNTYHUNTER:
@@ -965,12 +902,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     该玩家对应的2－2职业
         /// </summary>
-        public PC_JOB Job2T
-        {
-            get
-            {
-                switch (Job)
-                {
+        public PC_JOB Job2T {
+            get {
+                switch (Job) {
                     case PC_JOB.SWORDMAN:
                     case PC_JOB.BLADEMASTER:
                     case PC_JOB.BOUNTYHUNTER:
@@ -1047,12 +981,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     该玩家对应的3职业
         /// </summary>
-        public PC_JOB Job3
-        {
-            get
-            {
-                switch (Job)
-                {
+        public PC_JOB Job3 {
+            get {
+                switch (Job) {
                     case PC_JOB.SWORDMAN:
                     case PC_JOB.BLADEMASTER:
                     case PC_JOB.BOUNTYHUNTER:
@@ -1129,12 +1060,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     JobType
         /// </summary>
-        public JobType JobType
-        {
-            get
-            {
-                switch (Job)
-                {
+        public JobType JobType {
+            get {
+                switch (Job) {
                     case PC_JOB.SWORDMAN:
                     case PC_JOB.BLADEMASTER:
                     case PC_JOB.BOUNTYHUNTER:
@@ -1215,19 +1143,15 @@ namespace SagaDB.Actor
 
         public ushort DominionMag { get; set; }
 
-        public long Gold
-        {
+        public long Gold {
             get => gold;
-            set
-            {
+            set {
                 if (value > 999999999999)
                     value = 999999999999;
                 if (value < 0)
                     value = 0;
-                if (value - gold != 0)
-                {
-                    if (gold != 0)
-                    {
+                if (value - gold != 0) {
+                    if (gold != 0) {
                         Logger.LogGoldChange(Name + "(" + CharID + ")", (int)(value - gold));
                         if (value > 100000)
                             Logger.LogGoldChange("[金钱异常收入！]:" + Name + "(" + CharID + ")", (int)(value - gold));
@@ -1252,18 +1176,14 @@ namespace SagaDB.Actor
             }
         }
 
-        public uint CP
-        {
+        public uint CP {
             get => cp;
-            set
-            {
+            set {
                 if (value > 99999999)
                     value = 99999999;
                 var balance = (int)(value - cp);
-                if (value - cp != 0)
-                {
-                    if (cp != 0)
-                    {
+                if (value - cp != 0) {
+                    if (cp != 0) {
                         Logger.LogGoldChange("[CP]:" + Name + "(" + CharID + ")", balance);
                         if (value > 5000)
                             Logger.LogGoldChange("[CP异常收入！]:" + Name + "(" + CharID + ")", balance);
@@ -1284,11 +1204,9 @@ namespace SagaDB.Actor
             }
         }
 
-        public uint ECoin
-        {
+        public uint ECoin {
             get => ecoin;
-            set
-            {
+            set {
                 if (value > 99999999)
                     value = 99999999;
                 var balance = (int)(value - ecoin);
@@ -1348,11 +1266,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     WRP
         /// </summary>
-        public int WRP
-        {
+        public int WRP {
             get => wrp;
-            set
-            {
+            set {
                 var balance = value - wrp;
                 wrp = value;
                 if (e != null)
@@ -1398,11 +1314,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余人物属性点
         /// </summary>
-        public ushort StatsPoint
-        {
+        public ushort StatsPoint {
             get => statspoints;
-            set
-            {
+            set {
                 statspoints = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -1421,11 +1335,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     恶魔界的人物属性点
         /// </summary>
-        public ushort DominionStatsPoint
-        {
+        public ushort DominionStatsPoint {
             get => dstatspoints;
-            set
-            {
+            set {
                 dstatspoints = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -1434,11 +1346,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余1转技能点
         /// </summary>
-        public ushort SkillPoint
-        {
+        public ushort SkillPoint {
             get => skillpoint;
-            set
-            {
+            set {
                 skillpoint = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -1447,11 +1357,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余2－1技能点
         /// </summary>
-        public ushort SkillPoint2X
-        {
+        public ushort SkillPoint2X {
             get => skillpoint2x;
-            set
-            {
+            set {
                 skillpoint2x = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -1460,11 +1368,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     剩余2－2技能点
         /// </summary>
-        public ushort SkillPoint2T
-        {
+        public ushort SkillPoint2T {
             get => skillpoint2t;
-            set
-            {
+            set {
                 skillpoint2t = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.STAT_POINT, 0);
             }
@@ -1596,11 +1502,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     声望
         /// </summary>
-        public uint Fame
-        {
+        public uint Fame {
             get => fame;
-            set
-            {
+            set {
                 if (value > int.MaxValue) fame = 0;
                 else fame = value;
             }
@@ -1634,11 +1538,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     玩家的模式
         /// </summary>
-        public PlayerMode Mode
-        {
+        public PlayerMode Mode {
             get => mode;
-            set
-            {
+            set {
                 mode = value;
                 if (e != null) e.PropertyUpdate(UpdateEvent.MODE, 0);
             }
@@ -1658,16 +1560,13 @@ namespace SagaDB.Actor
         /// <summary>
         ///     玩家在虚拟商城的点券
         /// </summary>
-        public uint VShopPoints
-        {
-            get
-            {
+        public uint VShopPoints {
+            get {
                 if (e != null)
                     e.PropertyRead(UpdateEvent.VCASH_POINT);
                 return vpoints;
             }
-            set
-            {
+            set {
                 vpoints = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.VCASH_POINT, 0);
@@ -1677,16 +1576,13 @@ namespace SagaDB.Actor
         /// <summary>
         ///     玩家已用掉的点券
         /// </summary>
-        public uint UsedVShopPoints
-        {
-            get
-            {
+        public uint UsedVShopPoints {
+            get {
                 if (e != null)
                     e.PropertyRead(UpdateEvent.VCASH_POINT);
                 return usedVPoints;
             }
-            set
-            {
+            set {
                 usedVPoints = value;
                 if (e != null)
                     e.PropertyUpdate(UpdateEvent.VCASH_POINT, 0);
@@ -1721,8 +1617,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     變身的圖片ID
         /// </summary>
-        public uint TranceID
-        {
+        public uint TranceID {
             get => tranceID;
             set => tranceID = value;
         }
@@ -1740,11 +1635,9 @@ namespace SagaDB.Actor
         /// <summary>
         ///     防御战窗口是否可见
         /// </summary>
-        public bool DefWarShow
-        {
+        public bool DefWarShow {
             get => TInt["DefWarShow"] != 0;
-            set
-            {
+            set {
                 if (value)
                     TInt["DefWarShow"] = 1;
                 else
@@ -1800,8 +1693,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     Reset PC's Iris Abilities
         /// </summary>
-        public void ClearIrisAbilities()
-        {
+        public void ClearIrisAbilities() {
             IrisAbilityValues.Clear();
             IrisAbilityLevels.Clear();
         }
@@ -1809,8 +1701,7 @@ namespace SagaDB.Actor
         /// <summary>
         ///     清楚所有变量集，玩家下线后用于释放资源
         /// </summary>
-        public void ClearVarialbes()
-        {
+        public void ClearVarialbes() {
             AInt = null;
             AStr = null;
             AMask = null;
@@ -1822,15 +1713,13 @@ namespace SagaDB.Actor
             TMask = null;
         }
 
-        public class KillInfo
-        {
+        public class KillInfo {
             public bool isFinish = false;
             public int Count { set; get; }
             public int TotalCount { set; get; }
         }
 
-        public class NPCHide
-        {
+        public class NPCHide {
             public int NPCID { set; get; }
             public byte state { set; get; }
         }

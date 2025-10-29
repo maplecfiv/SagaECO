@@ -3,37 +3,30 @@ using System.Xml;
 using SagaDB.Actor;
 using SagaLib;
 
-namespace SagaDB.Item
-{
-    public class ItemFactory : Factory<ItemFactory, Item.ItemData>
-    {
+namespace SagaDB.Item {
+    public class ItemFactory : Factory<ItemFactory, Item.ItemData> {
         private bool readDesc;
 
-        public ItemFactory()
-        {
+        public ItemFactory() {
             loadingTab = "Loading item database";
             loadedTab = " items loaded.";
             databaseName = "Item";
             FactoryType = FactoryType.CSV;
         }
 
-        public bool ReadDesc
-        {
+        public bool ReadDesc {
             set => readDesc = value;
         }
 
-        protected override void ParseXML(XmlElement root, XmlElement current, Item.ItemData item)
-        {
+        protected override void ParseXML(XmlElement root, XmlElement current, Item.ItemData item) {
             throw new NotImplementedException();
         }
 
-        protected override uint GetKey(Item.ItemData item)
-        {
+        protected override uint GetKey(Item.ItemData item) {
             return item.id;
         }
 
-        protected override void ParseCSV(Item.ItemData item, string[] paras)
-        {
+        protected override void ParseCSV(Item.ItemData item, string[] paras) {
             uint offset = 0;
             item.id = uint.Parse(paras[0 + offset]);
             item.imageID = uint.Parse(paras[1 + offset]);
@@ -112,7 +105,7 @@ namespace SagaDB.Item
             item.spRecover = 0;
             for (var i = 0; i < 7; i++) item.element.Add((Elements)i, short.Parse(paras[69 + i + offset]));
             for (var i = 0; i < 9; i++) item.abnormalStatus.Add((AbnormalStatus)i, short.Parse(paras[76 + i + offset]));
-            for (var i = 0; i < 4; i++) item.possibleRace.Add((PC_RACE)i, toBool(paras[85 + i + offset]));
+            for (var i = 0; i < 4; i++) item.possibleRace.Add((SagaLib.PcRace)i, toBool(paras[85 + i + offset]));
             for (var i = 0; i < 2; i++) item.possibleGender.Add((PC_GENDER)i, toBool(paras[89 + i + offset]));
             item.possibleLv = byte.Parse(paras[91 + offset]);
             //转生
@@ -127,8 +120,7 @@ namespace SagaDB.Item
             item.possibleCha = ushort.Parse(paras[100 + offset]);
             //string[+ offset] jobs = Enum.GetNames(typeof(PC_JOB));
             //追加13个
-            for (var i = 0; i < 36; i++)
-            {
+            for (var i = 0; i < 36; i++) {
                 item.possibleJob.Add((PC_JOB)(i / 3 * 10 + i % 3 * 2 + 1), toBool(paras[102 + i + offset]));
                 if (toBool(paras[102 + i + offset]))
                     item.possibleJob[(PC_JOB)(i / 3 * 10 + 1)] = toBool(paras[102 + i + offset]);
@@ -154,29 +146,24 @@ namespace SagaDB.Item
                 item.ItemAddition = itemAddition;
         }
 
-        private bool toBool(string input)
-        {
+        private bool toBool(string input) {
             if (input == "1") return true;
             return false;
         }
 
-        public Item GetItem(uint id)
-        {
+        public Item GetItem(uint id) {
             return GetItem(id, true);
         }
 
-        public Item GetItem(uint id, bool identified)
-        {
-            if (Items.ContainsKey(id))
-            {
+        public Item GetItem(uint id, bool identified) {
+            if (Items.ContainsKey(id)) {
                 var item = new Item(Items[id]);
                 item.Stack = 1;
                 item.Durability = item.BaseData.durability;
                 item.Identified = identified;
                 return item;
             }
-            else
-            {
+            else {
                 Logger.GetLogger().Warning("Item:" + id + " not found! Creating dummy Item.");
                 var item = new Item(Items[10000000]);
                 item.Stack = 1;
@@ -186,12 +173,10 @@ namespace SagaDB.Item
             }
         }
 
-        public void CalcRefineBouns(Item Equip)
-        {
+        public void CalcRefineBouns(Item Equip) {
             if (Equip.Refine == 0) return;
             if (Equip.EquipSlot == null) return;
-            if (Equip.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE)
-            {
+            if (Equip.EquipSlot[0] == EnumEquipSlot.CHEST_ACCE) {
                 Equip.atk_refine = (short)(Equip.Refine_Sharp * 1);
                 Equip.matk_refine = (short)(Equip.Refine_Enchanted * 1);
                 Equip.hp_refine = (short)(Equip.Refine_Vitality * 15);
@@ -207,8 +192,7 @@ namespace SagaDB.Item
                 Equip.defrate_refine = (short)(Equip.Refine_Def * 1);
                 Equip.mdefrate_refine = (short)(Equip.Refine_Mdef * 2);
             }
-            else if (Equip.EquipSlot[0] == EnumEquipSlot.LEFT_HAND)
-            {
+            else if (Equip.EquipSlot[0] == EnumEquipSlot.LEFT_HAND) {
                 Equip.atk_refine = (short)(Equip.Refine_Sharp * 2);
                 Equip.matk_refine = (short)(Equip.Refine_Enchanted * 2);
                 Equip.hp_refine = (short)(Equip.Refine_Vitality * 10);
@@ -224,8 +208,7 @@ namespace SagaDB.Item
                 Equip.defrate_refine = (short)(Equip.Refine_Def * 1);
                 Equip.mdefrate_refine = (short)(Equip.Refine_Mdef * 1);
             }
-            else if (Equip.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND)
-            {
+            else if (Equip.EquipSlot[0] == EnumEquipSlot.RIGHT_HAND) {
                 Equip.atk_refine = (short)(Equip.Refine_Sharp * 2);
                 Equip.matk_refine = (short)(Equip.Refine_Enchanted * 2);
                 Equip.hp_refine = (short)(Equip.Refine_Vitality * 10);
@@ -241,8 +224,7 @@ namespace SagaDB.Item
                 Equip.defrate_refine = (short)(Equip.Refine_Def * 1);
                 Equip.mdefrate_refine = (short)(Equip.Refine_Mdef * 1);
             }
-            else if (Equip.EquipSlot[0] == EnumEquipSlot.UPPER_BODY)
-            {
+            else if (Equip.EquipSlot[0] == EnumEquipSlot.UPPER_BODY) {
                 Equip.atk_refine = (short)(Equip.Refine_Sharp * 1);
                 Equip.matk_refine = (short)(Equip.Refine_Enchanted * 1);
                 Equip.hp_refine = (short)(Equip.Refine_Vitality * 20);

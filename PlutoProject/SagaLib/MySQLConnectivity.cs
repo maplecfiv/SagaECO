@@ -75,11 +75,11 @@ namespace SagaLib {
                                 }
                             }
                             catch (Exception ex) {
-                                Logger.ShowSQL("Error on query:" + command2String(i.Command), Logger.defaultlogger);
-                                Logger.ShowSQL(ex, Logger.defaultlogger);
+                                Logger.ShowSQL("Error on query:" + command2String(i.Command));
+                                Logger.ShowSQL(ex);
                                 i.ErrorCount++;
                                 if (i.ErrorCount > 10)
-                                    Logger.ShowSQL("Error to many times, dropping command", Logger.defaultlogger);
+                                    Logger.ShowSQL("Error to many times, dropping command");
                                 else
                                     pending.Add(i);
                             }
@@ -167,7 +167,7 @@ namespace SagaLib {
                 result = true;
             }
             catch (Exception ex) {
-                Logger.ShowSQL(ex, Logger.defaultlogger);
+                Logger.ShowSQL(ex);
             }
 
             if (criticalarea) {
@@ -197,8 +197,8 @@ namespace SagaLib {
                 return result;
             }
             catch (Exception ex) {
-                Logger.ShowSQL("Error on query:" + sqlstr, Logger.defaultlogger);
-                Logger.ShowSQL(ex, Logger.defaultlogger);
+                Logger.ShowSQL($"Error on query: {sqlstr}");
+                Logger.ShowSQL(ex);
                 if (criticalarea)
                     ClientManager.EnterCriticalArea();
                 return null;
