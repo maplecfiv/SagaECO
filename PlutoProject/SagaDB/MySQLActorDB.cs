@@ -1002,8 +1002,18 @@ namespace SagaDB {
             byte[] data = ms.ToArray();
             ms.Close();
             try {
-                SqlSugarHelper.Db.Storageable(new CharacterVariable { CharacterId = pc.CharID, Values = data })
-                    .ExecuteCommand();
+                var resultList = SqlSugarHelper.Db.Queryable<CharacterVariable>()
+                    .Where(item => item.CharacterId == pc.CharID).ToList();
+                if (resultList.Count != 0) {
+                    foreach (var item in resultList) {
+                        item.Values = data;
+                        SqlSugarHelper.Db.Updateable(item).ExecuteCommand();
+                    }
+                }
+                else {
+                    SqlSugarHelper.Db.Insertable(new CharacterVariable { CharacterId = pc.CharID, Values = data })
+                        .ExecuteCommand();
+                }
             }
             catch (Exception ex) {
                 SagaLib.Logger.ShowError(ex);

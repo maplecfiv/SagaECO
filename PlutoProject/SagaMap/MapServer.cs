@@ -1,11 +1,13 @@
 ﻿//#define FreeVersion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using Dm.util;
 using SagaDB;
 using SagaDB.Actor;
 using SagaDB.DEMIC;
@@ -486,31 +488,27 @@ namespace SagaMap {
             //MapManager.Instance.CreateFFInstanceOfSer();
 
             try {
-                SqlSugarHelper.Db.BeginTran();
-
+                List<string> mapIds = new List<string>();
                 foreach (var mapId in Configuration.Configuration.Instance.HostedMaps) {
-                    SqlSugarHelper.Db.Storageable(new SagaDB.Entities.Server {
-                        ServerIp = Dns.GetHostAddresses(Configuration.Configuration.Instance.Host)[0]
-                            .ToString(),
-                        Port = Configuration.Configuration.Instance.Port,
-                        Type = mapId.ToString()
-                    }).ExecuteCommand();
+                    mapIds.Add(mapId.ToString());
                 }
 
                 foreach (var mapId in MapInfoFactory.Instance.MapInfo.Keys) {
+                    mapIds.add(mapId.ToString());
+                }
+
+                mapIds.Add("PORTAL");
+
+                SqlSugarHelper.Db.BeginTran();
+
+                foreach (var mapId in mapIds) {
                     SqlSugarHelper.Db.Storageable(new SagaDB.Entities.Server {
                         ServerIp = Dns.GetHostAddresses(Configuration.Configuration.Instance.Host)[0]
                             .ToString(),
                         Port = Configuration.Configuration.Instance.Port,
-                        Type = mapId.ToString()
+                        Type = mapId
                     }).ExecuteCommand();
                 }
-
-                SqlSugarHelper.Db.Storageable<SagaDB.Entities.Server>(new SagaDB.Entities.Server {
-                    ServerIp = Dns.GetHostAddresses(Configuration.Configuration.Instance.Host)[0].ToString(),
-                    Port = Configuration.Configuration.Instance.Port,
-                    Type = "PORTAL"
-                }).ExecuteCommand();
 
                 SqlSugarHelper.Db.CommitTran();
             }

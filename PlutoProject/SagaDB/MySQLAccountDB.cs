@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using MySql.Data.MySqlClient;
 using SagaDB.Actor;
+using SagaDB.Repository;
 using SagaLib;
 using SqlSugar;
 
@@ -127,22 +128,12 @@ namespace SagaDB {
             }
 
             try {
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.Login>().TranLock(DbLockType.Wait)
-                             .Where(item => item.AccountId == user.AccountID).ToList()) {
-                    i.Username = user.Name;
-                    i.Password = user.Password;
-                    i.DeletePassword = user.DeletePassword;
-                    i.Bank = user.Bank;
-                    i.Banned = user.Banned ? (byte)1 : (byte)0;
-                    i.LastIp = user.LastIP;
-                    i.QuestResetTime = user.questNextTime;
-                    i.LastLoginTime = DateTime.Now;
-                    i.MacAddress = user.MacAddress;
-                    i.PlayerNames = user.PlayerNames;
-                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
-                }
+                SqlSugarHelper.Db.BeginTran();
+                LoginRepository.WriteUser(user);
+                SqlSugarHelper.Db.CommitTran();
             }
             catch (Exception ex) {
+                SqlSugarHelper.Db.RollbackTran();
                 Logger.ShowError(ex);
             }
         }
@@ -151,8 +142,7 @@ namespace SagaDB {
             var accounts = new List<Account>();
             Account account;
             try {
-                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().ToList();
-
+                var result = LoginRepository.GetAllAccount();
 
                 if (result.Count == 0) {
                     return null;
@@ -191,31 +181,29 @@ namespace SagaDB {
             Account account = null;
 
             try {
-                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == name)
-                    .ToList();
+                var result = LoginRepository.GetLoginByUsername(name);
 
-
-                if (result.Count == 0) {
+                if (result == null) {
                     SagaLib.Logger.ShowWarning($"no user match name {name}");
                     return null;
                 }
 
                 account = new Account();
-                account.AccountID = result[0].AccountId;
-                account.Name = name;
-                account.Password = (string)result[0].Password;
-                account.DeletePassword = (string)result[0].DeletePassword;
-                account.GMLevel = (byte)result[0].GameMasterLevel;
-                account.Bank = (uint)result[0].Bank;
-                account.questNextTime = (DateTime)result[0].QuestResetTime;
+                account.AccountID = result.AccountId;
+                account.Name = result.Username;
+                account.Password = (string)result.Password;
+                account.DeletePassword = (string)result.DeletePassword;
+                account.GMLevel = (byte)result.GameMasterLevel;
+                account.Bank = (uint)result.Bank;
+                account.questNextTime = (DateTime)result.QuestResetTime;
                 try {
-                    account.LastIP2 = (string)result[0].LastIp2;
+                    account.LastIP2 = (string)result.LastIp2;
                 }
                 catch (Exception ex) {
                     Logger.ShowError(ex);
                 }
 
-                account.Banned = ((byte)result[0].Banned == 1);
+                account.Banned = ((byte)result.Banned == 1);
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);
@@ -228,22 +216,21 @@ namespace SagaDB {
 
         public bool CheckPassword(string user, string password, uint frontword, uint backword) {
             try {
-                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
-                    .ToList();
+                var result = LoginRepository.GetLoginByUsername(user);
 
-                if ((result.Count == 0)) {
+                if ((result == null)) {
                     SagaLib.Logger.ShowWarning($"no user match name {user}");
                     return false;
                 }
 
-                if ((result.Count == 1)) {
+                if (result != null) {
                     SagaLib.Logger.ShowWarning($"temp allow when username  {user} matched");
                     return true;
                 }
 
                 return password == Conversions.bytes2HexString(SHA1.Create()
                         .ComputeHash(
-                            Encoding.ASCII.GetBytes($"{frontword}{((string)result[0].Password).ToLower()}{backword}")))
+                            Encoding.ASCII.GetBytes($"{frontword}{((string)result.Password).ToLower()}{backword}")))
                     .ToLower();
             }
             catch (Exception ex) {
@@ -254,15 +241,14 @@ namespace SagaDB {
 
         public int GetAccountID(string user) {
             try {
-                var result = SqlSugarHelper.Db.Queryable<Entities.Login>().Where(item => item.Username == user)
-                    .ToList();
+                var result = LoginRepository.GetLoginByUsername(user);
 
-                if (result.Count == 0) {
+                if (result == null) {
                     SagaLib.Logger.ShowWarning($"no user with name {user}");
                     return -1;
                 }
 
-                return (int)result[0].AccountId;
+                return (int)result.AccountId;
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);
