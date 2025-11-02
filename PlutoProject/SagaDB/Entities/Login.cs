@@ -11,12 +11,10 @@ public class Login {
     public byte Banned { get; set; }
     public byte GameMasterLevel { get; set; }
     public uint Bank { get; set; }
-
     public uint VShopPoints { get; set; }
     public uint UsedVShopPoints { get; set; }
     public string LastIp { get; set; }
     public string LastIp2 { get; set; }
-
     public DateTime QuestResetTime { get; set; }
     public DateTime LastLoginTime { get; set; }
     public string MacAddress { get; set; }

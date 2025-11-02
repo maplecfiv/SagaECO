@@ -242,9 +242,11 @@ namespace SagaMap.Network.Client {
                                 MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
-                SqlSugarHelper.Db.Storageable<SagaDB.Entities.Character>(new SagaDB.Entities.Character {
-                    CharacterId = Character.CharID, Online = false
-                }).ExecuteCommand();
+                SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>()
+                    .Where(item => item.CharacterId == Character.CharID).ForEach((item => {
+                        item.Online = false;
+                        SqlSugarHelper.Db.Updateable<SagaDB.Entities.Character>(item).ExecuteCommand();
+                    }));
 
                 if (Character.HP == 0) {
                     /*this.Character.HP = 1;
@@ -1075,9 +1077,9 @@ namespace SagaMap.Network.Client {
         private void RunScript(Event evnt) {
             ClientManager.EnterCriticalArea();
             try {
-                if (currentEventID < 0xFFFF0000) {
-                    SendEventStart(currentEventID);
-                    SendCurrentEvent(currentEventID);
+                if (evnt.EventID < 0xFFFF0000) {
+                    SendEventStart(evnt.EventID);
+                    SendCurrentEvent(evnt.EventID);
                 }
 
                 currentEvent = evnt;
@@ -1118,7 +1120,7 @@ namespace SagaMap.Network.Client {
                 }
 
                 if (runscript) currentEvent.OnEvent(Character);
-                if (currentEventID < 0xFFFF0000)
+                if (evnt.EventID < 0xFFFF0000)
                     SendEventEnd();
             }
             catch (ThreadAbortException) {
@@ -1143,8 +1145,8 @@ namespace SagaMap.Network.Client {
                     if (Character.Online) {
                         if (Character.Account.GMLevel > 2) {
                             SendNPCMessageStart();
-                            SendNPCMessage(currentEventID,
-                                "Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" + ex.Message,
+                            SendNPCMessage(evnt.EventID,
+                                "Script Error(" + ScriptManager.Instance.Events[evnt.EventID] + "):" + ex.Message,
                                 131, "System Error");
                             SendNPCMessageEnd();
                         }
@@ -1152,7 +1154,7 @@ namespace SagaMap.Network.Client {
                         SendEventEnd();
                     }
 
-                    Logger.ShowWarning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
+                    Logger.ShowWarning("Script Error(" + ScriptManager.Instance.Events[evnt.EventID] + "):" +
                                        ex.Message + "\r\n" + ex.StackTrace);
                 }
                 catch {
@@ -9528,10 +9530,12 @@ namespace SagaMap.Network.Client {
                     }
 
                 if (Logger.defaultSql != null) {
-                    SqlSugarHelper.Db.Storageable(new SagaDB.Entities.Character {
-                        CharacterId = Character.CharID,
-                        Online = true
-                    }).ExecuteCommand();
+                    SqlSugarHelper.Db.Queryable<SagaDB.Entities.Character>()
+                        .Where(item => item.CharacterId == Character.CharID).ForEach((
+                            item => {
+                                item.Online = true;
+                                SqlSugarHelper.Db.Updateable(item).ExecuteCommand();
+                            }));
                 }
             }
         }

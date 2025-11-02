@@ -53,9 +53,6 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/dualjob_skill_learn.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/Dungeon/DungeonMaps.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/Dungeon/Dungeons.xml
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/eco.db
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/eco.db-shm
-/home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/eco.db-wal
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/ECOShop.xml
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/effect.ssp
 /home/maple/projects/SagaECO/PlutoProject/SagaMap/bin/Release/net8.0/publish/DB/enhancetable.csv

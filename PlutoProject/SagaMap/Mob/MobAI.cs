@@ -147,7 +147,6 @@ namespace SagaMap.Mob {
             var deletequeue = new List<string>();
             //ClientManager.EnterCriticalArea();
             try {
-                string[] keys;
                 if (locked)
                     return;
                 if (Mob.Buff.Dead)
@@ -167,8 +166,8 @@ namespace SagaMap.Mob {
                     }
                 }
 
-                if (commands.Count == 1)
-                    if (commands.ContainsKey("Attack"))
+                if (commands.Count == 1) {
+                    if (commands.ContainsKey("Attack")) {
                         if (Hate.Count == 0) {
                             AIActivity = Activity.IDLE;
                             if (Global.Random.Next(0, 99) < 10) {
@@ -210,16 +209,18 @@ namespace SagaMap.Mob {
                                 }
                             }
                         }
+                    }
+                }
 
-                keys = new string[commands.Count];
+                //Destination array is not long enough to copy all the items in the collection. Check array index and length.
+                // keys = new string[commands.Count];
+                string[] keys = new string[commands.Keys.Count];
                 commands.Keys.CopyTo(keys, 0);
                 var count = commands.Count;
-                for (var i = 0; i < count; i++)
+                for (var i = 0; i < count; i++) {
                     try {
-                        string j;
-                        j = keys[i];
-                        AICommand command;
-                        commands.TryGetValue(j, out command);
+                        string j = keys[i];
+                        commands.TryGetValue(j, out var command);
                         if (command != null) {
                             if (command.Status != CommandStatus.FINISHED && command.Status != CommandStatus.DELETING &&
                                 command.Status != CommandStatus.PAUSED)
@@ -236,6 +237,7 @@ namespace SagaMap.Mob {
                     catch (Exception ex) {
                         Logger.ShowError(ex);
                     }
+                }
 
                 lock (commands) {
                     foreach (var i in deletequeue) commands.Remove(i);
@@ -993,17 +995,19 @@ namespace SagaMap.Mob {
             if (sActor.type == ActorType.PC)
                 tmp = (uint)(tmp * sActor.Status.HateRate);
 
-            var HateTargetId = sActor.ActorID; //误导状态下，这个ID将会是误导目标ID，否则为攻击者ID。
+            var hateTargetId = sActor.ActorID; //误导状态下，这个ID将会是误导目标ID，否则为攻击者ID。
 
             if (sActor.Status.Additions.ContainsKey("误导") && sActor.TInt["误导"] != 0 &&
-                map.GetActor((uint)sActor.TInt["误导"]) != null) //如果误导的目标存在的话。
+                map.GetActor((uint)sActor.TInt["误导"]) != null) {
+                //如果误导的目标存在的话。
                 //这部分很可能需要更详细的逻辑，例如 误导的目标不能是partner，误导的目标必须可以被攻击等
-                HateTargetId = (uint)sActor.TInt["误导"];
+                hateTargetId = (uint)sActor.TInt["误导"];
+            }
 
-            if (Hate.ContainsKey(HateTargetId)) {
+            if (Hate.ContainsKey(hateTargetId)) {
                 if (tmp == 0)
                     tmp = 1;
-                Hate[HateTargetId] += tmp;
+                Hate[hateTargetId] += tmp;
             }
             else {
                 if (tmp == 0)
@@ -1015,7 +1019,7 @@ namespace SagaMap.Mob {
                     Y_pb = Mob.Y;
                 }
 
-                Hate.Add(HateTargetId, tmp);
+                Hate.Add(hateTargetId, tmp);
             }
 
             if (damage > 0) {
@@ -1050,20 +1054,24 @@ namespace SagaMap.Mob {
 
         public void OnSeenSkillUse(SkillArg arg) {
             if (map == null) {
-                Logger.ShowWarning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
+                Logger.ShowWarning($"Mob:{Mob.ActorID}({Mob.Name})'s map is null!");
                 return;
             }
 
-            if (master != null)
-                for (var i = 0; i < arg.affectedActors.Count; i++)
-                    if (arg.affectedActors[i].ActorID == master.ActorID) {
-                        var actor = map.GetActor(arg.sActor);
-                        if (actor != null) {
-                            OnAttacked(actor, arg.hp[i]);
-                            if (Hate.Count == 1)
-                                SendAggroEffect();
-                        }
+            if (master != null) {
+                for (var i = 0; i < arg.affectedActors.Count; i++) {
+                    if (arg.affectedActors[i].ActorID != master.ActorID) {
+                        continue;
                     }
+
+                    var actor = map.GetActor(arg.sActor);
+                    if (actor != null) {
+                        OnAttacked(actor, arg.hp[i]);
+                        if (Hate.Count == 1)
+                            SendAggroEffect();
+                    }
+                }
+            }
 
             if (Mode.HelpSameType) {
                 Actor actor;
@@ -1072,26 +1080,35 @@ namespace SagaMap.Mob {
                     mob = (ActorMob)Mob;
                     for (var i = 0; i < arg.affectedActors.Count; i++) {
                         actor = arg.affectedActors[i];
-                        if (actor.type == ActorType.MOB) {
-                            var tar = (ActorMob)actor;
-
-                            if (tar.BaseData.mobType == mob.BaseData.mobType) {
-                                actor = map.GetActor(arg.sActor);
-                                if (actor != null)
-                                    if (actor.type == ActorType.PC) {
-                                        if (Hate.Count == 0)
-                                            SendAggroEffect();
-                                        OnAttacked(actor, arg.hp[i]);
-                                    }
-                            }
+                        if (actor.type != ActorType.MOB) {
+                            continue;
                         }
+
+                        var tar = (ActorMob)actor;
+
+                        if (tar.BaseData.mobType != mob.BaseData.mobType) {
+                            continue;
+                        }
+
+                        actor = map.GetActor(arg.sActor);
+                        if (actor == null) {
+                            continue;
+                        }
+
+                        if (actor.type != ActorType.PC) {
+                            continue;
+                        }
+
+                        if (Hate.Count == 0)
+                            SendAggroEffect();
+                        OnAttacked(actor, arg.hp[i]);
                     }
 
                     actor = map.GetActor(arg.sActor);
-                    if (actor != null)
+                    if (actor != null) {
                         if (actor.type == ActorType.MOB) {
                             var tar = (ActorMob)actor;
-                            if (tar.BaseData.mobType == mob.BaseData.mobType)
+                            if (tar.BaseData.mobType == mob.BaseData.mobType) {
                                 foreach (var i in arg.affectedActors) {
                                     if (i.type != ActorType.PC)
                                         continue;
@@ -1099,22 +1116,28 @@ namespace SagaMap.Mob {
                                         SendAggroEffect();
                                     OnAttacked(i, 10);
                                 }
+                            }
                         }
+                    }
                 }
             }
 
             if (Mode.HateHeal) {
                 var actor = map.GetActor(arg.sActor);
-                if (actor != null && arg.skill != null && Hate.Count > 0)
+                if (actor != null && arg.skill != null && Hate.Count > 0) {
                     if (arg.skill.Support && actor.type == ActorType.PC) {
                         var damage = 0;
-                        foreach (var i in arg.hp) damage += -i;
+                        foreach (var i in arg.hp) {
+                            damage += -i;
+                        }
+
                         if (damage > 0) {
                             if (Hate.Count == 0)
                                 SendAggroEffect();
                             OnAttacked(actor, damage);
                         }
                     }
+                }
             }
 
             if (arg.skill != null) {
@@ -1149,13 +1172,15 @@ namespace SagaMap.Mob {
 
             if (Mode.HateMagic) {
                 var actor = map.GetActor(arg.sActor);
-                if (actor != null && arg.skill != null)
-                    if (arg.skill.Magical)
+                if (actor != null && arg.skill != null) {
+                    if (arg.skill.Magical) {
                         if (actor.type == ActorType.PC) {
                             if (Hate.Count == 0)
                                 SendAggroEffect();
                             OnAttacked(actor, (int)(Mob.MaxHP / 10));
                         }
+                    }
+                }
             }
         }
 

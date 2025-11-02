@@ -10,9 +10,9 @@ public class Character {
 
     public string Name { get; set; }
 
-    [SugarColumn(IsNullable = true)] public string FirstName { get; set; }
+    public string FirstName { get; set; }
 
-    [SugarColumn(IsNullable = true)] public byte ShowFirstName { get; set; }
+    public byte ShowFirstName { get; set; }
 
     public byte Race { get; set; }
 

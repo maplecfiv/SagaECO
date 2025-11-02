@@ -9,25 +9,26 @@ public class CharacterRepository {
     public static bool SaveCharacter(ActorPC aChar, uint mapId, byte x, byte y, uint questid, DateTime questRemainTime,
         byte status,
         int count1, int count2, int count3, uint partyId, uint ringId, uint golemId) {
-        SqlSugarHelper.Db.Storageable<Character>(new Entities.Character {
-            CharacterId = aChar.CharID,
-            MapId = mapId,
-            X = x,
-            Y = y,
-            QuestId = questid,
-            QuestEndTime = questRemainTime,
-            QuestStatus = (byte)status,
-            QuestCurrentCount1 = count1,
-            QuestCurrentCount2 = count2,
-            QuestCurrentCount3 = count3,
-            Party = partyId,
-            Ring = ringId,
-            Golem = golemId,
-        }).ExecuteCommand();
+        var i = SqlSugarHelper.Db.Queryable<Character>().TranLock(DbLockType.Wait)
+            .Where(item => item.CharacterId == aChar.CharID).First();
+        if (i == null) {
+            return false;
+        }
 
-
-        SqlSugarHelper.Db.CommitTran();
-        return true;
+        i.Name = aChar.Name;
+        i.MapId = mapId;
+        i.X = x;
+        i.Y = y;
+        i.QuestId = questid;
+        i.QuestEndTime = questRemainTime;
+        i.QuestStatus = (byte)status;
+        i.QuestCurrentCount1 = count1;
+        i.QuestCurrentCount2 = count2;
+        i.QuestCurrentCount3 = count3;
+        i.Party = partyId;
+        i.Ring = ringId;
+        i.Golem = golemId;
+        return SqlSugarHelper.Db.Updateable(i).ExecuteCommand() != 0;
     }
 
     public static uint CreateCharacter(ActorPC aChar, uint accountId) {
@@ -49,7 +50,7 @@ public class CharacterRepository {
         character.JobLv2x = aChar.JobLevel2X;
 
         character.JobLv2t = aChar.JobLevel2T;
-
+        character.FirstName = aChar.FirstName;
         character.QuestRemaining = aChar.QuestRemaining;
         character.Slot = aChar.Slot;
         character.X = aChar.X2;
