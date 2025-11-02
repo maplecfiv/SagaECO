@@ -55,7 +55,7 @@ namespace SagaMap.Tasks.System {
             }
             */
 
-            //Logger.getLogger().Information("南牢火車Start");
+            //Logger.getLogger().ShowInfo("南牢火車Start");
 
             create(map, 150, 12, 150, 251);
             create(map, 105, 251, 105, 12);

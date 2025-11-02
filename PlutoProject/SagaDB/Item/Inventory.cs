@@ -255,8 +255,8 @@ namespace SagaDB.Item {
 
                     var rest = (ushort)(oriItem.Stack - 9999);
                     if (rest > 9999) {
-                        Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                                   "), setting count to the maximal value(9999)");
+                        Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                           "), setting count to the maximal value(9999)");
                         rest = 9999;
                     }
 
@@ -273,8 +273,8 @@ namespace SagaDB.Item {
                 }
 
                 if (item.Stack > 9999) {
-                    Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                               "), setting count to the maximal value(9999)");
+                    Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                       "), setting count to the maximal value(9999)");
                     item.Stack = 9999;
                 }
 
@@ -356,8 +356,8 @@ namespace SagaDB.Item {
 
                         var rest = (ushort)(oriItem.Stack - 9999);
                         if (rest > 9999) {
-                            Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                                       "), setting count to the maximal value(9999)");
+                            Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                               "), setting count to the maximal value(9999)");
                             rest = 9999;
                         }
 
@@ -383,8 +383,8 @@ namespace SagaDB.Item {
                     }
 
                     if (item.Stack > 9999) {
-                        Logger.GetLogger().Warning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
-                                                   "), setting count to the maximal value(9999)");
+                        Logger.ShowWarning("Adding too many item(" + item.BaseData.name + ":" + item.Stack +
+                                           "), setting count to the maximal value(9999)");
                         item.Stack = 9999;
                     }
 
@@ -1279,7 +1279,7 @@ namespace SagaDB.Item {
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, false))
-                                    Logger.GetLogger().Warning(string.Format(
+                                    Logger.ShowWarning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }
@@ -1307,7 +1307,7 @@ namespace SagaDB.Item {
                                 chip.X = x;
                                 chip.Y = y;
                                 if (!InsertChip(page, chip, table, true))
-                                    Logger.GetLogger().Warning(string.Format(
+                                    Logger.ShowWarning(string.Format(
                                         "Cannot insert chip:{0} for character:{1}, droped!!!", chipID, owner.Name));
                             }
                         }

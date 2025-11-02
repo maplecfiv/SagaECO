@@ -67,7 +67,7 @@ namespace SagaMap.Manager {
                 if (!this.maps.ContainsKey((uint)(template * 100 + i)))
                 {
                     newMap.ID = (uint)(template * 100 + i);
-                    SagaLib.Logger.getLogger().Information(newMap.ID.ToString());
+                    SagaLib.Logger.getLogger().ShowInfo(newMap.ID.ToString());
                     break;
                 }
             }
@@ -83,7 +83,7 @@ namespace SagaMap.Manager {
                 for (var i = (int)(template % 1000) + 1; i < 999; i++)
                     if (!Maps.ContainsKey((uint)(template / 1000 * 1000 + template % 1000 + i))) {
                         newMap.ID = (uint)(template / 1000 * 1000 + template % 1000 + i);
-                        Logger.GetLogger().Information(newMap.ID + "副本创建者：" + creator.Name);
+                        Logger.ShowInfo(newMap.ID + "副本创建者：" + creator.Name);
                         break;
                     }
             }

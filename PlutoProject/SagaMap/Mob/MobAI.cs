@@ -1050,7 +1050,7 @@ namespace SagaMap.Mob {
 
         public void OnSeenSkillUse(SkillArg arg) {
             if (map == null) {
-                Logger.GetLogger().Warning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
+                Logger.ShowWarning(string.Format("Mob:{0}({1})'s map is null!", Mob.ActorID, Mob.Name));
                 return;
             }
 

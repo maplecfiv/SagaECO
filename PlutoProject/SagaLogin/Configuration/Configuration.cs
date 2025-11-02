@@ -126,7 +126,7 @@ namespace SagaLogin.Configuration {
                                 getVersion = true;
                             }
                             catch {
-                                Logger.GetLogger().Warning(string.Format(
+                                Logger.ShowWarning(string.Format(
                                     "Cannot find Version:[{0}], using default version:[{1}]", i.InnerText, Version));
                             }
 
@@ -249,10 +249,10 @@ namespace SagaLogin.Configuration {
                 }
 
                 if (!getVersion)
-                    Logger.GetLogger().Warning(string.Format(
+                    Logger.ShowWarning(string.Format(
                         "Packet Version not set, using default version:[{0}], \r\n         please change Config/SagaMap.xml to set version",
                         Version));
-                Logger.GetLogger().Information("Done reading configuration...");
+                Logger.ShowInfo("Done reading configuration...");
             }
             catch (Exception ex) {
                 Logger.ShowError(ex);

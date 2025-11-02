@@ -1,0 +1,21 @@
+event_progresses:
+  entrypoint:
+    type: 1
+    data:
+      message:
+        - hi $CHARACTER_NAME, $R;abc$R;...
+      sender:
+        - ABC
+    next: finish
+  finish:
+    type: 2
+    data:
+      map_id:
+        - 10025000
+      x:
+        - 1
+        - 126
+      y:
+        - 3
+        - 129
+    

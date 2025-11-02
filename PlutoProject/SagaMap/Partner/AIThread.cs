@@ -14,7 +14,7 @@ namespace SagaMap.Partner {
         {
             mainThread = new Thread(mainLoop);
             mainThread.Name = string.Format("PartnerAIThread({0})", mainThread.ManagedThreadId);
-            Logger.GetLogger().Information("PartnerAI线程启动：" + mainThread.Name);
+            Logger.ShowInfo("PartnerAI线程启动：" + mainThread.Name);
             ClientManager.AddThread(mainThread);
             mainThread.Start();
         }

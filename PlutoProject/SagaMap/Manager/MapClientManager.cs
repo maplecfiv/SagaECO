@@ -39,14 +39,11 @@ using SagaMap.Packets.Client.Tamaire;
 using SagaMap.Packets.Client.Trade;
 using SagaMap.Packets.Client.VShop;
 
-namespace SagaMap.Manager
-{
-    public sealed class MapClientManager : ClientManager
-    {
+namespace SagaMap.Manager {
+    public sealed class MapClientManager : ClientManager {
         public Thread check;
 
-        private MapClientManager()
-        {
+        private MapClientManager() {
             Clients = new List<MapClient>();
             CommandTable = new Dictionary<ushort, Packet>();
             //this.commandTable.Add(0x6000, new Packets.Client.TEST_YUMEMI_1());
@@ -367,13 +364,10 @@ namespace SagaMap.Manager
 
         public List<MapClient> Clients { get; }
 
-        public List<MapClient> OnlinePlayer
-        {
-            get
-            {
+        public List<MapClient> OnlinePlayer {
+            get {
                 var list = new List<MapClient>();
-                foreach (var i in Clients)
-                {
+                foreach (var i in Clients) {
                     if (i.NetIo.Disconnected)
                         continue;
                     if (i.Character == null)
@@ -387,22 +381,18 @@ namespace SagaMap.Manager
             }
         }
 
-        public List<MapClient> OnlinePlayerOnlyIP
-        {
-            get
-            {
+        public List<MapClient> OnlinePlayerOnlyIP {
+            get {
                 var ips = new List<string>();
                 var list = new List<MapClient>();
-                foreach (var i in Clients)
-                {
+                foreach (var i in Clients) {
                     if (i.NetIo.Disconnected)
                         continue;
                     if (i.Character == null)
                         continue;
                     if (!i.Character.Online)
                         continue;
-                    if (!ips.Contains(i.Character.Account.LastIP))
-                    {
+                    if (!ips.Contains(i.Character.Account.LastIP)) {
                         ips.Add(i.Character.Account.LastIP);
                         list.Add(i);
                     }
@@ -412,27 +402,21 @@ namespace SagaMap.Manager
             }
         }
 
-        public void Abort()
-        {
+        public void Abort() {
             check.Abort();
             PacketCoordinator.Abort();
         }
 
-        public void Announce(string txt)
-        {
-            try
-            {
+        public void Announce(string txt) {
+            try {
                 foreach (var i in OnlinePlayer)
-                    try
-                    {
+                    try {
                         i.SendAnnounce(txt);
                     }
-                    catch
-                    {
+                    catch {
                     }
             }
-            catch
-            {
+            catch {
             }
         }
 
@@ -440,30 +424,25 @@ namespace SagaMap.Manager
         /// <summary>
         ///     Connects new clients
         /// </summary>
-        public override void NetworkLoop(int maxNewConnections)
-        {
-            for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
-            {
+        public override void NetworkLoop(int maxNewConnections) {
+            for (var i = 0; Listener.Pending() && i < maxNewConnections; i++) {
                 var sock = Listener.AcceptSocket();
-                Logger.GetLogger()
-                    .Information(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
+                Logger
+                    .ShowInfo(string.Format(LocalManager.Instance.Strings.NEW_CLIENT, sock.RemoteEndPoint), null);
                 var client = new MapClient(sock, CommandTable);
                 Clients.Add(client);
             }
         }
 
-        public override void OnClientDisconnect(Client client_t)
-        {
+        public override void OnClientDisconnect(Client client_t) {
             Clients.Remove((MapClient)client_t);
         }
 
-        public MapClient FindClient(ActorPC pc)
-        {
+        public MapClient FindClient(ActorPC pc) {
             return FindClient(pc.CharID);
         }
 
-        public override Client GetClient(uint actorID)
-        {
+        public override Client GetClient(uint actorID) {
             var chr = from c in OnlinePlayer
                 where c.Character.ActorID == actorID
                 select c;
@@ -472,8 +451,7 @@ namespace SagaMap.Manager
             return null;
         }
 
-        public override Client GetClientForName(string actorName)
-        {
+        public override Client GetClientForName(string actorName) {
             var chr = from c in OnlinePlayer
                 where c.Character.Name == actorName
                 select c;
@@ -482,8 +460,7 @@ namespace SagaMap.Manager
             return null;
         }
 
-        public MapClient FindClient(uint charID)
-        {
+        public MapClient FindClient(uint charID) {
             var chr = from c in OnlinePlayer
                 where c.Character.CharID == charID
                 select c;
@@ -492,14 +469,12 @@ namespace SagaMap.Manager
             return null;
         }
 
-        private class Nested
-        {
+        private class Nested {
             internal static readonly MapClientManager instance = new MapClientManager();
 
             // Explicit static constructor to tell C# compiler
             // not to mark type as beforefieldinit
-            static Nested()
-            {
+            static Nested() {
             }
         }
     }

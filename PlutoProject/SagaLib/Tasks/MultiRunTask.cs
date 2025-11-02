@@ -1,13 +1,10 @@
 using System;
 
-namespace SagaLib.Tasks
-{
-    public abstract class MultiRunTask
-    {
+namespace SagaLib.Tasks {
+    public abstract class MultiRunTask {
         /// <summary>
         ///     启动延迟(ms)
         /// </summary>
-
         internal bool executing;
 
         /// <summary>
@@ -18,11 +15,9 @@ namespace SagaLib.Tasks
         /// <summary>
         ///     运行周期(ms)
         /// </summary>
-
         internal DateTime TaskBeginTime;
 
-        public MultiRunTask()
-        {
+        public MultiRunTask() {
         }
 
         /// <summary>
@@ -31,10 +26,9 @@ namespace SagaLib.Tasks
         /// <param name="dueTime">启动延迟</param>
         /// <param name="period">运行周期</param>
         /// <param name="name">名称</param>
-        public MultiRunTask(int dueTime, int period, string name)
-        {
+        public MultiRunTask(int dueTime, int period, string name) {
             if (period <= 0)
-                Logger.GetLogger().Warning("period <= 0");
+                Logger.ShowWarning("period <= 0");
             DueTime = dueTime;
             Period = period;
             Name = name;
@@ -58,20 +52,12 @@ namespace SagaLib.Tasks
         /// <summary>
         ///     启动延迟(ms)
         /// </summary>
-        public int DueTime
-        {
-            get;
-            set;
-        }
+        public int DueTime { get; set; }
 
         /// <summary>
         ///     运行周期(ms)
         /// </summary>
-        public int Period
-        {
-            get;
-            set;
-        }
+        public int Period { get; set; }
 
 
         /// <summary>
@@ -79,20 +65,17 @@ namespace SagaLib.Tasks
         /// </summary>
         public abstract void CallBack();
 
-        protected virtual void OnActivate()
-        {
+        protected virtual void OnActivate() {
         }
 
-        public bool getActivated()
-        {
+        public bool getActivated() {
             return Activated;
         }
 
         /// <summary>
         ///     激活任务
         /// </summary>
-        public void Activate()
-        {
+        public void Activate() {
             NextUpdateTime = DateTime.Now.AddMilliseconds(DueTime);
             TaskManager.Instance.RegisterTask(this);
             Activated = true;
@@ -102,22 +85,18 @@ namespace SagaLib.Tasks
         /// <summary>
         ///     将任务处于非激活状态
         /// </summary>
-        public void Deactivate()
-        {
+        public void Deactivate() {
             TaskManager.Instance.RemoveTask(this);
-            if (Activated)
-            {
+            if (Activated) {
                 Activated = false;
                 OnDeactivate();
             }
         }
 
-        protected virtual void OnDeactivate()
-        {
+        protected virtual void OnDeactivate() {
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             if (Name != null)
                 return Name;
             return base.ToString();

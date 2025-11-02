@@ -47,6 +47,303 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Folder Include="..\Bin\Scripts\Scripts\AAA剧情\第一章·好奇的少女\怪物属性\">
+          <Link>Scripts\Scripts\AAA剧情\第一章·好奇的少女\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\世界区域NPC\鱼缸团城寨\Enum\">
+          <Link>Scripts\Scripts\世界区域NPC\鱼缸团城寨\Enum</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\世界区域NPC\鱼缸团城寨\依兰之恋\">
+          <Link>Scripts\Scripts\世界区域NPC\鱼缸团城寨\依兰之恋</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\世界区域NPC\鱼缸团城寨\哞哞草原NPC\">
+          <Link>Scripts\Scripts\世界区域NPC\鱼缸团城寨\哞哞草原NPC</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\世界区域NPC\鱼缸团城寨\魔导师转职新增\">
+          <Link>Scripts\Scripts\世界区域NPC\鱼缸团城寨\魔导师转职新增</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\剧情\羽川柠剧情\枚举\">
+          <Link>Scripts\Scripts\剧情\羽川柠剧情\枚举</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\不死皇城\普通\刷怪\怪物属性\">
+          <Link>Scripts\Scripts\副本\不死皇城\普通\刷怪\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\东部地牢\NPC\">
+          <Link>Scripts\Scripts\副本\东部地牢\NPC</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\东部地牢\怪物属性\BOSS\">
+          <Link>Scripts\Scripts\副本\东部地牢\怪物属性\BOSS</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\东部地牢\怪物属性\植物\">
+          <Link>Scripts\Scripts\副本\东部地牢\怪物属性\植物</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\东部地牢\道具\">
+          <Link>Scripts\Scripts\副本\东部地牢\道具</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\光之塔\普通刷怪\怪物属性\BOSS困难\">
+          <Link>Scripts\Scripts\副本\光之塔\普通刷怪\怪物属性\BOSS困难</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\光之塔\普通刷怪\怪物属性\BOSS普通\">
+          <Link>Scripts\Scripts\副本\光之塔\普通刷怪\怪物属性\BOSS普通</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\搭档经验值关卡（初级）\怪物属性\">
+          <Link>Scripts\Scripts\副本\搭档经验值关卡（初级）\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\暴走族与光头集团\刷怪\怪物属性\">
+          <Link>Scripts\Scripts\副本\暴走族与光头集团\刷怪\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\测试用\">
+          <Link>Scripts\Scripts\副本\测试用</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\NPC中立岛\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\NPC中立岛</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B1F\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B1F</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B4F\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B4F</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B5F\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\NPC大陆B5F</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\NPC屋子\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\NPC屋子</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞1F怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞1F怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞2F怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞2F怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞3F怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞3F怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞5F怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\大陆洞5F怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\鱼缸岛岛1怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\鱼缸岛岛1怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\副本\鱼缸岛的异变\刷怪\鱼缸岛岛2怪物属性\">
+          <Link>Scripts\Scripts\副本\鱼缸岛的异变\刷怪\鱼缸岛岛2怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\原版世界\">
+          <Link>Scripts\Scripts\原版世界</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\CP兑换相关\">
+          <Link>Scripts\Scripts\奖励道具\CP兑换相关</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\任务点系列道具\">
+          <Link>Scripts\Scripts\奖励道具\任务点系列道具</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\副本相关\东部地牢\">
+          <Link>Scripts\Scripts\奖励道具\副本相关\东部地牢</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\副本相关\光之塔\困难\">
+          <Link>Scripts\Scripts\奖励道具\副本相关\光之塔\困难</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\副本相关\光头\">
+          <Link>Scripts\Scripts\奖励道具\副本相关\光头</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\副本相关\暮色\">
+          <Link>Scripts\Scripts\奖励道具\副本相关\暮色</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\副本相关\鱼缸岛\">
+          <Link>Scripts\Scripts\奖励道具\副本相关\鱼缸岛</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\周清盖章奖励等\">
+          <Link>Scripts\Scripts\奖励道具\周清盖章奖励等</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\技能道具\">
+          <Link>Scripts\Scripts\奖励道具\技能道具</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\无限回廊\">
+          <Link>Scripts\Scripts\奖励道具\无限回廊</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\活动相关\17年2月-春节活动道具\">
+          <Link>Scripts\Scripts\奖励道具\活动相关\17年2月-春节活动道具</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\经验系列道具\">
+          <Link>Scripts\Scripts\奖励道具\经验系列道具</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\奖励道具\野外\">
+          <Link>Scripts\Scripts\奖励道具\野外</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\天界水乡战利品\">
+          <Link>Scripts\Scripts\新加脚本\天界水乡战利品</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\沃特雷亚\副本·海底洞穴（寒流）\怪物属性\BOSS\">
+          <Link>Scripts\Scripts\新加脚本\沃特雷亚\副本·海底洞穴（寒流）\怪物属性\BOSS</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\沃特雷亚\外面\">
+          <Link>Scripts\Scripts\新加脚本\沃特雷亚\外面</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\沃特雷亚\沃特雷亚（外面）\属性\">
+          <Link>Scripts\Scripts\新加脚本\沃特雷亚\沃特雷亚（外面）\属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\沃特雷亚\洞穴\">
+          <Link>Scripts\Scripts\新加脚本\沃特雷亚\洞穴</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\沃特雷亚\海底洞窟（暖流）\属性\">
+          <Link>Scripts\Scripts\新加脚本\沃特雷亚\海底洞窟（暖流）\属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\通天岛\人界\怪物属性\">
+          <Link>Scripts\Scripts\新加脚本\通天岛\人界\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\通天岛\塔内\怪物属性\">
+          <Link>Scripts\Scripts\新加脚本\通天岛\塔内\怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新加脚本\通天岛\天界\">
+          <Link>Scripts\Scripts\新加脚本\通天岛\天界</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\新手教程部分\口内渊\NPCAI\">
+          <Link>Scripts\Scripts\新手教程部分\口内渊\NPCAI</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\朋朋\">
+          <Link>Scripts\Scripts\朋朋</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\CC新春活动\">
+          <Link>Scripts\Scripts\活动\CC新春活动</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\全服光之塔\">
+          <Link>Scripts\Scripts\活动\全服光之塔</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\端午节活动\">
+          <Link>Scripts\Scripts\活动\端午节活动</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\草莓活动\属性\">
+          <Link>Scripts\Scripts\活动\草莓活动\属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\蓝莓活动\属性\">
+          <Link>Scripts\Scripts\活动\蓝莓活动\属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\活动\麻麻捉迷藏\">
+          <Link>Scripts\Scripts\活动\麻麻捉迷藏</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\石像NPC\">
+          <Link>Scripts\Scripts\石像NPC</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\石器时代2.5 （喂\枚舉\">
+          <Link>Scripts\Scripts\石器时代2.5 （喂\枚舉</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\石器时代2.5 （喂\精灵王\">
+          <Link>Scripts\Scripts\石器时代2.5 （喂\精灵王</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\iris卡片能力\">
+          <Link>Scripts\Scripts\系统及各种测试\iris卡片能力</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\PVP测试\刷象征\">
+          <Link>Scripts\Scripts\系统及各种测试\PVP测试\刷象征</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\Test\">
+          <Link>Scripts\Scripts\系统及各种测试\Test</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\二测BossDemo\朋朋的挑战\">
+          <Link>Scripts\Scripts\系统及各种测试\二测BossDemo\朋朋的挑战</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\光头\">
+          <Link>Scripts\Scripts\系统及各种测试\光头</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\大逃杀\">
+          <Link>Scripts\Scripts\系统及各种测试\大逃杀</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\娱乐\">
+          <Link>Scripts\Scripts\系统及各种测试\娱乐</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\挑战测试\挑战记录\">
+          <Link>Scripts\Scripts\系统及各种测试\挑战测试\挑战记录</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\料理\">
+          <Link>Scripts\Scripts\系统及各种测试\料理</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\无限回廊\">
+          <Link>Scripts\Scripts\系统及各种测试\无限回廊</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\测试剧情\地图\">
+          <Link>Scripts\Scripts\系统及各种测试\测试剧情\地图</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\测试剧情\记录\">
+          <Link>Scripts\Scripts\系统及各种测试\测试剧情\记录</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\称号\">
+          <Link>Scripts\Scripts\系统及各种测试\称号</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\系统及各种测试\试炼挑战\第一关\怪物\">
+          <Link>Scripts\Scripts\系统及各种测试\试炼挑战\第一关\怪物</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\跑商\搬运\">
+          <Link>Scripts\Scripts\跑商\搬运</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\ECO遗迹外\刷怪\">
+          <Link>Scripts\Scripts\野外\ECO遗迹外\刷怪</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\万圣节地图\刷怪\">
+          <Link>Scripts\Scripts\野外\万圣节地图\刷怪</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\1 北方高原10049000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\1 北方高原10049000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\2 北方中央山脉10050000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\2 北方中央山脉10050000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\3 永恒之北部极地10051000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\3 永恒之北部极地10051000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\4 北部地牢20014000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\4 北部地牢20014000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\5 北国上层\">
+          <Link>Scripts\Scripts\野外\北國刷怪\5 北国上层</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\6 地下市民街20210000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\6 地下市民街20210000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\7 地下水洞20211000\">
+          <Link>Scripts\Scripts\野外\北國刷怪\7 地下水洞20211000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\木桩\">
+          <Link>Scripts\Scripts\野外\北國刷怪\木桩</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\北國刷怪\领主\">
+          <Link>Scripts\Scripts\野外\北國刷怪\领主</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\南國10066000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\南國10066000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\南牢120020000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\南牢120020000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\南牢220021000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\南牢220021000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\南牢320022000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\南牢320022000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\鐵火山10064000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\鐵火山10064000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\阿伊恩薩烏斯路10063000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\阿伊恩薩烏斯路10063000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\南國刷怪\鬼之岩10061000\">
+          <Link>Scripts\Scripts\野外\南國刷怪\鬼之岩10061000</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\夜晚东国\夜晚东国刷怪怪物属性\">
+          <Link>Scripts\Scripts\野外\夜晚东国\夜晚东国刷怪怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\牛牛草原\刷怪\牛牛草原怪物属性\">
+          <Link>Scripts\Scripts\野外\牛牛草原\刷怪\牛牛草原怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\鱼缸岛周围刷怪\A区怪物属性\">
+          <Link>Scripts\Scripts\野外\鱼缸岛周围刷怪\A区怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\鱼缸岛周围刷怪\B与C区怪物属性\">
+          <Link>Scripts\Scripts\野外\鱼缸岛周围刷怪\B与C区怪物属性</Link>
+        </Folder>
+        <Folder Include="..\Bin\Scripts\Scripts\野外\鱼缸岛周围刷怪\素材怪物\">
+          <Link>Scripts\Scripts\野外\鱼缸岛周围刷怪\素材怪物</Link>
+        </Folder>
         <Folder Include="Configuration\*"/>
         <Folder Include="Manager\*"/>
         <Folder Include="Network\*"/>

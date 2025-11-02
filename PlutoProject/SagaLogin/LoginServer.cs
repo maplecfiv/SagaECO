@@ -13,8 +13,6 @@ using SagaLogin.Manager;
 
 namespace SagaLogin {
     public class LoginServer {
-        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<LoginServer>();
-
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -48,7 +46,7 @@ namespace SagaLogin {
             var notConnected = false;
 
             while (notConnected) {
-                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.ShowInfo("Trying to reconnect to char db server ..", null);
             }
         }
 
@@ -56,12 +54,12 @@ namespace SagaLogin {
             var notConnected = false;
 
             if (!accountDB.isConnected()) {
-                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 notConnected = true;
             }
 
             while (notConnected) {
-                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.ShowInfo("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected()) {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
@@ -69,8 +67,8 @@ namespace SagaLogin {
                     notConnected = true;
                 }
                 else {
-                    Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                    Logger.GetLogger().Information("Clients can now connect again", null);
+                    Logger.ShowInfo("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                    Logger.ShowInfo("Clients can now connect again", null);
                     notConnected = false;
                 }
             }
@@ -101,40 +99,40 @@ namespace SagaLogin {
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("======================================================================");
+            SagaLib.Logger.ShowInfo("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Information("                     SagaECO Login Server                ");
-            _logger.Information("         (C)2013-2017 The Pluto ECO Project Development Team              ");
+            SagaLib.Logger.ShowInfo("                     SagaECO Login Server                ");
+            SagaLib.Logger.ShowInfo("         (C)2013-2017 The Pluto ECO Project Development Team              ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("======================================================================");
+            SagaLib.Logger.ShowInfo("======================================================================");
             //Console.ResetColor();
 
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information("Version Informations:");
+            Logger.ShowInfo("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaLogin");
+            SagaLib.Logger.ShowInfo("SagaLogin");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaLib");
+            SagaLib.Logger.ShowInfo("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
-                                GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" +
+                                    GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaDB");
+            SagaLib.Logger.ShowInfo("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
-                                GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" +
+                                    GlobalInfo.ModifyDate + ")");
 
 
-            Logger.GetLogger().Information("Starting Initialization...", null);
+            Logger.ShowInfo("Starting Initialization...", null);
 
             Configuration.Configuration.Instance.Initialization(
                 $"{ConfigLoader.LoadConfigPath()}/SagaLogin.xml");
 
             //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
-            Logger.GetLogger().Information("Initializing VirtualFileSystem...");
+            Logger.ShowInfo("Initializing VirtualFileSystem...");
 // #if FreeVersion1
             // VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
 // #else
@@ -156,14 +154,14 @@ namespace SagaLogin {
             LoginClientManager.Instance.Start();
             if (!LoginClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
                 Logger.ShowError("cannot listen on port: " + Configuration.Configuration.Instance.Port);
-                Logger.GetLogger().Information("Shutting down in 20sec.");
+                Logger.ShowInfo("Shutting down in 20sec.");
                 Thread.Sleep(20000);
                 return;
             }
 
             Global.clientMananger = LoginClientManager.Instance;
 
-            _logger.Information("Accepting clients.");
+            SagaLib.Logger.ShowInfo("Accepting clients.");
 
             new Thread(ThreadShutdownWatcher).Start();
 
@@ -182,7 +180,7 @@ namespace SagaLogin {
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args) {
-            Logger.GetLogger().Information("Closing.....", null);
+            Logger.ShowInfo("Closing.....", null);
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {

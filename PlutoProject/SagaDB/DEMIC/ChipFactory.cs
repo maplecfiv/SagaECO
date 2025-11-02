@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Xml;
 using SagaLib;
 
-namespace SagaDB.DEMIC
-{
-    public class ChipFactory : Factory<ChipFactory, Chip.BaseData>
-    {
-        public ChipFactory()
-        {
+namespace SagaDB.DEMIC {
+    public class ChipFactory : Factory<ChipFactory, Chip.BaseData> {
+        public ChipFactory() {
             loadingTab = "Loading DEMIC Chip database";
             loadedTab = " chips loaded.";
             databaseName = "DEMIC Chip";
@@ -17,30 +14,25 @@ namespace SagaDB.DEMIC
 
         public Dictionary<short, Chip.BaseData> ByChipID { get; } = new Dictionary<short, Chip.BaseData>();
 
-        public Chip GetChip(uint itemID)
-        {
-            if (Items.ContainsKey(itemID))
-            {
+        public Chip GetChip(uint itemID) {
+            if (Items.ContainsKey(itemID)) {
                 var chip = new Chip(Items[itemID]);
                 return chip;
             }
 
-            Logger.GetLogger().Warning("Cannot find chip:" + itemID);
+            Logger.ShowWarning("Cannot find chip:" + itemID);
             return null;
         }
 
-        protected override void ParseXML(XmlElement root, XmlElement current, Chip.BaseData item)
-        {
+        protected override void ParseXML(XmlElement root, XmlElement current, Chip.BaseData item) {
             throw new NotImplementedException();
         }
 
-        protected override uint GetKey(Chip.BaseData item)
-        {
+        protected override uint GetKey(Chip.BaseData item) {
             return item.itemID;
         }
 
-        protected override void ParseCSV(Chip.BaseData item, string[] paras)
-        {
+        protected override void ParseCSV(Chip.BaseData item, string[] paras) {
             item.chipID = short.Parse(paras[0]);
             item.itemID = uint.Parse(paras[1]);
             ByChipID.Add(item.chipID, item);

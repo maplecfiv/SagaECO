@@ -50,7 +50,7 @@ namespace SagaDB.Map {
 
         public void LoadGatherInterval(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
-            Logger.GetLogger().Information("Loading Gather database...");
+            Logger.ShowInfo("Loading Gather database...");
             var count = 0;
             string[] paras;
             while (!sr.EndOfStream) {
@@ -85,7 +85,7 @@ namespace SagaDB.Map {
                 }
             }
 
-            Logger.GetLogger().Information(count + " gather informations loaded.");
+            Logger.ShowInfo(count + " gather informations loaded.");
             sr.Close();
         }
 

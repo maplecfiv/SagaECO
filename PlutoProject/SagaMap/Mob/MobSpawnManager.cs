@@ -204,14 +204,14 @@ namespace SagaMap.Mob {
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadOne(f, 0);
-            Logger.GetLogger().Information(total + " mobs spawned...");
+            Logger.ShowInfo(total + " mobs spawned...");
         }
 
         public void LoadAnAI(string path) {
             var file = VirtualFileSystemManager.Instance.FileSystem.SearchFile(path, "*.xml");
             var total = 0;
             foreach (var f in file) total += LoadAI(f);
-            Logger.GetLogger().Information(total + " 加载新的AI...");
+            Logger.ShowInfo(total + " 加载新的AI...");
         }
     }
 }

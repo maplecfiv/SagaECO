@@ -194,7 +194,7 @@ namespace SagaLib {
                         Items.Add(key, item);
                     }
                     else {
-                        //Logger.GetLogger().Warning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
+                        //Logger.ShowWarning(string.Format("[{0}]=>该ID已存在=>来自:{1}", key, path));
                         Items[key] = item;
                     }
 #if !Web

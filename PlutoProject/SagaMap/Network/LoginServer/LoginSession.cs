@@ -63,7 +63,7 @@ namespace SagaMap.Network.LoginServer {
                 times--;
             } while (!Connected);
 
-            Logger.GetLogger().Information("Successfully connected to the loginserver", null);
+            Logger.ShowInfo("Successfully connected to the loginserver", null);
             state = SESSION_STATE.CONNECTED;
             try {
                 NetIo = new NetIo(sock, commandTable, this);
@@ -75,7 +75,7 @@ namespace SagaMap.Network.LoginServer {
                 NetIo.SendPacket(p, true, true);
             }
             catch (Exception ex) {
-                Logger.GetLogger().Warning(ex.StackTrace, null);
+                Logger.ShowWarning(ex.StackTrace, null);
             }
         }
 
@@ -110,18 +110,18 @@ namespace SagaMap.Network.LoginServer {
         public void OnGetConfig(INTERN_LOGIN_REQUEST_CONFIG_ANSWER p) {
             if (p.AuthOK) {
                 SagaLib.ConfigLoader.StartupSetting = p.StartupSetting;
-                Logger.GetLogger().Information("Got Configuration from login server:");
+                Logger.ShowInfo("Got Configuration from login server:");
                 foreach (var i in SagaLib.ConfigLoader.StartupSetting.Keys) {
                     //Console.ForegroundColor = ConsoleColor.Green;
-                    _logger.Information("[Info]");
+                    _logger.ShowInfo("[Info]");
                     //Console.ForegroundColor = ConsoleColor.Yellow;
-                    _logger.Information("Configuration for Race[");
+                    _logger.ShowInfo("Configuration for Race[");
                     //Console.ForegroundColor = ConsoleColor.White;
-                    _logger.Information(i.ToString());
+                    _logger.ShowInfo(i.ToString());
                     //Console.ForegroundColor = ConsoleColor.Yellow;
-                    _logger.Information("]");
+                    _logger.ShowInfo("]");
                     //Console.ForegroundColor = ConsoleColor.White;
-                    _logger.Information(":\r\n      " + SagaLib.ConfigLoader.StartupSetting[i]);
+                    _logger.ShowInfo(":\r\n      " + SagaLib.ConfigLoader.StartupSetting[i]);
                     //Console.ResetColor();
                 }
 

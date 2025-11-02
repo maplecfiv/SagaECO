@@ -12,7 +12,7 @@ namespace SagaMap.Tasks.System {
         public override void CallBack() {
             //ClientManager.EnterCriticalArea();
             try {
-                Logger.GetLogger().Information("Autosaving Server Svar data...");
+                Logger.ShowInfo("Autosaving Server Svar data...");
                 MapServer.charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
             }
             catch (Exception ex) {

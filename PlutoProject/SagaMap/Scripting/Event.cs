@@ -725,7 +725,7 @@ namespace SagaMap.Scripting {
             p.unknown = 1;
             client.NetIo.SendPacket(p);
 
-            //Logger.getLogger().Information("\n"+p.DumpData());
+            //Logger.getLogger().ShowInfo("\n"+p.DumpData());
         }
 
         /// <summary>
@@ -1122,7 +1122,7 @@ namespace SagaMap.Scripting {
         protected void AddGoods(params uint[] goods) {
             foreach (var i in goods)
                 if (Goods.Count == 12)
-                    Logger.GetLogger().Warning(ToString() + ":Maximal shop items(12) reached, skiping");
+                    Logger.ShowWarning(ToString() + ":Maximal shop items(12) reached, skiping");
                 else
                     Goods.Add(i);
         }
@@ -2591,7 +2591,7 @@ namespace SagaMap.Scripting {
         ///     离开飞空庭，如果不在飞空庭中则什么都不做
         /// </summary>
         /// <param name="pc">玩家</param>
-        protected void ExitFGarden(ActorPC pc) {
+        protected void ExitFlyingGarden(ActorPC pc) {
             var map = MapManager.Instance.GetMap(pc.MapID);
             pc.Speed = 350;
             if (map.IsMapInstance && map.ID / 10 * 10 == 70000000)

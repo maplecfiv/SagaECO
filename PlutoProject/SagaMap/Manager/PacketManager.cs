@@ -15,7 +15,7 @@ namespace SagaMap.Manager {
                 .Where(t => t.Namespace == "SagaMap.Packets.Server")
                 .ToList();
 
-            // Logger.getLogger().Information("Loading uncompiled PacketFiles");
+            // Logger.getLogger().ShowInfo("Loading uncompiled PacketFiles");
             // var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
             // var provider = new CSharpCodeProvider(dic);
             // Directory.SetCurrentDirectory(Directory.GetParent(path).FullName);
@@ -39,7 +39,7 @@ namespace SagaMap.Manager {
                 //     if (newAssembly != null)
                 //     {
                 //         tmp = LoadAssembly(newAssembly);
-                //         Logger.getLogger().Information(string.Format("Containing {0} Events", tmp));
+                //         Logger.getLogger().ShowInfo(string.Format("Containing {0} Events", tmp));
                 //         Packetcount += tmp;
                 //     }
                 // }
@@ -105,7 +105,7 @@ namespace SagaMap.Manager {
                         }
                     }
                     catch (Exception ex) {
-                        Logger.GetLogger().Warning(ex, ex.Message);
+                        Logger.ShowError(ex);
                     }
                 }
             }

@@ -52,8 +52,6 @@ using AIThread = SagaMap.Mob.AIThread;
 
 namespace SagaMap {
     public class MapServer {
-        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<MapServer>();
-
         /// <summary>
         ///     The characterdatabase associated to this mapserver.
         /// </summary>
@@ -91,12 +89,12 @@ namespace SagaMap {
         //     var notConnected = false;
         //
         //     if (!accountDB.isConnected()) {
-        //         Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+        //         Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
         //         notConnected = true;
         //     }
         //
         //     while (notConnected) {
-        //         Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
+        //         Logger.ShowInfo("Trying to reconnect to char db server ..", null);
         //         accountDB.Connect();
         //         if (!accountDB.isConnected()) {
         //             Logger.ShowError("Failed.. Trying again in 10sec", null);
@@ -104,8 +102,8 @@ namespace SagaMap {
         //             notConnected = true;
         //         }
         //         else {
-        //             Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-        //             Logger.GetLogger().Information("Clients can now connect again", null);
+        //             Logger.ShowInfo("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+        //             Logger.ShowInfo("Clients can now connect again", null);
         //             notConnected = false;
         //         }
         //     }
@@ -129,63 +127,63 @@ namespace SagaMap {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("======================================================================");
+            SagaLib.Logger.ShowInfo("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            _logger.Information("                         SagaECO Map Server                ");
-            _logger.Information("         (C)2013-2017 The Pluto ECO Project Development Team                ");
+            SagaLib.Logger.ShowInfo("                         SagaECO Map Server                ");
+            SagaLib.Logger.ShowInfo("         (C)2013-2017 The Pluto ECO Project Development Team                ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("======================================================================");
+            SagaLib.Logger.ShowInfo("======================================================================");
             //Console.ResetColor();
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information("Version Informations:");
+            Logger.ShowInfo("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaMap");
+            SagaLib.Logger.ShowInfo("SagaMap");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaLib");
+            SagaLib.Logger.ShowInfo("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
-                                GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" +
+                                    GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("SagaDB");
+            SagaLib.Logger.ShowInfo("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(":SVN Rev." + GlobalInfo.Version + "(" +
-                                GlobalInfo.ModifyDate + ")");
+            SagaLib.Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" +
+                                    GlobalInfo.ModifyDate + ")");
 
-            Logger.GetLogger().Information(LocalManager.Instance.Strings.INITIALIZATION, null);
+            Logger.ShowInfo(LocalManager.Instance.Strings.INITIALIZATION, null);
 
             Configuration.Configuration.Instance.Initialization(
                 $"{ConfigLoader.LoadConfigPath()}/SagaMap.xml");
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Information("[Info]");
+            SagaLib.Logger.ShowInfo("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("Current Packet Version:[");
+            SagaLib.Logger.ShowInfo("Current Packet Version:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(Configuration.Configuration.Instance.Version.ToString());
+            SagaLib.Logger.ShowInfo(Configuration.Configuration.Instance.Version.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("]");
+            SagaLib.Logger.ShowInfo("]");
 
             // LocalManager.Instance.CurrentLanguage =
             //     (LocalManager.Languages)Enum.Parse(typeof(LocalManager.Languages),
             //         Configuration.Configuration.Instance.Language);
 
             //Console.ForegroundColor = ConsoleColor.Green;
-            _logger.Information("[Info]");
+            SagaLib.Logger.ShowInfo("[Info]");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("Current Language:[");
+            SagaLib.Logger.ShowInfo("Current Language:[");
             //Console.ForegroundColor = ConsoleColor.White;
-            _logger.Information(LocalManager.Instance.ToString());
+            SagaLib.Logger.ShowInfo(LocalManager.Instance.ToString());
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            _logger.Information("]");
+            SagaLib.Logger.ShowInfo("]");
             //Console.ResetColor();
 
             //int item = (int)ContainerType.HEAD_ACCE2;
 
             //null.LogLevel = (Logger.LogContent)Configuration.Configuration.Instance.LogLevel;
 
-            Logger.GetLogger().Information("Initializing VirtualFileSystem...");
+            Logger.ShowInfo("Initializing VirtualFileSystem...");
 // #if FreeVersion1
             // VirtualFileSystemManager.Instance.Init(FileSystems.LPK, $"{ConfigLoader.LoadDbPath()}/DB.lpk");
 // #else
@@ -415,13 +413,13 @@ namespace SagaMap {
                       Configuration.Configuration.Instance.APIPort + "/";
             var ws = new WebServer.WebServer(SendResponse, pre);
             ws.Run();
-            Logger.GetLogger().Information("Accepting API Clients from: " + pre);
+            Logger.ShowInfo("Accepting API Clients from: " + pre);
 
 
             MapClientManager.Instance.Start();
             if (!MapClientManager.Instance.StartNetwork(Configuration.Configuration.Instance.Port)) {
                 Logger.ShowError("cannot listen on port: " + Configuration.Configuration.Instance.Port);
-                Logger.GetLogger().Information("Shutting down in 20sec.");
+                Logger.ShowInfo("Shutting down in 20sec.");
                 MapClientManager.Instance.Abort();
                 Thread.Sleep(20000);
                 return;
@@ -449,7 +447,7 @@ namespace SagaMap {
                 }
 
 
-                Logger.GetLogger().Information("Clearing SQL Logs");
+                Logger.ShowInfo("Clearing SQL Logs");
                 Logger.ShowInfo(string.Format("DELETE FROM `log` WHERE `eventTime` < '{0}';",
                     Logger.defaultSql.ToSqlDateTime(DateTime.Now - new TimeSpan(15, 0, 0, 0))));
             }
@@ -519,7 +517,7 @@ namespace SagaMap {
 
 
             Logger.ProgressBarHide("加载总耗时：" + (DateTime.Now - time).TotalMilliseconds + "ms");
-            Logger.GetLogger().Information(LocalManager.Instance.Strings.ACCEPTING_CLIENT);
+            Logger.ShowInfo(LocalManager.Instance.Strings.ACCEPTING_CLIENT);
 
             var console = new Thread(ConsoleThread);
             console.Start();
@@ -599,12 +597,12 @@ namespace SagaMap {
         }
 
         private static void ProcessShutdown() {
-            Logger.GetLogger().Information("Closing.....", null);
+            Logger.ShowInfo("Closing.....", null);
             shutingdown = true;
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
             MapClientManager.Instance.Clients.CopyTo(clients);
-            Logger.GetLogger().Information("Saving player's data.....", null);
+            Logger.ShowInfo("Saving player's data.....", null);
 
             foreach (var i in clients)
                 try {
@@ -615,7 +613,7 @@ namespace SagaMap {
                     Logger.ShowError(exception);
                 }
 
-            Logger.GetLogger().Information("Saving golem's data.....", null);
+            Logger.ShowInfo("Saving golem's data.....", null);
 
             foreach (var i in MapManager.Instance.Maps.Values) {
                 foreach (var j in i.Actors.Values)
@@ -652,20 +650,20 @@ namespace SagaMap {
                             ClientManager.PrintAllThreads();
                             break;
                         case "printtaskinfo":
-                            Logger.GetLogger().Warning("Active AI count:" + AIThread.Instance.ActiveAI);
+                            Logger.ShowWarning("Active AI count:" + AIThread.Instance.ActiveAI);
                             var tasks = TaskManager.Instance.RegisteredTasks;
-                            Logger.GetLogger().Warning("Active Tasks:" + tasks.Count);
-                            foreach (var i in tasks) Logger.GetLogger().Warning(i);
+                            Logger.ShowWarning("Active Tasks:" + tasks.Count);
+                            foreach (var i in tasks) Logger.ShowWarning(i);
                             break;
                         case "printband":
                             var sendTotal = 0;
                             var receiveTotal = 0;
-                            Logger.GetLogger().Warning("Bandwidth usage information:");
+                            Logger.ShowWarning("Bandwidth usage information:");
                             try {
                                 foreach (var i in MapClientManager.Instance.OnlinePlayer) {
                                     sendTotal += i.NetIo.UpStreamBand;
                                     receiveTotal += i.NetIo.DownStreamBand;
-                                    Logger.GetLogger().Warning(string.Format(
+                                    Logger.ShowWarning(string.Format(
                                         "Client:{0} Receive:{1:0.##}KB/s Send:{2:0.##}KB/s",
                                         i,
                                         (float)i.NetIo.DownStreamBand / 1024,
@@ -675,7 +673,7 @@ namespace SagaMap {
                             catch {
                             }
 
-                            Logger.GetLogger().Warning(string.Format("Total: Receive:{0:0.##}KB/s Send:{1:0.##}KB/s",
+                            Logger.ShowWarning(string.Format("Total: Receive:{0:0.##}KB/s Send:{1:0.##}KB/s",
                                 (float)receiveTotal / 1024,
                                 (float)sendTotal / 1024));
                             break;
@@ -711,7 +709,7 @@ namespace SagaMap {
                             break;
                         case "savevar":
                             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
-                            Logger.GetLogger().Information("Saving ....", null);
+                            Logger.ShowInfo("Saving ....", null);
                             break;
                         case "quit":
                             ProcessShutdown();
@@ -722,16 +720,16 @@ namespace SagaMap {
 
                                 x = Global.PosX16to8(i.Character.X, i.map.Width);
                                 y = Global.PosY16to8(i.Character.Y, i.map.Height);
-                                Logger.GetLogger().Information(i.Character.Name + "(CharID:" + i.Character.CharID +
-                                                               ")[" + i.Map.Name +
-                                                               " " + x + "," + y + "] IP：" +
-                                                               i.Character.Account.LastIP);
+                                Logger.ShowInfo(i.Character.Name + "(CharID:" + i.Character.CharID +
+                                                ")[" + i.Map.Name +
+                                                " " + x + "," + y + "] IP：" +
+                                                i.Character.Account.LastIP);
                             }
 
-                            Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
-                                                           MapClientManager.Instance.OnlinePlayer.Count);
-                            Logger.GetLogger()
-                                .Information("当前IP在线：" + MapClientManager.Instance.OnlinePlayerOnlyIP.Count);
+                            Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                                            MapClientManager.Instance.OnlinePlayer.Count);
+                            Logger
+                                .ShowInfo("当前IP在线：" + MapClientManager.Instance.OnlinePlayerOnlyIP.Count);
                             break;
                         case "kick2":
                             if (args.Length > 1)
@@ -759,12 +757,12 @@ namespace SagaMap {
         }
 
         private static void ShutingDown(object sender, ConsoleCancelEventArgs args) {
-            Logger.GetLogger().Information("Closing.....", null);
+            Logger.ShowInfo("Closing.....", null);
             shutingdown = true;
             charDB.SaveServerVar(ScriptManager.Instance.VariableHolder);
             var clients = new MapClient[MapClientManager.Instance.Clients.Count];
             MapClientManager.Instance.Clients.CopyTo(clients);
-            Logger.GetLogger().Information("Saving golem's data.....", null);
+            Logger.ShowInfo("Saving golem's data.....", null);
 
             var maps = MapManager.Instance.Maps.Values.ToArray();
             foreach (var i in maps) {
@@ -789,7 +787,7 @@ namespace SagaMap {
                     }
             }
 
-            Logger.GetLogger().Information("Saving player's data.....", null);
+            Logger.ShowInfo("Saving player's data.....", null);
 
             foreach (var i in clients)
                 try {
@@ -801,7 +799,7 @@ namespace SagaMap {
                 }
 
 
-            // Logger.GetLogger().Information("Closing MySQL connection....");
+            // Logger.ShowInfo("Closing MySQL connection....");
             // if (charDB.GetType() == typeof(MySQLConnectivity)) {
             //     var con = (MySQLConnectivity)charDB;
             //     while (!con.CanClose)
@@ -856,7 +854,7 @@ namespace SagaMap {
                     i.OnDestrory();
             }
 
-            // Logger.GetLogger().Information("Closing MySQL connection....");
+            // Logger.ShowInfo("Closing MySQL connection....");
             // if (charDB.GetType() == typeof(MySQLConnectivity)) {
             //     var con = (MySQLConnectivity)charDB;
             //     while (!con.CanClose)

@@ -141,7 +141,7 @@ return;
                         foreach (var item in pc.AnotherPapers)
                             pc.AnotherPapers[item.Key] = new AnotherDetail();
                         SagaMap.MapServer.charDB.SaveChar(pc, true);
-                        SagaMap.Network.Client.MapClient.FromActorPC(pc).netIO.Disconnect();
+                        SagaMap.Network.Client.MapClient.FromActorPC(pc).NetIo.Disconnect();
                     }
                 }
             }

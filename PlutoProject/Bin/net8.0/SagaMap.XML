@@ -2425,7 +2425,7 @@
             <param name="pc">玩家</param>
             <param name="rope">绳子的Actor</param>
         </member>
-        <member name="M:SagaMap.Scripting.Event.ExitFGarden(SagaDB.Actor.ActorPC)">
+        <member name="M:SagaMap.Scripting.Event.ExitFlyingGarden(SagaDB.Actor.ActorPC)">
             <summary>
                 离开飞空庭，如果不在飞空庭中则什么都不做
             </summary>
@@ -8584,6 +8584,38 @@
             <param name="nx">回傳X</param>
             <param name="ny">回傳Y</param>
             <returns>是否正常(無溢位發生)</returns>
+        </member>
+        <member name="F:SagaScript.Chinese.Enums.Job2X_03.第四個問題回答錯誤">
+            _4A08
+        </member>
+        <member name="M:SagaScript.行會商人.Init(System.UInt32,System.UInt32,System.Int32,SagaDB.Item.WarehousePlace)">
+            <summary>
+            初始化行會商人
+            </summary>
+            <param name="eventID">事件ID</param>
+            <param name="shop">商店ID</param>
+            <param name="wareFee">倉庫費用</param>
+            <param name="place">倉庫地點</param>
+        </member>
+        <member name="M:SagaScript.M21193000.S11001825.timerCall_01(SagaMap.Scripting.Timer,SagaDB.Actor.ActorPC)">
+            <summary>
+            计时器处理器
+            </summary>
+            <param name="timer"></param>
+            <param name="invoker"></param>
+        </member>
+        <member name="M:SagaScript.M21193000.S11001825.WarpToDungeon(SagaDB.Actor.ActorPC)">
+            <summary>
+            传送玩家到副本
+            </summary>
+            <param name="pc">玩家</param>
+        </member>
+        <member name="M:SagaScript.M21193000.S11001825.GetPossibleDungeons(SagaDB.Actor.ActorPC)">
+            <summary>
+            取得可能的副本
+            </summary>
+            <param name="pc"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

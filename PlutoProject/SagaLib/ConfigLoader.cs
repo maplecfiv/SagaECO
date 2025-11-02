@@ -103,6 +103,12 @@ namespace SagaLib {
             return path;
         }
 
+        public static string LoadEventPath() {
+            string path = $"{LoadDbPath()}/Events";
+            // SagaLib.Logger.ShowInfo($"load packet config from {path}");
+            return path;
+        }
+
         public static string LoadDbPath() {
             string path = "/home/maple/projects/SagaECO/PlutoProject/Bin/DB";
             // SagaLib.Logger.ShowInfo($"load db config from {path}");
@@ -116,7 +122,7 @@ namespace SagaLib {
         }
 
         public static string LoadScriptPath() {
-            string path = $"/home/maple/projects/SagaECO/PlutoProject/Bin/Script";
+            string path = $"/home/maple/projects/SagaECO/PlutoProject/Bin/Scripts";
             // SagaLib.Logger.ShowInfo($"load config from {path}");
             return path;
         }

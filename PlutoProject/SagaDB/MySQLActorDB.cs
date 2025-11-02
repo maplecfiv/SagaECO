@@ -46,23 +46,13 @@ namespace SagaDB {
 
                 aChar.CharID = CharacterRepository.CreateCharacter(aChar, (uint)accountId);
 
-                SqlSugarHelper.Db.Insertable<Inventory>(new Inventory {
-                    CharacterId = aChar.CharID,
-                    Data = aChar.Inventory.ToBytes()
-                }).ExecuteCommand();
+                InventoryRepository.SaveInventory(aChar);
 
                 if (aChar.Inventory.WareHouse != null) {
-                    if (SqlSugarHelper.Db.Queryable<Warehouse>().Where(item => item.AccountId == accountId).ToList()
-                            .Count == 0) {
-                        SqlSugarHelper.Db.Insertable<Warehouse>(new Warehouse {
-                            AccountId = accountId,
-                            Data = aChar.Inventory.WareToBytes()
-                        });
-                    }
+                    WarehouseRepository.CreateWarehouse(aChar, (uint)accountId);
                 }
 
                 SqlSugarHelper.Db.CommitTran();
-
 
                 aChar.Inventory.WareHouse = null;
                 //to avoid deleting items from warehouse
@@ -89,16 +79,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                ap.ActorPartnerID = SqlSugarHelper.Db.Insertable<Entities.Partner>(new Entities.Partner {
-                    PartnerId = ap.partnerid,
-                    Name = ap.BaseData.name,
-                    Level = ap.Level,
-                    TrustLevel = ap.reliability, Rebirth = 0, Rank = ap.rank, PerkPoints = ap.perkpoint,
-                    Perk0 = ap.perk0,
-                    Perk1 = ap.perk1, Perk2 = ap.perk2, Perk3 = ap.perk3, Perk4 = ap.perk4, Perk5 = ap.perk5,
-                    AiMode = ap.ai_mode, BasicAiMode1 = ap.basic_ai_mode, BasicAiMode2 = ap.basic_ai_mode_2, Hp = ap.HP,
-                    MaxHp = ap.MaxHP, Mp = ap.MP, MaxMp = ap.MaxMP, Sp = ap.SP, MaxSp = ap.MaxSP
-                }).ExecuteReturnEntity().ActorPartnerId;
+                ap.ActorPartnerID = PartnerRepository.CreatePartner(ap).ActorPartnerId;
 
                 SqlSugarHelper.Db.CommitTran();
                 return ap.ActorPartnerID;
@@ -119,39 +100,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-
-                foreach (var partner in SqlSugarHelper.Db.Queryable<Entities.Partner>().TranLock(DbLockType.Wait)
-                             .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList()) {
-                    partner.PartnerId = ap.partnerid;
-                    partner.Name = ap.Name;
-                    partner.Level = ap.Level;
-                    partner.TrustLevel = ap.reliability;
-                    partner.Rebirth = ap.rebirth ? (byte)1 : (byte)0;
-                    partner.Rank = ap.rank;
-                    partner.PerkPoints = ap.perkpoint;
-                    partner.Hp = ap.HP;
-                    partner.MaxHp = ap.MaxHP;
-                    partner.Mp = ap.MP;
-                    partner.MaxMp = ap.MaxMP;
-                    partner.Sp = ap.SP;
-                    partner.MaxSp = ap.MaxSP;
-                    partner.Perk0 = ap.perk0;
-                    partner.Perk1 = ap.perk1;
-                    partner.Perk2 = ap.perk2;
-                    partner.Perk3 = ap.perk3;
-                    partner.Perk4 = ap.perk4;
-                    partner.Perk5 = ap.perk5;
-                    partner.AiMode = ap.ai_mode;
-                    partner.BasicAiMode1 = ap.basic_ai_mode;
-                    partner.BasicAiMode2 = ap.basic_ai_mode_2;
-                    partner.Exp = ap.exp;
-                    partner.PictId = ap.PictID;
-                    partner.NextFeedTime = ap.nextfeedtime;
-                    partner.ReliabilityUprate = ap.reliabilityuprate;
-                    partner.TrustExp = ap.reliabilityexp;
-
-                    SqlSugarHelper.Db.Updateable(partner).ExecuteCommand();
-                }
+                PartnerRepository.SavePartner(ap);
 
                 /*SavePartnerEquip(ap);
                 SavePartnerCube(ap);
@@ -166,41 +115,14 @@ namespace SagaDB {
         }
 
         public void SavePartnerEquip(ActorPartner ap) {
-            string sqlstr;
             if (ap == null) {
                 return;
             }
 
-            var apid = ap.ActorPartnerID;
-
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var equip in SqlSugarHelper.Db.Queryable<Entities.PartnerEquip>().TranLock(DbLockType.Wait)
-                             .Where(item => item.ActorPartnerId == apid).ToList()) {
-                    SqlSugarHelper.Db.Deleteable(equip).ExecuteCommand();
-                }
-
-                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.COSTUME)) {
-                    SqlSugarHelper.Db.Insertable(new PartnerEquip {
-                        ActorPartnerId = apid, Type = 1, ItemId = ap.equipments[EnumPartnerEquipSlot.COSTUME].ItemID,
-                        Count = ap.equipments[EnumPartnerEquipSlot.COSTUME].Stack
-                    }).ExecuteCommand();
-                }
-
-                if (ap.equipments.ContainsKey(EnumPartnerEquipSlot.WEAPON)) {
-                    SqlSugarHelper.Db.Insertable(new PartnerEquip {
-                        ActorPartnerId = apid, Type = 2, ItemId = ap.equipments[EnumPartnerEquipSlot.WEAPON].ItemID,
-                        Count = ap.equipments[EnumPartnerEquipSlot.WEAPON].Stack
-                    }).ExecuteCommand();
-                }
-
-                for (var i = 0; i < ap.foods.Count; i++) {
-                    SqlSugarHelper.Db.Insertable(new PartnerEquip {
-                        ActorPartnerId = apid, Type = 3, ItemId = ap.foods[i].ItemID,
-                        Count = ap.foods[i].Stack
-                    }).ExecuteCommand();
-                }
+                PartnerEquipRepository.SavePartnerEquip(ap);
 
                 SqlSugarHelper.Db.CommitTran();
             }
@@ -211,46 +133,15 @@ namespace SagaDB {
         }
 
         public void SavePartnerCube(ActorPartner ap) {
-            string sqlstr;
             if (ap == null) {
                 return;
             }
-
-            var apid = ap.ActorPartnerID;
 
 
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var partnerCube in SqlSugarHelper.Db.Queryable<PartnerCube>().TranLock(DbLockType.Wait)
-                             .Where(item => item.ActorPartnerId == apid).ToList()) {
-                    SqlSugarHelper.Db.Deleteable(partnerCube);
-                }
-
-
-                for (var i = 0; i < ap.equipcubes_condition.Count; i++) {
-                    SqlSugarHelper.Db.Insertable(new PartnerCube {
-                        ActorPartnerId = apid, Type = 1, UniqueId = ap.equipcubes_condition[i]
-                    }).ExecuteCommand();
-                }
-
-                for (var i = 0; i < ap.equipcubes_action.Count; i++) {
-                    SqlSugarHelper.Db.Insertable(new PartnerCube {
-                        ActorPartnerId = apid, Type = 2, UniqueId = ap.equipcubes_action[i]
-                    }).ExecuteCommand();
-                }
-
-                for (var i = 0; i < ap.equipcubes_activeskill.Count; i++) {
-                    SqlSugarHelper.Db.Insertable(new PartnerCube {
-                        ActorPartnerId = apid, Type = 3, UniqueId = ap.equipcubes_activeskill[i]
-                    }).ExecuteCommand();
-                }
-
-                for (var i = 0; i < ap.equipcubes_passiveskill.Count; i++) {
-                    SqlSugarHelper.Db.Insertable(new PartnerCube {
-                        ActorPartnerId = apid, Type = 4, UniqueId = ap.equipcubes_passiveskill[i]
-                    }).ExecuteCommand();
-                }
+                PartnerCubeRepository.SavePartnerCube(ap);
 
 
                 SqlSugarHelper.Db.CommitTran();
@@ -270,37 +161,7 @@ namespace SagaDB {
             try {
                 SqlSugarHelper.Db.BeginTran();
 
-                foreach (var ai in SqlSugarHelper.Db.Queryable<PartnerAi>().TranLock(DbLockType.Wait)
-                             .Where(item => item.ActorPartnerId == ap.ActorPartnerID).ToList()) {
-                    SqlSugarHelper.Db.Deleteable((ai)).ExecuteCommand();
-                }
-
-                foreach (var item in ap.ai_conditions) {
-                    SqlSugarHelper.Db.Insertable(new PartnerAi {
-                        ActorPartnerId = ap.ActorPartnerID, Type = 1, Index = item.Key, Value = item.Value
-                    }).ExecuteCommand();
-                }
-
-
-                foreach (var item in ap.ai_reactions) {
-                    SqlSugarHelper.Db.Insertable(new PartnerAi {
-                        ActorPartnerId = ap.ActorPartnerID, Type = 2, Index = item.Key, Value = item.Value
-                    }).ExecuteCommand();
-                }
-
-                foreach (var item in ap.ai_intervals) {
-                    SqlSugarHelper.Db.Insertable(new PartnerAi {
-                        ActorPartnerId = ap.ActorPartnerID, Type = 3, Index = item.Key, Value = item.Value
-                    }).ExecuteCommand();
-                }
-
-
-                foreach (var item in ap.ai_states) {
-                    SqlSugarHelper.Db.Insertable(new PartnerAi {
-                        ActorPartnerId = ap.ActorPartnerID, Type = 4, Index = item.Key,
-                        Value = Convert.ToUInt16(item.Value)
-                    }).ExecuteCommand();
-                }
+                PartnerAiRepository.SavePartnerAi(ap);
 
                 SqlSugarHelper.Db.CommitTran();
             }
@@ -311,41 +172,40 @@ namespace SagaDB {
         }
 
         public ActorPartner GetActorPartner(uint actorPartnerId, Item.Item partneritem) {
-            var result = SqlSugarHelper.Db.Queryable<Entities.Partner>()
-                .Where(item => item.ActorPartnerId == actorPartnerId).ToList();
-            if (result.Count == 0) {
+            var partner = PartnerRepository.GetPartner(actorPartnerId);
+            if (partner == null) {
                 return null;
             }
 
 
-            var partnerid = (uint)result[0].PartnerId;
+            var partnerid = (uint)partner.PartnerId;
             var ap = new ActorPartner(partnerid, partneritem);
             ap.ActorPartnerID = actorPartnerId;
-            ap.Name = (string)result[0].Name;
-            ap.Level = (byte)result[0].Level;
-            ap.reliability = (byte)result[0].TrustLevel;
-            ap.reliabilityexp = (ulong)result[0].TrustExp;
-            ap.rebirth = result[0].Rebirth != 0;
-            ap.rank = (byte)result[0].Rank;
-            ap.perkpoint = (ushort)result[0].PerkPoints;
-            ap.HP = (uint)result[0].Hp;
-            ap.MaxHP = (uint)result[0].MaxHp;
-            ap.MP = (uint)result[0].Mp;
-            ap.MaxMP = (uint)result[0].MaxMp;
-            ap.SP = (uint)result[0].Sp;
-            ap.MaxSP = (uint)result[0].MaxSp;
-            ap.perk0 = (byte)result[0].Perk0;
-            ap.perk1 = (byte)result[0].Perk1;
-            ap.perk2 = (byte)result[0].Perk2;
-            ap.perk3 = (byte)result[0].Perk3;
-            ap.perk4 = (byte)result[0].Perk4;
-            ap.perk5 = (byte)result[0].Perk5;
-            ap.ai_mode = (byte)result[0].AiMode;
-            ap.basic_ai_mode = (byte)result[0].BasicAiMode1;
-            ap.basic_ai_mode_2 = (byte)result[0].BasicAiMode2;
-            ap.exp = (ulong)result[0].Exp;
-            ap.nextfeedtime = (DateTime)result[0].NextFeedTime;
-            ap.reliabilityuprate = (ushort)result[0].ReliabilityUprate;
+            ap.Name = (string)partner.Name;
+            ap.Level = (byte)partner.Level;
+            ap.reliability = (byte)partner.TrustLevel;
+            ap.reliabilityexp = (ulong)partner.TrustExp;
+            ap.rebirth = partner.Rebirth != 0;
+            ap.rank = (byte)partner.Rank;
+            ap.perkpoint = (ushort)partner.PerkPoints;
+            ap.HP = (uint)partner.Hp;
+            ap.MaxHP = (uint)partner.MaxHp;
+            ap.MP = (uint)partner.Mp;
+            ap.MaxMP = (uint)partner.MaxMp;
+            ap.SP = (uint)partner.Sp;
+            ap.MaxSP = (uint)partner.MaxSp;
+            ap.perk0 = (byte)partner.Perk0;
+            ap.perk1 = (byte)partner.Perk1;
+            ap.perk2 = (byte)partner.Perk2;
+            ap.perk3 = (byte)partner.Perk3;
+            ap.perk4 = (byte)partner.Perk4;
+            ap.perk5 = (byte)partner.Perk5;
+            ap.ai_mode = (byte)partner.AiMode;
+            ap.basic_ai_mode = (byte)partner.BasicAiMode1;
+            ap.basic_ai_mode_2 = (byte)partner.BasicAiMode2;
+            ap.exp = (ulong)partner.Exp;
+            ap.nextfeedtime = (DateTime)partner.NextFeedTime;
+            ap.reliabilityuprate = (ushort)partner.ReliabilityUprate;
 
             GetPartnerEquip(ap);
             GetPartnerCube(ap);
@@ -401,7 +261,10 @@ namespace SagaDB {
         }
 
         public void SaveChar(ActorPC aChar, bool itemInfo, bool fullinfo) {
-            string sqlstr;
+            if (aChar == null) {
+                return;
+            }
+
             MapInfo info = null;
             if (MapInfoFactory.Instance.MapInfo.ContainsKey(aChar.MapID)) {
                 info = MapInfoFactory.Instance.MapInfo[aChar.MapID];
@@ -412,12 +275,7 @@ namespace SagaDB {
                 }
             }
 
-            if (aChar == null) {
-                return;
-            }
-
             try {
-                SqlSugarHelper.Db.BeginTran();
                 uint questid = 0;
                 uint partyid = 0;
                 uint ringid = 0;
@@ -453,6 +311,8 @@ namespace SagaDB {
                     y = aChar.SaveY;
                 }
 
+                SqlSugarHelper.Db.BeginTran();
+
                 CharacterRepository.SaveCharacter(aChar, mapid, x, y, questid, questtime, (byte)status,
                     count1, count2, count3, partyid, ringid, golemid);
 
@@ -462,8 +322,10 @@ namespace SagaDB {
                 SaveFGarden(aChar);
                 //SaveFlyCastle(aChar.Ring);
                 //SaveNavi(aChar);
-                if (itemInfo)
+                if (itemInfo) {
                     SaveItem(aChar);
+                }
+
                 if (fullinfo) {
                     SaveSkill(aChar);
                     SaveDualJobInfo(aChar, true);
@@ -1001,26 +863,9 @@ namespace SagaDB {
             ms.Flush();
             byte[] data = ms.ToArray();
             ms.Close();
-            try {
-                var resultList = SqlSugarHelper.Db.Queryable<CharacterVariable>()
-                    .Where(item => item.CharacterId == pc.CharID).ToList();
-                if (resultList.Count != 0) {
-                    foreach (var item in resultList) {
-                        item.Values = data;
-                        SqlSugarHelper.Db.Updateable(item).ExecuteCommand();
-                    }
-                }
-                else {
-                    SqlSugarHelper.Db.Insertable(new CharacterVariable { CharacterId = pc.CharID, Values = data })
-                        .ExecuteCommand();
-                }
-            }
-            catch (Exception ex) {
-                SagaLib.Logger.ShowError(ex);
-            }
-            finally {
-                ms.Close();
-            }
+
+            SqlSugarHelper.Db.Storageable(new CharacterVariable { CharacterId = pc.CharID, Values = data })
+                .ExecuteCommand();
 
             ms = new MemoryStream();
             bw = new BinaryWriter(ms);
@@ -1949,24 +1794,14 @@ namespace SagaDB {
                 return;
             }
 
-            try {
-                SqlSugarHelper.Db.BeginTran();
-
-                SqlSugarHelper.Db.Deleteable<AnotherPaper>().Where(item => item.CharId == pc.CharID).ExecuteCommand();
-                foreach (var i in pc.AnotherPapers) {
-                    AnotherPaper anotherPaper = new AnotherPaper();
-                    anotherPaper.CharId = pc.CharID;
-                    anotherPaper.PaperId = i.Key;
-                    anotherPaper.PaperLv = i.Value.lv;
-                    anotherPaper.PaperValue = i.Value.value.Value;
-                    SqlSugarHelper.Db.Insertable<AnotherPaper>(anotherPaper).ExecuteCommand();
-                }
-
-                SqlSugarHelper.Db.CommitTran();
-            }
-            catch (Exception ex) {
-                SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.ShowError(ex);
+            SqlSugarHelper.Db.Deleteable<AnotherPaper>().Where(item => item.CharId == pc.CharID).ExecuteCommand();
+            foreach (var i in pc.AnotherPapers) {
+                AnotherPaper anotherPaper = new AnotherPaper();
+                anotherPaper.CharId = pc.CharID;
+                anotherPaper.PaperId = i.Key;
+                anotherPaper.PaperLv = i.Value.lv;
+                anotherPaper.PaperValue = i.Value.value.Value;
+                SqlSugarHelper.Db.Insertable<AnotherPaper>(anotherPaper).ExecuteCommand();
             }
         }
 
@@ -2597,42 +2432,23 @@ namespace SagaDB {
             }
         }
 
-        public void SaveItem(ActorPC pc) {
-            try {
-                SqlSugarHelper.Db.BeginTran();
-                var account = GetAccountID(pc);
-                if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
-                    pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
-                    if (pc.Account != null) {
-                        SagaLib.Logger.GetLogger().Information(
-                            "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" +
-                            pc.Inventory.ToBytes().Length);
-                    }
-
-                    foreach (var inventory in SqlSugarHelper.Db.Queryable<Inventory>().TranLock(DbLockType.Error)
-                                 .Where(item => item.CharacterId == pc.CharID).ToList()) {
-                        inventory.Data = pc.Inventory.ToBytes();
-                        SqlSugarHelper.Db.Updateable<Inventory>(inventory).ExecuteCommand();
-                    }
+        private void SaveItem(ActorPC pc) {
+            if ((!pc.Inventory.IsEmpty || pc.Inventory.NeedSave) &&
+                pc.Inventory.Items[ContainerType.BODY].Count < 1000) {
+                if (pc.Account != null) {
+                    SagaLib.Logger.ShowInfo(
+                        "存储玩家(" + pc.Account.AccountID + ")：" + pc.Name + "道具信息...大小：" +
+                        pc.Inventory.ToBytes().Length);
                 }
 
-
-                if (pc.Inventory.WareHouse != null) {
-                    if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
-                        foreach (var warehouse in SqlSugarHelper.Db.Queryable<Warehouse>().TranLock(DbLockType.Error)
-                                     .Where(item => item.AccountId == account).ToList()) {
-                            warehouse.Data = pc.Inventory.WareToBytes();
-
-                            SqlSugarHelper.Db.Updateable<Warehouse>(warehouse).ExecuteCommand();
-                        }
-                    }
-                }
-
-                SqlSugarHelper.Db.CommitTran();
+                InventoryRepository.SaveInventory(pc);
             }
-            catch (Exception ex) {
-                SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.ShowError(ex);
+
+
+            if (pc.Inventory.WareHouse != null) {
+                if (!pc.Inventory.IsWarehouseEmpty || pc.Inventory.NeedSaveWare) {
+                    WarehouseRepository.SaveWarehouse(pc, GetAccountID(pc));
+                }
             }
         }
 
@@ -2685,8 +2501,8 @@ namespace SagaDB {
                     SagaDB.Item.Inventory inv = null;
 
                     var buf = (byte[])inventories[0].Data;
-                    SagaLib.Logger.GetLogger()
-                        .Information("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
+                    SagaLib.Logger
+                        .ShowInfo("获取玩家(" + account + ")：" + pc.Name + "道具信息...大小：" + buf.Length);
                     var ms = new MemoryStream(buf);
                     if (buf[0] == 0x42 && buf[1] == 0x5A) {
                         var ms2 = new MemoryStream();
@@ -2853,82 +2669,53 @@ namespace SagaDB {
                 return;
             }
 
-            try {
-                SqlSugarHelper.Db.BeginTran();
+            var account = GetAccountID(pc);
 
-                var account = GetAccountID(pc);
+            pc.FlyingGarden.ID = SqlSugarHelper.Db.Storageable<Entities.FlyingGarden>(new Entities.FlyingGarden {
+                    AccountId = account,
+                    Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
+                    Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
+                    Part3 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
+                    Part4 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
+                    Part5 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
+                    Part6 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
+                    Part7 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
+                    Part8 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
+                    Fuel = pc.FlyingGarden.Fuel,
+                }).ExecuteReturnEntity()
+                .FlyingGardenId;
 
-                bool isFound = false;
-
-                foreach (var i in SqlSugarHelper.Db.Queryable<Entities.FlyingGarden>().TranLock(DbLockType.Error)
-                             .Where(item => item.AccountId == account).ToList()) {
-                    i.Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE];
-                    i.Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL];
-                    i.Part3 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR];
-                    i.Part4 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE];
-                    i.Part5 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall];
-                    i.Part6 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof];
-                    i.Part7 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR];
-                    i.Part8 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL];
-                    i.Fuel = pc.FlyingGarden.Fuel;
-                    SqlSugarHelper.Db.Updateable(i).ExecuteCommand();
-                    isFound = true;
-                }
-
-                if (!isFound) {
-                    pc.FlyingGarden.ID = SqlSugarHelper.Db.Insertable<Entities.FlyingGarden>(new Entities.FlyingGarden {
-                            AccountId = account,
-                            Part1 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_BASE],
-                            Part2 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.FLYING_SAIL],
-                            Part3 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_FLOOR],
-                            Part4 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.GARDEN_MODELHOUSE],
-                            Part5 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseOutSideWall],
-                            Part6 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.HouseRoof],
-                            Part7 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_FLOOR],
-                            Part8 = pc.FlyingGarden.FlyingGardenEquipments[FlyingGardenSlot.ROOM_WALL],
-                            Fuel = pc.FlyingGarden.Fuel,
-                        }).ExecuteReturnEntity()
-                        .FlyingGardenId;
-                }
-
-                foreach (var i in SqlSugarHelper.Db.Queryable<FlyingGardenFurniture>().TranLock(DbLockType.Error)
-                             .Where(item => item.FlyingGardenId == pc.FlyingGarden.ID).ToList()) {
-                    SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
-                }
-
-                foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
-                    SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
-                        FlyingGardenId = pc.FlyingGarden.ID,
-                        Place = 0,
-                        ItemId = i.ItemID,
-                        PictId = i.PictID,
-                        X = i.X,
-                        Y = i.Y,
-                        Z = i.Z,
-                        AxisX = i.Xaxis,
-                        AxisY = i.Yaxis,
-                        AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
-                    }).ExecuteCommand();
-                foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
-                    SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
-                        FlyingGardenId = pc.FlyingGarden.ID,
-                        Place = 1,
-                        ItemId = i.ItemID,
-                        PictId = i.PictID,
-                        X = i.X,
-                        Y = i.Y,
-                        Z = i.Z,
-                        AxisX = i.Xaxis,
-                        AxisY = i.Yaxis,
-                        AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
-                    }).ExecuteCommand();
-
-                SqlSugarHelper.Db.CommitTran();
+            foreach (var i in SqlSugarHelper.Db.Queryable<FlyingGardenFurniture>().TranLock(DbLockType.Error)
+                         .Where(item => item.FlyingGardenId == pc.FlyingGarden.ID).ToList()) {
+                SqlSugarHelper.Db.Deleteable(i).ExecuteCommand();
             }
-            catch (Exception e) {
-                SqlSugarHelper.Db.RollbackTran();
-                SagaLib.Logger.ShowError(e);
-            }
+
+            foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.GARDEN])
+                SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
+                    FlyingGardenId = pc.FlyingGarden.ID,
+                    Place = 0,
+                    ItemId = i.ItemID,
+                    PictId = i.PictID,
+                    X = i.X,
+                    Y = i.Y,
+                    Z = i.Z,
+                    AxisX = i.Xaxis,
+                    AxisY = i.Yaxis,
+                    AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
+                }).ExecuteCommand();
+            foreach (var i in pc.FlyingGarden.Furnitures[FlyingGarden.FurniturePlace.ROOM])
+                SqlSugarHelper.Db.Insertable<FlyingGardenFurniture>(new FlyingGardenFurniture {
+                    FlyingGardenId = pc.FlyingGarden.ID,
+                    Place = 1,
+                    ItemId = i.ItemID,
+                    PictId = i.PictID,
+                    X = i.X,
+                    Y = i.Y,
+                    Z = i.Z,
+                    AxisX = i.Xaxis,
+                    AxisY = i.Yaxis,
+                    AxisZ = i.Zaxis, Motion = i.Motion, Name = i.Name
+                }).ExecuteCommand();
         }
 
         public void SaveStamps(ActorPC pc) {

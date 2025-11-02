@@ -27,7 +27,7 @@ namespace SagaMap.Tasks.PC {
             try {
                 var now = DateTime.Now;
                 MapServer.charDB.SaveChar(pc, false);
-                Logger.GetLogger().Information(
+                Logger.ShowInfo(
                     "Autosaving " + pc.Name + "'s data, 耗时:" + (DateTime.Now - now).TotalMilliseconds + "ms");
             }
             catch (Exception ex) {

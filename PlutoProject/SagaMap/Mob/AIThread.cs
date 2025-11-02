@@ -14,7 +14,7 @@ namespace SagaMap.Mob {
         {
             mainThread = new Thread(mainLoop);
             mainThread.Name = string.Format("MobAIThread({0})", mainThread.ManagedThreadId);
-            Logger.GetLogger().Information("MobAI线程启动：" + mainThread.Name);
+            Logger.ShowInfo("MobAI线程启动：" + mainThread.Name);
             ClientManager.AddThread(mainThread);
             mainThread.Start();
         }

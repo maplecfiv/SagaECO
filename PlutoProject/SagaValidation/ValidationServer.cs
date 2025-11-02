@@ -37,30 +37,30 @@ namespace SagaValidation {
 
         static void Main(string[] args) {
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.GetLogger().Information("======================================================================");
+            Logger.ShowInfo("======================================================================");
             //Console.ForegroundColor = ConsoleColor.Cyan;
-            Logger.GetLogger().Information("                     SagaECO Validation Server             ");
-            Logger.GetLogger()
-                .Information("           (C)2013-2017 The Pluto ECO Project Development Team                  ");
+            Logger.ShowInfo("                     SagaECO Validation Server             ");
+            Logger
+                .ShowInfo("           (C)2013-2017 The Pluto ECO Project Development Team                  ");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.GetLogger().Information("======================================================================");
+            Logger.ShowInfo("======================================================================");
 
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information("Version Informations:");
+            Logger.ShowInfo("Version Informations:");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.GetLogger().Information("SagaValidation");
+            Logger.ShowInfo("SagaValidation");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.GetLogger().Information("SagaLib");
+            Logger.ShowInfo("SagaLib");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
             //Console.ForegroundColor = ConsoleColor.Yellow;
-            Logger.GetLogger().Information("SagaDB");
+            Logger.ShowInfo("SagaDB");
             //Console.ForegroundColor = ConsoleColor.White;
-            Logger.GetLogger().Information(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
+            Logger.ShowInfo(":SVN Rev." + GlobalInfo.Version + "(" + GlobalInfo.ModifyDate + ")");
 
-            Logger.GetLogger().Information("Starting Initialization...", null);
+            Logger.ShowInfo("Starting Initialization...", null);
 
             Configuration.Instance.Initialization(
                 $"{ConfigLoader.LoadConfigPath()}/SagaValidation.xml");
@@ -77,17 +77,17 @@ namespace SagaValidation {
             ValidationClientManager.Instance.Start();
             if (!ValidationClientManager.Instance.StartNetwork(Configuration.Instance.Port)) {
                 Logger.ShowError("cannot listen on port: " + Configuration.Instance.Port);
-                Logger.GetLogger().Information("Shutting down in 20sec.");
+                Logger.ShowInfo("Shutting down in 20sec.");
                 System.Threading.Thread.Sleep(20000);
                 return;
             }
 
             Global.clientMananger = (ClientManager)ValidationClientManager.Instance;
 
-            Logger.GetLogger().Information(string.Format("Accept Client Version at : {0}",
+            Logger.ShowInfo(string.Format("Accept Client Version at : {0}",
                 Configuration.Instance.ClientGameVersion));
 
-            Logger.GetLogger().Information("Accepting clients.");
+            Logger.ShowInfo("Accepting clients.");
 
             while (!ConfigLoader.ShouldShutdown()) {
                 // keep the connections to the database servers alive
@@ -103,7 +103,7 @@ namespace SagaValidation {
             bool connected = false;
 
             if (!accountDB.isConnected()) {
-                Logger.GetLogger().Warning("LOST CONNECTION TO CHAR DB SERVER!", null);
+                Logger.ShowWarning("LOST CONNECTION TO CHAR DB SERVER!", null);
                 connected = false;
             }
             else {
@@ -111,7 +111,7 @@ namespace SagaValidation {
             }
 
             while (!connected) {
-                Logger.GetLogger().Information("Trying to reconnect to char db server ..", null);
+                Logger.ShowInfo("Trying to reconnect to char db server ..", null);
                 accountDB.Connect();
                 if (!accountDB.isConnected()) {
                     Logger.ShowError("Failed.. Trying again in 10sec", null);
@@ -120,8 +120,8 @@ namespace SagaValidation {
                     continue;
                 }
 
-                Logger.GetLogger().Information("SUCCESSFULLY RE-CONNECTED to char db server...", null);
-                Logger.GetLogger().Information("Clients can now connect again", null);
+                Logger.ShowInfo("SUCCESSFULLY RE-CONNECTED to char db server...", null);
+                Logger.ShowInfo("Clients can now connect again", null);
                 connected = true;
             }
         }

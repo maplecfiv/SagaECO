@@ -103,7 +103,7 @@ namespace SagaLib.Tasks {
 
             main = new Thread(MainLoop);
             main.Name = string.Format("ThreadPoolMainLoop({0})", main.ManagedThreadId);
-            Logger.GetLogger().Information("主线程启动！：" + main.Name);
+            Logger.ShowInfo("主线程启动！：" + main.Name);
             ClientManager.AddThread(main);
             main.Start();
         }

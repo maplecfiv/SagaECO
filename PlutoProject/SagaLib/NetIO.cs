@@ -118,7 +118,7 @@ namespace SagaLib {
                         Logger.ShowError(exception);
                     }
 
-                    Logger.GetLogger().Warning("Invalid packet head from:" + sock.RemoteEndPoint, null);
+                    Logger.ShowWarning("Invalid packet head from:" + sock.RemoteEndPoint, null);
                 }
             }
             else {
@@ -272,7 +272,7 @@ namespace SagaLib {
 
                 disconnecting = true;
                 try {
-                    Logger.GetLogger().Information(sock.RemoteEndPoint + " disconnected", null);
+                    Logger.ShowInfo(sock.RemoteEndPoint + " disconnected", null);
                 }
                 catch (Exception exception) {
                     Logger.ShowError(exception);
@@ -308,7 +308,7 @@ namespace SagaLib {
                 catch (Exception exception) {
                     Logger.ShowError(exception);
                 }
-                //Logger.getLogger().Information(sock.RemoteEndPoint.ToString() + " disconnected", null);
+                //Logger.getLogger().ShowInfo(sock.RemoteEndPoint.ToString() + " disconnected", null);
             }
             //this.nlock.ReleaseWriterLock(); 
         }
@@ -343,7 +343,7 @@ namespace SagaLib {
 
 
                 if (size < 4) {
-                    Logger.GetLogger().Warning(sock.RemoteEndPoint + " error: packet size is < 4", null);
+                    Logger.ShowWarning(sock.RemoteEndPoint + " error: packet size is < 4", null);
                     return;
                 }
 
@@ -417,7 +417,7 @@ namespace SagaLib {
                         waitCounter = 0;
                         while (sock.Available == 0) {
                             if (waitCounter > 300) {
-                                Logger.GetLogger().Warning("Receive Timeout for client:" + client);
+                                Logger.ShowWarning("Receive Timeout for client:" + client);
                                 ClientManager.EnterCriticalArea();
                                 Disconnect();
                                 ClientManager.LeaveCriticalArea();

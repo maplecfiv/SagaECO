@@ -76,7 +76,7 @@ namespace SagaDB.Mob {
 
         //                            sw.WriteLine(paras[3].Replace(" ", "_") + ",");
         //                        }
-        //                        Logger.getLogger().Information(string.Format("{0}",paras[3].Replace(" ", "_")));
+        //                        Logger.getLogger().ShowInfo(string.Format("{0}",paras[3].Replace(" ", "_")));
         //                    }
         //                    mob.mobSize = float.Parse(paras[4]);
         //                    if (paras[7] == "1")
@@ -352,8 +352,8 @@ namespace SagaDB.Mob {
                                     newDrop.TreasureGroup = args;
 #if !Web
                                     if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup)) {
-                                        Logger.GetLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
-                                                                   " for Monster: " + mob.id);
+                                        Logger.ShowWarning("Can't find Drop Group: " + newDrop.TreasureGroup +
+                                                           " for Monster: " + mob.id);
                                         continue;
                                     }
 #endif
@@ -383,8 +383,8 @@ namespace SagaDB.Mob {
                                     newDrop.TreasureGroup = args;
 #if !Web
                                     if (!TreasureFactory.Instance.Items.ContainsKey(newDrop.TreasureGroup)) {
-                                        Logger.GetLogger().Warning("Can't find Drop Group: " + newDrop.TreasureGroup +
-                                                                   " for Monster: " + mob.id);
+                                        Logger.ShowWarning("Can't find Drop Group: " + newDrop.TreasureGroup +
+                                                           " for Monster: " + mob.id);
                                         continue;
                                     }
 #endif

@@ -62,7 +62,7 @@ namespace SagaScript.M30210000
                                     //pc.Inventory = new Inventory(pc);
                                     GiveItem(pc, 100000001, 1);
                                     SagaMap.MapServer.charDB.SaveChar(pc, true);
-                                    SagaMap.Network.Client.MapClient.FromActorPC(pc).netIO.Disconnect();
+                                    SagaMap.Network.Client.MapClient.FromActorPC(pc).NetIo.Disconnect();
                                 }
                                 break;
                         }
@@ -136,7 +136,7 @@ namespace SagaScript.M30210000
                                 p.ID = 0x18E3;
                                 p.PutUInt(pc.ActorID, 2);
                                 p.PutUInt(pc.MapID, 6);
-                                MapClient.FromActorPC(pc).netIO.SendPacket(p);
+                                MapClient.FromActorPC(pc).NetIo.SendPacket(p);
                                 Warp(pc, pc.Party.Leader.FGarden.MapID, 6, 11);
                                 return;
                             }
@@ -154,7 +154,7 @@ namespace SagaScript.M30210000
                     p2.ID = 0x18E3;
                     p2.PutUInt(pc.ActorID, 2);
                     p2.PutUInt(pc.MapID, 6);
-                    MapClient.FromActorPC(pc).netIO.SendPacket(p2);
+                    MapClient.FromActorPC(pc).NetIo.SendPacket(p2);
 
 
 

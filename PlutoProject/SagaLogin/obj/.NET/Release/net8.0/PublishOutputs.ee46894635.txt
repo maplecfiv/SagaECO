@@ -57,6 +57,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/effect.ssp
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/enhancetable.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/equipment_release.csv
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/Events/18001635.yaml
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/exchange.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/exchange_list.csv
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/DB/EXP.csv
@@ -788,6 +789,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/SagaValidation.runtimeconfig.json
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/Serilog.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/Serilog.Sinks.Console.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/Serilog.Sinks.File.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/SQLitePCLRaw.batteries_v2.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/SQLitePCLRaw.core.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/SQLitePCLRaw.provider.e_sqlite3.dll
@@ -810,6 +812,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/System.Text.Encodings.Web.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/System.Text.Json.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/System.Windows.Extensions.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/YamlDotNet.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/zh-Hans/Microsoft.Data.SqlClient.resources.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/zh-Hant/Microsoft.Data.SqlClient.resources.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/net8.0/ZstdSharp.dll
@@ -3005,6 +3008,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/Oscar.Data.SqlClient.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/Serilog.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/Serilog.Sinks.Console.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/Serilog.Sinks.File.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/ICSharpCode.SharpZipLib.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/SQLitePCLRaw.batteries_v2.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/SQLitePCLRaw.core.dll
@@ -3029,6 +3033,7 @@
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/System.Text.Encodings.Web.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/System.Text.Json.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/System.Windows.Extensions.dll
+/home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/YamlDotNet.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/ZstdSharp.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/de/Microsoft.Data.SqlClient.resources.dll
 /home/maple/projects/SagaECO/PlutoProject/SagaLogin/bin/Release/net8.0/publish/es/Microsoft.Data.SqlClient.resources.dll

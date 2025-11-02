@@ -7467,7 +7467,7 @@ namespace SagaMap.Skill {
             else {
                 arg.affectedActors.Add(dActor);
                 arg.Init();
-                Logger.GetLogger().Warning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")",
+                Logger.ShowWarning("No defination for skill:" + arg.skill.Name + "(ID:" + arg.skill.ID + ")",
                     null);
             }
         }
@@ -8144,7 +8144,7 @@ namespace SagaMap.Skill {
                     case ActorType.SKILL:
                         return false;
                     case ActorType.PC: {
-                        //Logger.getLogger().Information("skillhandler");
+                        //Logger.getLogger().ShowInfo("skillhandler");
                         var target = (ActorPC)dActor;
                         if ((pc.Mode == PlayerMode.COLISEUM_MODE && target.Mode == PlayerMode.COLISEUM_MODE) ||
                             (pc.Mode == PlayerMode.WRP && target.Mode == PlayerMode.WRP) ||
@@ -8167,16 +8167,16 @@ namespace SagaMap.Skill {
                                     || target.Mode == PlayerMode.KNIGHT_ROCK ||
                                     target.Mode == PlayerMode.KNIGHT_SOUTH || target.Mode == PlayerMode.KNIGHT_WEST)
                                )
-                                //Logger.getLogger().Information("skillhandler2");
+                                //Logger.getLogger().ShowInfo("skillhandler2");
                                 if (pc.Mode == target.Mode)
                                     return false;
-                            //Logger.getLogger().Information("skillhandler3");
+                            //Logger.getLogger().ShowInfo("skillhandler3");
                             if (pc.Party == target.Party && pc.Party != null)
                                 return false;
                             if (target.PossessionTarget == 0)
                                 return true;
                             return false;
-                            //Logger.getLogger().Information("skillhandler4");
+                            //Logger.getLogger().ShowInfo("skillhandler4");
                         }
 
                         return false;
@@ -9325,7 +9325,7 @@ namespace SagaMap.Skill {
         private uint skillID;
 
         public void LoadSkill(string path) {
-            Logger.GetLogger().Information("開始加載技能...");
+            Logger.ShowInfo("開始加載技能...");
             var dic = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
             var provider = new CSharpCodeProvider(dic);
             var skillcount = 0;
@@ -9338,7 +9338,7 @@ namespace SagaMap.Skill {
                     newAssembly = CompileScript(files, provider);
                     if (newAssembly != null) {
                         tmp = LoadAssembly(newAssembly);
-                        Logger.GetLogger().Information(string.Format("Containing {0} Skills", tmp));
+                        Logger.ShowInfo(string.Format("Containing {0} Skills", tmp));
                         skillcount += tmp;
                     }
                 }
@@ -9347,7 +9347,7 @@ namespace SagaMap.Skill {
                 Logger.ShowError(ex);
             }
 
-            Logger.GetLogger().Information(string.Format("外置技能加載數：{0}", skillcount));
+            Logger.ShowInfo(string.Format("外置技能加載數：{0}", skillcount));
         }
 
         private Assembly CompileScript(string[] Source, CodeDomProvider Provider) {
@@ -9405,7 +9405,7 @@ namespace SagaMap.Skill {
                         }
                         else {
                             if (skillID != 0)
-                                Logger.GetLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                                Logger.ShowWarning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     skillID, npcType.FullName));
                         }
                     }

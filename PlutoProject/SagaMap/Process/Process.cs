@@ -134,7 +134,7 @@ namespace SagaMap.Process {
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.GetLogger().Information("API Command execute successfully. (" + pc.Name + ")");
+            Logger.ShowInfo("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;
@@ -164,14 +164,14 @@ namespace SagaMap.Process {
                     Logger.ShowError("ERROR ON SAVE OFFLINE APIITEM");
                 }
 
-                Logger.GetLogger()
-                    .Information("Player: " + pc.Name + " is offline, Item will be process on next login");
+                Logger
+                    .ShowInfo("Player: " + pc.Name + " is offline, Item will be process on next login");
                 return true;
             }
 
             i = chr.First();
             AddItem(i, itemid, qty);
-            Logger.GetLogger().Information("API Command execute successfully. (" + pc.Name + ")");
+            Logger.ShowInfo("API Command execute successfully. (" + pc.Name + ")");
 
 
             return true;

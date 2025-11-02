@@ -591,7 +591,7 @@ namespace SagaMap.Partner {
 
         public void OnSeenSkillUse(SkillArg arg) {
             if (map == null) {
-                Logger.GetLogger().Warning($"Mob:{Partner.ActorID}({Partner.Name})'s map is null!");
+                Logger.ShowWarning($"Mob:{Partner.ActorID}({Partner.Name})'s map is null!");
                 return;
             }
 

@@ -710,7 +710,7 @@ namespace SagaMap.Packets.Server.Actor {
                             break;
                     }
 
-                    //Logger.getLogger().Information("SSMG_PLAYER_PC_INFO");
+                    //Logger.getLogger().ShowInfo("SSMG_PLAYER_PC_INFO");
                     PutByte(0, (ushort)(offset + 116));
                     PutByte(0, (ushort)(offset + 117));
                     PutByte(0, (ushort)(offset + 118));
@@ -1031,7 +1031,7 @@ namespace SagaMap.Packets.Server.Actor {
                     ////////////////玩家外观////////////////
 
 
-                    //Logger.getLogger().Information(appearance.Name+" "+appearance.CharID.ToString() + " " + value.TInt["幻化"].ToString());
+                    //Logger.getLogger().ShowInfo(appearance.Name+" "+appearance.CharID.ToString() + " " + value.TInt["幻化"].ToString());
                     //if (value.TInt["幻化"] != 0)   //玩家处于幻化状态
                     //{
                     //    var chr =
@@ -1042,7 +1042,7 @@ namespace SagaMap.Packets.Server.Actor {
                     //    {
 
                     //        appearance = chr.First().Character;  //tranceTarger为幻化目标。
-                    //        //Logger.getLogger().Information(appearance.CharID.ToString());
+                    //        //Logger.getLogger().ShowInfo(appearance.CharID.ToString());
                     //    }
                     //}
 

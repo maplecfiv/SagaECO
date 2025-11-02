@@ -2,6 +2,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.CSharp;
 using SagaDB.Actor;
@@ -36,34 +37,48 @@ namespace SagaMap.Manager {
         }
 
         public void LoadScript(string path) {
-            Logger.GetLogger().Information("Loading uncompiled scripts");
-            var dic = new Dictionary<string, string> { { "CompilerVersion", "v4.0" } };
-            var provider = new CSharpCodeProvider(dic);
+            Logger.ShowInfo("Loading uncompiled scripts");
+            var provider = new CSharpCodeProvider();
             var eventcount = 0;
             this.path = path;
             try {
-                var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
-                Assembly newAssembly;
-                int tmp;
-                if (files.Length > 0) {
-                    newAssembly = CompileScript(files, provider);
-                    if (newAssembly != null) {
-                        tmp = LoadAssembly(newAssembly);
-                        Logger.GetLogger().Information(string.Format("Containing {0} Events", tmp));
-                        eventcount += tmp;
+                Logger.ShowInfo($"trying to load scripts under {path}");
+
+                var subclasses = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(x => x.GetTypes().Where(x => typeof(Event).IsAssignableFrom(x)));
+
+                Logger.ShowInfo($"{subclasses.Count()} event(s) loaded");
+                int loadedEvents = 0;
+                foreach (var subclass in subclasses) {
+                    if (LoadEvent(subclass)) {
+                        loadedEvents++;
                     }
                 }
 
-                Logger.GetLogger().Information("Loading compiled scripts....");
-                files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
-                foreach (var i in files) {
-                    newAssembly = Assembly.LoadFile(Path.GetFullPath(i));
-                    if (newAssembly != null) {
-                        tmp = LoadAssembly(newAssembly);
-                        Logger.GetLogger().Information(string.Format("Loading {1}, Containing {0} Events", tmp, i));
-                        eventcount += tmp;
-                    }
-                }
+                Logger.ShowInfo($"{loadedEvents} event(s) loaded");
+                //
+                // var files = Directory.GetFiles(path, "*.cs", SearchOption.AllDirectories);
+                // Assembly newAssembly;
+                // int tmp;
+                // if (files.Length > 0) {
+                //     newAssembly = CompileScript(files, provider);
+                //     if (newAssembly != null) {
+                //         tmp = LoadAssembly(newAssembly);
+                //         Logger.ShowInfo($"Containing {tmp} Events");
+                //         eventcount += tmp;
+                //     }
+                // }
+                //
+                // Logger.ShowInfo("Loading compiled scripts....");
+                // files = Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories);
+                // foreach (var i in files) {
+                //     newAssembly = Assembly.LoadFile(Path.GetFullPath(i));
+                //     if (newAssembly != null) {
+                //         tmp = LoadAssembly(newAssembly);
+                //         Logger.ShowInfo(string.Format("Loading {1}, Containing {0} Events", tmp, i));
+                //         eventcount += tmp;
+                //     }
+                // }
 
                 if (!Events.ContainsKey(12001501))
                     Events.Add(12001501, new DungeonNorth());
@@ -85,13 +100,12 @@ namespace SagaMap.Manager {
             }
 
 
-            Logger.GetLogger().Information(string.Format("Totally {0} Events Added", eventcount));
+            Logger.ShowInfo(string.Format("Totally {0} Events Added", eventcount));
         }
 
         private Assembly CompileScript(string[] Source, CSharpCodeProvider Provider) {
             //ICodeCompiler compiler = Provider.;
             var parms = new CompilerParameters();
-            CompilerResults results;
 
             // Configure parameters
             parms.CompilerOptions = "/target:library /optimize";
@@ -108,21 +122,53 @@ namespace SagaMap.Manager {
             parms.ReferencedAssemblies.Add("SagaLib.dll");
             parms.ReferencedAssemblies.Add("SagaDB.dll");
             parms.ReferencedAssemblies.Add("SagaMap.exe");
-            foreach (var i in Configuration.Configuration.Instance.ScriptReference) parms.ReferencedAssemblies.Add(i);
-            // Compile
-            results = Provider.CompileAssemblyFromFile(parms, Source);
-            if (results.Errors.HasErrors) {
-                foreach (CompilerError error in results.Errors)
-                    if (!error.IsWarning) {
-                        Logger.ShowError("Compile Error:" + error.ErrorText, null);
-                        Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
-                    }
-
-                return null;
+            foreach (var i in Configuration.Configuration.Instance.ScriptReference) {
+                parms.ReferencedAssemblies.Add(i);
             }
 
-            //get a hold of the actual assembly that was generated
-            return results.CompiledAssembly;
+            // Compile
+            CompilerResults results = Provider.CompileAssemblyFromFile(parms, Source);
+            if (!results.Errors.HasErrors) {
+                //get a hold of the actual assembly that was generated
+                return results.CompiledAssembly;
+            }
+
+            foreach (CompilerError error in results.Errors) {
+                Logger.ShowError("Compile Error:" + error.ErrorText, null);
+                Logger.ShowError("File:" + error.FileName + ":" + error.Line, null);
+            }
+
+            return null;
+        }
+
+        private bool LoadEvent(Type npcType) {
+            try {
+                if (npcType.IsAbstract) return false;
+                if (npcType.GetCustomAttributes(false).Length > 0) return false;
+                Event newEvent;
+                try {
+                    newEvent = (Event)Activator.CreateInstance(npcType);
+                }
+                catch (Exception exception) {
+                    Logger.ShowError(exception);
+                    return false;
+                }
+
+                if (!Events.ContainsKey(newEvent.EventID) && newEvent.EventID != 0) {
+                    Events.Add(newEvent.EventID, newEvent);
+                    return true;
+                }
+                else if (newEvent.EventID != 0) {
+                    Logger.ShowWarning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                        newEvent.EventID, npcType.FullName));
+                    return true;
+                }
+            }
+            catch (Exception ex) {
+                Logger.ShowError(ex);
+            }
+
+            return false;
         }
 
         private int LoadAssembly(Assembly newAssembly) {
@@ -148,7 +194,7 @@ namespace SagaMap.Manager {
                         }
                         else {
                             if (newEvent.EventID != 0)
-                                Logger.GetLogger().Warning(string.Format("EventID:{0} already exists, Class:{1} droped",
+                                Logger.ShowWarning(string.Format("EventID:{0} already exists, Class:{1} droped",
                                     newEvent.EventID, npcType.FullName));
                         }
                     }

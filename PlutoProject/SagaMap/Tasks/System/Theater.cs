@@ -42,7 +42,7 @@ namespace SagaMap.Tasks.System {
                             case 3:
                             case 2:
                             case 1:
-                                Logger.GetLogger().Information(string.Format(
+                                Logger.ShowInfo(string.Format(
                                     "{0} is going to play <{1}> in {2:0} minutes", map.Name,
                                     nextMovie.Name, span.TotalMinutes));
                                 foreach (var i in actors) {
@@ -84,7 +84,7 @@ namespace SagaMap.Tasks.System {
 
                                 break;
                             case 0:
-                                Logger.GetLogger().Information(string.Format("{0} is now playing <{1}>", map.Name,
+                                Logger.ShowInfo(string.Format("{0} is now playing <{1}>", map.Name,
                                     nextMovie.Name));
                                 foreach (var i in actors) {
                                     if (i.type != ActorType.PC)

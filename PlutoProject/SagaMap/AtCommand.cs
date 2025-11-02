@@ -809,7 +809,7 @@ namespace SagaMap {
                     }
                 }
 
-                Logger.GetLogger().Information(string.Format("{0} GMCommand Setting Loaded.", count));
+                Logger.ShowInfo(string.Format("{0} GMCommand Setting Loaded.", count));
             }
             catch (Exception ex) {
                 Logger.ShowError(cmd + "," + ex);
@@ -823,7 +823,7 @@ namespace SagaMap {
 
                 // var log = new Logger("GM命令使用记录.txt");
                 var logtext = "\r\n" + client.Character.Name + "：" + command;
-                SagaLib.Logger.GetLogger().Information(logtext);
+                SagaLib.Logger.ShowInfo(logtext);
 
                 if (commandTable.ContainsKey(args[0])) {
                     var cInfo = commandTable[args[0]];
@@ -3603,7 +3603,7 @@ namespace SagaMap {
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
 
             args = "1D E3 00 00 00 00 12 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ";
             buf = Conversions.HexStr2Bytes(args.Replace(" ", ""));
@@ -3614,7 +3614,7 @@ namespace SagaMap {
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
         }
 
         private void ProcessRaw2(MapClient client, string args) {
@@ -3631,7 +3631,7 @@ namespace SagaMap {
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
         }
 
         private void ProcessTest(MapClient client, string args) {
@@ -3644,7 +3644,7 @@ namespace SagaMap {
             var str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
             client.NetIo.SendPacket(p);
 
             args = @"1C 25";
@@ -3656,7 +3656,7 @@ namespace SagaMap {
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
             client.NetIo.SendPacket(p);
 
 
@@ -3670,7 +3670,7 @@ namespace SagaMap {
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
             client.NetIo.SendPacket(p);
 
             args = @"1C 27";
@@ -3682,7 +3682,7 @@ namespace SagaMap {
             str = "Sending Packet : ";
             foreach (var item in p.data) str += item.ToString("X2") + " ";
             str += "\r\n";
-            Logger.GetLogger().Information(str);
+            Logger.ShowInfo(str);
             client.NetIo.SendPacket(p);
         }
 

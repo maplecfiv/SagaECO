@@ -9,10 +9,11 @@ using Serilog.Context;
 namespace SagaLib {
     public class Logger {
         private static readonly Serilog.Core.Logger _logger = new LoggerConfiguration()
+            .WriteTo.File("console.log", rollingInterval: RollingInterval.Day)
             .WriteTo.Console()
             .CreateLogger();
 
-        public static Serilog.Core.Logger GetLogger() {
+        private static Serilog.Core.Logger GetLogger() {
             return _logger;
         }
 

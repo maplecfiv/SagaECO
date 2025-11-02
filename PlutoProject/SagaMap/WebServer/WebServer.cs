@@ -7,7 +7,6 @@ using SagaLib;
 
 namespace SagaMap.WebServer {
     public class WebServer {
-        private static readonly Serilog.Core.Logger _logger = Logger.InitLogger<WebServer>();
         private readonly HttpListener _listener = new HttpListener();
         private readonly Func<HttpListenerRequest, string> _responderMethod;
         private bool data;
@@ -44,15 +43,15 @@ namespace SagaMap.WebServer {
                             var ctx = c as HttpListenerContext;
                             if (ctx.Request.HttpMethod == "POST") {
                                 //Allow POST to connect
-                                Logger.GetLogger()
-                                    .Information("Client connected:" + ctx.Request.RemoteEndPoint.Address);
+                                Logger
+                                    .ShowInfo("Client connected:" + ctx.Request.RemoteEndPoint.Address);
 
                                 //Debug
-                                //_logger.Information(ctx.Request.Headers.Get("token"));
-                                //_logger.Information(ctx.Request.Headers.Get("char_id"));
-                                //_logger.Information(ctx.Request.Headers.Get("item_id"));
-                                //_logger.Information(ctx.Request.Headers.Get("qty"));
-                                //_logger.Information(ctx.Request.Headers.Get("action"));
+                                //SagaLib.Logger.ShowInfo(ctx.Request.Headers.Get("token"));
+                                //SagaLib.Logger.ShowInfo(ctx.Request.Headers.Get("char_id"));
+                                //SagaLib.Logger.ShowInfo(ctx.Request.Headers.Get("item_id"));
+                                //SagaLib.Logger.ShowInfo(ctx.Request.Headers.Get("qty"));
+                                //SagaLib.Logger.ShowInfo(ctx.Request.Headers.Get("action"));
                                 var token = ctx.Request.Headers.Get("token");
 
                                 if (token == Configuration.Configuration.Instance.APIKey) {
@@ -60,7 +59,7 @@ namespace SagaMap.WebServer {
                                         case "vshop_buy":
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0) {
-                                                Logger.GetLogger().Warning("No char_id received");
+                                                Logger.ShowWarning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -74,7 +73,7 @@ namespace SagaMap.WebServer {
                                         case "inv_query":
                                             if (ctx.Request.Headers.Get("char_id") == null ||
                                                 int.Parse(ctx.Request.Headers.Get("char_id")) <= 0) {
-                                                Logger.GetLogger().Warning("No char_id received");
+                                                Logger.ShowWarning("No char_id received");
                                                 ctx.Response.OutputStream.Close();
                                             }
 
@@ -98,30 +97,30 @@ namespace SagaMap.WebServer {
                                             reader.Close();
 
                                             var message = ctx.Request.Headers.Get("message");
-                                            Logger.GetLogger().Information("An announce has made. (" + s + ")");
+                                            Logger.ShowInfo("An announce has made. (" + s + ")");
 
                                             var p3 = new Process.Process();
                                             p3.Announce(message);
                                             success = true;
                                             break;
                                         default:
-                                            Logger.GetLogger().Warning("Action is empty or not exists.");
+                                            Logger.ShowWarning("Action is empty or not exists.");
 
                                             break;
                                     }
                                 }
                                 else {
-                                    Logger.GetLogger().Warning("Token access deined.");
+                                    Logger.ShowWarning("Token access deined.");
                                     //Console.ForegroundColor = ConsoleColor.Red;
-                                    _logger.Information("Dropped.");
+                                    SagaLib.Logger.ShowInfo("Dropped.");
                                     ctx.Response.OutputStream.Close();
                                 }
                             }
                             else {
                                 //Not allow to GET
-                                Logger.GetLogger().Warning("Method disallowed from:" + ctx.Request.UserHostAddress);
+                                Logger.ShowWarning("Method disallowed from:" + ctx.Request.UserHostAddress);
                                 //Console.ForegroundColor = ConsoleColor.Red;
-                                _logger.Information("Dropped.");
+                                SagaLib.Logger.ShowInfo("Dropped.");
                                 ctx.Response.OutputStream.Close();
                             }
 

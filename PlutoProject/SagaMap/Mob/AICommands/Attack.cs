@@ -237,7 +237,7 @@ namespace SagaMap.Mob.AICommands {
                             ifChase = true;
 
                 if (MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) > size * 150 || ifChase) {
-                    //SagaLib.Logger.getLogger().Information(size.ToString());
+                    //SagaLib.Logger.getLogger().ShowInfo(size.ToString());
                     if (!mob.Mode.RunAway || MobAI.GetLengthD(mob.Mob.X, mob.Mob.Y, dest.X, dest.Y) < 2000) {
                         var chase = new Chase(mob, dest);
                         mob.commands.Add("Chase", chase);

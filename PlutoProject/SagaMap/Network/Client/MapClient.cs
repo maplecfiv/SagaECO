@@ -236,10 +236,10 @@ namespace SagaMap.Network.Client {
 
                 Character.VisibleActors.Clear();
 
-                Logger.GetLogger().Information(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT,
+                Logger.ShowInfo(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_OUT,
                     (object)Character.Name));
-                Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
-                                               MapClientManager.Instance.OnlinePlayer.Count);
+                Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                                MapClientManager.Instance.OnlinePlayer.Count);
                 MapServer.shouldRefreshStatistic = true;
 
                 SqlSugarHelper.Db.Storageable<SagaDB.Entities.Character>(new SagaDB.Entities.Character {
@@ -467,7 +467,9 @@ namespace SagaMap.Network.Client {
         }
 
         public Event currentEvent;
-        private uint currentEventID;
+
+        //TODO put it in DB
+        public uint currentEventID;
         public Shop currentShop;
         private uint currentVShopCategory;
         public string inputContent;
@@ -1030,8 +1032,17 @@ namespace SagaMap.Network.Client {
         public void EventActivate(uint EventID) {
             if (Character.Account.GMLevel > 100)
                 SendSystemMessage("触发ID:" + EventID);
-            if (ScriptManager.Instance.Events.ContainsKey(EventID)) {
-                var thread = new Thread(RunScript);
+            Event _event = null;
+            var eventData = EventParser.Find(EventID);
+            if (eventData != null) {
+                _event = new CustomEvent(eventData);
+            }
+            else if (ScriptManager.Instance.Events.ContainsKey(EventID)) {
+                _event = ScriptManager.Instance.Events[EventID];
+            }
+
+            if (_event != null) {
+                var thread = new Thread(() => RunScript(_event));
                 thread.Name = string.Format("ScriptThread({0}) of player:{1}", thread.ManagedThreadId, Character.Name);
                 ClientManager.AddThread(thread);
                 if (scriptThread != null) {
@@ -1057,15 +1068,13 @@ namespace SagaMap.Network.Client {
                         string.Format(LocalManager.Instance.Strings.NPC_EventID_NotFound_Msg, EventID), 131, "");
                 SendNPCMessageEnd();
                 SendEventEnd();
-                Logger.GetLogger().Warning("No script loaded for EventID:" + EventID);
+                Logger.ShowWarning("No script loaded for EventID:" + EventID);
             }
         }
 
-        private void RunScript() {
+        private void RunScript(Event evnt) {
             ClientManager.EnterCriticalArea();
-            Event evnt = null;
             try {
-                evnt = ScriptManager.Instance.Events[currentEventID];
                 if (currentEventID < 0xFFFF0000) {
                     SendEventStart(currentEventID);
                     SendCurrentEvent(currentEventID);
@@ -1120,7 +1129,7 @@ namespace SagaMap.Network.Client {
                         evnt.CurrentPC = null;
                     currentEvent = null;
                     if (Character != null)
-                        Logger.GetLogger().Warning(string.Format(
+                        Logger.ShowWarning(string.Format(
                             "Player:{0} logged out while script thread is still running, terminating the script thread!",
                             Character.Name));
                 }
@@ -1143,8 +1152,8 @@ namespace SagaMap.Network.Client {
                         SendEventEnd();
                     }
 
-                    Logger.GetLogger().Warning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
-                                               ex.Message + "\r\n" + ex.StackTrace);
+                    Logger.ShowWarning("Script Error(" + ScriptManager.Instance.Events[currentEventID] + "):" +
+                                       ex.Message + "\r\n" + ex.StackTrace);
                 }
                 catch {
                 }
@@ -8062,7 +8071,7 @@ namespace SagaMap.Network.Client {
 
             DeleteItem(inventoryid, 1, true);
             AddItem(targetitem, true);
-            //Logger.getLogger().Information("Receive Item Exchange Request. Type:" + exchangetype + ", itemslot:" + inventoryid + ", targetid:" + exchangetargetid);
+            //Logger.getLogger().ShowInfo("Receive Item Exchange Request. Type:" + exchangetype + ", itemslot:" + inventoryid + ", targetid:" + exchangetargetid);
 
             var p1 = new SSMG_ITEM_EXCHANGE_WINDOW_RESET();
             NetIo.SendPacket(p1);
@@ -9087,8 +9096,8 @@ namespace SagaMap.Network.Client {
         public void OnSendVersion(CSMG_SEND_VERSION p) {
             if (Configuration.Configuration.Instance.ClientVersion == null ||
                 Configuration.Configuration.Instance.ClientVersion == p.GetVersion()) {
-                Logger.GetLogger()
-                    .Information(string.Format(LocalManager.Instance.Strings.CLIENT_CONNECTING, p.GetVersion()));
+                Logger
+                    .ShowInfo(string.Format(LocalManager.Instance.Strings.CLIENT_CONNECTING, p.GetVersion()));
                 client_Version = p.GetVersion();
 
                 var p1 = new SSMG_VERSION_ACK();
@@ -9339,10 +9348,10 @@ namespace SagaMap.Network.Client {
                 Character.Ring = RingManager.Instance.GetRing(Character.Ring);
                 RingManager.Instance.PlayerOnline(Character.Ring, Character);
 
-                Logger.GetLogger()
-                    .Information(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_IN, Character.Name));
-                Logger.GetLogger().Information(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
-                                               MapClientManager.Instance.OnlinePlayer.Count);
+                Logger
+                    .ShowInfo(string.Format(LocalManager.Instance.Strings.PLAYER_LOG_IN, Character.Name));
+                Logger.ShowInfo(LocalManager.Instance.Strings.ATCOMMAND_ONLINE_PLAYER_INFO +
+                                MapClientManager.Instance.OnlinePlayer.Count);
 
                 var SerPC = ScriptManager.Instance.VariableHolder;
                 var day = DateTime.Now.ToString("d");
@@ -9766,9 +9775,9 @@ namespace SagaMap.Network.Client {
                         MapManager.Instance.DeleteMapInstance(map.ID);
                     }
 
-                    Logger.GetLogger().Information("Destory Player's Tent : " + Character.Name + " (" +
-                                                   Character.TenkActor.EventID +
-                                                   ")");
+                    Logger.ShowInfo("Destory Player's Tent : " + Character.Name + " (" +
+                                    Character.TenkActor.EventID +
+                                    ")");
 
                     Character.TenkActor = null;
                 }
@@ -10680,7 +10689,7 @@ namespace SagaMap.Network.Client {
                             client.Character.Account.MacAddress;
                     if (newItem.Refine > 10)
                         text += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
-                    SagaLib.Logger.GetLogger().Information(text);
+                    SagaLib.Logger.ShowInfo(text);
 
 
                     if (Character.Account.MacAddress == client.Character.Account.MacAddress ||
@@ -10693,7 +10702,7 @@ namespace SagaMap.Network.Client {
                                  client.Character.Account.MacAddress;
                         if (newItem.Refine > 10)
                             text2 += "\r\n装备道具：" + newItem.BaseData.name + " 强化次数" + newItem.Refine;
-                        SagaLib.Logger.GetLogger().Information(text2);
+                        SagaLib.Logger.ShowInfo(text2);
                     }
                 }
                 else {
@@ -12248,23 +12257,23 @@ namespace SagaMap.Network.Client {
                     if (Character.Gold >= 5000) {
                         Character.Gold -= 5000;
 
-                        Logger.GetLogger().Information("Refine Item:" + item.BaseData.name + "[" + p.InventorySlot +
-                                                       "] Protect Item: " +
-                                                       (ItemFactory.Instance.GetItem(p.ProtectItem).ItemID != 10000000
-                                                           ? ItemFactory.Instance.GetItem(p.ProtectItem).BaseData.name
-                                                           : "None") +
-                                                       Environment.NewLine + "Material: " +
-                                                       (ItemFactory.Instance.GetItem(p.Material).ItemID != 10000000
-                                                           ? ItemFactory.Instance.GetItem(p.Material).BaseData.name
-                                                           : "None") +
-                                                       " SupportItem: " +
-                                                       (ItemFactory.Instance.GetItem(p.SupportItem).ItemID != 10000000
-                                                           ? ItemFactory.Instance.GetItem(p.SupportItem).BaseData.name
-                                                           : "None"));
+                        Logger.ShowInfo("Refine Item:" + item.BaseData.name + "[" + p.InventorySlot +
+                                        "] Protect Item: " +
+                                        (ItemFactory.Instance.GetItem(p.ProtectItem).ItemID != 10000000
+                                            ? ItemFactory.Instance.GetItem(p.ProtectItem).BaseData.name
+                                            : "None") +
+                                        Environment.NewLine + "Material: " +
+                                        (ItemFactory.Instance.GetItem(p.Material).ItemID != 10000000
+                                            ? ItemFactory.Instance.GetItem(p.Material).BaseData.name
+                                            : "None") +
+                                        " SupportItem: " +
+                                        (ItemFactory.Instance.GetItem(p.SupportItem).ItemID != 10000000
+                                            ? ItemFactory.Instance.GetItem(p.SupportItem).BaseData.name
+                                            : "None"));
 
 
-                        Logger.GetLogger().Information("BaseLevel: " + p.BaseLevel + " JLevel: " + p.JobLevel);
-                        Logger.GetLogger().Information("ExpRate: " + p.ExpRate + " JExpRate: " + p.JExpRate);
+                        Logger.ShowInfo("BaseLevel: " + p.BaseLevel + " JLevel: " + p.JobLevel);
+                        Logger.ShowInfo("ExpRate: " + p.ExpRate + " JExpRate: " + p.JExpRate);
 
                         var Material = p.Material;
 
@@ -15401,7 +15410,7 @@ namespace SagaMap.Network.Client {
                     //Character.Account.Banned = true;
                     // var log = new Logger("玩家异常.txt");
                     var logtext = "\r\n" + Character.Name + "使用了交易，修改了数量：" + this.tradeCounts[i] + "/" + item.Stack;
-                    SagaLib.Logger.GetLogger().Information(logtext);
+                    SagaLib.Logger.ShowInfo(logtext);
                 }
 
                 item.Stack = this.tradeCounts[i];
@@ -15495,9 +15504,9 @@ namespace SagaMap.Network.Client {
                 p2.Item = item;
                 p2.InventorySlot = tradeItems[i];
                 p2.Container = ContainerType.BODY;
-                Logger.GetLogger().Information("尝试交易道具:" + item.ItemID + "[" + item.Name + "] " + item.Stack +
-                                               "个  , 道具栏ID: " +
-                                               tradeItems[i]);
+                Logger.ShowInfo("尝试交易道具:" + item.ItemID + "[" + item.Name + "] " + item.Stack +
+                                "个  , 道具栏ID: " +
+                                tradeItems[i]);
                 client.NetIo.SendPacket(p2);
             }
 

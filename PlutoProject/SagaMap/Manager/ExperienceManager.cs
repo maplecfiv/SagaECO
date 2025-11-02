@@ -278,7 +278,7 @@ namespace SagaMap.Manager {
                             break;
                     }
                 }
-                Logger.getLogger().Information("EXP table loaded");
+                Logger.getLogger().ShowInfo("EXP table loaded");
             }
             catch (Exception ex)
             {
@@ -1038,7 +1038,7 @@ namespace SagaMap.Manager {
                     bonus = 1f;
                 //计算团队伤害比重
                 if (damageParty[i] < 0) {
-                    Logger.GetLogger().Information("fix damage party value low than 0");
+                    Logger.ShowInfo("fix damage party value low than 0");
                     damageParty[i] = 0;
                 }
 
@@ -1058,7 +1058,7 @@ namespace SagaMap.Manager {
                 //计算团队经验分配
                 var difference = (uint)Math.Abs(maxlv - minlv);
                 if (bonus < 0) {
-                    Logger.GetLogger().Information("fix bonus low than 0");
+                    Logger.ShowInfo("fix bonus low than 0");
                     bonus = 0;
                 }
 

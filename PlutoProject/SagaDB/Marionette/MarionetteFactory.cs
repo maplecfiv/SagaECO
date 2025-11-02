@@ -20,7 +20,7 @@ namespace SagaDB.Marionette {
 
         public void Init(string path, Encoding encoding) {
             var sr = new StreamReader(VirtualFileSystemManager.Instance.FileSystem.OpenFile(path), encoding);
-            Logger.GetLogger().Information("Loading marionette database...");
+            Logger.ShowInfo("Loading marionette database...");
             //Console.ForegroundColor = ConsoleColor.Green;
             var count = 0;
             string[] paras;
@@ -97,7 +97,7 @@ namespace SagaDB.Marionette {
             }
 
             //Console.ResetColor();
-            Logger.GetLogger().Information(count + " marionette loaded.");
+            Logger.ShowInfo(count + " marionette loaded.");
             sr.Close();
         }
     }

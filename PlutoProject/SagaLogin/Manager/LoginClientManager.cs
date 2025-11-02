@@ -17,14 +17,11 @@ using SagaLogin.Packets.Client.Tool;
 using SagaLogin.Packets.Client.WRP;
 using SagaLogin.Packets.Map;
 
-namespace SagaLogin.Manager
-{
-    public sealed class LoginClientManager : ClientManager
-    {
+namespace SagaLogin.Manager {
+    public sealed class LoginClientManager : ClientManager {
         public Thread check;
 
-        private LoginClientManager()
-        {
+        private LoginClientManager() {
             /*
             this.clients = new Dictionary<uint, GatewayClient>();
             this.commandTable = new Dictionary<ushort, Packet>();
@@ -89,24 +86,20 @@ namespace SagaLogin.Manager
         /// <summary>
         ///     Connects new clients
         /// </summary>
-        public override void NetworkLoop(int maxNewConnections)
-        {
-            for (var i = 0; Listener.Pending() && i < maxNewConnections; i++)
-            {
+        public override void NetworkLoop(int maxNewConnections) {
+            for (var i = 0; Listener.Pending() && i < maxNewConnections; i++) {
                 var sock = Listener.AcceptSocket();
-                Logger.GetLogger().Information("New client from: " + sock.RemoteEndPoint, null);
+                Logger.ShowInfo("New client from: " + sock.RemoteEndPoint, null);
                 var client = new LoginClient(sock, CommandTable);
                 Clients.Add(client);
             }
         }
 
-        public override void OnClientDisconnect(Client client_t)
-        {
+        public override void OnClientDisconnect(Client client_t) {
             Clients.Remove((LoginClient)client_t);
         }
 
-        public LoginClient FindClient(ActorPC pc)
-        {
+        public LoginClient FindClient(ActorPC pc) {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.selectedChar != null
@@ -119,8 +112,7 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        public LoginClient FindClient(uint charID)
-        {
+        public LoginClient FindClient(uint charID) {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.selectedChar != null
@@ -133,8 +125,7 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        public LoginClient FindClient(string charName)
-        {
+        public LoginClient FindClient(string charName) {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.selectedChar != null
@@ -147,8 +138,7 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        public List<LoginClient> FindAllOnlineAccounts()
-        {
+        public List<LoginClient> FindAllOnlineAccounts() {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.account != null
@@ -158,8 +148,7 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        public LoginClient FindClientAccountID(uint accountID)
-        {
+        public LoginClient FindClientAccountID(uint accountID) {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.account != null
@@ -172,8 +161,7 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        public LoginClient FindClientAccount(string accountName)
-        {
+        public LoginClient FindClientAccount(string accountName) {
             var chr =
                 from c in Clients
                 where !c.IsMapServer && c.account != null
@@ -186,14 +174,12 @@ namespace SagaLogin.Manager
             return null;
         }
 
-        private class Nested
-        {
+        private class Nested {
             internal static readonly LoginClientManager instance = new LoginClientManager();
 
             // Explicit static constructor to tell C# compiler
             // not to mark type as beforefieldinit
-            static Nested()
-            {
+            static Nested() {
             }
         }
     }

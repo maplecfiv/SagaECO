@@ -694,17 +694,13 @@ namespace SagaDB.Actor {
             get {
                 if (MapInfoFactory.Instance.MapInfo.ContainsKey(MapID)) {
                     var map = MapInfoFactory.Instance.MapInfo[MapID];
-                    if (map.Flag.Test(MapFlags.Dominion))
-                        return true;
-                    return false;
+                    return (map.Flag.Test(MapFlags.Dominion));
                 }
 
                 var oriMap = MapID / 1000 * 1000;
                 if (MapInfoFactory.Instance.MapInfo.ContainsKey(oriMap)) {
                     var map = MapInfoFactory.Instance.MapInfo[oriMap];
-                    if (map.Flag.Test(MapFlags.Dominion))
-                        return true;
-                    return false;
+                    return (map.Flag.Test(MapFlags.Dominion));
                 }
 
                 return false;

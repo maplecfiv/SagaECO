@@ -967,7 +967,7 @@ namespace SagaMap.ActorEventHandlers {
             //Packets.Server.SSMG_ACTOR_PC_INFO p1 = new Packets.Server.SSMG_ACTOR_PC_INFO();
             var pc = (ActorPC)aActor;
             p.ActorID = aActor.ActorID;
-            //Logger.getLogger().Information("OnPlayerMode");
+            //Logger.getLogger().ShowInfo("OnPlayerMode");
             switch (pc.Mode) {
                 case PlayerMode.NORMAL:
                     p.Mode1 = 2;
