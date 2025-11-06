@@ -1,0 +1,5708 @@
+event_progresses:
+  entrypoint:
+# アップタウン・ギルド商人
+   - action: routine
+       type: question
+       question: 御用がおありですか？
+        options:
+            買い物をする: buy
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+           何もしない: RETURN
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10164000
+         - id: 10026400
+         - id: 61010000
+         - id: 60040000
+         - id: 50070500
+         - id: 60030000
+         - id: 50020900
+         - id: 50000300
+         - id: 50001700
+         - id: 50010254
+         - id: 50010150
+         - id: 50061500
+         - id: 50070100
+  jewel
+    - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。
+event_progresses:
+  entrypoint:
+# アップタウン北可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# ダウンタウン・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン・ThanksObject
+   - action: routine
+       type: question
+       question: 何をしますか？
+        options:
+          アイテムの購入: hop
+         特にない: RETURN
+event_progresses:
+  entrypoint:
+# アップタウン東可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン南可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン西可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（南西）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270003
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・崩落した階段・東側
+    - action: dialog
+        title: 
+        content: ……階段の下に降りられそうだ。
+        character_image: 11004348
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 151
+        y: 36
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（北西）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270002
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（北東）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270000
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（南東）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270001
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・崩落した階段・西側
+    - action: dialog
+        title: 
+        content: ……階段の下に降りられそうだ。
+        character_image: 11004349
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 105
+        y: 36
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# カーマインブリックシティ・タクシー屋（街）
+    - action: dialog
+        title: タクシー屋（街）
+        content: ここはバギータクシーだよ！$R$Pカーマインブリックの街発の$Rカーマイン海岸行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+        character_image: 11004140
+   - action: routine
+       type: question
+       question: どうしますか？
+        options:
+          利用しない: hold_request
+          カーマイン海岸まで行く（15000Ｇ）: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: タクシー屋（街）
+        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+        character_image: 11004140
+    - action: teleport
+        map_id: 10080000
+        x: 51
+        y: 65
+        dir: 0
+event_progresses:
+  entrypoint:
+# モーグシティ・炭鉱夫見習い
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
+        character_image: 18000848
+   - action: routine
+       type: question
+       question: １００ゴールド渡す？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……まいど。$R$Pおーい、人が乗るぞー！
+        character_image: 18000848
+    - action: teleport
+        map_id: 10060000
+        x: 84
+        y: 142
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・空港係員
+   - action: routine
+       type: question
+       question: 光の塔行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: 光の塔へ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000825 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 20146000
+        x: 202
+        y: 144
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・空港係員
+   - action: routine
+       type: question
+       question: 軍艦島行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: 軍艦島へ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000824 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10035000
+        x: 100
+        y: 213
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・密航路の親父
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          何もしない: hold_request
+          天まで続く塔の島へ行く！: accept_request
+  hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 密航路の親父
+        content: すぐに出発じゃ。$Rさっさと乗り込まんか！
+        character_image: 11001468
+    - action: dialog
+        title: 
+        content: 天まで続く塔の島へ出発しまーす！
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11001468 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 250
+        dir: 180
+event_progresses:
+  entrypoint:
+# モーグシティ・炭鉱夫見習い
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
+        character_image: 18000849
+   - action: routine
+       type: question
+       question: １００ゴールド渡す？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……まいど。$R$Pおーい、人が乗るぞー！
+        character_image: 18000848
+    - action: teleport
+        map_id: 10060000
+        x: 142
+        y: 145
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 12
+        y: 185
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 240
+        y: 213
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 156
+        y: 217
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 13
+        y: 213
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 219
+        y: 50
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 69
+        y: 78
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20073000
+        x: 36
+        y: 30
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20073000
+        x: 181
+        y: 151
+        dir: 0
+event_progresses:
+  entrypoint:
+# トンカ島・アイアンサウス行き
+    - action: dialog
+        title: アイアンサウス行き
+        content: マルクトの船着場行き$Rまもなく出発です。
+        character_image: 11001055
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（100ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド渡した。
+        character_image: 11000000
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: アイアンサウス行き
+        content: マルクトの船着場へ出発しまーす！
+        character_image: 11001055
+    - action: play_se
+        id: 2438
+#effect id=11001055 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 20023000
+        x: 151
+        y: 44
+        dir: 180
+event_progresses:
+  entrypoint:
+# トンカ島・カーマイン島行き
+    - action: dialog
+        title: カーマイン島行き
+        content: カーマイン海岸行き$Rまもなく出発です。
+        character_image: 11004168
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（5000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-5000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 5000ゴールド渡した。
+        character_image: 11004168
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: カーマイン島行き
+        content: カーマイン海岸へ出発しまーす！
+        character_image: 11004168
+    - action: play_se
+        id: 2438
+#effect id=11004168 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10080000
+        x: 47
+        y: 81
+        dir: 0
+event_progresses:
+  entrypoint:
+# トンカ島・マイマイ島行き
+    - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島行き、まもなく出発です。
+        character_image: 11001058
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（200ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-200
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: マイマイ島行き
+        content: 200ゴールド渡した。
+        character_image: 11000000
+    - action: dialog
+        title: マイマイ島行き
+        content: では、飛空庭へどうぞ。
+        character_image: 11001058
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島へ出発しまーす！
+        character_image: 11001058
+    - action: play_se
+        id: 2438
+#effect id=11001058 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10059000
+        x: 69
+        y: 147
+        dir: 270
+event_progresses:
+  entrypoint:
+# トンカ島・アクロポリス行き
+    - action: dialog
+        title: アクロポリス行き
+        content: 高速飛空庭、トンカエクスプレス！$Rアクロポリス行きはここだ～よ♪$R
+        character_image: 11001336
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（1000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-1000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 1000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: アクロポリス行き
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11001336
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: アクロポリス行き
+        content: 本日は、トンカエクスプレス$Rアクロポリス行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11001336
+    - action: dialog
+        title: アクロポリス行き
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11001336
+    - action: dialog
+        title: アクロポリス行き
+        content: それでは$Rアクロポリスへ出発しまーす！
+        character_image: 11001336
+    - action: play_se
+        id: 2438
+#effect id=11001336 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10023000
+        x: 159
+        y: 193
+        dir: 90
+event_progresses:
+  entrypoint:
+# 軍艦島・レジスタンス
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#end
+    - action: dialog
+        title: レジスタンス
+        content: この先は$R「軍艦島地下」へ繋がっている。$R$R……リーダーからの通行許可を$R得ているようだな。
+        character_image: 11001592
+   - action: routine
+       type: question
+       question: 「軍艦島地下」へ進むか？
+        options:
+          「軍艦島地下」へ行く: accept_request
+          やめる: hold_request
+#*state1
+  accept_request
+    - action: teleport
+        map_id: 22197000
+        x: 103
+        y: 5
+        dir: 0
+#*state2
+  hold_request
+event_progresses:
+  entrypoint:
+# 軍艦島（ドミニオン界）・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: ウェストフォートに行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 12019000
+        x: 4
+        y: 80
+        dir: 0
+event_progresses:
+  entrypoint:
+# 軍艦島・レジスタンス
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#end
+    - action: dialog
+        title: レジスタンス
+        content: この先は$R「軍艦島地下」へ繋がっている。$R$R……リーダーからの通行許可を$R得ているようだな。
+        character_image: 11001593
+   - action: routine
+       type: question
+       question: 「軍艦島地下」へ進むか？
+        options:
+          「軍艦島地下」へ行く: accept_request
+          やめる: hold_request
+#*state1
+  accept_request
+    - action: teleport
+        map_id: 22197000
+        x: 103
+        y: 5
+        dir: 0
+#*state2
+  hold_request
+event_progresses:
+  entrypoint:
+# 軍艦島・飛空庭係員
+    - action: dialog
+        title: 飛空庭係員
+        content: 「天まで続く塔の島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+        character_image: 11001591
+   - action: routine
+       type: question
+       question: 天まで続く塔の島行きの飛空庭だ
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る（100ゴールド）: accept_request
+  hold_request
+    - action: dialog
+        title: 飛空庭係員
+        content: ……また来な。$R
+        character_image: 11001590
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド支払った！
+        character_image: 10000000
+    - action: dialog
+        title: 飛空庭係員
+        content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+        character_image: 11001590
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 飛空庭係員
+        content: ……天まで続く塔の島へ出発だ！
+        character_image: 11001591
+    - action: play_se
+        id: 2438
+#effect id=11001591 effect=8066
+    - action: wait
+        time: 2180
+    - action: teleport
+        map_id: 12058000
+        x: 127
+        y: 250
+        dir: 180
+event_progresses:
+  entrypoint:
+# 軍艦島地下・軍艦島地下衛兵
+   - action: routine
+       type: question
+       question: どのマップに行く？
+        options:
+          行かない: hold_request
+          アイアンサウス跡地: iron
+          鉄火山エネルギープラント: kazan
+          トラージ・ディコーヤ: tora
+  hold_request
+  iron
+    - action: teleport
+        map_id: 12063000
+        x: 19
+        y: 93
+        dir: 0
+  kazan
+    - action: teleport
+        map_id: 12064000
+        x: 116
+        y: 100
+        dir: 0
+  tora
+    - action: teleport
+        map_id: 12101000
+        x: 39
+        y: 21
+        dir: 0
+event_progresses:
+  entrypoint:
+# 光の塔下層・飛空庭係員
+   - action: routine
+       type: question
+       question: モーグシティ行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: モーグシティへ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000876 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 42
+        y: 133
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいでしょう、通りなさい……。
+        character_image: 11000657
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦から出る: accept_request
+          まだ出ない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054001
+        x: 154
+        y: 165
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいだろう、通りなさい……。
+        character_image: 11000656
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦から出る: accept_request
+          まだ出ない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054001
+        x: 153
+        y: 165
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・水先案内人
+    - action: dialog
+        title: 水先案内人
+        content: 乗ってく？$Rあたしたちの島に連れてったげるよ♪
+        character_image: 11001470
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          行く: accept_request
+          船を貸してもらう: accept_request2
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 11053000
+        x: 20
+        y: 232
+        dir: 180
+  accept_request2
+    - action: dialog
+        title: 水先案内人
+        content: え、別にいいけど$Rちゃんと返してね～。
+        character_image: 11001471
+    - action: teleport
+        map_id: 11075000
+        x: 15
+        y: 9
+        dir: 0
+event_progresses:
+  entrypoint:
+#深淵・インスマウス像
+    - action: dialog
+        title: 
+        content: どこからともなく、声が聞こえる…$R$Pカエレ…$R$Rオマエ ハ フサワシクナイ…$R$Rカエレ…
+        character_image: 11001824
+   - action: routine
+       type: question
+       question: カエル？
+        options:
+          カエラナイ: hold_request
+          カエル: accept_request
+  hold_request
+    - action: dialog
+        title: 
+        content: その場から離れた。
+        character_image: 11001824
+  accept_request
+    - action: teleport
+        map_id: 21190000
+        x: 17
+        y: 124
+        dir: 90
+event_progresses:
+  entrypoint:
+# アップタウン・国境エクスプレス係員
+    - action: dialog
+        title: 国境エクスプレス係員
+        content: ここは$R演習ボーナス空路の搭乗口だけんども$R今はどこの空路も開通してないから$R使用できないんだ～よ。$R$Rごめんな～。
+        character_image: 11003963
+event_progresses:
+  entrypoint:
+# アップタウン東可動橋・アップタウン東門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 217
+        y: 128
+        dir: 90
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# アップタウン・トンカエクスプレス係員
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 高速飛空庭、トンカエクスプレス！$Rトンカ行きはここだ～よ♪$R
+        character_image: 11001335
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（1000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-1000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 1000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11001335
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 本日は、トンカエクスプレス$Rトンカ行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11001335
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11001335
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それでは$Rトンカシティへ出発しまーす！
+        character_image: 11001335
+    - action: play_se
+        id: 2438
+#effect id=11001335 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 189
+        y: 66
+        dir: 135
+event_progresses:
+  entrypoint:
+# アップタウン南可動橋・アップタウン南門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 219
+        dir: 2
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー２Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮２階になります。$R$P北はアーチャーマスター$R東はソードマンマスター$R南はスカウトマスター$R西はフェンサーマスターの$R部屋になっています。
+        character_image: 11000011
+event_progresses:
+  entrypoint:
+# シアタースクリーン室１・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000192
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000192
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30180000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー５Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮５階になります。
+        character_image: 11000014
+event_progresses:
+  entrypoint:
+# アップタウン・タイニー
+    - action: dialog
+        title: タイニー
+        content: 不思議なところに行ってみたくない？？
+        character_image: 11000776
+   - action: routine
+       type: question
+       question: ？？？
+        options:
+          いってみたい: accept_request
+          いきたくない: hold_request
+  accept_request
+    - action: dialog
+        title: タイニー
+        content: ♪♪$Rじゃあ目をつむってね！$R$P３つ数えるね。$Rいーち、にーぃ…さー……
+        character_image: 11000776
+    - action: dialog
+        title: 
+        content: ……？$Rなんだか…眠くなってきた……。$R$P……。
+        character_image: 11000000
+    - action: teleport
+        map_id: 10071000
+        x: 245
+        y: 84
+        dir: 0
+  hold_request
+    - action: dialog
+        title: タイニー
+        content: ちぇーっ、つまんないのー。
+        character_image: 11000776
+event_progresses:
+  entrypoint:
+# シアタースクリーン室３・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000194
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000194
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30182000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー３Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮３階になります。$R$P北はファーマーマスター$R東はスペルユーザーマスター$R南はマシンナリーマスター$R西はタタラベマスターの$R部屋になっています。
+        character_image: 11000012
+event_progresses:
+  entrypoint:
+# アップタウン北可動橋・アップタウン北門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 253
+        dir: 0
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー４Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮４階になります。$R$P北はマーチャントマスター$R東はアルケミストマスター$R南はレンジャーマスター$R西はマリオネストマスターの$R部屋になっています。
+        character_image: 11000013
+event_progresses:
+  entrypoint:
+# アップタウン西可動橋・アップタウン西門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 37
+        y: 128
+        dir: 270
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー１Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: いらっしゃいませ！$R『ギルド元宮』にようこそ！$R$Pこちらは初めてですか？$R$Rよければ、ギルド元宮についての説明を$Rお聞きになりませんか？
+        character_image: 11000000
+   - action: routine
+       type: question
+       question: ギルド元宮について聞く？
+        options:
+          聞く: accept_request
+          聞かない: hold_request
+  accept_request
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: このギルド元宮は、５階建ての建物の$R中にいろいろな職業ギルドの本部が$Rテナントとして入っています。$R$P各職業ギルドへの入団手続きや$Rクエストの請負なども行っています。$R$P職業ごとのくわしい説明は$R２階から上の各職業ギルド本部で$Rお聞きになってください。$R$Pあ、５階はこの世界にいらっしゃる$R異界の方々の専用フロアに$Rなっておりますので、エミルの方の$Rご利用はご遠慮ください。
+        character_image: 11000000
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ギルド元宮にようこそ！
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  guide
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request1
+          1: accept_request2
+          2: accept_request3
+          3: accept_request4
+          4: accept_request5
+          5: hold_request
+  accept_request1
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: １階ロビーはこのフロアのことです。$R$Rギルド元宮、総合案内担当の私と$R他の階につながるワープがあります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request2
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ２階フロアには、ファイター系の$R職業ギルドが入っています。$R$Rソードマン、フェンサー、スカウト$Rアーチャーギルドをご利用の方は$Rこちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request3
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ３階フロアには、バックパッカー系の$R職業ギルドの他に、ウィザードや$Rシャーマンを統括している$Rスペルユーザーギルドがあります。$R$Pウィザード、シャーマン、ファーマー$Rタタラベ、マシンナリーギルドを$Rご利用の方は、こちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request4
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ４階フロアには、バックパッカー系の$R職業ギルドが入っています。$R$Rマーチャント、アルケミスト$Rレンジャー、マリオネストギルドを$Rご利用の方は、こちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request5
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ５階フロアは、異界の方々の$R専用フロアになっています。$R$Rエミルの方はご利用になれません。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  hold_request
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: どうぞゆっくりして下さいね！
+        character_image: 11000000
+event_progresses:
+  entrypoint:
+# シアタースクリーン室４・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000195
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000195
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30183000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# シアタースクリーン室２・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000193
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000193
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30181000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいだろう、通りなさい……。
+        character_image: 11000906
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦の中に入る: accept_request
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054000
+        x: 153
+        y: 161
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいでしょう、通りなさい……。
+        character_image: 11000906
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦の中に入る: accept_request
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054000
+        x: 154
+        y: 161
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# 大陸の洞窟Ｂ４Ｆ・リヴィングデッド
+    - action: dialog
+        title: リヴィングデッド
+        content: ギヒヒヒヒヒ。$Rオマエ、ツイテコイ……。$R
+        character_image: 11001351
+   - action: routine
+       type: question
+       question: ……。
+        options:
+          逃げる: hold_request
+          ついていく: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 20003000
+        x: 82
+        y: 23
+        dir: 180
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・コッソ
+    - action: dialog
+        title: コッソ
+        content: ノーザン市民街へ行くっすか？
+        character_image: 11003379
+   - action: routine
+       type: question
+       question: ノーザン市民街に行く？
+        options:
+          いく: accept_request
+          やめる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 20015001
+        x: 9
+        y: 6
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ノーザン宮殿秘密通路・コッソ
+    - action: dialog
+        title: コッソ
+        content: ここを抜ければノーザン市民街っす。$R$Rモンスター共がうろついてっから$R行くなら気を付けて行くっすよ！
+        character_image: 11003380
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・交渉する冒険者
+    - action: dialog
+        title: 交渉する冒険者
+        content: あなたに相談すれば$Rノーザン市民街へ行く$R手引きをして貰えるって$R噂に聞いて来たんですが……。
+        character_image: 11003382
+    - action: dialog
+        title: ドーロ
+        content: こっちも商売だからな$Rそれなりに値が張るぜ？
+        character_image: 11003381
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・ドーロ
+event_progresses:
+  entrypoint:
+# マイマイ島・飛空庭誘導員
+    - action: dialog
+        title: 飛空庭誘導員
+        content: トンカ島へ戻るかい？
+        character_image: 11001261
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 10062000
+        x: 183
+        y: 71
+        dir: 180
+event_progresses:
+  entrypoint:
+# マルクトの船着場・南軍兵士
+    - action: dialog
+        title: 南軍兵士
+        content: ようこそ、マルクトの船着場へ。$Rトンカへの飛空庭乗り場はこちらです。$R
+        character_image: 11001099
+   - action: routine
+       type: question
+       question: ようこそ、マルクトの船着場へ！
+        options:
+          なにもしない: hold_request
+          搭乗手続きを行う: accept_request
+  accept_request
+    - action: dialog
+        title: 南軍兵士
+        content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+        character_image: 11001099
+   - action: routine
+       type: question
+       question: トンカシティ行きの飛空庭です
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る: accept_request2
+  accept_request2
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: トンカシティへ出発しまーす！$R
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=10 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 195
+        y: 60
+        dir: 135
+  hold_request
+event_progresses:
+  entrypoint:
+# ダウンタウン・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: 天まで続く塔の島へ行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+    - action: dialog
+        title: レジスタンス傭兵
+        content: そっか、仕方ないよね。
+        character_image: 11001669
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 10058000
+        x: 110
+        y: 238
+        dir: 0
+event_progresses:
+  entrypoint:
+# ノーザン地下・市民街・ノーザン王国の民
+    - action: dialog
+        title: ノーザン王国の民
+        content: ようこそ！ノーザンの市民街へ！$R街の殆どは氷漬けに$Rなってるけどね！$R$Rゆっくりしていってね！
+        character_image: 11003366
+    - action: dialog
+        title: ノーザン王国の民
+        content: ん？身体が変だって？$Rそんな細かいこと$R気にしていたらここじゃ$R生きられないわよ♪$R
+        character_image: 11003366
+event_progresses:
+  entrypoint:
+# 南アクロニア平原・運び屋マックス
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11003316
+    - action: dialog
+        title: 運び屋マックス
+        content: おぉ、あんたか。$Rこれからウェストー開拓地の村まで$R戻るとこだが、あんたも乗ってくか？
+        character_image: 11003316
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request
+          やめる: hold_request
+  accept_request
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003316
+    - action: teleport
+        map_id: 10005000
+        x: 114
+        y: 79
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・レジスタンス傭兵
+    - action: dialog
+        title: レジスタンス傭兵
+        content: これからダウンタウンに行くんだけど$R一緒にどうだい？
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ダウンタウンに行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 10024000
+        x: 54
+        y: 122
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・密航路の親父
+    - action: dialog
+        title: 密航路の親父
+        content: わしはちょっくらモーグに戻るが$Rお前さんはどうする？
+        character_image: 11001469
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（500ゴールド）: accept_request
+  hold_request
+  accept_request
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 500ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: 密航路の親父
+        content: すぐに出発じゃ。$Rさっさと乗り込まんか！
+        character_image: 10001543
+    - action: dialog
+        title: 
+        content: モーグ島へ出発しまーす！
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11001469 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 83
+        y: 40
+        dir: 270
+event_progresses:
+  entrypoint:
+# ウェストー開拓地・運び屋マックス
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11003317
+       loop: True
+    - action: dialog
+        title: 運び屋マックス
+        content: 仕事の紹介感謝するぜ！$R$R俺はしばらくこの辺を拠点に$R仕事してるから、何かあれば$R遠慮なく言ってくれ。
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          南アクロニア平原まで乗せて: soacro
+          ノーザリン岬の村まで乗せて: north
+          イストー岬の村まで乗せて: east
+          サウスリン岬の村まで乗せて: south
+          廃炭坑の村まで乗せて: tanco
+          特に用事はない: hold_request
+  soacro
+    - action: dialog
+        title: 運び屋マックス
+        content: 南アクロニア平原か。$Rちょうど行くところだし$Rタダで乗せてってやるけど、どうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request
+          やめる: hold_request
+  accept_request
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10031000
+        x: 135
+        y: 130
+        dir: 0
+  north
+    - action: dialog
+        title: 運び屋マックス
+        content: ノーザリン岬の村か。$R３６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request2
+          やめる: hold_request
+  accept_request2
+#getgold gold=-360
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10001000
+        x: 96
+        y: 24
+        dir: 0
+  east
+    - action: dialog
+        title: 運び屋マックス
+        content: イストー岬の村か。$R３８０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request3
+          やめる: hold_request
+  accept_request3
+#getgold gold=-380
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10018100
+        x: 238
+        y: 81
+        dir: 0
+  south
+    - action: dialog
+        title: 運び屋マックス
+        content: サウスリン岬の村か。$R４６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request4
+          やめる: hold_request
+  accept_request4
+#getgold gold=-460
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10046000
+        x: 156
+        y: 218
+        dir: 0
+  tanco
+    - action: dialog
+        title: 運び屋マックス
+        content: 廃炭鉱の村か。$R３７０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request5
+          やめる: hold_request
+  accept_request5
+#getgold gold=-370
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10035000
+        x: 44
+        y: 194
+        dir: 0
+  hold_request
+    - action: dialog
+        title: 運び屋マックス
+        content: oh……。
+        character_image: 11003317
+event_progresses:
+  entrypoint:
+# アンデッド島（大陸側）・グリエルモ
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: has
+         false: hasnot
+  hasnot
+    - action: dialog
+        title: グリエルモ
+        content: ここから見えるのがアンデッド島だ。$R今は封印されていて渡れない$R渡るには『紋章紙』が必要だ。$R
+        character_image: 11000094
+  has
+    - action: dialog
+        title: グリエルモ
+        content: それは『紋章紙』だな？$R$Rこの紙を燃やせば$Rアンデッド島の封印が一時的に解け$Rあの島に渡れるようになる。
+        character_image: 11000094
+   - action: routine
+       type: question
+       question: アンデッド島に渡りますか？
+        options:
+          渡らない: hold_request
+          渡ってみる: accept_request
+  hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 10019100
+        x: 93
+        y: 104
+        dir: 90
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F中央・現金なスフィンクス・タラタ
+    - action: dialog
+        title: 現金なスフィンクス・タラタ
+        content: 私はダンジョンワープ商人！$R$R人よんで、スフィンクスタクシーにゃ！$R$Rアンタをダンジョン内の$R私の姉妹がいる場所に$R移動させてやることができるにゃ$Rもちろんお代はいただくけどにゃ！$R$Rさて、今日はどうするにゃ？
+        character_image: 11004475
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F西居住区・現金なスフィンクス・イトネ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡２F・現金なスフィンクス・ハムサ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡Ｂ１F・現金なスフィンクス・ワヒド
+    - action: dialog
+        title: 現金なスフィンクス・ワヒド
+        content: Ｚｚｚ……$Rにゃぁ～ん？誰にゃ？$Rあぁ、なんだ冒険者にゃ。$R$Rなんにゃー？$Rスフィンクスタクシー使うにゃ？$Rしょうがないにゃぁ～～……。
+        character_image: 11004479
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            １Ｆ西居住区（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            ２Ｆ中央（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F東居住区・現金なスフィンクス・アルバ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# ノーザン地下・世界樹・ 
+    - action: dialog
+        title: 
+        content: 氷の中の女性は$Rこころなしか$R穏やかな表情をしている。
+        character_image: 11003359
+event_progresses:
+  entrypoint:
+# 軍艦島・モーグ国境警備員
+    - action: dialog
+        title: モーグ国境警備員
+        content: ようこそ、軍艦島空港へ。$Rモーグへの飛空庭乗り場はこちらです。$R
+        character_image: 11000433
+   - action: routine
+       type: question
+       question: ようこそ、軍艦島空港へ！
+        options:
+          搭乗手続きを行う: accept_request
+          なにもしない: hold_request
+  accept_request
+    - action: dialog
+        title: モーグ国境警備員
+        content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+        character_image: 11000433
+   - action: routine
+       type: question
+       question: モーグシティ行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request2
+          まだ、乗らない: hold_request
+  accept_request2
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: モーグシティへ出発しまーす！$R
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11000433 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 223
+        y: 173
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# バオバブの森・森のギルド員
+    - action: routine
+        type: variable
+        var: cloudforest
+        options:
+          0: cloudforest0
+          1: cloudforest1
+  cloudforest0
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11001259
+    - action: dialog
+        title: 森のギルド員
+        content: ここは、森のギルド所有の山小屋だ。$R一泊360ゴールドで休んでくかい？
+        character_image: 11001259
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          休まない: hold_request
+          休む: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: 森のギルド員
+        content: このバオバブの森には$R夜にしか現れないモンスターがいるよ。$R$Rよければ散策してみるかい？
+        character_image: 11001259
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          散策しない: accept_request2
+          散策する: accept_request3
+  accept_request2
+    - action: dialog
+        title: 森のギルド員
+        content: じゃあ、おやすみ。
+        character_image: 11001259
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  accept_request3
+    - action: dialog
+        title: 森のギルド員
+        content: じゃあ、夜になったら起こすね。$R寝起き……悪くないよね？
+        character_image: 11001259
+    - action: routine
+        type: item
+         item: 10012600
+         count: 1
+         true: true
+         false: false
+  true
+    - action: take_item
+        id: 10012600
+        count: 1
+    - action: set_var
+        name: cloudforest
+        value: 1
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059102
+        x: 234
+        y: 36
+        dir: 0
+  false
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059101
+        x: 234
+        y: 36
+        dir: 0
+  cloudforest1
+    - action: dialog
+        title: 森のギルド員
+        content: 昨晩、ひどく$Rうなされていたみたいだけど$R大丈夫かい？$R$R起こそうとしたんだけど$Rいくら、揺すっても起きないから$R心配してたんだぜ。$R$P……？？？$R$P大きな竜を見た？$R何を言ってるんだよ。$R$R昨日はずっと、ベットにいたよ。$R$R夢でも見たんじゃないのかな？
+        character_image: 11001259
+    - action: dialog
+        title: 
+        content: 持っていた『紫金の宝玉』が$Rなくなっている……。
+        character_image: 11000000
+    - action: set_var
+        name: cloudforest
+        value: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・飛空庭係員
+    - action: dialog
+        title: 飛空庭係員
+        content: 「軍艦島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+        character_image: 11001590
+   - action: routine
+       type: question
+       question: 軍艦島行きの飛空庭だ
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る（100ゴールド）: accept_request
+  hold_request
+    - action: dialog
+        title: 飛空庭係員
+        content: ……また来な。$R
+        character_image: 11001590
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド支払った！
+        character_image: 10000000
+    - action: dialog
+        title: 飛空庭係員
+        content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+        character_image: 11001590
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 飛空庭係員
+        content: ……軍艦島へ出発だ！
+        character_image: 11001590
+    - action: play_se
+        id: 2438
+#effect id=11001590 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 12035000
+        x: 47
+        y: 159
+        dir: 0
+event_progresses:
+  entrypoint:
+# ゴールデンブリッジ・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: 軍艦島に行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 12035000
+        x: 51
+        y: 155
+        dir: 0
+event_progresses:
+  entrypoint:
+# カーマイン海岸・トンカエクスプレス係員
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 高速飛空庭、トンカエクスプレス！$Rトンカ行きはここだ～よ♪$R
+        character_image: 11004169
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る(5000ゴールド): accept_request
+  hold_request
+  accept_request
+#getgold gold=-5000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 5000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11004169
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 本日は、トンカエクスプレス$Rトンカ行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11004169
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11004169
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それでは$Rトンカシティへ出発しまーす！
+        character_image: 11004169
+    - action: play_se
+        id: 2438
+#effect id=10 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 176
+        y: 53
+        dir: 0
+event_progresses:
+  entrypoint:
+# カーマイン海岸・タクシー屋（海岸）
+    - action: dialog
+        title: タクシー屋（海岸）
+        content: ここはバギータクシーだよ！$R$Pカーマイン海岸発の$Rカーマインブリックの街行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+        character_image: 11004138
+   - action: routine
+       type: question
+       question: どうしますか？
+        options:
+          利用しない: hold_request
+          街まで行く（15000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-15000
+    - action: dialog
+        title: タクシー屋（海岸）
+        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+        character_image: 11004138
+    - action: teleport
+        map_id: 10055000
+        x: 142
+        y: 248
+        dir: 0
+event_progresses:
+  entrypoint:
+# タイニーアイランド・サンドバック系アイテム収集家
+  - action: purchase_dialog
+       items: 
+         - id: 20050051
+         - id: 20050106
+         - id: 20050132
+         - id: 20050127
+         - id: 20050064
+         - id: 20050069
+         - id: 20050115
+         - id: 20050118
+         - id: 20050195
+         - id: 20050286
+         - id: 20050365
+event_progresses:
+  entrypoint:
+# タイニーアイランド・パイレーツタイニー
+    - action: dialog
+        title: パイレーツタイニー
+        content: タイニーメダルと交換だな！$R交換できるお宝は次のとおりだ！
+        character_image: 11000707
+    - action: dialog
+        title: パイレーツタイニー
+        content: この船がハリボテなのは絶対秘密だぞ！
+        character_image: 11000707
+  - action: purchase_dialog
+       items: 
+         - id: 10050300
+         - id: 10050350
+         - id: 60072200
+         - id: 31080402
+         - id: 31090202
+         - id: 31131402
+         - id: 50071051
+         - id: 50071052
+         - id: 50071055
+         - id: 50001761
+         - id: 50071750
+         - id: 50071751
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ギルド商人
+   - action: routine
+       type: question
+       question: 御用がおありですか？
+        options:
+            買い物をする(通常): buy
+            買い物をする(珍品): buy2
+            買い物をする(チュートリアル): buy3
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+           何もしない: RETURN
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 50002750
+         - id: 50000750
+         - id: 50000060
+         - id: 50001452
+         - id: 50060150
+         - id: 50060050
+         - id: 50061609
+         - id: 50060550
+         - id: 50010153
+         - id: 50010154
+         - id: 50010351
+         - id: 50010452
+  buy2
+  - action: purchase_dialog
+       items: 
+         - id: 50104203
+         - id: 50104204
+         - id: 50104205
+         - id: 60110959
+         - id: 60110960
+         - id: 60110961
+         - id: 60156400
+         - id: 50240500
+         - id: 60156401
+         - id: 50240501
+         - id: 60156402
+         - id: 50240502
+         - id: 50240600
+  buy3
+  - action: purchase_dialog
+       items: 
+         - id: 50002751
+         - id: 50000751
+         - id: 50001453
+         - id: 50010453
+         - id: 50010451
+         - id: 50012358
+         - id: 50012360
+  jewel
+    - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。
+event_progresses:
+  entrypoint:
+# タイニーアイランド・デ・ジ・キャラット
+    - action: dialog
+        title: デ・ジ・キャラット
+        content: ここはゲーマーズ$Rタイニーアイランド支店$Rコスプレ衣装通販事業部だにょ。
+        character_image: 11000977
+    - action: dialog
+        title: デ・ジ・キャラット
+        content: ……まったく$Rちょっと、ビームだしたくらいで$Rこわれるなんて、もろすぎだにょ。
+        character_image: 11000977
+event_progresses:
+  entrypoint:
+# タイニーアイランド・コスプレが好きな少女
+    - action: dialog
+        title: コスプレが好きな少女
+        content: で、でじこだにょ……。$R$Pなーんちゃって！$R$R好きなキャラクターになりきって$R遊ぶのは楽しいよ！
+        character_image: 11000919
+event_progresses:
+  entrypoint:
+# タイニーアイランド・海を眺めるタイニー
+    - action: dialog
+        title: 海を眺めるタイニー
+        content: あ、お客さん？$R残念だけど「海の家」は夏限定だよ。
+        character_image: 11000724
+    - action: dialog
+        title: 海を眺めるタイニー
+        content: 「海開き」には絶対来てね！$Rもちろん水着も販売するからね！
+        character_image: 11000724
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ネイティブタイニー
+    - action: dialog
+        title: ネイティブタイニー
+        content: パイレーツとてもよくない。$Rあれは悪いタイニーたち。
+        character_image: 11000712
+event_progresses:
+  entrypoint:
+# タイニーアイランド・アイテム精製師
+    - action: dialog
+        title: アイテム精製師
+        content: え！？…君は$R宝箱を開けたことが無いのかい？$R$Rじゃあちょうどいい。$Rおやじさん、$R飛空庭に溜め込んでいる宝箱$Rこのこにひとつあげちゃいなよ。$R$R荷物になって困っているんでしょ。
+        character_image: 11000736
+event_progresses:
+  entrypoint:
+# タイニーアイランド・湖畔のティタ
+    - action: dialog
+        title: 湖畔のティタ
+        content: エミルの世界へ戻りたいときは$R海岸にいるあのかわいいタイニーに$R話かければいいそうですわ。$R$Rあたしが話しかけると$R君はまだ早いよって言われちゃいます。
+        character_image: 11000725
+event_progresses:
+  entrypoint:
+# タイニーアイランド・レインボー発生マシーン
+    - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+          虹の話を聞かせて: rainbow
+  state1
+  hold_request
+    - action: dialog
+        title: タイニー４号
+        content: あれれー？
+        character_image: 11000726
+  accept_request
+    - action: dialog
+        title: タイニー１号
+        content: よーしっ！$Rじゃあ、みんな、いくぜ～っ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: こーこーろーをーあーわーせーてー$Rちーかーらーをーひーとーつーにー！$R$Rまわせまわせまわせまわせ～～～！
+        character_image: 11000726
+    - action: move_npc
+       ids: 
+       - id: npcs
+       x: 62
+       y: 210
+       speed: 0
+       dir: -1
+       move_type: 7
+       motion: 111
+       motion_speed: 200
+    - action: play_effect
+        id: 11000726
+        effect: 5314
+    - action: move_npc
+       ids: 
+       - id: 11000717
+       - id: 11000718
+       - id: 11000738
+       x: 62
+       y: 210
+       speed: 100
+       dir: -1
+       move_type: 7
+       motion: 111
+       motion_speed: 65535
+    - action: play_effect
+        id: 11000726
+        effect: 4011
+    - action: play_effect
+        id: 11000726
+        effect: 5314
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 11027000
+        x: 254
+        y: 7
+        dir: 2
+  rainbow
+    - action: dialog
+        title: タイニーたち
+        content: オッケー！$Rそれじゃあ、はじめるよ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: ねえ、知ってる？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: 知ってる？
+        options:
+          知らない: none
+          何を？: none
+  none
+    - action: dialog
+        title: タイニー２号
+        content: レインボーはねぇ、実は道なんだ。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: 近所のコンビニに続く道。$R$R世界の裏側の国に続く道。$R$R君の未来へと続く道。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー４号
+        content: 君が望めば$R本当に、どこにでも行けるんだ。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: 実は、この空には$Rレインボーがい～っぱい！$R$R……見えないけどね。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー２号
+        content: クスクスッ！$R$Rじゃあさ！$Rレインボーの交差点って知ってる？$R
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: 知ってる？
+        options:
+          知らない: none2
+          知ってる: know
+  none2
+    - action: dialog
+        title: タイニー３号
+        content: レインボーが交差する場所。$Rここではない、どこでもない場所。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー４号
+        content: 中継地点みたいなもんかな？
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: えー、違うでしょ！？
+        character_image: 11000726
+    - action: dialog
+        title: タイニー２号
+        content: フフフッ！$Rねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+  know
+    - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+event_progresses:
+  entrypoint:
+# タイニーアイランド・タイニー
+    - action: dialog
+        title: タイニー
+        content: こんにちは！$R
+        character_image: 11000723
+    - action: dialog
+        title: タイニー
+        content: どうする？$Rタイニーアイランドから出る？
+        character_image: 11000723
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          帰る: accept_request
+          やめておく: hold_request
+  accept_request
+    - action: dialog
+        title: タイニー
+        content: えー？$R本当に帰っちゃうのー？
+        character_image: 11000723
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          帰る: accept_request2
+          やめておく: hold_request2
+  accept_request2
+    - action: dialog
+        title: タイニー
+        content: そっかぁー。$Rじゃあしょうがないね$R$R君を元の世界に帰してあげるよ。
+        character_image: 11000723
+    - action: dialog
+        title: タイニー
+        content: タイニーアイランドはみんなの夢の国！$R$Rまたいつでも来てね！$R待ってるからね♪
+        character_image: 11000723
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 151
+        dir: 0
+  hold_request2
+  hold_request
+event_progresses:
+  entrypoint:
+# タイニーアイランド・パイレーツタイニー
+    - action: dialog
+        title: パイレーツタイニー
+        content: おまえはネイティブの回し者だろう！$R通っちゃだめだぞ！
+        character_image: 11000703
+event_progresses:
+  entrypoint:
+# タイニーアイランド・タイニー家具職人
+    - action: routine
+        type: item
+         item: 10050300
+         count: 3
+         true: true
+         false: false
+  false
+    - action: dialog
+        title: タイニー家具職人
+        content: ……つんっ！$R$Rもっともっと、家に詳しくなってから来るんだな！$Rここの敷居は高いんだぜぃっ！
+        character_image: 11000799
+  true
+    - action: routine
+        type: item
+         item: 30001200
+         count: 1
+         true: canbuild
+         false: cantbuild
+  canbuild
+    - action: dialog
+        title: タイニー家具職人
+        content: おいらは、こだわり家具職人でぃっ！$R$R雨が降ったら仕事はしないっ！$R風が吹いたら仕事はしないっ！$R気に入った奴にしか仕事はしないっ！$R$Rでぃっ、でぃっ、でぃっ！
+        character_image: 11000799
+    - action: dialog
+        title: タイニー家具職人
+        content: あ～、それはタイニーメダルっ！$R$Rおまえは、世の中というものを$Rよくわかってるじゃないか！
+        character_image: 11000799
+   - action: routine
+       type: question
+       question: 渡しますか？
+        options:
+            与える: em id=10002800 count=100 label=build else=cantbuild
+           与えない: RETURN
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: build
+  build
+    - action: dialog
+        title: タイニー家具職人
+        content: ふふん、まかせろっ！
+        character_image: 11000799
+    - action: dialog
+        title: タイニー家具職人
+        content: よお～し！$Rとんてんかんてんとんてんかーん！
+        character_image: 11000799
+    - action: take_item
+        id: 10050300
+        count: 3
+    - action: take_item
+        id: 10002800
+        count: 100
+    - action: take_item
+        id: 30001200
+        count: 1
+    - action: give_item
+        id: 30000600
+  cantbuild
+    - action: dialog
+        title: 
+        content: 材料の数が足りない$R$R「タイニーメダル」3個$R「りんご」100個$R「小さな家」1個
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# 難民テント・宿屋
+    - action: dialog
+        title: 宿屋
+        content: ……。（うとうと）$R$P……あっ、お客さん……？$R$R休憩なら、その辺で$R勝手にしちゃってください～……。$Pでも、お代はしっかり$R頂きますよ～……。
+        character_image: 11001643
+   - action: routine
+       type: question
+       question: 一泊500ゴールドになります～。
+        options:
+            利用しない: n
+            一泊する: inn
+            ショップを利用したい: buy
+  inn
+    - action: dialog
+        title: 宿屋
+        content: ふぁぁ……。$R$Rそれじゃ、オヤスミなさい……。
+        character_image: 11001643
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 120
+    - action: set_var
+        name: dominionnight
+        value: 0
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10000103
+         - id: 10000102
+         - id: 10000108
+         - id: 10000604
+event_progresses:
+  entrypoint:
+# 難民テント・宿屋
+    - action: dialog
+        title: 宿屋
+        content: いらっしゃいませ～！$R$R一泊500ゴールドで$Rお客さまの心と体を$Rリフレッシュします～！$R$Rご要望とあらば、お薬なども$Rお譲りしますよ～！
+        character_image: 11001642
+   - action: routine
+       type: question
+       question: 一泊500ゴールドになります～。
+        options:
+            利用しない: n
+            一泊する: inn
+            夜まで休憩する: break
+            ショップを利用したい: buy
+  inn
+    - action: dialog
+        title: 宿屋
+        content: ごゆっくりお休みください～。$R
+        character_image: 11001642
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 120
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  break
+    - action: dialog
+        title: 宿屋
+        content: 夜になったらお知らせしますね。$R$Rぐっすり寝てても起こしますよ～。
+        character_image: 11001642
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: set_var
+        name: dominionnight
+        value: 1
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10000103
+         - id: 10000102
+         - id: 10000108
+         - id: 10000604
+event_progresses:
+  entrypoint:
+# ウォーターレイアー・水先案内人
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#  3: goto label=state3
+#end
+    - action: dialog
+        title: 水先案内人
+        content: 乗ってく？$R天まで続く塔の島に連れてったげるよ♪
+        character_image: 11001471
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          行く: accept_request
+          船を貸してもらう: accept_request2
+  state1
+  hold_request
+  state2
+  accept_request
+    - action: teleport
+        map_id: 11058000
+        x: 127
+        y: 250
+        dir: 180
+  state3
+  accept_request2
+    - action: dialog
+        title: 水先案内人
+        content: え、別にいいけど$Rちゃんと返してね～。
+        character_image: 11001470
+    - action: teleport
+        map_id: 11075000
+        x: 15
+        y: 9
+        dir: 0
+event_progresses:
+  entrypoint:
+# アップタウン・ギルド商人
+   - action: routine
+       type: question
+       question: 御用がおありですか？
+        options:
+            買い物をする: buy
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+           何もしない: RETURN
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10164000
+         - id: 10026400
+         - id: 61010000
+         - id: 60040000
+         - id: 50070500
+         - id: 60030000
+         - id: 50020900
+         - id: 50000300
+         - id: 50001700
+         - id: 50010254
+         - id: 50010150
+         - id: 50061500
+         - id: 50070100
+  jewel
+    - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。
+event_progresses:
+  entrypoint:
+# アップタウン北可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# ダウンタウン・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン・ThanksObject
+   - action: routine
+       type: question
+       question: 何をしますか？
+        options:
+          アイテムの購入: hop
+         特にない: RETURN
+event_progresses:
+  entrypoint:
+# アップタウン東可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン南可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+# アップタウン西可動橋・ThanksObject
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（南西）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270003
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・崩落した階段・東側
+    - action: dialog
+        title: 
+        content: ……階段の下に降りられそうだ。
+        character_image: 11004348
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 151
+        y: 36
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（北西）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270002
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（北東）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270000
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸（南東）
+    - action: dialog
+        title: 
+        content: ……井戸の中に降りられそうだ。
+        character_image: 11004350
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 30270001
+        x: 3
+        y: 4
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・崩落した階段・西側
+    - action: dialog
+        title: 
+        content: ……階段の下に降りられそうだ。
+        character_image: 11004349
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          降りる: accept_request
+          降りない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 105
+        y: 36
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# カーマインブリックシティ・タクシー屋（街）
+    - action: dialog
+        title: タクシー屋（街）
+        content: ここはバギータクシーだよ！$R$Pカーマインブリックの街発の$Rカーマイン海岸行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+        character_image: 11004140
+   - action: routine
+       type: question
+       question: どうしますか？
+        options:
+          利用しない: hold_request
+          カーマイン海岸まで行く（15000Ｇ）: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: タクシー屋（街）
+        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+        character_image: 11004140
+    - action: teleport
+        map_id: 10080000
+        x: 51
+        y: 65
+        dir: 0
+event_progresses:
+  entrypoint:
+# モーグシティ・炭鉱夫見習い
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
+        character_image: 18000848
+   - action: routine
+       type: question
+       question: １００ゴールド渡す？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……まいど。$R$Pおーい、人が乗るぞー！
+        character_image: 18000848
+    - action: teleport
+        map_id: 10060000
+        x: 84
+        y: 142
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・空港係員
+   - action: routine
+       type: question
+       question: 光の塔行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: 光の塔へ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000825 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 20146000
+        x: 202
+        y: 144
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・空港係員
+   - action: routine
+       type: question
+       question: 軍艦島行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: 軍艦島へ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000824 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10035000
+        x: 100
+        y: 213
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# モーグシティ・密航路の親父
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          何もしない: hold_request
+          天まで続く塔の島へ行く！: accept_request
+  hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 密航路の親父
+        content: すぐに出発じゃ。$Rさっさと乗り込まんか！
+        character_image: 11001468
+    - action: dialog
+        title: 
+        content: 天まで続く塔の島へ出発しまーす！
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11001468 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 250
+        dir: 180
+event_progresses:
+  entrypoint:
+# モーグシティ・炭鉱夫見習い
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
+        character_image: 18000849
+   - action: routine
+       type: question
+       question: １００ゴールド渡す？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: dialog
+        title: 炭鉱夫見習い
+        content: ……まいど。$R$Pおーい、人が乗るぞー！
+        character_image: 18000848
+    - action: teleport
+        map_id: 10060000
+        x: 142
+        y: 145
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 12
+        y: 185
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 240
+        y: 213
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 156
+        y: 217
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 13
+        y: 213
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20075000
+        x: 219
+        y: 50
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 69
+        y: 78
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴２Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20072000
+        x: 130
+        y: 125
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20073000
+        x: 36
+        y: 30
+        dir: 0
+event_progresses:
+  entrypoint:
+#神託の風穴３Ｆ・落とし穴
+    - action: wait
+        time: 1580
+    - action: teleport
+        map_id: 20073000
+        x: 181
+        y: 151
+        dir: 0
+event_progresses:
+  entrypoint:
+# トンカ島・アイアンサウス行き
+    - action: dialog
+        title: アイアンサウス行き
+        content: マルクトの船着場行き$Rまもなく出発です。
+        character_image: 11001055
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（100ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド渡した。
+        character_image: 11000000
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: アイアンサウス行き
+        content: マルクトの船着場へ出発しまーす！
+        character_image: 11001055
+    - action: play_se
+        id: 2438
+#effect id=11001055 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 20023000
+        x: 151
+        y: 44
+        dir: 180
+event_progresses:
+  entrypoint:
+# トンカ島・カーマイン島行き
+    - action: dialog
+        title: カーマイン島行き
+        content: カーマイン海岸行き$Rまもなく出発です。
+        character_image: 11004168
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（5000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-5000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 5000ゴールド渡した。
+        character_image: 11004168
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: カーマイン島行き
+        content: カーマイン海岸へ出発しまーす！
+        character_image: 11004168
+    - action: play_se
+        id: 2438
+#effect id=11004168 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10080000
+        x: 47
+        y: 81
+        dir: 0
+event_progresses:
+  entrypoint:
+# トンカ島・マイマイ島行き
+    - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島行き、まもなく出発です。
+        character_image: 11001058
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（200ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-200
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: マイマイ島行き
+        content: 200ゴールド渡した。
+        character_image: 11000000
+    - action: dialog
+        title: マイマイ島行き
+        content: では、飛空庭へどうぞ。
+        character_image: 11001058
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島へ出発しまーす！
+        character_image: 11001058
+    - action: play_se
+        id: 2438
+#effect id=11001058 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10059000
+        x: 69
+        y: 147
+        dir: 270
+event_progresses:
+  entrypoint:
+# トンカ島・アクロポリス行き
+    - action: dialog
+        title: アクロポリス行き
+        content: 高速飛空庭、トンカエクスプレス！$Rアクロポリス行きはここだ～よ♪$R
+        character_image: 11001336
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（1000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-1000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 1000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: アクロポリス行き
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11001336
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: アクロポリス行き
+        content: 本日は、トンカエクスプレス$Rアクロポリス行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11001336
+    - action: dialog
+        title: アクロポリス行き
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11001336
+    - action: dialog
+        title: アクロポリス行き
+        content: それでは$Rアクロポリスへ出発しまーす！
+        character_image: 11001336
+    - action: play_se
+        id: 2438
+#effect id=11001336 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10023000
+        x: 159
+        y: 193
+        dir: 90
+event_progresses:
+  entrypoint:
+# 軍艦島・レジスタンス
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#end
+    - action: dialog
+        title: レジスタンス
+        content: この先は$R「軍艦島地下」へ繋がっている。$R$R……リーダーからの通行許可を$R得ているようだな。
+        character_image: 11001592
+   - action: routine
+       type: question
+       question: 「軍艦島地下」へ進むか？
+        options:
+          「軍艦島地下」へ行く: accept_request
+          やめる: hold_request
+#*state1
+  accept_request
+    - action: teleport
+        map_id: 22197000
+        x: 103
+        y: 5
+        dir: 0
+#*state2
+  hold_request
+event_progresses:
+  entrypoint:
+# 軍艦島（ドミニオン界）・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: ウェストフォートに行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 12019000
+        x: 4
+        y: 80
+        dir: 0
+event_progresses:
+  entrypoint:
+# 軍艦島・レジスタンス
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#end
+    - action: dialog
+        title: レジスタンス
+        content: この先は$R「軍艦島地下」へ繋がっている。$R$R……リーダーからの通行許可を$R得ているようだな。
+        character_image: 11001593
+   - action: routine
+       type: question
+       question: 「軍艦島地下」へ進むか？
+        options:
+          「軍艦島地下」へ行く: accept_request
+          やめる: hold_request
+#*state1
+  accept_request
+    - action: teleport
+        map_id: 22197000
+        x: 103
+        y: 5
+        dir: 0
+#*state2
+  hold_request
+event_progresses:
+  entrypoint:
+# 軍艦島・飛空庭係員
+    - action: dialog
+        title: 飛空庭係員
+        content: 「天まで続く塔の島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+        character_image: 11001591
+   - action: routine
+       type: question
+       question: 天まで続く塔の島行きの飛空庭だ
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る（100ゴールド）: accept_request
+  hold_request
+    - action: dialog
+        title: 飛空庭係員
+        content: ……また来な。$R
+        character_image: 11001590
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド支払った！
+        character_image: 10000000
+    - action: dialog
+        title: 飛空庭係員
+        content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+        character_image: 11001590
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 飛空庭係員
+        content: ……天まで続く塔の島へ出発だ！
+        character_image: 11001591
+    - action: play_se
+        id: 2438
+#effect id=11001591 effect=8066
+    - action: wait
+        time: 2180
+    - action: teleport
+        map_id: 12058000
+        x: 127
+        y: 250
+        dir: 180
+event_progresses:
+  entrypoint:
+# 軍艦島地下・軍艦島地下衛兵
+   - action: routine
+       type: question
+       question: どのマップに行く？
+        options:
+          行かない: hold_request
+          アイアンサウス跡地: iron
+          鉄火山エネルギープラント: kazan
+          トラージ・ディコーヤ: tora
+  hold_request
+  iron
+    - action: teleport
+        map_id: 12063000
+        x: 19
+        y: 93
+        dir: 0
+  kazan
+    - action: teleport
+        map_id: 12064000
+        x: 116
+        y: 100
+        dir: 0
+  tora
+    - action: teleport
+        map_id: 12101000
+        x: 39
+        y: 21
+        dir: 0
+event_progresses:
+  entrypoint:
+# 光の塔下層・飛空庭係員
+   - action: routine
+       type: question
+       question: モーグシティ行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: モーグシティへ出発しまーす！
+        character_image: 00000000
+    - action: play_se
+        id: 2438
+#effect id=11000876 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 42
+        y: 133
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいでしょう、通りなさい……。
+        character_image: 11000657
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦から出る: accept_request
+          まだ出ない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054001
+        x: 154
+        y: 165
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいだろう、通りなさい……。
+        character_image: 11000656
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦から出る: accept_request
+          まだ出ない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054001
+        x: 153
+        y: 165
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・水先案内人
+    - action: dialog
+        title: 水先案内人
+        content: 乗ってく？$Rあたしたちの島に連れてったげるよ♪
+        character_image: 11001470
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          行く: accept_request
+          船を貸してもらう: accept_request2
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 11053000
+        x: 20
+        y: 232
+        dir: 180
+  accept_request2
+    - action: dialog
+        title: 水先案内人
+        content: え、別にいいけど$Rちゃんと返してね～。
+        character_image: 11001471
+    - action: teleport
+        map_id: 11075000
+        x: 15
+        y: 9
+        dir: 0
+event_progresses:
+  entrypoint:
+#深淵・インスマウス像
+    - action: dialog
+        title: 
+        content: どこからともなく、声が聞こえる…$R$Pカエレ…$R$Rオマエ ハ フサワシクナイ…$R$Rカエレ…
+        character_image: 11001824
+   - action: routine
+       type: question
+       question: カエル？
+        options:
+          カエラナイ: hold_request
+          カエル: accept_request
+  hold_request
+    - action: dialog
+        title: 
+        content: その場から離れた。
+        character_image: 11001824
+  accept_request
+    - action: teleport
+        map_id: 21190000
+        x: 17
+        y: 124
+        dir: 90
+event_progresses:
+  entrypoint:
+# アップタウン・国境エクスプレス係員
+    - action: dialog
+        title: 国境エクスプレス係員
+        content: ここは$R演習ボーナス空路の搭乗口だけんども$R今はどこの空路も開通してないから$R使用できないんだ～よ。$R$Rごめんな～。
+        character_image: 11003963
+event_progresses:
+  entrypoint:
+# アップタウン東可動橋・アップタウン東門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 217
+        y: 128
+        dir: 90
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# アップタウン・トンカエクスプレス係員
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 高速飛空庭、トンカエクスプレス！$Rトンカ行きはここだ～よ♪$R
+        character_image: 11001335
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（1000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-1000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 1000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11001335
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 本日は、トンカエクスプレス$Rトンカ行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11001335
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11001335
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それでは$Rトンカシティへ出発しまーす！
+        character_image: 11001335
+    - action: play_se
+        id: 2438
+#effect id=11001335 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 189
+        y: 66
+        dir: 135
+event_progresses:
+  entrypoint:
+# アップタウン南可動橋・アップタウン南門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 219
+        dir: 2
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー２Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮２階になります。$R$P北はアーチャーマスター$R東はソードマンマスター$R南はスカウトマスター$R西はフェンサーマスターの$R部屋になっています。
+        character_image: 11000011
+event_progresses:
+  entrypoint:
+# シアタースクリーン室１・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000192
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000192
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30180000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー５Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮５階になります。
+        character_image: 11000014
+event_progresses:
+  entrypoint:
+# アップタウン・タイニー
+    - action: dialog
+        title: タイニー
+        content: 不思議なところに行ってみたくない？？
+        character_image: 11000776
+   - action: routine
+       type: question
+       question: ？？？
+        options:
+          いってみたい: accept_request
+          いきたくない: hold_request
+  accept_request
+    - action: dialog
+        title: タイニー
+        content: ♪♪$Rじゃあ目をつむってね！$R$P３つ数えるね。$Rいーち、にーぃ…さー……
+        character_image: 11000776
+    - action: dialog
+        title: 
+        content: ……？$Rなんだか…眠くなってきた……。$R$P……。
+        character_image: 11000000
+    - action: teleport
+        map_id: 10071000
+        x: 245
+        y: 84
+        dir: 0
+  hold_request
+    - action: dialog
+        title: タイニー
+        content: ちぇーっ、つまんないのー。
+        character_image: 11000776
+event_progresses:
+  entrypoint:
+# シアタースクリーン室３・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000194
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000194
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30182000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー３Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮３階になります。$R$P北はファーマーマスター$R東はスペルユーザーマスター$R南はマシンナリーマスター$R西はタタラベマスターの$R部屋になっています。
+        character_image: 11000012
+event_progresses:
+  entrypoint:
+# アップタウン北可動橋・アップタウン北門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 253
+        dir: 0
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー４Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮４階になります。$R$P北はマーチャントマスター$R東はアルケミストマスター$R南はレンジャーマスター$R西はマリオネストマスターの$R部屋になっています。
+        character_image: 11000013
+event_progresses:
+  entrypoint:
+# アップタウン西可動橋・アップタウン西門守衛
+   - action: routine
+       type: question
+       question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10023000
+        x: 37
+        y: 128
+        dir: 270
+  pinto
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth
+#getgold gold=-100
+    - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー１Ｆ・ギルド元宮ガイド
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: いらっしゃいませ！$R『ギルド元宮』にようこそ！$R$Pこちらは初めてですか？$R$Rよければ、ギルド元宮についての説明を$Rお聞きになりませんか？
+        character_image: 11000000
+   - action: routine
+       type: question
+       question: ギルド元宮について聞く？
+        options:
+          聞く: accept_request
+          聞かない: hold_request
+  accept_request
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: このギルド元宮は、５階建ての建物の$R中にいろいろな職業ギルドの本部が$Rテナントとして入っています。$R$P各職業ギルドへの入団手続きや$Rクエストの請負なども行っています。$R$P職業ごとのくわしい説明は$R２階から上の各職業ギルド本部で$Rお聞きになってください。$R$Pあ、５階はこの世界にいらっしゃる$R異界の方々の専用フロアに$Rなっておりますので、エミルの方の$Rご利用はご遠慮ください。
+        character_image: 11000000
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ギルド元宮にようこそ！
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  guide
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request1
+          1: accept_request2
+          2: accept_request3
+          3: accept_request4
+          4: accept_request5
+          5: hold_request
+  accept_request1
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: １階ロビーはこのフロアのことです。$R$Rギルド元宮、総合案内担当の私と$R他の階につながるワープがあります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request2
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ２階フロアには、ファイター系の$R職業ギルドが入っています。$R$Rソードマン、フェンサー、スカウト$Rアーチャーギルドをご利用の方は$Rこちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request3
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ３階フロアには、バックパッカー系の$R職業ギルドの他に、ウィザードや$Rシャーマンを統括している$Rスペルユーザーギルドがあります。$R$Pウィザード、シャーマン、ファーマー$Rタタラベ、マシンナリーギルドを$Rご利用の方は、こちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request4
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ４階フロアには、バックパッカー系の$R職業ギルドが入っています。$R$Rマーチャント、アルケミスト$Rレンジャー、マリオネストギルドを$Rご利用の方は、こちらの階になります。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  accept_request5
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: ５階フロアは、異界の方々の$R専用フロアになっています。$R$Rエミルの方はご利用になれません。
+        character_image: 11000000
+    - action: go_section
+         section: guide
+  hold_request
+    - action: dialog
+        title: ギルド元宮ガイド
+        content: どうぞゆっくりして下さいね！
+        character_image: 11000000
+event_progresses:
+  entrypoint:
+# シアタースクリーン室４・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000195
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000195
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30183000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# シアタースクリーン室２・会場案内人
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11000193
+    - action: dialog
+        title: 会場案内人
+        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+        character_image: 11000193
+   - action: routine
+       type: question
+       question: ロビーに戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 30181000
+        x: 9
+        y: 2
+        dir: 0
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいだろう、通りなさい……。
+        character_image: 11000906
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦の中に入る: accept_request
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054000
+        x: 153
+        y: 161
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# フシギ団の砦・フシギ団団員
+    - action: dialog
+        title: フシギ団団員
+        content: いいでしょう、通りなさい……。
+        character_image: 11000906
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          砦の中に入る: accept_request
+          入らない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054000
+        x: 154
+        y: 161
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# 大陸の洞窟Ｂ４Ｆ・リヴィングデッド
+    - action: dialog
+        title: リヴィングデッド
+        content: ギヒヒヒヒヒ。$Rオマエ、ツイテコイ……。$R
+        character_image: 11001351
+   - action: routine
+       type: question
+       question: ……。
+        options:
+          逃げる: hold_request
+          ついていく: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 20003000
+        x: 82
+        y: 23
+        dir: 180
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・コッソ
+    - action: dialog
+        title: コッソ
+        content: ノーザン市民街へ行くっすか？
+        character_image: 11003379
+   - action: routine
+       type: question
+       question: ノーザン市民街に行く？
+        options:
+          いく: accept_request
+          やめる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 20015001
+        x: 9
+        y: 6
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ノーザン宮殿秘密通路・コッソ
+    - action: dialog
+        title: コッソ
+        content: ここを抜ければノーザン市民街っす。$R$Rモンスター共がうろついてっから$R行くなら気を付けて行くっすよ！
+        character_image: 11003380
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・交渉する冒険者
+    - action: dialog
+        title: 交渉する冒険者
+        content: あなたに相談すれば$Rノーザン市民街へ行く$R手引きをして貰えるって$R噂に聞いて来たんですが……。
+        character_image: 11003382
+    - action: dialog
+        title: ドーロ
+        content: こっちも商売だからな$Rそれなりに値が張るぜ？
+        character_image: 11003381
+event_progresses:
+  entrypoint:
+# ノーザンプロムナード・ドーロ
+event_progresses:
+  entrypoint:
+# マイマイ島・飛空庭誘導員
+    - action: dialog
+        title: 飛空庭誘導員
+        content: トンカ島へ戻るかい？
+        character_image: 11001261
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 10062000
+        x: 183
+        y: 71
+        dir: 180
+event_progresses:
+  entrypoint:
+# マルクトの船着場・南軍兵士
+    - action: dialog
+        title: 南軍兵士
+        content: ようこそ、マルクトの船着場へ。$Rトンカへの飛空庭乗り場はこちらです。$R
+        character_image: 11001099
+   - action: routine
+       type: question
+       question: ようこそ、マルクトの船着場へ！
+        options:
+          なにもしない: hold_request
+          搭乗手続きを行う: accept_request
+  accept_request
+    - action: dialog
+        title: 南軍兵士
+        content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+        character_image: 11001099
+   - action: routine
+       type: question
+       question: トンカシティ行きの飛空庭です
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る: accept_request2
+  accept_request2
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: トンカシティへ出発しまーす！$R
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=10 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 195
+        y: 60
+        dir: 135
+  hold_request
+event_progresses:
+  entrypoint:
+# ダウンタウン・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: 天まで続く塔の島へ行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+    - action: dialog
+        title: レジスタンス傭兵
+        content: そっか、仕方ないよね。
+        character_image: 11001669
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 10058000
+        x: 110
+        y: 238
+        dir: 0
+event_progresses:
+  entrypoint:
+# ノーザン地下・市民街・ノーザン王国の民
+    - action: dialog
+        title: ノーザン王国の民
+        content: ようこそ！ノーザンの市民街へ！$R街の殆どは氷漬けに$Rなってるけどね！$R$Rゆっくりしていってね！
+        character_image: 11003366
+    - action: dialog
+        title: ノーザン王国の民
+        content: ん？身体が変だって？$Rそんな細かいこと$R気にしていたらここじゃ$R生きられないわよ♪$R
+        character_image: 11003366
+event_progresses:
+  entrypoint:
+# 南アクロニア平原・運び屋マックス
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11003316
+    - action: dialog
+        title: 運び屋マックス
+        content: おぉ、あんたか。$Rこれからウェストー開拓地の村まで$R戻るとこだが、あんたも乗ってくか？
+        character_image: 11003316
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request
+          やめる: hold_request
+  accept_request
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003316
+    - action: teleport
+        map_id: 10005000
+        x: 114
+        y: 79
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・レジスタンス傭兵
+    - action: dialog
+        title: レジスタンス傭兵
+        content: これからダウンタウンに行くんだけど$R一緒にどうだい？
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ダウンタウンに行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 10024000
+        x: 54
+        y: 122
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・密航路の親父
+    - action: dialog
+        title: 密航路の親父
+        content: わしはちょっくらモーグに戻るが$Rお前さんはどうする？
+        character_image: 11001469
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（500ゴールド）: accept_request
+  hold_request
+  accept_request
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 500ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: 密航路の親父
+        content: すぐに出発じゃ。$Rさっさと乗り込まんか！
+        character_image: 10001543
+    - action: dialog
+        title: 
+        content: モーグ島へ出発しまーす！
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11001469 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 83
+        y: 40
+        dir: 270
+event_progresses:
+  entrypoint:
+# ウェストー開拓地・運び屋マックス
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11003317
+       loop: True
+    - action: dialog
+        title: 運び屋マックス
+        content: 仕事の紹介感謝するぜ！$R$R俺はしばらくこの辺を拠点に$R仕事してるから、何かあれば$R遠慮なく言ってくれ。
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          南アクロニア平原まで乗せて: soacro
+          ノーザリン岬の村まで乗せて: north
+          イストー岬の村まで乗せて: east
+          サウスリン岬の村まで乗せて: south
+          廃炭坑の村まで乗せて: tanco
+          特に用事はない: hold_request
+  soacro
+    - action: dialog
+        title: 運び屋マックス
+        content: 南アクロニア平原か。$Rちょうど行くところだし$Rタダで乗せてってやるけど、どうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request
+          やめる: hold_request
+  accept_request
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10031000
+        x: 135
+        y: 130
+        dir: 0
+  north
+    - action: dialog
+        title: 運び屋マックス
+        content: ノーザリン岬の村か。$R３６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request2
+          やめる: hold_request
+  accept_request2
+#getgold gold=-360
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10001000
+        x: 96
+        y: 24
+        dir: 0
+  east
+    - action: dialog
+        title: 運び屋マックス
+        content: イストー岬の村か。$R３８０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request3
+          やめる: hold_request
+  accept_request3
+#getgold gold=-380
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10018100
+        x: 238
+        y: 81
+        dir: 0
+  south
+    - action: dialog
+        title: 運び屋マックス
+        content: サウスリン岬の村か。$R４６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request4
+          やめる: hold_request
+  accept_request4
+#getgold gold=-460
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10046000
+        x: 156
+        y: 218
+        dir: 0
+  tanco
+    - action: dialog
+        title: 運び屋マックス
+        content: 廃炭鉱の村か。$R３７０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          お願いします！: accept_request5
+          やめる: hold_request
+  accept_request5
+#getgold gold=-370
+    - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+    - action: teleport
+        map_id: 10035000
+        x: 44
+        y: 194
+        dir: 0
+  hold_request
+    - action: dialog
+        title: 運び屋マックス
+        content: oh……。
+        character_image: 11003317
+event_progresses:
+  entrypoint:
+# アンデッド島（大陸側）・グリエルモ
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: has
+         false: hasnot
+  hasnot
+    - action: dialog
+        title: グリエルモ
+        content: ここから見えるのがアンデッド島だ。$R今は封印されていて渡れない$R渡るには『紋章紙』が必要だ。$R
+        character_image: 11000094
+  has
+    - action: dialog
+        title: グリエルモ
+        content: それは『紋章紙』だな？$R$Rこの紙を燃やせば$Rアンデッド島の封印が一時的に解け$Rあの島に渡れるようになる。
+        character_image: 11000094
+   - action: routine
+       type: question
+       question: アンデッド島に渡りますか？
+        options:
+          渡らない: hold_request
+          渡ってみる: accept_request
+  hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 10019100
+        x: 93
+        y: 104
+        dir: 90
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F中央・現金なスフィンクス・タラタ
+    - action: dialog
+        title: 現金なスフィンクス・タラタ
+        content: 私はダンジョンワープ商人！$R$R人よんで、スフィンクスタクシーにゃ！$R$Rアンタをダンジョン内の$R私の姉妹がいる場所に$R移動させてやることができるにゃ$Rもちろんお代はいただくけどにゃ！$R$Rさて、今日はどうするにゃ？
+        character_image: 11004475
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F西居住区・現金なスフィンクス・イトネ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡２F・現金なスフィンクス・ハムサ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡Ｂ１F・現金なスフィンクス・ワヒド
+    - action: dialog
+        title: 現金なスフィンクス・ワヒド
+        content: Ｚｚｚ……$Rにゃぁ～ん？誰にゃ？$Rあぁ、なんだ冒険者にゃ。$R$Rなんにゃー？$Rスフィンクスタクシー使うにゃ？$Rしょうがないにゃぁ～～……。
+        character_image: 11004479
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            １Ｆ西居住区（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            ２Ｆ中央（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# D-カーマインブリック遺跡１F東居住区・現金なスフィンクス・アルバ
+   - action: routine
+       type: question
+       question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n
+event_progresses:
+  entrypoint:
+# ノーザン地下・世界樹・ 
+    - action: dialog
+        title: 
+        content: 氷の中の女性は$Rこころなしか$R穏やかな表情をしている。
+        character_image: 11003359
+event_progresses:
+  entrypoint:
+# 軍艦島・モーグ国境警備員
+    - action: dialog
+        title: モーグ国境警備員
+        content: ようこそ、軍艦島空港へ。$Rモーグへの飛空庭乗り場はこちらです。$R
+        character_image: 11000433
+   - action: routine
+       type: question
+       question: ようこそ、軍艦島空港へ！
+        options:
+          搭乗手続きを行う: accept_request
+          なにもしない: hold_request
+  accept_request
+    - action: dialog
+        title: モーグ国境警備員
+        content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+        character_image: 11000433
+   - action: routine
+       type: question
+       question: モーグシティ行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request2
+          まだ、乗らない: hold_request
+  accept_request2
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 
+        content: モーグシティへ出発しまーす！$R
+        character_image: 11000000
+    - action: play_se
+        id: 2438
+#effect id=11000433 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10060000
+        x: 223
+        y: 173
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# バオバブの森・森のギルド員
+    - action: routine
+        type: variable
+        var: cloudforest
+        options:
+          0: cloudforest0
+          1: cloudforest1
+  cloudforest0
+    - action: play_motion
+        motion: 131
+        ids:
+         - 11001259
+    - action: dialog
+        title: 森のギルド員
+        content: ここは、森のギルド所有の山小屋だ。$R一泊360ゴールドで休んでくかい？
+        character_image: 11001259
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          休まない: hold_request
+          休む: accept_request
+  hold_request
+  accept_request
+    - action: dialog
+        title: 森のギルド員
+        content: このバオバブの森には$R夜にしか現れないモンスターがいるよ。$R$Rよければ散策してみるかい？
+        character_image: 11001259
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          散策しない: accept_request2
+          散策する: accept_request3
+  accept_request2
+    - action: dialog
+        title: 森のギルド員
+        content: じゃあ、おやすみ。
+        character_image: 11001259
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  accept_request3
+    - action: dialog
+        title: 森のギルド員
+        content: じゃあ、夜になったら起こすね。$R寝起き……悪くないよね？
+        character_image: 11001259
+    - action: routine
+        type: item
+         item: 10012600
+         count: 1
+         true: true
+         false: false
+  true
+    - action: take_item
+        id: 10012600
+        count: 1
+    - action: set_var
+        name: cloudforest
+        value: 1
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059102
+        x: 234
+        y: 36
+        dir: 0
+  false
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059101
+        x: 234
+        y: 36
+        dir: 0
+  cloudforest1
+    - action: dialog
+        title: 森のギルド員
+        content: 昨晩、ひどく$Rうなされていたみたいだけど$R大丈夫かい？$R$R起こそうとしたんだけど$Rいくら、揺すっても起きないから$R心配してたんだぜ。$R$P……？？？$R$P大きな竜を見た？$R何を言ってるんだよ。$R$R昨日はずっと、ベットにいたよ。$R$R夢でも見たんじゃないのかな？
+        character_image: 11001259
+    - action: dialog
+        title: 
+        content: 持っていた『紫金の宝玉』が$Rなくなっている……。
+        character_image: 11000000
+    - action: set_var
+        name: cloudforest
+        value: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・飛空庭係員
+    - action: dialog
+        title: 飛空庭係員
+        content: 「軍艦島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+        character_image: 11001590
+   - action: routine
+       type: question
+       question: 軍艦島行きの飛空庭だ
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る（100ゴールド）: accept_request
+  hold_request
+    - action: dialog
+        title: 飛空庭係員
+        content: ……また来な。$R
+        character_image: 11001590
+  accept_request
+#getgold gold=-100
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 100ゴールド支払った！
+        character_image: 10000000
+    - action: dialog
+        title: 飛空庭係員
+        content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+        character_image: 11001590
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: 飛空庭係員
+        content: ……軍艦島へ出発だ！
+        character_image: 11001590
+    - action: play_se
+        id: 2438
+#effect id=11001590 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 12035000
+        x: 47
+        y: 159
+        dir: 0
+event_progresses:
+  entrypoint:
+# ゴールデンブリッジ・レジスタンス傭兵
+   - action: routine
+       type: question
+       question: 軍艦島に行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request
+  accept_request
+    - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+    - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+   - action: routine
+       type: question
+       question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2
+  accept_request2
+#getgold gold=-2200
+    - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+    - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+    - action: teleport
+        map_id: 12035000
+        x: 51
+        y: 155
+        dir: 0
+event_progresses:
+  entrypoint:
+# カーマイン海岸・トンカエクスプレス係員
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 高速飛空庭、トンカエクスプレス！$Rトンカ行きはここだ～よ♪$R
+        character_image: 11004169
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          乗らない: hold_request
+          乗る(5000ゴールド): accept_request
+  hold_request
+  accept_request
+#getgold gold=-5000
+    - action: play_se
+        id: 2040
+    - action: dialog
+        title: 
+        content: 5000ゴールド払った。
+        character_image: 11000000
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それじゃ、席にご案内すっぺ。$R
+        character_image: 11004169
+    - action: play_se
+        id: 2426
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 本日は、トンカエクスプレス$Rトンカ行きをご利用くださいまして$Rまことにありがとうございます。$R
+        character_image: 11004169
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: 途中、強い風の影響で$R庭が大きく揺れることがありますが$R振り落とされることなどないよう$Rご注意願います。
+        character_image: 11004169
+    - action: dialog
+        title: トンカエクスプレス係員
+        content: それでは$Rトンカシティへ出発しまーす！
+        character_image: 11004169
+    - action: play_se
+        id: 2438
+#effect id=10 effect=8066
+    - action: wait
+        time: 1980
+    - action: teleport
+        map_id: 10062000
+        x: 176
+        y: 53
+        dir: 0
+event_progresses:
+  entrypoint:
+# カーマイン海岸・タクシー屋（海岸）
+    - action: dialog
+        title: タクシー屋（海岸）
+        content: ここはバギータクシーだよ！$R$Pカーマイン海岸発の$Rカーマインブリックの街行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+        character_image: 11004138
+   - action: routine
+       type: question
+       question: どうしますか？
+        options:
+          利用しない: hold_request
+          街まで行く（15000ゴールド）: accept_request
+  hold_request
+  accept_request
+#getgold gold=-15000
+    - action: dialog
+        title: タクシー屋（海岸）
+        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+        character_image: 11004138
+    - action: teleport
+        map_id: 10055000
+        x: 142
+        y: 248
+        dir: 0
+event_progresses:
+  entrypoint:
+# タイニーアイランド・サンドバック系アイテム収集家
+  - action: purchase_dialog
+       items: 
+         - id: 20050051
+         - id: 20050106
+         - id: 20050132
+         - id: 20050127
+         - id: 20050064
+         - id: 20050069
+         - id: 20050115
+         - id: 20050118
+         - id: 20050195
+         - id: 20050286
+         - id: 20050365
+event_progresses:
+  entrypoint:
+# タイニーアイランド・パイレーツタイニー
+    - action: dialog
+        title: パイレーツタイニー
+        content: タイニーメダルと交換だな！$R交換できるお宝は次のとおりだ！
+        character_image: 11000707
+    - action: dialog
+        title: パイレーツタイニー
+        content: この船がハリボテなのは絶対秘密だぞ！
+        character_image: 11000707
+  - action: purchase_dialog
+       items: 
+         - id: 10050300
+         - id: 10050350
+         - id: 60072200
+         - id: 31080402
+         - id: 31090202
+         - id: 31131402
+         - id: 50071051
+         - id: 50071052
+         - id: 50071055
+         - id: 50001761
+         - id: 50071750
+         - id: 50071751
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ギルド商人
+   - action: routine
+       type: question
+       question: 御用がおありですか？
+        options:
+            買い物をする(通常): buy
+            買い物をする(珍品): buy2
+            買い物をする(チュートリアル): buy3
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+           何もしない: RETURN
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 50002750
+         - id: 50000750
+         - id: 50000060
+         - id: 50001452
+         - id: 50060150
+         - id: 50060050
+         - id: 50061609
+         - id: 50060550
+         - id: 50010153
+         - id: 50010154
+         - id: 50010351
+         - id: 50010452
+  buy2
+  - action: purchase_dialog
+       items: 
+         - id: 50104203
+         - id: 50104204
+         - id: 50104205
+         - id: 60110959
+         - id: 60110960
+         - id: 60110961
+         - id: 60156400
+         - id: 50240500
+         - id: 60156401
+         - id: 50240501
+         - id: 60156402
+         - id: 50240502
+         - id: 50240600
+  buy3
+  - action: purchase_dialog
+       items: 
+         - id: 50002751
+         - id: 50000751
+         - id: 50001453
+         - id: 50010453
+         - id: 50010451
+         - id: 50012358
+         - id: 50012360
+  jewel
+    - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。
+event_progresses:
+  entrypoint:
+# タイニーアイランド・デ・ジ・キャラット
+    - action: dialog
+        title: デ・ジ・キャラット
+        content: ここはゲーマーズ$Rタイニーアイランド支店$Rコスプレ衣装通販事業部だにょ。
+        character_image: 11000977
+    - action: dialog
+        title: デ・ジ・キャラット
+        content: ……まったく$Rちょっと、ビームだしたくらいで$Rこわれるなんて、もろすぎだにょ。
+        character_image: 11000977
+event_progresses:
+  entrypoint:
+# タイニーアイランド・コスプレが好きな少女
+    - action: dialog
+        title: コスプレが好きな少女
+        content: で、でじこだにょ……。$R$Pなーんちゃって！$R$R好きなキャラクターになりきって$R遊ぶのは楽しいよ！
+        character_image: 11000919
+event_progresses:
+  entrypoint:
+# タイニーアイランド・海を眺めるタイニー
+    - action: dialog
+        title: 海を眺めるタイニー
+        content: あ、お客さん？$R残念だけど「海の家」は夏限定だよ。
+        character_image: 11000724
+    - action: dialog
+        title: 海を眺めるタイニー
+        content: 「海開き」には絶対来てね！$Rもちろん水着も販売するからね！
+        character_image: 11000724
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ネイティブタイニー
+    - action: dialog
+        title: ネイティブタイニー
+        content: パイレーツとてもよくない。$Rあれは悪いタイニーたち。
+        character_image: 11000712
+event_progresses:
+  entrypoint:
+# タイニーアイランド・アイテム精製師
+    - action: dialog
+        title: アイテム精製師
+        content: え！？…君は$R宝箱を開けたことが無いのかい？$R$Rじゃあちょうどいい。$Rおやじさん、$R飛空庭に溜め込んでいる宝箱$Rこのこにひとつあげちゃいなよ。$R$R荷物になって困っているんでしょ。
+        character_image: 11000736
+event_progresses:
+  entrypoint:
+# タイニーアイランド・湖畔のティタ
+    - action: dialog
+        title: 湖畔のティタ
+        content: エミルの世界へ戻りたいときは$R海岸にいるあのかわいいタイニーに$R話かければいいそうですわ。$R$Rあたしが話しかけると$R君はまだ早いよって言われちゃいます。
+        character_image: 11000725
+event_progresses:
+  entrypoint:
+# タイニーアイランド・レインボー発生マシーン
+    - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+          虹の話を聞かせて: rainbow
+  state1
+  hold_request
+    - action: dialog
+        title: タイニー４号
+        content: あれれー？
+        character_image: 11000726
+  accept_request
+    - action: dialog
+        title: タイニー１号
+        content: よーしっ！$Rじゃあ、みんな、いくぜ～っ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: こーこーろーをーあーわーせーてー$Rちーかーらーをーひーとーつーにー！$R$Rまわせまわせまわせまわせ～～～！
+        character_image: 11000726
+    - action: move_npc
+       ids: 
+       - id: npcs
+       x: 62
+       y: 210
+       speed: 0
+       dir: -1
+       move_type: 7
+       motion: 111
+       motion_speed: 200
+    - action: play_effect
+        id: 11000726
+        effect: 5314
+    - action: move_npc
+       ids: 
+       - id: 11000717
+       - id: 11000718
+       - id: 11000738
+       x: 62
+       y: 210
+       speed: 100
+       dir: -1
+       move_type: 7
+       motion: 111
+       motion_speed: 65535
+    - action: play_effect
+        id: 11000726
+        effect: 4011
+    - action: play_effect
+        id: 11000726
+        effect: 5314
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 11027000
+        x: 254
+        y: 7
+        dir: 2
+  rainbow
+    - action: dialog
+        title: タイニーたち
+        content: オッケー！$Rそれじゃあ、はじめるよ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: ねえ、知ってる？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: 知ってる？
+        options:
+          知らない: none
+          何を？: none
+  none
+    - action: dialog
+        title: タイニー２号
+        content: レインボーはねぇ、実は道なんだ。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: 近所のコンビニに続く道。$R$R世界の裏側の国に続く道。$R$R君の未来へと続く道。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー４号
+        content: 君が望めば$R本当に、どこにでも行けるんだ。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: 実は、この空には$Rレインボーがい～っぱい！$R$R……見えないけどね。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー２号
+        content: クスクスッ！$R$Rじゃあさ！$Rレインボーの交差点って知ってる？$R
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: 知ってる？
+        options:
+          知らない: none2
+          知ってる: know
+  none2
+    - action: dialog
+        title: タイニー３号
+        content: レインボーが交差する場所。$Rここではない、どこでもない場所。
+        character_image: 11000726
+    - action: dialog
+        title: タイニー４号
+        content: 中継地点みたいなもんかな？
+        character_image: 11000726
+    - action: dialog
+        title: タイニー１号
+        content: えー、違うでしょ！？
+        character_image: 11000726
+    - action: dialog
+        title: タイニー２号
+        content: フフフッ！$Rねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+  know
+    - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+    - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+event_progresses:
+  entrypoint:
+# タイニーアイランド・タイニー
+    - action: dialog
+        title: タイニー
+        content: こんにちは！$R
+        character_image: 11000723
+    - action: dialog
+        title: タイニー
+        content: どうする？$Rタイニーアイランドから出る？
+        character_image: 11000723
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          帰る: accept_request
+          やめておく: hold_request
+  accept_request
+    - action: dialog
+        title: タイニー
+        content: えー？$R本当に帰っちゃうのー？
+        character_image: 11000723
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          帰る: accept_request2
+          やめておく: hold_request2
+  accept_request2
+    - action: dialog
+        title: タイニー
+        content: そっかぁー。$Rじゃあしょうがないね$R$R君を元の世界に帰してあげるよ。
+        character_image: 11000723
+    - action: dialog
+        title: タイニー
+        content: タイニーアイランドはみんなの夢の国！$R$Rまたいつでも来てね！$R待ってるからね♪
+        character_image: 11000723
+    - action: teleport
+        map_id: 10023000
+        x: 127
+        y: 151
+        dir: 0
+  hold_request2
+  hold_request
+event_progresses:
+  entrypoint:
+# タイニーアイランド・パイレーツタイニー
+    - action: dialog
+        title: パイレーツタイニー
+        content: おまえはネイティブの回し者だろう！$R通っちゃだめだぞ！
+        character_image: 11000703
+event_progresses:
+  entrypoint:
+# タイニーアイランド・タイニー家具職人
+    - action: routine
+        type: item
+         item: 10050300
+         count: 3
+         true: true
+         false: false
+  false
+    - action: dialog
+        title: タイニー家具職人
+        content: ……つんっ！$R$Rもっともっと、家に詳しくなってから来るんだな！$Rここの敷居は高いんだぜぃっ！
+        character_image: 11000799
+  true
+    - action: routine
+        type: item
+         item: 30001200
+         count: 1
+         true: canbuild
+         false: cantbuild
+  canbuild
+    - action: dialog
+        title: タイニー家具職人
+        content: おいらは、こだわり家具職人でぃっ！$R$R雨が降ったら仕事はしないっ！$R風が吹いたら仕事はしないっ！$R気に入った奴にしか仕事はしないっ！$R$Rでぃっ、でぃっ、でぃっ！
+        character_image: 11000799
+    - action: dialog
+        title: タイニー家具職人
+        content: あ～、それはタイニーメダルっ！$R$Rおまえは、世の中というものを$Rよくわかってるじゃないか！
+        character_image: 11000799
+   - action: routine
+       type: question
+       question: 渡しますか？
+        options:
+            与える: em id=10002800 count=100 label=build else=cantbuild
+           与えない: RETURN
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: build
+  build
+    - action: dialog
+        title: タイニー家具職人
+        content: ふふん、まかせろっ！
+        character_image: 11000799
+    - action: dialog
+        title: タイニー家具職人
+        content: よお～し！$Rとんてんかんてんとんてんかーん！
+        character_image: 11000799
+    - action: take_item
+        id: 10050300
+        count: 3
+    - action: take_item
+        id: 10002800
+        count: 100
+    - action: take_item
+        id: 30001200
+        count: 1
+    - action: give_item
+        id: 30000600
+  cantbuild
+    - action: dialog
+        title: 
+        content: 材料の数が足りない$R$R「タイニーメダル」3個$R「りんご」100個$R「小さな家」1個
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# 難民テント・宿屋
+    - action: dialog
+        title: 宿屋
+        content: ……。（うとうと）$R$P……あっ、お客さん……？$R$R休憩なら、その辺で$R勝手にしちゃってください～……。$Pでも、お代はしっかり$R頂きますよ～……。
+        character_image: 11001643
+   - action: routine
+       type: question
+       question: 一泊500ゴールドになります～。
+        options:
+            利用しない: n
+            一泊する: inn
+            ショップを利用したい: buy
+  inn
+    - action: dialog
+        title: 宿屋
+        content: ふぁぁ……。$R$Rそれじゃ、オヤスミなさい……。
+        character_image: 11001643
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 120
+    - action: set_var
+        name: dominionnight
+        value: 0
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10000103
+         - id: 10000102
+         - id: 10000108
+         - id: 10000604
+event_progresses:
+  entrypoint:
+# 難民テント・宿屋
+    - action: dialog
+        title: 宿屋
+        content: いらっしゃいませ～！$R$R一泊500ゴールドで$Rお客さまの心と体を$Rリフレッシュします～！$R$Rご要望とあらば、お薬なども$Rお譲りしますよ～！
+        character_image: 11001642
+   - action: routine
+       type: question
+       question: 一泊500ゴールドになります～。
+        options:
+            利用しない: n
+            一泊する: inn
+            夜まで休憩する: break
+            ショップを利用したい: buy
+  inn
+    - action: dialog
+        title: 宿屋
+        content: ごゆっくりお休みください～。$R
+        character_image: 11001642
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 120
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  break
+    - action: dialog
+        title: 宿屋
+        content: 夜になったらお知らせしますね。$R$Rぐっすり寝てても起こしますよ～。
+        character_image: 11001642
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: set_var
+        name: dominionnight
+        value: 1
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 3980
+    - action: control_screen
+       enable: 0
+    - action: change_bgm
+       id: -1
+  buy
+  - action: purchase_dialog
+       items: 
+         - id: 10000103
+         - id: 10000102
+         - id: 10000108
+         - id: 10000604
+event_progresses:
+  entrypoint:
+# ウォーターレイアー・水先案内人
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#  3: goto label=state3
+#end
+    - action: dialog
+        title: 水先案内人
+        content: 乗ってく？$R天まで続く塔の島に連れてったげるよ♪
+        character_image: 11001471
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          行かない: hold_request
+          行く: accept_request
+          船を貸してもらう: accept_request2
+  state1
+  hold_request
+  state2
+  accept_request
+    - action: teleport
+        map_id: 11058000
+        x: 127
+        y: 250
+        dir: 180
+  state3
+  accept_request2
+    - action: dialog
+        title: 水先案内人
+        content: え、別にいいけど$Rちゃんと返してね～。
+        character_image: 11001470
+    - action: teleport
+        map_id: 11075000
+        x: 15
+        y: 9
+        dir: 0

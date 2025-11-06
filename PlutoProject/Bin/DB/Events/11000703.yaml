@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・パイレーツタイニー
+      - action: dialog
+        title: パイレーツタイニー
+        content: おまえはネイティブの回し者だろう！$R通っちゃだめだぞ！
+        character_image: 11000703

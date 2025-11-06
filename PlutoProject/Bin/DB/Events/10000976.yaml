@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ファーイーストシティ・ファーイースト商店前（街の南側）ポータル
+      - action: set_var
+        name: eastshop
+        value: 1
+      - action: teleport
+        map_id: 30060006
+        x: 4
+        y: 7
+        dir: 180

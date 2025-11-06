@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザンプロムナード・交渉する冒険者
+      - action: dialog
+        title: 交渉する冒険者
+        content: あなたに相談すれば$Rノーザン市民街へ行く$R手引きをして貰えるって$R噂に聞いて来たんですが……。
+        character_image: 11003382
+      - action: dialog
+        title: ドーロ
+        content: こっちも商売だからな$Rそれなりに値が張るぜ？
+        character_image: 11003381

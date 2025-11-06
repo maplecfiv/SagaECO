@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#深淵・インスマウス像
+      - action: dialog
+        title: 
+        content: どこからともなく、声が聞こえる…$R$Pカエレ…$R$Rオマエ ハ フサワシクナイ…$R$Rカエレ…
+        character_image: 11001824
+      - action: routine
+        type: question
+        question: カエル？
+        options:
+          カエラナイ: hold_request
+          カエル: accept_request
+  hold_request:
+    actions:
+      - action: dialog
+        title: 
+        content: その場から離れた。
+        character_image: 11001824
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 21190000
+        x: 17
+        y: 124
+        dir: 90

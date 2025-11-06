@@ -1,0 +1,32 @@
+event_progresses:
+  entrypoint:
+    actions:
+#天まで続く塔の島（エミル界）　門付近ポータル
+      - action: routine
+        type: question
+        question: 塔内に入りますか？
+        options:
+          入らない: hold_request
+          入る: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: play_effect
+        id: 12002089
+        effect: 5306
+      - action: play_se
+        id: 2407
+      - action: wait
+        time: 990
+      - action: play_motion
+        motion: 621
+        ids:
+         - 12002089
+      - action: wait
+        time: 3960
+      - action: teleport
+        map_id: 20170000
+        x: 31
+        y: 60
+        dir: 180

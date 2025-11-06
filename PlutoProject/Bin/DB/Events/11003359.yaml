@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザン地下・世界樹・ 
+      - action: dialog
+        title: 
+        content: 氷の中の女性は$Rこころなしか$R穏やかな表情をしている。
+        character_image: 11003359

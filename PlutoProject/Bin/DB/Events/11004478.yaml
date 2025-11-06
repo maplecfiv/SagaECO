@@ -1,0 +1,13 @@
+event_progresses:
+  entrypoint:
+    actions:
+# D-カーマインブリック遺跡２F・現金なスフィンクス・ハムサ
+      - action: routine
+        type: question
+        question: どこに行くにゃ？
+        options:
+            １Ｆ中央（10,000Ｇ）: map=20220001 x=128 y=124 dir=180
+            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
+            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
+            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
+            やっぱりやめる: n

@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・海を眺めるタイニー
+      - action: dialog
+        title: 海を眺めるタイニー
+        content: あ、お客さん？$R残念だけど「海の家」は夏限定だよ。
+        character_image: 11000724
+      - action: dialog
+        title: 海を眺めるタイニー
+        content: 「海開き」には絶対来てね！$Rもちろん水着も販売するからね！
+        character_image: 11000724

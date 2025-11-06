@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・アイテム精製師
+      - action: dialog
+        title: アイテム精製師
+        content: え！？…君は$R宝箱を開けたことが無いのかい？$R$Rじゃあちょうどいい。$Rおやじさん、$R飛空庭に溜め込んでいる宝箱$Rこのこにひとつあげちゃいなよ。$R$R荷物になって困っているんでしょ。
+        character_image: 11000736

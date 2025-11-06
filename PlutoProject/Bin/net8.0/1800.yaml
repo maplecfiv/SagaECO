@@ -1,0 +1,1022 @@
+event_progresses:
+  entrypoint:
+# アミスの飛空庭・アミス
+    - action: dialog
+        title: アミス
+        content: あら、おかえりなさい。$Rこの世界はまだまだ未完成なのだけど、$Rみんなの手で少しずつ$R作り上げてくれるとうれしいわ。
+        character_image: 18001619
+event_progresses:
+  entrypoint:
+# タイニーアイランド・デリバリタイニー
+    - action: routine
+        type: event
+         event: Event1
+         ind: 2
+         true: Alreadly
+         false: NotAlreadly
+  NotAlreadly
+    - action: routine
+        type: event
+         event: Event1
+         ind: 0
+         true: Event1
+         false: Event2
+  Event1
+    - action: dialog
+        title: デリバリタイニー
+        content: はぁー。久しぶりの里帰りだー。$Rのんびりするなぁ……。$R$Rおや、冒険者さんですね。$Rおつかれさまでっす！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: えっ？　ボクが誰かですって？$Rそういや、名乗ってませんでした。$Rボクはデリバリタイニーです！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: 見ての通り、いろんな荷物を$R運ぶのが得意で、あっちこっち$R配達にまわってるんですよ。$R$R今は久しぶりのばけーしょんで、$R里帰りをしているのです。えっへん！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ……あ、そうだ。$R冒険者さんあら、荷物を運ぶ時の$Rイロイロな苦労はお分かりのはず。$R$R実はですね、ボクの後輩が$Rそろそろ一人前になるんですが、$Rちょうど今雇い主を探してまして。
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: どうです、デリバリタイニーの$Rご主人様になってみませんか？$R今ならケイヤクリョーはベンキョー$Rいたしますよっ！
+        character_image: 18000648
+   - action: routine
+       type: question
+       question: デリバリタイニーを……
+        options:
+            雇いたい！: Event1a
+           今はまだいいかな。: RETURN
+  Event1a
+    - action: dialog
+        title: デリバリタイニー
+        content: 毎度ありっ！……どいう事で、$Rさっそくですがケイヤクリョーに$R関してお話させてもらいますよっ！$R$Rふふふ……僕らデリバリタイニーは！$Rサービス特価であっても、決して$R安いタイニーじゃないですよ……？
+        character_image: 18000648
+    - action: dialog
+        title: 
+        content: （デリバリタイニーの周囲に、$Rわずかに張りつめた空気が$Rただよいはじめた気がした）$R
+        character_image: 00000000
+    - action: dialog
+        title: デリバリタイニー
+        content: ３つ……。
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: 大セービスても、それがげんかいです。$Rりんごを３つ、一気にそうえてここに$R特ってきていただきますよっ！$R$Rそれが、デリバリタイニーを$R雇うための条件となりますっ！$Rよろしくお願いしますっ！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ……で、りんごなんですが、$Rアクロボリスから出て、東の方にある$Rイストー岬の村のお店で売ってます。$Rあるいは、このタイニーアイランドに$R生えている「タイニーツリー」を叩くと$Rたまに手に入りますよ！
+        character_image: 18000648
+  Event2
+    - action: dialog
+        title: デリバリタイニー
+        content: お疲れ様ですっ！$R準備できましたか？
+        character_image: 18000648
+   - action: routine
+       type: question
+       question: りんご３つの準備は？
+        options:
+            準備できたよ: em id=10002800 count=3 label=Event2a else=Noapple
+           もうちょっと待ってね: RETURN
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: Event2a
+  Event2a
+    - action: dialog
+        title: デリバリタイニー
+        content: これでケイヤクセーリツですねっ！$Rボク達はあまり荒っいことは$R得意ではないですけど、$R荷物の配達は得意でですよ！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ボクの後輩のこと、$Rよろしくお願いしますねっ！
+        character_image: 18000648
+    - action: take_item
+        id: 10002800
+        count: 3
+    - action: give_item
+        id: 10128900
+  Alreadly
+    - action: dialog
+        title: デリバリタイニー
+        content: あっ、ごぶさたしてます！$Rうちの後輩はお役にたってますか？
+        character_image: 18000648
+  Noapple
+    - action: dialog
+        title: 
+        content: りんごの数が足りない
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# タイニーアイランド・にしこくん
+    - action: routine
+        type: variable
+        var: musashifairy
+        options:
+          0: nishikokun1
+          1: nishikokun2
+          2: nishikokun3
+  nishikokun1
+    - action: dialog
+        title: にしこくん
+        content: こんにちブーン( *｀ω´)！！$R$Rタイニーに誘われて$Rこの世界に遊びに来た$R武蔵の国の妖精「にしこくん」$Rだブーン( *｀ω´)！！$Rみんなと仲良く$Rしたいブーン( *｀ω´)$R$Rよろしくブーン( *｀ω´)
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: タイニーと仲良くなって$Rこの世界の「イリスカード」に$Rしてもらったブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくとタイニーの華麗な$Rコラボレーションの$Rイラストだブン｡.:*☆$R$R受け取ってほしい$Rブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: give_item
+        id: 70000021
+    - action: dialog
+        title: 
+        content: 「◆にしこくん」を$R手に入れた！$R
+        character_image: 00000000
+    - action: set_var
+        name: musashifairy
+        value: 1
+  nishikokun2
+    - action: dialog
+        title: にしこくん
+        content: この世界では「花火大会」が$R開催されてるブーン｡.:*☆$R$Rたくさんの花火が打ち上がって$Rとてもきれいブン｡.:*☆
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: そういえば$Rタイニーがいいものを作って$Rくれたブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 「にしこくんうちわ」と$R「半纏（にしこくん）」で$R花火大会を$R満喫するブーン( *｀ω´)
+        character_image: 18001163
+    - action: give_item
+        id: 61071000
+    - action: give_item
+        id: 60118150
+    - action: dialog
+        title: 
+        content: 「にしこくんうちわ」とを$R「半纏（にしこくん）」を$R手に入れた！
+        character_image: 00000000
+    - action: set_var
+        name: musashifairy
+        value: 2
+  nishikokun3
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request1
+          1: accept_request2
+          2: accept_request3
+          3: accept_request4
+          4: hold_request
+  accept_request1
+    - action: dialog
+        title: にしこくん
+        content: 質問に答えるブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: go_section
+         section: question
+  question
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request5
+          1: accept_request6
+          2: accept_request7
+          3: accept_request8
+          4: accept_request9
+          5: accept_request10
+          6: accept_request11
+          7: accept_request12
+          8: hold_request
+  accept_request5
+    - action: dialog
+        title: にしこくん
+        content: 武蔵の国の妖精「にしこくん」$Rだブーン( *｀ω´)！！$R$R武蔵の国・国分寺跡から発掘された$R"あぶみ瓦"がモチーフなんだ$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 口癖は見ての通り$R「ブーン( *｀ω´)！！」だ$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request6
+    - action: dialog
+        title: にしこくん
+        content: タイニーがぼくのところに遊びに来て$R「なかよくなりたいにー！」って$R言ってくれたブーン( *｀ω´)！！$R$R「はーとふる」であたたかくて$R夢のような世界だと聞いて、とても$R遊びに来たくなったブン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぬいぐるみが喋ったから$R最初はとても驚いたけど$Rぼくも妖精だからすぐに意思疎通が$Rできたブーン( *｀ω´)！！$R$Rタイニーアイランドは噂で聞く通り$Rとてもいいところで$R気に入ったブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: この世界の冒険者ともっと仲良くなって$Rぼくもいろいろと$R見て歩きたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request7
+    - action: dialog
+        title: にしこくん
+        content: 水を飲むブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request8
+    - action: dialog
+        title: にしこくん
+        content: いかに日々ゆるく過ごすかを$R探求することだブン！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request9
+    - action: dialog
+        title: にしこくん
+        content: みんなとブーンしたり、$Rゆるーく過ごしている時$Rだブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request10
+    - action: dialog
+        title: にしこくん
+        content: 惜しまぬ努力と、$Rあきらめないゆるさ、$Rだブーーーン！！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request11
+    - action: dialog
+        title: にしこくん
+        content: カラー写真で撮っても$Rぼくだけ何故か$Rモノクロに写ることだブーン、、、
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request12
+    - action: dialog
+        title: にしこくん
+        content: 空をブーンと$R飛んでみたいブーン( *｀ω´)！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request2
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: pose1
+          1: pose2
+          2: pose3
+          3: pose4
+          4: hold_request
+  pose1
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+  pose2
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: play_motion
+        motion: 135
+        ids:
+         - 18001163
+       loop: False
+  pose3
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+  pose4
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: play_motion
+        motion: 140
+        ids:
+         - 18001163
+       loop: False
+    - action: wait
+        time: 3880
+    - action: play_motion
+        motion: 141
+        ids:
+         - 18001163
+       loop: False
+  accept_request3
+    - action: routine
+        type: item
+         item: 10002800
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: にしこくん
+        content: そ、それは！$R「りんご」ブーン( *｀ω´)$Rブーン( *｀ω´)！！$R$Rこの世界のりんごは$Rなんだかとっても$Rおいしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくにひとつくれたら$R打ち上げるとぼくの顔の形になる$Rとってもキュートな花火を$Rあげるブン( *｀ω´)
+        character_image: 18001163
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          花火と交換する: accept_request13
+          交換しない: hold_request
+  accept_request13
+    - action: take_item
+        id: 10002800
+    - action: give_item
+        id: 10048567
+    - action: dialog
+        title: 
+        content: 「にしこくん花火」を$R1個手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: 特性$R「にしこくん花火」だブン｡.:*☆$R$Rみんなで打ち上げて$R遊んでほしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: まだもらっていないよーという$Rお友達がいる場合は知らせて$Rあげてほしいブン( *｀ω´)$R$Rぼくはいつでも$Rここにいるブーン( *｀ω´)！！
+        character_image: 18001163
+  false
+    - action: give_item
+        id: 10002800
+    - action: dialog
+        title: にしこくん
+        content: 「りんご」をぼくのところに$R持ってくるブーン( *｀ω´)！！$R$Rこの世界のりんごは$Rなんだかとっても$Rおいしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 「りんご」と交換で$R打ち上げるとぼくの顔の形になる$Rとってもキュートな花火を$Rあげるブン( *｀ω´)
+        character_image: 18001163
+  accept_request4
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request14
+          1: accept_request15
+          2: accept_request16
+          3: hold_request
+  accept_request14
+    - action: routine
+        type: variable
+        var: getnishikokun
+        options:
+          0: getnishikokun1
+          1: getnishikokun2
+  getnishikokun1
+    - action: dialog
+        title: にしこくん
+        content: ぼくもいろんなところに$R一緒に連れて行って$Rほしいブーン( *｀ω´)！！$R$Rこの世界をもっともっと$R知ってみたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 10141800
+    - action: dialog
+        title: 
+        content: 「にしこくん」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: {CHAR_NAME}と一緒なら$Rどんな冒険も楽しくなるに$R違いないブーン( *｀ω´)！！$R$Rワクワクブーン( *｀ω´)！！$Rブーーーーーーーン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikokun
+        value: 1
+  getnishikokun2
+    - action: dialog
+        title: にしこくん
+        content: ぼくもいろんなところに$R一緒に連れて行って$Rほしいブーン( *｀ω´)！！$R$Rこの世界をもっともっと$R知ってみたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: {CHAR_NAME}と一緒なら$Rどんな冒険も楽しくなるに$R違いないブーン( *｀ω´)！！$R$Rワクワクブーン( *｀ω´)！！$Rブーーーーーーーン( *｀ω´)！！
+        character_image: 18001163
+  accept_request15
+    - action: routine
+        type: variable
+        var: getnishikocarpet
+        options:
+          0: getnishikocarpet1
+          1: getnishikocarpet2
+  getnishikocarpet1
+    - action: dialog
+        title: にしこくん
+        content: にしこくん特製のじゅうたんブン！！$R$R「飛空庭」に$R飾るブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 31167751
+    - action: dialog
+        title: 
+        content: 「にしこくんじゅうたん」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: ぼくは飛空庭でゆる～く$R過ごしたいブン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikocarpet
+        value: 1
+  getnishikocarpet2
+    - action: dialog
+        title: にしこくん
+        content: にしこくん特製のじゅうたんブン！！$R$R「飛空庭」に$R飾るブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくは飛空庭でゆる～く$R過ごしたいブン( *｀ω´)！！
+        character_image: 18001163
+  accept_request16
+    - action: routine
+        type: variable
+        var: getnishikohead
+        options:
+          0: getnishikohead1
+          1: getnishikohead2
+  getnishikohead1
+    - action: dialog
+        title: にしこくん
+        content: にしこくんっぽくなれる$Rかぶりものブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 50130000
+    - action: dialog
+        title: 
+        content: 「にしこくんヘッド」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: これをかぶってゆる～く過ごす$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikohead
+        value: 1
+  getnishikohead2
+    - action: dialog
+        title: にしこくん
+        content: にしこくんっぽくなれる$Rかぶりものブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: これをかぶってゆる～く過ごす$Rブーン( *｀ω´)！！
+        character_image: 18001163
+  hold_request
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ティラ
+   - action: routine
+       type: question
+       question: どうしよう？
+        options:
+            受け取るような動きをしてみる: em id=10133800
+           ガルガル……？: RETURN
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ネコマタ好きのお姉さん
+    - action: dialog
+        title: ネコマタ好きのお姉さん
+        content: {CHAR_NAME}くん！$Rそう、君だよっ。$R$Rアタシの勘がこういうの！$R君はアタシの同類だってね♪
+        character_image: 18001007
+   - action: routine
+       type: question
+       question: どれを貰う？
+        options:
+            ネコマタ（黒）用舞踏会ドレス: em id=20050534
+            ネコマタ（胡桃・若菜）用大正袴: em id=20050535
+            ネコマタ（茜）用学園ブレザー: em id=20050539
+            ネコマタ（藍）用お嬢様ワンピース: em id=20050546
+            ネコマタ（杏）用勇者服: em id=20050547
+            ネコマタ（白）用ナース服: em id=20050556
+            ネコマタ（空）用ウェスタンワンピ: em id=20050555
+            ネコマタ（緑）用探偵服: em id=20050557
+            ネコマタ（菫）用カクテルドレス: em id=20050558
+            ネコマタ（山吹）用パイロットウェア: tem id=20050559
+            ネコマタ（桃）用小悪魔アイドル服: tem id=20050562
+           何もしない: RETURN
+event_progresses:
+  entrypoint:
+# アミスの飛空庭・アミス
+    - action: dialog
+        title: アミス
+        content: あら、おかえりなさい。$Rこの世界はまだまだ未完成なのだけど、$Rみんなの手で少しずつ$R作り上げてくれるとうれしいわ。
+        character_image: 18001619
+event_progresses:
+  entrypoint:
+# タイニーアイランド・デリバリタイニー
+    - action: routine
+        type: event
+         event: Event1
+         ind: 2
+         true: Alreadly
+         false: NotAlreadly
+  NotAlreadly
+    - action: routine
+        type: event
+         event: Event1
+         ind: 0
+         true: Event1
+         false: Event2
+  Event1
+    - action: dialog
+        title: デリバリタイニー
+        content: はぁー。久しぶりの里帰りだー。$Rのんびりするなぁ……。$R$Rおや、冒険者さんですね。$Rおつかれさまでっす！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: えっ？　ボクが誰かですって？$Rそういや、名乗ってませんでした。$Rボクはデリバリタイニーです！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: 見ての通り、いろんな荷物を$R運ぶのが得意で、あっちこっち$R配達にまわってるんですよ。$R$R今は久しぶりのばけーしょんで、$R里帰りをしているのです。えっへん！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ……あ、そうだ。$R冒険者さんあら、荷物を運ぶ時の$Rイロイロな苦労はお分かりのはず。$R$R実はですね、ボクの後輩が$Rそろそろ一人前になるんですが、$Rちょうど今雇い主を探してまして。
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: どうです、デリバリタイニーの$Rご主人様になってみませんか？$R今ならケイヤクリョーはベンキョー$Rいたしますよっ！
+        character_image: 18000648
+   - action: routine
+       type: question
+       question: デリバリタイニーを……
+        options:
+            雇いたい！: Event1a
+           今はまだいいかな。: RETURN
+  Event1a
+    - action: dialog
+        title: デリバリタイニー
+        content: 毎度ありっ！……どいう事で、$Rさっそくですがケイヤクリョーに$R関してお話させてもらいますよっ！$R$Rふふふ……僕らデリバリタイニーは！$Rサービス特価であっても、決して$R安いタイニーじゃないですよ……？
+        character_image: 18000648
+    - action: dialog
+        title: 
+        content: （デリバリタイニーの周囲に、$Rわずかに張りつめた空気が$Rただよいはじめた気がした）$R
+        character_image: 00000000
+    - action: dialog
+        title: デリバリタイニー
+        content: ３つ……。
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: 大セービスても、それがげんかいです。$Rりんごを３つ、一気にそうえてここに$R特ってきていただきますよっ！$R$Rそれが、デリバリタイニーを$R雇うための条件となりますっ！$Rよろしくお願いしますっ！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ……で、りんごなんですが、$Rアクロボリスから出て、東の方にある$Rイストー岬の村のお店で売ってます。$Rあるいは、このタイニーアイランドに$R生えている「タイニーツリー」を叩くと$Rたまに手に入りますよ！
+        character_image: 18000648
+  Event2
+    - action: dialog
+        title: デリバリタイニー
+        content: お疲れ様ですっ！$R準備できましたか？
+        character_image: 18000648
+   - action: routine
+       type: question
+       question: りんご３つの準備は？
+        options:
+            準備できたよ: em id=10002800 count=3 label=Event2a else=Noapple
+           もうちょっと待ってね: RETURN
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: Event2a
+  Event2a
+    - action: dialog
+        title: デリバリタイニー
+        content: これでケイヤクセーリツですねっ！$Rボク達はあまり荒っいことは$R得意ではないですけど、$R荷物の配達は得意でですよ！
+        character_image: 18000648
+    - action: dialog
+        title: デリバリタイニー
+        content: ボクの後輩のこと、$Rよろしくお願いしますねっ！
+        character_image: 18000648
+    - action: take_item
+        id: 10002800
+        count: 3
+    - action: give_item
+        id: 10128900
+  Alreadly
+    - action: dialog
+        title: デリバリタイニー
+        content: あっ、ごぶさたしてます！$Rうちの後輩はお役にたってますか？
+        character_image: 18000648
+  Noapple
+    - action: dialog
+        title: 
+        content: りんごの数が足りない
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# タイニーアイランド・にしこくん
+    - action: routine
+        type: variable
+        var: musashifairy
+        options:
+          0: nishikokun1
+          1: nishikokun2
+          2: nishikokun3
+  nishikokun1
+    - action: dialog
+        title: にしこくん
+        content: こんにちブーン( *｀ω´)！！$R$Rタイニーに誘われて$Rこの世界に遊びに来た$R武蔵の国の妖精「にしこくん」$Rだブーン( *｀ω´)！！$Rみんなと仲良く$Rしたいブーン( *｀ω´)$R$Rよろしくブーン( *｀ω´)
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: タイニーと仲良くなって$Rこの世界の「イリスカード」に$Rしてもらったブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくとタイニーの華麗な$Rコラボレーションの$Rイラストだブン｡.:*☆$R$R受け取ってほしい$Rブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: give_item
+        id: 70000021
+    - action: dialog
+        title: 
+        content: 「◆にしこくん」を$R手に入れた！$R
+        character_image: 00000000
+    - action: set_var
+        name: musashifairy
+        value: 1
+  nishikokun2
+    - action: dialog
+        title: にしこくん
+        content: この世界では「花火大会」が$R開催されてるブーン｡.:*☆$R$Rたくさんの花火が打ち上がって$Rとてもきれいブン｡.:*☆
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: そういえば$Rタイニーがいいものを作って$Rくれたブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 「にしこくんうちわ」と$R「半纏（にしこくん）」で$R花火大会を$R満喫するブーン( *｀ω´)
+        character_image: 18001163
+    - action: give_item
+        id: 61071000
+    - action: give_item
+        id: 60118150
+    - action: dialog
+        title: 
+        content: 「にしこくんうちわ」とを$R「半纏（にしこくん）」を$R手に入れた！
+        character_image: 00000000
+    - action: set_var
+        name: musashifairy
+        value: 2
+  nishikokun3
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request1
+          1: accept_request2
+          2: accept_request3
+          3: accept_request4
+          4: hold_request
+  accept_request1
+    - action: dialog
+        title: にしこくん
+        content: 質問に答えるブーン( *｀ω´)！！$R
+        character_image: 18001163
+    - action: go_section
+         section: question
+  question
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request5
+          1: accept_request6
+          2: accept_request7
+          3: accept_request8
+          4: accept_request9
+          5: accept_request10
+          6: accept_request11
+          7: accept_request12
+          8: hold_request
+  accept_request5
+    - action: dialog
+        title: にしこくん
+        content: 武蔵の国の妖精「にしこくん」$Rだブーン( *｀ω´)！！$R$R武蔵の国・国分寺跡から発掘された$R"あぶみ瓦"がモチーフなんだ$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 口癖は見ての通り$R「ブーン( *｀ω´)！！」だ$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request6
+    - action: dialog
+        title: にしこくん
+        content: タイニーがぼくのところに遊びに来て$R「なかよくなりたいにー！」って$R言ってくれたブーン( *｀ω´)！！$R$R「はーとふる」であたたかくて$R夢のような世界だと聞いて、とても$R遊びに来たくなったブン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぬいぐるみが喋ったから$R最初はとても驚いたけど$Rぼくも妖精だからすぐに意思疎通が$Rできたブーン( *｀ω´)！！$R$Rタイニーアイランドは噂で聞く通り$Rとてもいいところで$R気に入ったブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: この世界の冒険者ともっと仲良くなって$Rぼくもいろいろと$R見て歩きたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request7
+    - action: dialog
+        title: にしこくん
+        content: 水を飲むブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request8
+    - action: dialog
+        title: にしこくん
+        content: いかに日々ゆるく過ごすかを$R探求することだブン！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request9
+    - action: dialog
+        title: にしこくん
+        content: みんなとブーンしたり、$Rゆるーく過ごしている時$Rだブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request10
+    - action: dialog
+        title: にしこくん
+        content: 惜しまぬ努力と、$Rあきらめないゆるさ、$Rだブーーーン！！！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request11
+    - action: dialog
+        title: にしこくん
+        content: カラー写真で撮っても$Rぼくだけ何故か$Rモノクロに写ることだブーン、、、
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request12
+    - action: dialog
+        title: にしこくん
+        content: 空をブーンと$R飛んでみたいブーン( *｀ω´)！
+        character_image: 18001163
+    - action: go_section
+         section: question
+  accept_request2
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: pose1
+          1: pose2
+          2: pose3
+          3: pose4
+          4: hold_request
+  pose1
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+  pose2
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: play_motion
+        motion: 135
+        ids:
+         - 18001163
+       loop: False
+  pose3
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+  pose4
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: play_motion
+        motion: 140
+        ids:
+         - 18001163
+       loop: False
+    - action: wait
+        time: 3880
+    - action: play_motion
+        motion: 141
+        ids:
+         - 18001163
+       loop: False
+  accept_request3
+    - action: routine
+        type: item
+         item: 10002800
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: にしこくん
+        content: そ、それは！$R「りんご」ブーン( *｀ω´)$Rブーン( *｀ω´)！！$R$Rこの世界のりんごは$Rなんだかとっても$Rおいしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくにひとつくれたら$R打ち上げるとぼくの顔の形になる$Rとってもキュートな花火を$Rあげるブン( *｀ω´)
+        character_image: 18001163
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          花火と交換する: accept_request13
+          交換しない: hold_request
+  accept_request13
+    - action: take_item
+        id: 10002800
+    - action: give_item
+        id: 10048567
+    - action: dialog
+        title: 
+        content: 「にしこくん花火」を$R1個手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: 特性$R「にしこくん花火」だブン｡.:*☆$R$Rみんなで打ち上げて$R遊んでほしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: まだもらっていないよーという$Rお友達がいる場合は知らせて$Rあげてほしいブン( *｀ω´)$R$Rぼくはいつでも$Rここにいるブーン( *｀ω´)！！
+        character_image: 18001163
+  false
+    - action: give_item
+        id: 10002800
+    - action: dialog
+        title: にしこくん
+        content: 「りんご」をぼくのところに$R持ってくるブーン( *｀ω´)！！$R$Rこの世界のりんごは$Rなんだかとっても$Rおいしいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: 「りんご」と交換で$R打ち上げるとぼくの顔の形になる$Rとってもキュートな花火を$Rあげるブン( *｀ω´)
+        character_image: 18001163
+  accept_request4
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: accept_request14
+          1: accept_request15
+          2: accept_request16
+          3: hold_request
+  accept_request14
+    - action: routine
+        type: variable
+        var: getnishikokun
+        options:
+          0: getnishikokun1
+          1: getnishikokun2
+  getnishikokun1
+    - action: dialog
+        title: にしこくん
+        content: ぼくもいろんなところに$R一緒に連れて行って$Rほしいブーン( *｀ω´)！！$R$Rこの世界をもっともっと$R知ってみたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 10141800
+    - action: dialog
+        title: 
+        content: 「にしこくん」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: {CHAR_NAME}と一緒なら$Rどんな冒険も楽しくなるに$R違いないブーン( *｀ω´)！！$R$Rワクワクブーン( *｀ω´)！！$Rブーーーーーーーン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikokun
+        value: 1
+  getnishikokun2
+    - action: dialog
+        title: にしこくん
+        content: ぼくもいろんなところに$R一緒に連れて行って$Rほしいブーン( *｀ω´)！！$R$Rこの世界をもっともっと$R知ってみたいブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: {CHAR_NAME}と一緒なら$Rどんな冒険も楽しくなるに$R違いないブーン( *｀ω´)！！$R$Rワクワクブーン( *｀ω´)！！$Rブーーーーーーーン( *｀ω´)！！
+        character_image: 18001163
+  accept_request15
+    - action: routine
+        type: variable
+        var: getnishikocarpet
+        options:
+          0: getnishikocarpet1
+          1: getnishikocarpet2
+  getnishikocarpet1
+    - action: dialog
+        title: にしこくん
+        content: にしこくん特製のじゅうたんブン！！$R$R「飛空庭」に$R飾るブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 31167751
+    - action: dialog
+        title: 
+        content: 「にしこくんじゅうたん」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: ぼくは飛空庭でゆる～く$R過ごしたいブン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikocarpet
+        value: 1
+  getnishikocarpet2
+    - action: dialog
+        title: にしこくん
+        content: にしこくん特製のじゅうたんブン！！$R$R「飛空庭」に$R飾るブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: ぼくは飛空庭でゆる～く$R過ごしたいブン( *｀ω´)！！
+        character_image: 18001163
+  accept_request16
+    - action: routine
+        type: variable
+        var: getnishikohead
+        options:
+          0: getnishikohead1
+          1: getnishikohead2
+  getnishikohead1
+    - action: dialog
+        title: にしこくん
+        content: にしこくんっぽくなれる$Rかぶりものブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: give_item
+        id: 50130000
+    - action: dialog
+        title: 
+        content: 「にしこくんヘッド」を$R手に入れた！
+        character_image: 00000000
+    - action: dialog
+        title: にしこくん
+        content: これをかぶってゆる～く過ごす$Rブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: set_var
+        name: getnishikohead
+        value: 1
+  getnishikohead2
+    - action: dialog
+        title: にしこくん
+        content: にしこくんっぽくなれる$Rかぶりものブーン( *｀ω´)！！
+        character_image: 18001163
+    - action: dialog
+        title: にしこくん
+        content: これをかぶってゆる～く過ごす$Rブーン( *｀ω´)！！
+        character_image: 18001163
+  hold_request
+    - action: dialog
+        title: にしこくん
+        content: ブーン( *｀ω´)！！
+        character_image: 18001163
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ティラ
+   - action: routine
+       type: question
+       question: どうしよう？
+        options:
+            受け取るような動きをしてみる: em id=10133800
+           ガルガル……？: RETURN
+event_progresses:
+  entrypoint:
+# タイニーアイランド・ネコマタ好きのお姉さん
+    - action: dialog
+        title: ネコマタ好きのお姉さん
+        content: {CHAR_NAME}くん！$Rそう、君だよっ。$R$Rアタシの勘がこういうの！$R君はアタシの同類だってね♪
+        character_image: 18001007
+   - action: routine
+       type: question
+       question: どれを貰う？
+        options:
+            ネコマタ（黒）用舞踏会ドレス: em id=20050534
+            ネコマタ（胡桃・若菜）用大正袴: em id=20050535
+            ネコマタ（茜）用学園ブレザー: em id=20050539
+            ネコマタ（藍）用お嬢様ワンピース: em id=20050546
+            ネコマタ（杏）用勇者服: em id=20050547
+            ネコマタ（白）用ナース服: em id=20050556
+            ネコマタ（空）用ウェスタンワンピ: em id=20050555
+            ネコマタ（緑）用探偵服: em id=20050557
+            ネコマタ（菫）用カクテルドレス: em id=20050558
+            ネコマタ（山吹）用パイロットウェア: tem id=20050559
+            ネコマタ（桃）用小悪魔アイドル服: tem id=20050562
+           何もしない: RETURN

@@ -1,0 +1,24 @@
+event_progresses:
+  entrypoint:
+    actions:
+#シアターロビー１・シアタースクリーン入場ポータル
+      - action: routine
+        type: question
+        question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 30190000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2:
+    actions:
+      - action: teleport
+        map_id: 30191000
+        x: 11
+        y: 21
+        dir: 180

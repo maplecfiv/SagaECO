@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アミスの飛空庭・アミス
+      - action: dialog
+        title: アミス
+        content: あら、おかえりなさい。$Rこの世界はまだまだ未完成なのだけど、$Rみんなの手で少しずつ$R作り上げてくれるとうれしいわ。
+        character_image: 18001619

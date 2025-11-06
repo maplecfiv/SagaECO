@@ -1,0 +1,148 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ウェストー開拓地・運び屋マックス
+      - action: play_motion
+        motion: 131
+        ids:
+         - 11003317
+       loop: True
+      - action: dialog
+        title: 運び屋マックス
+        content: 仕事の紹介感謝するぜ！$R$R俺はしばらくこの辺を拠点に$R仕事してるから、何かあれば$R遠慮なく言ってくれ。
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          南アクロニア平原まで乗せて: soacro
+          ノーザリン岬の村まで乗せて: north
+          イストー岬の村まで乗せて: east
+          サウスリン岬の村まで乗せて: south
+          廃炭坑の村まで乗せて: tanco
+          特に用事はない: hold_request
+  soacro:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: 南アクロニア平原か。$Rちょうど行くところだし$Rタダで乗せてってやるけど、どうする？
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          お願いします！: accept_request
+          やめる: hold_request
+  accept_request:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+      - action: teleport
+        map_id: 10031000
+        x: 135
+        y: 130
+        dir: 0
+  north:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: ノーザリン岬の村か。$R３６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          お願いします！: accept_request2
+          やめる: hold_request
+  accept_request2:
+    actions:
+#getgold gold=-360
+      - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+      - action: teleport
+        map_id: 10001000
+        x: 96
+        y: 24
+        dir: 0
+  east:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: イストー岬の村か。$R３８０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          お願いします！: accept_request3
+          やめる: hold_request
+  accept_request3:
+    actions:
+#getgold gold=-380
+      - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+      - action: teleport
+        map_id: 10018100
+        x: 238
+        y: 81
+        dir: 0
+  south:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: サウスリン岬の村か。$R４６０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          お願いします！: accept_request4
+          やめる: hold_request
+  accept_request4:
+    actions:
+#getgold gold=-460
+      - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+      - action: teleport
+        map_id: 10046000
+        x: 156
+        y: 218
+        dir: 0
+  tanco:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: 廃炭鉱の村か。$R３７０ゴールド、燃料代に貰えるなら$R構わないけどどうする？
+        character_image: 11003317
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          お願いします！: accept_request5
+          やめる: hold_request
+  accept_request5:
+    actions:
+#getgold gold=-370
+      - action: dialog
+        title: 運び屋マックス
+        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+        character_image: 11003317
+      - action: teleport
+        map_id: 10035000
+        x: 44
+        y: 194
+        dir: 0
+  hold_request:
+    actions:
+      - action: dialog
+        title: 運び屋マックス
+        content: oh……。
+        character_image: 11003317

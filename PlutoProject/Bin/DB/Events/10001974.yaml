@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#Ｄ－マルクトの船着き場・南側ポータル
+      - action: routine
+        type: variable
+        var: dsouth3f
+        options:
+          0: dsouth3f0
+          1: dsouth3f1
+  dsouth3f0:
+    actions:
+      - action: teleport
+        map_id: 20020003
+        x: 101
+        y: 249
+        dir: 180
+  dsouth3f1:
+    actions:
+      - action: set_var
+        name: dsouth3f
+        value: 0
+      - action: teleport
+        map_id: 20020003
+        x: 153
+        y: 249
+        dir: 180

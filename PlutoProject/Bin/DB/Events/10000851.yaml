@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アンデッドの城・王の寝室行き扉
+      - action: dialog
+        title: 
+        content: 扉はかたく閉ざされている……。
+        character_image: 00000000

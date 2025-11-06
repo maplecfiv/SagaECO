@@ -1,0 +1,46 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ウォーターレイアー・水先案内人
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#  3: goto label=state3
+#end
+      - action: dialog
+        title: 水先案内人
+        content: 乗ってく？$R天まで続く塔の島に連れてったげるよ♪
+        character_image: 11001471
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          行かない: hold_request
+          行く: accept_request
+          船を貸してもらう: accept_request2
+  state1:
+    actions:
+  hold_request:
+    actions:
+  state2:
+    actions:
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 11058000
+        x: 127
+        y: 250
+        dir: 180
+  state3:
+    actions:
+  accept_request2:
+    actions:
+      - action: dialog
+        title: 水先案内人
+        content: え、別にいいけど$Rちゃんと返してね～。
+        character_image: 11001470
+      - action: teleport
+        map_id: 11075000
+        x: 15
+        y: 9
+        dir: 0

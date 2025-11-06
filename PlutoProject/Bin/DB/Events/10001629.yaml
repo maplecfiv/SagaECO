@@ -1,0 +1,54 @@
+event_progresses:
+  entrypoint:
+    actions:
+#難民テント・出口ポータル
+      - action: routine
+        type: variable
+        var: domitent
+        options:
+          0: domiisland
+          1: domidesert
+  domiisland:
+    actions:
+      - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request
+          1: accept_request2
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 12035000
+        x: 46
+        y: 172
+        dir: 270
+  accept_request2:
+    actions:
+      - action: teleport
+        map_id: 12035001
+        x: 46
+        y: 172
+        dir: 270
+  domidesert:
+    actions:
+      - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request3
+          1: accept_request4
+  accept_request3:
+    actions:
+      - action: teleport
+        map_id: 12020000
+        x: 110
+        y: 76
+        dir: 0
+  accept_request4:
+    actions:
+      - action: teleport
+        map_id: 12020001
+        x: 110
+        y: 76
+        dir: 0

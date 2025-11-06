@@ -1,0 +1,23 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザンプロムナード・コッソ
+      - action: dialog
+        title: コッソ
+        content: ノーザン市民街へ行くっすか？
+        character_image: 11003379
+      - action: routine
+        type: question
+        question: ノーザン市民街に行く？
+        options:
+          いく: accept_request
+          やめる: hold_request
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 20015001
+        x: 9
+        y: 6
+        dir: 0
+  hold_request:
+    actions:

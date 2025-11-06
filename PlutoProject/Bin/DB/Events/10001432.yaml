@@ -1,0 +1,29 @@
+event_progresses:
+  entrypoint:
+    actions:
+# バオバブの森・森のギルド員の山小屋
+      - action: routine
+        type: question
+        question: もう寝ますか？
+        options:
+          まだ寝ない: hold_request
+          寝る: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: control_screen
+       enable: 1
+       color: 0
+      - action: stop_bgm
+      - action: wait
+        time: 80
+      - action: play_se
+        id: 4001
+      - action: wait
+        time: 2980
+      - action: teleport
+        map_id: 10059100
+        x: 234
+        y: 36
+        dir: 0

@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+#トンカ島・トンカ商店（街の南側）入場ポータル
+      - action: set_var
+        name: tonkashop
+        value: 1
+      - action: teleport
+        map_id: 30060007
+        x: 4
+        y: 7
+        dir: 180

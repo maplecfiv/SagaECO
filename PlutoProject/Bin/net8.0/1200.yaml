@@ -1,0 +1,352 @@
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（タイタニア界）・天まで続く塔の鍵穴
+   - action: routine
+       type: question
+       question: エミル界に戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002087
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002087
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0
+event_progresses:
+  entrypoint:
+# 大陸の洞窟Ｂ５Ｆ・案内看板
+   - action: routine
+       type: question
+       question: インスマウスの隠れ里へ行く？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: teleport
+        map_id: 20004001
+        x: 63
+        y: 102
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# エレベータールーム・コントロールパネル
+    - action: dialog
+        title: コントロールパネル
+        content: コントロールパネルの$R電源は生きている。
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 画面を操作しますか？
+        options:
+          しない: hold_request
+          上のボタンを押す: tytania
+          下のボタンを押す: dominion
+          外に出る: emil
+  hold_request
+  tytania
+    - action: play_effect
+        id: 12001162
+        effect: 5289
+    - action: change_bgm
+       id: 1054
+    - action: dialog
+        title: コントロールパネル
+        content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rタイタニアワールドニ転移シマスカ？
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 転移シマスカ？
+        options:
+          やめる: hold_request2
+          行く: accept_request
+  hold_request2
+    - action: change_bgm
+       id: 1147
+  accept_request
+    - action: play_effect
+        id: 12001162
+        effect: 5313
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 11058000
+        x: 127
+        y: 157
+        dir: 0
+  dominion
+    - action: play_effect
+        id: 12001162
+        effect: 5289
+    - action: change_bgm
+       id: 1054
+    - action: dialog
+        title: コントロールパネル
+        content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rドミニオンワールドニ転移シマスカ？
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 転移シマスカ？
+        options:
+          やめる: hold_request3
+          行く: accept_request2
+  hold_request3
+    - action: change_bgm
+       id: 1147
+  accept_request2
+    - action: play_effect
+        id: 12001162
+        effect: 5313
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 12058000
+        x: 127
+        y: 157
+        dir: 0
+  emil
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・天まで続く塔の鍵穴
+    - action: dialog
+        title: 天まで続く塔の鍵穴
+        content: ゲートハ既ニ開イテイマス。
+        character_image: 12002090
+event_progresses:
+  entrypoint:
+# イーストダンジョン・落とし穴
+    - action: dialog
+        title: 
+        content: 落とし穴だ！！
+        character_image: 00000000
+#effect id=10 effect=4539
+    - action: teleport
+        map_id: 20091000
+        x: 189
+        y: 225
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（ドミニオン界）・天まで続く塔の鍵穴
+   - action: routine
+       type: question
+       question: エミル界に戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002095
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002095
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（タイタニア界）・天まで続く塔の鍵穴
+   - action: routine
+       type: question
+       question: エミル界に戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002087
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002087
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0
+event_progresses:
+  entrypoint:
+# 大陸の洞窟Ｂ５Ｆ・案内看板
+   - action: routine
+       type: question
+       question: インスマウスの隠れ里へ行く？
+        options:
+          はい: accept_request
+          いいえ: hold_request
+  accept_request
+    - action: teleport
+        map_id: 20004001
+        x: 63
+        y: 102
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+# エレベータールーム・コントロールパネル
+    - action: dialog
+        title: コントロールパネル
+        content: コントロールパネルの$R電源は生きている。
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 画面を操作しますか？
+        options:
+          しない: hold_request
+          上のボタンを押す: tytania
+          下のボタンを押す: dominion
+          外に出る: emil
+  hold_request
+  tytania
+    - action: play_effect
+        id: 12001162
+        effect: 5289
+    - action: change_bgm
+       id: 1054
+    - action: dialog
+        title: コントロールパネル
+        content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rタイタニアワールドニ転移シマスカ？
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 転移シマスカ？
+        options:
+          やめる: hold_request2
+          行く: accept_request
+  hold_request2
+    - action: change_bgm
+       id: 1147
+  accept_request
+    - action: play_effect
+        id: 12001162
+        effect: 5313
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 11058000
+        x: 127
+        y: 157
+        dir: 0
+  dominion
+    - action: play_effect
+        id: 12001162
+        effect: 5289
+    - action: change_bgm
+       id: 1054
+    - action: dialog
+        title: コントロールパネル
+        content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rドミニオンワールドニ転移シマスカ？
+        character_image: 12001162
+   - action: routine
+       type: question
+       question: 転移シマスカ？
+        options:
+          やめる: hold_request3
+          行く: accept_request2
+  hold_request3
+    - action: change_bgm
+       id: 1147
+  accept_request2
+    - action: play_effect
+        id: 12001162
+        effect: 5313
+    - action: wait
+        time: 990
+    - action: teleport
+        map_id: 12058000
+        x: 127
+        y: 157
+        dir: 0
+  emil
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島・天まで続く塔の鍵穴
+    - action: dialog
+        title: 天まで続く塔の鍵穴
+        content: ゲートハ既ニ開イテイマス。
+        character_image: 12002090
+event_progresses:
+  entrypoint:
+# イーストダンジョン・落とし穴
+    - action: dialog
+        title: 
+        content: 落とし穴だ！！
+        character_image: 00000000
+#effect id=10 effect=4539
+    - action: teleport
+        map_id: 20091000
+        x: 189
+        y: 225
+        dir: 0
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（ドミニオン界）・天まで続く塔の鍵穴
+   - action: routine
+       type: question
+       question: エミル界に戻りますか？
+        options:
+          戻らない: hold_request
+          戻る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002095
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002095
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 10058000
+        x: 127
+        y: 157
+        dir: 0

@@ -1,0 +1,49 @@
+event_progresses:
+  entrypoint:
+    actions:
+#アイアンシティ下層階→サウスダンジョン
+       - action: routine
+         type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true:
+    actions:
+      - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションサウスダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+      - action: routine
+        type: question
+        question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request:
+    actions:
+      - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 4
+  accept_request:
+    actions:
+      - action: take_item
+        id: 10014651
+        count: 1
+      - action: set_var
+        name: indimentionsouth
+        value: 1
+      - action: teleport
+        map_id: 20022001
+        x: 126
+        y: 51
+        dir: 0
+  false:
+    actions:
+      - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 180

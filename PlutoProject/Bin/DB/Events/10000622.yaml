@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+      - action: set_var
+        name: magicguild
+        value: 3
+      - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180

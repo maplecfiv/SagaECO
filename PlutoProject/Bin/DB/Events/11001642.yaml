@@ -1,0 +1,67 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 難民テント・宿屋
+      - action: dialog
+        title: 宿屋
+        content: いらっしゃいませ～！$R$R一泊500ゴールドで$Rお客さまの心と体を$Rリフレッシュします～！$R$Rご要望とあらば、お薬なども$Rお譲りしますよ～！
+        character_image: 11001642
+      - action: routine
+        type: question
+        question: 一泊500ゴールドになります～。
+        options:
+            利用しない: n
+            一泊する: inn
+            夜まで休憩する: break
+            ショップを利用したい: buy
+  inn:
+    actions:
+      - action: dialog
+        title: 宿屋
+        content: ごゆっくりお休みください～。$R
+        character_image: 11001642
+      - action: control_screen
+       enable: 1
+       color: 0
+      - action: stop_bgm
+      - action: wait
+        time: 120
+      - action: play_se
+        id: 4001
+      - action: wait
+        time: 3980
+      - action: control_screen
+       enable: 0
+      - action: change_bgm
+       id: -1
+  break:
+    actions:
+      - action: dialog
+        title: 宿屋
+        content: 夜になったらお知らせしますね。$R$Rぐっすり寝てても起こしますよ～。
+        character_image: 11001642
+      - action: control_screen
+       enable: 1
+       color: 0
+      - action: stop_bgm
+      - action: wait
+        time: 80
+      - action: set_var
+        name: dominionnight
+        value: 1
+      - action: play_se
+        id: 4001
+      - action: wait
+        time: 3980
+      - action: control_screen
+       enable: 0
+      - action: change_bgm
+       id: -1
+  buy:
+    actions:
+    - action: purchase_dialog
+       items: 
+         - id: 10000103
+         - id: 10000102
+         - id: 10000108
+         - id: 10000604

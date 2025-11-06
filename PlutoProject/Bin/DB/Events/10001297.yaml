@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#トンカ商店・出口ポータル
+      - action: routine
+        type: variable
+        var: tonkashop
+        options:
+          0: tonkashop0
+          1: tonkashop1
+  tonkashop0:
+    actions:
+      - action: teleport
+        map_id: 10062000
+        x: 124
+        y: 91
+        dir: 135
+  tonkashop1:
+    actions:
+      - action: set_var
+        name: tonkashop
+        value: 0
+      - action: teleport
+        map_id: 10062000
+        x: 118
+        y: 185
+        dir: 90

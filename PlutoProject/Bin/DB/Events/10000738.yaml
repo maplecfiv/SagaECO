@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#大タタラ場・アイアンシティ下層階へ戻るポータル
+      - action: routine
+        type: variable
+        var: ootatara
+        options:
+          0: ootatara0
+          1: ootatara1
+  ootatara0:
+    actions:
+      - action: teleport
+        map_id: 10066000
+        x: 155
+        y: 60
+        dir: 0
+  ootatara1:
+    actions:
+      - action: set_var
+        name: ootatara
+        value: 0
+      - action: teleport
+        map_id: 10066000
+        x: 175
+        y: 60
+        dir: 0

@@ -1,0 +1,163 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・レインボー発生マシーン
+      - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+      - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+          虹の話を聞かせて: rainbow
+  state1:
+    actions:
+  hold_request:
+    actions:
+      - action: dialog
+        title: タイニー４号
+        content: あれれー？
+        character_image: 11000726
+  accept_request:
+    actions:
+      - action: dialog
+        title: タイニー１号
+        content: よーしっ！$Rじゃあ、みんな、いくぜ～っ！
+        character_image: 11000726
+      - action: dialog
+        title: タイニー１号
+        content: こーこーろーをーあーわーせーてー$Rちーかーらーをーひーとーつーにー！$R$Rまわせまわせまわせまわせ～～～！
+        character_image: 11000726
+      - action: move_npc
+        ids: 
+          - id: npcs
+        x: 62
+        y: 210
+        speed: 0
+        dir: -1
+        move_type: 7
+        motion: 111
+        motion_speed: 200
+      - action: play_effect
+        id: 11000726
+        effect: 5314
+      - action: move_npc
+        ids: 
+          - id: 11000717
+          - id: 11000718
+          - id: 11000738
+        x: 62
+        y: 210
+        speed: 100
+        dir: -1
+        move_type: 7
+        motion: 111
+        motion_speed: 65535
+      - action: play_effect
+        id: 11000726
+        effect: 4011
+      - action: play_effect
+        id: 11000726
+        effect: 5314
+      - action: wait
+        time: 990
+      - action: teleport
+        map_id: 11027000
+        x: 254
+        y: 7
+        dir: 2
+  rainbow:
+    actions:
+      - action: dialog
+        title: タイニーたち
+        content: オッケー！$Rそれじゃあ、はじめるよ！
+        character_image: 11000726
+      - action: dialog
+        title: タイニー１号
+        content: ねえ、知ってる？
+        character_image: 11000726
+      - action: routine
+        type: question
+        question: 知ってる？
+        options:
+          知らない: none
+          何を？: none
+  none:
+    actions:
+      - action: dialog
+        title: タイニー２号
+        content: レインボーはねぇ、実は道なんだ。
+        character_image: 11000726
+      - action: dialog
+        title: タイニー３号
+        content: 近所のコンビニに続く道。$R$R世界の裏側の国に続く道。$R$R君の未来へと続く道。
+        character_image: 11000726
+      - action: dialog
+        title: タイニー４号
+        content: 君が望めば$R本当に、どこにでも行けるんだ。
+        character_image: 11000726
+      - action: dialog
+        title: タイニー１号
+        content: 実は、この空には$Rレインボーがい～っぱい！$R$R……見えないけどね。
+        character_image: 11000726
+      - action: dialog
+        title: タイニー２号
+        content: クスクスッ！$R$Rじゃあさ！$Rレインボーの交差点って知ってる？$R
+        character_image: 11000726
+      - action: routine
+        type: question
+        question: 知ってる？
+        options:
+          知らない: none2
+          知ってる: know
+  none2:
+    actions:
+      - action: dialog
+        title: タイニー３号
+        content: レインボーが交差する場所。$Rここではない、どこでもない場所。
+        character_image: 11000726
+      - action: dialog
+        title: タイニー４号
+        content: 中継地点みたいなもんかな？
+        character_image: 11000726
+      - action: dialog
+        title: タイニー１号
+        content: えー、違うでしょ！？
+        character_image: 11000726
+      - action: dialog
+        title: タイニー２号
+        content: フフフッ！$Rねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+      - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request
+  know:
+    actions:
+      - action: dialog
+        title: タイニー２号
+        content: ねえ、行ってみたい？$Rレインボーが交差するあの場所へ！
+        character_image: 11000726
+      - action: dialog
+        title: タイニー３号
+        content: あったりまえだよ！ねえ！？
+        character_image: 11000726
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          行かない: hold_request
+          もちろん、いってみたい！: accept_request

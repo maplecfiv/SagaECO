@@ -1,0 +1,17 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・サンドバック系アイテム収集家
+    - action: purchase_dialog
+       items: 
+         - id: 20050051
+         - id: 20050106
+         - id: 20050132
+         - id: 20050127
+         - id: 20050064
+         - id: 20050069
+         - id: 20050115
+         - id: 20050118
+         - id: 20050195
+         - id: 20050286
+         - id: 20050365

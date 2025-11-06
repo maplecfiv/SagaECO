@@ -1,0 +1,47 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アンデッドの城・礼拝堂2Ｆ入口
+       - action: routine
+         type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true:
+    actions:
+      - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+      - action: routine
+        type: question
+        question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request:
+    actions:
+      - action: take_item
+        id: 10024900
+        count: 1
+      - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+      - action: teleport
+        map_id: 20123000
+        x: 16
+        y: 1
+        dir: 0
+  hold_request:
+    actions:
+  false:
+    actions:
+      - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+      - action: give_item
+        id: 10024900
+        count: 1

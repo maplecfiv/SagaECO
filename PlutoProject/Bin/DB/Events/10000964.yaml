@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ファーイーストシティ・鑑定屋前ポータル
+      - action: set_var
+        name: eastkantei
+        value: 1
+      - action: teleport
+        map_id: 30011005
+        x: 3
+        y: 5
+        dir: 180

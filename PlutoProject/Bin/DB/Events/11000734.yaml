@@ -1,0 +1,66 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・ギルド商人
+      - action: routine
+        type: question
+        question: 御用がおありですか？
+        options:
+            買い物をする(通常): buy
+            買い物をする(珍品): buy2
+            買い物をする(チュートリアル): buy3
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+            何もしない: RETURN
+  buy:
+    actions:
+    - action: purchase_dialog
+       items: 
+         - id: 50002750
+         - id: 50000750
+         - id: 50000060
+         - id: 50001452
+         - id: 50060150
+         - id: 50060050
+         - id: 50061609
+         - id: 50060550
+         - id: 50010153
+         - id: 50010154
+         - id: 50010351
+         - id: 50010452
+  buy2:
+    actions:
+    - action: purchase_dialog
+       items: 
+         - id: 50104203
+         - id: 50104204
+         - id: 50104205
+         - id: 60110959
+         - id: 60110960
+         - id: 60110961
+         - id: 60156400
+         - id: 50240500
+         - id: 60156401
+         - id: 50240501
+         - id: 60156402
+         - id: 50240502
+         - id: 50240600
+  buy3:
+    actions:
+    - action: purchase_dialog
+       items: 
+         - id: 50002751
+         - id: 50000751
+         - id: 50001453
+         - id: 50010453
+         - id: 50010451
+         - id: 50012358
+         - id: 50012360
+  jewel:
+    actions:
+      - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。

@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ファーイースト鑑定屋出口
+      - action: routine
+        type: variable
+        var: eastkantei
+        options:
+          0: eastkantei0
+          1: eastkantei1
+  eastkantei0:
+    actions:
+      - action: teleport
+        map_id: 10018100
+        x: 226
+        y: 72
+        dir: 45
+  eastkantei1:
+    actions:
+      - action: set_var
+        name: eastkantei
+        value: 0
+      - action: teleport
+        map_id: 10057000
+        x: 128
+        y: 100
+        dir: 45

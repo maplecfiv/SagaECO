@@ -1,0 +1,12 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザン地下・市民街・ノーザン王国の民
+      - action: dialog
+        title: ノーザン王国の民
+        content: ようこそ！ノーザンの市民街へ！$R街の殆どは氷漬けに$Rなってるけどね！$R$Rゆっくりしていってね！
+        character_image: 11003366
+      - action: dialog
+        title: ノーザン王国の民
+        content: ん？身体が変だって？$Rそんな細かいこと$R気にしていたらここじゃ$R生きられないわよ♪$R
+        character_image: 11003366

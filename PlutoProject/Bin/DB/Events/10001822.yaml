@@ -1,0 +1,85 @@
+event_progresses:
+  entrypoint:
+    actions:
+      - action: routine
+        type: question
+        question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up:
+    actions:
+      - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth:
+    actions:
+      - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth:
+    actions:
+      - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 4
+  down:
+    actions:
+      - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9:
+    actions:
+      - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7:
+    actions:
+      - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3:
+    actions:
+      - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 4
+  down1:
+    actions:
+      - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 4
+  back:
+    actions:
+      - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none:
+    actions:

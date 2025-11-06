@@ -1,0 +1,23 @@
+event_progresses:
+  entrypoint:
+    actions:
+# フシギ団の砦・フシギ団団員
+      - action: dialog
+        title: フシギ団団員
+        content: いいでしょう、通りなさい……。
+        character_image: 11000906
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          砦の中に入る: accept_request
+          入らない: hold_request
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 10054000
+        x: 154
+        y: 161
+        dir: 180
+  hold_request:
+    actions:

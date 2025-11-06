@@ -1,0 +1,4436 @@
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（南東）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 196
+        y: 163
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（北東）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 188
+        y: 107
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（北西）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 68
+        y: 107
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（南西）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 60
+        y: 163
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#モーグシティ　密航路の親父付近のポータル
+event_progresses:
+  entrypoint:
+# モーグシティ・軍艦島行き
+event_progresses:
+  entrypoint:
+# モーグシティ・光の塔入口
+event_progresses:
+  entrypoint:
+# マーチャントギルド総本山→モーグシティ
+    - action: play_motion
+        motion: 159
+        ids:
+         - 11000828
+         - 11000829
+       loop: True
+    - action: wait
+        time: 980
+    - action: dialog
+        title: 
+        content: ありがとうございました！
+        character_image: 00000000
+    - action: teleport
+        map_id: 10060000
+        x: 82
+        y: 153
+        dir: 270
+event_progresses:
+  entrypoint:
+#ノース中央山脈（北側）→ノーザンダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションノーザンダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20014000
+        x: 243
+        y: 12
+        dir: 45
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20014001
+        x: 14
+        y: 160
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20014000
+        x: 243
+        y: 12
+        dir: 45
+event_progresses:
+  entrypoint:
+#トンカ島・トンカ商店（街の南側）入場ポータル
+    - action: set_var
+        name: tonkashop
+        value: 1
+    - action: teleport
+        map_id: 30060007
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#トンカ島・アイアンサウス行き飛空庭ポータル
+event_progresses:
+  entrypoint:
+#トンカ商店・出口ポータル
+    - action: routine
+        type: variable
+        var: tonkashop
+        options:
+          0: tonkashop0
+          1: tonkashop1
+  tonkashop0
+    - action: teleport
+        map_id: 10062000
+        x: 124
+        y: 91
+        dir: 135
+  tonkashop1
+    - action: set_var
+        name: tonkashop
+        value: 0
+    - action: teleport
+        map_id: 10062000
+        x: 118
+        y: 185
+        dir: 90
+event_progresses:
+  entrypoint:
+#大海の孤島　謎の装置付近ポータル
+    - action: dialog
+        title: 
+        content: ――システムエラー$R――システムエラー$R$R――転送装置ヲ起動シマス
+        character_image: 11000000
+#effect id=10 effect=5212
+    - action: wait
+        time: 1485
+    - action: teleport
+        map_id: 11073000
+        x: 251
+        y: 11
+        dir: 0
+event_progresses:
+  entrypoint:
+# 軍艦島（ドミニオン界）・難民テントポータル
+    - action: set_var
+        name: domitent
+        value: 0
+    - action: teleport
+        map_id: 32200000
+        x: 2
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#軍艦島（ドミニオン界）　飛空庭係員付近ポータル
+event_progresses:
+  entrypoint:
+# 王の寝室・暖炉の隠し通路
+   - action: routine
+       type: question
+       question: 暖炉に隠し通路がある！
+        options:
+          行ってみる！: accept_request
+          危険なことはしない: hold_request
+  accept_request
+    - action: play_se
+        id: 2444
+    - action: teleport
+        map_id: 10069000
+        x: 137
+        y: 144
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# アンデッドの城・牢屋入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20105000
+        x: 3
+        y: 32
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・礼拝堂2Ｆ入口
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20123000
+        x: 16
+        y: 1
+        dir: 0
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・聖者の間入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20125000
+        x: 24
+        y: 46
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・王の寝室行き扉
+    - action: dialog
+        title: 
+        content: 扉はかたく閉ざされている……。
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# アンデッドの城・アカズの間入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20120000
+        x: 8
+        y: 26
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ40Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ16Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ24Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ37Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ32Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ17Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ34Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ20Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ13Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ1Ｆ→ステップ砂漠
+   - action: routine
+       type: question
+       question: 戻りますか？
+        options:
+            はい: map=10042000 x=80 y=134 dir=0
+           いいえ: RETURN
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ39Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ12Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ3Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ14Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ8Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ21Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ11Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ10Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ2Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ19Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ25Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ22Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ28Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ18Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ29Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ5Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ35Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ4Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ31Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ9Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ15Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ27Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ6Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ24Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ36Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ33Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ38Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ30Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ7Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ26Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+# 光の塔下層・モーグシティ行き
+event_progresses:
+  entrypoint:
+#東アクロニア海岸・大陸の洞窟行きポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション大陸の洞窟に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20000000
+        x: 63
+        y: 23
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20004003
+        x: 56
+        y: 18
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20000000
+        x: 63
+        y: 23
+        dir: 0
+event_progresses:
+  entrypoint:
+#フシギ団本部　奥の階段
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          中立のシマに行く: accept_request
+          聖女のシマに行く: accept_request2
+          行かない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054100
+        x: 123
+        y: 78
+        dir: 90
+  accept_request2
+    - action: teleport
+        map_id: 10054000
+        x: 71
+        y: 140
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#天まで続く塔の島（タイタニア）　水先案内人付近ポータル
+event_progresses:
+  entrypoint:
+#ファーイースト商店出口
+    - action: routine
+        type: variable
+        var: eastshop
+        options:
+          0: eastshop0
+          1: eastshop1
+  eastshop0
+    - action: teleport
+        map_id: 10018100
+        x: 221
+        y: 67
+        dir: 45
+  eastshop1
+    - action: set_var
+        name: eastshop
+        value: 0
+    - action: teleport
+        map_id: 10057000
+        x: 123
+        y: 120
+        dir: 0
+event_progresses:
+  entrypoint:
+#ファーイーストシティ→イーストダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションイーストダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20090000
+        x: 112
+        y: 253
+        dir: 180
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20092002
+        x: 168
+        y: 34
+        dir: 90
+  false
+    - action: teleport
+        map_id: 20090000
+        x: 112
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイーストシティ・ファーイースト商店前（街の南側）ポータル
+    - action: set_var
+        name: eastshop
+        value: 1
+    - action: teleport
+        map_id: 30060006
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイーストシティ・鑑定屋前ポータル
+    - action: set_var
+        name: eastkantei
+        value: 1
+    - action: teleport
+        map_id: 30011005
+        x: 3
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイースト鑑定屋出口
+    - action: routine
+        type: variable
+        var: eastkantei
+        options:
+          0: eastkantei0
+          1: eastkantei1
+  eastkantei0
+    - action: teleport
+        map_id: 10018100
+        x: 226
+        y: 72
+        dir: 45
+  eastkantei1
+    - action: set_var
+        name: eastkantei
+        value: 0
+    - action: teleport
+        map_id: 10057000
+        x: 128
+        y: 100
+        dir: 45
+event_progresses:
+  entrypoint:
+#シアターロビー４・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30196000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30197000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー４Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ３階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+event_progresses:
+  entrypoint:
+#ともしびの聖堂・出口ポータル
+    - action: routine
+        type: variable
+        var: candlechurch
+        options:
+          0: candlechurch0
+          1: candlechurch1
+  candlechurch0
+    - action: teleport
+        map_id: 10023000
+        x: 164
+        y: 128
+        dir: 90
+  candlechurch1
+    - action: set_var
+        name: candlechurch
+        value: 0
+    - action: teleport
+        map_id: 10023000
+        x: 91
+        y: 128
+        dir: 270
+event_progresses:
+  entrypoint:
+#シアターロビー２・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30192000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30193000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー５Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ３階フロア: accept_request3
+          ４階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー１Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          ２階フロア: accept_request1
+          ３階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー３Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#シアターロビー１・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30190000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30191000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アップタウン・黒の聖堂入場ポータル
+   - action: routine
+       type: question
+       question: 黒の聖堂
+        options:
+          黒の聖堂に入る: accept_request
+          ともしびの聖堂に入る: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30121000
+        x: 10
+        y: 22
+        dir: 4
+  accept_request2
+    - action: set_var
+        name: candlechurch
+        value: 1
+    - action: teleport
+        map_id: 30120001
+        x: 11
+        y: 21
+        dir: 4
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー２Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ３階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#アップタウン・白の聖堂入場ポータル
+   - action: routine
+       type: question
+       question: 白の聖堂
+        options:
+          白の聖堂に入る: accept_request
+          ともしびの聖堂に入る: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30120000
+        x: 10
+        y: 22
+        dir: 4
+  accept_request2
+    - action: set_var
+        name: candlechurch
+        value: 0
+    - action: teleport
+        map_id: 30120001
+        x: 11
+        y: 21
+        dir: 4
+event_progresses:
+  entrypoint:
+#シアターロビー３・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30194000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30195000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#ブラフスキーの家・出口ポータル
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: dominionnight0
+          1: dominionnight1
+  dominionnight0
+    - action: teleport
+        map_id: 12020000
+        x: 182
+        y: 47
+        dir: 0
+  dominionnight1
+    - action: teleport
+        map_id: 12020001
+        x: 182
+        y: 47
+        dir: 0
+event_progresses:
+  entrypoint:
+#大陸の洞窟Ｂ５Ｆ・案内看板
+event_progresses:
+  entrypoint:
+#エレベータールーム内ポータル
+event_progresses:
+  entrypoint:
+# 氷結の坑道Ｂ３Ｆ・西側奥の部屋行きポータル
+    - action: teleport
+        map_id: 20012000
+        x: 58
+        y: 66
+        dir: 90
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 1
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 2
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#魔法ギルド総本山ロビー・ノーザンプロムナードに戻るポータル
+    - action: routine
+        type: variable
+        var: magicguild
+        options:
+          0: magicguild0
+          1: magicguild1
+          2: magicguild2
+          3: magicguild3
+          4: magicguild4
+  magicguild0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild1
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild2
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 66
+        dir: 180
+  magicguild3
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 78
+        dir: 0
+  magicguild4
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 78
+        dir: 0
+event_progresses:
+  entrypoint:
+# ノーザン宮殿秘密通路・ノーザン市民街行きポータル
+    - action: teleport
+        map_id: 20210000
+        x: 148
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#魔法ギルド総本山ロビー・大導師・総本山・隠し部屋
+   - action: routine
+       type: question
+       question: どこの部屋に行きますか？
+        options:
+          大導師の部屋: accept_request1
+          総本山の部屋: accept_request2
+          隠し部屋: accept_request3
+          やめる: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30164000
+        x: 9
+        y: 17
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30165000
+        x: 2
+        y: 7
+        dir: 180
+  accept_request3
+    - action: teleport
+        map_id: 30165001
+        x: 2
+        y: 6
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 3
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 4
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#マイマイ島→バオバブの森
+    - action: set_var
+        name: cloudforest
+        value: 0
+    - action: teleport
+        map_id: 10059100
+        x: 88
+        y: 158
+        dir: 315
+event_progresses:
+  entrypoint:
+#マイマイ島　飛空庭付近ポータル
+event_progresses:
+  entrypoint:
+#Ｄ－サウスダンジョンＢ３Ｆ（南側右ポータル）
+    - action: set_var
+        name: dsouth3f
+        value: 1
+    - action: teleport
+        map_id: 20023001
+        x: 129
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#Ｄ－マルクトの船着き場・南側ポータル
+    - action: routine
+        type: variable
+        var: dsouth3f
+        options:
+          0: dsouth3f0
+          1: dsouth3f1
+  dsouth3f0
+    - action: teleport
+        map_id: 20020003
+        x: 101
+        y: 249
+        dir: 180
+  dsouth3f1
+    - action: set_var
+        name: dsouth3f
+        value: 0
+    - action: teleport
+        map_id: 20020003
+        x: 153
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#サウスダンジョンＢ１Ｆ・南側右ポータル
+    - action: routine
+        type: variable
+        var: indimentionsouth
+        options:
+          0: indimentionsouth0
+          1: indimentionsouth1
+  indimentionsouth0
+    - action: teleport
+        map_id: 10066000
+        x: 199
+        y: 125
+        dir: 90
+  indimentionsouth1
+    - action: set_var
+        name: indimentionsouth
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 199
+        y: 82
+        dir: 90
+event_progresses:
+  entrypoint:
+#マルクトの船着場・トンカ行き飛空庭ポータル
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 4
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 4
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 4
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+#天まで続く塔の島（エミル界）　門付近ポータル
+   - action: routine
+       type: question
+       question: 塔内に入りますか？
+        options:
+          入らない: hold_request
+          入る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002089
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002089
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 20170000
+        x: 31
+        y: 60
+        dir: 180
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（エミル界）　南側ポータル
+event_progresses:
+  entrypoint:
+event_progresses:
+  entrypoint:
+# ヘルサバーク・難民テント入場ポータル
+    - action: set_var
+        name: domitent
+        value: 1
+    - action: teleport
+        map_id: 32200000
+        x: 2
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#スノップ雪原→氷結の坑道
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション氷結の坑道に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20012005
+        x: 11
+        y: 67
+        dir: 180
+  false
+    - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0
+event_progresses:
+  entrypoint:
+#軍艦島　モーグシティ行きポータル
+event_progresses:
+  entrypoint:
+#軍艦島・廃炭鉱入場ポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション廃炭鉱に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20030000
+        x: 63
+        y: 11
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20032003
+        x: 65
+        y: 19
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20030000
+        x: 63
+        y: 11
+        dir: 0
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大工場前ポータル（右）
+    - action: set_var
+        name: bigfac
+        value: 1
+    - action: teleport
+        map_id: 30081000
+        x: 10
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階→サウスダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションサウスダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20020000
+        x: 153
+        y: 249
+        dir: 180
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20022001
+        x: 126
+        y: 51
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20020000
+        x: 153
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大工場前ポータル（左）
+    - action: set_var
+        name: bigfac
+        value: 0
+    - action: teleport
+        map_id: 30081000
+        x: 10
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階→サウスダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションサウスダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 4
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: set_var
+        name: indimentionsouth
+        value: 1
+    - action: teleport
+        map_id: 20022001
+        x: 126
+        y: 51
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#大タタラ場・アイアンシティ下層階へ戻るポータル
+    - action: routine
+        type: variable
+        var: ootatara
+        options:
+          0: ootatara0
+          1: ootatara1
+  ootatara0
+    - action: teleport
+        map_id: 10066000
+        x: 155
+        y: 60
+        dir: 0
+  ootatara1
+    - action: set_var
+        name: ootatara
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 175
+        y: 60
+        dir: 0
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大タタラ場前ポータル（右）
+    - action: set_var
+        name: ootatara
+        value: 1
+    - action: teleport
+        map_id: 30082000
+        x: 10
+        y: 22
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大タタラ場前ポータル（左）
+    - action: set_var
+        name: ootatara
+        value: 0
+    - action: teleport
+        map_id: 30082000
+        x: 10
+        y: 22
+        dir: 180
+event_progresses:
+  entrypoint:
+#大工場ロビー・アイアンシティ下層階へ戻るポータル
+    - action: routine
+        type: variable
+        var: bigfac
+        options:
+          0: bigfac0
+          1: bigfac1
+  bigfac0
+    - action: teleport
+        map_id: 10066000
+        x: 175
+        y: 147
+        dir: 0
+  bigfac1
+    - action: set_var
+        name: bigfac
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 155
+        y: 147
+        dir: 0
+event_progresses:
+  entrypoint:
+# バオバブの森・森のギルド員の山小屋
+   - action: routine
+       type: question
+       question: もう寝ますか？
+        options:
+          まだ寝ない: hold_request
+          寝る: accept_request
+  hold_request
+  accept_request
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059100
+        x: 234
+        y: 36
+        dir: 0
+event_progresses:
+  entrypoint:
+#バオバブの森・神託の洞穴入場ポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション神託の風穴に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20072000
+        x: 103
+        y: 58
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20074001
+        x: 73
+        y: 125
+        dir: 180
+  false
+    - action: teleport
+        map_id: 20072000
+        x: 103
+        y: 58
+        dir: 0
+event_progresses:
+  entrypoint:
+# イーストダンジョン・南東ポータル（隔離地帯）
+    - action: routine
+        type: item
+         item: 10013002
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 『ヒスイ』が光り輝く！
+        character_image: 00000000
+    - action: take_item
+        id: 10013002
+        count: 1
+    - action: teleport
+        map_id: 20092000
+        x: 170
+        y: 34
+        dir: 0
+  false
+    - action: dialog
+        title: 
+        content: 資格なき者、立ち去りなさい……。
+        character_image: 00000000
+    - action: teleport
+        map_id: 20090000
+        x: 35
+        y: 68
+        dir: 180
+event_progresses:
+  entrypoint:
+#天まで続く塔の島　飛空庭係員付近のポータル
+event_progresses:
+  entrypoint:
+#カーマイン海岸　カーマイン砂漠入口
+    - action: set_var
+        name: daydesert
+        value: 0
+    - action: set_var
+        name: nightdesert
+        value: 0
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          カーマイン砂漠に行く: noon
+          カーマイン砂漠（夜）に行く: night
+          行かない: none
+  noon
+    - action: teleport
+        map_id: 10100007
+        x: 128
+        y: 253
+        dir: 180
+  night
+    - action: teleport
+        map_id: 10100016
+        x: 128
+        y: 253
+        dir: 180
+  none
+event_progresses:
+  entrypoint:
+#難民テント・出口ポータル
+    - action: routine
+        type: variable
+        var: domitent
+        options:
+          0: domiisland
+          1: domidesert
+  domiisland
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request
+          1: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 12035000
+        x: 46
+        y: 172
+        dir: 270
+  accept_request2
+    - action: teleport
+        map_id: 12035001
+        x: 46
+        y: 172
+        dir: 270
+  domidesert
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request3
+          1: accept_request4
+  accept_request3
+    - action: teleport
+        map_id: 12020000
+        x: 110
+        y: 76
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 12020001
+        x: 110
+        y: 76
+        dir: 0
+event_progresses:
+  entrypoint:
+#ウォーターレイアー　水先案内人付近ポータル
+event_progresses:
+  entrypoint:
+#ノーザン地下・氷洞、世界樹へ続く道
+    - action: play_effect
+        id: 10
+        effect: 9571
+    - action: wait
+        time: 990
+    - action: dialog
+        title: 
+        content: ……？？$R何か見えない壁がある……。$R$R……通れないようだ。
+        character_image: 00000000
+    - action: wait
+        time: 990
+    - action: dialog
+        title: 
+        content: ……目を凝らすと$R這って通れそうな$R壁のすき間が見える気がする……。$R
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 先へ進みますか？
+        options:
+          進まない: hold_request
+          進む: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 20212000
+        x: 102
+        y: 125
+        dir: 90
+event_progresses:
+  entrypoint:
+#くじら岩・口内淵に続くロープ
+    - action: dialog
+        title: 
+        content: 上にあるクジラの口まで$Rロープが伸びている…$R$R伝って登れば、$Rクジラの口の中に入れそうだ。
+        character_image: 10001723
+   - action: routine
+       type: question
+       question: 登る？
+        options:
+          登らない: hold_request
+          登ってみる: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 21190000
+        x: 32
+        y: 185
+        dir: 180
+event_progresses:
+  entrypoint:
+#脱衣所（番台）・脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+  ecospaundress1
+    - action: teleport
+        map_id: 31304000
+        x: 83
+        y: 16
+        dir: 90
+event_progresses:
+  entrypoint:
+#脱衣所（番台）・脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+  ecospaundress1
+    - action: teleport
+        map_id: 31304000
+        x: 89
+        y: 47
+        dir: 180
+event_progresses:
+  entrypoint:
+#脱衣所（番台）→脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+    - action: teleport
+        map_id: 31304000
+        x: 29
+        y: 71
+        dir: 180
+  ecospaundress1
+event_progresses:
+  entrypoint:
+#脱衣所（番台）→脱衣所（女性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+    - action: teleport
+        map_id: 31304000
+        x: 12
+        y: 16
+        dir: 270
+  ecospaundress1
+event_progresses:
+  entrypoint:
+#イストー岬の村・ギルド商店前ポータル
+    - action: teleport
+        map_id: 30060006
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#イストー岬の村・鑑定屋前ポータル
+    - action: teleport
+        map_id: 30011005
+        x: 3
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（南東）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 196
+        y: 163
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（北東）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 188
+        y: 107
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（北西）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 68
+        y: 107
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#カーマインブリックシティ・井戸の中（南西）
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10055000
+        x: 60
+        y: 163
+        dir: 270
+  hold_request
+event_progresses:
+  entrypoint:
+#モーグシティ　密航路の親父付近のポータル
+event_progresses:
+  entrypoint:
+# モーグシティ・軍艦島行き
+event_progresses:
+  entrypoint:
+# モーグシティ・光の塔入口
+event_progresses:
+  entrypoint:
+# マーチャントギルド総本山→モーグシティ
+    - action: play_motion
+        motion: 159
+        ids:
+         - 11000828
+         - 11000829
+       loop: True
+    - action: wait
+        time: 980
+    - action: dialog
+        title: 
+        content: ありがとうございました！
+        character_image: 00000000
+    - action: teleport
+        map_id: 10060000
+        x: 82
+        y: 153
+        dir: 270
+event_progresses:
+  entrypoint:
+#ノース中央山脈（北側）→ノーザンダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションノーザンダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20014000
+        x: 243
+        y: 12
+        dir: 45
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20014001
+        x: 14
+        y: 160
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20014000
+        x: 243
+        y: 12
+        dir: 45
+event_progresses:
+  entrypoint:
+#トンカ島・トンカ商店（街の南側）入場ポータル
+    - action: set_var
+        name: tonkashop
+        value: 1
+    - action: teleport
+        map_id: 30060007
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#トンカ島・アイアンサウス行き飛空庭ポータル
+event_progresses:
+  entrypoint:
+#トンカ商店・出口ポータル
+    - action: routine
+        type: variable
+        var: tonkashop
+        options:
+          0: tonkashop0
+          1: tonkashop1
+  tonkashop0
+    - action: teleport
+        map_id: 10062000
+        x: 124
+        y: 91
+        dir: 135
+  tonkashop1
+    - action: set_var
+        name: tonkashop
+        value: 0
+    - action: teleport
+        map_id: 10062000
+        x: 118
+        y: 185
+        dir: 90
+event_progresses:
+  entrypoint:
+#大海の孤島　謎の装置付近ポータル
+    - action: dialog
+        title: 
+        content: ――システムエラー$R――システムエラー$R$R――転送装置ヲ起動シマス
+        character_image: 11000000
+#effect id=10 effect=5212
+    - action: wait
+        time: 1485
+    - action: teleport
+        map_id: 11073000
+        x: 251
+        y: 11
+        dir: 0
+event_progresses:
+  entrypoint:
+# 軍艦島（ドミニオン界）・難民テントポータル
+    - action: set_var
+        name: domitent
+        value: 0
+    - action: teleport
+        map_id: 32200000
+        x: 2
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#軍艦島（ドミニオン界）　飛空庭係員付近ポータル
+event_progresses:
+  entrypoint:
+# 王の寝室・暖炉の隠し通路
+   - action: routine
+       type: question
+       question: 暖炉に隠し通路がある！
+        options:
+          行ってみる！: accept_request
+          危険なことはしない: hold_request
+  accept_request
+    - action: play_se
+        id: 2444
+    - action: teleport
+        map_id: 10069000
+        x: 137
+        y: 144
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# アンデッドの城・牢屋入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20105000
+        x: 3
+        y: 32
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・礼拝堂2Ｆ入口
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20123000
+        x: 16
+        y: 1
+        dir: 0
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・聖者の間入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20125000
+        x: 24
+        y: 46
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+# アンデッドの城・王の寝室行き扉
+    - action: dialog
+        title: 
+        content: 扉はかたく閉ざされている……。
+        character_image: 00000000
+event_progresses:
+  entrypoint:
+# アンデッドの城・アカズの間入場ポータル（封印）
+    - action: routine
+        type: item
+         item: 10024900
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 紋章紙を使いますか？
+        options:
+          使う: accept_request
+          使わない: hold_request
+  accept_request
+    - action: take_item
+        id: 10024900
+        count: 1
+    - action: dialog
+        title: 
+        content: 『紋章紙』を燃やした。
+        character_image: 11000000
+    - action: teleport
+        map_id: 20120000
+        x: 8
+        y: 26
+        dir: 180
+  hold_request
+  false
+    - action: dialog
+        title: 
+        content: 封印されている……。
+        character_image: 00000000
+    - action: give_item
+        id: 10024900
+        count: 1
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ40Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ16Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ24Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ37Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ32Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ17Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ34Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ20Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ13Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ1Ｆ→ステップ砂漠
+   - action: routine
+       type: question
+       question: 戻りますか？
+        options:
+            はい: map=10042000 x=80 y=134 dir=0
+           いいえ: RETURN
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ39Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ12Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ3Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ14Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ8Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ21Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ11Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ10Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ2Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ19Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ25Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ22Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ28Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ18Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ29Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ5Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ35Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ4Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ31Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ9Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ15Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ27Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ6Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ24Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ36Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ33Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ38Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ30Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ7Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+#無限回廊Ｂ26Ｆ→ステップ砂漠
+event_progresses:
+  entrypoint:
+# 光の塔下層・モーグシティ行き
+event_progresses:
+  entrypoint:
+#東アクロニア海岸・大陸の洞窟行きポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション大陸の洞窟に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20000000
+        x: 63
+        y: 23
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20004003
+        x: 56
+        y: 18
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20000000
+        x: 63
+        y: 23
+        dir: 0
+event_progresses:
+  entrypoint:
+#フシギ団本部　奥の階段
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          中立のシマに行く: accept_request
+          聖女のシマに行く: accept_request2
+          行かない: hold_request
+  accept_request
+    - action: teleport
+        map_id: 10054100
+        x: 123
+        y: 78
+        dir: 90
+  accept_request2
+    - action: teleport
+        map_id: 10054000
+        x: 71
+        y: 140
+        dir: 90
+  hold_request
+event_progresses:
+  entrypoint:
+#天まで続く塔の島（タイタニア）　水先案内人付近ポータル
+event_progresses:
+  entrypoint:
+#ファーイースト商店出口
+    - action: routine
+        type: variable
+        var: eastshop
+        options:
+          0: eastshop0
+          1: eastshop1
+  eastshop0
+    - action: teleport
+        map_id: 10018100
+        x: 221
+        y: 67
+        dir: 45
+  eastshop1
+    - action: set_var
+        name: eastshop
+        value: 0
+    - action: teleport
+        map_id: 10057000
+        x: 123
+        y: 120
+        dir: 0
+event_progresses:
+  entrypoint:
+#ファーイーストシティ→イーストダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションイーストダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20090000
+        x: 112
+        y: 253
+        dir: 180
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20092002
+        x: 168
+        y: 34
+        dir: 90
+  false
+    - action: teleport
+        map_id: 20090000
+        x: 112
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイーストシティ・ファーイースト商店前（街の南側）ポータル
+    - action: set_var
+        name: eastshop
+        value: 1
+    - action: teleport
+        map_id: 30060006
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイーストシティ・鑑定屋前ポータル
+    - action: set_var
+        name: eastkantei
+        value: 1
+    - action: teleport
+        map_id: 30011005
+        x: 3
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#ファーイースト鑑定屋出口
+    - action: routine
+        type: variable
+        var: eastkantei
+        options:
+          0: eastkantei0
+          1: eastkantei1
+  eastkantei0
+    - action: teleport
+        map_id: 10018100
+        x: 226
+        y: 72
+        dir: 45
+  eastkantei1
+    - action: set_var
+        name: eastkantei
+        value: 0
+    - action: teleport
+        map_id: 10057000
+        x: 128
+        y: 100
+        dir: 45
+event_progresses:
+  entrypoint:
+#シアターロビー４・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30196000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30197000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー４Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ３階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+event_progresses:
+  entrypoint:
+#ともしびの聖堂・出口ポータル
+    - action: routine
+        type: variable
+        var: candlechurch
+        options:
+          0: candlechurch0
+          1: candlechurch1
+  candlechurch0
+    - action: teleport
+        map_id: 10023000
+        x: 164
+        y: 128
+        dir: 90
+  candlechurch1
+    - action: set_var
+        name: candlechurch
+        value: 0
+    - action: teleport
+        map_id: 10023000
+        x: 91
+        y: 128
+        dir: 270
+event_progresses:
+  entrypoint:
+#シアターロビー２・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30192000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30193000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー５Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ３階フロア: accept_request3
+          ４階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー１Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          ２階フロア: accept_request1
+          ３階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー３Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ２階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30111000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#シアターロビー１・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30190000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30191000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アップタウン・黒の聖堂入場ポータル
+   - action: routine
+       type: question
+       question: 黒の聖堂
+        options:
+          黒の聖堂に入る: accept_request
+          ともしびの聖堂に入る: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30121000
+        x: 10
+        y: 22
+        dir: 4
+  accept_request2
+    - action: set_var
+        name: candlechurch
+        value: 1
+    - action: teleport
+        map_id: 30120001
+        x: 11
+        y: 21
+        dir: 4
+event_progresses:
+  entrypoint:
+# ギルド元宮ロビー２Ｆ・中央ポータル
+   - action: routine
+       type: question
+       question: どの階に行く？
+        options:
+          １階フロア: accept_request1
+          ３階フロア: accept_request2
+          ４階フロア: accept_request3
+          ５階フロア: accept_request4
+          やめておく: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30110000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request2
+    - action: teleport
+        map_id: 30112000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request3
+    - action: teleport
+        map_id: 30113000
+        x: 13
+        y: 14
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 30114000
+        x: 13
+        y: 14
+        dir: 0
+  hold_request
+event_progresses:
+  entrypoint:
+#アップタウン・白の聖堂入場ポータル
+   - action: routine
+       type: question
+       question: 白の聖堂
+        options:
+          白の聖堂に入る: accept_request
+          ともしびの聖堂に入る: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30120000
+        x: 10
+        y: 22
+        dir: 4
+  accept_request2
+    - action: set_var
+        name: candlechurch
+        value: 0
+    - action: teleport
+        map_id: 30120001
+        x: 11
+        y: 21
+        dir: 4
+event_progresses:
+  entrypoint:
+#シアターロビー３・シアタースクリーン入場ポータル
+   - action: routine
+       type: question
+       question: どっちに行く？
+        options:
+          通常時: accept_request
+          上映中: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 30194000
+        x: 11
+        y: 21
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30195000
+        x: 11
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#ブラフスキーの家・出口ポータル
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: dominionnight0
+          1: dominionnight1
+  dominionnight0
+    - action: teleport
+        map_id: 12020000
+        x: 182
+        y: 47
+        dir: 0
+  dominionnight1
+    - action: teleport
+        map_id: 12020001
+        x: 182
+        y: 47
+        dir: 0
+event_progresses:
+  entrypoint:
+#大陸の洞窟Ｂ５Ｆ・案内看板
+event_progresses:
+  entrypoint:
+#エレベータールーム内ポータル
+event_progresses:
+  entrypoint:
+# 氷結の坑道Ｂ３Ｆ・西側奥の部屋行きポータル
+    - action: teleport
+        map_id: 20012000
+        x: 58
+        y: 66
+        dir: 90
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 1
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 2
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#魔法ギルド総本山ロビー・ノーザンプロムナードに戻るポータル
+    - action: routine
+        type: variable
+        var: magicguild
+        options:
+          0: magicguild0
+          1: magicguild1
+          2: magicguild2
+          3: magicguild3
+          4: magicguild4
+  magicguild0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild1
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild2
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 66
+        dir: 180
+  magicguild3
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 78
+        dir: 0
+  magicguild4
+    - action: set_var
+        name: magicguild
+        value: 0
+    - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 78
+        dir: 0
+event_progresses:
+  entrypoint:
+# ノーザン宮殿秘密通路・ノーザン市民街行きポータル
+    - action: teleport
+        map_id: 20210000
+        x: 148
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#魔法ギルド総本山ロビー・大導師・総本山・隠し部屋
+   - action: routine
+       type: question
+       question: どこの部屋に行きますか？
+        options:
+          大導師の部屋: accept_request1
+          総本山の部屋: accept_request2
+          隠し部屋: accept_request3
+          やめる: hold_request
+  accept_request1
+    - action: teleport
+        map_id: 30164000
+        x: 9
+        y: 17
+        dir: 180
+  accept_request2
+    - action: teleport
+        map_id: 30165000
+        x: 2
+        y: 7
+        dir: 180
+  accept_request3
+    - action: teleport
+        map_id: 30165001
+        x: 2
+        y: 6
+        dir: 180
+  hold_request
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 3
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#ノーザンプロムナード・魔法ギルド総本山北西ポータル
+    - action: set_var
+        name: magicguild
+        value: 4
+    - action: teleport
+        map_id: 30163000
+        x: 12
+        y: 24
+        dir: 180
+event_progresses:
+  entrypoint:
+#マイマイ島→バオバブの森
+    - action: set_var
+        name: cloudforest
+        value: 0
+    - action: teleport
+        map_id: 10059100
+        x: 88
+        y: 158
+        dir: 315
+event_progresses:
+  entrypoint:
+#マイマイ島　飛空庭付近ポータル
+event_progresses:
+  entrypoint:
+#Ｄ－サウスダンジョンＢ３Ｆ（南側右ポータル）
+    - action: set_var
+        name: dsouth3f
+        value: 1
+    - action: teleport
+        map_id: 20023001
+        x: 129
+        y: 253
+        dir: 180
+event_progresses:
+  entrypoint:
+#Ｄ－マルクトの船着き場・南側ポータル
+    - action: routine
+        type: variable
+        var: dsouth3f
+        options:
+          0: dsouth3f0
+          1: dsouth3f1
+  dsouth3f0
+    - action: teleport
+        map_id: 20020003
+        x: 101
+        y: 249
+        dir: 180
+  dsouth3f1
+    - action: set_var
+        name: dsouth3f
+        value: 0
+    - action: teleport
+        map_id: 20020003
+        x: 153
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#サウスダンジョンＢ１Ｆ・南側右ポータル
+    - action: routine
+        type: variable
+        var: indimentionsouth
+        options:
+          0: indimentionsouth0
+          1: indimentionsouth1
+  indimentionsouth0
+    - action: teleport
+        map_id: 10066000
+        x: 199
+        y: 125
+        dir: 90
+  indimentionsouth1
+    - action: set_var
+        name: indimentionsouth
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 199
+        y: 82
+        dir: 90
+event_progresses:
+  entrypoint:
+#マルクトの船着場・トンカ行き飛空庭ポータル
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 0
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 0
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 0
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+   - action: routine
+       type: question
+       question: エル・シエル転送テレポート
+        options:
+          上層階ブロックへ移動する: up
+          下層階ブロックへ移動する: down
+          やめる: none
+  up
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: upnouth
+          1: upsouth
+          2: back
+          3: none
+  upnouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 35
+        dir: 0
+  upsouth
+    - action: teleport
+        map_id: 11023000
+        x: 127
+        y: 220
+        dir: 4
+  down
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: down9
+          1: down7
+          2: down3
+          3: down1
+          4: back
+          5: none
+  down9
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 28
+        dir: 0
+  down7
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 28
+        dir: 0
+  down3
+    - action: teleport
+        map_id: 11024000
+        x: 145
+        y: 227
+        dir: 4
+  down1
+    - action: teleport
+        map_id: 11024000
+        x: 110
+        y: 227
+        dir: 4
+  back
+    - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: up
+          1: down
+          2: none
+  none
+event_progresses:
+  entrypoint:
+#天まで続く塔の島（エミル界）　門付近ポータル
+   - action: routine
+       type: question
+       question: 塔内に入りますか？
+        options:
+          入らない: hold_request
+          入る: accept_request
+  hold_request
+  accept_request
+    - action: play_effect
+        id: 12002089
+        effect: 5306
+    - action: play_se
+        id: 2407
+    - action: wait
+        time: 990
+    - action: play_motion
+        motion: 621
+        ids:
+         - 12002089
+    - action: wait
+        time: 3960
+    - action: teleport
+        map_id: 20170000
+        x: 31
+        y: 60
+        dir: 180
+event_progresses:
+  entrypoint:
+# 天まで続く塔の島（エミル界）　南側ポータル
+event_progresses:
+  entrypoint:
+event_progresses:
+  entrypoint:
+# ヘルサバーク・難民テント入場ポータル
+    - action: set_var
+        name: domitent
+        value: 1
+    - action: teleport
+        map_id: 32200000
+        x: 2
+        y: 5
+        dir: 180
+event_progresses:
+  entrypoint:
+#スノップ雪原→氷結の坑道
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション氷結の坑道に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20012005
+        x: 11
+        y: 67
+        dir: 180
+  false
+    - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0
+event_progresses:
+  entrypoint:
+#軍艦島　モーグシティ行きポータル
+event_progresses:
+  entrypoint:
+#軍艦島・廃炭鉱入場ポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション廃炭鉱に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20030000
+        x: 63
+        y: 11
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20032003
+        x: 65
+        y: 19
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20030000
+        x: 63
+        y: 11
+        dir: 0
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大工場前ポータル（右）
+    - action: set_var
+        name: bigfac
+        value: 1
+    - action: teleport
+        map_id: 30081000
+        x: 10
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階→サウスダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションサウスダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20020000
+        x: 153
+        y: 249
+        dir: 180
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20022001
+        x: 126
+        y: 51
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20020000
+        x: 153
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大工場前ポータル（左）
+    - action: set_var
+        name: bigfac
+        value: 0
+    - action: teleport
+        map_id: 30081000
+        x: 10
+        y: 21
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階→サウスダンジョン
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンションサウスダンジョンに$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 4
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: set_var
+        name: indimentionsouth
+        value: 1
+    - action: teleport
+        map_id: 20022001
+        x: 126
+        y: 51
+        dir: 0
+  false
+    - action: teleport
+        map_id: 20020000
+        x: 102
+        y: 249
+        dir: 180
+event_progresses:
+  entrypoint:
+#大タタラ場・アイアンシティ下層階へ戻るポータル
+    - action: routine
+        type: variable
+        var: ootatara
+        options:
+          0: ootatara0
+          1: ootatara1
+  ootatara0
+    - action: teleport
+        map_id: 10066000
+        x: 155
+        y: 60
+        dir: 0
+  ootatara1
+    - action: set_var
+        name: ootatara
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 175
+        y: 60
+        dir: 0
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大タタラ場前ポータル（右）
+    - action: set_var
+        name: ootatara
+        value: 1
+    - action: teleport
+        map_id: 30082000
+        x: 10
+        y: 22
+        dir: 180
+event_progresses:
+  entrypoint:
+#アイアンシティ下層階・大タタラ場前ポータル（左）
+    - action: set_var
+        name: ootatara
+        value: 0
+    - action: teleport
+        map_id: 30082000
+        x: 10
+        y: 22
+        dir: 180
+event_progresses:
+  entrypoint:
+#大工場ロビー・アイアンシティ下層階へ戻るポータル
+    - action: routine
+        type: variable
+        var: bigfac
+        options:
+          0: bigfac0
+          1: bigfac1
+  bigfac0
+    - action: teleport
+        map_id: 10066000
+        x: 175
+        y: 147
+        dir: 0
+  bigfac1
+    - action: set_var
+        name: bigfac
+        value: 0
+    - action: teleport
+        map_id: 10066000
+        x: 155
+        y: 147
+        dir: 0
+event_progresses:
+  entrypoint:
+# バオバブの森・森のギルド員の山小屋
+   - action: routine
+       type: question
+       question: もう寝ますか？
+        options:
+          まだ寝ない: hold_request
+          寝る: accept_request
+  hold_request
+  accept_request
+    - action: control_screen
+       enable: 1
+       color: 0
+    - action: stop_bgm
+    - action: wait
+        time: 80
+    - action: play_se
+        id: 4001
+    - action: wait
+        time: 2980
+    - action: teleport
+        map_id: 10059100
+        x: 234
+        y: 36
+        dir: 0
+event_progresses:
+  entrypoint:
+#バオバブの森・神託の洞穴入場ポータル
+    - action: routine
+        type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション神託の風穴に$R入ることができそうだ。
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request
+    - action: teleport
+        map_id: 20072000
+        x: 103
+        y: 58
+        dir: 0
+  accept_request
+    - action: take_item
+        id: 10014651
+        count: 1
+    - action: teleport
+        map_id: 20074001
+        x: 73
+        y: 125
+        dir: 180
+  false
+    - action: teleport
+        map_id: 20072000
+        x: 103
+        y: 58
+        dir: 0
+event_progresses:
+  entrypoint:
+# イーストダンジョン・南東ポータル（隔離地帯）
+    - action: routine
+        type: item
+         item: 10013002
+         count: 1
+         true: true
+         false: false
+  true
+    - action: dialog
+        title: 
+        content: 『ヒスイ』が光り輝く！
+        character_image: 00000000
+    - action: take_item
+        id: 10013002
+        count: 1
+    - action: teleport
+        map_id: 20092000
+        x: 170
+        y: 34
+        dir: 0
+  false
+    - action: dialog
+        title: 
+        content: 資格なき者、立ち去りなさい……。
+        character_image: 00000000
+    - action: teleport
+        map_id: 20090000
+        x: 35
+        y: 68
+        dir: 180
+event_progresses:
+  entrypoint:
+#天まで続く塔の島　飛空庭係員付近のポータル
+event_progresses:
+  entrypoint:
+#カーマイン海岸　カーマイン砂漠入口
+    - action: set_var
+        name: daydesert
+        value: 0
+    - action: set_var
+        name: nightdesert
+        value: 0
+   - action: routine
+       type: question
+       question: どうする？
+        options:
+          カーマイン砂漠に行く: noon
+          カーマイン砂漠（夜）に行く: night
+          行かない: none
+  noon
+    - action: teleport
+        map_id: 10100007
+        x: 128
+        y: 253
+        dir: 180
+  night
+    - action: teleport
+        map_id: 10100016
+        x: 128
+        y: 253
+        dir: 180
+  none
+event_progresses:
+  entrypoint:
+#難民テント・出口ポータル
+    - action: routine
+        type: variable
+        var: domitent
+        options:
+          0: domiisland
+          1: domidesert
+  domiisland
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request
+          1: accept_request2
+  accept_request
+    - action: teleport
+        map_id: 12035000
+        x: 46
+        y: 172
+        dir: 270
+  accept_request2
+    - action: teleport
+        map_id: 12035001
+        x: 46
+        y: 172
+        dir: 270
+  domidesert
+    - action: routine
+        type: variable
+        var: dominionnight
+        options:
+          0: accept_request3
+          1: accept_request4
+  accept_request3
+    - action: teleport
+        map_id: 12020000
+        x: 110
+        y: 76
+        dir: 0
+  accept_request4
+    - action: teleport
+        map_id: 12020001
+        x: 110
+        y: 76
+        dir: 0
+event_progresses:
+  entrypoint:
+#ウォーターレイアー　水先案内人付近ポータル
+event_progresses:
+  entrypoint:
+#ノーザン地下・氷洞、世界樹へ続く道
+    - action: play_effect
+        id: 10
+        effect: 9571
+    - action: wait
+        time: 990
+    - action: dialog
+        title: 
+        content: ……？？$R何か見えない壁がある……。$R$R……通れないようだ。
+        character_image: 00000000
+    - action: wait
+        time: 990
+    - action: dialog
+        title: 
+        content: ……目を凝らすと$R這って通れそうな$R壁のすき間が見える気がする……。$R
+        character_image: 00000000
+   - action: routine
+       type: question
+       question: 先へ進みますか？
+        options:
+          進まない: hold_request
+          進む: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 20212000
+        x: 102
+        y: 125
+        dir: 90
+event_progresses:
+  entrypoint:
+#くじら岩・口内淵に続くロープ
+    - action: dialog
+        title: 
+        content: 上にあるクジラの口まで$Rロープが伸びている…$R$R伝って登れば、$Rクジラの口の中に入れそうだ。
+        character_image: 10001723
+   - action: routine
+       type: question
+       question: 登る？
+        options:
+          登らない: hold_request
+          登ってみる: accept_request
+  hold_request
+  accept_request
+    - action: teleport
+        map_id: 21190000
+        x: 32
+        y: 185
+        dir: 180
+event_progresses:
+  entrypoint:
+#脱衣所（番台）・脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+  ecospaundress1
+    - action: teleport
+        map_id: 31304000
+        x: 83
+        y: 16
+        dir: 90
+event_progresses:
+  entrypoint:
+#脱衣所（番台）・脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+  ecospaundress1
+    - action: teleport
+        map_id: 31304000
+        x: 89
+        y: 47
+        dir: 180
+event_progresses:
+  entrypoint:
+#脱衣所（番台）→脱衣所（男性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+    - action: teleport
+        map_id: 31304000
+        x: 29
+        y: 71
+        dir: 180
+  ecospaundress1
+event_progresses:
+  entrypoint:
+#脱衣所（番台）→脱衣所（女性）行きポータル
+    - action: set_var
+        name: ecospaundress
+        value: CHAR_SEX
+    - action: routine
+        type: variable
+        var: ecospaundress
+        options:
+          0: ecospaundress0
+          1: ecospaundress1
+  ecospaundress0
+    - action: teleport
+        map_id: 31304000
+        x: 12
+        y: 16
+        dir: 270
+  ecospaundress1
+event_progresses:
+  entrypoint:
+#イストー岬の村・ギルド商店前ポータル
+    - action: teleport
+        map_id: 30060006
+        x: 4
+        y: 7
+        dir: 180
+event_progresses:
+  entrypoint:
+#イストー岬の村・鑑定屋前ポータル
+    - action: teleport
+        map_id: 30011005
+        x: 3
+        y: 5
+        dir: 180

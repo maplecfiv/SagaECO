@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ともしびの聖堂・出口ポータル
+      - action: routine
+        type: variable
+        var: candlechurch
+        options:
+          0: candlechurch0
+          1: candlechurch1
+  candlechurch0:
+    actions:
+      - action: teleport
+        map_id: 10023000
+        x: 164
+        y: 128
+        dir: 90
+  candlechurch1:
+    actions:
+      - action: set_var
+        name: candlechurch
+        value: 0
+      - action: teleport
+        map_id: 10023000
+        x: 91
+        y: 128
+        dir: 270

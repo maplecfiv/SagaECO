@@ -1,0 +1,30 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 光の塔下層・飛空庭係員
+      - action: routine
+        type: question
+        question: モーグシティ行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request:
+    actions:
+      - action: play_se
+        id: 2426
+      - action: dialog
+        title: 
+        content: モーグシティへ出発しまーす！
+        character_image: 00000000
+      - action: play_se
+        id: 2438
+#effect id=11000876 effect=8066
+      - action: wait
+        time: 1980
+      - action: teleport
+        map_id: 10060000
+        x: 42
+        y: 133
+        dir: 270
+  hold_request:
+    actions:

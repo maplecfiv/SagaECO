@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ギルド元宮ロビー２Ｆ・ギルド元宮ガイド
+      - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮２階になります。$R$P北はアーチャーマスター$R東はソードマンマスター$R南はスカウトマスター$R西はフェンサーマスターの$R部屋になっています。
+        character_image: 11000011

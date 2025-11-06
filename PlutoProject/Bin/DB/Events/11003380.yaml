@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザン宮殿秘密通路・コッソ
+      - action: dialog
+        title: コッソ
+        content: ここを抜ければノーザン市民街っす。$R$Rモンスター共がうろついてっから$R行くなら気を付けて行くっすよ！
+        character_image: 11003380

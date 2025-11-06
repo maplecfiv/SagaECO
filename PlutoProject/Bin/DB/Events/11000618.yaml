@@ -1,0 +1,37 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アップタウン・ギルド商人
+      - action: routine
+        type: question
+        question: 御用がおありですか？
+        options:
+            買い物をする: buy
+            物を売る: hop
+            銀行にお金を預ける: it
+            銀行からお金を引き出す: raw
+            倉庫を使う（無料）: ouse
+            『ジュエル・ゴールド』を取り扱う: jewel
+            何もしない: RETURN
+  buy:
+    actions:
+    - action: purchase_dialog
+       items: 
+         - id: 10164000
+         - id: 10026400
+         - id: 61010000
+         - id: 60040000
+         - id: 50070500
+         - id: 60030000
+         - id: 50020900
+         - id: 50000300
+         - id: 50001700
+         - id: 50010254
+         - id: 50010150
+         - id: 50061500
+         - id: 50070100
+  jewel:
+    actions:
+      - action: dialog
+        title: ギルド商人
+        content: 申し訳ありません。$R現在『ジュエル・ゴールド』の取り扱いを$R停止しております。

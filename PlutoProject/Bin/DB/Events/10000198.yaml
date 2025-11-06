@@ -1,0 +1,9 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 氷結の坑道Ｂ３Ｆ・西側奥の部屋行きポータル
+      - action: teleport
+        map_id: 20012000
+        x: 58
+        y: 66
+        dir: 90

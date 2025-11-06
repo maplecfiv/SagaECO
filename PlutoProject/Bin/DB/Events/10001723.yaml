@@ -1,0 +1,23 @@
+event_progresses:
+  entrypoint:
+    actions:
+#くじら岩・口内淵に続くロープ
+      - action: dialog
+        title: 
+        content: 上にあるクジラの口まで$Rロープが伸びている…$R$R伝って登れば、$Rクジラの口の中に入れそうだ。
+        character_image: 10001723
+      - action: routine
+        type: question
+        question: 登る？
+        options:
+          登らない: hold_request
+          登ってみる: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 21190000
+        x: 32
+        y: 185
+        dir: 180

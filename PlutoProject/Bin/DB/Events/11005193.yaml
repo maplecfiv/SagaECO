@@ -1,0 +1,10 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アップタウン・ThanksObject
+      - action: routine
+        type: question
+        question: 何をしますか？
+        options:
+          アイテムの購入: hop
+          特にない: RETURN

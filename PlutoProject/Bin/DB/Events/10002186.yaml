@@ -1,0 +1,9 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ノーザン宮殿秘密通路・ノーザン市民街行きポータル
+      - action: teleport
+        map_id: 20210000
+        x: 148
+        y: 253
+        dir: 180

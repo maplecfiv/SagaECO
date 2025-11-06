@@ -1,0 +1,45 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 軍艦島（ドミニオン界）・レジスタンス傭兵
+      - action: routine
+        type: question
+        question: ウェストフォートに行く？
+        options:
+          行かない: hold_request
+          行く: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: set_var
+        name: LEVEL20
+        value: CHAR_LEVEL
+      - action: dialog
+        title: レジスタンス傭兵
+        content: 最近、ガソリン代が高くってサ！$R悪いけど、割り勘にさせて貰うよ！$R$Rアンタの体重だと大体…$R${LEVEL20}ゴールドだね。$R
+        character_image: 11001669
+      - action: routine
+        type: question
+        question: ガソリン代を…
+        options:
+          払わない: hold_request2
+          払う: accept_request2
+  hold_request2:
+    actions:
+  accept_request2:
+    actions:
+#getgold gold=-2200
+      - action: dialog
+        title: 
+        content: ガソリン代として$R${LEVEL20}ゴールド支払った。
+        character_image: 11000000
+      - action: dialog
+        title: レジスタンス傭兵
+        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+        character_image: 11001669
+      - action: teleport
+        map_id: 12019000
+        x: 4
+        y: 80
+        dir: 0

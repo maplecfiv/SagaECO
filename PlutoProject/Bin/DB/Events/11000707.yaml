@@ -1,0 +1,26 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・パイレーツタイニー
+      - action: dialog
+        title: パイレーツタイニー
+        content: タイニーメダルと交換だな！$R交換できるお宝は次のとおりだ！
+        character_image: 11000707
+      - action: dialog
+        title: パイレーツタイニー
+        content: この船がハリボテなのは絶対秘密だぞ！
+        character_image: 11000707
+    - action: purchase_dialog
+       items: 
+         - id: 10050300
+         - id: 10050350
+         - id: 60072200
+         - id: 31080402
+         - id: 31090202
+         - id: 31131402
+         - id: 50071051
+         - id: 50071052
+         - id: 50071055
+         - id: 50001761
+         - id: 50071750
+         - id: 50071751

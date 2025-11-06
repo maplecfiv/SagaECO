@@ -1,0 +1,60 @@
+event_progresses:
+  entrypoint:
+    actions:
+#魔法ギルド総本山ロビー・ノーザンプロムナードに戻るポータル
+      - action: routine
+        type: variable
+        var: magicguild
+        options:
+          0: magicguild0
+          1: magicguild1
+          2: magicguild2
+          3: magicguild3
+          4: magicguild4
+  magicguild0:
+    actions:
+      - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild1:
+    actions:
+      - action: set_var
+        name: magicguild
+        value: 0
+      - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 66
+        dir: 180
+  magicguild2:
+    actions:
+      - action: set_var
+        name: magicguild
+        value: 0
+      - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 66
+        dir: 180
+  magicguild3:
+    actions:
+      - action: set_var
+        name: magicguild
+        value: 0
+      - action: teleport
+        map_id: 10065000
+        x: 42
+        y: 78
+        dir: 0
+  magicguild4:
+    actions:
+      - action: set_var
+        name: magicguild
+        value: 0
+      - action: teleport
+        map_id: 10065000
+        x: 61
+        y: 78
+        dir: 0

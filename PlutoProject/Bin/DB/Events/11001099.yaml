@@ -1,0 +1,46 @@
+event_progresses:
+  entrypoint:
+    actions:
+# マルクトの船着場・南軍兵士
+      - action: dialog
+        title: 南軍兵士
+        content: ようこそ、マルクトの船着場へ。$Rトンカへの飛空庭乗り場はこちらです。$R
+        character_image: 11001099
+      - action: routine
+        type: question
+        question: ようこそ、マルクトの船着場へ！
+        options:
+          なにもしない: hold_request
+          搭乗手続きを行う: accept_request
+  accept_request:
+    actions:
+      - action: dialog
+        title: 南軍兵士
+        content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+        character_image: 11001099
+      - action: routine
+        type: question
+        question: トンカシティ行きの飛空庭です
+        options:
+          まだ、乗らない: hold_request
+          飛空庭に乗る: accept_request2
+  accept_request2:
+    actions:
+      - action: play_se
+        id: 2426
+      - action: dialog
+        title: 
+        content: トンカシティへ出発しまーす！$R
+        character_image: 11000000
+      - action: play_se
+        id: 2438
+#effect id=10 effect=8066
+      - action: wait
+        time: 1980
+      - action: teleport
+        map_id: 10062000
+        x: 195
+        y: 60
+        dir: 135
+  hold_request:
+    actions:

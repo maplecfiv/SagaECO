@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 天まで続く塔の島・天まで続く塔の鍵穴
+      - action: dialog
+        title: 天まで続く塔の鍵穴
+        content: ゲートハ既ニ開イテイマス。
+        character_image: 12002090

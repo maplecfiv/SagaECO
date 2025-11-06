@@ -1,0 +1,8 @@
+event_progresses:
+  entrypoint:
+    actions:
+# ギルド元宮ロビー４Ｆ・ギルド元宮ガイド
+      - action: dialog
+        title: ギルド元宮ガイド
+        content: こちらはギルド元宮４階になります。$R$P北はマーチャントマスター$R東はアルケミストマスター$R南はレンジャーマスター$R西はマリオネストマスターの$R部屋になっています。
+        character_image: 11000013

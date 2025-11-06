@@ -1,0 +1,45 @@
+event_progresses:
+  entrypoint:
+    actions:
+# トンカ島・マイマイ島行き
+      - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島行き、まもなく出発です。
+        character_image: 11001058
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          乗らない: hold_request
+          乗る（200ゴールド）: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+#getgold gold=-200
+      - action: play_se
+        id: 2040
+      - action: dialog
+        title: マイマイ島行き
+        content: 200ゴールド渡した。
+        character_image: 11000000
+      - action: dialog
+        title: マイマイ島行き
+        content: では、飛空庭へどうぞ。
+        character_image: 11001058
+      - action: play_se
+        id: 2426
+      - action: dialog
+        title: マイマイ島行き
+        content: マイマイ島へ出発しまーす！
+        character_image: 11001058
+      - action: play_se
+        id: 2438
+#effect id=11001058 effect=8066
+      - action: wait
+        time: 1980
+      - action: teleport
+        map_id: 10059000
+        x: 69
+        y: 147
+        dir: 270

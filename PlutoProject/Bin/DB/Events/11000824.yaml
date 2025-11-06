@@ -1,0 +1,30 @@
+event_progresses:
+  entrypoint:
+    actions:
+# モーグシティ・空港係員
+      - action: routine
+        type: question
+        question: 軍艦島行きの飛空庭です
+        options:
+          飛空庭に乗る: accept_request
+          まだ、乗らない: hold_request
+  accept_request:
+    actions:
+      - action: play_se
+        id: 2426
+      - action: dialog
+        title: 
+        content: 軍艦島へ出発しまーす！
+        character_image: 00000000
+      - action: play_se
+        id: 2438
+#effect id=11000824 effect=8066
+      - action: wait
+        time: 1980
+      - action: teleport
+        map_id: 10035000
+        x: 100
+        y: 213
+        dir: 270
+  hold_request:
+    actions:

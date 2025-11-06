@@ -1,0 +1,19 @@
+event_progresses:
+  entrypoint:
+    actions:
+#カーマインブリックシティ・井戸の中（北東）
+      - action: routine
+        type: question
+        question: どうする？
+        options:
+          戻る: accept_request
+          まだいる: hold_request
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 10055000
+        x: 188
+        y: 107
+        dir: 270
+  hold_request:
+    actions:

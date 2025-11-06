@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+# カーマインブリックシティ・タクシー屋（街）
+      - action: dialog
+        title: タクシー屋（街）
+        content: ここはバギータクシーだよ！$R$Pカーマインブリックの街発の$Rカーマイン海岸行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+        character_image: 11004140
+      - action: routine
+        type: question
+        question: どうしますか？
+        options:
+          利用しない: hold_request
+          カーマイン海岸まで行く（15000Ｇ）: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: dialog
+        title: タクシー屋（街）
+        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+        character_image: 11004140
+      - action: teleport
+        map_id: 10080000
+        x: 51
+        y: 65
+        dir: 0

@@ -1,0 +1,27 @@
+event_progresses:
+  entrypoint:
+    actions:
+#アップタウン・黒の聖堂入場ポータル
+      - action: routine
+        type: question
+        question: 黒の聖堂
+        options:
+          黒の聖堂に入る: accept_request
+          ともしびの聖堂に入る: accept_request2
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 30121000
+        x: 10
+        y: 22
+        dir: 4
+  accept_request2:
+    actions:
+      - action: set_var
+        name: candlechurch
+        value: 1
+      - action: teleport
+        map_id: 30120001
+        x: 11
+        y: 21
+        dir: 4

@@ -1,0 +1,46 @@
+event_progresses:
+  entrypoint:
+    actions:
+#スノップ雪原→氷結の坑道
+       - action: routine
+         type: item
+         item: 10014651
+         count: 1
+         true: true
+         false: false
+  true:
+    actions:
+      - action: dialog
+        title: 
+        content: 不思議な次元の断層が見える。$R次元安定石を使えば$Rこの次元断層を固定して$Rディメンション氷結の坑道に$R入ることができそうだ。
+        character_image: 00000000
+      - action: routine
+        type: question
+        question: 使いますか？
+        options:
+            使わない: hold_request
+            使う: accept_request
+  hold_request:
+    actions:
+      - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0
+  accept_request:
+    actions:
+      - action: take_item
+        id: 10014651
+        count: 1
+      - action: teleport
+        map_id: 20012005
+        x: 11
+        y: 67
+        dir: 180
+  false:
+    actions:
+      - action: teleport
+        map_id: 20010000
+        x: 63
+        y: 12
+        dir: 0

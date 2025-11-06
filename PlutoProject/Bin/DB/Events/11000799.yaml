@@ -1,0 +1,72 @@
+event_progresses:
+  entrypoint:
+    actions:
+# タイニーアイランド・タイニー家具職人
+       - action: routine
+         type: item
+         item: 10050300
+         count: 3
+         true: true
+         false: false
+  false:
+    actions:
+      - action: dialog
+        title: タイニー家具職人
+        content: ……つんっ！$R$Rもっともっと、家に詳しくなってから来るんだな！$Rここの敷居は高いんだぜぃっ！
+        character_image: 11000799
+  true:
+    actions:
+       - action: routine
+         type: item
+         item: 30001200
+         count: 1
+         true: canbuild
+         false: cantbuild
+  canbuild:
+    actions:
+      - action: dialog
+        title: タイニー家具職人
+        content: おいらは、こだわり家具職人でぃっ！$R$R雨が降ったら仕事はしないっ！$R風が吹いたら仕事はしないっ！$R気に入った奴にしか仕事はしないっ！$R$Rでぃっ、でぃっ、でぃっ！
+        character_image: 11000799
+      - action: dialog
+        title: タイニー家具職人
+        content: あ～、それはタイニーメダルっ！$R$Rおまえは、世の中というものを$Rよくわかってるじゃないか！
+        character_image: 11000799
+      - action: routine
+        type: question
+        question: 渡しますか？
+        options:
+            与える: em id=10002800 count=100 label=build else=cantbuild
+            与えない: RETURN
+      - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: build
+  build:
+    actions:
+      - action: dialog
+        title: タイニー家具職人
+        content: ふふん、まかせろっ！
+        character_image: 11000799
+      - action: dialog
+        title: タイニー家具職人
+        content: よお～し！$Rとんてんかんてんとんてんかーん！
+        character_image: 11000799
+      - action: take_item
+        id: 10050300
+        count: 3
+      - action: take_item
+        id: 10002800
+        count: 100
+      - action: take_item
+        id: 30001200
+        count: 1
+      - action: give_item
+        id: 30000600
+  cantbuild:
+    actions:
+      - action: dialog
+        title: 
+        content: 材料の数が足りない$R$R「タイニーメダル」3個$R「りんご」100個$R「小さな家」1個
+        character_image: 00000000

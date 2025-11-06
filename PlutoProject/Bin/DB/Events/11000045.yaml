@@ -1,0 +1,62 @@
+event_progresses:
+  entrypoint:
+    actions:
+# アップタウン東可動橋・アップタウン東門守衛
+      - action: routine
+        type: question
+        question: ようこそ、アクロポリスへ！
+        options:
+          アップタウンへ入る: accept_request
+          いつもご苦労様です: pinto
+          入らない: hold_request
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 10023000
+        x: 217
+        y: 128
+        dir: 90
+  pinto:
+    actions:
+      - action: routine
+        type: variable
+        var: tmp
+        options:
+          0: east
+          1: west
+          2: south
+          3: nouth
+  east:
+    actions:
+#getgold gold=-100
+      - action: teleport
+        map_id: 10023100
+        x: 224
+        y: 128
+        dir: 270
+  west:
+    actions:
+#getgold gold=-100
+      - action: teleport
+        map_id: 10023200
+        x: 31
+        y: 128
+        dir: 90
+  south:
+    actions:
+#getgold gold=-100
+      - action: teleport
+        map_id: 10023300
+        x: 127
+        y: 225
+        dir: 0
+  nouth:
+    actions:
+#getgold gold=-100
+      - action: teleport
+        map_id: 10023400
+        x: 127
+        y: 30
+        dir: 180
+  hold_request:
+    actions:

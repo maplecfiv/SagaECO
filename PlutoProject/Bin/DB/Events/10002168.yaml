@@ -1,0 +1,34 @@
+event_progresses:
+  entrypoint:
+    actions:
+#ノーザン地下・氷洞、世界樹へ続く道
+      - action: play_effect
+        id: 10
+        effect: 9571
+      - action: wait
+        time: 990
+      - action: dialog
+        title: 
+        content: ……？？$R何か見えない壁がある……。$R$R……通れないようだ。
+        character_image: 00000000
+      - action: wait
+        time: 990
+      - action: dialog
+        title: 
+        content: ……目を凝らすと$R這って通れそうな$R壁のすき間が見える気がする……。$R
+        character_image: 00000000
+      - action: routine
+        type: question
+        question: 先へ進みますか？
+        options:
+          進まない: hold_request
+          進む: accept_request
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 20212000
+        x: 102
+        y: 125
+        dir: 90

@@ -1,0 +1,29 @@
+event_progresses:
+  entrypoint:
+    actions:
+# 軍艦島・レジスタンス
+#case
+#  1: goto label=state1
+#  2: goto label=state2
+#end
+      - action: dialog
+        title: レジスタンス
+        content: この先は$R「軍艦島地下」へ繋がっている。$R$R……リーダーからの通行許可を$R得ているようだな。
+        character_image: 11001592
+      - action: routine
+        type: question
+        question: 「軍艦島地下」へ進むか？
+        options:
+          「軍艦島地下」へ行く: accept_request
+          やめる: hold_request
+#*state1
+  accept_request:
+    actions:
+      - action: teleport
+        map_id: 22197000
+        x: 103
+        y: 5
+        dir: 0
+#*state2
+  hold_request:
+    actions:

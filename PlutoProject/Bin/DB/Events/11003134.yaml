@@ -1,0 +1,11 @@
+event_progresses:
+  entrypoint:
+    actions:
+#神託の風穴２Ｆ・落とし穴
+      - action: wait
+        time: 1580
+      - action: teleport
+        map_id: 20075000
+        x: 13
+        y: 213
+        dir: 0
