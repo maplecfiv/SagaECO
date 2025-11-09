@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 using ICSharpCode.SharpZipLib.Zip;
 using SagaDB.Marionette;
@@ -62,6 +64,7 @@ namespace SagaDB.Map {
                     if (line.Substring(0, 1) == "#")
                         continue;
                     paras = line.Split(',');
+                    SagaLib.Logger.ShowInfo(line);
 
                     for (var i = 0; i < paras.Length; i++)
                         if (paras[i] == "" || paras[i].ToLower() == "null")

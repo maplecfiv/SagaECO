@@ -1,35 +1,38 @@
 event_progresses:
   entrypoint:
     actions:
-# 軍艦島地下・軍艦島地下衛兵
       - action: routine
-        type: question
-        question: どのマップに行く？
-        options:
-          行かない: hold_request
-          アイアンサウス跡地: iron
-          鉄火山エネルギープラント: kazan
-          トラージ・ディコーヤ: tora
+        data:
+          type: question
+          question: どのマップに行く？
+          options:
+            行かない: hold_request
+            アイアンサウス跡地: iron
+            鉄火山エネルギープラント: kazan
+            トラージ・ディコーヤ: tora
   hold_request:
     actions:
   iron:
     actions:
       - action: teleport
-        map_id: 12063000
-        x: 19
-        y: 93
-        dir: 0
+        data:
+          map_id: 12063000
+          x: 19
+          y: 93
+          dir: 0
   kazan:
     actions:
       - action: teleport
-        map_id: 12064000
-        x: 116
-        y: 100
-        dir: 0
+        data:
+          map_id: 12064000
+          x: 116
+          y: 100
+          dir: 0
   tora:
     actions:
       - action: teleport
-        map_id: 12101000
-        x: 39
-        y: 21
-        dir: 0
+        data:
+          map_id: 12101000
+          x: 39
+          y: 21
+          dir: 0

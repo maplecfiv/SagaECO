@@ -1,23 +1,25 @@
 event_progresses:
   entrypoint:
     actions:
-# 大陸の洞窟Ｂ４Ｆ・リヴィングデッド
       - action: dialog
-        title: リヴィングデッド
-        content: ギヒヒヒヒヒ。$Rオマエ、ツイテコイ……。$R
-        character_image: 11001351
+        data:
+          title: リヴィングデッド
+          content: ギヒヒヒヒヒ。$Rオマエ、ツイテコイ……。$R
+          character_image: 11001351
       - action: routine
-        type: question
-        question: ……。
-        options:
-          逃げる: hold_request
-          ついていく: accept_request
+        data:
+          type: question
+          question: ……。
+          options:
+            逃げる: hold_request
+            ついていく: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: teleport
-        map_id: 20003000
-        x: 82
-        y: 23
-        dir: 180
+        data:
+          map_id: 20003000
+          x: 82
+          y: 23
+          dir: 180

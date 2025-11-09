@@ -1,8 +1,8 @@
 event_progresses:
   entrypoint:
     actions:
-# アップタウン・国境エクスプレス係員
       - action: dialog
-        title: 国境エクスプレス係員
-        content: ここは$R演習ボーナス空路の搭乗口だけんども$R今はどこの空路も開通してないから$R使用できないんだ～よ。$R$Rごめんな～。
-        character_image: 11003963
+        data:
+          title: 国境エクスプレス係員
+          content: ここは$R演習ボーナス空路の搭乗口だけんども$R今はどこの空路も開通してないから$R使用できないんだ～よ。$R$Rごめんな～。
+          character_image: 11003963

@@ -1,32 +1,38 @@
 event_progresses:
   entrypoint:
     actions:
-# 天まで続く塔の島（タイタニア界）・天まで続く塔の鍵穴
       - action: routine
-        type: question
-        question: エミル界に戻りますか？
-        options:
-          戻らない: hold_request
-          戻る: accept_request
+        data:
+          type: question
+          question: エミル界に戻りますか？
+          options:
+            戻らない: hold_request
+            戻る: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: play_effect
-        id: 12002087
-        effect: 5306
+        data:
+          id: 12002087
+          effect: 5306
       - action: play_se
-        id: 2407
+        data:
+          id: 2407
       - action: wait
-        time: 990
+        data:
+          time: 990
       - action: play_motion
-        motion: 621
-        ids:
+        data:
+          motion: 621
+          ids:
          - 12002087
       - action: wait
-        time: 3960
+        data:
+          time: 3960
       - action: teleport
-        map_id: 10058000
-        x: 127
-        y: 157
-        dir: 0
+        data:
+          map_id: 10058000
+          x: 127
+          y: 157
+          dir: 0

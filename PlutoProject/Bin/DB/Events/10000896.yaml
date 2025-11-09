@@ -1,21 +1,23 @@
 event_progresses:
   entrypoint:
     actions:
-# 王の寝室・暖炉の隠し通路
       - action: routine
-        type: question
-        question: 暖炉に隠し通路がある！
-        options:
-          行ってみる！: accept_request
-          危険なことはしない: hold_request
+        data:
+          type: question
+          question: 暖炉に隠し通路がある！
+          options:
+            行ってみる！: accept_request
+            危険なことはしない: hold_request
   accept_request:
     actions:
       - action: play_se
-        id: 2444
+        data:
+          id: 2444
       - action: teleport
-        map_id: 10069000
-        x: 137
-        y: 144
-        dir: 0
+        data:
+          map_id: 10069000
+          x: 137
+          y: 144
+          dir: 0
   hold_request:
     actions:

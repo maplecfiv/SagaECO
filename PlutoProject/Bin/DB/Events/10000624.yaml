@@ -1,35 +1,38 @@
 event_progresses:
   entrypoint:
     actions:
-#魔法ギルド総本山ロビー・大導師・総本山・隠し部屋
       - action: routine
-        type: question
-        question: どこの部屋に行きますか？
-        options:
-          大導師の部屋: accept_request1
-          総本山の部屋: accept_request2
-          隠し部屋: accept_request3
-          やめる: hold_request
+        data:
+          type: question
+          question: どこの部屋に行きますか？
+          options:
+            大導師の部屋: accept_request1
+            総本山の部屋: accept_request2
+            隠し部屋: accept_request3
+            やめる: hold_request
   accept_request1:
     actions:
       - action: teleport
-        map_id: 30164000
-        x: 9
-        y: 17
-        dir: 180
+        data:
+          map_id: 30164000
+          x: 9
+          y: 17
+          dir: 180
   accept_request2:
     actions:
       - action: teleport
-        map_id: 30165000
-        x: 2
-        y: 7
-        dir: 180
+        data:
+          map_id: 30165000
+          x: 2
+          y: 7
+          dir: 180
   accept_request3:
     actions:
       - action: teleport
-        map_id: 30165001
-        x: 2
-        y: 6
-        dir: 180
+        data:
+          map_id: 30165001
+          x: 2
+          y: 6
+          dir: 180
   hold_request:
     actions:

@@ -1,9 +1,0 @@
-event_progresses:
-  entrypoint:
-    actions:
-#イストー岬の村・鑑定屋前ポータル
-      - action: teleport
-        map_id: 30011005
-        x: 3
-        y: 5
-        dir: 180

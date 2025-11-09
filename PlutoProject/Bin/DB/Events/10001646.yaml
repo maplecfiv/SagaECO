@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-# ヘルサバーク・難民テント入場ポータル
       - action: set_var
-        name: domitent
-        value: 1
+        data:
+          name: domitent
+          value: 1
       - action: teleport
-        map_id: 32200000
-        x: 2
-        y: 5
-        dir: 180
+        data:
+          map_id: 32200000
+          x: 2
+          y: 5
+          dir: 180

@@ -1,4 +1,20 @@
 event_progresses:
   entrypoint:
     actions:
-#無限回廊Ｂ33Ｆ→ステップ砂漠
+      - action: routine
+        data:
+          type: question
+          question: 戻りますか？
+          options:
+              はい: 1
+              いいえ: 2
+  1:
+    actions:
+      - action: teleport
+        data:
+          map_id: 10042000
+          x: 80
+          y: 134
+          dir: 0
+  2:
+    actions:

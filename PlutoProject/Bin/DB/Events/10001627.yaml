@@ -1,4 +1,57 @@
 event_progresses:
   entrypoint:
     actions:
-#天まで続く塔の島　飛空庭係員付近のポータル
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: 「軍艦島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+          character_image: 11001590
+      - action: routine
+        data:
+          type: question
+          question: 軍艦島行きの飛空庭だ
+          options:
+            まだ、乗らない: hold_request
+            飛空庭に乗る（100ゴールド）: accept_request
+  hold_request:
+    actions:
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……また来な。$R
+          character_image: 11001590
+  accept_request:
+    actions:
+      - action: play_se
+        data:
+          id: 2040
+      - action: dialog
+        data:
+          title: 
+          content: 100ゴールド支払った！
+          character_image: 10000000
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+          character_image: 11001590
+      - action: play_se
+        data:
+          id: 2426
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……軍艦島へ出発だ！
+          character_image: 11001590
+      - action: play_se
+        data:
+          id: 2438
+      - action: wait
+        data:
+          time: 1980
+      - action: teleport
+        data:
+          map_id: 12035000
+          x: 47
+          y: 159
+          dir: 0

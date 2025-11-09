@@ -1,31 +1,35 @@
 event_progresses:
   entrypoint:
     actions:
-# 南アクロニア平原・運び屋マックス
       - action: play_motion
-        motion: 131
-        ids:
+        data:
+          motion: 131
+          ids:
          - 11003316
       - action: dialog
-        title: 運び屋マックス
-        content: おぉ、あんたか。$Rこれからウェストー開拓地の村まで$R戻るとこだが、あんたも乗ってくか？
-        character_image: 11003316
+        data:
+          title: 運び屋マックス
+          content: おぉ、あんたか。$Rこれからウェストー開拓地の村まで$R戻るとこだが、あんたも乗ってくか？
+          character_image: 11003316
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          お願いします！: accept_request
-          やめる: hold_request
+        data:
+          type: question
+          question: どうする？
+          options:
+            お願いします！: accept_request
+            やめる: hold_request
   accept_request:
     actions:
       - action: dialog
-        title: 運び屋マックス
-        content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
-        character_image: 11003316
+        data:
+          title: 運び屋マックス
+          content: オッケー、んじゃ$Rマックスピードでブッ飛ばすから$Rしっかりつかまっとけよ！
+          character_image: 11003316
       - action: teleport
-        map_id: 10005000
-        x: 114
-        y: 79
-        dir: 0
+        data:
+          map_id: 10005000
+          x: 114
+          y: 79
+          dir: 0
   hold_request:
     actions:

@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-#サウスダンジョンＢ１Ｆ・南側右ポータル
       - action: routine
-        type: variable
-        var: indimentionsouth
-        options:
-          0: indimentionsouth0
-          1: indimentionsouth1
+        data:
+          type: variable
+          var: indimentionsouth
+          options:
+            0: indimentionsouth0
+            1: indimentionsouth1
   indimentionsouth0:
     actions:
       - action: teleport
-        map_id: 10066000
-        x: 199
-        y: 125
-        dir: 90
+        data:
+          map_id: 10066000
+          x: 199
+          y: 125
+          dir: 90
   indimentionsouth1:
     actions:
       - action: set_var
-        name: indimentionsouth
-        value: 0
+        data:
+          name: indimentionsouth
+          value: 0
       - action: teleport
-        map_id: 10066000
-        x: 199
-        y: 82
-        dir: 90
+        data:
+          map_id: 10066000
+          x: 199
+          y: 82
+          dir: 90

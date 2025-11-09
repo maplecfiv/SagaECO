@@ -1,27 +1,29 @@
 event_progresses:
   entrypoint:
     actions:
-#フシギ団本部　奥の階段
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          中立のシマに行く: accept_request
-          聖女のシマに行く: accept_request2
-          行かない: hold_request
+        data:
+          type: question
+          question: どうする？
+          options:
+            中立のシマに行く: accept_request
+            聖女のシマに行く: accept_request2
+            行かない: hold_request
   accept_request:
     actions:
       - action: teleport
-        map_id: 10054100
-        x: 123
-        y: 78
-        dir: 90
+        data:
+          map_id: 10054100
+          x: 123
+          y: 78
+          dir: 90
   accept_request2:
     actions:
       - action: teleport
-        map_id: 10054000
-        x: 71
-        y: 140
-        dir: 90
+        data:
+          map_id: 10054000
+          x: 71
+          y: 140
+          dir: 90
   hold_request:
     actions:

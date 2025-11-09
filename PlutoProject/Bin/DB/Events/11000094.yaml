@@ -1,44 +1,50 @@
 event_progresses:
   entrypoint:
     actions:
-# アンデッド島（大陸側）・グリエルモ
-       - action: routine
-         type: item
-         item: 10024900
-         count: 1
-         true: has
-         false: hasnot
+      - action: routine
+        data:
+          type: item
+          item: 10024900
+          count: 1
+          true: has
+          false: hasnot
   hasnot:
     actions:
       - action: dialog
-        title: グリエルモ
-        content: ここから見えるのがアンデッド島だ。$R今は封印されていて渡れない$R渡るには『紋章紙』が必要だ。$R
-        character_image: 11000094
+        data:
+          title: グリエルモ
+          content: ここから見えるのがアンデッド島だ。$R今は封印されていて渡れない$R渡るには『紋章紙』が必要だ。$R
+          character_image: 11000094
   has:
     actions:
       - action: dialog
-        title: グリエルモ
-        content: それは『紋章紙』だな？$R$Rこの紙を燃やせば$Rアンデッド島の封印が一時的に解け$Rあの島に渡れるようになる。
-        character_image: 11000094
+        data:
+          title: グリエルモ
+          content: それは『紋章紙』だな？$R$Rこの紙を燃やせば$Rアンデッド島の封印が一時的に解け$Rあの島に渡れるようになる。
+          character_image: 11000094
       - action: routine
-        type: question
-        question: アンデッド島に渡りますか？
-        options:
-          渡らない: hold_request
-          渡ってみる: accept_request
+        data:
+          type: question
+          question: アンデッド島に渡りますか？
+          options:
+            渡らない: hold_request
+            渡ってみる: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: take_item
-        id: 10024900
-        count: 1
+        data:
+          id: 10024900
+          count: 1
       - action: dialog
-        title: 
-        content: 『紋章紙』を燃やした。
-        character_image: 11000000
+        data:
+          title: 
+          content: 『紋章紙』を燃やした。
+          character_image: 11000000
       - action: teleport
-        map_id: 10019100
-        x: 93
-        y: 104
-        dir: 90
+        data:
+          map_id: 10019100
+          x: 93
+          y: 104
+          dir: 90

@@ -1,4 +1,109 @@
 event_progresses:
   entrypoint:
     actions:
-#エレベータールーム内ポータル
+      - action: dialog
+        data:
+          title: コントロールパネル
+          content: コントロールパネルの$R電源は生きている。
+          character_image: 12001162
+      - action: routine
+        data:
+          type: question
+          question: 画面を操作しますか？
+          options:
+            しない: hold_request
+            上のボタンを押す: tytania
+            下のボタンを押す: dominion
+            外に出る: emil
+  hold_request:
+    actions:
+  tytania:
+    actions:
+      - action: play_effect
+        data:
+          id: 12001162
+          effect: 5289
+      - action: change_bgm
+        data:
+          id: 1054
+      - action: dialog
+        data:
+          title: コントロールパネル
+          content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rタイタニアワールドニ転移シマスカ？
+          character_image: 12001162
+      - action: routine
+        data:
+          type: question
+          question: 転移シマスカ？
+          options:
+            やめる: hold_request2
+            行く: accept_request
+  hold_request2:
+    actions:
+      - action: change_bgm
+        data:
+          id: 1147
+  accept_request:
+    actions:
+      - action: play_effect
+        data:
+          id: 12001162
+          effect: 5313
+      - action: wait
+        data:
+          time: 990
+      - action: teleport
+        data:
+          map_id: 11058000
+          x: 127
+          y: 157
+          dir: 0
+  dominion:
+    actions:
+      - action: play_effect
+        data:
+          id: 12001162
+          effect: 5289
+      - action: change_bgm
+        data:
+          id: 1054
+      - action: dialog
+        data:
+          title: コントロールパネル
+          content: ピッ……。$R$P……。$R$P…………。$R$P………………。$R$Pアクセス成功。$Rドミニオンワールドニ転移シマスカ？
+          character_image: 12001162
+      - action: routine
+        data:
+          type: question
+          question: 転移シマスカ？
+          options:
+            やめる: hold_request3
+            行く: accept_request2
+  hold_request3:
+    actions:
+      - action: change_bgm
+        data:
+          id: 1147
+  accept_request2:
+    actions:
+      - action: play_effect
+        data:
+          id: 12001162
+          effect: 5313
+      - action: wait
+        data:
+          time: 990
+      - action: teleport
+        data:
+          map_id: 12058000
+          x: 127
+          y: 157
+          dir: 0
+  emil:
+    actions:
+      - action: teleport
+        data:
+          map_id: 10058000
+          x: 127
+          y: 157
+          dir: 0

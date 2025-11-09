@@ -1,4 +1,39 @@
 event_progresses:
   entrypoint:
     actions:
-#天まで続く塔の島（タイタニア）　水先案内人付近ポータル
+      - action: dialog
+        data:
+          title: 水先案内人
+          content: 乗ってく？$Rあたしたちの島に連れてったげるよ♪
+          character_image: 11001470
+      - action: routine
+        data:
+          type: question
+          question: どうする？
+          options:
+            行かない: hold_request
+            行く: accept_request
+            船を貸してもらう: accept_request2
+  hold_request:
+    actions:
+  accept_request:
+    actions:
+      - action: teleport
+        data:
+          map_id: 11053000
+          x: 20
+          y: 232
+          dir: 180
+  accept_request2:
+    actions:
+      - action: dialog
+        data:
+          title: 水先案内人
+          content: え、別にいいけど$Rちゃんと返してね～。
+          character_image: 11001471
+      - action: teleport
+        data:
+          map_id: 11075000
+          x: 15
+          y: 9
+          dir: 0

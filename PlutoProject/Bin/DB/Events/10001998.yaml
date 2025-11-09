@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-#Ｄ－サウスダンジョンＢ３Ｆ（南側右ポータル）
       - action: set_var
-        name: dsouth3f
-        value: 1
+        data:
+          name: dsouth3f
+          value: 1
       - action: teleport
-        map_id: 20023001
-        x: 129
-        y: 253
-        dir: 180
+        data:
+          map_id: 20023001
+          x: 129
+          y: 253
+          dir: 180

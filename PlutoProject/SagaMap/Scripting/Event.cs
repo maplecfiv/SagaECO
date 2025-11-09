@@ -2823,6 +2823,16 @@ namespace SagaMap.Scripting {
             MapClient.FromActorPC(pc).NetIo.SendPacket(p);
         }
 
+        protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop) {
+            var p = new SSMG_CHAT_MOTION();
+            p.ActorID = npcID;
+            p.Motion = (MotionType)motion;
+            if (loop)
+                p.Loop = 1;
+            MapClient.FromActorPC(pc).NetIo.SendPacket(p);
+        }
+
+
         protected void NPCMotion(ActorPC pc, uint npcID, ushort motion, bool loop, uint motionspeed, byte unknown) {
             var p = new SSMG_CHAT_MOTION();
             p.ActorID = npcID;

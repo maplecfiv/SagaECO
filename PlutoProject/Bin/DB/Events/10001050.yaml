@@ -1,21 +1,24 @@
 event_progresses:
   entrypoint:
     actions:
-# マーチャントギルド総本山→モーグシティ
       - action: play_motion
-        motion: 159
-        ids:
+        data:
+          motion: 159
+          ids:
          - 11000828
          - 11000829
        loop: True
       - action: wait
-        time: 980
+        data:
+          time: 980
       - action: dialog
-        title: 
-        content: ありがとうございました！
-        character_image: 00000000
+        data:
+          title: 
+          content: ありがとうございました！
+          character_image: 00000000
       - action: teleport
-        map_id: 10060000
-        x: 82
-        y: 153
-        dir: 270
+        data:
+          map_id: 10060000
+          x: 82
+          y: 153
+          dir: 270

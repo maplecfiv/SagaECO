@@ -1,16 +1,17 @@
 event_progresses:
   entrypoint:
     actions:
-#大海の孤島　謎の装置付近ポータル
       - action: dialog
-        title: 
-        content: ――システムエラー$R――システムエラー$R$R――転送装置ヲ起動シマス
-        character_image: 11000000
-#effect id=10 effect=5212
+        data:
+          title: 
+          content: ――システムエラー$R――システムエラー$R$R――転送装置ヲ起動シマス
+          character_image: 11000000
       - action: wait
-        time: 1485
+        data:
+          time: 1485
       - action: teleport
-        map_id: 11073000
-        x: 251
-        y: 11
-        dir: 0
+        data:
+          map_id: 11073000
+          x: 251
+          y: 11
+          dir: 0

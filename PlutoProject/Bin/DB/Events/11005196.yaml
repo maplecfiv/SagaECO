@@ -1,4 +1,10 @@
 event_progresses:
   entrypoint:
     actions:
-# アップタウン北可動橋・ThanksObject
+      - action: routine
+        data:
+          type: question
+          question: 何をしますか？
+          options:
+            アイテムの購入: hop
+            特にない: RETURN

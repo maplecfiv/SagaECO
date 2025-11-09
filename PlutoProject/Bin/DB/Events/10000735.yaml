@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-#大工場ロビー・アイアンシティ下層階へ戻るポータル
       - action: routine
-        type: variable
-        var: bigfac
-        options:
-          0: bigfac0
-          1: bigfac1
+        data:
+          type: variable
+          var: bigfac
+          options:
+            0: bigfac0
+            1: bigfac1
   bigfac0:
     actions:
       - action: teleport
-        map_id: 10066000
-        x: 175
-        y: 147
-        dir: 0
+        data:
+          map_id: 10066000
+          x: 175
+          y: 147
+          dir: 0
   bigfac1:
     actions:
       - action: set_var
-        name: bigfac
-        value: 0
+        data:
+          name: bigfac
+          value: 0
       - action: teleport
-        map_id: 10066000
-        x: 155
-        y: 147
-        dir: 0
+        data:
+          map_id: 10066000
+          x: 155
+          y: 147
+          dir: 0

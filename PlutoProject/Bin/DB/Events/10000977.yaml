@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-#ファーイースト商店出口
       - action: routine
-        type: variable
-        var: eastshop
-        options:
-          0: eastshop0
-          1: eastshop1
+        data:
+          type: variable
+          var: eastshop
+          options:
+            0: eastshop0
+            1: eastshop1
   eastshop0:
     actions:
       - action: teleport
-        map_id: 10018100
-        x: 221
-        y: 67
-        dir: 45
+        data:
+          map_id: 10018100
+          x: 221
+          y: 67
+          dir: 45
   eastshop1:
     actions:
       - action: set_var
-        name: eastshop
-        value: 0
+        data:
+          name: eastshop
+          value: 0
       - action: teleport
-        map_id: 10057000
-        x: 123
-        y: 120
-        dir: 0
+        data:
+          map_id: 10057000
+          x: 123
+          y: 120
+          dir: 0

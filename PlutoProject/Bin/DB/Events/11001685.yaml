@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-# 天まで続く塔の島・レジスタンス傭兵
       - action: dialog
-        title: レジスタンス傭兵
-        content: これからダウンタウンに行くんだけど$R一緒にどうだい？
-        character_image: 11001669
+        data:
+          title: レジスタンス傭兵
+          content: これからダウンタウンに行くんだけど$R一緒にどうだい？
+          character_image: 11001669
       - action: routine
-        type: question
-        question: ダウンタウンに行く？
-        options:
-          行かない: hold_request
-          行く: accept_request
+        data:
+          type: question
+          question: ダウンタウンに行く？
+          options:
+            行かない: hold_request
+            行く: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: dialog
-        title: レジスタンス傭兵
-        content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
-        character_image: 11001669
+        data:
+          title: レジスタンス傭兵
+          content: じゃ、行くよ。$R$R振り落とされないよう$Rしっかり掴まってンだよ！
+          character_image: 11001669
       - action: teleport
-        map_id: 10024000
-        x: 54
-        y: 122
-        dir: 0
+        data:
+          map_id: 10024000
+          x: 54
+          y: 122
+          dir: 0

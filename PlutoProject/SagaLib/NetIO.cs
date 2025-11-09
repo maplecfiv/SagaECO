@@ -488,8 +488,13 @@ namespace SagaLib {
                         ProcessPacket(p2);
                     }
 
-                SagaLib.Logger.ShowInfo($"read [{0}-{0 + 4}] from {buffer}");
-                stream.BeginRead(buffer, 0, 4, callbackSize, null);
+                if (!this.Disconnected) {
+                    SagaLib.Logger.ShowInfo($"read [{0}-{0 + 4}] from {buffer}");
+                    stream.BeginRead(buffer, 0, 4, callbackSize, null);
+                }
+                else {
+                    return;
+                }
             }
             catch (Exception e) {
                 Logger.ShowError(e);

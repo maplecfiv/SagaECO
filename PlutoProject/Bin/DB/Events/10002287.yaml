@@ -1,33 +1,37 @@
 event_progresses:
   entrypoint:
     actions:
-#カーマイン海岸　カーマイン砂漠入口
       - action: set_var
-        name: daydesert
-        value: 0
+        data:
+          name: daydesert
+          value: 0
       - action: set_var
-        name: nightdesert
-        value: 0
+        data:
+          name: nightdesert
+          value: 0
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          カーマイン砂漠に行く: noon
-          カーマイン砂漠（夜）に行く: night
-          行かない: none
+        data:
+          type: question
+          question: どうする？
+          options:
+            カーマイン砂漠に行く: noon
+            カーマイン砂漠（夜）に行く: night
+            行かない: none
   noon:
     actions:
       - action: teleport
-        map_id: 10100007
-        x: 128
-        y: 253
-        dir: 180
+        data:
+          map_id: 10100007
+          x: 128
+          y: 253
+          dir: 180
   night:
     actions:
       - action: teleport
-        map_id: 10100016
-        x: 128
-        y: 253
-        dir: 180
+        data:
+          map_id: 10100016
+          x: 128
+          y: 253
+          dir: 180
   none:
     actions:

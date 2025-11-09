@@ -1,8 +1,8 @@
 event_progresses:
   entrypoint:
     actions:
-# ギルド元宮ロビー５Ｆ・ギルド元宮ガイド
       - action: dialog
-        title: ギルド元宮ガイド
-        content: こちらはギルド元宮５階になります。
-        character_image: 11000014
+        data:
+          title: ギルド元宮ガイド
+          content: こちらはギルド元宮５階になります。
+          character_image: 11000014

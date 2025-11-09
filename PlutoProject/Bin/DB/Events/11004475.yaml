@@ -1,17 +1,52 @@
 event_progresses:
   entrypoint:
     actions:
-# D-カーマインブリック遺跡１F中央・現金なスフィンクス・タラタ
       - action: dialog
-        title: 現金なスフィンクス・タラタ
-        content: 私はダンジョンワープ商人！$R$R人よんで、スフィンクスタクシーにゃ！$R$Rアンタをダンジョン内の$R私の姉妹がいる場所に$R移動させてやることができるにゃ$Rもちろんお代はいただくけどにゃ！$R$Rさて、今日はどうするにゃ？
-        character_image: 11004475
+        data:
+          title: 現金なスフィンクス・タラタ
+          content: 私はダンジョンワープ商人！$R$R人よんで、スフィンクスタクシーにゃ！$R$Rアンタをダンジョン内の$R私の姉妹がいる場所に$R移動させてやることができるにゃ$Rもちろんお代はいただくけどにゃ！$R$Rさて、今日はどうするにゃ？
+          character_image: 11004475
       - action: routine
-        type: question
-        question: どこに行くにゃ？
-        options:
-            １Ｆ東居住区（10,000Ｇ）: map=20230001 x=16 y=127 dir=270
-            １Ｆ西居住区（10,000Ｇ）: map=20240001 x=239 y=127 dir=90
-            ２Ｆ中央（10,000Ｇ）: map=20250001 x=128 y=127 dir=0
-            Ｂ１Ｆ南側（10,000Ｇ）: map=20260001 x=129 y=180 dir=0
-            やっぱりやめる: n
+        data:
+          type: question
+          question: どこに行くにゃ？
+          options:
+              １Ｆ東居住区（10,000Ｇ）: 1
+              １Ｆ西居住区（10,000Ｇ）: 2
+              ２Ｆ中央（10,000Ｇ）: 3
+              Ｂ１Ｆ南側（10,000Ｇ）: 4
+              やっぱりやめる: 5
+  1:
+    actions:
+      - action: teleport
+        data:
+          map_id: 20230001
+          x: 16
+          y: 127
+          dir: 270
+  2:
+    actions:
+      - action: teleport
+        data:
+          map_id: 20240001
+          x: 239
+          y: 127
+          dir: 90
+  3:
+    actions:
+      - action: teleport
+        data:
+          map_id: 20250001
+          x: 128
+          y: 127
+          dir: 0
+  4:
+    actions:
+      - action: teleport
+        data:
+          map_id: 20260001
+          x: 129
+          y: 180
+          dir: 0
+  5:
+    actions:

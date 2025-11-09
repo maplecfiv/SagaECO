@@ -1,4 +1,57 @@
 event_progresses:
   entrypoint:
     actions:
-#軍艦島（ドミニオン界）　飛空庭係員付近ポータル
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: 「天まで続く塔の島」行きの飛空庭だ。$R周りには、十分気をつけるんだな。
+          character_image: 11001591
+      - action: routine
+        data:
+          type: question
+          question: 天まで続く塔の島行きの飛空庭だ
+          options:
+            まだ、乗らない: hold_request
+            飛空庭に乗る（100ゴールド）: accept_request
+  hold_request:
+    actions:
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……また来な。$R
+          character_image: 11001590
+  accept_request:
+    actions:
+      - action: play_se
+        data:
+          id: 2040
+      - action: dialog
+        data:
+          title: 
+          content: 100ゴールド支払った！
+          character_image: 10000000
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……揺れるぞ。$R$Rくれぐれも落っこちるなよ？
+          character_image: 11001590
+      - action: play_se
+        data:
+          id: 2426
+      - action: dialog
+        data:
+          title: 飛空庭係員
+          content: ……天まで続く塔の島へ出発だ！
+          character_image: 11001591
+      - action: play_se
+        data:
+          id: 2438
+      - action: wait
+        data:
+          time: 2180
+      - action: teleport
+        data:
+          map_id: 12058000
+          x: 127
+          y: 250
+          dir: 180

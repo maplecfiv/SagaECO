@@ -1,14 +1,14 @@
 event_progresses:
   entrypoint:
     actions:
-# イーストダンジョン・落とし穴
       - action: dialog
-        title: 
-        content: 落とし穴だ！！
-        character_image: 00000000
-#effect id=10 effect=4539
+        data:
+          title: 
+          content: 落とし穴だ！！
+          character_image: 00000000
       - action: teleport
-        map_id: 20091000
-        x: 189
-        y: 225
-        dir: 0
+        data:
+          map_id: 20091000
+          x: 189
+          y: 225
+          dir: 0

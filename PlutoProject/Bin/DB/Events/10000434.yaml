@@ -1,9 +1,0 @@
-event_progresses:
-  entrypoint:
-    actions:
-#イストー岬の村・ギルド商店前ポータル
-      - action: teleport
-        map_id: 30060006
-        x: 4
-        y: 7
-        dir: 180

@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-# シアタースクリーン室１・会場案内人
       - action: play_motion
-        motion: 131
-        ids:
+        data:
+          motion: 131
+          ids:
          - 11000192
       - action: dialog
-        title: 会場案内人
-        content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
-        character_image: 11000192
+        data:
+          title: 会場案内人
+          content: 入場時間を過ぎると、次の上演まで$R場内に入ることは出来ません。$R$Rそれでも、ロビーに戻りますか？
+          character_image: 11000192
       - action: routine
-        type: question
-        question: ロビーに戻りますか？
-        options:
-          戻らない: hold_request
-          戻る: accept_request
+        data:
+          type: question
+          question: ロビーに戻りますか？
+          options:
+            戻らない: hold_request
+            戻る: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: teleport
-        map_id: 30180000
-        x: 9
-        y: 2
-        dir: 0
+        data:
+          map_id: 30180000
+          x: 9
+          y: 2
+          dir: 0

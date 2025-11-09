@@ -1,84 +1,100 @@
 event_progresses:
   entrypoint:
     actions:
-# ギルド元宮ロビー１Ｆ・ギルド元宮ガイド
       - action: dialog
-        title: ギルド元宮ガイド
-        content: いらっしゃいませ！$R『ギルド元宮』にようこそ！$R$Pこちらは初めてですか？$R$Rよければ、ギルド元宮についての説明を$Rお聞きになりませんか？
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: いらっしゃいませ！$R『ギルド元宮』にようこそ！$R$Pこちらは初めてですか？$R$Rよければ、ギルド元宮についての説明を$Rお聞きになりませんか？
+          character_image: 11000000
       - action: routine
-        type: question
-        question: ギルド元宮について聞く？
-        options:
-          聞く: accept_request
-          聞かない: hold_request
+        data:
+          type: question
+          question: ギルド元宮について聞く？
+          options:
+            聞く: accept_request
+            聞かない: hold_request
   accept_request:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: このギルド元宮は、５階建ての建物の$R中にいろいろな職業ギルドの本部が$Rテナントとして入っています。$R$P各職業ギルドへの入団手続きや$Rクエストの請負なども行っています。$R$P職業ごとのくわしい説明は$R２階から上の各職業ギルド本部で$Rお聞きになってください。$R$Pあ、５階はこの世界にいらっしゃる$R異界の方々の専用フロアに$Rなっておりますので、エミルの方の$Rご利用はご遠慮ください。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: このギルド元宮は、５階建ての建物の$R中にいろいろな職業ギルドの本部が$Rテナントとして入っています。$R$P各職業ギルドへの入団手続きや$Rクエストの請負なども行っています。$R$P職業ごとのくわしい説明は$R２階から上の各職業ギルド本部で$Rお聞きになってください。$R$Pあ、５階はこの世界にいらっしゃる$R異界の方々の専用フロアに$Rなっておりますので、エミルの方の$Rご利用はご遠慮ください。
+          character_image: 11000000
       - action: dialog
-        title: ギルド元宮ガイド
-        content: ギルド元宮にようこそ！
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: ギルド元宮にようこそ！
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   guide:
     actions:
       - action: routine
-        type: variable
-        var: tmp
-        options:
-          0: accept_request1
-          1: accept_request2
-          2: accept_request3
-          3: accept_request4
-          4: accept_request5
-          5: hold_request
+        data:
+          type: question
+          question: 何階の説明を聞きますか？
+          options:
+            １階フロア: accept_request1
+            ２階フロア: accept_request2
+            ３階フロア: accept_request3
+            ４階フロア: accept_request4
+            ５階フロア: accept_request5
+            聞かない: hold_request
   accept_request1:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: １階ロビーはこのフロアのことです。$R$Rギルド元宮、総合案内担当の私と$R他の階につながるワープがあります。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: １階ロビーはこのフロアのことです。$R$Rギルド元宮、総合案内担当の私と$R他の階につながるワープがあります。
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   accept_request2:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: ２階フロアには、ファイター系の$R職業ギルドが入っています。$R$Rソードマン、フェンサー、スカウト$Rアーチャーギルドをご利用の方は$Rこちらの階になります。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: ２階フロアには、ファイター系の$R職業ギルドが入っています。$R$Rソードマン、フェンサー、スカウト$Rアーチャーギルドをご利用の方は$Rこちらの階になります。
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   accept_request3:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: ３階フロアには、バックパッカー系の$R職業ギルドの他に、ウィザードや$Rシャーマンを統括している$Rスペルユーザーギルドがあります。$R$Pウィザード、シャーマン、ファーマー$Rタタラベ、マシンナリーギルドを$Rご利用の方は、こちらの階になります。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: ３階フロアには、バックパッカー系の$R職業ギルドの他に、ウィザードや$Rシャーマンを統括している$Rスペルユーザーギルドがあります。$R$Pウィザード、シャーマン、ファーマー$Rタタラベ、マシンナリーギルドを$Rご利用の方は、こちらの階になります。
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   accept_request4:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: ４階フロアには、バックパッカー系の$R職業ギルドが入っています。$R$Rマーチャント、アルケミスト$Rレンジャー、マリオネストギルドを$Rご利用の方は、こちらの階になります。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: ４階フロアには、バックパッカー系の$R職業ギルドが入っています。$R$Rマーチャント、アルケミスト$Rレンジャー、マリオネストギルドを$Rご利用の方は、こちらの階になります。
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   accept_request5:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: ５階フロアは、異界の方々の$R専用フロアになっています。$R$Rエミルの方はご利用になれません。
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: ５階フロアは、異界の方々の$R専用フロアになっています。$R$Rエミルの方はご利用になれません。
+          character_image: 11000000
       - action: go_section
-         section: guide
+        data:
+          section: guide
   hold_request:
     actions:
       - action: dialog
-        title: ギルド元宮ガイド
-        content: どうぞゆっくりして下さいね！
-        character_image: 11000000
+        data:
+          title: ギルド元宮ガイド
+          content: どうぞゆっくりして下さいね！
+          character_image: 11000000

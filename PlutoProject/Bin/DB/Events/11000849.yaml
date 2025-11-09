@@ -1,27 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-# モーグシティ・炭鉱夫見習い
       - action: dialog
-        title: 炭鉱夫見習い
-        content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
-        character_image: 18000849
+        data:
+          title: 炭鉱夫見習い
+          content: ……何？$R$R１００ゴールドくれるなら$Rリフトに乗せてあげてもいいよ。
+          character_image: 18000849
       - action: routine
-        type: question
-        question: １００ゴールド渡す？
-        options:
-          はい: accept_request
-          いいえ: hold_request
+        data:
+          type: question
+          question: １００ゴールド渡す？
+          options:
+            はい: accept_request
+            いいえ: hold_request
   accept_request:
     actions:
       - action: dialog
-        title: 炭鉱夫見習い
-        content: ……まいど。$R$Pおーい、人が乗るぞー！
-        character_image: 18000848
+        data:
+          title: 炭鉱夫見習い
+          content: ……まいど。$R$Pおーい、人が乗るぞー！
+          character_image: 18000848
       - action: teleport
-        map_id: 10060000
-        x: 142
-        y: 145
-        dir: 270
+        data:
+          map_id: 10060000
+          x: 142
+          y: 145
+          dir: 270
   hold_request:
     actions:

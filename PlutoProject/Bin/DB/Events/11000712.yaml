@@ -1,8 +1,8 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・ネイティブタイニー
       - action: dialog
-        title: ネイティブタイニー
-        content: パイレーツとてもよくない。$Rあれは悪いタイニーたち。
-        character_image: 11000712
+        data:
+          title: ネイティブタイニー
+          content: パイレーツとてもよくない。$Rあれは悪いタイニーたち。
+          character_image: 11000712

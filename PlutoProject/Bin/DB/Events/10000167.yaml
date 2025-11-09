@@ -1,43 +1,47 @@
 event_progresses:
   entrypoint:
     actions:
-# ギルド元宮ロビー４Ｆ・中央ポータル
       - action: routine
-        type: question
-        question: どの階に行く？
-        options:
-          １階フロア: accept_request1
-          ２階フロア: accept_request2
-          ３階フロア: accept_request3
-          ５階フロア: accept_request4
-          やめておく: hold_request
+        data:
+          type: question
+          question: どの階に行く？
+          options:
+            １階フロア: accept_request1
+            ２階フロア: accept_request2
+            ３階フロア: accept_request3
+            ５階フロア: accept_request4
+            やめておく: hold_request
   accept_request1:
     actions:
       - action: teleport
-        map_id: 30110000
-        x: 13
-        y: 14
-        dir: 0
+        data:
+          map_id: 30110000
+          x: 13
+          y: 14
+          dir: 0
   accept_request2:
     actions:
       - action: teleport
-        map_id: 30111000
-        x: 13
-        y: 14
-        dir: 0
+        data:
+          map_id: 30111000
+          x: 13
+          y: 14
+          dir: 0
   accept_request3:
     actions:
       - action: teleport
-        map_id: 30112000
-        x: 13
-        y: 14
-        dir: 0
+        data:
+          map_id: 30112000
+          x: 13
+          y: 14
+          dir: 0
   accept_request4:
     actions:
       - action: teleport
-        map_id: 30114000
-        x: 13
-        y: 14
-        dir: 0
+        data:
+          map_id: 30114000
+          x: 13
+          y: 14
+          dir: 0
   hold_request:
     actions:

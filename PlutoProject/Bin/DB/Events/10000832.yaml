@@ -1,35 +1,40 @@
 event_progresses:
   entrypoint:
     actions:
-# イーストダンジョン・南東ポータル（隔離地帯）
-       - action: routine
-         type: item
-         item: 10013002
-         count: 1
-         true: true
-         false: false
+      - action: routine
+        data:
+          type: item
+          item: 10013002
+          count: 1
+          true: true
+          false: false
   true:
     actions:
       - action: dialog
-        title: 
-        content: 『ヒスイ』が光り輝く！
-        character_image: 00000000
+        data:
+          title: 
+          content: 『ヒスイ』が光り輝く！
+          character_image: 00000000
       - action: take_item
-        id: 10013002
-        count: 1
+        data:
+          id: 10013002
+          count: 1
       - action: teleport
-        map_id: 20092000
-        x: 170
-        y: 34
-        dir: 0
+        data:
+          map_id: 20092000
+          x: 170
+          y: 34
+          dir: 0
   false:
     actions:
       - action: dialog
-        title: 
-        content: 資格なき者、立ち去りなさい……。
-        character_image: 00000000
+        data:
+          title: 
+          content: 資格なき者、立ち去りなさい……。
+          character_image: 00000000
       - action: teleport
-        map_id: 20090000
-        x: 35
-        y: 68
-        dir: 180
+        data:
+          map_id: 20090000
+          x: 35
+          y: 68
+          dir: 180

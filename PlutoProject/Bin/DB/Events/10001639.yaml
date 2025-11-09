@@ -1,24 +1,26 @@
 event_progresses:
   entrypoint:
     actions:
-#ブラフスキーの家・出口ポータル
       - action: routine
-        type: variable
-        var: dominionnight
-        options:
-          0: dominionnight0
-          1: dominionnight1
+        data:
+          type: variable
+          var: dominionnight
+          options:
+            0: dominionnight0
+            1: dominionnight1
   dominionnight0:
     actions:
       - action: teleport
-        map_id: 12020000
-        x: 182
-        y: 47
-        dir: 0
+        data:
+          map_id: 12020000
+          x: 182
+          y: 47
+          dir: 0
   dominionnight1:
     actions:
       - action: teleport
-        map_id: 12020001
-        x: 182
-        y: 47
-        dir: 0
+        data:
+          map_id: 12020001
+          x: 182
+          y: 47
+          dir: 0

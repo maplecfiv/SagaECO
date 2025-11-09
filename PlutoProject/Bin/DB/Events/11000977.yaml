@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・デ・ジ・キャラット
       - action: dialog
-        title: デ・ジ・キャラット
-        content: ここはゲーマーズ$Rタイニーアイランド支店$Rコスプレ衣装通販事業部だにょ。
-        character_image: 11000977
+        data:
+          title: デ・ジ・キャラット
+          content: ここはゲーマーズ$Rタイニーアイランド支店$Rコスプレ衣装通販事業部だにょ。
+          character_image: 11000977
       - action: dialog
-        title: デ・ジ・キャラット
-        content: ……まったく$Rちょっと、ビームだしたくらいで$Rこわれるなんて、もろすぎだにょ。
-        character_image: 11000977
+        data:
+          title: デ・ジ・キャラット
+          content: ……まったく$Rちょっと、ビームだしたくらいで$Rこわれるなんて、もろすぎだにょ。
+          character_image: 11000977

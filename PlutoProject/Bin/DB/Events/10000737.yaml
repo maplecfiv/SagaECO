@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-#アイアンシティ下層階・大タタラ場前ポータル（右）
       - action: set_var
-        name: ootatara
-        value: 1
+        data:
+          name: ootatara
+          value: 1
       - action: teleport
-        map_id: 30082000
-        x: 10
-        y: 22
-        dir: 180
+        data:
+          map_id: 30082000
+          x: 10
+          y: 22
+          dir: 180

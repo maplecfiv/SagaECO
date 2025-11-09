@@ -1,23 +1,25 @@
 event_progresses:
   entrypoint:
     actions:
-# マイマイ島・飛空庭誘導員
       - action: dialog
-        title: 飛空庭誘導員
-        content: トンカ島へ戻るかい？
-        character_image: 11001261
+        data:
+          title: 飛空庭誘導員
+          content: トンカ島へ戻るかい？
+          character_image: 11001261
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          戻らない: hold_request
-          戻る: accept_request
+        data:
+          type: question
+          question: どうする？
+          options:
+            戻らない: hold_request
+            戻る: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
       - action: teleport
-        map_id: 10062000
-        x: 183
-        y: 71
-        dir: 180
+        data:
+          map_id: 10062000
+          x: 183
+          y: 71
+          dir: 180

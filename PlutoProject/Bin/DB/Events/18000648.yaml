@@ -1,112 +1,133 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・デリバリタイニー
       - action: routine
-        type: event
-         event: Event1
-         ind: 2
-         true: Alreadly
-         false: NotAlreadly
+        data:
+          type: event
+          event: Event1
+          ind: 2
+          true: Alreadly
+          false: NotAlreadly
   NotAlreadly:
     actions:
       - action: routine
-        type: event
-         event: Event1
-         ind: 0
-         true: Event1
-         false: Event2
+        data:
+          type: event
+          event: Event1
+          ind: 0
+          true: Event1
+          false: Event2
   Event1:
     actions:
       - action: dialog
-        title: デリバリタイニー
-        content: はぁー。久しぶりの里帰りだー。$Rのんびりするなぁ……。$R$Rおや、冒険者さんですね。$Rおつかれさまでっす！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: はぁー。久しぶりの里帰りだー。$Rのんびりするなぁ……。$R$Rおや、冒険者さんですね。$Rおつかれさまでっす！
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: えっ？　ボクが誰かですって？$Rそういや、名乗ってませんでした。$Rボクはデリバリタイニーです！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: えっ？　ボクが誰かですって？$Rそういや、名乗ってませんでした。$Rボクはデリバリタイニーです！
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: 見ての通り、いろんな荷物を$R運ぶのが得意で、あっちこっち$R配達にまわってるんですよ。$R$R今は久しぶりのばけーしょんで、$R里帰りをしているのです。えっへん！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: 見ての通り、いろんな荷物を$R運ぶのが得意で、あっちこっち$R配達にまわってるんですよ。$R$R今は久しぶりのばけーしょんで、$R里帰りをしているのです。えっへん！
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: ……あ、そうだ。$R冒険者さんあら、荷物を運ぶ時の$Rイロイロな苦労はお分かりのはず。$R$R実はですね、ボクの後輩が$Rそろそろ一人前になるんですが、$Rちょうど今雇い主を探してまして。
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: ……あ、そうだ。$R冒険者さんあら、荷物を運ぶ時の$Rイロイロな苦労はお分かりのはず。$R$R実はですね、ボクの後輩が$Rそろそろ一人前になるんですが、$Rちょうど今雇い主を探してまして。
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: どうです、デリバリタイニーの$Rご主人様になってみませんか？$R今ならケイヤクリョーはベンキョー$Rいたしますよっ！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: どうです、デリバリタイニーの$Rご主人様になってみませんか？$R今ならケイヤクリョーはベンキョー$Rいたしますよっ！
+          character_image: 18000648
       - action: routine
-        type: question
-        question: デリバリタイニーを……
-        options:
-            雇いたい！: Event1a
-            今はまだいいかな。: RETURN
+        data:
+          type: question
+          question: デリバリタイニーを……
+          options:
+              雇いたい！: Event1a
+              今はまだいいかな。: RETURN
   Event1a:
     actions:
       - action: dialog
-        title: デリバリタイニー
-        content: 毎度ありっ！……どいう事で、$Rさっそくですがケイヤクリョーに$R関してお話させてもらいますよっ！$R$Rふふふ……僕らデリバリタイニーは！$Rサービス特価であっても、決して$R安いタイニーじゃないですよ……？
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: 毎度ありっ！……どいう事で、$Rさっそくですがケイヤクリョーに$R関してお話させてもらいますよっ！$R$Rふふふ……僕らデリバリタイニーは！$Rサービス特価であっても、決して$R安いタイニーじゃないですよ……？
+          character_image: 18000648
       - action: dialog
-        title: 
-        content: （デリバリタイニーの周囲に、$Rわずかに張りつめた空気が$Rただよいはじめた気がした）$R
-        character_image: 00000000
+        data:
+          title: 
+          content: （デリバリタイニーの周囲に、$Rわずかに張りつめた空気が$Rただよいはじめた気がした）$R
+          character_image: 00000000
       - action: dialog
-        title: デリバリタイニー
-        content: ３つ……。
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: ３つ……。
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: 大セービスても、それがげんかいです。$Rりんごを３つ、一気にそうえてここに$R特ってきていただきますよっ！$R$Rそれが、デリバリタイニーを$R雇うための条件となりますっ！$Rよろしくお願いしますっ！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: 大セービスても、それがげんかいです。$Rりんごを３つ、一気にそうえてここに$R特ってきていただきますよっ！$R$Rそれが、デリバリタイニーを$R雇うための条件となりますっ！$Rよろしくお願いしますっ！
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: ……で、りんごなんですが、$Rアクロボリスから出て、東の方にある$Rイストー岬の村のお店で売ってます。$Rあるいは、このタイニーアイランドに$R生えている「タイニーツリー」を叩くと$Rたまに手に入りますよ！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: ……で、りんごなんですが、$Rアクロボリスから出て、東の方にある$Rイストー岬の村のお店で売ってます。$Rあるいは、このタイニーアイランドに$R生えている「タイニーツリー」を叩くと$Rたまに手に入りますよ！
+          character_image: 18000648
   Event2:
     actions:
       - action: dialog
-        title: デリバリタイニー
-        content: お疲れ様ですっ！$R準備できましたか？
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: お疲れ様ですっ！$R準備できましたか？
+          character_image: 18000648
       - action: routine
-        type: question
-        question: りんご３つの準備は？
-        options:
-            準備できたよ: em id=10002800 count=3 label=Event2a else=Noapple
-            もうちょっと待ってね: RETURN
+        data:
+          type: question
+          question: りんご３つの準備は？
+          options:
+              準備できたよ: em id=10002800 count=3 label=Event2a else=Noapple
+              もうちょっと待ってね: RETURN
       - action: routine
-        type: variable
-        var: tmp
-        options:
-          0: Event2a
+        data:
+          type: variable
+          var: tmp
+          options:
+            0: Event2a
   Event2a:
     actions:
       - action: dialog
-        title: デリバリタイニー
-        content: これでケイヤクセーリツですねっ！$Rボク達はあまり荒っいことは$R得意ではないですけど、$R荷物の配達は得意でですよ！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: これでケイヤクセーリツですねっ！$Rボク達はあまり荒っいことは$R得意ではないですけど、$R荷物の配達は得意でですよ！
+          character_image: 18000648
       - action: dialog
-        title: デリバリタイニー
-        content: ボクの後輩のこと、$Rよろしくお願いしますねっ！
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: ボクの後輩のこと、$Rよろしくお願いしますねっ！
+          character_image: 18000648
       - action: take_item
-        id: 10002800
-        count: 3
+        data:
+          id: 10002800
+          count: 3
       - action: give_item
-        id: 10128900
+        data:
+          id: 10128900
   Alreadly:
     actions:
       - action: dialog
-        title: デリバリタイニー
-        content: あっ、ごぶさたしてます！$Rうちの後輩はお役にたってますか？
-        character_image: 18000648
+        data:
+          title: デリバリタイニー
+          content: あっ、ごぶさたしてます！$Rうちの後輩はお役にたってますか？
+          character_image: 18000648
   Noapple:
     actions:
       - action: dialog
-        title: 
-        content: りんごの数が足りない
-        character_image: 00000000
+        data:
+          title: 
+          content: りんごの数が足りない
+          character_image: 00000000

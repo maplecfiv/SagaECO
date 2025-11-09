@@ -1,24 +1,26 @@
 event_progresses:
   entrypoint:
     actions:
-#シアターロビー４・シアタースクリーン入場ポータル
       - action: routine
-        type: question
-        question: どっちに行く？
-        options:
-          通常時: accept_request
-          上映中: accept_request2
+        data:
+          type: question
+          question: どっちに行く？
+          options:
+            通常時: accept_request
+            上映中: accept_request2
   accept_request:
     actions:
       - action: teleport
-        map_id: 30196000
-        x: 11
-        y: 21
-        dir: 180
+        data:
+          map_id: 30196000
+          x: 11
+          y: 21
+          dir: 180
   accept_request2:
     actions:
       - action: teleport
-        map_id: 30197000
-        x: 11
-        y: 21
-        dir: 180
+        data:
+          map_id: 30197000
+          x: 11
+          y: 21
+          dir: 180

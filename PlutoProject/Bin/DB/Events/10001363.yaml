@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-#マイマイ島→バオバブの森
       - action: set_var
-        name: cloudforest
-        value: 0
+        data:
+          name: cloudforest
+          value: 0
       - action: teleport
-        map_id: 10059100
-        x: 88
-        y: 158
-        dir: 315
+        data:
+          map_id: 10059100
+          x: 88
+          y: 158
+          dir: 315

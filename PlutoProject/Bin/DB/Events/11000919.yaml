@@ -1,8 +1,8 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・コスプレが好きな少女
       - action: dialog
-        title: コスプレが好きな少女
-        content: で、でじこだにょ……。$R$Pなーんちゃって！$R$R好きなキャラクターになりきって$R遊ぶのは楽しいよ！
-        character_image: 11000919
+        data:
+          title: コスプレが好きな少女
+          content: で、でじこだにょ……。$R$Pなーんちゃって！$R$R好きなキャラクターになりきって$R遊ぶのは楽しいよ！
+          character_image: 11000919

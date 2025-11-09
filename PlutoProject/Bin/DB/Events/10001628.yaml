@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-# 軍艦島（ドミニオン界）・難民テントポータル
       - action: set_var
-        name: domitent
-        value: 0
+        data:
+          name: domitent
+          value: 0
       - action: teleport
-        map_id: 32200000
-        x: 2
-        y: 5
-        dir: 180
+        data:
+          map_id: 32200000
+          x: 2
+          y: 5
+          dir: 180

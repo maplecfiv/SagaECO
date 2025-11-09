@@ -1,23 +1,25 @@
 event_progresses:
   entrypoint:
     actions:
-#カーマインブリックシティ・崩落した階段・西側
       - action: dialog
-        title: 
-        content: ……階段の下に降りられそうだ。
-        character_image: 11004349
+        data:
+          title: 
+          content: ……階段の下に降りられそうだ。
+          character_image: 11004349
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          降りる: accept_request
-          降りない: hold_request
+        data:
+          type: question
+          question: どうする？
+          options:
+            降りる: accept_request
+            降りない: hold_request
   accept_request:
     actions:
       - action: teleport
-        map_id: 10055000
-        x: 105
-        y: 36
-        dir: 270
+        data:
+          map_id: 10055000
+          x: 105
+          y: 36
+          dir: 270
   hold_request:
     actions:

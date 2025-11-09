@@ -1037,6 +1037,7 @@ namespace SagaMap.Network.Client {
             Event _event = null;
             var eventData = EventParser.Find(EventID);
             if (eventData != null) {
+                SagaLib.Logger.ShowInfo(($"trying to process {EventID}"));
                 _event = new CustomEvent(eventData);
             }
             else if (ScriptManager.Instance.Events.ContainsKey(EventID)) {

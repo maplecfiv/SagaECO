@@ -1,10 +1,10 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・ティラ
       - action: routine
-        type: question
-        question: どうしよう？
-        options:
-            受け取るような動きをしてみる: em id=10133800
-            ガルガル……？: RETURN
+        data:
+          type: question
+          question: どうしよう？
+          options:
+              受け取るような動きをしてみる: em id=10133800
+              ガルガル……？: RETURN

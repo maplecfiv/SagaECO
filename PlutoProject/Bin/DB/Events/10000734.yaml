@@ -1,12 +1,13 @@
 event_progresses:
   entrypoint:
     actions:
-#アイアンシティ下層階・大工場前ポータル（右）
       - action: set_var
-        name: bigfac
-        value: 1
+        data:
+          name: bigfac
+          value: 1
       - action: teleport
-        map_id: 30081000
-        x: 10
-        y: 21
-        dir: 180
+        data:
+          map_id: 30081000
+          x: 10
+          y: 21
+          dir: 180

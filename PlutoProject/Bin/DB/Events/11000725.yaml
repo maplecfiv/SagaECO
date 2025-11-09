@@ -1,8 +1,8 @@
 event_progresses:
   entrypoint:
     actions:
-# タイニーアイランド・湖畔のティタ
       - action: dialog
-        title: 湖畔のティタ
-        content: エミルの世界へ戻りたいときは$R海岸にいるあのかわいいタイニーに$R話かければいいそうですわ。$R$Rあたしが話しかけると$R君はまだ早いよって言われちゃいます。
-        character_image: 11000725
+        data:
+          title: 湖畔のティタ
+          content: エミルの世界へ戻りたいときは$R海岸にいるあのかわいいタイニーに$R話かければいいそうですわ。$R$Rあたしが話しかけると$R君はまだ早いよって言われちゃいます。
+          character_image: 11000725

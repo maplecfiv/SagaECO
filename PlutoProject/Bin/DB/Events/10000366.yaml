@@ -1,4 +1,20 @@
 event_progresses:
   entrypoint:
     actions:
-#大陸の洞窟Ｂ５Ｆ・案内看板
+      - action: routine
+        data:
+          type: question
+          question: インスマウスの隠れ里へ行く？
+          options:
+            はい: accept_request
+            いいえ: hold_request
+  accept_request:
+    actions:
+      - action: teleport
+        data:
+          map_id: 20004001
+          x: 63
+          y: 102
+          dir: 180
+  hold_request:
+    actions:

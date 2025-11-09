@@ -1,4 +1,53 @@
 event_progresses:
   entrypoint:
     actions:
-#マルクトの船着場・トンカ行き飛空庭ポータル
+      - action: dialog
+        data:
+          title: 南軍兵士
+          content: ようこそ、マルクトの船着場へ。$Rトンカへの飛空庭乗り場はこちらです。$R
+          character_image: 11001099
+      - action: routine
+        data:
+          type: question
+          question: ようこそ、マルクトの船着場へ！
+          options:
+            なにもしない: hold_request
+            搭乗手続きを行う: accept_request
+  accept_request:
+    actions:
+      - action: dialog
+        data:
+          title: 南軍兵士
+          content: おや、あなたは！$R一度こちらに入国されておりますね。$Rどうぞ、飛空庭にお乗りください。
+          character_image: 11001099
+      - action: routine
+        data:
+          type: question
+          question: トンカシティ行きの飛空庭です
+          options:
+            まだ、乗らない: hold_request
+            飛空庭に乗る: accept_request2
+  accept_request2:
+    actions:
+      - action: play_se
+        data:
+          id: 2426
+      - action: dialog
+        data:
+          title: 
+          content: トンカシティへ出発しまーす！$R
+          character_image: 11000000
+      - action: play_se
+        data:
+          id: 2438
+      - action: wait
+        data:
+          time: 1980
+      - action: teleport
+        data:
+          map_id: 10062000
+          x: 195
+          y: 60
+          dir: 135
+  hold_request:
+    actions:

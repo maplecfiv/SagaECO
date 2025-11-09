@@ -40,10 +40,10 @@ namespace SagaLib {
 
             Dictionary<string, Dictionary<string, string>> qaMap = new Dictionary<string, Dictionary<string, string>>();
             for (int i = 0; i < lines.Length; i++) {
-                string line = lines[i];
+                string line = lines[i].Trim();
 
                 if (line.StartsWith("#")) {
-                    outputs.Add($"{line}");
+                    // outputs.Add($"{line}");
                 }
                 else if (line.StartsWith("movenpc ")) {
                     var data = GetData((line));
@@ -63,42 +63,46 @@ namespace SagaLib {
                     }
 
                     outputs.Add($"      - action: move_npc");
-                    outputs.Add($"        ids: ");
+                    outputs.Add($"        data: ");
+                    outputs.Add($"          ids: ");
                     foreach (var npcId in npcIds) {
-                        outputs.Add($"          - id: {npcId}");
+                        outputs.Add($"            - id: {npcId}");
                     }
 
                     // outputs.Add($"      id: {data["id"]}");
-                    outputs.Add($"        x: {data["x"]}");
-                    outputs.Add($"        y: {data["y"]}");
-                    outputs.Add($"        speed: {data["speed"]}");
-                    outputs.Add($"        dir: {data["dir"]}");
-                    outputs.Add($"        move_type: {data["movetype"]}");
-                    outputs.Add($"        motion: {data["motion"]}");
-                    outputs.Add($"        motion_speed: {data["motionspeed"]}");
+                    outputs.Add($"          x: {data["x"]}");
+                    outputs.Add($"          y: {data["y"]}");
+                    outputs.Add($"          speed: {data["speed"]}");
+                    outputs.Add($"          dir: {data["dir"]}");
+                    outputs.Add($"          move_type: {data["movetype"]}");
+                    outputs.Add($"          motion: {data["motion"]}");
+                    outputs.Add($"          motion_speed: {data["motionspeed"]}");
                 }
                 else if (line.StartsWith("hasitem ") || line.StartsWith("Hasitem ")) {
                     var data = GetData((line));
-                    outputs.Add($"       - action: routine");
-                    outputs.Add($"         type: item");
-                    outputs.Add($"         item: {data["id"]}");
-                    outputs.Add($"         count: {data["count"]}");
-                    outputs.Add($"         true: {data["label"]}");
-                    outputs.Add($"         false: {data["else"]}");
+                    outputs.Add($"      - action: routine");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          type: item");
+                    outputs.Add($"          item: {data["id"]}");
+                    outputs.Add($"          count: {data["count"]}");
+                    outputs.Add($"          true: {data["label"]}");
+                    outputs.Add($"          false: {data["else"]}");
                 }
                 else if (line.StartsWith("hasevent ")) {
                     var data = GetData((line));
                     outputs.Add($"      - action: routine");
-                    outputs.Add($"        type: event");
-                    outputs.Add($"         event: {data["var"]}");
-                    outputs.Add($"         ind: {data["ind"]}");
-                    outputs.Add($"         true: {data["label"]}");
-                    outputs.Add($"         false: {data["else"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          type: event");
+                    outputs.Add($"          event: {data["var"]}");
+                    outputs.Add($"          ind: {data["ind"]}");
+                    outputs.Add($"          true: {data["label"]}");
+                    outputs.Add($"          false: {data["else"]}");
                 }
                 else if (line.StartsWith("goto ")) {
                     var data = GetData((line));
                     outputs.Add($"      - action: go_section");
-                    outputs.Add($"         section: {data["label"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          section: {data["label"]}");
                 }
                 else if (line.StartsWith("npcflags ")) {
                     var data = GetData((line));
@@ -131,15 +135,17 @@ namespace SagaLib {
                             i++;
                             break;
                         }
-                        else if (lines[j].StartsWith("end")) {
-                            subLines.Add(lines[j]);
-                            i++;
-                            break;
-                        }
+                        // else if (lines[j].StartsWith("end")) {
+                        //     subLines.Add(lines[j]);
+                        //     i++;
+                        //     break;
+                        // }
                         else if (lines[j].StartsWith("*")) {
+                            i--;
                             break;
                         }
                         else {
+                            // SagaLib.Logger.ShowInfo(($" {line} add {lines[j]}"));
                             subLines.Add(lines[j]);
                         }
                     }
@@ -151,17 +157,9 @@ namespace SagaLib {
                     // outputs.Add($"Process dialog {line}");
                     List<string> subLines = new List<string>();
                     for (int j = i + 1; j < lines.Length; i++, j++) {
-                        if (lines[j].StartsWith("return")) {
-                            subLines.Add(lines[j]);
-                            i++;
-                            break;
-                        }
-                        else if (lines[j].StartsWith("end")) {
+                        if (lines[j].StartsWith("end")) {
                             // subLines.Add(lines[j]);
                             i++;
-                            break;
-                        }
-                        else if (lines[j].StartsWith("*")) {
                             break;
                         }
                         else {
@@ -175,11 +173,12 @@ namespace SagaLib {
                     //
                     //
                     outputs.Add($"      - action: dialog");
-                    outputs.Add($"        title: {data["title"]}");
-                    outputs.Add($"        content: {String.Join(
+                    outputs.Add($"        data:");
+                    outputs.Add($"          title: {data["title"]}");
+                    outputs.Add($"          content: {String.Join(
                         "", subLines)}");
                     if (imageId != null) {
-                        outputs.Add($"        character_image: {imageId}");
+                        outputs.Add($"          character_image: {imageId}");
                     }
                 }
                 else if (line.StartsWith("buyshop")) {
@@ -187,17 +186,9 @@ namespace SagaLib {
                     // outputs.Add($"Process purchase dialog {line}");
                     List<string> subLines = new List<string>();
                     for (int j = i + 1; j < lines.Length; i++, j++) {
-                        if (lines[j].StartsWith("return")) {
-                            subLines.Add(lines[j]);
-                            i++;
-                            break;
-                        }
-                        else if (lines[j].StartsWith("end")) {
+                        if (lines[j].StartsWith("end")) {
                             // subLines.Add(lines[j]);
                             i++;
-                            break;
-                        }
-                        else if (lines[j].StartsWith("*")) {
                             break;
                         }
                         else {
@@ -206,14 +197,14 @@ namespace SagaLib {
                     }
 
 
-                    outputs.Add($"    - action: purchase_dialog");
-                    outputs.Add($"       items: ");
+                    outputs.Add($"      - action: purchase_dialog");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          items: ");
                     foreach (var itemId in subLines) {
-                        outputs.Add($"         - id: {itemId}");
+                        outputs.Add($"            - {itemId}");
                     }
                 }
                 else if (line.StartsWith("select ")) {
-                    qaMap.Clear();
                     // outputs.Add($"Process selection");
                     Dictionary<string, string> data = GetData(line);
                     for (int j = i + 1, oIdx = 0; j < lines.Length; i++, j++, oIdx++) {
@@ -230,10 +221,6 @@ namespace SagaLib {
                     }
                 }
                 else if (line.StartsWith("case")) {
-                    if (!qaMap.ContainsKey("question")) {
-                        qaMap.Clear();
-                    }
-
                     // outputs.Add($"Process selection condition");
                     Dictionary<string, string> data = GetData(line);
                     for (int j = i + 1, oIdx = 0; j < lines.Length; i++, j++, oIdx++) {
@@ -252,16 +239,18 @@ namespace SagaLib {
 
                     if (qaMap.ContainsKey("question")) {
                         outputs.Add($"      - action: routine");
-                        outputs.Add($"        type: question");
-                        outputs.Add($"        question: {qaMap["question"]["title"]}");
+                        outputs.Add($"        data:");
+                        outputs.Add($"          type: question");
+                        outputs.Add($"          question: {qaMap["question"]["title"]}");
                     }
                     else {
                         outputs.Add($"      - action: routine");
-                        outputs.Add($"        type: variable");
-                        outputs.Add($"        var: {data["var"]}");
+                        outputs.Add($"        data:");
+                        outputs.Add($"          type: variable");
+                        outputs.Add($"          var: {data["var"]}");
                     }
 
-                    outputs.Add($"        options:");
+                    outputs.Add($"          options:");
                     foreach (string key in qaMap.Keys) {
                         if (key == "question") {
                             continue;
@@ -269,14 +258,14 @@ namespace SagaLib {
 
                         if (qaMap.ContainsKey("question")) {
                             if (qaMap[key].ContainsKey("A")) {
-                                outputs.Add($"          {qaMap[key]["Q"]}: {qaMap[key]["A"].Trim()}");
+                                outputs.Add($"            {qaMap[key]["Q"]}: {qaMap[key]["A"].Trim()}");
                             }
                             else {
-                                outputs.Add($"          {qaMap[key]["Q"]}: RETURN");
+                                outputs.Add($"            {qaMap[key]["Q"]}: RETURN");
                             }
                         }
                         else {
-                            outputs.Add($"          {key}: {qaMap[key]["A"].Trim()}");
+                            outputs.Add($"            {key}: {qaMap[key]["A"].Trim()}");
                         }
                     }
 
@@ -285,10 +274,11 @@ namespace SagaLib {
                 else if (line.StartsWith("warp ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: teleport");
-                    outputs.Add($"        map_id: {data["map"]}");
-                    outputs.Add($"        x: {data["x"]}");
-                    outputs.Add($"        y: {data["y"]}");
-                    outputs.Add($"        dir: {data["dir"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          map_id: {data["map"]}");
+                    outputs.Add($"          x: {data["x"]}");
+                    outputs.Add($"          y: {data["y"]}");
+                    outputs.Add($"          dir: {data["dir"]}");
                 }
                 else if (line.StartsWith("motion ")) {
                     Dictionary<string, string> data = GetData(line);
@@ -301,8 +291,9 @@ namespace SagaLib {
                     }
 
                     outputs.Add($"      - action: play_motion");
-                    outputs.Add($"        motion: {data["motion"]}");
-                    outputs.Add($"        ids:");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          motion: {data["motion"]}");
+                    outputs.Add($"          ids:");
                     foreach (var target in targets) {
                         outputs.Add($"         - {target}");
                     }
@@ -313,24 +304,28 @@ namespace SagaLib {
                 }
                 else if (line.StartsWith("stopbgm")) {
                     outputs.Add($"      - action: stop_bgm");
+                    outputs.Add($"        type: stop_bgm");
                 }
                 else if (line.StartsWith("playbgm")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: change_bgm");
-                    outputs.Add($"       id: {data["id"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          id: {data["id"]}");
                 }
                 else if (line.StartsWith("screen")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: control_screen");
-                    outputs.Add($"       enable: {data["enable"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          enable: {data["enable"]}");
                     if (data.ContainsKey("color")) {
-                        outputs.Add($"       color: {data["color"]}");
+                        outputs.Add($"          color: {data["color"]}");
                     }
                 }
                 else if (line.StartsWith("wait ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: wait");
-                    outputs.Add($"        time: {data["time"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          time: {data["time"]}");
                 }
                 else if (line.StartsWith("return")) {
                     // outputs.Add($"RETURN");
@@ -338,29 +333,33 @@ namespace SagaLib {
                 else if (line.StartsWith("loseitem ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: take_item");
-                    outputs.Add($"        id: {data["id"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          id: {data["id"]}");
                     if (data.ContainsKey("count")) {
-                        outputs.Add($"        count: {data["count"]}");
+                        outputs.Add($"          count: {data["count"]}");
                     }
                 }
                 else if (line.StartsWith("getitem ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: give_item");
-                    outputs.Add($"        id: {data["id"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          id: {data["id"]}");
                     if (data.ContainsKey("count")) {
-                        outputs.Add($"        count: {data["count"]}");
+                        outputs.Add($"          count: {data["count"]}");
                     }
                 }
                 else if (line.StartsWith("playse ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: play_se");
-                    outputs.Add($"        id: {data["id"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          id: {data["id"]}");
                 }
                 else if (line.StartsWith("effect ")) {
                     var data = GetData(line);
                     outputs.Add($"      - action: play_effect");
-                    outputs.Add($"        id: {data["id"]}");
-                    outputs.Add($"        effect: {data["effect"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          id: {data["id"]}");
+                    outputs.Add($"          effect: {data["effect"]}");
                 }
                 else if (line.StartsWith("end")) {
                     outputs.Add($"END");
@@ -378,8 +377,9 @@ namespace SagaLib {
                     varMap[data["var"]] = data["value"];
 
                     outputs.Add($"      - action: set_var");
-                    outputs.Add($"        name: {data["var"]}");
-                    outputs.Add($"        value: {data["value"]}");
+                    outputs.Add($"        data:");
+                    outputs.Add($"          name: {data["var"]}");
+                    outputs.Add($"          value: {data["value"]}");
                 }
                 else if (line.Trim().Length == 0) {
                     continue;
@@ -390,11 +390,31 @@ namespace SagaLib {
             }
         }
 
-        private void ProcessSsfFile(string path) {
+        private void ProcessSsfFile(string eventId, Dictionary<string, string> eventMap) {
             List<string> outputs = new List<string>();
-            ProcessScript(File.ReadAllLines(path), null, outputs);
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            var dest = $"/home/maple/projects/SagaECO/PlutoProject/Bin/DB/Events/{fileName}.yaml";
+            List<string> _lines = new List<string>();
+            string[] lines = null;
+            foreach (var line in File.ReadAllLines(eventMap[eventId])) {
+                if (!line.StartsWith("include")) {
+                    _lines.Add(line);
+                    continue;
+                }
+
+                lines = File.ReadAllLines(eventMap[line.Split(" ")[1].Trim()]);
+                break;
+            }
+
+            if (lines == null) {
+                lines = _lines.ToArray();
+            }
+
+            ProcessScript(lines, null, outputs);
+            var fileName = Path.GetFileNameWithoutExtension(eventMap[eventId]);
+            var dest = $"{ConfigLoader.LoadDbPath()}/Events/{fileName}.yaml";
+            if (File.Exists(dest)) {
+                File.Delete(dest);
+            }
+
             Console.WriteLine(dest);
             File.AppendAllLines(dest, outputs);
         }
@@ -402,8 +422,13 @@ namespace SagaLib {
         private void Process() {
             var ssfFiles = Directory.GetFiles("/home/maple/Downloads/Serissa/scripts/", "*.ssf",
                 SearchOption.AllDirectories);
+            Dictionary<string, string> eventMap = new Dictionary<string, string>();
             foreach (var ssfFile in ssfFiles) {
-                ProcessSsfFile(ssfFile);
+                eventMap[Path.GetFileNameWithoutExtension(ssfFile)] = ssfFile;
+            }
+
+            foreach (var eventId in eventMap.Keys) {
+                ProcessSsfFile(eventId, eventMap);
             }
         }
 

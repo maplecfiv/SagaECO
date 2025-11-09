@@ -1,41 +1,47 @@
 event_progresses:
   entrypoint:
     actions:
-# トンカ島・カーマイン島行き
       - action: dialog
-        title: カーマイン島行き
-        content: カーマイン海岸行き$Rまもなく出発です。
-        character_image: 11004168
+        data:
+          title: カーマイン島行き
+          content: カーマイン海岸行き$Rまもなく出発です。
+          character_image: 11004168
       - action: routine
-        type: question
-        question: どうする？
-        options:
-          乗らない: hold_request
-          乗る（5000ゴールド）: accept_request
+        data:
+          type: question
+          question: どうする？
+          options:
+            乗らない: hold_request
+            乗る（5000ゴールド）: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
-#getgold gold=-5000
       - action: play_se
-        id: 2040
+        data:
+          id: 2040
       - action: dialog
-        title: 
-        content: 5000ゴールド渡した。
-        character_image: 11004168
+        data:
+          title: 
+          content: 5000ゴールド渡した。
+          character_image: 11004168
       - action: play_se
-        id: 2426
+        data:
+          id: 2426
       - action: dialog
-        title: カーマイン島行き
-        content: カーマイン海岸へ出発しまーす！
-        character_image: 11004168
+        data:
+          title: カーマイン島行き
+          content: カーマイン海岸へ出発しまーす！
+          character_image: 11004168
       - action: play_se
-        id: 2438
-#effect id=11004168 effect=8066
+        data:
+          id: 2438
       - action: wait
-        time: 1980
+        data:
+          time: 1980
       - action: teleport
-        map_id: 10080000
-        x: 47
-        y: 81
-        dir: 0
+        data:
+          map_id: 10080000
+          x: 47
+          y: 81
+          dir: 0

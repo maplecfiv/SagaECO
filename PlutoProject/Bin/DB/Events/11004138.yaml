@@ -1,28 +1,30 @@
 event_progresses:
   entrypoint:
     actions:
-# カーマイン海岸・タクシー屋（海岸）
       - action: dialog
-        title: タクシー屋（海岸）
-        content: ここはバギータクシーだよ！$R$Pカーマイン海岸発の$Rカーマインブリックの街行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
-        character_image: 11004138
+        data:
+          title: タクシー屋（海岸）
+          content: ここはバギータクシーだよ！$R$Pカーマイン海岸発の$Rカーマインブリックの街行きだよ～！$R$P片道15000Ｇだけど、乗っていくかい？
+          character_image: 11004138
       - action: routine
-        type: question
-        question: どうしますか？
-        options:
-          利用しない: hold_request
-          街まで行く（15000ゴールド）: accept_request
+        data:
+          type: question
+          question: どうしますか？
+          options:
+            利用しない: hold_request
+            街まで行く（15000ゴールド）: accept_request
   hold_request:
     actions:
   accept_request:
     actions:
-#getgold gold=-15000
       - action: dialog
-        title: タクシー屋（海岸）
-        content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
-        character_image: 11004138
+        data:
+          title: タクシー屋（海岸）
+          content: はい！たしかに15000Ｇ頂きました！$R早速出発するから、乗って乗って！
+          character_image: 11004138
       - action: teleport
-        map_id: 10055000
-        x: 142
-        y: 248
-        dir: 0
+        data:
+          map_id: 10055000
+          x: 142
+          y: 248
+          dir: 0
