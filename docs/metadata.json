@@ -1,0 +1,19 @@
+{
+    "generation_info": {
+        "timestamp": "2025-12-29T13:36:45.888807",
+        "main_model": "qwen2.5-coder:0.5b",
+        "generator_version": "1.0.0",
+        "repo_path": "/root/projects/SagaECO",
+        "commit_id": null
+    },
+    "statistics": {
+        "total_components": 8787,
+        "leaf_nodes": 8080,
+        "max_depth": 2
+    },
+    "files_generated": [
+        "overview.md",
+        "module_tree.json",
+        "first_module_tree.json"
+    ]
+}
