@@ -303,7 +303,9 @@ namespace SagaMap {
             DualJobSkillFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/dualjob_skill_learn.csv",
                 Encoding.UTF8);
 
-            MapInfoFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MapInfo.zip");
+            List<uint> events = MapInfoFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/MapInfo.zip");
+
+
             MapNameFactory.Instance.Init($"{ConfigLoader.LoadDbPath()}/mapname.csv",
                 Encoding.UTF8);
             MapInfoFactory.Instance.LoadMapFish($"{ConfigLoader.LoadDbPath()}/CanFish.xml");
@@ -407,6 +409,26 @@ namespace SagaMap {
 
             ScriptManager.Instance.LoadScript($"{ConfigLoader.LoadScriptPath()}/Scripts");
             ScriptManager.Instance.VariableHolder = charDB.LoadServerVar();
+
+            HashSet<uint> checkedEventIds = new HashSet<uint>();
+            foreach (uint eventId in events) {
+                var eventData = EventParser.Find(eventId);
+                if (eventData != null) {
+                    continue;
+                }
+
+                if (ScriptManager.Instance.Events.ContainsKey(eventId)) {
+                    continue;
+                }
+
+                if (checkedEventIds.Contains(eventId)) {
+                    SagaLib.Logger.ShowWarning($"Missing custom event {eventId}");
+                    continue;
+                }
+
+                SagaLib.Logger.ShowWarning($"Missing event {eventId}");
+                checkedEventIds.Add(eventId);
+            }
 
             //Starting API
             var pre = Configuration.Configuration.Instance.Prefixes + ":" +

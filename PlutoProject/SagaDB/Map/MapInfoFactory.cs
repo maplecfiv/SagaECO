@@ -177,11 +177,12 @@ namespace SagaDB.Map {
             }
         }
 
-        public void Init(string path) {
-            Init(path, true);
+        public List<uint> Init(string path) {
+            return Init(path, true);
         }
 
-        public void Init(string path, bool fullinfo) {
+        public List<uint> Init(string path, bool fullinfo) {
+            List<uint> events = new List<uint>();
             var stream = VirtualFileSystemManager.Instance.FileSystem.OpenFile(path);
             var file = new ZipFile(stream);
             var total = (int)file.Count;
@@ -255,6 +256,8 @@ namespace SagaDB.Map {
                         for (var j = 0; j < info.width; j++) {
                             var eventid = br.ReadUInt32();
                             if (eventid != 0) {
+                                events.Add(eventid);
+                                SagaLib.Logger.ShowInfo($"Event {eventid} was found in {info.name}/{info.id}");
                                 if (!info.events.ContainsKey(eventid)) {
                                     info.events.Add(eventid, new byte[2] { (byte)j, (byte)i });
                                 }
@@ -286,6 +289,7 @@ namespace SagaDB.Map {
                         }
                 }
 
+                SagaLib.Logger.ShowInfo(JsonSerializer.Serialize(info));
                 mapInfos.Add(info.id, info);
                 ms.Close();
                 entry = zs.GetNextEntry();
@@ -303,6 +307,7 @@ namespace SagaDB.Map {
 #if !Web
             Logger.ProgressBarHide(count + " maps loaded.");
 #endif
+            return events;
         }
     }
 }
